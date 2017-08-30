@@ -1,6 +1,6 @@
 <?php
 
-namespace Muserpol\Models\RetirementFund;
+namespace Muserpol\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
