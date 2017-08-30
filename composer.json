@@ -22,7 +22,7 @@
             "database/factories"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "Muserpol\\": "app/"
         }
     },
     "autoload-dev": {

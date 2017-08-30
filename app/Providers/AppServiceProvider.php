@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace Muserpol\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -23,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        require_once __DIR__ . '/../Http/Helpers/Navigation.php';
     }
 }
