@@ -59,7 +59,7 @@ class Affiliate extends Model
 
     public function contributions()
     {
-        return $this->hasMany(RetirementFund\Contribution::class);
+        return $this->hasMany('Muserpol\Models\Contribution\Contribution'::class);
     }
 
     public function degree()
