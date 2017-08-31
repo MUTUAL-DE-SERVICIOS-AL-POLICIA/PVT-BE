@@ -9,6 +9,11 @@ class City extends Model
 {
 	protected $table = "cities";
 
+	protected $fillable = [
+		'name',
+		'shortened'
+	];
+
 	public function affiliates_with_identity_cards()
 	{
 		return $this->hasMany(Affiliate::class,'city_identity_card_id','id');
