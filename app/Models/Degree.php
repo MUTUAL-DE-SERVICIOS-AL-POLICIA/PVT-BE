@@ -20,4 +20,9 @@ class Degree extends Model
     {
         return $this->belongsTo(Hierarchy::class);
     }
+
+    public function base_wages()
+    {
+        return $this->hasMany(BaseWage::class);
+    }
 }
