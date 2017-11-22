@@ -29,15 +29,28 @@ class CreateRetirementFundTables extends Migration
             $table->bigInteger('ret_fun_modality_id')->unsigned()->nullable();
             $table->bigInteger('city_id')->unsigned()->nullable();
             $table->string('code')->unique();
-            $table->date('reception_date')->nullable();
-            $table->date('check_file_date')->nullable();
-            $table->date('qualification_date')->nullable();
+
+            $table->string('resolution_code')->nullable();
+            $table->date('resolution_date')->nullable();
+            $table->string('legal_assessment_code')->nullable();
             $table->date('legal_assessment_date')->nullable();
-            $table->date('anticipation_start_date')->nullable();
-            $table->date('anticipation_end_date')->nullable();
-            $table->date('recognized_start_date')->nullable();
-            $table->date('recognized_end_date')->nullable();
+
+            $table->enum('type', ['Pago', 'Anticipo']);
+
+            $table->string('accounting_code')->nullable();
+            $table->date('accounting_response_date')->nullable();
+            $table->string('loan_code')->nullable();
+            $table->date('loan_response_date')->nullable();
+
+            $table->date('reception_date')->nullable();
+            $table->date('qualification_date')->nullable();
+            $table->date('check_file_date')->nullable();
+           
+            $table->decimal('average_quotable', 13, 2);
+            $table->integer('quotations');  
+/**/
             $table->decimal('total_quotable', 13, 2);
+
             $table->decimal('total_additional_quotable', 13, 2);
             $table->decimal('subtotal', 13, 2);
             $table->decimal('performance', 13, 2);
