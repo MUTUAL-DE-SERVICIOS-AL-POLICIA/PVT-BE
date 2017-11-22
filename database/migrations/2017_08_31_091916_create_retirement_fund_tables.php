@@ -155,7 +155,32 @@ class CreateRetirementFundTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-    
+        Schema::create('interval_type', function(Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create('interval_type_ret_fun', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->bigInteger('interval_type_id')->unsigned();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
+            $table->foreign('interval_type_id')->references('id')->on('interval_type');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create('ret_fun_advanced_payment', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->date('date')->nullable();
+            $table->decimal('total', 13, 2)->nullable();
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
