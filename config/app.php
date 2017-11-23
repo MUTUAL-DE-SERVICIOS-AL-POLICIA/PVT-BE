@@ -176,6 +176,7 @@ return [
         // Muserpol\Providers\BroadcastServiceProvider::class,
         Muserpol\Providers\EventServiceProvider::class,
         Muserpol\Providers\RouteServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
     ],
 
