@@ -5,7 +5,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+// require('./bootstrap');
 
 window.Vue = require('vue');
 
@@ -16,7 +16,15 @@ window.Vue = require('vue');
  */
 
 Vue.component('example', require('./components/Example.vue'));
+Vue.component('example-one', require('./components/affiliate/ExampleOne.vue'));
+// Vue.component(
+// 	'affiliate-index',
+// 	require('./components/affiliate/index.vue')
+// );
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
 });
+// const application = new Vue({
+//     el: '#app'
+// });
