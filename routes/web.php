@@ -13,6 +13,10 @@
 
 Route::get('/', 'HomeController@index')->name("main");
 Route::get('/minor', 'HomeController@minor')->name("minor");
+
 //afiliates
 Route::resource('affiliate', 'AffiliateController');
 Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
+
+Route::resource('affiliate', 'AffiliateController');
+

@@ -21,6 +21,7 @@ class AffiliateController extends Controller
         $affiliates = Affiliate::take(100)->get();
         Log::info("cechus y anita");
         return response()->json($affiliates);
+
     }
 
     /**
