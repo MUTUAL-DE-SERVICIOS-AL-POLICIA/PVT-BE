@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p><code>query: <!-- {{ query }} --></code></p>
+    <p><code>query: {{ query }}</code></p>
     <datatable v-bind="$data">
       <button class="btn btn-default" @click="alertSelectedUids" :disabled="!selection.length">
         <i class="fa fa-commenting-o"></i>
@@ -11,14 +11,15 @@
 </template>
 <script>
 import Vue from 'vue'
+import axios from 'axios'
 import Datatable from 'vue2-datatable-component'
 
 Vue.use(Datatable) // done!
-// import mockData from '../_mockData'
-// import components from './comps/'
+import mockData from '../_mockData'
+import components from './comps/'
 export default {
   components,
-  name: 'FriendsTable', // `name` is required as a recursive component
+  name: 'AffiliatesTable', // `name` is required as a recursive component
   props: ['row'], // from the parent FriendsTable (if exists)
   data () {
     const amINestedComp = !!this.row
@@ -30,10 +31,12 @@ export default {
       pageSizeOptions: [5, 10, 15, 20],
       columns: (() => {
         const cols = [
-          { title: 'UID', field: 'uid', label: 'User ID', sortable: true, visible: 'true' },
+          { title: 'ID', field: 'id', label: 'Affiliate ID', sortable: true, visible: 'true' },
           { title: 'Email', field: 'email', visible: false, thComp: 'FilterTh', tdComp: 'Email' },
-          { title: 'Username', field: 'name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'Country', field: 'country', thComp: 'FilterTh', thStyle: { fontWeight: 'normal' } },
+          { title: 'Username', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Username', field: 'second_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Username', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Username', field: 'mothers_last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'IP', field: 'ip', visible: false, tdComp: 'IP' },
           { title: 'Age', field: 'age', sortable: true, thClass: 'text-info', tdClass: 'text-success' },
           { title: 'Create time', field: 'createTime', sortable: true, colClass: 'w-240', thComp: 'CreatetimeTh', tdComp: 'CreatetimeTd' },
@@ -44,7 +47,7 @@ export default {
         ]
         const groupsDef = {
           Normal: ['Email', 'Username', 'Country', 'IP'],
-          Sortable: ['UID', 'Age', 'Create time'],
+          Sortable: ['UID'],
           Extra: ['Operation', 'Color', 'Language', 'PL']
         }
         return cols.map(col => {
@@ -80,14 +83,19 @@ export default {
   },
   methods: {
     handleQueryChange () {
+      axios.get('get_all_affiliates').then((response)=> {
+        this.data = response.data
+        this.total = response.data.length
+        // this.summary = summary
+      });
       mockData(this.query).then(({ rows, total, summary }) => {
-        this.data = rows
-        this.total = total
-        this.summary = summary
+        console.log(rows)
+        // this.data = rows
       })
     },
     alertSelectedUids () {
-      alert(this.selection.map(({ uid }) => uid))
+      console.log(this.selection);
+      alert(this.selection.map(({ id }) => id))
     }
   }
 }

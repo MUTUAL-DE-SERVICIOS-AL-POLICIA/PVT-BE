@@ -8,7 +8,7 @@
 // require('./bootstrap');
 
 window.Vue = require('vue');
-
+window.$ = window.jQuery = require('jquery');
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -16,12 +16,13 @@ window.Vue = require('vue');
  */
 
 Vue.component('example', require('./components/Example.vue'));
-Vue.component('example-one', require('./components/affiliate/ExampleOne.vue'));
+// Vue.component('example-one', require('./components/affiliate/ExampleOne.vue'));
+// Vue.component('listss', require('./components/affiliate/List.vue'));
+Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
 // Vue.component(
 // 	'affiliate-index',
 // 	require('./components/affiliate/index.vue')
 // );
-
 const app = new Vue({
     el: '#app',
 });

@@ -35,6 +35,7 @@
 
 {{-- <script src="{!! asset('js/app.js') !!}" type="text/javascript"></script> --}}
 <script src="{!! asset('js/dev/app.js') !!}" type="text/javascript"></script>
+<script src="https://unpkg.com/jquery@2.1.4/dist/jquery.min.js" type="text/javascript"></script>
 
 @section('scripts')
 @show

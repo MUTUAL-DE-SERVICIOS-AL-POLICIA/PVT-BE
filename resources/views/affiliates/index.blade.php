@@ -9,13 +9,13 @@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row" id="affiliate_view">
+    <div class="row" id="app">
         <div class="col-lg-12">
             <div class="text-center m-t-lg">
-                <example></example>
-                <h1>
-                    Welcome in INSPINIA Laravel Starter Project
-                </h1>
+                <affiliate-index></affiliate-index>
+                <h2>
+                    Welcome in INSPINIA Larasssvel Starter Project
+                </h2>
                 <small>
                     It is an application skeleton for a typical web app. You can use it to quickly bootstrap your webapp projects.
                 </small>

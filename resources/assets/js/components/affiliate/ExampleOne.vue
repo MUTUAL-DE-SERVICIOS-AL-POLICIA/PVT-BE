@@ -1,7 +1,7 @@
 <template>
   <div>
     <code>query: {{ query }}</code>
-    <datatable v-bind="$data" />
+    <!-- <datatable v-bind="$data" /> -->
   </div>
 </template>
 <script>

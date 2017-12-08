@@ -19,6 +19,9 @@
     "vue": "^2.1.10"
   },
   "dependencies": {
+    "axios": "^0.16.2",
+    "mockjs": "^1.0.1-beta3",
+    "moment": "^2.19.3",
     "vue2-datatable-component": "^2.1.20"
   }
 }

@@ -4,7 +4,7 @@ namespace Muserpol\Http\Controllers;
 
 use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
-
+use Log;
 class AffiliateController extends Controller
 {
     /**
@@ -15,6 +15,12 @@ class AffiliateController extends Controller
     public function index()
     {
         return view('affiliates.index');
+    }
+    public function getAllAffiliates()
+    {
+        $affiliates = Affiliate::take(100)->get();
+        Log::info("cechus y anita");
+        return response()->json($affiliates);
     }
 
     /**
