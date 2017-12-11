@@ -6,7 +6,6 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-<<<<<<< HEAD
         {{ Breadcrumbs::render('affiliate') }}
     </div>
 </div>

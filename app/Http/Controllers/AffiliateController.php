@@ -16,12 +16,16 @@ class AffiliateController extends Controller
     {
         return view('affiliates.index');
     }
-    public function getAllAffiliates()
+    public function getAllAffiliates(Request $request)
     {
-        $affiliates = Affiliate::take(100)->get();
-        Log::info("cechus y anita");
-        return response()->json($affiliates);
-
+        $offset = $request->offset ?? 0;
+        $limit = $request->limit ?? 10;
+        $sort = $request->sort ?? 'id';
+        $order = $request->order ?? 'asc';
+        $affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->get();
+        $total=53640;
+        // $total=Affiliate::all()->count();
+        return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
     }
 
     /**

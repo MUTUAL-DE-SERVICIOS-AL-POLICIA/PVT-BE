@@ -19,6 +19,7 @@ Vue.component('example', require('./components/Example.vue'));
 // Vue.component('example-one', require('./components/affiliate/ExampleOne.vue'));
 // Vue.component('listss', require('./components/affiliate/List.vue'));
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
+Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vue'));
 // Vue.component(
 // 	'affiliate-index',
 // 	require('./components/affiliate/index.vue')

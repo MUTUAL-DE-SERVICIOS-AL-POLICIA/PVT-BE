@@ -9,9 +9,12 @@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
+    <div class="row" id="app">
         <div class="col-lg-12">
-            <div class="text-center m-t-lg">
+            <div class=" m-t-lg">
+                <div class="col-md-6">
+                    <affiliate-show  :affiliate="{{ $affiliate }}"></affiliate-show>
+                </div>
                 <h1>
                     {{ $affiliate->first_name }}
                 </h1>

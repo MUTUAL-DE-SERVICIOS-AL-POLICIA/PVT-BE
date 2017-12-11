@@ -83,15 +83,19 @@ export default {
   },
   methods: {
     handleQueryChange () {
-      axios.get('get_all_affiliates').then((response)=> {
-        this.data = response.data
-        this.total = response.data.length
+      axios.get('/get_all_affiliates',{
+        params: this.query
+      }).then((response)=> {
+        this.data = response.data.affiliates, 
+        this.total = response.data.total
         // this.summary = summary
-      });
+      }).catch(function (error) {
+        console.log(error)
+      });/*
       mockData(this.query).then(({ rows, total, summary }) => {
         console.log(rows)
         // this.data = rows
-      })
+      })*/
     },
     alertSelectedUids () {
       console.log(this.selection);

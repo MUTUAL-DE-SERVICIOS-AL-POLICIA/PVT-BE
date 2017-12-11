@@ -229,11 +229,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         //dependences
-<<<<<<< HEAD
-        
-=======
-        'Breadcrumbs' => Watson\Breadcrumbs\Facade::class,
->>>>>>> 6065fc17a0d75d7cf9bdc012f19b970a9f385358
 
     ],
 
