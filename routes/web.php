@@ -17,3 +17,6 @@ Route::get('/minor', 'HomeController@minor')->name("minor");
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::resource('affiliate', 'AffiliateController');
+

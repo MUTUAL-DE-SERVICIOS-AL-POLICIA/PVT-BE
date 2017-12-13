@@ -23,32 +23,45 @@ class CreateRetirementFundTables extends Migration
         //     $table->foreign('ret_fun_modality_type_id')->references('id')->on('ret_fun_modality_types');
         // });
 
-        // Schema::create('retirement_funds', function (Blueprint $table) {
-        //     $table->bigIncrements('id');
-        //     $table->bigInteger('affiliate_id')->unsigned();
-        //     $table->bigInteger('ret_fun_modality_id')->unsigned()->nullable();
-        //     $table->bigInteger('city_id')->unsigned()->nullable();
-        //     $table->string('code')->unique();
-        //     $table->date('reception_date')->nullable();
-        //     $table->date('check_file_date')->nullable();
-        //     $table->date('qualification_date')->nullable();
-        //     $table->date('legal_assessment_date')->nullable();
-        //     $table->date('anticipation_start_date')->nullable();
-        //     $table->date('anticipation_end_date')->nullable();
-        //     $table->date('recognized_start_date')->nullable();
-        //     $table->date('recognized_end_date')->nullable();
-        //     $table->decimal('total_quotable', 13, 2);
-        //     $table->decimal('total_additional_quotable', 13, 2);
-        //     $table->decimal('subtotal', 13, 2);
-        //     $table->decimal('performance', 13, 2);
-        //     $table->decimal('total', 13, 2);
-        //     $table->string('comment');
-        //     $table->foreign('affiliate_id')->references('id')->on('affiliates')->onDelete('cascade');
-        //     $table->foreign('ret_fun_modality_id')->references('id')->on('ret_fun_modalities');
-        //     $table->foreign('city_id')->references('id')->on('cities');
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
+        Schema::create('retirement_funds', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('affiliate_id')->unsigned();
+            $table->bigInteger('ret_fun_modality_id')->unsigned()->nullable();
+            $table->bigInteger('city_id')->unsigned()->nullable();
+            $table->string('code')->unique();
+
+            $table->string('resolution_code')->nullable();
+            $table->date('resolution_date')->nullable();
+            $table->string('legal_assessment_code')->nullable();
+            $table->date('legal_assessment_date')->nullable();
+
+            $table->enum('type', ['Pago', 'Anticipo']);
+
+            $table->string('accounting_code')->nullable();
+            $table->date('accounting_response_date')->nullable();
+            $table->string('loan_code')->nullable();
+            $table->date('loan_response_date')->nullable();
+
+            $table->date('reception_date')->nullable();
+            $table->date('qualification_date')->nullable();
+            $table->date('check_file_date')->nullable();
+           
+            $table->decimal('average_quotable', 13, 2);
+            $table->integer('quotations');  
+/**/
+            $table->decimal('total_quotable', 13, 2);
+
+            $table->decimal('total_additional_quotable', 13, 2);
+            $table->decimal('subtotal', 13, 2);
+            $table->decimal('performance', 13, 2);
+            $table->decimal('total', 13, 2);
+            $table->string('comment');
+            $table->foreign('affiliate_id')->references('id')->on('affiliates')->onDelete('cascade');
+            $table->foreign('ret_fun_modality_id')->references('id')->on('ret_fun_modalities');
+            $table->foreign('city_id')->references('id')->on('cities');
+            $table->timestamps();
+            $table->softDeletes();
+        });
 
         // Schema::create('ret_fun_requirement_types', function (Blueprint $table) {
         //     $table->bigIncrements('id');
@@ -143,19 +156,45 @@ class CreateRetirementFundTables extends Migration
         //     $table->softDeletes();
         // });
 
-        // Schema::create('address', function(Blueprint $table) {
-        //     $table->bigIncrements('id');
-        //     $table->bigInteger('affiliate_id')->unsigned();
-        //     $table->bigInteger('city_address_id')->unsigned()->nullable();
-        //     $table->string('zone')->nullable();
-        //     $table->string('street')->nullable();
-        //     $table->string('number_address')->nullable();
-        //     $table->foreign('affiliate_id')->references('id')->on('affiliates');
-        //     $table->foreign('city_address_id')->references('id')->on('cities');
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
-    
+        Schema::create('address', function(Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('affiliate_id')->unsigned();
+            $table->bigInteger('city_address_id')->unsigned()->nullable();
+            $table->string('zone')->nullable();
+            $table->string('street')->nullable();
+            $table->string('number_address')->nullable();
+            $table->foreign('affiliate_id')->references('id')->on('affiliates');
+            $table->foreign('city_address_id')->references('id')->on('cities');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create('interval_type', function(Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create('interval_type_ret_fun', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->bigInteger('interval_type_id')->unsigned();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
+            $table->foreign('interval_type_id')->references('id')->on('interval_type');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create('ret_fun_advanced_payment', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->date('date')->nullable();
+            $table->decimal('total', 13, 2)->nullable();
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
     }
 
     /**
