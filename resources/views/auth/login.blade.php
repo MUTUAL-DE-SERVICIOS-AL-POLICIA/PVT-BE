@@ -1,8 +1,9 @@
-@extends('auth.auth')
+@extends('layouts.app')
+
+@section('title', 'Minor page')
 
 @section('content')
-<body class="login-page">
-    <div class="login-box">
+  <div class="login-box">
         <div class="login-logo">
             Plataforma Virtual <b>MUSERPOL</b>
         </div>
@@ -34,7 +35,8 @@
 
         <div class="box box-success">
             <div class="login-box-body">
-                {!! Form::open(['url' => 'login', 'role' => 'form']) !!}
+                <form>
+                    
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="form-group has-feedback">
                         <input type="text" class="form-control" placeholder="Nombre de Usuario" name="username" required/>
@@ -49,14 +51,10 @@
                             <button type="submit" class="btn btn-block btn-raised btn-primary">Ingresar</button>
                         </div>
                     </div>
-                {!! Form::close() !!}
+                </form>
+             
             </div>
         </div>
 
     </div><!-- /.login-box -->
-
-    @include('auth.scripts')
-
-</body>
-
 @endsection
