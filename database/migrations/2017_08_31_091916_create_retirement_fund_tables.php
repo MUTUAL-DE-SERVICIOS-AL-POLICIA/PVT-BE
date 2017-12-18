@@ -23,6 +23,15 @@ class CreateRetirementFundTables extends Migration
             $table->bigInteger('ret_fun_modality_type_id')->unsigned()->nullable();
             $table->foreign('ret_fun_modality_type_id')->references('id')->on('ret_fun_modality_types');
         });
+        // Schema::create('ret_fund_modality_types', function(Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->string('name');
+        //     $table->timestamps();
+        // });
+        // Schema::create('ret_fund_modalities', function(Blueprint $table) {
+        //     $table->bigInteger('ret_fun_modality_type_id')->unsigned()->nullable();
+        //     $table->foreign('ret_fun_modality_type_id')->references('id')->on('ret_fun_modality_types');
+        // });
 
         Schema::create('retirement_funds', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -195,6 +204,7 @@ class CreateRetirementFundTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
     }
 
     /**

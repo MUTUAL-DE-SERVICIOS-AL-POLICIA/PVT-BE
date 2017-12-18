@@ -78820,8 +78820,12 @@ var render = function() {
             _c("dd", [
               _vm._v(
                 _vm._s(_vm.affiliate.identity_card) +
-                  " " +
-                  _vm._s(_vm.affiliate.city_identity_card_id)
+                  "  " +
+                  _vm._s(
+                    !!_vm.affiliate.city_identity_card
+                      ? _vm.affiliate.city_identity_card.first_shortened
+                      : ""
+                  )
               )
             ]),
             _vm._v(" "),
@@ -78893,7 +78897,15 @@ var render = function() {
             _vm._v(" "),
             _c("dt", [_vm._v("Lugar de Nacimiento:")]),
             _vm._v(" "),
-            _c("dd", [_vm._v(_vm._s(_vm.affiliate.city_birth_id))]),
+            _c("dd", [
+              _vm._v(
+                _vm._s(
+                  !!_vm.affiliate.city_birth
+                    ? _vm.affiliate.city_birth.name
+                    : ""
+                )
+              )
+            ]),
             _vm._v(" "),
             _c("dt", [_vm._v("Telefono:")]),
             _vm._v(" "),

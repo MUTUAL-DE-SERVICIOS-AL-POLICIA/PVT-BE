@@ -16,7 +16,8 @@
                     <affiliate-show  :affiliate="{{ $affiliate }}"></affiliate-show>
                 </div>
                 <div class="col-md-6">
-                    <affiliate-police  :affiliate="{{ $affiliate }}"></affiliate-police>
+                    <affiliate-police  :affiliate="{{ json_encode($affiliate) }}"></affiliate-police>
+                    
                 </div>
                 <h1>
                     {{ $affiliate->first_name }}

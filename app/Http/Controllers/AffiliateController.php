@@ -66,6 +66,10 @@ class AffiliateController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
+        $affiliate->load(['city_identity_card:id,first_shortened', 'city_birth:id,name']);
+      //  $affiliate=Affiliate::where('id','=',$affiliate->id)->first()->load('city_identity_card');
+      //  
+      // return $affiliate;
         return view('affiliates.show',compact('affiliate'));
     }
 
