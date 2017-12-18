@@ -13,17 +13,27 @@ class CreateRetirementFundTables extends Migration
      */
     public function up()
     {
-        Schema::create('ret_fund_modality_types', function(Blueprint $table) {
-            $table->bigIncrements('id'); //identificador
-            $table->string('name'); //nombre de la modalidad
+        Schema::create('ret_fun_modality_types', function(Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
             $table->timestamps();
         });
-      
-        Schema::create('ret_fund_modalities', function(Blueprint $table) {
-            $table->bigInteger('ret_fun_modality_type_id')->unsigned()->nullable(); //identificador de tipo de modalidad
+        Schema::create('ret_fun_modalities', function(Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('ret_fun_modality_type_id')->unsigned()->nullable();
             $table->foreign('ret_fun_modality_type_id')->references('id')->on('ret_fun_modality_types');
         });
-  
+        // Schema::create('ret_fund_modality_types', function(Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->string('name');
+        //     $table->timestamps();
+        // });
+        // Schema::create('ret_fund_modalities', function(Blueprint $table) {
+        //     $table->bigInteger('ret_fun_modality_type_id')->unsigned()->nullable();
+        //     $table->foreign('ret_fun_modality_type_id')->references('id')->on('ret_fun_modality_types');
+        // });
+
+
         Schema::create('retirement_funds', function (Blueprint $table) {
             $table->bigIncrements('id'); //identificador
             $table->bigInteger('affiliate_id')->unsigned(); //identificador afiliado
@@ -207,6 +217,19 @@ class CreateRetirementFundTables extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('ret_fun_advanced_payment');
+        Schema::drop('interval_type_ret_fun');
+        Schema::drop('interval_type');
+        Schema::drop('address');
+        Schema::drop('ret_fun_legal_guardians');
+        Schema::drop('ret_fun_applicants');
+        Schema::drop('ret_fun_antecedents');
+        Schema::drop('ret_fun_antecedent_files');
+        Schema::drop('ret_fun_submitted_documents');
+        Schema::drop('ret_fun_requirements');
+        Schema::drop('ret_fun_requirement_types');
+        Schema::drop('retirement_funds');
+        Schema::drop('ret_fun_modalities');
+        Schema::drop('ret_fun_modality_types');
     }
 }

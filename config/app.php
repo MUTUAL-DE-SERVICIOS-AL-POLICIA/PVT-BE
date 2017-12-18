@@ -179,7 +179,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
 
         //dependences
-        Watson\Breadcrumbs\ServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
     ],
 
@@ -231,7 +231,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         //dependences
-        'Breadcrumbs' => Watson\Breadcrumbs\Facade::class,
 
     ],
 
