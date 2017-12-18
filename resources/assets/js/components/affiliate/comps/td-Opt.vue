@@ -10,6 +10,7 @@
       @click="toggleNestedComp('FriendsTable')">
       <i class="fa fa-users"></i> <!-- {{ row.friends.length }} -->
     </button>
+    <a :href="'/affiliate/'+ row.id ">GO</a>
   </div>
 </template>
 <script>
@@ -17,7 +18,8 @@
 export default {
   props: ['row', 'nested'],
   mounted () {
-    // $(this.$el).find('button[title]').tooltip()
+    // console.log(jQuery(this.$el).find('button[title]').tooltip());
+    // jQuery(this.$el).find('button[title]').tooltip();
   },
   computed: {
     isDisplayRowVisible () {

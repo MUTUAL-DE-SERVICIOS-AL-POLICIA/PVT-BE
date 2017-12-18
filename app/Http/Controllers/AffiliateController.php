@@ -3,8 +3,11 @@
 namespace Muserpol\Http\Controllers;
 
 use Muserpol\Models\Affiliate;
+use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Log;
+use Yajra\Datatables\Datatables;
+
 class AffiliateController extends Controller
 {
     /**
@@ -18,12 +21,18 @@ class AffiliateController extends Controller
     }
     public function getAllAffiliates(Request $request)
     {
+        /*$query = Affiliate::take(100)->get();
+
+        return $datatables->collection($query)
+                          // ->addColumn('action', 'eloquent.tables.users-action')
+                          ->make(true);*/
         $offset = $request->offset ?? 0;
         $limit = $request->limit ?? 10;
         $sort = $request->sort ?? 'id';
         $order = $request->order ?? 'asc';
-        $affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->get();
-        $total=53640;
+        $last_name = $request->last_name ?? '';
+        $affiliates = Contribution::skip($offset)->take($limit)->orderBy($sort,$order)->get();
+        $total=6669783;
         // $total=Affiliate::all()->count();
         return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
     }

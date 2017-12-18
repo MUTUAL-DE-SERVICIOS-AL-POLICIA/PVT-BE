@@ -22,7 +22,8 @@ export default {
     keyword: ''
   }),
   mounted () {
-    // $(this.$el).on('shown.bs.dropdown', e => this.$refs.input.focus())
+    console.log(jQuery(this.$el).tooltip()) ;
+    jQuery(this.$el).on('shown.bs.dropdown', e => this.$refs.input.focus());
   },
   watch: {
     keyword (kw) {

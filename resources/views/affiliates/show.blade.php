@@ -15,6 +15,9 @@
                 <div class="col-md-6">
                     <affiliate-show  :affiliate="{{ $affiliate }}"></affiliate-show>
                 </div>
+                <div class="col-md-6">
+                    <affiliate-police  :affiliate="{{ $affiliate }}"></affiliate-police>
+                </div>
                 <h1>
                     {{ $affiliate->first_name }}
                 </h1>

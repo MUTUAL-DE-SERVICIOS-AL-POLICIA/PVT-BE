@@ -32,23 +32,16 @@ export default {
       columns: (() => {
         const cols = [
           { title: 'ID', field: 'id', label: 'Affiliate ID', sortable: true, visible: 'true' },
-          { title: 'Email', field: 'email', visible: false, thComp: 'FilterTh', tdComp: 'Email' },
-          { title: 'Username', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'Username', field: 'second_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'Username', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'Username', field: 'mothers_last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'IP', field: 'ip', visible: false, tdComp: 'IP' },
-          { title: 'Age', field: 'age', sortable: true, thClass: 'text-info', tdClass: 'text-success' },
-          { title: 'Create time', field: 'createTime', sortable: true, colClass: 'w-240', thComp: 'CreatetimeTh', tdComp: 'CreatetimeTd' },
-          { title: 'Color', field: 'color', explain: 'Favorite color', visible: false, tdComp: 'Color' },
-          { title: 'Language', field: 'lang', visible: false, thComp: 'FilterTh' },
-          { title: 'PL', field: 'programLang', explain: 'Programming Language', visible: false, thComp: 'FilterTh' },
-          { title: 'Operation', tdComp: 'Opt', visible: 'true' }
+          { title: 'Primer Nombre', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Segundo Nombre', field: 'second_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Apellido Paterno', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Apellido Materno', field: 'mothers_last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+           { title: 'Operation', tdComp: 'Opt', visible: 'true' }
         ]
         const groupsDef = {
-          Normal: ['Email', 'Username', 'Country', 'IP'],
-          Sortable: ['UID'],
-          Extra: ['Operation', 'Color', 'Language', 'PL']
+          Normal: ['Primer Nombre', 'Segundo Nombre', 'Apellido Paterno'],
+          Sortable: ['ID'],
+          Extra: []
         }
         return cols.map(col => {
           Object.keys(groupsDef).forEach(groupName => {
