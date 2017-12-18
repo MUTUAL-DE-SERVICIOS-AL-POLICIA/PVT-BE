@@ -11,8 +11,7 @@
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "yajra/laravel-datatables-oracle": "^8.0",
-        "spatie/laravel-permission": "^2.7",
-        "watson/breadcrumbs": "^1.0"
+        "spatie/laravel-permission": "^2.7"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
