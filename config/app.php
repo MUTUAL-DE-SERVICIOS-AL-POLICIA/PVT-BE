@@ -176,6 +176,10 @@ return [
         // Muserpol\Providers\BroadcastServiceProvider::class,
         Muserpol\Providers\EventServiceProvider::class,
         Muserpol\Providers\RouteServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+
+        //dependences
+        Watson\Breadcrumbs\ServiceProvider::class,
 
     ],
 
@@ -225,6 +229,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        //dependences
+        'Breadcrumbs' => Watson\Breadcrumbs\Facade::class,
 
     ],
 
