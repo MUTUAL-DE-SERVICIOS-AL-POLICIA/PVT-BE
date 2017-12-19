@@ -8,7 +8,11 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-window.$ = window.jQuery = require('jquery');
+window.events = new Vue();
+window.flash = function (message, level = 'success') {
+	window.events.$emit('flash', { message, level });
+};
+
 
 require('./inspinia');
 /**
@@ -16,6 +20,8 @@ require('./inspinia');
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+Vue.component('flash', require('./components/Flash.vue'));
 
 Vue.component('example', require('./components/Example.vue'));
 // Vue.component('example-one', require('./components/affiliate/ExampleOne.vue'));

@@ -67,9 +67,6 @@ class AffiliateController extends Controller
     public function show(Affiliate $affiliate)
     {
         $affiliate->load(['city_identity_card:id,first_shortened', 'city_birth:id,name']);
-      //  $affiliate=Affiliate::where('id','=',$affiliate->id)->first()->load('city_identity_card');
-      //  
-      // return $affiliate;
         return view('affiliates.show',compact('affiliate'));
     }
 
@@ -93,7 +90,19 @@ class AffiliateController extends Controller
      */
     public function update(Request $request, Affiliate $affiliate)
     {
-        //
+        // Log::info("llego".json_encode($request->all()));
+        Log::info("llego".json_encode($affiliate));
+        $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
+        $affiliate->identity_card = $request->identity_card;
+        $affiliate->first_name = $request->first_name;
+        $affiliate->second_name = $request->second_name;
+        $affiliate->last_name = $request->last_name;
+        $affiliate->mothers_last_name = $request->mothers_last_name;
+        $affiliate->gender = $request->gender;
+        $affiliate->civil_status = $request->civil_status;
+        $affiliate->birth_date = $request->birth_date;
+        $affiliate->save();
+
     }
 
     /**
