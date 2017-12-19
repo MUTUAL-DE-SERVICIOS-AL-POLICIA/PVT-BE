@@ -1,6 +1,6 @@
 <?php
 
-namespace Muserpol\Models;
+namespace Muserpol;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;

@@ -9378,7 +9378,7 @@ body.rtls.top-navigation .footer.fixed {
 
 .blue-skin {
   font-weight: 600;
-  background: url(/images/header-profile-skin-1.png?d4a2704f9a85a87b2618a727bfc7ec94) repeat scroll 0 0;
+  background: url(/images/header-profile-skin-1.png?8b9bd1f85d3212c6fe40fc08872b02e7) repeat scroll 0 0;
 }
 
 .blue-skin:hover {
@@ -9387,7 +9387,7 @@ body.rtls.top-navigation .footer.fixed {
 
 .yellow-skin {
   font-weight: 600;
-  background: url(/images/header-profile-skin-3.png?027f702b237fc696f8af0712a0f07cec) repeat scroll 0 100%;
+  background: url(/images/header-profile-skin-3.png?d1e73552813b105605953adaaa32dfbd) repeat scroll 0 100%;
 }
 
 .yellow-skin:hover {
@@ -9397,11 +9397,11 @@ body.rtls.top-navigation .footer.fixed {
 .ultra-skin {
   padding: 20px 10px;
   font-weight: 600;
-  background: url(/images/3.png?ff65f4fedc47a6c291fd960d8ad3160a) repeat scroll 0 0;
+  background: url(/images/3.png?7ef980b6e363ddc6cb55951e210bbd1f) repeat scroll 0 0;
 }
 
 .ultra-skin:hover {
-  background: url(/images/4.png?5557ad50683f6212d077a2562987b1c6) repeat scroll 0 0;
+  background: url(/images/4.png?728868eeca3644062134348ef3274e10) repeat scroll 0 0;
 }
 
 /*
@@ -9429,7 +9429,7 @@ body.rtls.top-navigation .footer.fixed {
 
 .skin-1 .nav-header {
   background-color: #0e9aef;
-  background-image: url(/images/header-profile-skin-1.png?d4a2704f9a85a87b2618a727bfc7ec94);
+  background-image: url(/images/header-profile-skin-1.png?8b9bd1f85d3212c6fe40fc08872b02e7);
 }
 
 .skin-1.mini-navbar .nav-second-level {
@@ -9566,7 +9566,7 @@ body.skin-2 {
 
 .skin-2 .nav-header {
   background-color: #23c6c8;
-  background-image: url(/images/header-profile-skin-2.png?0072bb4dad8dea90619e9957fd2acbd4);
+  background-image: url(/images/header-profile-skin-2.png?49aae5f39e5cfa2f24bea4cb72e348a6);
 }
 
 .skin-2.mini-navbar .nav-second-level {
@@ -9758,7 +9758,7 @@ body.boxed-layout.skin-3 #wrapper {
 
 .skin-3 .nav-header {
   background-color: #ecba52;
-  background-image: url(/images/header-profile-skin-3.png?027f702b237fc696f8af0712a0f07cec);
+  background-image: url(/images/header-profile-skin-3.png?d1e73552813b105605953adaaa32dfbd);
 }
 
 .skin-3.mini-navbar .nav-second-level {
@@ -9876,7 +9876,7 @@ body.md-skin {
 }
 
 .md-skin .nav-header {
-  background: url(/images/4.png?5557ad50683f6212d077a2562987b1c6) no-repeat;
+  background: url(/images/4.png?728868eeca3644062134348ef3274e10) no-repeat;
 }
 
 .md-skin .label,
