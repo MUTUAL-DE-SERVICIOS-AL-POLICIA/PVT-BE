@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
 
 </head>
-<body>
+<body class="md-skin fixed-nav no-skin-config">
 
   <!-- Wrapper-->
     <div id="wrapper">
