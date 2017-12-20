@@ -1,15 +1,14 @@
 <template>
     <div class="col-lg-12">
-
         <code>{{ editing }}</code>
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
             <div class="panel-heading">
                 <h3 class="pull-left">Información Personal</h3>
                 <div class="text-right">
-                    <button class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing()"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'"></i> </button>
+                    <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing()"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
                 </div>
             </div>
-            <div class="panel-body" v-if="! editing ">
+            <div class="panel-body " v-if="! editing " >
                 <div class="col-md-6">
                     <dl class="dl-">
                         <dt>Cedula de identidad:</dt> <dd>{{ affiliate.identity_card }}  {{ !!affiliate.city_identity_card ? affiliate.city_identity_card.first_shortened : '' }}</dd>
@@ -34,6 +33,26 @@
                 </div>
             </div>
             <div class="panel-body" v-else>
+                <div class="sk-folding-cube" v-show="show_spinner" >
+                    <div class="sk-cube1 sk-cube"></div>
+                    <div class="sk-cube2 sk-cube"></div>
+                    <div class="sk-cube4 sk-cube"></div>
+                    <div class="sk-cube3 sk-cube"></div>
+                </div>
+                <!-- <div class="sk-fading-circle" v-show="show_spinner" >
+                  <div class="sk-circle1 sk-circle"></div>
+                  <div class="sk-circle2 sk-circle"></div>
+                  <div class="sk-circle3 sk-circle"></div>
+                  <div class="sk-circle4 sk-circle"></div>
+                  <div class="sk-circle5 sk-circle"></div>
+                  <div class="sk-circle6 sk-circle"></div>
+                  <div class="sk-circle7 sk-circle"></div>
+                  <div class="sk-circle8 sk-circle"></div>
+                  <div class="sk-circle9 sk-circle"></div>
+                  <div class="sk-circle10 sk-circle"></div>
+                  <div class="sk-circle11 sk-circle"></div>
+                  <div class="sk-circle12 sk-circle"></div>
+                </div> -->
                 <div class="col-md-6">
                     <dl class="dl-">
                         <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">  <select name="" id="" class="form-control">
@@ -75,6 +94,7 @@
         data(){
             return{
                 editing: false,
+                show_spinner: false,
                 form:{
                     identity_card: this.affiliate.identity_card,
                     first_name: this.affiliate.first_name,
@@ -95,16 +115,17 @@
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
-                
             },
             update () {
                 let uri = `/update_affiliate/${this.affiliate.id}`;
+                this.show_spinner=true;
                 axios.patch(uri,this.form)
                     .then(()=>{
                         this.editing = false;
+                        this.show_spinner=false;
                         flash('Informacion del Afiliado Actualizada');
                     }).catch((response)=>{
-                        console.log(response);
+                        this.show_spinner=false;
                         flash('Error al actualizar el afiliado: '+response.message,'error');
                     })
             }

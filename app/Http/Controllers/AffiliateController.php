@@ -90,6 +90,14 @@ class AffiliateController extends Controller
      */
     public function update(Request $request, Affiliate $affiliate)
     {
+        $c=Affiliate::all()->count();
+        $c=Affiliate::all()->count();
+        $c=Affiliate::all()->count();
+        $c=Affiliate::all()->count();
+        $c=Affiliate::all()->count();
+        $c=Affiliate::all()->count();
+
+        // sleep(15);
         // Log::info("llego".json_encode($request->all()));
         Log::info("llego".json_encode($affiliate));
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();

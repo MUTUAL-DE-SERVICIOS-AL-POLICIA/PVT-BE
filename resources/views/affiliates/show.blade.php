@@ -12,13 +12,13 @@
     <div class="row" id="app">
         <div class="col-lg-12">
             <div class=" m-t-lg">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <affiliate-show  :affiliate="{{ $affiliate }}"></affiliate-show>
                 </div>
-                <div class="col-md-6">
+                {{-- <div class="col-md-6">
                     <affiliate-police  :affiliate="{{ json_encode($affiliate) }}"></affiliate-police>
                     
-                </div>
+                </div> --}}
                 <h1>
                     {{ $affiliate->first_name }}
                 </h1>
