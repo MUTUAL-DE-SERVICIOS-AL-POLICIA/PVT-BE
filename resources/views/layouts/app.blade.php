@@ -3,11 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INSPINIA - @yield('title') </title>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Muserpol - @yield('title') </title>
+   
     <link rel="stylesheet" href="{!! asset('css/vendor.css') !!}" />
     <link rel="stylesheet" href="{!! asset('css/inspinia.css') !!}" />
 </head>
-<body>
+<body class="md-skin fixed-nav no-skin-config">
 
   <!-- Wrapper-->
     <div id="wrapper">
@@ -35,7 +38,7 @@
 
 {{-- <script src="{!! asset('js/app.js') !!}" type="text/javascript"></script> --}}
 <script src="{!! asset('js/dev/app.js') !!}" type="text/javascript"></script>
-<script src="https://unpkg.com/jquery@2.1.4/dist/jquery.min.js" type="text/javascript"></script>
+
 
 @section('scripts')
 @show

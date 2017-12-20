@@ -6,11 +6,10 @@
  */
 
 require('./bootstrap');
+require('./inspinia');
 
 window.Vue = require('vue');
-window.$ = window.jQuery = require('jquery');
 
-require('./inspinia');
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -18,6 +17,7 @@ require('./inspinia');
  */
 
 Vue.component('example', require('./components/Example.vue'));
+
 // Vue.component('example-one', require('./components/affiliate/ExampleOne.vue'));
 // Vue.component('listss', require('./components/affiliate/List.vue'));
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
@@ -33,3 +33,4 @@ const app = new Vue({
 // const application = new Vue({
 //     el: '#app'
 // });
+
