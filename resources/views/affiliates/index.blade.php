@@ -10,7 +10,7 @@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row" id="app">
+    <div class="row">
         <div class="col-lg-12">
             <div class="text-center m-t-lg">
                 <affiliate-index></affiliate-index>
