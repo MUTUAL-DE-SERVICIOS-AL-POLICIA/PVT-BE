@@ -17,4 +17,12 @@
                     </div>
                 </div>
             </div>
+            hyuhus
+    <div id="app">
+        <example></example>
+        <example></example>
+        <example></example>
+        <example-one></example-one>
+
+    </div>
 @endsection

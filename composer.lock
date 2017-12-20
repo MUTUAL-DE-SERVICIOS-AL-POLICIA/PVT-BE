@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9de2b207aaca519ce2f9d1b72f1c2566",
+    "content-hash": "c911964b9745cf96d6d96250bad9429e",
     "packages": [
         {
             "name": "davejamesmiller/laravel-breadcrumbs",
@@ -2278,44 +2278,56 @@
             "time": "2016-09-01T10:05:43+00:00"
         },
         {
-            "name": "watson/breadcrumbs",
-            "version": "1.0.5",
+            "name": "yajra/laravel-datatables-oracle",
+            "version": "v8.3.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/dwightwatson/breadcrumbs.git",
-                "reference": "81e8bfa8330d9ff74efef1f51d668dc6f712b7ae"
+                "url": "https://github.com/yajra/laravel-datatables.git",
+                "reference": "8c3490d7a810824da147161033d6ef272d7c8726"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dwightwatson/breadcrumbs/zipball/81e8bfa8330d9ff74efef1f51d668dc6f712b7ae",
-                "reference": "81e8bfa8330d9ff74efef1f51d668dc6f712b7ae",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/8c3490d7a810824da147161033d6ef272d7c8726",
+                "reference": "8c3490d7a810824da147161033d6ef272d7c8726",
                 "shasum": ""
             },
             "require": {
-                "illuminate/routing": "5.*",
-                "illuminate/support": "5.*",
-                "illuminate/view": "5.*",
+                "illuminate/database": "5.4.*|5.5.*",
+                "illuminate/filesystem": "5.4.*|5.5.*",
+                "illuminate/http": "5.4.*|5.5.*",
+                "illuminate/support": "5.4.*|5.5.*",
+                "illuminate/view": "5.4.*|5.5.*",
                 "php": ">=7.0"
             },
             "require-dev": {
-                "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "~5.0"
+                "orchestra/testbench": "~3.5"
+            },
+            "suggest": {
+                "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTable.",
+                "yajra/laravel-datatables-fractal": "Plugin for server-side response using Fractal.",
+                "yajra/laravel-datatables-html": "Plugin for server-side HTML builder of dataTable."
             },
             "type": "library",
             "extra": {
+                "branch-alias": {
+                    "dev-master": "8.0-dev"
+                },
                 "laravel": {
                     "providers": [
-                        "Watson\\Breadcrumbs\\ServiceProvider"
+                        "Yajra\\DataTables\\DataTablesServiceProvider"
                     ],
                     "aliases": {
-                        "Breadcrumbs": "Watson\\Breadcrumbs\\Facade"
+                        "DataTables": "Yajra\\DataTables\\Facades\\DataTables"
                     }
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Watson\\": "src/"
-                }
+                    "Yajra\\DataTables\\": "src/"
+                },
+                "files": [
+                    "src/helper.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2323,16 +2335,17 @@
             ],
             "authors": [
                 {
-                    "name": "Dwight Watson",
-                    "email": "dwight@studentservices.com.au"
+                    "name": "Arjay Angeles",
+                    "email": "aqangeles@gmail.com"
                 }
             ],
-            "description": "Breadcrumbs made easy for Laravel.",
+            "description": "jQuery DataTables API for Laravel 4|5",
             "keywords": [
-                "breadcrumbs",
+                "datatables",
+                "jquery",
                 "laravel"
             ],
-            "time": "2017-09-07T06:04:15+00:00"
+            "time": "2017-11-02T02:30:46+00:00"
         }
     ],
     "packages-dev": [

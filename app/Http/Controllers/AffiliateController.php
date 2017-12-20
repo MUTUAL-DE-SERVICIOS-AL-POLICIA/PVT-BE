@@ -3,7 +3,10 @@
 namespace Muserpol\Http\Controllers;
 
 use Muserpol\Models\Affiliate;
+use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
+use Log;
+use Yajra\Datatables\Datatables;
 
 class AffiliateController extends Controller
 {
@@ -15,6 +18,23 @@ class AffiliateController extends Controller
     public function index()
     {
         return view('affiliates.index');
+    }
+    public function getAllAffiliates(Request $request)
+    {
+        /*$query = Affiliate::take(100)->get();
+
+        return $datatables->collection($query)
+                          // ->addColumn('action', 'eloquent.tables.users-action')
+                          ->make(true);*/
+        $offset = $request->offset ?? 0;
+        $limit = $request->limit ?? 10;
+        $sort = $request->sort ?? 'id';
+        $order = $request->order ?? 'asc';
+        $last_name = $request->last_name ?? '';
+        $affiliates = Contribution::skip($offset)->take($limit)->orderBy($sort,$order)->get();
+        $total=6669783;
+        // $total=Affiliate::all()->count();
+        return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
     }
 
     /**
@@ -46,7 +66,11 @@ class AffiliateController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
-        //
+        $affiliate->load(['city_identity_card:id,first_shortened', 'city_birth:id,name']);
+      //  $affiliate=Affiliate::where('id','=',$affiliate->id)->first()->load('city_identity_card');
+      //  
+      // return $affiliate;
+        return view('affiliates.show',compact('affiliate'));
     }
 
     /**
