@@ -66,4 +66,12 @@ class Affiliate extends Model
     {
         return $this->belongsTo(Degree::class);
     }
+    public function affiliate_state()
+    {
+        return $this->belongsTo(AffiliateState::class);
+    }
+    public function pension_entity()
+    {
+        return $this->belongsTo(PensionEntity::class);
+    }
 }
