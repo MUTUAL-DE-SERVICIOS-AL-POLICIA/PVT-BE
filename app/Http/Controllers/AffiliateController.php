@@ -16,7 +16,7 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {                
         return view('affiliates.index');
     }
     public function getAllAffiliates(Request $request)
@@ -31,7 +31,8 @@ class AffiliateController extends Controller
         $sort = $request->sort ?? 'id';
         $order = $request->order ?? 'asc';
         $last_name = $request->last_name ?? '';
-        $affiliates = Contribution::skip($offset)->take($limit)->orderBy($sort,$order)->get();
+        //$affiliates = Contribution::skip($offset)->take($limit)->orderBy($sort,$order)->get();
+        $affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->get();
         $total=6669783;
         // $total=Affiliate::all()->count();
         return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);

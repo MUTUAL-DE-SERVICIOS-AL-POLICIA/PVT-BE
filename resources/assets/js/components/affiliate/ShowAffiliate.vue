@@ -9,7 +9,7 @@
                     <button class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing()"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'"></i> </button>
                 </div>
             </div>
-            <div class="panel-body" v-if="! editing ">
+            <div class="panel-body col-md-12" v-if="! editing ">
                 <div class="col-md-6">
                     <dl class="dl-">
                         <dt>Cedula de identidad:</dt> <dd>{{ affiliate.identity_card }}  {{ !!affiliate.city_identity_card ? affiliate.city_identity_card.first_shortened : '' }}</dd>
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-md-6">
                     <dl class="dl-">
-                        <dt>Genero:</dt> <dd>{{ affiliate.gender }}</dd>
+                        <dt>G&eacute;nero:</dt> <dd>{{ affiliate.gender }}</dd>
                         <dt>Estado Civil:</dt> <dd>{{ affiliate.civil_status }}</dd>
                         <dt>Fecha de Nacimiento:</dt> <dd>{{ affiliate.birth_date }}</dd>
                         <dt>Edad:</dt> <dd>{{ affiliate.birth_date }}</dd>
@@ -36,7 +36,7 @@
             <div class="panel-body" v-else>
                 <div class="col-md-6">
                     <dl class="dl-">
-                        <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">  <select name="" id="" class="form-control">
+                        <dt>C&eacute;dula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">  <select name="" id="" class="form-control">
                             <option value="lp">LP</option>
                         </select></dd>
                         <dt>Primer Nombre:</dt> <dd><input type="text" v-model="form.first_name" class="form-control"></dd>

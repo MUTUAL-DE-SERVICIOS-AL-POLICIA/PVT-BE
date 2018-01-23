@@ -32,7 +32,7 @@ export default {
       columns: (() => {
         const cols = [
           { title: 'ID', field: 'id', label: 'Affiliate ID', sortable: true, visible: 'true' },
-          { title: 'Primer Nombre', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Primer Nombrexd', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Segundo Nombre', field: 'second_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Apellido Paterno', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Apellido Materno', field: 'mothers_last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
