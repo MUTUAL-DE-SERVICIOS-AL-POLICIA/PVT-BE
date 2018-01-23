@@ -19,8 +19,8 @@
                 <div class="col-md-6">
                     <dl class="dl-">
                         <dt>Categoria:</dt> <dd>{{ $affiliate->category->name }}</dd>
-                        <dt>Grado:</dt> <dd data-toggle="tooltip" data-placement="right" title="{{ $affiliate->degree->name }}">{{ $affiliate->degree->shortened }} </dd>
-                        <dt>Ente gestor:</dt> <dd data-toggle="tooltip" data-placement="right" title="{{ $affiliate->pension_entity->type }}">{{ $affiliate->pension_entity->name }}</dd>
+                        <dt>Grado:</dt> <dd data-toggle="tooltip" data-placement="right" title="{{ $affiliate->degree->name ?? '' }}">{{ $affiliate->degree->shortened ?? '' }} </dd>
+                        <dt>Ente gestor:</dt> <dd data-toggle="tooltip" data-placement="right" title="{{ $affiliate->pension_entity->type ?? '' }}">{{ $affiliate->pension_entity->name ?? '' }}</dd>
                     </dl>
                 </div>
             </div>

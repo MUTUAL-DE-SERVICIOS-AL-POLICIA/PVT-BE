@@ -25,8 +25,7 @@
 			toggle_editing: function () {
 				this.editing = !this.editing;
 			},
-			update: function () {
-				
+			update: function () {	
 				let uri = `/update_affiliate_police/${this.affiliate.id}`;
 				this.show_spinner=true;
 				axios.patch(uri,this.form)
