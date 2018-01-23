@@ -21,3 +21,5 @@ Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('changerol','UserController@changerol');
+
