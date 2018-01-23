@@ -3,6 +3,12 @@
 namespace Muserpol\Http\Controllers;
 
 use Muserpol\Models\Affiliate;
+use Muserpol\Models\AffiliateState;
+use Muserpol\Models\Category;
+use Muserpol\Models\City;
+use Muserpol\Models\Degree;
+use Muserpol\Models\PensionEntity;
+
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Log;
@@ -67,8 +73,20 @@ class AffiliateController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
-        $affiliate->load(['city_identity_card:id,first_shortened', 'city_birth:id,name']);
-        return view('affiliates.show',compact('affiliate'));
+        $cities = City::all()->pluck('first_shortened', 'id');
+        $categories = Category::all()->pluck('name', 'id');
+        $degrees = Degree::all()->pluck('name', 'id');
+        $pension_entities = PensionEntity::all()->pluck('name', 'id');
+        $affiliate_states = AffiliateState::all()->pluck('name', 'id');
+        $affiliate->load([
+            'city_identity_card:id,first_shortened',
+            'city_birth:id,name',
+            'affiliate_state',
+            'pension_entity',
+            'category',
+            'degree',
+        ]);
+        return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities'));
     }
 
     /**
@@ -91,8 +109,6 @@ class AffiliateController extends Controller
      */
     public function update(Request $request, Affiliate $affiliate)
     {
-        // Log::info("llego".json_encode($request->all()));
-        Log::info("llego".json_encode($affiliate));
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
         $affiliate->identity_card = $request->identity_card;
         $affiliate->first_name = $request->first_name;
@@ -103,6 +119,21 @@ class AffiliateController extends Controller
         $affiliate->civil_status = $request->civil_status;
         $affiliate->birth_date = $request->birth_date;
         $affiliate->save();
+
+    }
+    public function update_affiliate_police(Request $request, Affiliate $affiliate)
+    {
+        $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
+        $affiliate->affiliate_state_id = $request->affiliate_state;
+        $affiliate->type = $request->affiliate_type;
+        $affiliate->date_entry = $request->affiliate_date_entry;
+        $affiliate->item = $request->affiliate_item;
+        $affiliate->category_id = $request->affiliate_category;
+        $affiliate->degree_id = $request->affiliate_degree;
+        $affiliate->pension_entity_id = $request->affiliate_pension_entity;
+        $affiliate->save();
+
+
 
     }
 
