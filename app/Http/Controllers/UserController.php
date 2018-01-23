@@ -87,7 +87,7 @@ class UserController extends Controller
     public function changerol()
     {
         $roles =  Auth::user()->roles;
-
+        // return $roles;
         // dd($roles);
         $new_roles = array();
         foreach ($roles as $role) {
@@ -97,7 +97,7 @@ class UserController extends Controller
                 array_push($new_roles, $role);
             }
         }
-        // return $roles;
+        return $new_roles;
 
         return view('auth.change')->with('roles',$new_roles);
     }
