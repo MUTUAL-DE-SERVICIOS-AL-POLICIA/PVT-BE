@@ -28,4 +28,27 @@ class City extends Model
 		return $this->belongsToMany(Address::class);
 	}
 
+	public function retirement_funds_city_start()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund','city_start_id');
+	
+	}
+	
+	public function retirement_funds_city_end()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund','city_end_id');
+    }
+
+	public function ret_fun_beneficiaries()
+	{
+		return $this->hasMany('Muserpol\Models\RetirementFund\RetFunBeneficiary','city_identity_card_id','id');
+	}
+	public function ret_fun_advisors()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunAdvisor','city_identity_card_id','id');
+	}
+	public function ret_fun_applicants()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunApplicant','city_identity_card_id','id');
+    }
 }
