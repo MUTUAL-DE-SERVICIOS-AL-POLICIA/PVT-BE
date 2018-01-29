@@ -97,7 +97,7 @@ class UserController extends Controller
                 array_push($new_roles, $role);
             }
         }
-        return $new_roles;
+        //return $new_roles;
 
         return view('auth.change')->with('roles',$new_roles);
     }
