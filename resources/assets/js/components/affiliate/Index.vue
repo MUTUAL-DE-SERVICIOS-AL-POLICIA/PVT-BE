@@ -31,11 +31,15 @@ export default {
       pageSizeOptions: [5, 10, 15, 20],
       columns: (() => {
         const cols = [
-          { title: 'ID', field: 'id', label: 'Affiliate ID', sortable: true, visible: 'true' },
-          { title: 'Primer Nombrexd', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'ID', field: 'id', label: 'Affiliate ID', sortable: true, visible: 'true' },          
+          { title: 'C.I.', field: 'identity_card', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Matrícula', field: 'registration', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Grado', field: 'degree', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Primer Nombre', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Segundo Nombre', field: 'second_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Apellido Paterno', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Apellido Materno', field: 'mothers_last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Estado', field: 'affiliate_state', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
            { title: 'Operation', tdComp: 'Opt', visible: 'true' }
         ]
         const groupsDef = {
@@ -47,7 +51,7 @@ export default {
           Object.keys(groupsDef).forEach(groupName => {
             if (groupsDef[groupName].includes(col.title)) {
               col.group = groupName
-            }
+            }            
           })
           return col
         })

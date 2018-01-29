@@ -1,11 +1,8 @@
 <?php
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-
 class CreateRetirementFundTables extends Migration {
-
     /**
      * Run the migrations.
      *
@@ -19,7 +16,6 @@ class CreateRetirementFundTables extends Migration {
             //$table->foreign('module_id')->references('id')->on('modules');
             $table->timestamps();
         });
-
         Schema::create('procedure_modalities', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('procedure_type_id')->unsigned()->nullable();
@@ -28,13 +24,11 @@ class CreateRetirementFundTables extends Migration {
             $table->boolean('is_valid')->default(true); //esta vigente la modalidad hdp 
             $table->foreign('procedure_type_id')->references('id')->on('procedure_types');
         });
-
         Schema::create('procedure_documents', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->timestamps();
         });
-
         Schema::create('procedure_requirements', function (Blueprint $table) { ///requisito entregado 
             $table->bigIncrements('id'); // identificador
             $table->bigInteger('procedure_modality_id')->unsigned(); //identificador de tipo de modalidad
@@ -45,7 +39,6 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::create('ret_fun_procedures', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->decimal('annual_yield', 13, 2); //rendimiento anual porcentaje
@@ -54,7 +47,6 @@ class CreateRetirementFundTables extends Migration {
             $table->boolean('is_enabled')->default(true); //estado activo 
             $table->timestamps();
         });
-
         Schema::create('retirement_funds', function (Blueprint $table) {
             $table->bigIncrements('id'); //identificador
             $table->bigInteger('user_id')->unsigned();
@@ -76,7 +68,6 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::create('ret_fun_submitted_documents', function (Blueprint $table) {
             $table->bigIncrements('id'); //identificador
             $table->bigInteger('retirement_fund_id')->unsigned(); // identificador de fondo de retiro
@@ -89,14 +80,12 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::create('kinships', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::create('ret_fun_beneficiaries', function (Blueprint $table) {
             $table->bigIncrements('id'); // identifiador
             $table->bigInteger('retirement_fund_id')->unsigned(); //identificador de fondo de retiro
@@ -121,7 +110,6 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::create('ret_fun_advisors', function (Blueprint $table) { // tabla tutor
             $table->bigIncrements('id');
             $table->bigInteger('city_identity_card_id')->unsigned()->nullable(); //identificación del ci
@@ -146,7 +134,6 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::create('ret_fun_advisor_beneficiary', function (Blueprint $table) {
             $table->bigInteger('ret_fun_beneficiary_id')->unsigned();
             $table->bigInteger('ret_fun_advisor_id')->unsigned();
@@ -154,7 +141,6 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('ret_fun_advisor_id')->references('id')->on('ret_fun_advisors');
             $table->primary('ret_fun_beneficiary_id');
         });
-
         Schema::create('ret_fun_applicants', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('retirement_fund_id')->unsigned();
@@ -176,7 +162,6 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::create('ret_fun_address_applicants', function(Blueprint $table) {
             $table->bigIncrements('id'); //identificador
             $table->bigInteger('affiliate_id')->unsigned();
@@ -187,7 +172,6 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('affiliate_id')->references('id')->on('affiliates'); //identificador de afiliado
             $table->foreign('city_address_id')->references('id')->on('cities'); //identificación del ci
         });
-
         Schema::create('affiliate_folders', function (Blueprint $table) {  //Folder o carpeta de afiliado
             $table->bigIncrements('id');
             $table->bigInteger('affiliate_id')->unsigned();
@@ -199,7 +183,6 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::create('scanned_documents', function (Blueprint $table) { //Escaneo de documentos de afiliado
             $table->bigIncrements('id');
             $table->bigInteger('affiliate_folder_id')->unsigned();
@@ -222,19 +205,16 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::table('contributions', function (Blueprint $table) { //Escaneo de documentos de afiliado
             $table->bigInteger('contribution_type_id')->unsigned()->nullable();
             $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
         });
-
         Schema::create('ret_fun_interval_types', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
-
         Schema::create('ret_fun_interval_type_ranges', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('retirement_fund_id')->unsigned();
@@ -247,7 +227,6 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -276,5 +255,4 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types');
     }
-
 }
