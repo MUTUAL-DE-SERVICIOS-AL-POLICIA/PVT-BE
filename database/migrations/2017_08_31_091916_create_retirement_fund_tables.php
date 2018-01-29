@@ -19,7 +19,6 @@ class CreateRetirementFundTables extends Migration {
             //$table->foreign('module_id')->references('id')->on('modules');
             $table->timestamps();
         });
-
         Schema::create('procedure_modalities', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('procedure_type_id')->unsigned()->nullable();

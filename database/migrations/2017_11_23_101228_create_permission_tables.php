@@ -12,7 +12,7 @@ class CreatePermissionTables extends Migration
      */
     public function up()
     {
-        $tableNames = config('permission.table_names');
+       $tableNames = config('permission.table_names');
     if (!Schema::hasTable('model_has_permissions')) {
         Schema::create($tableNames['permissions'], function (Blueprint $table) {
             $table->increments('id');
