@@ -7,7 +7,7 @@ class ProcedureTablesSeeder extends Seeder {
     /**
      * Run the database seeds.
      *
-     * @return void
+     * @return void 
      */
     public function run() {
         DB::table('procedure_types')->insert([
