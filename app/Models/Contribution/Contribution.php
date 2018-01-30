@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contribution extends Model
 {
+
     use SoftDeletes;
 
     protected $fillable = [
@@ -59,5 +60,10 @@ class Contribution extends Model
     public function category()
     {
         return $this->belongsTo('Muserpol\Models\Category');
+    }
+
+    public function contribution_type()
+    {
+        return $this->belongsTo('Muserpol\Models\Contribution\ContributionType');
     }
 }

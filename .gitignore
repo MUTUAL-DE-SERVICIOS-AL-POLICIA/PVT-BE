@@ -1,7 +1,7 @@
 /node_modules
 /public/hot
-/public/js/app.js
-/public/css/app.css
+public/js/app.js
+public/css/app.css
 /public/storage
 /storage/*.key
 /vendor
@@ -12,3 +12,6 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .env
+/nbproject/private/
+/nbproject/project.properties
+/nbproject/project.xml

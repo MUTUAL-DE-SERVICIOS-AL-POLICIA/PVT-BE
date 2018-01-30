@@ -66,4 +66,22 @@ class Affiliate extends Model
     {
         return $this->belongsTo(Degree::class);
     }
+    public function affiliate_state()
+    {
+        return $this->belongsTo(AffiliateState::class);
+    }
+    public function pension_entity()
+    {
+        return $this->belongsTo(PensionEntity::class);
+    }
+    
+    public function retirement_funds()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund');
+    }
+
+    public function affiliate_folders()
+    {
+        return $this->hasMany('Muserpol\Models\AffiliateFolder');
+    }
 }
