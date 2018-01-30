@@ -24,3 +24,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('changerol','UserController@changerol');
 
+//RetirementFundRequirements
+Route::get('affiliate/{affiliate}/ret_fun', 'RetirementFundRequirementController@retFun');
+

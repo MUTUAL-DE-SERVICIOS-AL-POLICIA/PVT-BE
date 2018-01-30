@@ -36,10 +36,11 @@ class AffiliateController extends Controller
         $limit = $request->limit ?? 10;
         $sort = $request->sort ?? 'id';
         $order = $request->order ?? 'asc';
-        $last_name = $request->last_name ?? '';
-        $firs_name = $request->first_name ?? '';
-        $second_name = $request->
-        $identity_card = $request->identity_card ?? '';        
+        $last_name = strtoupper($request->last_name) ?? '';
+        $first_name = strtoupper($request->first_name) ?? '';
+        $second_name = strtoupper($request->second_name) ?? '';
+        $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
+        $identity_card = strtoupper($request->identity_card) ?? '';        
         //$total=Affiliate::where('identity_card','LIKE',$identity_card.'%')->where('last_name','LIKE',$last_name.'%')->count();        
         //$total=6669783;
         //$affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->where('last_name','LIKE',$last_name.'%')->get();                
@@ -49,9 +50,8 @@ class AffiliateController extends Controller
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->where('affiliates.first_name','LIKE',$first_name.'%')
                                 ->where('affiliates.second_name','LIKE',$second_name.'%')
-                                ->where('affiliates.second_name','LIKE',$last_name.'%')
-                                ->where('affiliates.second_name','LIKE',$mothers_last_name.'%')
-                                //->where('affiliates.second_name','LIKE',$mothers_last_name.'%')
+                                ->where('affiliates.last_name','LIKE',$last_name.'%')
+                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')                                
                                 ->where('affiliates.identity_card','LIKE',$identity_card.'%')
                                 ->count();
         
@@ -63,8 +63,8 @@ class AffiliateController extends Controller
                                 ->orderBy($sort,$order)
                                 ->where('affiliates.first_name','LIKE',$first_name.'%')
                                 ->where('affiliates.second_name','LIKE',$second_name.'%')
-                                ->where('affiliates.second_name','LIKE',$last_name.'%')
-                                ->where('affiliates.second_name','LIKE',$mothers_last_name.'%')
+                                ->where('affiliates.last_name','LIKE',$last_name.'%')
+                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')
                                 ->where('affiliates.identity_card','LIKE',$identity_card.'%')
                                 ->get();
         
