@@ -67,4 +67,10 @@ class User extends Authenticatable
     public function getModule(){
         return $this->roles()->first()->module;
     }
+
+    public function retirement_funds()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund');
+    }
+
 }
