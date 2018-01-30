@@ -13,4 +13,5 @@ npm-debug.log
 yarn-error.log
 .env
 /nbproject/private/
-/nbproject/*
+/nbproject/project.properties
+/nbproject/project.xml
