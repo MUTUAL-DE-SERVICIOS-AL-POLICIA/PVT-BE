@@ -20,8 +20,10 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "mdi": "^2.1.19",
     "mockjs": "^1.0.1-beta3",
     "moment": "^2.19.3",
+    "vue-form-wizard": "^0.8.2",
     "vue2-datatable-component": "^2.1.20"
   }
 }
