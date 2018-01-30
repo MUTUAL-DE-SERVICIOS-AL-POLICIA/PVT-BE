@@ -2,6 +2,7 @@
 
 namespace Muserpol\Http\Controllers;
 use Muserpol\Models\ProcedureRequirement;
+use Muserpol\Models\ProcedureModality;
 use Muserpol\RetirementFundRequirement;
 use Illuminate\Http\Request;
 
@@ -18,14 +19,18 @@ class RetirementFundRequirementController extends Controller
     }
     public function retFun(){
         $procedure_requirements = ProcedureRequirement::
-                                    select('procedure_requirements.id','procedure_documents.name as procedure_document','number','procedure_modalities.name as procedure_modality')
+                                    select('procedure_requirements.id','procedure_documents.name as procedure_document','number','procedure_modality_id')
                                     ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
-                                    ->leftJoin('procedure_modalities','procedure_requirements.procedure_modality_id','=','procedure_modalities.id')
-                                    ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+                                    ->orderBy('procedure_requirements.id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
-        //return$procedure_requirements;
-        return view('ret_fun.step1_requirements');        
+        $modalities = ProcedureModality::where('procedure_type_id','2')->select('id','name')->get();
+        
+        $data = [
+            'requirements' => $procedure_requirements,
+            'modalities'    => $modalities,
+        ];        
+        return view('ret_fun.step1_requirements',$data);        
     }
     /**
      * Show the form for creating a new resource.
