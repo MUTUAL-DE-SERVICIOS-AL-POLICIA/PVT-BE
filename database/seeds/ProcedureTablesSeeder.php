@@ -30,7 +30,7 @@ class ProcedureTablesSeeder extends Seeder {
             ['id' => '9', 'procedure_type_id' => '3', 'name' => 'Fallecimiento del titular por Riesgo Comun'],
             ['id' => '10', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del titular'],
             ['id' => '11', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del o de la conyugue'],
-            ['id' => '12', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del o de la viuda'],
+            ['id' => '12', 'procedure_type_id' => '4', 'name' => 'Fallecimiento de la o del viudo'],
            
 
         ]);
@@ -65,9 +65,9 @@ class ProcedureTablesSeeder extends Seeder {
             ['id' => '28', 'name' => 'Certificado de nacimiento del cónyugue original y actualizado'],
             ['id' => '29', 'name' => 'Certificado de defunción de la o el cónyugue original y actualizado'],
             ['id' => '30', 'name' => 'Fotocopia simple de la célula de identidad del cónyugue'],
-            ['id' => '31', 'name' => 'Certificado de nacimiento del o de la viud@ original y actualizado'],
-            ['id' => '32', 'name' => 'Certificado de defunción del o de la viud@ original y actualizado'],
-            ['id' => '33', 'name' => 'Fotocopia simple de la célula de identidad del o de la viud@'],
+            ['id' => '31', 'name' => 'Certificado de nacimiento de la o del viudo original y actualizado'],
+            ['id' => '32', 'name' => 'Certificado de defunción de la o del viudo original y actualizado'],
+            ['id' => '33', 'name' => 'Fotocopia simple de la célula de identidad de la o del viudo'],
         ]);
         DB::table('procedure_requirements')->insert([
             ['procedure_modality_id' => '3', 'procedure_document_id' => '1', 'number' => '1'],
@@ -162,7 +162,43 @@ class ProcedureTablesSeeder extends Seeder {
             ['procedure_modality_id' => '9', 'procedure_document_id' => '17', 'number' => '10'],
             ['procedure_modality_id' => '9', 'procedure_document_id' => '24', 'number' => '11'],
 
-            
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '1', 'number' => '1'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '2', 'number' => '2'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '3', 'number' => '3'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '4', 'number' => '4'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '9', 'number' => '5'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '10', 'number' => '6'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '11', 'number' => '7'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '12', 'number' => '8'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '13', 'number' => '8'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '14', 'number' => '8'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '15', 'number' => '9'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '16', 'number' => '10'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '25', 'number' => '10'],
+            ['procedure_modality_id' => '10', 'procedure_document_id' => '17', 'number' => '10'],
+
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '1', 'number' => '1'],
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '2', 'number' => '2'],
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '3', 'number' => '3'],
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '4', 'number' => '4'],
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '28', 'number' => '5'],
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '29', 'number' => '6'],
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '30', 'number' => '7'],
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '12', 'number' => '8'],
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '13', 'number' => '8'],
+            ['procedure_modality_id' => '11', 'procedure_document_id' => '14', 'number' => '8'],
+
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '1', 'number' => '1'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '2', 'number' => '2'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '33', 'number' => '3'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '31', 'number' => '4'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '32', 'number' => '5'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '10', 'number' => '6'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '11', 'number' => '7'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '15', 'number' => '8'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '16', 'number' => '9'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '25', 'number' => '9'],
+            ['procedure_modality_id' => '12', 'procedure_document_id' => '17', 'number' => '9'],
         ]);
     }
 
