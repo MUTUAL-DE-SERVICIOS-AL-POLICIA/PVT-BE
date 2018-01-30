@@ -8,6 +8,7 @@ use Muserpol\Models\Category;
 use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
+use Muserpol\Models\ProcedureRequirement;
 
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
@@ -25,6 +26,18 @@ class AffiliateController extends Controller
     {                
         return view('affiliates.index');
     }
+    public function retFun(){
+        $procedure_requirements = ProcedureRequirement::
+                                    select('procedure_requirements.id','procedure_documents.name as procedure_document','number','procedure_modalities.name as procedure_modality')
+                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
+                                    ->leftJoin('procedure_modalities','procedure_requirements.procedure_modality_id','=','procedure_modalities.id')
+                                    ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+                                    ->orderBy('procedure_requirements.number','ASC')
+                                    ->get();
+        //return$procedure_requirements;
+        return view('ret_fun.step1_requirements');
+        
+    }
     public function getAllAffiliates(Request $request)
     {
         /*$query = Affiliate::take(100)->get();
@@ -36,10 +49,11 @@ class AffiliateController extends Controller
         $limit = $request->limit ?? 10;
         $sort = $request->sort ?? 'id';
         $order = $request->order ?? 'asc';
-        $last_name = $request->last_name ?? '';
-        $firs_name = $request->first_name ?? '';
-        $second_name = $request->
-        $identity_card = $request->identity_card ?? '';        
+        $last_name = strtoupper($request->last_name) ?? '';
+        $first_name = strtoupper($request->first_name) ?? '';
+        $second_name = strtoupper($request->second_name) ?? '';
+        $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
+        $identity_card = strtoupper($request->identity_card) ?? '';        
         //$total=Affiliate::where('identity_card','LIKE',$identity_card.'%')->where('last_name','LIKE',$last_name.'%')->count();        
         //$total=6669783;
         //$affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->where('last_name','LIKE',$last_name.'%')->get();                
@@ -47,11 +61,10 @@ class AffiliateController extends Controller
         $total = Affiliate::select('affiliates.id')//,'identity_card','registration','degrees.name as degree','first_name','second_name','last_name','mothers_last_name','civil_status')->
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-                                ->where('affiliates.first_name','LIKE',$first_name.'%')
+                                ->where('affiliates.first_namprocedre_requirementse','LIKE',$first_name.'%')
                                 ->where('affiliates.second_name','LIKE',$second_name.'%')
-                                ->where('affiliates.second_name','LIKE',$last_name.'%')
-                                ->where('affiliates.second_name','LIKE',$mothers_last_name.'%')
-                                //->where('affiliates.second_name','LIKE',$mothers_last_name.'%')
+                                ->where('affiliates.last_name','LIKE',$last_name.'%')
+                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')                                
                                 ->where('affiliates.identity_card','LIKE',$identity_card.'%')
                                 ->count();
         
@@ -63,8 +76,8 @@ class AffiliateController extends Controller
                                 ->orderBy($sort,$order)
                                 ->where('affiliates.first_name','LIKE',$first_name.'%')
                                 ->where('affiliates.second_name','LIKE',$second_name.'%')
-                                ->where('affiliates.second_name','LIKE',$last_name.'%')
-                                ->where('affiliates.second_name','LIKE',$mothers_last_name.'%')
+                                ->where('affiliates.last_name','LIKE',$last_name.'%')
+                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')
                                 ->where('affiliates.identity_card','LIKE',$identity_card.'%')
                                 ->get();
         

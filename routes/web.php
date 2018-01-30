@@ -19,6 +19,7 @@ Route::resource('affiliate', 'AffiliateController');
 Route::patch('/update_affiliate/{affiliate}','AffiliateController@update')->name('update_affiliate');
 Route::patch('/update_affiliate_police/{affiliate}','AffiliateController@update_affiliate_police')->name('update_affiliate_police');
 Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
+Route::get('affiliate/{affiliate}/ret_fun', 'AffiliateController@retFun');
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
