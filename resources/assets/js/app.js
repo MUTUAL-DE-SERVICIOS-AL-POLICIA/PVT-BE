@@ -34,6 +34,9 @@ Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
 // 	'affiliate-index',
 // 	require('./components/affiliate/index.vue')
 // );
+
+Vue.component('ret_fun-step1_requirements', require('./components/ret_fun/step1_requirements.vue'));
+
 const app = new Vue({
     el: '#app',
 });
