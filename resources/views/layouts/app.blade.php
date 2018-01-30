@@ -7,8 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Muserpol - @yield('title') </title>
    
-    <link rel="stylesheet" href="{!! asset('css/vendor.css') !!}" />
-    <link rel="stylesheet" href="{!! asset('css/inspinia.css') !!}" />
+    <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
+    
     <style>
         .toast-title {
             font-weight: 700
