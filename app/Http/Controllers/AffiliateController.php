@@ -48,7 +48,7 @@ class AffiliateController extends Controller
         $total = Affiliate::select('affiliates.id')//,'identity_card','registration','degrees.name as degree','first_name','second_name','last_name','mothers_last_name','civil_status')->
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-                                ->where('affiliates.first_namprocedre_requirementse','LIKE',$first_name.'%')
+                                ->where('affiliates.first_name','LIKE',$first_name.'%')
                                 ->where('affiliates.second_name','LIKE',$second_name.'%')
                                 ->where('affiliates.last_name','LIKE',$last_name.'%')
                                 ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')                                
