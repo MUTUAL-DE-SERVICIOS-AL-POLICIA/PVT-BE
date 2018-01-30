@@ -13,6 +13,8 @@ class ProcedureTablesSeeder extends Seeder {
         DB::table('procedure_types')->insert([
             ['module_id' => '3', 'name' => 'Pago Global de Aportes'],
             ['module_id' => '3', 'name' => 'Pago de Fondo de Retiro'],
+            ['module_id' => '4', 'name' => 'Pago Cuota Mortuoria'],
+            ['module_id' => '5', 'name' => 'Pago Auxilio Mortuorio'],            
         ]);
 
         DB::table('procedure_modalities')->insert([
@@ -23,10 +25,18 @@ class ProcedureTablesSeeder extends Seeder {
             ['id' => '5', 'procedure_type_id' => '2', 'name' => 'Retiro forzoso'],
             ['id' => '6', 'procedure_type_id' => '2', 'name' => 'Retiro forzoso(Invalidez Permanente)'],
             ['id' => '7', 'procedure_typs_id' => '2', 'name' => 'Retiro Voluntario'],
+
+            ['id' => '8', 'procedure_type_id' => '3', 'name' => 'Fallecimiento del titular en cumplimiento de funciones'],
+            ['id' => '9', 'procedure_type_id' => '3', 'name' => 'Fallecimiento del titular por Riesgo Comun'],
+            ['id' => '10', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del titular'],
+            ['id' => '11', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del o de la conyugue'],
+            ['id' => '12', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del o de la viuda'],
+           
+
         ]);
         DB::table('procedure_documents')->insert([
             ['id' => '1', 'name' => 'Comprobante de depósito bancario de Bs.- 25 por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSEROL.'],
-            ['id' => '2', 'name' => 'Formualrio de verificación de requisitos con carácter de Declaración Jurada y solicitud a ser otorgado por la MUSERPOL a momento de inicio de trámite.'],
+            ['id' => '2', 'name' => 'Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud a ser otorgado por la MUSERPOL a momento de inicio de trámite.'],
             ['id' => '3', 'name' => 'Fotocopia simple de cédula de identidad del tituar, vigente a la fecha de solicitud.'],
             ['id' => '4', 'name' => 'Certificado de nacimiento del titular (original y actualizado).'],
             ['id' => '5', 'name' => 'Memorándum de agradecimiento de servicios emitido por el Comando general de la Policía Boliviana(original).'],
@@ -34,12 +44,12 @@ class ProcedureTablesSeeder extends Seeder {
             ['id' => '7', 'name' => 'Certificado de haberes otorgado por el Comando general de la Policía Boliviana, de los últimos 60 meses efectivamente percibidos antes de su destino a disponibilidad de las letras(reserva activa), (original).'],
             ['id' => '8', 'name' => 'Certificado de años de servicio desglosado, otorgado por el Comando General de la Policía Boliviana (original).'],
             ['id' => '9', 'name' => 'Certificado de defunción (original y actualizado).'],
-            ['id' => '10', 'name' => 'Certificado de nacimiento de lso derechohabientes (original y actualizado).'],
+            ['id' => '10', 'name' => 'Certificado de nacimiento de los derechohabientes (original y actualizado).'],
             ['id' => '11', 'name' => 'Fotocopia simple de la cédula de identidad de los derechohabientes(vigente).'],
             ['id' => '12', 'name' => 'Certificado de Matrimonio(original y actualizado).'],
             ['id' => '13', 'name' => 'Certificado de unión libre o de hecho emitido por el "SERECI" (original y actualizado).'],
-            ['id' => '14', 'name' => 'Resolución de reconocimiento de matrimonio de hecho ante autoridad competente (orignal o copia legalizada).'],
-            ['id' => '15', 'name' => 'Certificado de descendencia de titutar fallecido emitido por el SERECI (original y actualizado).'],
+            ['id' => '14', 'name' => 'Resolución de reconocimiento de matrimonio de hecho ante autoridad competente (original o copia legalizada).'],
+            ['id' => '15', 'name' => 'Certificado de descendencia del titutar fallecido emitido por el SERECI (original y actualizado).'],
             ['id' => '16', 'name' => 'Declaratoria de herederos (original o copia legalizada),'],
             ['id' => '17', 'name' => 'Testamento que señale expresamente la otorgación del beneficio (original o copia legalizada).'],
             ['id' => '18', 'name' => 'Certificado de haberes otorgado por el Comando General de la Policía Boliviana, de los últimos 60 meses efectivamente percibidos, previo a suscitarse a fallecimiento del titular (original).'],
@@ -52,14 +62,13 @@ class ProcedureTablesSeeder extends Seeder {
             ['id' => '25', 'name' => 'Aceptación de Herencia original'],
             ['id' => '26', 'name' => 'Aceptación de Herencia copia legalizada'],
             ['id' => '27', 'name' => 'Dictamen emitido por la Entidad Encargada de Calificar'],
-            ['id' => '28', 'name' => 'Certificación emitida por la Dirección Nacional de Salud y Bienestar Social de la Policia Boliviana original'],
-            ['id' => '29', 'name' => 'Certificación emitida por la Dirección Nacional de Salud y Bienestar Social de la Policia Boliviana copia legalizada'],
-            ['id' => '30', 'name' => 'Certificado de nacimiento del cónyugue original y actualizado'],
-            ['id' => '31', 'name' => 'Certificado de defunción de la o el cónyugue original y actualizado'],
-            ['id' => '32', 'name' => 'Fotocopia simple de la célula de identidad del cónyugue'],
-            ['id' => '33', 'name' => 'Certificado de nacimiento del o de la viud@ original y actualizado'],
-            ['id' => '34', 'name' => 'Certificado de defunción del o de la viud@ original y actualizado'],
-            ['id' => '35', 'name' => 'Fotocopia simple de la célula de identidad del o de la viud@'],
+            ['id' => '28', 'name' => 'Certificación emitida por la Dirección Nacional de Salud y Bienestar Social de la Policia Boliviana (original o copia legalizada)'],
+            ['id' => '29', 'name' => 'Certificado de nacimiento del cónyugue original y actualizado'],
+            ['id' => '30', 'name' => 'Certificado de defunción de la o el cónyugue original y actualizado'],
+            ['id' => '31', 'name' => 'Fotocopia simple de la célula de identidad del cónyugue'],
+            ['id' => '32', 'name' => 'Certificado de nacimiento del o de la viud@ original y actualizado'],
+            ['id' => '33', 'name' => 'Certificado de defunción del o de la viud@ original y actualizado'],
+            ['id' => '34', 'name' => 'Fotocopia simple de la célula de identidad del o de la viud@'],
         ]);
         DB::table('procedure_requirements')->insert([
             ['procedure_modality_id' => '3', 'procedure_document_id' => '1', 'number' => '1'],
@@ -118,6 +127,24 @@ class ProcedureTablesSeeder extends Seeder {
             ['procedure_modality_id' => '7', 'procedure_document_id' => '21', 'number' => '6'],
             ['procedure_modality_id' => '7', 'procedure_document_id' => '7', 'number' => '6'],
             ['procedure_modality_id' => '7', 'procedure_document_id' => '8', 'number' => '7'],
+
+
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '1', 'number' => '1'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '2', 'number' => '2'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '3', 'number' => '3'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '4', 'number' => '4'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '9', 'number' => '5'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '10', 'number' => '6'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '11', 'number' => '7'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '12', 'number' => '8'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '13', 'number' => '8'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '14', 'number' => '8'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '15', 'number' => '9'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '16', 'number' => '10'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '17', 'number' => '10'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '24', 'number' => '11'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '27', 'number' => '12'],
+            ['procedure_modality_id' => '8', 'procedure_document_id' => '28', 'number' => '12'],
         ]);
     }
 
