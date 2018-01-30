@@ -8,7 +8,6 @@ use Muserpol\Models\Category;
 use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
-use Muserpol\Models\ProcedureRequirement;
 
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
@@ -25,18 +24,6 @@ class AffiliateController extends Controller
     public function index()
     {                
         return view('affiliates.index');
-    }
-    public function retFun(){
-        $procedure_requirements = ProcedureRequirement::
-                                    select('procedure_requirements.id','procedure_documents.name as procedure_document','number','procedure_modalities.name as procedure_modality')
-                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
-                                    ->leftJoin('procedure_modalities','procedure_requirements.procedure_modality_id','=','procedure_modalities.id')
-                                    ->orderBy('procedure_requirements.procedure_modality_id','ASC')
-                                    ->orderBy('procedure_requirements.number','ASC')
-                                    ->get();
-        //return$procedure_requirements;
-        return view('ret_fun.step1_requirements');
-        
     }
     public function getAllAffiliates(Request $request)
     {
