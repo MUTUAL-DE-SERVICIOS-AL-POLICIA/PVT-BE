@@ -14,7 +14,7 @@ class RetirementFundController extends Controller
      */
     public function index()
     {
-        //
+        return view('ret_fun.index');
     }
 
     /**
