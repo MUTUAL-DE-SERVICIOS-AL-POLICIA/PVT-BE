@@ -41,6 +41,9 @@ Vue.component('step2-applicant', require('./components/ret_fun/Step2Applicant.vu
 // 	'affiliate-index',
 // 	require('./components/affiliate/index.vue')
 // );
+
+Vue.component('ret_fun-step1_requirements', require('./components/ret_fun/step1_requirements.vue'));
+
 const app = new Vue({
     el: '#app',
 });
