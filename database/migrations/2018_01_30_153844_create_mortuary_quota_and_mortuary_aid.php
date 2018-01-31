@@ -90,6 +90,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             // fin datos de tutor legal
             $table->string('phone_number')->nullable(); //numero de telefono
             $table->string('cell_phone_number')->nullable(); //numero de cel
+            $table->foreign('city_identity_card_id')->references('id')->on('cities');
             $table->foreign('kinship_id')->references('id')->on('kinships');
             $table->timestamps();
             $table->softDeletes();
