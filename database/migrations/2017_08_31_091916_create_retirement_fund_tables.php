@@ -63,6 +63,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigInteger('city_start_id')->unsigned()->nullable(); //ciudad donde se inicia el tramite.
             $table->bigInteger('city_end_id')->unsigned()->nullable(); //ciudad donde se entrega el pago.
             $table->string('code')->unique(); //codigo
+            $table->date('reception_date')->nullable(); //fecha de recepcion
             $table->enum('type', ['Pago', 'Anticipo'])->default('Pago'); //tipo
             $table->decimal('subtotal', 13, 2); // sub total
             $table->decimal('total', 13, 2); // total
@@ -141,6 +142,7 @@ class CreateRetirementFundTables extends Migration {
             // fin datos de tutor legal
             $table->string('phone_number')->nullable(); //numero de telefono
             $table->string('cell_phone_number')->nullable(); //numero de cel
+            $table->foreign('city_identity_card_id')->references('id')->on('cities');
             $table->foreign('kinship_id')->references('id')->on('kinships');
             $table->timestamps();
             $table->softDeletes();

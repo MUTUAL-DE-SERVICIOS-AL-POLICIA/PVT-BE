@@ -6,6 +6,7 @@ public/css/app.css
 /storage/*.key
 /vendor
 /.idea
+/.vscode
 /.vagrant
 Homestead.json
 Homestead.yaml
@@ -15,3 +16,4 @@ yarn-error.log
 /nbproject/private/
 /nbproject/project.properties
 /nbproject/project.xml
+/public/fonts/vendor/mdi

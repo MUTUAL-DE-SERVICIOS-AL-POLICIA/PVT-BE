@@ -21,6 +21,10 @@ window.flash = function (message, level = 'success') {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+import VueFormWizard from 'vue-form-wizard';
+import 'vue-form-wizard/dist/vue-form-wizard.min.css';
+Vue.use(VueFormWizard);
+
 Vue.component('flash', require('./components/Flash.vue'));
 
 Vue.component('example', require('./components/Example.vue'));
@@ -30,6 +34,9 @@ Vue.component('example', require('./components/Example.vue'));
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
 Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vue'));
 Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
+//Vue.component('form-wizard-ret-fund', require('./components/FormWizard.vue'));
+Vue.component('temp', require('./components/temp.vue'));
+Vue.component('step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
 // Vue.component(
 // 	'affiliate-index',
 // 	require('./components/affiliate/index.vue')
