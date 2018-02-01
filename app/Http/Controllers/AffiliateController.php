@@ -35,7 +35,7 @@ class AffiliateController extends Controller
         $offset = $request->offset ?? 0;
         $limit = $request->limit ?? 10;
         $sort = $request->sort ?? 'id';
-        $order = $request->order ?? 'asc';
+        $order = $request->order ?? 'asc';  
         $last_name = strtoupper($request->last_name) ?? '';
         $first_name = strtoupper($request->first_name) ?? '';
         $second_name = strtoupper($request->second_name) ?? '';
@@ -88,7 +88,7 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {        
         //
     }
 
