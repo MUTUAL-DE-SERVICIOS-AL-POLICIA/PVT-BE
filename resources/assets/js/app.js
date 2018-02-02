@@ -36,6 +36,7 @@ Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vu
 Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
 //Vue.component('form-wizard-ret-fund', require('./components/FormWizard.vue'));
 Vue.component('temp', require('./components/temp.vue'));
+Vue.component('step1-requirement', require('./components/ret_fun/step1_requirements.vue'));
 Vue.component('step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
 // Vue.component(
 // 	'affiliate-index',

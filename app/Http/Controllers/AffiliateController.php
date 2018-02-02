@@ -19,7 +19,7 @@ class AffiliateController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response1%2%3#4$
      */
     public function index()
     {                
@@ -71,7 +71,7 @@ class AffiliateController extends Controller
         return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
     }
 
-    /**
+    /** 
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

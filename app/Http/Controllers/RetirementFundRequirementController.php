@@ -1,9 +1,11 @@
 <?php
 
 namespace Muserpol\Http\Controllers;
+use Validator;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\ProcedureModality;
 use Muserpol\RetirementFundRequirement;
+use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 
@@ -15,14 +17,27 @@ class RetirementFundRequirementController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //  
+    {        
+        $retirement_found = new RetirementFund();
+        $retirement_found->user_id = null;
+        $retirement_found->affiliate_id = null;
+        $retirement_found->procedure_modaliy_id = null;
+        $retirement_found->ret_fun_procedure_id = null;
+        $retirement_found->city_start_id = null;
+        $retirement_found->city_end_id = null;
+        $retirement_found->code = null;
+        $retirement_found->type = null;
+        $retirement_found->subtotal = null;
+        $retirement_found->total = null;
+        $retirement_found->save();
+        return 12;
+        //return view('ret_fun.index',$data);
     }
-    public function retFun(Affiliate $affiliate){
+    public function generateProcedure(Affiliate $affiliate){
 //        $affiliate = Affiliate::select('id','')
 //                        ->find($affiliate->id);
 //        
-         $affiliate = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
+        $affiliate = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
@@ -45,8 +60,9 @@ class RetirementFundRequirementController extends Controller
             'requirements' => $procedure_requirements,
             'modalities'    => $modalities,
             'affiliate'  => $affiliate,
-        ];        
-        return view('ret_fun.step1_requirements',$data);        
+        ];       
+        //return $data;
+        return view('ret_fun.index',$data);        
     }
     /**
      * Show the form for creating a new resource.
@@ -55,7 +71,7 @@ class RetirementFundRequirementController extends Controller
      */
     public function create()
     {
-        //
+        return view('ret_fun.create');
     }
 
     /**
@@ -66,7 +82,29 @@ class RetirementFundRequirementController extends Controller
      */
     public function store(Request $request)
     {
-        return 0;
+        //return $request->all();
+        for($i=0;$i<100;$i++)
+        {
+            if($request->input('document'.$i) == 'registered')
+                echo "<br>".$i;
+            //echo $request->input('document'.$i)." ".$i."-<br>";
+        }    
+        
+        $type = $request->input('account');
+        
+        
+//         $validator = Validator::make($request->all(), [
+//            'name' => 'required|max:5',
+//            'lastname' => 'required',
+//        ]);
+//        $validator->after(function($validator){
+//            if(false)
+//                $validator->errors()->add('field', 'Something is wrong with this field!');
+//        });
+//        if($validator->fails()){
+//            return $validator->errors();
+//        }
+        return 213;
     }
 
     /**

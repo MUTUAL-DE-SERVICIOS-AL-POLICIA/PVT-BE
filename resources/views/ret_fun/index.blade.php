@@ -10,6 +10,13 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+<!--    <div class="row">
+        <div class="col-md-12">
+            
+        </div>
+            
+    </div>-->
+        
     <div class="row">
         <div class="col-md-12">
             {{--  <form-wizard-ret-fund></form-wizard-ret-fund>  --}}
@@ -29,9 +36,9 @@
             icon="mdi mdi-format-list-checks"
             {{--  :before-change="validateAsync"  --}}
             >
-                <temp inline-template>
-                    <div>UNO</div>
-                </temp>
+                <step1-requirement inline-template>
+                    @include('ret_fun.step1_requirements')
+                </step1-requirement>
         </tab-content>
         <tab-content
             title="Datos del Solicitante"
@@ -49,7 +56,7 @@
         </tab-content>
     </form-wizard>
         </div>
-    </div>
+    </div> 
 </div>
 
 @endsection
