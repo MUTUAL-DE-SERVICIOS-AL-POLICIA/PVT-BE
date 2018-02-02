@@ -268,14 +268,23 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('ret_fun_advisor_beneficiary');
         Schema::drop('ret_fun_advisors');
         Schema::drop('ret_fun_beneficiaries');
-        Schema::drop('kinships');
+     
         Schema::drop('ret_fun_submitted_documents');
         Schema::drop('retirement_funds');
         Schema::drop('ret_fun_procedures');
         Schema::drop('procedure_requirements');
         Schema::drop('procedure_documents');
+        
+        Schema::drop('quota_aid_applicants');
+        Schema::drop('quota_aid_advisor_beneficiaries');
+        Schema::drop('quota_aid_advisors');
+        Schema::drop('quota_aid_beneficiaries');
+        Schema::drop('quota_aid_mortuaries');
+        Schema::drop('amount_mortuaries');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types');
+        Schema::drop('kinships');
+
     }
 
 }
