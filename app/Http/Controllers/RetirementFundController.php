@@ -14,7 +14,8 @@ class RetirementFundController extends Controller
      */
     public function index()
     {
-        return view('ret_fun.index');
+        $ret = \Muserpol\Models\RetirementFund\RetFunProcedure::all();   
+        return view('ret_fun.index',compact('ret'));
     }
 
     /**

@@ -43,9 +43,9 @@
         <tab-content
             title="Datos de los Derechohabientes"
             icon="mdi mdi-account-multiple-plus">
-                <temp inline-template>
-                    <div>tres</div>
-                </temp>
+                <step3-beneficiaries :items="{{ $ret }}" inline-template>
+                    @include('ret_fun.step3_beneficiaries')
+                </step3-beneficiaries>
         </tab-content>
     </form-wizard>
         </div>
