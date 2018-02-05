@@ -1,5 +1,8 @@
 <script>
 export default {
+  props:[
+    'cities',
+  ],
   data(){
     return{
       applicant_type: '',
@@ -24,7 +27,7 @@ export default {
         this.show_advisor_form = false;
         return;
       }
-      console.log(this.applicant_type); 
+      console.log(this.applicant_type);
     }
   }
 }
