@@ -62,6 +62,9 @@ class CreateRetirementFundTables extends Migration {
             $table->bigInteger('ret_fun_procedure_id')->unsigned()->nullable(); //identificador de tipo de modalidad
             $table->bigInteger('city_start_id')->unsigned()->nullable(); //ciudad donde se inicia el tramite.
             $table->bigInteger('city_end_id')->unsigned()->nullable(); //ciudad donde se entrega el pago.
+            $table->bigInteger('workflow_id')->unsigned(); // identificador de flujo
+            $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado
+
             $table->string('code')->unique(); //codigo
             $table->date('reception_date')->nullable(); //fecha de recepcion
             $table->enum('type', ['Pago', 'Anticipo'])->default('Pago'); //tipo
@@ -73,6 +76,9 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('ret_fun_procedure_id')->references('id')->on('ret_fun_procedures');
             $table->foreign('city_start_id')->references('id')->on('cities');
             $table->foreign('city_end_id')->references('id')->on('cities');
+            $table->foreign('workflow_id')->references('id')->on('workflows');
+            $table->foreign('wf_state_current_id')->references('id')->on('wf_states');
+
             $table->timestamps();
             $table->softDeletes();
         });
@@ -268,14 +274,23 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('ret_fun_advisor_beneficiary');
         Schema::drop('ret_fun_advisors');
         Schema::drop('ret_fun_beneficiaries');
-        Schema::drop('kinships');
+     
         Schema::drop('ret_fun_submitted_documents');
         Schema::drop('retirement_funds');
         Schema::drop('ret_fun_procedures');
         Schema::drop('procedure_requirements');
         Schema::drop('procedure_documents');
+        
+        Schema::drop('quota_aid_applicants');
+        Schema::drop('quota_aid_advisor_beneficiaries');
+        Schema::drop('quota_aid_advisors');
+        Schema::drop('quota_aid_beneficiaries');
+        Schema::drop('quota_aid_mortuaries');
+        Schema::drop('amount_mortuaries');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types');
+        Schema::drop('kinships');
+
     }
 
 }

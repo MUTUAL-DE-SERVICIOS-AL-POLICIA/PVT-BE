@@ -48,6 +48,9 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->bigInteger('quota_aid_mortuary_id')->unsigned(); //identificador de cuota y auxilio mortuoria
             $table->bigInteger('city_identity_card_id')->unsigned()->nullable(); //identificación del ci
             $table->bigInteger('kinship_id')->unsigned()->nullable();
+            $table->bigInteger('workflow_id')->unsigned(); // identificador de flujo
+            $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado
+
             $table->string('identity_card'); //ci
             $table->string('last_name')->nullable(); //apellido paterno
             $table->string('mothers_last_name')->nullable(); // apellido materno
@@ -66,6 +69,8 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade'); // identificador de fondo de retiro
             $table->foreign('city_identity_card_id')->references('id')->on('cities'); //identificación del ci
             $table->foreign('kinship_id')->references('id')->on('kinships');
+            $table->foreign('workflow_id')->references('id')->on('work_flows');
+            $table->foreign('wf_state_current_id')->references('id')->on('wf_states');
             $table->timestamps();
             $table->softDeletes();
         });
