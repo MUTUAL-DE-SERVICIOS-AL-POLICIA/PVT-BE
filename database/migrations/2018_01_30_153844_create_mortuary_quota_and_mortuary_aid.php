@@ -69,7 +69,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade'); // identificador de fondo de retiro
             $table->foreign('city_identity_card_id')->references('id')->on('cities'); //identificación del ci
             $table->foreign('kinship_id')->references('id')->on('kinships');
-            $table->foreign('workflow_id')->references('id')->on('work_flows');
+            $table->foreign('workflow_id')->references('id')->on('workflows');
             $table->foreign('wf_state_current_id')->references('id')->on('wf_states');
             $table->timestamps();
             $table->softDeletes();
