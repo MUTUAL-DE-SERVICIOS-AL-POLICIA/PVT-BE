@@ -23,6 +23,7 @@
                         <div class="form-group"><label class="col-sm-4 control-label">Primer Nombre</label>
                             <div class="col-sm-8"><input type="text" name="applicant_first_name" class="form-control"></div>
                         </div>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group"><label class="col-sm-4 control-label">Segundo Nombre</label>
                             <div class="col-sm-8"><input type="text" name="applicant_second_name" class="form-control"></div>
@@ -194,7 +195,7 @@
                         <div class="col-sm-8"><input type="text" name="beneficiary_number_address" class="form-control"></div>
                     </div>
                 </div>
-            </div>
+</div>
         </div>
-    </div>
+</div>
 </div>
