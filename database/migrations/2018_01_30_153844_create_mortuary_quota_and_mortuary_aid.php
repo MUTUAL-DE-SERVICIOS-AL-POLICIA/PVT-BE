@@ -43,6 +43,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->softDeletes();
         });        
         
+
         Schema::create('quota_aid_beneficiaries', function (Blueprint $table) {
             $table->bigIncrements('id'); // identifiador
             $table->bigInteger('quota_aid_mortuary_id')->unsigned(); //identificador de cuota y auxilio mortuoria
@@ -75,6 +76,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->softDeletes();
         });
 
+       
         Schema::create('quota_aid_advisors', function (Blueprint $table) { // tabla tutor
             $table->bigIncrements('id');
             $table->bigInteger('city_identity_card_id')->unsigned()->nullable(); //identificación del ci
@@ -108,7 +110,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->foreign('quota_aid_advisor_id')->references('id')->on('quota_aid_advisors');            
         });
        
-       /* Schema::create('address_quota_aid_beneficiaries', function(Blueprint $table) {
+       /*Schema::create('address_quota_aid_beneficiaries', function(Blueprint $table) {
             $table->bigIncrements('id'); 
             $table->bigInteger('quota_aid_beneficiary_id')->unsigned();
             $table->bigInteger('address_id')->unsigned();
@@ -116,6 +118,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->foreign('address_id')->references('id')->on('addresses'); 
           	$table->timestamps();
         });*/
+     
 
     }   
     public function down()
