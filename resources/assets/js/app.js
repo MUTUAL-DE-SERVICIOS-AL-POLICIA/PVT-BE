@@ -38,6 +38,8 @@ Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
 Vue.component('temp', require('./components/temp.vue'));
 Vue.component('step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
 Vue.component('step3-beneficiaries', require('./components/ret_fun/Step3Beneficiaries.vue'));
+Vue.component('beneficiary-list', require('./components/ret_fun/BeneficiaryList.vue'));
+Vue.component('beneficiary', require('./components/ret_fun/Beneficiary.vue'));
 // Vue.component(
 // 	'affiliate-index',
 // 	require('./components/affiliate/index.vue')

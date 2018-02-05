@@ -7,7 +7,9 @@
         </div>
         <div class="ibox-content">
             <form method="get" class="form-horizontal">
-                <div class="row" v-for="beneficiary in items">
+                <beneficiary-list :items="{{ $ret }}"></beneficiary-list>
+                {{--  </beneficiary>  --}}
+                {{--  <div class="row" v-for="beneficiary in items">
                     <div class="hr-line-dashed"></div>
                     <div class="row">
                         <div class="col-md-6">
@@ -76,10 +78,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                    <div class="row">
-                        <button class="btn btn-success" type="button" ><i class="fa fa-plus"></i></button>
-                    </div>
+                </div>  --}}
+                    {{--  <div class="row">
+                        <button class="btn btn-success" @click="addBeneficiary()" type="button" ><i class="fa fa-plus"></i></button>
+                    </div>  --}}
                     {{--  <div class="row" v-if=" show_advisor_form ">
                         <h3 class="m-t-none m-b">Datos del Tutor Legal</h3>
                         <div class="row">
