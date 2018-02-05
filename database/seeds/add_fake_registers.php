@@ -28,6 +28,9 @@ class add_fake_registers extends Seeder
                 'type' => $faker -> randomElement($array = array ('Pago','Anticipo')),
                 'subtotal' =>$faker-> numberBetween($min = 1000, $max = 10000), 
                 'total'=> $faker -> numberBetween($min = 10000, $max = 15000), 
+                'workflow_id'=> $faker -> numberBetween($min = 1, $max = 7),
+                'wf_state_current_id' => $faker -> numberBetween($min = 3, $max = 32),
+                
                 ]);
         }
         

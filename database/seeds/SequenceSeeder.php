@@ -11,7 +11,7 @@ class SequenceSeeder extends Seeder
      */
     public function run()
     {
-       /* DB::table('roles')->insert([
+        DB::table('roles')->insert([
             ['id' => '28', 'module_id' => '3', 'name' => 'Área de Jefatura', 'action' => 'Aprobado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],
             ['id' => '29', 'module_id' => '3', 'name' => 'Área de Resolución', 'action' => 'Aprobado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],
             ['id' => '30', 'module_id' => '3', 'name' => 'Regional Santa Cruz', 'action' => 'Recepcionado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],
@@ -33,7 +33,7 @@ class SequenceSeeder extends Seeder
             ['id' => '30', 'module_id' => '3', 'role_id' => '33', 'name' => 'Regional Potosí', 'first_shortened' => 'Potosí'],
             ['id' => '31', 'module_id' => '3', 'role_id' => '34', 'name' => 'Regional Sucre', 'first_shortened' => 'Sucre'],
             ['id' => '32', 'module_id' => '3', 'role_id' => '35', 'name' => 'Regional Taríja', 'first_shortened' => 'Taríja'],
-        ]);*/
+        ]);
 
         DB::table('wf_sequences')->insert([
             ['id'=> 117,'workflow_id' => '4', 'wf_state_current_id' => '27', 'wf_state_next_id' => '19', 'action' => 'Aprobar','created_at' => '1100/07/21', 'updated_at' =>'1100/07/21'],

@@ -21,11 +21,11 @@ class add_kinship extends Seeder
         ['id' => '7', ]
         ]);
 
-        DB::table('procedure_types')->insert([
+       /* DB::table('procedure_types')->insert([
             ['module_id' => '3', 'name' => 'Pago Global de Aportes'],
             ['module_id' => '3', 'name' => 'Pago de Fondo de Retiro'],
             ['module_id' => '4', 'name' => 'Pago Cuota Mortuoria'],
             ['module_id' => '5', 'name' => 'Pago Auxilio Mortuorio'],            
-        ]);
+        ]);*/
     }
 }
