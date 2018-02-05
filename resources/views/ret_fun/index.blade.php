@@ -22,23 +22,23 @@
                     icon="mdi mdi-format-list-checks"
                     {{--  :before-change="validateAsync"  --}}
                     >
-                        <step1-requirements :modalities="{{ $modalities}}" :requirements="{{ $requirements }}" inline-template>
+                        <ret-fun-step1-requirements :modalities="{{ $modalitiesret-fun-}}" :requirements="{{ $requirements }}" inline-template>
                             @include('ret_fun.step1_requirements')
-                        </step1-requirements>
+                        </ret-fun-step1-requirements>
                     </tab-content>
                     <tab-content
                         title="Datos del Solicitante"
                         icon="mdi mdi-account-edit">
-                        <step2-applicant inline-template>
+                        <ret-fun-step2-applicant inline-template>
                             @include('ret_fun.step2_applicant')
-                        </step2-applicant>
+                        </ret-fun-step2-applicant>
                     </tab-content>
                     <tab-content
                     title="Datos de los Derechohabientes"
                     icon="mdi mdi-account-multiple-plus">
-                    <step3-beneficiaries :items="{{ $ret }}" inline-template>
+                    <ret-fun-step3-beneficiaries :items="{{ $ret }}" inline-template>
                         @include('ret_fun.step3_beneficiaries')
-                    </step3-beneficiaries>
+                    </ret-fun-step3-beneficiaries>
                 </tab-content>
                 {!! Form::submit('Click Me!') !!}
             </form-wizard>

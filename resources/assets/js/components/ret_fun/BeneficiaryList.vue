@@ -1,6 +1,6 @@
 <template>
     <div>
-        <beneficiary v-for="benef in beneficiaries" :beneficiary="benef" :key='benef.id'></beneficiary>
+        <ret-fun-beneficiary v-for="benef in beneficiaries" :beneficiary="benef" :key='benef.id'></ret-fun-beneficiary>
         <div class="row">
             <button class="btn btn-success" @click="addBeneficiary()" type="button" ><i class="fa fa-plus"></i></button>
         </div>
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import beneficiary from './Beneficiary.vue'
+import RetFunBeneficiary from './Beneficiary.vue'
 export default {
   props:[
       'items'
@@ -22,7 +22,7 @@ export default {
       console.log(this.items)
   },
   components:{
-      beneficiary
+      RetFunBeneficiary
   },
   methods: {
       addBeneficiary(){
