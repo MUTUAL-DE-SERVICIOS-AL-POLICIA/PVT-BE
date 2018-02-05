@@ -107,17 +107,26 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->foreign('quota_aid_beneficiary_id')->references('id')->on('quota_aid_beneficiaries');
             $table->foreign('quota_aid_advisor_id')->references('id')->on('quota_aid_advisors');            
         });
-         Schema::create('address_quota_aid_beneficiary', function(Blueprint $table) {
+       
+       /* Schema::create('address_quota_aid_beneficiaries', function(Blueprint $table) {
             $table->bigIncrements('id'); 
             $table->bigInteger('quota_aid_beneficiary_id')->unsigned();
             $table->bigInteger('address_id')->unsigned();
             $table->foreign('quota_aid_beneficiary_id')->references('id')->on('quota_aid_beneficiaries'); 
             $table->foreign('address_id')->references('id')->on('addresses'); 
           	$table->timestamps();
-        });
+        });*/
+
     }   
     public function down()
     {
+        Schema::drop('address_quota_aid_beneficiaries');
+        Schema::drop('quota_aid_advisor_beneficiaries');
+        Schema::drop('quota_aid_advisors');
+        Schema::drop('quota_aid_beneficiaries');
+        Schema::drop('quota_aid_mortuaries');
+        Schema::drop('amount_mortuaries');
+
         
     }
 }
