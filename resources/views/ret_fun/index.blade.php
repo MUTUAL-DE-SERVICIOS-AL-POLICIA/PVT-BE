@@ -25,9 +25,6 @@
                         <step1-requirements :modalities="{{ $modalities}}" :requirements="{{ $requirements }}" inline-template>
                             @include('ret_fun.step1_requirements')
                         </step1-requirements>
-                        {{--  <temp inline-template>
-                            <div>UNO</div>
-                        </temp>  --}}
                     </tab-content>
                     <tab-content
                         title="Datos del Solicitante"
@@ -46,7 +43,6 @@
                 {!! Form::submit('Click Me!') !!}
             </form-wizard>
         </form>
-        {{--  <input type="button" id='cl' value="sdsd">  --}}
         </div>
     </div>
 </div>

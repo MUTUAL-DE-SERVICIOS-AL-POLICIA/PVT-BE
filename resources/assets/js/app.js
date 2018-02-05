@@ -27,15 +27,12 @@ Vue.use(VueFormWizard)
 
 Vue.component('flash', require('./components/Flash.vue'));
 
-Vue.component('example', require('./components/Example.vue'));
-
-// Vue.component('example-one', require('./components/affiliate/ExampleOne.vue'));
-// Vue.component('listss', require('./components/affiliate/List.vue'));
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
 Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vue'));
 Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
-//Vue.component('form-wizard-ret-fund', require('./components/FormWizard.vue'));
-Vue.component('temp', require('./components/temp.vue'));
+
+
+//retirement Fund
 Vue.component('step1-requirements', require('./components/ret_fun/Step1Requirements.vue'));
 Vue.component('step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
 Vue.component('step3-beneficiaries', require('./components/ret_fun/Step3Beneficiaries.vue'));
