@@ -118,11 +118,6 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
     }   
     public function down()
     {
-        Schema::drop('address_quota_aid_beneficiary');
-        Schema::drop('quota_aid_advisor_beneficiaries');
-        Schema::drop('quota_aid_advisors');
-        Schema::drop('quota_aid_beneficiaries');
-        Schema::drop('quota_aid_mortuaries');
-        Schema::drop('amount_mortuaries');
+        
     }
 }
