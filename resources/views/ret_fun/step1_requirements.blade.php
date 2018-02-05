@@ -2,7 +2,7 @@
 <!-- <form action="{{asset('ret_fun')}}" method="post">-->
      {{ csrf_field() }}
     <div class="row">
-        <div class="col-md-12">        
+        <div class="col-md-12">                    
             <ret_fun-step1_requirements  :modalities="{{ $modalities}}"   :requirements="{{ $requirements }}" inline-template>
                 <div>
                 <select v-model="modality" v-on:change="hello" name='modality'>   

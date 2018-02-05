@@ -14,7 +14,7 @@
         <div class="col-md-12">
             
         </div>
-            
+             
     </div>-->
     <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">    
     <div class="row">
@@ -58,5 +58,5 @@
         </div>
     </div> 
 </div>
-
+        
 @endsection

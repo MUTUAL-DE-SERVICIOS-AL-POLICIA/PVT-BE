@@ -26,7 +26,7 @@ class RetirementFundRequirementController extends Controller
     public function index()
     {                     
         
-        $requirements = ProcedureRequirement::select('id')->get();
+        $requirements = ProcedureRequirement::select('id')->get();        
         
         
         $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled',true)->select('id')->first();
@@ -55,7 +55,7 @@ class RetirementFundRequirementController extends Controller
                 $submit->save();
             }                
         }
-                                        
+                                              
         $type = $request->input('account');     
         
 //        $applicant = new RetFunApplicant();
@@ -198,6 +198,8 @@ class RetirementFundRequirementController extends Controller
     public function store(Request $request)
     {
         
+                
+        return $request->input('nomxd');
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:5',            
         ]);        
