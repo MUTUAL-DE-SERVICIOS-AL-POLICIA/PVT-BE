@@ -16,7 +16,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigIncrements('id');
             $table->bigInteger('module_id')->unsigned()->nullable();
             $table->string('name');
-            //$table->foreign('module_id')->references('id')->on('modules');
+           $table->foreign('module_id')->references('id')->on('modules');
             $table->timestamps();
         });
         Schema::create('procedure_modalities', function(Blueprint $table) {
@@ -64,7 +64,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigInteger('city_end_id')->unsigned()->nullable(); //ciudad donde se entrega el pago.
             $table->bigInteger('workflow_id')->unsigned(); // identificador de flujo
             $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado
-
+            
             $table->string('code')->unique(); //codigo
             $table->date('reception_date')->nullable(); //fecha de recepcion
             $table->enum('type', ['Pago', 'Anticipo'])->default('Pago'); //tipo
@@ -78,7 +78,6 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('city_end_id')->references('id')->on('cities');
             $table->foreign('workflow_id')->references('id')->on('workflows');
             $table->foreign('wf_state_current_id')->references('id')->on('wf_states');
-
             $table->timestamps();
             $table->softDeletes();
         });
@@ -102,7 +101,7 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
+      
         Schema::create('ret_fun_beneficiaries', function (Blueprint $table) {
             $table->bigIncrements('id'); // identifiador
             $table->bigInteger('retirement_fund_id')->unsigned(); //identificador de fondo de retiro
@@ -116,6 +115,7 @@ class CreateRetirementFundTables extends Migration {
             $table->string('surname_husband')->nullable(); //apellido casada
             $table->date('birth_date')->nullable(); //fecha de nacimento
             $table->enum('gender', ['M', 'F']); // genero
+            $table->enum('type', ['S', 'N']); // tipo de beneficiario (Solicitante o Normal)
             $table->enum('civil_status', ['C', 'S', 'V', 'D'])->nullable(); //estado civil
             $table->string('phone_number')->nullable(); // nomero de telefono
             $table->string('cell_phone_number')->nullable(); // numero de celular
@@ -126,6 +126,25 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('kinship_id')->references('id')->on('kinships');
             $table->timestamps();
             $table->softDeletes();
+        });
+      
+      	Schema::create('addresses', function(Blueprint $table) {
+            $table->bigIncrements('id'); 
+            $table->bigInteger('city_address_id')->unsigned()->nullable(); // identificador de la dirección y ciudad
+            $table->string('zone')->nullable(); // zona
+            $table->string('street')->nullable(); // calle
+            $table->string('number_address')->nullable(); //numero de domicilio
+            $table->foreign('city_address_id')->references('id')->on('cities'); //identificación del ci
+          	$table->timestamps();
+        });
+      
+        Schema::create('address_ret_fun_beneficiary', function(Blueprint $table) {
+            $table->bigIncrements('id'); 
+            $table->bigInteger('ret_fun_beneficiary_id')->unsigned();
+            $table->bigInteger('address_id')->unsigned();
+            $table->foreign('ret_fun_beneficiary_id')->references('id')->on('ret_fun_beneficiaries'); 
+            $table->foreign('address_id')->references('id')->on('addresses'); 
+          	$table->timestamps();
         });
 
         Schema::create('ret_fun_advisors', function (Blueprint $table) { // tabla tutor
@@ -154,45 +173,41 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('ret_fun_advisor_beneficiary', function (Blueprint $table) {
+        Schema::create('ret_fun_advisor_beneficiary', function (Blueprint $table) { //Tabla tutor-beneficiario
             $table->bigInteger('ret_fun_beneficiary_id')->unsigned();
             $table->bigInteger('ret_fun_advisor_id')->unsigned();
             $table->foreign('ret_fun_beneficiary_id')->references('id')->on('ret_fun_beneficiaries');
             $table->foreign('ret_fun_advisor_id')->references('id')->on('ret_fun_advisors');
             $table->primary('ret_fun_beneficiary_id');
         });
-
-        Schema::create('ret_fun_applicants', function(Blueprint $table) {
+      
+      	Schema::create('ret_fun_legal_guardians', function (Blueprint $table) { // apoderado
             $table->bigIncrements('id');
-            $table->bigInteger('retirement_fund_id')->unsigned();
-            $table->bigInteger('city_identity_card_id')->unsigned()->nullable(); //identificación del ci
-            $table->bigInteger('kinship_id')->unsigned()->nullable(); //identificación del ci
-            $table->string('identity_card')->nullable(); //ci
-            $table->string('last_name')->nullable(); // apellido paterno
-            $table->string('mothers_last_name')->nullable(); // apellido materno
-            $table->string('first_name'); // primer nombre
+            $table->bigInteger('retirement_fund_id')->unsigned()->index(); //
+            $table->bigInteger('city_identity_card_id')->unsigned()->nullable(); // Ciudad de expedicion
+            $table->string('identity_card')->nullable(); // numero de CI
+            $table->string('last_name')->nullable(); //apellido
+            $table->string('mothers_last_name')->nullable(); //apellido materno
+            $table->string('first_name')->nullable(); //nombre
             $table->string('second_name')->nullable(); //segundo nombre
-            $table->string('surname_husband')->nullable(); //apellido casada
-            $table->enum('type', ['Apoderado', 'Tutor', 'Beneficiario']);
-            $table->string('number_authority')->nullable(); //numero de poder
+            $table->string('surname_husband')->nullable(); //apellido de casada
+            $table->string('phone_number')->nullable();// numero de telefono fijo
+            $table->string('cell_phone_number')->nullable(); //numero de celuluar
+          	$table->string('number_authority')->nullable(); //numero de poder
             $table->string('notary_of_ public_faith')->nullable(); //notaria de fe publica Nro....CECHUS ANITA
             $table->string('notary')->nullable(); //notario
-            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
-            $table->foreign('city_identity_card_id')->references('id')->on('cities'); //expedicion del ci
-            $table->foreign('kinship_id')->references('id')->on('kinships');
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
+            $table->foreign('city_identity_card_id')->references('id')->on('cities');
             $table->timestamps();
             $table->softDeletes();
         });
-
-        Schema::create('ret_fun_address_applicants', function(Blueprint $table) {
-            $table->bigIncrements('id'); //identificador
-            $table->bigInteger('affiliate_id')->unsigned();
-            $table->bigInteger('city_address_id')->unsigned()->nullable(); // identificador de la dirección y ciudad
-            $table->string('zone')->nullable(); // zona
-            $table->string('street')->nullable(); // calle
-            $table->string('number_address')->nullable(); //numero de domicilio
-            $table->foreign('affiliate_id')->references('id')->on('affiliates'); //identificador de afiliado
-            $table->foreign('city_address_id')->references('id')->on('cities'); //identificación del ci
+      
+      	Schema::create('ret_fun_beneficiary_legal_guardian', function (Blueprint $table) { //Beneficiario-apoderado
+            $table->bigInteger('ret_fun_beneficiary_id')->unsigned(); //identificador del beneficiario
+            $table->bigInteger('ret_fun_legal_guardian_id')->unsigned(); //identificador del tutor
+            $table->foreign('ret_fun_beneficiary_id')->references('id')->on('ret_fun_beneficiaries');
+            $table->foreign('ret_fun_legal_guardian_id')->references('id')->on('ret_fun_legal_guardians');
+            $table->primary('ret_fun_beneficiary_id');
         });
 
         Schema::create('affiliate_folders', function (Blueprint $table) {  //Folder o carpeta de afiliado
@@ -269,28 +284,20 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('contribution_types');
         Schema::drop('scanned_documents');
         Schema::drop('affiliate_folders');
+        Schema::drop('ret_fun_beneficiary_legal_guardian');
+        Schema::drop('ret_fun_legal_guardians');
         Schema::drop('ret_fun_address_applicants');
-        Schema::drop('ret_fun_applicants');
         Schema::drop('ret_fun_advisor_beneficiary');
         Schema::drop('ret_fun_advisors');
         Schema::drop('ret_fun_beneficiaries');
-     
+        Schema::drop('kinships');
         Schema::drop('ret_fun_submitted_documents');
         Schema::drop('retirement_funds');
         Schema::drop('ret_fun_procedures');
         Schema::drop('procedure_requirements');
         Schema::drop('procedure_documents');
-        
-        Schema::drop('quota_aid_applicants');
-        Schema::drop('quota_aid_advisor_beneficiaries');
-        Schema::drop('quota_aid_advisors');
-        Schema::drop('quota_aid_beneficiaries');
-        Schema::drop('quota_aid_mortuaries');
-        Schema::drop('amount_mortuaries');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types');
-        Schema::drop('kinships');
-
     }
 
 }
