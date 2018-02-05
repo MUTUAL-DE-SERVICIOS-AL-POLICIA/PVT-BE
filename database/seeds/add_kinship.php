@@ -19,7 +19,7 @@ class add_kinship extends Seeder
         ['id' => '5', 'name' => 'Apoderado'],
         ['id' => '6', 'name' => 'Tutor/Tutora'],
         ['id' => '7', ]
-        ])
+        ]);
 
         DB::table('procedure_types')->insert([
             ['module_id' => '3', 'name' => 'Pago Global de Aportes'],

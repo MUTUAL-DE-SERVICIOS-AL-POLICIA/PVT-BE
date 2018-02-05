@@ -17,7 +17,6 @@ class add_fake_registers extends Seeder
         for($i=1;$i<150;$i++)
         {
             DB::table('retirement_funds')->insert([
-               'id' => $i,
                 'user_id'=>$faker->numberBetween($min = 1, $max = 20),
                 'affiliate_id' => $faker -> numberBetween($min = 1, $max = 190),
                 'procedure_modalities_id' => $faker -> numberBetween($min = 1, $max = 12),
