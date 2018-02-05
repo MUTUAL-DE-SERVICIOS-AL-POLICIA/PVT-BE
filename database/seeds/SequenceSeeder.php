@@ -12,8 +12,8 @@ class SequenceSeeder extends Seeder
     public function run()
     {
         DB::table('roles')->insert([
-            ['id' => '28', 'module_id' => '3', 'name' => 'Area de Jefatura', 'action' => 'Aprobado'],
-            ['id' => '29', 'module_id' => '3', 'name' => 'Area de Resolución', 'action' => 'Aprobado'],
+            ['id' => '28', 'module_id' => '3', 'name' => 'Área de Jefatura', 'action' => 'Aprobado'],
+            ['id' => '29', 'module_id' => '3', 'name' => 'Área de Resolución', 'action' => 'Aprobado'],
             ['id' => '30', 'module_id' => '3', 'name' => 'Regional Santa Cruz', 'action' => 'Recepcionado'],
             ['id' => '31', 'module_id' => '3', 'name' => 'Regional Cochabamba', 'action' => 'Recepcionado'],
             ['id' => '32', 'module_id' => '3', 'name' => 'Regional Oruro', 'action' => 'Recepcionado'],
@@ -22,11 +22,11 @@ class SequenceSeeder extends Seeder
             ['id' => '35', 'module_id' => '3', 'name' => 'Regional Taríja', 'action' => 'Recepcionado'],       
         ]);
         DB::table('wf_states')->insert([
-            ['id' => '22', 'module_id' => '3', 'role_id' => '12', 'name' => 'Area de Cuentas Individuales Fondo de Retiro', 'fist_shortened' => 'Cuentas Individuales'],
-            ['id' => '23', 'module_id' => '3', 'role_id' => '13', 'name' => 'Area de Calificación Fondo de Retiro', 'fist_shortened' => 'Calificación'],
-            ['id' => '24', 'module_id' => '3', 'role_id' => '28', 'name' => 'Area de Jefatura Fondo de Retiro', 'fist_shortened' => 'Jefatura'],
-            ['id' => '25', 'module_id' => '3', 'role_id' => '14', 'name' => 'Area de Dictamen Legal Fondo de Retiro', 'fist_shortened' => 'Dictamen Legal'],
-            ['id' => '26', 'module_id' => '3', 'role_id' => '29', 'name' => 'Area de Resolución Fondo de Retiro', 'fist_shortened' => 'Resolución'],
+            ['id' => '22', 'module_id' => '3', 'role_id' => '12', 'name' => 'Área de Cuentas Individuales Fondo de Retiro', 'fist_shortened' => 'Cuentas Individuales'],
+            ['id' => '23', 'module_id' => '3', 'role_id' => '13', 'name' => 'Área de Calificación Fondo de Retiro', 'fist_shortened' => 'Calificación'],
+            ['id' => '24', 'module_id' => '3', 'role_id' => '28', 'name' => 'Área de Jefatura Fondo de Retiro', 'fist_shortened' => 'Jefatura'],
+            ['id' => '25', 'module_id' => '3', 'role_id' => '14', 'name' => 'Área de Dictamen Legal Fondo de Retiro', 'fist_shortened' => 'Dictamen Legal'],
+            ['id' => '26', 'module_id' => '3', 'role_id' => '29', 'name' => 'Área de Resolución Fondo de Retiro', 'fist_shortened' => 'Resolución'],
             ['id' => '27', 'module_id' => '3', 'role_id' => '30', 'name' => 'Regional Santa Cruz', 'fist_shortened' => 'Santa Cruz'],
             ['id' => '28', 'module_id' => '3', 'role_id' => '31', 'name' => 'Regional Cochabamba', 'fist_shortened' => 'Cochabamba'],
             ['id' => '29', 'module_id' => '3', 'role_id' => '32', 'name' => 'Regional Oruro', 'fist_shortened' => 'Oruro'],
