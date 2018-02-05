@@ -6,7 +6,12 @@ use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\ProcedureModality;
 use Muserpol\RetirementFundRequirement;
 use Muserpol\Models\RetirementFund\RetirementFund;
+use Muserpol\Models\RetirementFund\RetFunAdvisor;
+use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
+use Muserpol\Models\ProcedureDocument;
 use Muserpol\Models\Affiliate;
+use Auth;
+//use Muserpol\Models\RetirementFund;
 use Illuminate\Http\Request;
 
 class RetirementFundRequirementController extends Controller
@@ -17,21 +22,128 @@ class RetirementFundRequirementController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {        
+    {                     
+        
+        $requirements = ProcedureRequirement::select('id')->get();
+        
+        
+        $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled',true)->select('id')->first();
+                
         $retirement_found = new RetirementFund();
-        $retirement_found->user_id = null;
-        $retirement_found->affiliate_id = null;
-        $retirement_found->procedure_modaliy_id = null;
-        $retirement_found->ret_fun_procedure_id = null;
-        $retirement_found->city_start_id = null;
-        $retirement_found->city_end_id = null;
+        $retirement_found->user_id = Auth::user()->id;
+        $retirement_found->affiliate_id = $request->input('affiliate_id');
+        $retirement_found->procedure_modaliy_id = $request->input('modality_id');
+        $retirement_found->ret_fun_procedure_id = $procedure->id;
+        $retirement_found->city_start_id = Auth::user()->city_id;
+        $retirement_found->city_end_id = Auth::user()->city_id;
         $retirement_found->code = null;
-        $retirement_found->type = null;
-        $retirement_found->subtotal = null;
-        $retirement_found->total = null;
-        $retirement_found->save();
-        return 12;
-        //return view('ret_fun.index',$data);
+        //$retirement_found->type = "Pago"; default value
+        $retirement_found->subtotal = 0;
+        $retirement_found->total = 0;
+        
+        for($i=0;$i<= sizeof($requirements);$i++)
+        {
+            if($request->input('document'.$i) == 'checked')
+            {
+                $submit = new RetFunSubmittedDocument();
+                $submit->retirement_fund_id = $retirement_found->id;
+                $submit->procedure_requirement_id = $requirements->id;
+                $submit->reception_date = date('Y/m/d');
+                $submit->comment = '';
+                $submit->save();
+            }                
+        }
+        
+        
+                
+        
+        $type = $request->input('account');     
+        $applicant = new RetFunApplicant();
+        $applicant->retirement_fund_id = null;
+        $applicant->city_identity_card_id = null;
+        $applicant->kinship_id = null;
+        $applicant->identity_card = null;
+        $applicant->last_name = null;
+        $applicant->mothers_last_name = null;
+        $applicant->first_name = null;
+        $applicant->second_name = null;
+        $applicant->surname_husband = null;
+        $applicant->type = null;
+        $applicant->number_authority = null;
+        $applicant->notary_of_public_faith = null;
+        $applicant->notary = null;
+        $applicant->save();
+        
+        $address = new RetFunAddressApplicant();
+        $address->user_id = null;
+        $address->affiliate_id = null;
+        $address->city_address_id = null;
+        $address->zone = null;
+        $address->street = null;
+        $address->number_address= null;
+        $address->save();
+        
+        $beneficiary = new RetFunBeneficiary();
+        $beneficiary->retirement_fund_id = null;
+        $beneficiary->city_identity_card_id = null;
+        $beneficiary->kinship_id = null;
+        $beneficiary->identity_card = null;
+        $beneficiary->last_name = null;
+        $beneficiary->mothers_last_name = null;
+        $beneficiary->first_name = null;
+        $beneficiary->second_name = null;
+        $beneficiary->surname_husband = null;
+        $beneficiary->birth_date = null;
+        $beneficiary->gender = null;
+        $beneficiary->civil_status = null;
+        $beneficiary->phone_number = null;
+        $beneficiary->cell_phone_number = null;
+        $beneficiary->home_address = null;
+        $beneficiary->work_address = null;
+        $beneficiary->save();
+        
+        $advisor = new RetFunAdvisor();
+        $advisor->city_identity_card = null;
+        $advisor->kinship_id = null;
+        $advisor->identity_card = null;
+        $advisor->last_name = null;
+        $advisor->mothers_last_name = null;
+        $advisor->fisrt_name = null;
+        $advisor->second_name = null;
+        $advisor->surname_husband = null;
+        $advisor->birth_day = null;
+        $advisor->gender = null;
+        $advisor->type = null;
+        $advisor->name_court = null;
+        $advisor->resolution_number = null;
+        $advisor->resolution_date = null;
+        $advisor->phone_number = null;
+        $advisor->cell_phone_number = null;
+        $advisor->save();
+        
+        $beneficiary_advisor = new RetFunAdvisorBeneficiary();
+        $beneficiary_advisor->ret_fun_beneficiary_id = null;
+        $beneficiary_advisor->ter_fun_advisor_id = null;
+        $beneficiary_advisor->save();
+        
+        
+
+        
+//        $validator = Validator::make($request->all(), [
+//            //'name' => 'required|max:5',            
+//        ]);        
+        $validator->after(function($validator){
+            if(false)
+                $validator->errors()->add('field', 'Something is wrong with this field!');
+        });
+        if($validator->fails()){
+            return redirect()->route('ret_fun.index');
+        }
+        else{
+            //$retirement_found->save();
+            return redirect()->route('affiliate.index');
+        }
+                        
     }
     public function generateProcedure(Affiliate $affiliate){
 //        $affiliate = Affiliate::select('id','')
@@ -82,16 +194,29 @@ class RetirementFundRequirementController extends Controller
      */
     public function store(Request $request)
     {
-        //return $request->all();
-        for($i=0;$i<100;$i++)
-        {
-            if($request->input('document'.$i) == 'registered')
-                echo "<br>".$i;
-            //echo $request->input('document'.$i)." ".$i."-<br>";
-        }    
         
-        $type = $request->input('account');
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:5',            
+        ]);        
+        $validator->after(function($validator){
+            if(false)
+                $validator->errors()->add('field', 'Something is wrong with this field!');
+        });
+        if($validator->fails()){
+            return redirect()->route('ret_fun.create');
+        }
+        else{
+            //$retirement_found->save();
+            return redirect()->route('affiliate.index');
+        }
         
+//        for($i=0;$i<100;$i++)
+//        {
+//            if($request->input('document'.$i) == 'registered')
+//                echo "<br>".$i;            
+//        }    
+//        
+        //$type = $request->input('account');        
         
 //         $validator = Validator::make($request->all(), [
 //            'name' => 'required|max:5',

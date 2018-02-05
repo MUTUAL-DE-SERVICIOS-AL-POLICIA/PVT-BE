@@ -28,7 +28,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <!--<input type="radio" name="option@{{requirement.number}}">-->
-                                    <input type="checkbox" value="registered" :name="'document'+requirement.id" class="i-checks"/>
+                                    <input type="checkbox" value="checked" :name="'document'+requirement.id" class="i-checks"/>
                                 </div>
                             </div>                       
                             
