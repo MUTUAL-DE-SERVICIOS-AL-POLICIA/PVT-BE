@@ -22,13 +22,22 @@
                             
                         </span>
                             <div class="panel-body">
-                                <div class="col-md-10">
-                                    <!--<label class="radio-inline" >@{{requirement.document}} </label>-->
-                                    <span class="m-l-xs">@{{requirement.document}}</span>
+                                <div class="col-md-12">
+                                    <div class="col-md-10">
+                                        <!--<label class="radio-inline" >@{{requirement.document}} </label>-->
+                                        <span class="m-l-xs">@{{requirement.document}}</span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <!--<input type="radio" name="option@{{requirement.number}}">-->
+                                        <input type="checkbox" value="checked" :name="'document'+requirement.id" class="i-checks"/>
+                                    </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <!--<input type="radio" name="option@{{requirement.number}}">-->
-                                    <input type="checkbox" value="checked" :name="'document'+requirement.id" class="i-checks"/>
+                                <br>
+                                <div class="col-md-12">
+                                    <div class="col-md-2">Comentario adicional</div>
+                                    <div class="col-md-8">
+                                        <input :name="'comment'+requirement.id" class="form-control" type="text">
+                                    </div>
                                 </div>
                             </div>                       
                             

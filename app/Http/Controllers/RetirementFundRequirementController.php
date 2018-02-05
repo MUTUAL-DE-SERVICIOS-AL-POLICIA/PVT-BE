@@ -9,6 +9,8 @@ use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
 use Muserpol\Models\ProcedureDocument;
+use Muserpol\Models\Kinship;
+use Muserpol\Models\City;
 use Muserpol\Models\Affiliate;
 use Auth;
 //use Muserpol\Models\RetirementFund;
@@ -48,82 +50,85 @@ class RetirementFundRequirementController extends Controller
                 $submit = new RetFunSubmittedDocument();
                 $submit->retirement_fund_id = $retirement_found->id;
                 $submit->procedure_requirement_id = $requirements->id;
-                $submit->reception_date = date('Y/m/d');
-                $submit->comment = '';
+                $submit->reception_date = date('Y-m-d');
+                $submit->comment = $request->input('comment'.$i);
                 $submit->save();
             }                
         }
-        
-        
-                
-        
+                                        
         $type = $request->input('account');     
-        $applicant = new RetFunApplicant();
-        $applicant->retirement_fund_id = null;
-        $applicant->city_identity_card_id = null;
-        $applicant->kinship_id = null;
-        $applicant->identity_card = null;
-        $applicant->last_name = null;
-        $applicant->mothers_last_name = null;
-        $applicant->first_name = null;
-        $applicant->second_name = null;
-        $applicant->surname_husband = null;
-        $applicant->type = null;
-        $applicant->number_authority = null;
-        $applicant->notary_of_public_faith = null;
-        $applicant->notary = null;
-        $applicant->save();
         
-        $address = new RetFunAddressApplicant();
-        $address->user_id = null;
-        $address->affiliate_id = null;
-        $address->city_address_id = null;
-        $address->zone = null;
-        $address->street = null;
-        $address->number_address= null;
-        $address->save();
+//        $applicant = new RetFunApplicant();
+//        $applicant->retirement_fund_id = null;
+//        $applicant->city_identity_card_id = null;
+//        $applicant->kinship_id = null;
+//        $applicant->identity_card = null;
+//        $applicant->last_name = null;
+//        $applicant->mothers_last_name = null;
+//        $applicant->first_name = null;
+//        $applicant->second_name = null;
+//        $applicant->surname_husband = null;
+//        $applicant->type = null;
+//        $applicant->number_authority = null;
+//        $applicant->notary_of_public_faith = null;
+//        $applicant->notary = null;
+//        $applicant->save();
         
-        $beneficiary = new RetFunBeneficiary();
-        $beneficiary->retirement_fund_id = null;
-        $beneficiary->city_identity_card_id = null;
-        $beneficiary->kinship_id = null;
-        $beneficiary->identity_card = null;
-        $beneficiary->last_name = null;
-        $beneficiary->mothers_last_name = null;
-        $beneficiary->first_name = null;
-        $beneficiary->second_name = null;
-        $beneficiary->surname_husband = null;
-        $beneficiary->birth_date = null;
-        $beneficiary->gender = null;
-        $beneficiary->civil_status = null;
-        $beneficiary->phone_number = null;
-        $beneficiary->cell_phone_number = null;
-        $beneficiary->home_address = null;
-        $beneficiary->work_address = null;
-        $beneficiary->save();
+//        $address = new RetFunAddressApplicant();
+//        $address->user_id = Auth::user()->id;
+//        $address->affiliate_id = $request->input('affiliate_id');
+//        $address->city_address_id = $request->input('');
+//        $address->zone = $request->input('');
+//        $address->street = $request->input('');
+//        $address->number_address= $request->input('');
+//        $address->save();
+        
+        $beneficiaries = $request->input('beneficiaries');
+        
+        foreach ($beneficiaries as $beneficiary){
+            $beneficiary = new RetFunBeneficiary();
+            $beneficiary->retirement_fund_id = $retirement_found->id;
+            $beneficiary->city_identity_card_id = null;
+            $beneficiary->kinship_id = null;
+            $beneficiary->identity_card = null;
+            $beneficiary->last_name = null;
+            $beneficiary->mothers_last_name = $request->input('');
+            $beneficiary->first_name = $request->input('');
+            $beneficiary->second_name = $request->input('');
+            $beneficiary->surname_husband = $request->input('');
+            $beneficiary->birth_date = null;
+            $beneficiary->gender = null;
+            $beneficiary->civil_status = $request->input('');
+            $beneficiary->phone_number = $request->input('');
+            $beneficiary->cell_phone_number = $request->input('');
+            $beneficiary->home_address = $request->input('');
+            $beneficiary->work_address = $request->input('');
+            $beneficiary->type = "S";
+            $beneficiary->save();
+        }
         
         $advisor = new RetFunAdvisor();
-        $advisor->city_identity_card = null;
+        $advisor->city_identity_card = $request->input('');
         $advisor->kinship_id = null;
-        $advisor->identity_card = null;
-        $advisor->last_name = null;
-        $advisor->mothers_last_name = null;
-        $advisor->fisrt_name = null;
-        $advisor->second_name = null;
-        $advisor->surname_husband = null;
-        $advisor->birth_day = null;
-        $advisor->gender = null;
-        $advisor->type = null;
-        $advisor->name_court = null;
-        $advisor->resolution_number = null;
+        $advisor->identity_card = $request->input('');
+        $advisor->last_name = $request->input('');
+        $advisor->mothers_last_name = $request->input('');
+        $advisor->fisrt_name = $request->input('');
+        $advisor->second_name = $request->input('');
+        $advisor->surname_husband = $request->input('');
+        $advisor->birth_day = $request->input('');
+        $advisor->gender = $request->input('');
+        $advisor->type = $request->input('');
+        $advisor->name_court = $request->input('');
+        $advisor->resolution_number = $request->input('');
         $advisor->resolution_date = null;
-        $advisor->phone_number = null;
-        $advisor->cell_phone_number = null;
+        $advisor->phone_number = $request->input('');
+        $advisor->cell_phone_number = $request->input('');
         $advisor->save();
         
         $beneficiary_advisor = new RetFunAdvisorBeneficiary();
-        $beneficiary_advisor->ret_fun_beneficiary_id = null;
-        $beneficiary_advisor->ter_fun_advisor_id = null;
+        $beneficiary_advisor->ret_fun_beneficiary_id = $beneficiary->id;
+        $beneficiary_advisor->ter_fun_advisor_id = $advisor->id;
         $beneficiary_advisor->save();
         
         
@@ -146,9 +151,7 @@ class RetirementFundRequirementController extends Controller
                         
     }
     public function generateProcedure(Affiliate $affiliate){
-//        $affiliate = Affiliate::select('id','')
-//                        ->find($affiliate->id);
-//        
+
         $affiliate = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
@@ -160,18 +163,18 @@ class RetirementFundRequirementController extends Controller
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
-//        $requirements = [];
-//        foreach ($procedure_requirements as $require){
-//            array_push($requirements, $require);      
-//            $requirements->number2 = "1" ;
-//        }
                 
         $modalities = ProcedureModality::where('procedure_type_id','2')->select('id','name')->get();
+        
+        $kinships = Kinship::get();
+        $cities = City::get();
         
         $data = [
             'requirements' => $procedure_requirements,
             'modalities'    => $modalities,
             'affiliate'  => $affiliate,
+            'kinships'  =>  $kinships,
+            'cities'    =>  $cities,
         ];       
         //return $data;
         return view('ret_fun.index',$data);        

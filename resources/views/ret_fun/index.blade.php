@@ -16,7 +16,7 @@
         </div>
             
     </div>-->
-        
+    <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">    
     <div class="row">
         <div class="col-md-12">
             {{--  <form-wizard-ret-fund></form-wizard-ret-fund>  --}}
