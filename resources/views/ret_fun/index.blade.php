@@ -12,7 +12,7 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-md-12">
-            {!! Form::open(['route' => 'ret_fun_store', 'method' => 'POST']) !!}
+            {!! Form::open(['url' => 'ret_fun_store', 'method' => 'POST']) !!}
             <form-wizard 
             color="#1AB394"
             error-color="#ED5565"
@@ -22,14 +22,14 @@
                     icon="mdi mdi-format-list-checks"
                     {{--  :before-change="validateAsync"  --}}
                     >
-                        <ret-fun-step1-requirements :modalities="{{ $modalitiesret-fun-}}" :requirements="{{ $requirements }}" inline-template>
+                        <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" inline-template>
                             @include('ret_fun.step1_requirements')
                         </ret-fun-step1-requirements>
                     </tab-content>
                     <tab-content
                         title="Datos del Solicitante"
                         icon="mdi mdi-account-edit">
-                        <ret-fun-step2-applicant inline-template>
+                        <ret-fun-step2-applicant :cities="{{ $cities }}" inline-template>
                             @include('ret_fun.step2_applicant')
                         </ret-fun-step2-applicant>
                     </tab-content>
