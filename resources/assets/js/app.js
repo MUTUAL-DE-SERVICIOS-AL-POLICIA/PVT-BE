@@ -23,7 +23,7 @@ window.flash = function (message, level = 'success') {
 
 import VueFormWizard from 'vue-form-wizard';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
-Vue.use(VueFormWizard);
+Vue.use(VueFormWizard)
 
 Vue.component('flash', require('./components/Flash.vue'));
 
@@ -36,6 +36,7 @@ Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vu
 Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
 //Vue.component('form-wizard-ret-fund', require('./components/FormWizard.vue'));
 Vue.component('temp', require('./components/temp.vue'));
+Vue.component('step1-requirements', require('./components/ret_fun/Step1Requirements.vue'));
 Vue.component('step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
 Vue.component('step3-beneficiaries', require('./components/ret_fun/Step3Beneficiaries.vue'));
 Vue.component('beneficiary-list', require('./components/ret_fun/BeneficiaryList.vue'));
@@ -45,7 +46,7 @@ Vue.component('beneficiary', require('./components/ret_fun/Beneficiary.vue'));
 // 	require('./components/affiliate/index.vue')
 // );
 
-Vue.component('ret_fun-step1_requirements', require('./components/ret_fun/step1_requirements.vue'));
+//Vue.component('ret_fun-step1_requirements', require('./components/ret_fun/step1_requirements.vue'));
 
 const app = new Vue({
     el: '#app',

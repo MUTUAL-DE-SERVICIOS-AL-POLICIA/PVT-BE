@@ -6,7 +6,7 @@
             </div>
         </div>
         <div class="ibox-content">
-            <form method="get" class="form-horizontal">
+            {{--  <form method="get" class="form-horizontal">  --}}
                 <beneficiary-list :items="{{ $ret }}"></beneficiary-list>
                 {{--  </beneficiary>  --}}
                 {{--  <div class="row" v-for="beneficiary in items">
@@ -98,7 +98,7 @@
                         </div>
                         <div class="hr-line-dashed"></div>
                     </div>  --}}
-            </form>
+            {{--  </form>  --}}
         </div>
     </div>
     {{--  <div class="ibox float-e-margins">

@@ -12,44 +12,44 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-md-12">
-            {{--  <form-wizard-ret-fund></form-wizard-ret-fund>  --}}
+            {!! Form::open(['route' => 'ret_fun_store', 'method' => 'POST']) !!}
             <form-wizard 
-        color="#1AB394"
-        error-color="#ED5565">
-        <!-- <tab-content v-for="tab in tabs"
-                    v-if="!tab.hide"
-                    :key="tab.title"
-                    :title="tab.title"
-                    :icon="tab.icon"
-                    :before-change="validateAsync">
-            <component :is="tab.component"></component>
-        </tab-content> -->
-        <tab-content
-            title="Modalidad y Requisitos"
-            icon="mdi mdi-format-list-checks"
-            {{--  :before-change="validateAsync"  --}}
+            color="#1AB394"
+            error-color="#ED5565"
             >
-                <temp inline-template>
-                    <div>UNO</div>
-                </temp>
-        </tab-content>
-        <tab-content
-            title="Datos del Solicitante"
-            icon="mdi mdi-account-edit">
-                <step2-applicant inline-template>
-                    @include('ret_fun.step2_applicant')
-                </step2-applicant>
-        </tab-content>
-        <tab-content
-            title="Datos de los Derechohabientes"
-            icon="mdi mdi-account-multiple-plus">
-                <step3-beneficiaries :items="{{ $ret }}" inline-template>
-                    @include('ret_fun.step3_beneficiaries')
-                </step3-beneficiaries>
-        </tab-content>
-    </form-wizard>
+                    <tab-content
+                    title="Modalidad y Requisitos"
+                    icon="mdi mdi-format-list-checks"
+                    {{--  :before-change="validateAsync"  --}}
+                    >
+                        <step1-requirements :modalities="{{ $modalities}}" :requirements="{{ $requirements }}" inline-template>
+                            @include('ret_fun.step1_requirements')
+                        </step1-requirements>
+                        {{--  <temp inline-template>
+                            <div>UNO</div>
+                        </temp>  --}}
+                    </tab-content>
+                    <tab-content
+                        title="Datos del Solicitante"
+                        icon="mdi mdi-account-edit">
+                        <step2-applicant inline-template>
+                            @include('ret_fun.step2_applicant')
+                        </step2-applicant>
+                    </tab-content>
+                    <tab-content
+                    title="Datos de los Derechohabientes"
+                    icon="mdi mdi-account-multiple-plus">
+                    <step3-beneficiaries :items="{{ $ret }}" inline-template>
+                        @include('ret_fun.step3_beneficiaries')
+                    </step3-beneficiaries>
+                </tab-content>
+                {!! Form::submit('Click Me!') !!}
+            </form-wizard>
+        </form>
+        {{--  <input type="button" id='cl' value="sdsd">  --}}
         </div>
     </div>
 </div>
+
 
 @endsection

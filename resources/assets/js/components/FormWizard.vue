@@ -39,6 +39,11 @@ export default {
                 {title: 'Last step', icon: 'ti-check', component: 'step4'},
             ],
         }
+    },
+    methods:{
+        finish: function () {
+            alert('ojasd');
+        }
     }
 }
 </script>
