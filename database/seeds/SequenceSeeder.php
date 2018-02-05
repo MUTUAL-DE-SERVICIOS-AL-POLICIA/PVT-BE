@@ -12,8 +12,8 @@ class SequenceSeeder extends Seeder
     public function run()
     {
         DB::table('roles')->insert([
-            ['id' => '28', 'module_id' => '3', 'name' => 'Jefatura', 'action' => 'Aprobado'],
-            ['id' => '29', 'module_id' => '3', 'name' => 'Resolución', 'action' => 'Aprobado'],
+            ['id' => '28', 'module_id' => '3', 'name' => 'Area de Jefatura', 'action' => 'Aprobado'],
+            ['id' => '29', 'module_id' => '3', 'name' => 'Area de Resolución', 'action' => 'Aprobado'],
             ['id' => '30', 'module_id' => '3', 'name' => 'Regional Santa Cruz', 'action' => 'Recepcionado'],
             ['id' => '31', 'module_id' => '3', 'name' => 'Regional Cochabamba', 'action' => 'Recepcionado'],
             ['id' => '32', 'module_id' => '3', 'name' => 'Regional Oruro', 'action' => 'Recepcionado'],
