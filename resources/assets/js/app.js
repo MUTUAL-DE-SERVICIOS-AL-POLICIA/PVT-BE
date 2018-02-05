@@ -41,17 +41,8 @@ Vue.component('step2-applicant', require('./components/ret_fun/Step2Applicant.vu
 Vue.component('step3-beneficiaries', require('./components/ret_fun/Step3Beneficiaries.vue'));
 Vue.component('beneficiary-list', require('./components/ret_fun/BeneficiaryList.vue'));
 Vue.component('beneficiary', require('./components/ret_fun/Beneficiary.vue'));
-// Vue.component(
-// 	'affiliate-index',
-// 	require('./components/affiliate/index.vue')
-// );
-
-//Vue.component('ret_fun-step1_requirements', require('./components/ret_fun/step1_requirements.vue'));
 
 const app = new Vue({
     el: '#app',
 });
-// const application = new Vue({
-//     el: '#app'
-// });
 
