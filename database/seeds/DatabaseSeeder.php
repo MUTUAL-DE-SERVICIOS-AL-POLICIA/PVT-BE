@@ -15,6 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ProcedureTablesSeeder::class);
         $this->call(QuotaSeeder::class);
         $this->call(WorkFlowAndStates::class);
-        $this->command->info('Todo ok cechus y anita :) finalizado!'); 
+        $this->command->info('Todo ok finalizado!'); 
     }
 }
