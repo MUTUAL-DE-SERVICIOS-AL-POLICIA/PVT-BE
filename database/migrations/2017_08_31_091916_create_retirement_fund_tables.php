@@ -11,7 +11,48 @@ class CreateRetirementFundTables extends Migration {
      *
      * @return void
      */
-    public function up() {        
+    public function up() 
+    {    
+        //afiliados y apoderados
+        Schema::create('affiliate_folders', function (Blueprint $table) {  //Folder o carpeta de afiliado
+            $table->bigIncrements('id');
+            $table->bigInteger('affiliate_id')->unsigned();
+            $table->bigInteger('procedure_modality_id')->unsigned();
+            $table->string('code_file')->nullable();
+            $table->integer('folder_number')->nullable();
+            $table->foreign('affiliate_id')->references('id')->on('affiliates');
+            $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create('scanned_documents', function (Blueprint $table) { //Escaneo de documentos de afiliado
+            $table->bigIncrements('id');
+            $table->bigInteger('affiliate_folder_id')->unsigned();
+            $table->bigInteger('procedure_document_id')->unsigned();
+            $table->string('name');
+            $table->text('url_file');
+            $table->date('due_date')->nullable(); //fecha de vencimiento
+            $table->text('comment')->nullable();
+            $table->foreign('affiliate_folder_id')->references('id')->on('affiliate_folders');
+            $table->foreign('procedure_document_id')->references('id')->on('procedure_documents'); //
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        //Disponibilidad
+        Schema::create('contribution_types', function (Blueprint $table) { //Tipos de Aportes
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('shortened');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::table('contributions', function (Blueprint $table) { //Escaneo de documentos de afiliado
+            $table->bigInteger('contribution_type_id')->unsigned()->nullable();
+            $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
+        });
+
+        //Fondo de retiro
         Schema::create('procedure_types', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('module_id')->unsigned()->nullable();
@@ -19,6 +60,7 @@ class CreateRetirementFundTables extends Migration {
            $table->foreign('module_id')->references('id')->on('modules');
             $table->timestamps();
         });
+        
         Schema::create('procedure_modalities', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('procedure_type_id')->unsigned()->nullable();
@@ -63,8 +105,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigInteger('city_start_id')->unsigned()->nullable(); //ciudad donde se inicia el tramite.
             $table->bigInteger('city_end_id')->unsigned()->nullable(); //ciudad donde se entrega el pago.
             $table->bigInteger('workflow_id')->unsigned(); // identificador de flujo
-            $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado
-            
+            $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado         
             $table->string('code')->unique(); //codigo
             $table->date('reception_date')->nullable(); //fecha de recepcion
             $table->enum('type', ['Pago', 'Anticipo'])->default('Pago'); //tipo
@@ -208,46 +249,6 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('ret_fun_beneficiary_id')->references('id')->on('ret_fun_beneficiaries');
             $table->foreign('ret_fun_legal_guardian_id')->references('id')->on('ret_fun_legal_guardians');
             $table->primary('ret_fun_beneficiary_id');
-        });
-
-        Schema::create('affiliate_folders', function (Blueprint $table) {  //Folder o carpeta de afiliado
-            $table->bigIncrements('id');
-            $table->bigInteger('affiliate_id')->unsigned();
-            $table->bigInteger('procedure_modality_id')->unsigned();
-            $table->string('code_file')->nullable();
-            $table->integer('folder_number')->nullable();
-            $table->foreign('affiliate_id')->references('id')->on('affiliates');
-            $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
-        Schema::create('scanned_documents', function (Blueprint $table) { //Escaneo de documentos de afiliado
-            $table->bigIncrements('id');
-            $table->bigInteger('affiliate_folder_id')->unsigned();
-            $table->bigInteger('procedure_document_id')->unsigned();
-            $table->string('name');
-            $table->text('url_file');
-            $table->date('due_date')->nullable(); //fecha de vencimiento
-            $table->text('comment')->nullable();
-            $table->foreign('affiliate_folder_id')->references('id')->on('affiliate_folders');
-            $table->foreign('procedure_document_id')->references('id')->on('procedure_documents'); //
-            $table->timestamps();
-            $table->softDeletes();
-        });
-        /* falta revisar */
-        //Disponibilidad
-        Schema::create('contribution_types', function (Blueprint $table) { //Tipos de Aportes
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('shortened');
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
-        Schema::table('contributions', function (Blueprint $table) { //Escaneo de documentos de afiliado
-            $table->bigInteger('contribution_type_id')->unsigned()->nullable();
-            $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
         });
 
         Schema::create('ret_fun_interval_types', function(Blueprint $table) {
