@@ -23,7 +23,7 @@ window.flash = function (message, level = 'success') {
 
 import VueFormWizard from 'vue-form-wizard';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
-Vue.use(VueFormWizard)
+Vue.use(VueFormWizard);
 
 Vue.component('flash', require('./components/Flash.vue'));
 
