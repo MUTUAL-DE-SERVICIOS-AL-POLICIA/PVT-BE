@@ -8,11 +8,11 @@ use Muserpol\Models\Category;
 use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
-
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Log;
 use Yajra\Datatables\Datatables;
+use Muserpol\Models\ProcedureModality;
 
 class AffiliateController extends Controller
 {
