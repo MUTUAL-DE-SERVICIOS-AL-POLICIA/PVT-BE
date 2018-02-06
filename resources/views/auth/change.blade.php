@@ -65,7 +65,7 @@
                
 
             <div class="info-box-content">
-                <input type="hidden" name="rol_id" value={!! $role->id !!}"">
+                <input type="hidden" name="rol_id" value={!! $role->id !!}>
 
                 <span class="info-box-text"> {!! $role->module->name !!} </span>
                 <br>
