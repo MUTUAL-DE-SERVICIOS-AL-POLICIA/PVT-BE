@@ -11,7 +11,7 @@ class QuotaSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('amount_mortuaries')->insert([
+        DB::table('quota_aid_procedures')->insert([
             ['hierarchy_id' => '1', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '8', 'amount' => '70000', 'year' => '2018/02/02'],
             ['hierarchy_id' => '2', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '8', 'amount' => '70000', 'year' => '2018/02/02'],
             ['hierarchy_id' => '4', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '8', 'amount' => '60000', 'year' => '2018/02/02'],
