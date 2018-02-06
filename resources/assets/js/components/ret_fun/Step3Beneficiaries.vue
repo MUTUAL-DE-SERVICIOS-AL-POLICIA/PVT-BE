@@ -9,7 +9,6 @@ export default {
         }
     },
     mounted(){
-        console.log('step 3 mounted')
     },
     methods:{
         addItem:function(){

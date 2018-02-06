@@ -30,7 +30,7 @@
         },
         methods:{
           hello:function(){
-              console.log(this.modality);
+
               //            requirementsList(requirements){
 //         requirements.filter(function (x) { return x.modality_id > this.modalit; })[0];
 //            }
@@ -45,8 +45,9 @@
 //        mounted(){
 //            //console.log(this.requirements);
 //        },
-        computed:{            
+        computed:{
             requirementsList(){
+                // bus.$emit('modality_on_f', $this.modality);
                 var list = [];
                 for(var i=0;i<this.requirements.length;i++){
                     if(this.modality == this.requirements[i].modality_id)

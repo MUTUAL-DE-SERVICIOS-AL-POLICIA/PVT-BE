@@ -28,4 +28,5 @@ Route::get('changerol','UserController@changerol');
 //RetirementFundRequirements
 //Route::resource('ret_fun', 'RetirementFundRequirementController@retFun');
 Route::get('affiliate/{affiliate}/ret_fun', 'RetirementFundRequirementController@retFun');
+Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure');
 

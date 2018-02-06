@@ -74,7 +74,7 @@ export default {
       "beneficiary"
   ],
   mounted(){
-    console.log(`beneficiary ${this.beneficiary.name}`);
+
   }
 }
 </script>

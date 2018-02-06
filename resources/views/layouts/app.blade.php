@@ -9,7 +9,8 @@
    
     <link rel="stylesheet" href="{!! asset('css/vendor.css') !!}" />
     <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
-    
+    @section('styles')
+    @show
     <style>
         .toast-title {
             font-weight: 700

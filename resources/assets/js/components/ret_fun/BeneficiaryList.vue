@@ -20,7 +20,6 @@ export default {
       }
   },
   mounted(){
-      console.log(this.items)
   },
   components:{
       RetFunBeneficiary
@@ -35,7 +34,6 @@ export default {
             'third_shortened': ""
         }
         this.beneficiaries.push(beneficiary);
-        console.log(this.beneficiaries.length);
       }
   }
 }
