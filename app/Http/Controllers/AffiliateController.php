@@ -19,7 +19,7 @@ class AffiliateController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response1%2%3#4$
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {                
