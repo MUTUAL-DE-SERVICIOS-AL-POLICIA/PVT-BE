@@ -2,7 +2,6 @@
 
 namespace Muserpol\Http\Controllers;
 
-//use Muserpol\RetirementFund;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\ProcedureRequirement;
