@@ -110,7 +110,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigInteger('retirement_fund_id')->unsigned(); //identificador de fondo de retiro
             $table->bigInteger('city_identity_card_id')->unsigned()->nullable(); //identificación del ci
             $table->bigInteger('kinship_id')->unsigned()->nullable();
-            $table->string('identity_card'); //ci
+            $table->string('identity_card')->nullable(); //ci
             $table->string('last_name')->nullable(); //apellido paterno
             $table->string('mothers_last_name')->nullable(); // apellido materno
             $table->string('first_name')->nullable(); // primer nombre
