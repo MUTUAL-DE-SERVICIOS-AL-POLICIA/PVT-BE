@@ -62,7 +62,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigIncrements('id'); //identificador
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('affiliate_id')->unsigned(); //identificador afiliado
-            $table->bigInteger('procedure_modalities_id')->unsigned()->nullable(); //identificador de tipo de modalidad
+            $table->bigInteger('procedure_modality_id')->unsigned()->nullable(); //identificador de tipo de modalidad
             $table->bigInteger('ret_fun_procedure_id')->unsigned()->nullable(); //identificador de tipo de modalidad
             $table->bigInteger('city_start_id')->unsigned()->nullable(); //ciudad donde se inicia el tramite.
             $table->bigInteger('city_end_id')->unsigned()->nullable(); //ciudad donde se entrega el pago.
@@ -122,8 +122,6 @@ class CreateRetirementFundTables extends Migration {
             $table->enum('civil_status', ['C', 'S', 'V', 'D'])->nullable(); //estado civil
             $table->string('phone_number')->nullable(); // nomero de telefono
             $table->string('cell_phone_number')->nullable(); // numero de celular
-            $table->string('home_address')->nullable(); // direccion
-            $table->string('work_address')->nullable(); // direccion trabajo
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade'); // identificador de fondo de retiro
             $table->foreign('city_identity_card_id')->references('id')->on('cities'); //identificación del ci
             $table->foreign('kinship_id')->references('id')->on('kinships');
