@@ -13,7 +13,7 @@ export default {
   },
   methods: {
     change_applicant: function() {
-      if(this.applicant_type  === 'Tutor'){
+      if(this.applicant_type  === '2'){
         this.show_advisor_form = !this.show_advisor_form;
         this.show_apoderado_form = false;
         // bus.$on('modality_on_f', function(id){
@@ -27,7 +27,7 @@ export default {
         this.show_advisor_form = false;
         return;
       }
-      if(this.applicant_type  === 'Beneficiario'){
+      if(this.applicant_type  === '1'){
         this.show_apoderado_form = false;
         this.show_advisor_form = false;
         return;

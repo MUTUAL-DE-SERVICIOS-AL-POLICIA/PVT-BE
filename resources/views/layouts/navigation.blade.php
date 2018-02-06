@@ -3,16 +3,18 @@
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element"> <span>
-                            <img alt="image" class="img-circle" src="images/user.png" />
+                            <img alt="image" class="img-circle" src="images/userheadphone.png" />
                              </span>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{Auth::user()->username}}</strong>
-                             </span> <span class="text-muted text-xs block">Art Director <b class="caret"></b></span> </span> </a>
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"> {{Auth::user()->first_name}}</strong>
+                             </span> <span class="text-muted text-xs block">{{Session::get('rol_name')}} <b class="caret"></b></span> </span> </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a href="#">Perfil</a></li>
-                        <li><a href="#"></a></li>
+                        <li><a href="#"> <i class="fa fa-address-card-o"></i> Perfil</a></li>
                         <li class="divider"></li>
-                        <li><a href="{{ url('logout')}}">Cerrar Sesión</a></li>
+                        <li><a href={{URL('changerol')}}><i class="fa fa-exchange"></i>  Cambiar de Rol</a></li>
+
+                        <li class="divider"></li>
+                        <li><a href="{{ url('logout')}}"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
                     </ul>
                 </div>
                 <div class="logo-element">

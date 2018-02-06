@@ -10,9 +10,9 @@
 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
-        {{--  {{ Breadcrumbs::render('show_affiliate', $affiliate) }}  --}}
-    </div>
+   <div class="col-lg-9">
+       {{--  {{ Breadcrumbs::render('show_affiliate', $affiliate) }}  --}}
+   </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -29,8 +29,10 @@
             </div>
         </div>
         {{--  <div class="col-md-12">
-            {!! Form::open(['url' => 'ret_fun_store', 'method' => 'POST']) !!}
-            <form-wizard
+            {!! Form::open(['url' => 'ret_fun', 'method' => 'POST']) !!}
+            <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
+            <form-wizard 
+
             color="#1AB394"
             title=""
             subtitle=""
@@ -67,6 +69,7 @@
         </div>  --}}
     </div>
 </div>
+
 
 
 @endsection
@@ -144,4 +147,5 @@
             });
        });
     </script>
+
 @endsection
