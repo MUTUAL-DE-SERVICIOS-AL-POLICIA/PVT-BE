@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Log;
 use Yajra\Datatables\Datatables;
 use Muserpol\Models\ProcedureModality;
+use Muserpol\Models\RetirementFund\RetirementFund;
 
 class AffiliateController extends Controller
 {
@@ -105,6 +106,11 @@ class AffiliateController extends Controller
         $degrees = Degree::all()->pluck('name', 'id');
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
+       
+        $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->first();
+        $produre_modalite = $retirement_fund->procedure_modality->name;
+   //     return $produre_modalite;
+   
         $affiliate->load([
             'city_identity_card:id,first_shortened',
             'city_birth:id,name',
@@ -114,6 +120,7 @@ class AffiliateController extends Controller
             'degree',
         ]);
         return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities'));
+        
     }
 
     /**
