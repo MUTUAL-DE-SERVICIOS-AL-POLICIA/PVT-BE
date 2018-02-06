@@ -8,11 +8,12 @@ use Muserpol\Models\Category;
 use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
-
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Log;
 use Yajra\Datatables\Datatables;
+use Muserpol\Models\RetirementFund\RetirementFund;
+use Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary;
 
 class AffiliateController extends Controller
 {
@@ -105,6 +106,9 @@ class AffiliateController extends Controller
         $degrees = Degree::all()->pluck('name', 'id');
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
+       
+        
+        $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->first();
         $affiliate->load([
             'city_identity_card:id,first_shortened',
             'city_birth:id,name',
@@ -114,6 +118,7 @@ class AffiliateController extends Controller
             'degree',
         ]);
         return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities'));
+        
     }
 
     /**
