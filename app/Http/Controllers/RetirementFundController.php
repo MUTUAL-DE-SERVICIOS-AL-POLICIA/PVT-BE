@@ -24,8 +24,10 @@ class RetirementFundController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
+    {        
+          
+        return view('ret_fun.index');
+       
     }
 
     /**
@@ -72,7 +74,7 @@ class RetirementFundController extends Controller
         $retirement_found = new RetirementFund();
         $retirement_found->user_id = Auth::user()->id;
         $retirement_found->affiliate_id = $request->affiliate_id;
-        $retirement_found->procedure_modalities_id = $request->re_fun_modality;
+        $retirement_found->procedure_modalities_id = $request->ret_fun_modality;
         $retirement_found->ret_fun_procedure_id = $procedure->id;
         $retirement_found->city_start_id = Auth::user()->city_id;
         $retirement_found->city_end_id = Auth::user()->city_id;
@@ -207,10 +209,76 @@ class RetirementFundController extends Controller
      *
      * @param  \Muserpol\RetirementFund  $retirementFund
      * @return \Illuminate\Http\Response
-     */
+     */   
     public function destroy(RetirementFund $retirementFund)
     {
         //
+    }
+    
+    public function getAllRetFun(Request $request)
+    {
+        
+        $offset = $request->offset ?? 0;
+        $limit = $request->limit ?? 10;
+        $sort = $request->sort ?? 'id';
+        $order = $request->order ?? 'desc';          
+        $last_name = strtoupper($request->last_name) ?? '';
+        $first_name = strtoupper($request->first_name) ?? '';
+        $code = $request->code ?? '';
+        $modality = strtoupper($request->modality) ?? '';
+        
+//        $second_name = strtoupper($request->second_name) ?? '';
+//        $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
+//        $identity_card = strtoupper($request->identity_card) ?? '';        
+//
+//        $total = Affiliate::select('affiliates.id')//,'identity_card','registration','degrees.name as degree','first_name','second_name','last_name','mothers_last_name','civil_status')->
+//                                ->leftJoin('degrees','affiliates.id','=','degrees.id')
+//                                ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
+//                                ->where('affiliates.first_name','LIKE',$first_name.'%')
+//                                ->where('affiliates.second_name','LIKE',$second_name.'%')
+//                                ->where('affiliates.last_name','LIKE',$last_name.'%')
+//                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')                                
+//                                ->where('affiliates.identity_card','LIKE',$identity_card.'%')
+//                                ->count();
+//        
+//        $affiliates = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
+//                                ->leftJoin('degrees','affiliates.id','=','degrees.id')
+//                                ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
+//                                ->skip($offset)
+//                                ->take($limit)
+//                                ->orderBy($sort,$order)
+//                                ->where('affiliates.first_name','LIKE',$first_name.'%')
+//                                ->where('affiliates.second_name','LIKE',$second_name.'%')
+//                                ->where('affiliates.last_name','LIKE',$last_name.'%')
+//                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')
+//                                ->where('affiliates.identity_card','LIKE',$identity_card.'%')
+//                                ->get();
+        $total = RetirementFund::select('retirement_funds.id')
+                                ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
+                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modalities_id','=','procedure_modalities.id')
+                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
+                                ->where('retirement_funds.code','LIKE',$code.'%')
+                                //->where('procedure_modalities.name','LIKE',$modality.'%')
+                                ->where('affiliates.first_name','LIKE',$first_name.'%')
+                                ->where('affiliates.last_name','LIKE',$last_name.'%')                                
+                                ->count();
+        
+                                
+        $ret_funds = RetirementFund::select('retirement_funds.id','affiliates.first_name as first_name','affiliates.last_name as last_name','procedure_modalities.name as modality','workflows.name as workflow','retirement_funds.code','retirement_funds.reception_date','retirement_funds.total')
+                                ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
+                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modalities_id','=','procedure_modalities.id')
+                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
+                                ->where('affiliates.first_name','LIKE',$first_name.'%')
+                                //->where('procedure_modalities.name','LIKE',$modality.'%')
+                                ->where('affiliates.last_name','LIKE',$last_name.'%')
+                                ->where('retirement_funds.code','LIKE',$code.'%')
+                                ->skip($offset)
+                                ->take($limit)
+                                ->orderBy($sort,$order)
+                                ->get();
+        
+        
+        return response()->json(['ret_funds' => $ret_funds->toArray(),'total'=>$total]);
     }
     
     public function generateProcedure(Affiliate $affiliate){  
