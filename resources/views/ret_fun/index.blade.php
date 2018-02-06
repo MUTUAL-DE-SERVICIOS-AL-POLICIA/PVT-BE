@@ -4,15 +4,16 @@
 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
-        {{--  {{ Breadcrumbs::render('show_affiliate', $affiliate) }}  --}}
-    </div>
+   <div class="col-lg-9">
+       {{--  {{ Breadcrumbs::render('show_affiliate', $affiliate) }}  --}}
+   </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-md-12">
-            {!! Form::open(['url' => 'ret_fun_store', 'method' => 'POST']) !!}
+            {!! Form::open(['url' => 'ret_fun', 'method' => 'POST']) !!}
+            <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
             <form-wizard 
             color="#1AB394"
             error-color="#ED5565"

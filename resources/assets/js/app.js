@@ -30,8 +30,6 @@ Vue.component('flash', require('./components/Flash.vue'));
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
 Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vue'));
 Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
-
-
 //retirement Fund
 Vue.component('ret-fun-step1-requirements', require('./components/ret_fun/Step1Requirements.vue'));
 Vue.component('ret-fun-step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
