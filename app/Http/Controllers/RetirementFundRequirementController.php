@@ -1,20 +1,7 @@
 <?php
 
 namespace Muserpol\Http\Controllers;
-use Validator;
-use Muserpol\Models\ProcedureRequirement;
-use Muserpol\Models\ProcedureModality;
 use Muserpol\RetirementFundRequirement;
-use Muserpol\Models\RetirementFund\RetirementFund;
-use Muserpol\Models\RetirementFund\RetFunAdvisor;
-use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
-use Muserpol\Models\ProcedureDocument;
-use Muserpol\Models\Kinship;
-use Muserpol\Models\City;
-use Muserpol\Models\Affiliate;
-use Auth;
-use Muserpol\Models\Address;
-//use Muserpol\Models\RetirementFund;
 use Illuminate\Http\Request;
 
 class RetirementFundRequirementController extends Controller
