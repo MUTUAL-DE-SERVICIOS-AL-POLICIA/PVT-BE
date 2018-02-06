@@ -21,9 +21,9 @@ class CreatePermissionTables extends Migration
             $table->timestamps();
         });
     }
-//        Schema::table($tableNames['roles'], function (Blueprint $table) {          
-//            $table->string('guard_name')->nullable();
-//        });
+       Schema::table($tableNames['roles'], function (Blueprint $table) {          
+           $table->string('guard_name')->nullable();
+       });
     if (!Schema::hasTable('model_has_permissions')) {
         Schema::create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames) {
             $table->integer('permission_id')->unsigned();
