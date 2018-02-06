@@ -72,5 +72,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund');
     }
+    public function quota_aid_mortuaries()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary');
+    }
+    
 
 }
