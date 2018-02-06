@@ -62,7 +62,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigIncrements('id'); //identificador
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('affiliate_id')->unsigned(); //identificador afiliado
-            $table->bigInteger('procedure_modalities_id')->unsigned()->nullable(); //identificador de tipo de modalidad
+            $table->bigInteger('procedure_modality_id')->unsigned()->nullable(); //identificador de tipo de modalidad
             $table->bigInteger('ret_fun_procedure_id')->unsigned()->nullable(); //identificador de tipo de modalidad
             $table->bigInteger('city_start_id')->unsigned()->nullable(); //ciudad donde se inicia el tramite.
             $table->bigInteger('city_end_id')->unsigned()->nullable(); //ciudad donde se entrega el pago.
