@@ -18,11 +18,6 @@ class add_kinship extends Seeder
         ['id' => '4', 'name' => 'Hijo/Hija'],
         ['id' => '5', 'name' => 'Apoderado'],
         ['id' => '6', 'name' => 'Tutor/Tutora'],
-<<<<<<< HEAD
         ]);       
-=======
-        ['id' => '7', ]
-        ]);
->>>>>>> upstream/master
     }
 }
