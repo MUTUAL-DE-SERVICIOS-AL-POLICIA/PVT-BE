@@ -12,7 +12,6 @@ use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Log;
 use Yajra\Datatables\Datatables;
-use Muserpol\Models\ProcedureModality;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary;
 
