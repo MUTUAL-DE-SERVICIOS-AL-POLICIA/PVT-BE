@@ -39,10 +39,7 @@
           <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedicion</label>
               <div class="col-sm-8">
                   <select class="form-control m-b" name="beneficiary_city_identity_card[]">
-                      <option>option 1</option>
-                      <option>option 2</option>
-                      <option>option 3</option>
-                      <option>option 4</option>
+                      <option v-for="city in cities" :value="city.id" >{{ city.name }}</option>
                   </select>
               </div>
           </div>
@@ -58,10 +55,10 @@
           <div class="form-group"><label class="col-sm-4 control-label">Parentesco</label>
               <div class="col-sm-8">
                   <select class="form-control m-b" name="beneficiary_kinship[]">
-                      <option>option 1</option>
-                      <option>option 2</option>
-                      <option>option 3</option>
-                      <option>option 4</option>
+                      <option value="1">option 1</option>
+                      <option value="2">option 2</option>
+                      <option value="3">option 3</option>
+                      <option value="4">option 4</option>
                   </select>
               </div>
           </div>
@@ -73,6 +70,7 @@
 <script>
 export default {
   props:[
+      "cities",
       "beneficiary"
   ],
   mounted(){

@@ -11,9 +11,9 @@
                 <div class="form-group"><label class="col-sm-4 control-label">Tipo de Solicitante</label>
                     <div class="col-sm-4">
                         <select class="form-control m-b" name="accountType" @change="change_applicant()" v-model="applicant_type">
-                            <option value="Beneficiario">Beneficiario</option>
-                            <option value="Apoderado">Apoderado</option>
-                            <option value="Tutor">Tutor</option>
+                            <option value="1">Beneficiario</option>
+                            <!--<option value="Apoderado">Apoderado</option>-->
+                            <option value="2">Tutor</option>
                         </select>
                     </div>
                 </div>
@@ -57,10 +57,9 @@
                         <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedicion</label>
                             <div class="col-sm-8">
                                 <select class="form-control m-b" name="applicant_city_identity_card">
-                                    <option>option 1</option>
-                                    <option>option 2</option>
-                                    <option>option 3</option>
-                                    <option>option 4</option>
+                                    <option v-for="city in cities" :value="city.id">
+                                        @{{ city.name }}
+                                    </option>
                                 </select>
                             </div>
                         </div>
