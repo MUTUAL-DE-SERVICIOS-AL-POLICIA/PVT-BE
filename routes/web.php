@@ -23,6 +23,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('changerol','UserController@changerol');
+Route::post('postchangerol','UserController@postchangerol');
 
 //retirement fund
 //RetirementFundRequirements

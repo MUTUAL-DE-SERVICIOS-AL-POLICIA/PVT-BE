@@ -5,7 +5,8 @@ namespace Muserpol\Http\Controllers;
 use Illuminate\Http\Request;
 use User;
 use Auth;
-
+use Session;
+use Muserpol\Models\Role;
 class UserController extends Controller
 {
     /**
@@ -100,5 +101,31 @@ class UserController extends Controller
         //return $new_roles;
 
         return view('auth.change')->with('roles',$new_roles);
+    }
+    public function postchangerol(Request $request)
+    {
+       $sw = false;
+       
+        
+        $roles = Auth::user()->roles;
+
+        foreach ($roles as $rol) {
+            # code...
+            if($request->rol_id==$rol->id)
+            {
+                $sw = true;
+            }
+        }
+       
+
+       if($sw)
+       {
+         Session::put('rol_id',$request->rol_id);
+         $rol = Role::find($request->rol_id);
+         Session::put('rol_name',$rol->name);
+       }
+       
+       return redirect('/');
+
     }
 }

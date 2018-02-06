@@ -122,8 +122,6 @@ class CreateRetirementFundTables extends Migration {
             $table->enum('civil_status', ['C', 'S', 'V', 'D'])->nullable(); //estado civil
             $table->string('phone_number')->nullable(); // nomero de telefono
             $table->string('cell_phone_number')->nullable(); // numero de celular
-            $table->string('home_address')->nullable(); // direccion
-            $table->string('work_address')->nullable(); // direccion trabajo
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade'); // identificador de fondo de retiro
             $table->foreign('city_identity_card_id')->references('id')->on('cities'); //identificación del ci
             $table->foreign('kinship_id')->references('id')->on('kinships');
