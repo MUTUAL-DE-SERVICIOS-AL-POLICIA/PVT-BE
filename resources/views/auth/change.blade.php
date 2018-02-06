@@ -71,21 +71,21 @@
                 <br>
 
                 @if($role->module_id==1)   
-                <button type="submit" class="btn btn-block btn-raised btn-danger"><i class="glyphicon glyphicon-share-alt"></i>  {{$role->name}}</a>
+                <button type="submit" class="btn btn-block btn-raised btn-danger">  {{$role->name}} <i class="glyphicon glyphicon-share-alt"></i></a>
                 @endif 
                 @if($role->module_id==2 || $role->module_id==8 )
-                <button type="submit" class="btn btn-block btn-raised btn-info"><i class="glyphicon glyphicon-share-alt"></i>  {{$role->name}}</a>
+                <button type="submit" class="btn btn-block btn-raised btn-info">  {{$role->name}} <i class="glyphicon glyphicon-share-alt"></i></a>
                 @endif     
                 @if($role->module_id==3)
-                <button type="submit" class="btn btn-block btn-raised btn-warning"><i class="glyphicon glyphicon-share-alt"></i>  {{$role->name}}</a>
+                <button type="submit" class="btn btn-block btn-raised btn-warning">  {{$role->name}} <i class="glyphicon glyphicon-share-alt"></i></a>
                 
                 @endif
                 @if($role->module_id==6 || $role->module_id==9)
-                <button type="submit" class="btn btn-block btn-raised btn-success"><i class="glyphicon glyphicon-share-alt"></i>  {{$role->name}}</a>
+                <button type="submit" class="btn btn-block btn-raised btn-success">  {{$role->name}} <i class="glyphicon glyphicon-share-alt"></i></a>
                 
                 @endif
                 @if($role->module_id==4 ||$role->module_id==5 ||$role->module_id==7 ||$role->module_id==10 )
-                <button type="submit" class="btn btn-block btn-raised btn-success"><i class="glyphicon glyphicon-share-alt"></i>  {{$role->name}}</a>
+                <button type="submit" class="btn btn-block btn-raised btn-success">  {{$role->name}} <i class="glyphicon glyphicon-share-alt"></i></a>
                 
                 @endif
 
