@@ -312,7 +312,7 @@ class RetirementFundController extends Controller
             'cities'    =>  $cities,
             'ret'    =>  $cities,
         ];               
-        return view('ret_fun.index',$data);        
+        return view('ret_fun.create',$data);        
     }
     private function getNextCode($actual){
         $year =  date('Y');
