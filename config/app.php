@@ -176,8 +176,6 @@ return [
         // Muserpol\Providers\BroadcastServiceProvider::class,
         Muserpol\Providers\EventServiceProvider::class,
         Muserpol\Providers\RouteServiceProvider::class,
-        Spatie\Permission\PermissionServiceProvider::class,
-
         //dependences
         Yajra\DataTables\DataTablesServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
