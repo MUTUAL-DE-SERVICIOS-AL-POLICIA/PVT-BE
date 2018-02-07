@@ -14,7 +14,7 @@
             <div class="text-center m-t-lg">
                 <ret-fun-index></ret-fun-index>
             </div>
-        </divdiv>
+        </div>
     </div>
 </div>
 @endsection
