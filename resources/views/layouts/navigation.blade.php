@@ -24,6 +24,7 @@
            
             <li class="{{ isActiveRoute('affiliate.index') }}">
                 <a href="{{ url('/affiliate') }}"><i class="fa fa-user"></i> <span class="nav-label">Afiliados</span></a>
+                <a href="{{ url('/ret_fun') }}"><i class="fa fa-user"></i> <span class="nav-label">Fondos de Retiro</span></a>
             </li>
         </ul>
 
