@@ -32,4 +32,8 @@ class QuotaAidMortuary extends Model
     {
         return $this-belongsTo('Muserpol\Models\city', 'city_end_id');
     }
+    public function quota_aid_beneficiaries()
+	{
+		return $this->hasMany('Muserpol\Models\RetirementFund\QuotaAidBeneficiaries');
+    }
 }
