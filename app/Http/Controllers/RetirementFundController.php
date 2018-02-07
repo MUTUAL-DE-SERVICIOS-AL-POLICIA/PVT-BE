@@ -289,7 +289,8 @@ class RetirementFundController extends Controller
             'cities'    =>  $cities,
             'ret'    =>  $cities,
             'spose' =>  $spouse,
-        ];                       
+        ];
+      
         return view('ret_fun.create',$data);        
     }
     private function getNextCode($actual){

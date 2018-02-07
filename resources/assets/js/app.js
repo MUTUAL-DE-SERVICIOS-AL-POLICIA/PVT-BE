@@ -38,9 +38,8 @@ Vue.component('ret-fun-step2-applicant', require('./components/ret_fun/Step2Appl
 Vue.component('ret-fun-step3-beneficiaries', require('./components/ret_fun/Step3Beneficiaries.vue'));
 Vue.component('ret-fun-beneficiary-list', require('./components/ret_fun/BeneficiaryList.vue'));
 Vue.component('ret-fun-beneficiary', require('./components/ret_fun/Beneficiary.vue'));
-
 Vue.component('quota-aid-index', require('./components/quota_aid/Index.vue'));
+
 const app = new Vue({
     el: '#app',
 });
-
