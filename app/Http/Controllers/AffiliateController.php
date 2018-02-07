@@ -117,7 +117,7 @@ class AffiliateController extends Controller
             'category',
             'degree',
         ]);
-        return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities'));
+        return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
         
     }
 

@@ -84,4 +84,8 @@ class Affiliate extends Model
     {
         return $this->hasMany('Muserpol\Models\AffiliateFolder');
     }
+    public function quota_aid_mortuaries()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary');
+    }
 }
