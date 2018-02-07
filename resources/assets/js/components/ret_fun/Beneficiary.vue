@@ -55,7 +55,7 @@
           <div class="form-group"><label class="col-sm-4 control-label">Parentesco</label>
               <div class="col-sm-8">
                   <select class="form-control m-b" v-model="beneficiary_kinship" name="beneficiary_kinship[]">
-                      <option v-for="kinship in kinships" :key="beneficiary.id + ''+kinship.id " :value="beneficiary.kinship_id">@{{kinship.name}}</option>
+                      <option v-for="kinship in kinships" :key="beneficiary.id + ''+kinship.id " :value="beneficiary.kinship_id">{{kinship.name}}</option>
                   </select>
               </div>
           </div>
