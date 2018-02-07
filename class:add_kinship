@@ -1,0 +1,7 @@
+
+                                                                                 
+  [UnexpectedValueException]                                                     
+  The stream or file "/var/www/wwwachuchus/storage/logs/laravel.log" could not   
+  be opened: failed to open stream: Permission denied                            
+                                                                                 
+

@@ -28,7 +28,7 @@
                         </ret-fun-step1-requirements>
                     </tab-content>
                     <tab-content title="Datos del Solicitante" icon="mdi mdi-account-edit">
-                        <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" inline-template>
+                        <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
                             @include('ret_fun.step2_applicant')
                         </ret-fun-step2-applicant>
                     </tab-content>

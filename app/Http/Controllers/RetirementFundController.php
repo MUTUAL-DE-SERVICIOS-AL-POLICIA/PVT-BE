@@ -358,7 +358,7 @@ class RetirementFundController extends Controller
             'kinships'  =>  $kinships,
             'cities'    =>  $cities,
             'ret'    =>  $cities,
-            'spose' =>  $spouse,
+            'spouse' =>  $spouse,
         ];
       
         return view('ret_fun.create',$data);        
