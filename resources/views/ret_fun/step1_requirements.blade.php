@@ -1,6 +1,6 @@
 
 <div>
-   <select v-model="modality" v-on:change="hello" name="ret_fun_modality">                    
+   <select v-model="modality" v-on:change="hello" name="ret_fun_modality" id="ret_fun_modality">                    
        <option v-for="modality in modalities" :value="modality.id">@{{modality.name}}</option>
    </select>
    <div class="panel panel-success" v-for="requirement in requirementsList">
