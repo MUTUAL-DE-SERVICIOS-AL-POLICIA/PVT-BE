@@ -51,7 +51,7 @@ export default {
         this.resetAffiliate();
         return;
       }
-      if(this.applicant_type  === 'Apoderado'){
+      if(this.applicant_type  === '3'){
         this.show_apoderado_form = !this.show_advisor_form;
         this.show_advisor_form = false;
         return;

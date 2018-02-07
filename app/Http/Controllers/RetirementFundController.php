@@ -12,10 +12,14 @@ use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 use Muserpol\Models\RetirementFund\AddressRetFunBeneficiary;
+use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Auth;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
+use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
+use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
+use Muserpol\Models\RetirementFund\RetFunBeneficiaryLegalGuardian;
 
 class RetirementFundController extends Controller
 {
@@ -100,7 +104,7 @@ class RetirementFundController extends Controller
             }                
         }
         $account_type = $request->input('accountType');    
-        
+
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_found->id;
         $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;
@@ -110,14 +114,66 @@ class RetirementFundController extends Controller
         $beneficiary->mothers_last_name = $request->applicant_mothers_last_name;
         $beneficiary->first_name = $request->applicant_first_name;
         $beneficiary->second_name = $request->applicant_second_name;
-        $beneficiary->surname_husband = $request->applicant_surname_husband;
-        //$beneficiary->birth_date = $request->;
-        $beneficiary->gender = "M";
-        //$beneficiary->civil_status = $request->;
-        //$beneficiary->phone_number = $request->;
-        //$beneficiary->cell_phone_number = $request->;        
+        $beneficiary->surname_husband = $request->applicant_surname_husband;        
+        $beneficiary->gender = "M";        
+        $beneficiary->phone_number = $request->applicant_phone_number;
+        $beneficiary->cell_phone_number = $request->applicant_cell_phone_number;        
         $beneficiary->type = "S";
         $beneficiary->save();
+                
+        if($account_type == '2')
+        {
+            $advisor = new RetFunAdvisor();
+            //$advisor->retirement_fund_id = $retirement_found->id;
+            $advisor->city_identity_card_id = $request->applicant_city_identity_card;
+            $advisor->kinship_id = null;
+            $advisor->identity_card = $request->applicant_identity_card;
+            $advisor->last_name = $request->applicant_last_name;
+            $advisor->mothers_last_name = $request->applicant_mothers_last_name;
+            $advisor->first_name = $request->applicant_first_name;
+            $advisor->second_name = $request->applicant_second_name;
+            $advisor->surname_husband = $request->applicant_surname_husband;        
+            $advisor->gender = "M";                    
+            $advisor->phone_number = $request->applicant_phone_number;
+            $advisor->cell_phone_number = $request->applicant_cell_phone_number;        
+            $advisor->name_court = $request->advisor_name_court;            
+            $advisor->resolution_number = $request->advisor_resolution_number;
+            $advisor->resolution_date = $request->advisor_resolution_date;
+            $advisor->type = "Natural";
+            $advisor->save();
+            
+            $advisor_beneficiary = new RetFunAdvisorBeneficiary();
+            $advisor_beneficiary->ret_fun_beneficiary_id = $beneficiary->id;
+            $advisor_beneficiary->ret_fun_advisor_id = $advisor->id;
+            $advisor->save();
+        }
+        
+        if($account_type == '3')
+        {
+            $legal_guardian = new RetFunLegalGuardian();
+            $legal_guardian->retirement_fund_id = $retirement_found->id;
+            $legal_guardian->city_identity_card_id = $request->applicant_city_identity_card;            
+            $legal_guardian->identity_card = $request->applicant_identity_card  ;
+            $legal_guardian->last_name = $request->applicant_last_name;
+            $legal_guardian->mothers_last_name = $request->applicant_mothers_last_name;
+            $legal_guardian->first_name = $request->applicant_first_name;
+            $legal_guardian->second_name = $request->applicant_second_name;
+            $legal_guardian->surname_husband = $request->applicant_surname_husband;        
+            //$legal_guardian->gender = "M";                    
+            $legal_guardian->phone_number = $request->applicant_phone_number;
+            $legal_guardian->cell_phone_number = $request->applicant_cell_phone_number;        
+            $legal_guardian->number_authority = $request->legal_guardian_number_authority;            
+            $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
+            $legal_guardian->notary = $request->legal_guardian_notary;
+            $legal_guardian->save();
+            
+            $beneficiary_legal_guardian = new RetFunBeneficiaryLegalGuardian();
+            $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
+            $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
+            $beneficiary_legal_guardian->save();
+            //$beneficiary->type = "N";            
+        }
+        
         
         $address = new Address();
         $address->city_address_id = 1;
@@ -177,11 +233,25 @@ class RetirementFundController extends Controller
      * @param  \Muserpol\RetirementFund  $retirementFund
      * @return \Illuminate\Http\Response
      */
-    public function show(RetirementFund $retirementFund)
+    //public function show(RetirementFund $retirementFund)
+    public function show($id)
     {
+        $retirement_fund = RetirementFund::find($id);
+        
+        $affiliate = Affiliate::find($retirement_fund->affiliate_id);
+        
+        $beneficiaries = RetFunBeneficiary::find($retirement_fund->beneficiary_id);
+        //$
+        $advisor = RetFunAdvisor::
+        //$tuto
+        
         $data = [
-            'retirement_fund' => $retirementFund,
+            'retirement_fund' => $retirement_fund,
+            'affiliate' =>  $affiliate,
+            'beneficiaries' =>  $beneficiaries,
+            
         ];
+        return $data;
         return view('ret_fun.show',$data);
     }
 
@@ -299,7 +369,8 @@ class RetirementFundController extends Controller
             return "1/".$year;
         
         $data = explode('/', $actual);        
-                        
+        if(!isset($data[1]))
+            return "1/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
 }
