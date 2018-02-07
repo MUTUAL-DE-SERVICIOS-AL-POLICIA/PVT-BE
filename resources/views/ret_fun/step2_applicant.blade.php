@@ -12,7 +12,7 @@
                     <div class="col-sm-4">
                         <select class="form-control m-b" name="accountType" @change="change_applicant()" v-model="applicant_type">
                             <option value="1">Beneficiario</option>
-                            <!--<option value="Apoderado">Apoderado</option>-->
+                            <option value="Apoderado">Apoderado</option>
                             <option value="2">Tutor</option>
                         </select>
                     </div>
@@ -48,18 +48,28 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="form-group"><label class="col-sm-6 control-label">Carnet de Identidad</label>
                             <div class="col-sm-6"><input type="text" name="applicant_identity_card" v-model="applicant_identity_card" class="form-control"></div>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-5">
                         <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedicion</label>
                             <div class="col-sm-8">
                                 <select class="form-control m-b" name="applicant_city_identity_card" v-model="applicant_city_identity_card">
                                     <option v-for="city in cities" :value="city.id">
                                         @{{ city.name }}
                                     </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group"><label class="col-sm-4 control-label">Genero</label>
+                            <div class="col-sm-8">
+                                <select class="form-control m-b" name="applicant_gender" v-model="applicant_gender">
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
                                 </select>
                             </div>
                         </div>
@@ -125,18 +135,6 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group"><label class="col-sm-4 control-label">Primer Nombre</label>
-                                <div class="col-sm-8"><input type="text" name="legal_guardian_first_name" v-model="legal_guardian_first_name" class="form-control"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group"><label class="col-sm-4 control-label">Segundo Nombre</label>
-                                <div class="col-sm-8"><input type="text" name="legal_guardian_second_name" v-model="legal_guardian_second_name" class="form-control"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group"><label class="col-sm-6 control-label">Apellido Paterno</label>
                                 <div class="col-sm-6"><input type="text" name="legal_guardian_last_name" v-model="legal_guardian_last_name" class="form-control"></div>
@@ -163,11 +161,8 @@
                             <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedicion</label>
                                 <div class="col-sm-8">
                                     <select class="form-control m-b" name="legal_guardian_city_identity_card" v-model="legal_guardian_city_identity_card">
-                                    <option>option 1</option>
-                                    <option>option 2</option>
-                                    <option>option 3</option>
-                                    <option>option 4</option>
-                                </select>
+                                        <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

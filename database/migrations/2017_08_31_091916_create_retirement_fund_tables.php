@@ -75,7 +75,7 @@ class CreateRetirementFundTables extends Migration {
             $table->decimal('total', 13, 2); // total
             $table->foreign('affiliate_id')->references('id')->on('affiliates')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('procedure_modalities_id')->references('id')->on('procedure_modalities');
+            $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
             $table->foreign('ret_fun_procedure_id')->references('id')->on('ret_fun_procedures');
             $table->foreign('city_start_id')->references('id')->on('cities');
             $table->foreign('city_end_id')->references('id')->on('cities');
@@ -175,11 +175,12 @@ class CreateRetirementFundTables extends Migration {
         });
 
         Schema::create('ret_fun_advisor_beneficiary', function (Blueprint $table) { //Tabla tutor-beneficiario
+            $table->bigIncrements('id');
             $table->bigInteger('ret_fun_beneficiary_id')->unsigned();
             $table->bigInteger('ret_fun_advisor_id')->unsigned();
             $table->foreign('ret_fun_beneficiary_id')->references('id')->on('ret_fun_beneficiaries');
             $table->foreign('ret_fun_advisor_id')->references('id')->on('ret_fun_advisors');
-            $table->primary('ret_fun_beneficiary_id');
+            $table->timestamps();
         });
       
       	Schema::create('ret_fun_legal_guardians', function (Blueprint $table) { // apoderado
@@ -195,7 +196,7 @@ class CreateRetirementFundTables extends Migration {
             $table->string('phone_number')->nullable();// numero de telefono fijo
             $table->string('cell_phone_number')->nullable(); //numero de celuluar
           	$table->string('number_authority')->nullable(); //numero de poder
-            $table->string('notary_of_ public_faith')->nullable(); //notaria de fe publica Nro....CECHUS ANITA
+            $table->string('notary_of_public_faith')->nullable(); //notaria de fe publica Nro....CECHUS ANITA
             $table->string('notary')->nullable(); //notario
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
             $table->foreign('city_identity_card_id')->references('id')->on('cities');
@@ -204,13 +205,14 @@ class CreateRetirementFundTables extends Migration {
         });
       
       	Schema::create('ret_fun_beneficiary_legal_guardian', function (Blueprint $table) { //Beneficiario-apoderado
+            $table->bigIncrements('id');
             $table->bigInteger('ret_fun_beneficiary_id')->unsigned(); //identificador del beneficiario
             $table->bigInteger('ret_fun_legal_guardian_id')->unsigned(); //identificador del tutor
             $table->foreign('ret_fun_beneficiary_id')->references('id')->on('ret_fun_beneficiaries');
             $table->foreign('ret_fun_legal_guardian_id')->references('id')->on('ret_fun_legal_guardians');
-            $table->primary('ret_fun_beneficiary_id');
+            $table->timestamps();
         });
-
+        
         Schema::create('ret_fun_interval_types', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
@@ -289,8 +291,8 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('ret_fun_legal_guardians');
         Schema::drop('ret_fun_advisor_beneficiary');       
         Schema::drop('ret_fun_advisors');
-        Schema::drop('address_ret_fun_beneficiary');
-        Schema::drop('address');
+        //Schema::drop('address_ret_fun_beneficiary');
+        // Schema::drop('address');
         Schema::drop('ret_fun_beneficiaries');
         Schema::drop('ret_fun_submitted_documents');
         Schema::drop('kinships');
