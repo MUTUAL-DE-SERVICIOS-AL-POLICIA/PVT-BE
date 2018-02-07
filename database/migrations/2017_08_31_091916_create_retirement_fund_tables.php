@@ -277,28 +277,36 @@ class CreateRetirementFundTables extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('ret_fun_interval_type_ranges');
-        Schema::drop('ret_fun_interval_types');
         Schema::table('contributions', function (Blueprint $table) {
             $table->dropColumn('contribution_type_id');
         });
         Schema::drop('contribution_types');
         Schema::drop('scanned_documents');
-        Schema::drop('affiliate_folders');
+        Schema::drop('affiliate_folders');     
+        Schema::drop('ret_fun_interval_type_ranges');
+        Schema::drop('ret_fun_interval_types');
         Schema::drop('ret_fun_beneficiary_legal_guardian');
         Schema::drop('ret_fun_legal_guardians');
-        Schema::drop('ret_fun_address_applicants');
-        Schema::drop('ret_fun_advisor_beneficiary');
+        Schema::drop('ret_fun_advisor_beneficiary');       
         Schema::drop('ret_fun_advisors');
+        Schema::drop('address_ret_fun_beneficiary');
+        Schema::drop('address');
         Schema::drop('ret_fun_beneficiaries');
-        Schema::drop('kinships');
         Schema::drop('ret_fun_submitted_documents');
+        Schema::drop('kinships');
         Schema::drop('retirement_funds');
         Schema::drop('ret_fun_procedures');
         Schema::drop('procedure_requirements');
         Schema::drop('procedure_documents');
         Schema::drop('procedure_modalities');
-        Schema::drop('procedure_types');
+        Schema::drop('procedure_types'); 
+      //  Schema::drop('ret_fun_address_applicants');
+        
+        
+        
+
+        
+        
     }
 
 }

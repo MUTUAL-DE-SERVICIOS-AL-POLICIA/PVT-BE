@@ -33,12 +33,16 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->date('reception_date')->nullable(); //fecha de nacimento
             $table->decimal('subtotal', 13, 2); // sub total
             $table->decimal('total', 13, 2); // total
+            $table->bigInteger('workflow_id')->unsigned(); // identificador de flujo
+            $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado         
             $table->foreign('affiliate_id')->references('id')->on('affiliates')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('quota_aid_procedure_id')->references('id')->on('quota_aid_procedures');
             $table->foreign('procedure_modalities_id')->references('id')->on('procedure_modalities');
             $table->foreign('city_start_id')->references('id')->on('cities');
             $table->foreign('city_end_id')->references('id')->on('cities');
+            $table->foreign('workflow_id')->references('id')->on('workflows');
+            $table->foreign('wf_state_current_id')->references('id')->on('wf_states');
             $table->timestamps();
             $table->softDeletes();
         });   
@@ -154,9 +158,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->foreign('quota_aid_beneficiary_id')->references('id')->on('quota_aid_beneficiaries');
             $table->foreign('quota_aid_legal_guardian_id')->references('id')->on('quota_aid_legal_guardians');
             $table->primary('quota_aid_beneficiary_id');
-          });
-
-
+          });        
     }   
     public function down()
     {
