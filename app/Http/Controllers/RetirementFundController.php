@@ -178,7 +178,10 @@ class RetirementFundController extends Controller
      */
     public function show(RetirementFund $retirementFund)
     {
-        //
+        $data = [
+            'retirement_fund' => $retirementFund,
+        ];
+        return view('ret_fun.show',$data);
     }
 
     /**
