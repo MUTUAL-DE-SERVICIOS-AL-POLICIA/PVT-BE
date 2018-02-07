@@ -50,5 +50,10 @@ class City extends Model
 	public function ret_fun_applicants()
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetFunApplicant','city_identity_card_id','id');
+	}
+	public function quota_aid_mortuaries()
+    {
+        return $this->hasMany('Muserpol\Models\'QuotaAidMortuaries\QuotaAidMortuary', 'city_identity_card_id','id');
     }
+
 }

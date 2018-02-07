@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
 	
 
+
 	Route::get('changerol','UserController@changerol');
 	Route::post('postchangerol','UserController@postchangerol');
 
@@ -33,5 +34,15 @@ Route::group(['middleware' => 'auth'], function() {
 	//Route::resource('ret_fun', 'RetirementFundRequirementController@retFun');
 	Route::get('affiliate/{affiliate}/ret_fun', 'RetirementFundRequirementController@retFun');
 	// Route::get('/home', 'HomeController@index')->name('home');
+	Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
+	Route::resource('ret_fun', 'RetirementFundController');
+	Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
+	Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure');
+
+	//QuotaAidMortuory
+	Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure');
+	Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
+	Route::resource('quota_aid', 'QuotaAidMortuaryController');
 	
 });
+
