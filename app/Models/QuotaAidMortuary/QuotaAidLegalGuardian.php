@@ -1,6 +1,6 @@
 <?php
 
-namespace Muserpol\Models\QuotaAidMortuary;s
+namespace Muserpol\Models\QuotaAidMortuary;
 
 use Illuminate\Database\Eloquent\Model;
 
