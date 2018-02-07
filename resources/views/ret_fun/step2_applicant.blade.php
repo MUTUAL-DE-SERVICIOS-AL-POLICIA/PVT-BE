@@ -11,9 +11,9 @@
                 <div class="form-group"><label class="col-sm-4 control-label">Tipo de Solicitante</label>
                     <div class="col-sm-4">
                         <select class="form-control m-b" name="accountType" @change="change_applicant()" v-model="applicant_type">
-                            <option value="Beneficiario">Beneficiario</option>
-                            <option value="Apoderado">Apoderado</option>
-                            <option value="Tutor">Tutor</option>
+                            <option value="1">Beneficiario</option>
+                            <!--<option value="Apoderado">Apoderado</option>-->
+                            <option value="2">Tutor</option>
                         </select>
                     </div>
                 </div>
@@ -194,7 +194,7 @@
                         <div class="col-sm-8"><input type="text" name="beneficiary_number_address" class="form-control"></div>
                     </div>
                 </div>
-            </div>
+</div>
         </div>
-    </div>
+</div>
 </div>
