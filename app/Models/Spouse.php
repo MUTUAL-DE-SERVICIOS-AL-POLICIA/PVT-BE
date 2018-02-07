@@ -1,10 +1,10 @@
 <?php
 
-namespace Muserpol;
+namespace Muserpol\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class QuotaAidAdvisor extends Model
+class Spouse extends Model
 {
     //
 }

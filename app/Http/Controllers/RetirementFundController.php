@@ -15,6 +15,7 @@ use Muserpol\Models\RetirementFund\AddressRetFunBeneficiary;
 use Auth;
 use Validator;
 use Muserpol\Models\Address;
+use Muserpol\Models\Spouse;
 
 class RetirementFundController extends Controller
 {
@@ -230,32 +231,7 @@ class RetirementFundController extends Controller
         $code = $request->code ?? '';
         $modality = strtoupper($request->modality) ?? '';
         
-//        $second_name = strtoupper($request->second_name) ?? '';
-//        $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
-//        $identity_card = strtoupper($request->identity_card) ?? '';        
-//
-//        $total = Affiliate::select('affiliates.id')//,'identity_card','registration','degrees.name as degree','first_name','second_name','last_name','mothers_last_name','civil_status')->
-//                                ->leftJoin('degrees','affiliates.id','=','degrees.id')
-//                                ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-//                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-//                                ->where('affiliates.second_name','LIKE',$second_name.'%')
-//                                ->where('affiliates.last_name','LIKE',$last_name.'%')
-//                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')                                
-//                                ->where('affiliates.identity_card','LIKE',$identity_card.'%')
-//                                ->count();
-//        
-//        $affiliates = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
-//                                ->leftJoin('degrees','affiliates.id','=','degrees.id')
-//                                ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-//                                ->skip($offset)
-//                                ->take($limit)
-//                                ->orderBy($sort,$order)
-//                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-//                                ->where('affiliates.second_name','LIKE',$second_name.'%')
-//                                ->where('affiliates.last_name','LIKE',$last_name.'%')
-//                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')
-//                                ->where('affiliates.identity_card','LIKE',$identity_card.'%')
-//                                ->get();
+
         $total = RetirementFund::select('retirement_funds.id')
                                 ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modalities_id','=','procedure_modalities.id')
@@ -297,7 +273,8 @@ class RetirementFundController extends Controller
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
-                
+        
+        $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
         $modalities = ProcedureModality::where('procedure_type_id','2')->select('id','name')->get();
         
         $kinships = Kinship::get();
@@ -311,8 +288,10 @@ class RetirementFundController extends Controller
             'kinships'  =>  $kinships,
             'cities'    =>  $cities,
             'ret'    =>  $cities,
-        ];               
-        return view('ret_fun.index',$data);        
+            'spose' =>  $spouse,
+        ];
+      
+        return view('ret_fun.create',$data);        
     }
     private function getNextCode($actual){
         $year =  date('Y');
