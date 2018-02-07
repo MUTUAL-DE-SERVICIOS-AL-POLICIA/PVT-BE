@@ -289,7 +289,7 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('ret_fun_legal_guardians');
         Schema::drop('ret_fun_advisor_beneficiary');       
         Schema::drop('ret_fun_advisors');
-        Schema::drop('address_ret_fun_beneficiary');
+     Schema::drop('address_ret_fun_beneficiary');
         Schema::drop('address');
         Schema::drop('ret_fun_beneficiaries');
         Schema::drop('ret_fun_submitted_documents');
