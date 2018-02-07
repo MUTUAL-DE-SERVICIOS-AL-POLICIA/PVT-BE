@@ -32,4 +32,9 @@ Route::resource('ret_fun', 'RetirementFundController');
 Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure');
 
+//QuotaAidMortuory
+Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure');
+Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
+Route::resource('quota_aid', 'QuotaAidMortuaryController');
+
         
