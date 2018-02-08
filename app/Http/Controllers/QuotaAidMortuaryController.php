@@ -18,7 +18,6 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisorBeneficiary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidLegalGuardian;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisor;
-use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisorBeneficiary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
 class QuotaAidMortuaryController extends Controller
 {

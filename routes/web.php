@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::resource('ret_fun', 'RetirementFundController');
 	Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 	Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure');
+        Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundController@printReception');
 
 	//QuotaAidMortuory
 	Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure');

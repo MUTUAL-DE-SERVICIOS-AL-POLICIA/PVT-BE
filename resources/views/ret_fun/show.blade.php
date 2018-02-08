@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-lg-12">
             Aqui va el detalle del fondo de retiro
-            <input type="button" class="btn btn-info" value="Generar PDF" onclick="location.href = '{{asset("ret_fun")}}';">
+            <input type="button" class="btn btn-info" value="Generar PDF"  target="_blank" onclick="location.href = '{{asset("ret_fun/".$retirement_fund->id."/print/reception")}}';">
         </div>
     </div>
     <div class="row">
