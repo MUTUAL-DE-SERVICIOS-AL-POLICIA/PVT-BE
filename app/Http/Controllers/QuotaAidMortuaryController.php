@@ -35,7 +35,7 @@ class QuotaAidMortuaryController extends Controller
                                 ->where('affiliates.first_name','LIKE',$first_name.'%')
                                 ->where('affiliates.last_name','LIKE',$last_name.'%')                             
                                 ->count();
-
+        //dd($total);
          $quota_aid_mortuaries = QuotaAidMortuary::select('quota_aid_mortuaries.id','affiliates.first_name as first_name','affiliates.last_name as last_name','procedure_modalities.name as modality','workflows.name as workflow','quota_aid_mortuaries.code','quota_aid_mortuaries.reception_date','quota_aid_mortuaries.total')
                                 ->leftJoin('affiliates','quota_aid_mortuaries.id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
@@ -47,7 +47,7 @@ class QuotaAidMortuaryController extends Controller
                                 ->take($limit)
                                 ->orderBy($sort,$order)
                                 ->get();             
-        
+       // dd($quota_aid_mortuaries);
         return response()->json(['quota_aid_mortuaries' => $quota_aid_mortuaries->toArray(),'total'=>$total]);
     }
 

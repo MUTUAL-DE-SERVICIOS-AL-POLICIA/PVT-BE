@@ -82,7 +82,7 @@ export default {
       axios.get('/get_all_quota_aid',{
         params: this.query
       }).then((response)=> {
-        this.data = response.data.ret_funds, 
+        this.data = response.data.quota_aid_mortuaries, 
         this.total = response.data.total
         // this.summary = summary
       }).catch(function (error) {
