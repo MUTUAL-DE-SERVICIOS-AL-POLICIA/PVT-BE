@@ -59,6 +59,20 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('quota_aid_observations', function(Blueprint $table) {   //observaciones de Quota y Auxilio
+            $table->bigIncrements('id');
+            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('quota_aid_mortuary_id')->unsigned();
+            $table->bigInteger('observation_type_id')->unsigned();
+            $table->date('date');
+            $table->longText('message');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
+            $table->foreign('observation_type_id')->references('id')->on('observation_types');
+            $table->timestamps();
+            $table->softDeletes();
+        });
         
         Schema::create('quota_aid_beneficiaries', function (Blueprint $table) {
             $table->bigIncrements('id'); // identifiador
@@ -169,6 +183,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
         Schema::drop('quota_aid_advisor_beneficiary');
         Schema::drop('quota_aid_advisors');
         Schema::drop('address_quota_aid_beneficiary');
+        Schema::drop('quota_aid_observations');        
         Schema::drop('quota_aid_beneficiaries');
         Schema::drop('quota_aid_submitted_documents');
         Schema::drop('quota_aid_mortuaries');
