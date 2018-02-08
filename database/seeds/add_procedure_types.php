@@ -11,10 +11,10 @@ class add_procedure_types extends Seeder
      */
     public function run()
     {
-        DB::table('procedure_types')->insert([
-        ['id' => '9', 'module_id' => '6', 'name' => 'Anticipo Fondo de Retiro Policial'],
-        ['id' => '10', 'module_id' => '3', 'name' => 'Aporte Voluntario Item "0" '],
-        ['id' => '11', 'module_id' => '3', 'name' => 'Expediente Transitorio '],
+        DB::table('procedure_modalities')->insert([
+        ['id' => '13','procedure_type_id' => '3', 'name' => 'Anticipo Fondo de Retiro Policial', 'is_valid'=> false],
+        ['id' => '14','procedure_type_id' => '3', 'name' => 'Aporte Voluntario Item "0" ', 'is_valid' => true],
+        ['id' => '15','procedure_type_id' => '3', 'name' => 'Expediente Transitorio ', 'is_valid' =>true],
         ]);      
     }
 }
