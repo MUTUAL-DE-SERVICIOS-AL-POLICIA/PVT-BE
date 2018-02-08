@@ -98,6 +98,20 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
+        Schema::create('ret_fun_observations', function(Blueprint $table) {   //observaciones de fondo de retiro
+            $table->bigIncrements('id');
+            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->bigInteger('observation_type_id')->unsigned();
+            $table->date('date');
+            $table->longText('message');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
+            $table->foreign('observation_type_id')->references('id')->on('observation_types');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('kinships', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
@@ -295,6 +309,7 @@ class CreateRetirementFundTables extends Migration {
         // Schema::drop('address');
         Schema::drop('ret_fun_beneficiaries');
         Schema::drop('ret_fun_submitted_documents');
+        Schema::drop('ret_fun_observations');        
         Schema::drop('kinships');
         Schema::drop('retirement_funds');
         Schema::drop('ret_fun_procedures');
