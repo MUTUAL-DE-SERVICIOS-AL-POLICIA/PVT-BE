@@ -244,7 +244,6 @@ class CreateRetirementFundTables extends Migration {
             $table->date('end_date')->nullable();
             $table->foreign('procedure_interval_type_id')->references('id')->on('procedure_interval_types');
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
-
             $table->timestamps();
             $table->softDeletes();
         });
@@ -302,8 +301,6 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('contribution_types');
         Schema::drop('scanned_documents');
         Schema::drop('affiliate_folders');     
-        Schema::drop('ret_fun_interval_type_ranges');
-        Schema::drop('ret_fun_interval_types');
         Schema::drop('ret_fun_beneficiary_legal_guardian');
         Schema::drop('ret_fun_legal_guardians');
         Schema::drop('ret_fun_advisor_beneficiary');       

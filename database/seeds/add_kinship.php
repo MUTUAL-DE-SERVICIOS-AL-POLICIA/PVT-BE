@@ -13,11 +13,12 @@ class add_kinship extends Seeder
     {
         DB::table('kinships')->insert
         ([['id' => '1', 'name' => 'Titular'],
-        ['id' => '2', 'name' => 'Esposa/Esposo'],
-        ['id' => '3', 'name' => 'Padre/Madre'],
-        ['id' => '4', 'name' => 'Hijo/Hija'],
-        ['id' => '5', 'name' => 'Apoderado'],
-        ['id' => '6', 'name' => 'Tutor/Tutora'],
+        ['id' => '2', 'name' => 'Conyugue'],
+        ['id' => '3', 'name' => 'Hijo(a)'],
+        ['id' => '4', 'name' => 'Padre'],
+        ['id' => '5', 'name' => 'Madre'],
+        ['id' => '6', 'name' => 'Hermano(a)'],
+        //['id' => '6', 'name' => 'Otro'],
         ]);       
     }
 }
