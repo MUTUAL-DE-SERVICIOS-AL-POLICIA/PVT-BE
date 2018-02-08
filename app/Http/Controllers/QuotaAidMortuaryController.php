@@ -12,7 +12,14 @@ use Auth;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
-
+use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisorBeneficiary;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidLegalGuardian;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisor;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisorBeneficiary;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -45,177 +52,181 @@ class QuotaAidMortuaryController extends Controller
      */
     public function store(Request $request)
     {
-//        $requirements = ProcedureRequirement::select('id')->get();        
-//        
-//        $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled',true)->select('id')->first();
-//        
-//        
-//        $validator = Validator::make($request->all(), [
-//            //'applicant_first_name' => 'required|max:5',            
-//        ]);                
-//        //custom this validator
-//        $validator->after(function($validator){
-//            if(false)                
-//                $validator->errors()->add('Modalidad', 'el campo modalidad no puede ser tramitada este mes');            
-//        });        
-//        if($validator->fails()){
-//            return $validator->errors();            
-//        }
-//        
-//        
-//        $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
-//        if(!isset($ret_fund->id))
-//            $code=$this->getNextCode ("");
-//        else        
-//            $code=$this->getNextCode ($ret_fund->code);
-//        $retirement_found = new RetirementFund();
-//        $retirement_found->user_id = Auth::user()->id;
-//        $retirement_found->affiliate_id = $request->affiliate_id;
-//        $retirement_found->procedure_modality_id = $request->ret_fun_modality;
-//        $retirement_found->ret_fun_procedure_id = $procedure->id;
-//        $retirement_found->city_start_id = Auth::user()->city_id;
-//        $retirement_found->city_end_id = Auth::user()->city_id;
-//        $retirement_found->code = $code;
-//        $retirement_found->workflow_id = 4;
-//        $retirement_found->wf_state_current_id = 1;
-//        //$retirement_found->type = "Pago"; default value
-//        $retirement_found->subtotal = 0;
-//        $retirement_found->total = 0;
-//        $retirement_found->save();                       
-//        
-//        foreach ($requirements  as  $requirement)
-//        {
-//            if($request->input('document'.$requirement->id) == 'checked')
-//            {
-//                $submit = new RetFunSubmittedDocument();
-//                $submit->retirement_fund_id = $retirement_found->id;
-//                $submit->procedure_requirement_id = $requirement->id;
-//                $submit->reception_date = date('Y-m-d');
-//                $submit->comment = $request->input('comment'.$requirement->id);                
-//                $submit->save();
-//            }                
-//        }
-//        $account_type = $request->input('accountType');    
-//
-//        $beneficiary = new RetFunBeneficiary();
-//        $beneficiary->retirement_fund_id = $retirement_found->id;
-//        $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;
-//        $beneficiary->kinship_id = $request->applicant_kinship;
-//        $beneficiary->identity_card = $request->applicant_identity_card;
-//        $beneficiary->last_name = $request->applicant_last_name;
-//        $beneficiary->mothers_last_name = $request->applicant_mothers_last_name;
-//        $beneficiary->first_name = $request->applicant_first_name;
-//        $beneficiary->second_name = $request->applicant_second_name;
-//        $beneficiary->surname_husband = $request->applicant_surname_husband;        
-//        $beneficiary->gender = "M";        
-//        $beneficiary->phone_number = $request->applicant_phone_number;
-//        $beneficiary->cell_phone_number = $request->applicant_cell_phone_number;        
-//        $beneficiary->type = "S";
-//        $beneficiary->save();
-//                
-//        if($account_type == '2')
-//        {
-//            $advisor = new RetFunAdvisor();
-//            //$advisor->retirement_fund_id = $retirement_found->id;
-//            $advisor->city_identity_card_id = $request->applicant_city_identity_card;
-//            $advisor->kinship_id = null;
-//            $advisor->identity_card = $request->applicant_identity_card;
-//            $advisor->last_name = $request->applicant_last_name;
-//            $advisor->mothers_last_name = $request->applicant_mothers_last_name;
-//            $advisor->first_name = $request->applicant_first_name;
-//            $advisor->second_name = $request->applicant_second_name;
-//            $advisor->surname_husband = $request->applicant_surname_husband;        
-//            $advisor->gender = "M";                    
-//            $advisor->phone_number = $request->applicant_phone_number;
-//            $advisor->cell_phone_number = $request->applicant_cell_phone_number;        
-//            $advisor->name_court = $request->advisor_name_court;            
-//            $advisor->resolution_number = $request->advisor_resolution_number;
-//            $advisor->resolution_date = $request->advisor_resolution_date;
-//            $advisor->type = "Natural";
-//            $advisor->save();
-//            
-//            $advisor_beneficiary = new RetFunAdvisorBeneficiary();
-//            $advisor_beneficiary->ret_fun_beneficiary_id = $beneficiary->id;
-//            $advisor_beneficiary->ret_fun_advisor_id = $advisor->id;
-//            $advisor_beneficiary->save();
-//        }
-//        
-//        if($account_type == '3')
-//        {
-//            $legal_guardian = new RetFunLegalGuardian();
-//            $legal_guardian->retirement_fund_id = $retirement_found->id;
-//            $legal_guardian->city_identity_card_id = $request->applicant_city_identity_card;            
-//            $legal_guardian->identity_card = $request->applicant_identity_card  ;
-//            $legal_guardian->last_name = $request->applicant_last_name;
-//            $legal_guardian->mothers_last_name = $request->applicant_mothers_last_name;
-//            $legal_guardian->first_name = $request->applicant_first_name;
-//            $legal_guardian->second_name = $request->applicant_second_name;
-//            $legal_guardian->surname_husband = $request->applicant_surname_husband;        
-//            //$legal_guardian->gender = "M";                    
-//            $legal_guardian->phone_number = $request->applicant_phone_number;
-//            $legal_guardian->cell_phone_number = $request->applicant_cell_phone_number;        
-//            $legal_guardian->number_authority = $request->legal_guardian_number_authority;            
-//            $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
-//            $legal_guardian->notary = $request->legal_guardian_notary;
-//            $legal_guardian->save();
-//            
-//            $beneficiary_legal_guardian = new RetFunBeneficiaryLegalGuardian();
-//            $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
-//            $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
-//            $beneficiary_legal_guardian->save();
-//            //$beneficiary->type = "N";            
-//        }
-//        
-//        
-//        $address = new Address();
-//        $address->city_address_id = 1;
-//        $address->zone = $request->beneficiary_zone;
-//        $address->street = $request->beneficiary_street;
-//        $address->number_address = $request->beneficiary_number_address;
-//        $address->save();
-//        
-//        $address_rel = new AddressRetFunBeneficiary();
-//        $address_rel->ret_fun_beneficiary_id = $beneficiary->id;
-//        $address_rel->address_id = $address->id;
-//        $address_rel->save();
-//        
-//        $first_name = $request->beneficiary_first_name;
-//        $second_name = $request->beneficiary_second_name;
-//        $last_name = $request->beneficiary_last_name;
-//        $mothers_last_name = $request->beneficiary_mothers_last_name;
-//        $surname_husband = $request->surname_husband;
-//        $identity_card = $request->beneficiary_identity_card;
-//        $city_id = $request-> beneficiary_city_identity_card;
-//        $birth_date = $request->beneficiary_birth_date;
-//        $kinship = $request->beneficiary_kinship;
-//        for($i=0;$i<sizeof($first_name);$i++){
-//            if($first_name[$i] != "" && $last_name[$i] != ""){
-//                $beneficiary = new RetFunBeneficiary();
-//                $beneficiary->retirement_fund_id = $retirement_found->id;
-//                $beneficiary->city_identity_card_id = $city_id[$i];
-//                $beneficiary->kinship_id = $kinship[$i];
-//                $beneficiary->identity_card = $identity_card[$i];
-//                $beneficiary->last_name = $last_name[$i];
-//                $beneficiary->mothers_last_name = $mothers_last_name[$i];
-//                $beneficiary->first_name = $first_name[$i];
-//                $beneficiary->second_name = $second_name[$i];
-//                $beneficiary->surname_husband = $surname_husband[$i];                
-//                $beneficiary->birth_date = $birth_date[$i];
-//                $beneficiary->gender = "M";
-//                //$beneficiary->civil_status = $request->
-//                //$beneficiary->phone_number = $request->;
-//                //$beneficiary->cell_phone_number = $request->;               
-//                $beneficiary->type = "N";
-//                $beneficiary->save();                
-//            }        
-//        }
-//        
-//        
-//        $data = [
-//            
-//        ];
-//        
-//        return view('ret_fun.show',$data);        
+        $requirements = ProcedureRequirement::select('id')->get();        
+        
+        $procedure = QuotaAidProcedure::where('is_enabled',true)->select('id')->first();
+        
+        
+        $validator = Validator::make($request->all(), [
+            //'applicant_first_name' => 'required|max:5',            
+        ]);                
+        //custom this validator
+        $validator->after(function($validator){
+            if(false)                   
+                $validator->errors()->add('Modalidad', 'el campo modalidad no puede ser tramitada este mes');            
+        });        
+        if($validator->fails()){
+            return $validator->errors();            
+        }
+        
+        
+        $quota_aid  = QuotaAidMortuary::select('id','code')->orderby('id','desc')->first();
+        if(!isset($quota_aid->id))
+            $code=$this->getNextCode ("");
+        else        
+            $code=$this->getNextCode ($quota_aid->code);
+        $modality = ProcedureModality::find($request->ret_fun_modality);
+        
+        
+        $quota_aid = new RetirementFund();
+        $quota_aid->user_id = Auth::user()->id;
+        $quota_aid->affiliate_id = $request->affiliate_id;
+        $quota_aid->procedure_modality_id = $request->ret_fun_modality;
+        $quota_aid->ret_fun_procedure_id = $procedure->id;
+        $quota_aid->city_start_id = Auth::user()->city_id;
+        $quota_aid->city_end_id = Auth::user()->city_id;
+        $quota_aid->code = $code;
+        $quota_aid->reception_date = date('Y-m-d');
+        $quota_aid->workflow_id = $modality->procedure_type_id;
+        $quota_aid->wf_state_current_id = 1;        
+        $quota_aid->subtotal = 0;
+        $quota_aid->total = 0;
+        $quota_aid->save();                       
+        
+        foreach ($requirements  as  $requirement)
+        {
+            if($request->input('document'.$requirement->id) == 'checked')
+            {
+                $submit = new QuotaAidSubmittedDocument();
+                $submit->quote_aid_mourtuary_id = $quota_aid->id;
+                $submit->procedure_requirement_id = $requirement->id;
+                $submit->reception_date = date('Y-m-d');
+                $submit->comment = $request->input('comment'.$requirement->id);                
+                $submit->save();
+            }                
+        }
+        $account_type = $request->input('accountType');    
+
+        $beneficiary = new RetFunBeneficiary();
+        $beneficiary->quota_aid_mortuary_id = $quota_aid->id;
+        $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;
+        $beneficiary->kinship_id = $request->applicant_kinship;
+        $beneficiary->identity_card = $request->applicant_identity_card;
+        $beneficiary->last_name = $request->applicant_last_name;
+        $beneficiary->mothers_last_name = $request->applicant_mothers_last_name;
+        $beneficiary->first_name = $request->applicant_first_name;
+        $beneficiary->second_name = $request->applicant_second_name;
+        $beneficiary->surname_husband = $request->applicant_surname_husband;        
+        $beneficiary->gender = "M";        
+        $beneficiary->phone_number = $request->applicant_phone_number;
+        $beneficiary->cell_phone_number = $request->applicant_cell_phone_number;        
+        $beneficiary->porcentage = 0;
+        $beneficiary->paid_amount = 0;
+        $beneficiary->type = "S";
+        $beneficiary->save();
+                
+        if($account_type == '2')
+        {
+            $advisor = new QuotaAidAdvisor();
+            //$advisor->retirement_fund_id = $retirement_found->id;
+            $advisor->city_identity_card_id = $request->applicant_city_identity_card;
+            $advisor->kinship_id = null;
+            $advisor->identity_card = $request->applicant_identity_card;
+            $advisor->last_name = $request->applicant_last_name;
+            $advisor->mothers_last_name = $request->applicant_mothers_last_name;
+            $advisor->first_name = $request->applicant_first_name;
+            $advisor->second_name = $request->applicant_second_name;
+            $advisor->surname_husband = $request->applicant_surname_husband;        
+            $advisor->gender = "M";                    
+            $advisor->phone_number = $request->applicant_phone_number;
+            $advisor->cell_phone_number = $request->applicant_cell_phone_number;        
+            $advisor->name_court = $request->advisor_name_court;            
+            $advisor->resolution_number = $request->advisor_resolution_number;
+            $advisor->resolution_date = $request->advisor_resolution_date;
+            $advisor->type = "Natural";
+            $advisor->save();
+            
+            $advisor_beneficiary = new RetFunAdvisorBeneficiary();
+            $advisor_beneficiary->ret_fun_beneficiary_id = $beneficiary->id;
+            $advisor_beneficiary->ret_fun_advisor_id = $advisor->id;
+            $advisor_beneficiary->save();
+        }
+        
+        if($account_type == '3')
+        {
+            $legal_guardian = new QuotaAidLegalGuardian();
+            $legal_guardian->retirement_fund_id = $retirement_found->id;
+            $legal_guardian->city_identity_card_id = $request->applicant_city_identity_card;            
+            $legal_guardian->identity_card = $request->applicant_identity_card  ;
+            $legal_guardian->last_name = $request->applicant_last_name;
+            $legal_guardian->mothers_last_name = $request->applicant_mothers_last_name;
+            $legal_guardian->first_name = $request->applicant_first_name;
+            $legal_guardian->second_name = $request->applicant_second_name;
+            $legal_guardian->surname_husband = $request->applicant_surname_husband;        
+            //$legal_guardian->gender = "M";                    
+            $legal_guardian->phone_number = $request->applicant_phone_number;
+            $legal_guardian->cell_phone_number = $request->applicant_cell_phone_number;        
+            $legal_guardian->number_authority = $request->legal_guardian_number_authority;            
+            $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
+            $legal_guardian->notary = $request->legal_guardian_notary;
+            $legal_guardian->save();
+            
+            $beneficiary_legal_guardian = new RetFunBeneficiaryLegalGuardian();
+            $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
+            $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
+            $beneficiary_legal_guardian->save();
+            //$beneficiary->type = "N";            
+        }
+        
+        
+        $address = new Address();
+        $address->city_address_id = 1;
+        $address->zone = $request->beneficiary_zone;
+        $address->street = $request->beneficiary_street;
+        $address->number_address = $request->beneficiary_number_address;
+        $address->save();
+        
+        $address_rel = new AddressRetFunBeneficiary();
+        $address_rel->ret_fun_beneficiary_id = $beneficiary->id;
+        $address_rel->address_id = $address->id;
+        $address_rel->save();
+        
+        $first_name = $request->beneficiary_first_name;
+        $second_name = $request->beneficiary_second_name;
+        $last_name = $request->beneficiary_last_name;
+        $mothers_last_name = $request->beneficiary_mothers_last_name;
+        $surname_husband = $request->surname_husband;
+        $identity_card = $request->beneficiary_identity_card;
+        $city_id = $request-> beneficiary_city_identity_card;
+        $birth_date = $request->beneficiary_birth_date;
+        $kinship = $request->beneficiary_kinship;
+        for($i=0;$i<sizeof($first_name);$i++){
+            if($first_name[$i] != "" && $last_name[$i] != ""){
+                $beneficiary = new RetFunBeneficiary();
+                $beneficiary->retirement_fund_id = $retirement_found->id;
+                $beneficiary->city_identity_card_id = $city_id[$i];
+                $beneficiary->kinship_id = $kinship[$i];
+                $beneficiary->identity_card = $identity_card[$i];
+                $beneficiary->last_name = $last_name[$i];
+                $beneficiary->mothers_last_name = $mothers_last_name[$i];
+                $beneficiary->first_name = $first_name[$i];
+                $beneficiary->second_name = $second_name[$i];
+                $beneficiary->surname_husband = $surname_husband[$i];                
+                $beneficiary->birth_date = $birth_date[$i];
+                $beneficiary->gender = "M";
+                $beneficiary->porcentage = 0;
+                $beneficiary->paid_amount = 0;                
+                $beneficiary->type = "N";
+                $beneficiary->save();                
+            }        
+        }
+        
+        
+        $data = [
+            
+        ];
+        
+        return view('ret_fun.show',$data);        
         
     }
 
