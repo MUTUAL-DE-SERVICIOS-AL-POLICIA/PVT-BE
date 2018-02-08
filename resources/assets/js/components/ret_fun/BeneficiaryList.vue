@@ -17,7 +17,8 @@ export default {
   ],
   data(){
       return{
-          beneficiaries: this.items
+          beneficiaries: [],
+        //   beneficiaries: this.items// datos iniciales
       }
   },
   mounted(){

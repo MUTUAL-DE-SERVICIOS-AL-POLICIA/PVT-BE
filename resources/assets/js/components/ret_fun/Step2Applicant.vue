@@ -80,15 +80,15 @@ export default {
       this.applicant_gender = '';
     },
     setDataAffilate: function(){
-        this.applicant_first_name = this.affiliate.first_name;
-        this.applicant_second_name = this.affiliate.second_name;
-        this.applicant_last_name = this.affiliate.last_name;
-        this.applicant_mothers_last_name = this.affiliate.mothers_last_name;
-        this.applicant_surname_husband = this.affiliate.surname_husband;
-        this.applicant_surname_husband = this.affiliate.surname_husband,
-        this.applicant_identity_card = this.affiliate.identity_card;
-        this.applicant_city_identity_card = this.affiliate.city_identity_card_id;
-        this.applicant_gender = this.affiliate.gender;
+        this.applicant_first_name = this.spouse.first_name;
+        this.applicant_second_name = this.spouse.second_name;
+        this.applicant_last_name = this.spouse.last_name;
+        this.applicant_mothers_last_name = this.spouse.mothers_last_name;
+        this.applicant_surname_husband = this.spouse.surname_husband;
+        this.applicant_surname_husband = this.spouse.surname_husband,
+        this.applicant_identity_card = this.spouse.identity_card;
+        this.applicant_city_identity_card = this.spouse.city_identity_card_id;
+        this.applicant_gender = this.spouse.gender;
         this.applicant_kinship = 1;
     },
     setDataSpouse: function(){

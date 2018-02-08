@@ -21,7 +21,7 @@ class RetirementFund extends Model
 
     public function procedure_modality()
     {
-        return $this->belongsTo('Muserpol\Models\ProcedureModality', 'procedure_modalities_id');
+        return $this->belongsTo('Muserpol\Models\ProcedureModality', 'procedure_modality_id');
     }
 
     public function ret_fun_procedure()
