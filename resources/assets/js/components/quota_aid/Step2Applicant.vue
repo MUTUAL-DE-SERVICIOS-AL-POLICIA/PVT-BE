@@ -22,7 +22,6 @@ export default {
       applicant_cell_phone_number: '',
       advisor_resolution_number: '',
       advisor_resolution_date: '',
-      applicant_gender: '',
       legal_guardian_first_name: '',
       legal_guardian_second_name: '',
       legal_guardian_first_name: '',
@@ -60,7 +59,7 @@ export default {
       if(this.applicant_type  === '1'){
         this.show_apoderado_form = false;
         this.show_advisor_form = false;
-        if(this.modality_id == 4){ 
+        if(modality_id == 4){ 
           this.setDataSpouse();
         }else{
           this.setDataAffilate();
