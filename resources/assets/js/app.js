@@ -40,6 +40,9 @@ Vue.component('ret-fun-beneficiary-list', require('./components/ret_fun/Benefici
 Vue.component('ret-fun-beneficiary', require('./components/ret_fun/Beneficiary.vue'));
 Vue.component('ret-fun-info', require('./components/ret_fun/Info.vue'));
 
+// Quota Aid Mortuaries
+Vue.component('quota-aid-mortuary-index', require('./components/quota_aid/Index.vue'));
+
 const app = new Vue({
     el: '#app',
 });
