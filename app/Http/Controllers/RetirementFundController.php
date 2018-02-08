@@ -86,10 +86,11 @@ class RetirementFundController extends Controller
         $retirement_found->code = $code;
         $retirement_found->workflow_id = 4;
         $retirement_found->wf_state_current_id = 1;
+        $retirement_found->reception_date = date('Y-m-d');
         //$retirement_found->type = "Pago"; default value
         $retirement_found->subtotal = 0;
         $retirement_found->total = 0;
-        $retirement_found->save();                       
+        $retirement_found->save();
         
         foreach ($requirements  as  $requirement)
         {
