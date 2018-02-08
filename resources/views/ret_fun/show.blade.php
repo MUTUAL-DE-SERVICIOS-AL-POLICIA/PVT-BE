@@ -5,7 +5,7 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {!!Breadcrumbs::render('affiliate')!!}
+        {!!Breadcrumbs::render('affiliate')!!} 
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -36,6 +36,12 @@
     <div class="row">
         <div class="col-md-6">
             @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries])
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
         </div>
     </div>
 </div>

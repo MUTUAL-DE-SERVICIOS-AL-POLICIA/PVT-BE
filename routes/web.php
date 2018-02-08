@@ -43,6 +43,8 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure');
 	Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
 	Route::resource('quota_aid', 'QuotaAidMortuaryController');
+
+	Route::resource('affiliate_folder','AffiliateFolderController');
 	
 });
 

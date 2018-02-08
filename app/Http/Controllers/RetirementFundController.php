@@ -258,13 +258,15 @@ class RetirementFundController extends Controller
         else 
             $guardian = new RetFunLegalGuardian();                
         
+        $procedures_modalities = ProcedureModality::all();
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
             'beneficiaries' =>  $beneficiaries,
             'applicant' => $applicant,
             'advisor'  =>  $advisor,
-            'legal_guardian'    =>  $guardian,            
+            'legal_guardian'    =>  $guardian,
+            'procedure_modalities' => $procedures_modalities,          
         ];
         
         return view('ret_fun.show',$data);
