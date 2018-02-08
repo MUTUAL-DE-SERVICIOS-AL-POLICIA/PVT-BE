@@ -301,8 +301,6 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('contribution_types');
         Schema::drop('scanned_documents');
         Schema::drop('affiliate_folders');     
-        Schema::drop('interval_type_ranges');
-        Schema::drop('interval_types');
         Schema::drop('ret_fun_beneficiary_legal_guardian');
         Schema::drop('ret_fun_legal_guardians');
         Schema::drop('ret_fun_advisor_beneficiary');       
