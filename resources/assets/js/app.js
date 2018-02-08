@@ -39,6 +39,8 @@ Vue.component('ret-fun-step3-beneficiaries', require('./components/ret_fun/Step3
 Vue.component('ret-fun-beneficiary-list', require('./components/ret_fun/BeneficiaryList.vue'));
 Vue.component('ret-fun-beneficiary', require('./components/ret_fun/Beneficiary.vue'));
 
+//quota_aid
+Vue.component('quota-aid-step1-requirements', require('./components/quota_aid/Step1Requirements.vue'));
 const app = new Vue({
     el: '#app',
 });

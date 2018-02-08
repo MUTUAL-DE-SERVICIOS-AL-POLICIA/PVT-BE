@@ -23,11 +23,11 @@
                     icon="mdi mdi-format-list-checks"
                     {{--  :before-change="validateAsync"  --}}
                     >
-                        <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" inline-template>
-                            @include('ret_fun.step1_requirements')
-                        </ret-fun-step1-requirements>
+                        <quota-aid-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" inline-template>
+                            @include('quota_aid.step1_requirements')
+                        </quota-aid-step1-requirements>
                     </tab-content>
-                    <tab-content
+<!--                    <tab-content
                         title="Datos del Solicitante"
                         icon="mdi mdi-account-edit">
                         <ret-fun-step2-applicant :cities="{{ $cities }}" inline-template>
@@ -40,7 +40,7 @@
                     <ret-fun-step3-beneficiaries :items="{{ $ret }}" inline-template>
                         @include('ret_fun.step3_beneficiaries')
                     </ret-fun-step3-beneficiaries>
-                </tab-content>
+                </tab-content>-->
                 {!! Form::submit('Click Me!') !!}
             </form-wizard>
         </form>
