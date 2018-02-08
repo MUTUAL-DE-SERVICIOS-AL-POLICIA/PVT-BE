@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-md-6">
         <div class="form-group"><label class="col-sm-4 control-label">Primer Nombre</label>
-            <div class="col-sm-8"><input type="text" name="beneficiary_first_name[]" :value="beneficiary.first_shortened" class="form-control"></div>
+            <div class="col-sm-8"><input type="text" name="beneficiary_first_name[]"  class="form-control"></div>
         </div>
     </div>
     <div class="col-md-6">
@@ -55,7 +55,7 @@
           <div class="form-group"><label class="col-sm-4 control-label">Parentesco</label>
               <div class="col-sm-8">
                   <select class="form-control m-b" v-model="beneficiary_kinship" name="beneficiary_kinship[]">
-                      <option v-for="kinship in kinships" :key="beneficiary.id + ''+kinship.id " :value="beneficiary.kinship_id">{{kinship.name}}</option>
+                      <option v-for="kinship in kinships" :key="beneficiary.id + ''+kinship.id " :value="kinship.id">{{kinship.name}}</option>
                   </select>
               </div>
           </div>
