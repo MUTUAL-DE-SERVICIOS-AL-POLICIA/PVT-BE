@@ -24,9 +24,9 @@
                             <br>
                             <strong>Apellido de Casada:</strong><span>{{ $beneficiary->surname_husband }}</span>
                             <br>
-                            <small class="text-muted">Fecha de Nac.: {{ $beneficiary->birth_date }}</small>
+                            <stong>Fecha de Nac.: </strong>{{ $beneficiary->birth_date }}
                             <br>
-                            <small class="text-muted">Parentesco: {{ $beneficiary->kinship->name ?? '' }}</small>
+                            <strong>Parentesco: </strong><span>{{ $beneficiary->kinship->name ?? '' }}</span>
                         </div>
                     </div>
                 @endforeach

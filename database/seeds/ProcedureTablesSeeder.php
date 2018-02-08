@@ -24,7 +24,7 @@ class ProcedureTablesSeeder extends Seeder {
             ['id' => '4', 'procedure_type_id' => '2', 'name' => 'Fallecimiento'],
             ['id' => '5', 'procedure_type_id' => '2', 'name' => 'Retiro forzoso'],
             ['id' => '6', 'procedure_type_id' => '2', 'name' => 'Retiro forzoso(Invalidez Permanente)'],
-            ['id' => '7', 'procedure_typs_id' => '2', 'name' => 'Retiro Voluntario'],
+            ['id' => '7', 'procedure_type_id' => '2', 'name' => 'Retiro Voluntario'],
 
             ['id' => '8', 'procedure_type_id' => '3', 'name' => 'Fallecimiento del titular en cumplimiento de funciones'],
             ['id' => '9', 'procedure_type_id' => '3', 'name' => 'Fallecimiento del titular por Riesgo Comun'],
