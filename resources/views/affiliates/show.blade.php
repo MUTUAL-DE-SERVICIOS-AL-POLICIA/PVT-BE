@@ -9,6 +9,16 @@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row text-center">
+        <button class="btn btn-primary dim" type="button"><i class="fa fa-money"></i></button>
+        <button class="btn btn-warning dim" type="button"><i class="fa fa-warning"></i></button>
+        <button class="btn btn-primary dim" type="button"><i class="fa fa-check"></i></button>
+        <button class="btn btn-success  dim" type="button"><i class="fa fa-upload"></i></button>
+        <button class="btn btn-info  dim" type="button"><i class="fa fa-paste"></i> </button>
+        <button class="btn btn-warning  dim" type="button"><i class="fa fa-warning"></i></button>
+        <button class="btn btn-default  dim " type="button"><i class="fa fa-star"></i></button>
+        <button class="btn btn-danger  dim " type="button"><i class="fa fa-heart"></i></button>
+    </div>
     <div class="row">
         <div class="col-md-6">
             <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 

@@ -22,6 +22,7 @@ export default {
       applicant_cell_phone_number: '',
       advisor_resolution_number: '',
       advisor_resolution_date: '',
+      applicant_gender: '',
       legal_guardian_first_name: '',
       legal_guardian_second_name: '',
       legal_guardian_first_name: '',
