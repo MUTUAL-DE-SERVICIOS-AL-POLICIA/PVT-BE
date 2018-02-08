@@ -127,6 +127,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
         });
 
         Schema::create('quota_aid_advisor_beneficiary', function (Blueprint $table) {//tabla tutor beneficiario
+           $table->bigIncremental('id');
             $table->bigInteger('quota_aid_beneficiary_id')->unsigned();
             $table->bigInteger('quota_aid_advisor_id')->unsigned();
             $table->foreign('quota_aid_beneficiary_id')->references('id')->on('quota_aid_beneficiaries');
@@ -153,6 +154,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
         });
             
         Schema::create('quota_aid_beneficiary_legal_guardian', function (Blueprint $table) { //Beneficiario-apoderado
+            $table->bigIncremental('id');
             $table->bigInteger('quota_aid_beneficiary_id')->unsigned(); //identificador del beneficiario
             $table->bigInteger('quota_aid_legal_guardian_id')->unsigned(); //identificador del tutor
             $table->foreign('quota_aid_beneficiary_id')->references('id')->on('quota_aid_beneficiaries');
