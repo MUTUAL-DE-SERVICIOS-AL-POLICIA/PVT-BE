@@ -213,21 +213,21 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
         });
         
-        Schema::create('ret_fun_interval_types', function(Blueprint $table) {
+        Schema::create('interval_types', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::create('ret_fun_interval_type_ranges', function (Blueprint $table) {
+        Schema::create('interval_type_ranges', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('retirement_fund_id')->unsigned();
-            $table->bigInteger('ret_fun_interval_type_id')->unsigned();
+            $table->bigInteger('interval_type_id')->unsigned();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
-            $table->foreign('ret_fun_interval_type_id')->references('id')->on('ret_fun_interval_types');
+            $table->foreign('interval_type_id')->references('id')->on('interval_types');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -285,8 +285,8 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('contribution_types');
         Schema::drop('scanned_documents');
         Schema::drop('affiliate_folders');     
-        Schema::drop('ret_fun_interval_type_ranges');
-        Schema::drop('ret_fun_interval_types');
+        Schema::drop('interval_type_ranges');
+        Schema::drop('interval_types');
         Schema::drop('ret_fun_beneficiary_legal_guardian');
         Schema::drop('ret_fun_legal_guardians');
         Schema::drop('ret_fun_advisor_beneficiary');       

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class RetFunIntervalTypeRange extends Model
 {
-    public function ret_fun_interval_type()
+    public function interval_type()
     {
-        return $this->belongsTo('Muserpol\Models\RetirementFund\RetFunIntervalType');
+        return $this->belongsTo('Muserpol\Models\RetirementFund\IntervalType');
     }
 
     public function retirement_fund()

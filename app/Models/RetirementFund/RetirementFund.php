@@ -48,9 +48,9 @@ class RetirementFund extends Model
 	{
 		return $this->hasOne('Muserpol\Models\RetirementFund\RetFunApplicant');
     }
-    public function ret_fun_interval_type_ranges()
+    public function interval_type_ranges()
     {
-        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunIntervalTypeRange');
+        return $this->hasMany('Muserpol\Models\RetirementFund\IntervalTypeRange');
     }
     
 }
