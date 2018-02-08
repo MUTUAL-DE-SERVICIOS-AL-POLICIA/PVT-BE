@@ -98,6 +98,20 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
+        Schema::create('ret_fun_observations', function(Blueprint $table) {   //observaciones de fondo de retiro
+            $table->bigIncrements('id');
+            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->bigInteger('observation_type_id')->unsigned();
+            $table->date('date');
+            $table->longText('message');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
+            $table->foreign('observation_type_id')->references('id')->on('observation_types');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('kinships', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
@@ -213,26 +227,29 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
         });
         
-        Schema::create('ret_fun_interval_types', function(Blueprint $table) {
+        Schema::create('procedure_interval_types', function(Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('procedure_modality_id')->unsigned(); //identificador de tipo de modalidad
             $table->string('name')->nullable();
+            $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::create('ret_fun_interval_type_ranges', function (Blueprint $table) {
+        Schema::create('ret_fun_intervals', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('procedure_interval_type_id')->unsigned();
             $table->bigInteger('retirement_fund_id')->unsigned();
-            $table->bigInteger('ret_fun_interval_type_id')->unsigned();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
+            $table->foreign('procedure_interval_type_id')->references('id')->on('procedure_interval_types');
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
-            $table->foreign('ret_fun_interval_type_id')->references('id')->on('ret_fun_interval_types');
+
             $table->timestamps();
             $table->softDeletes();
         });
 
-        //afiliados y apoderados
+        //documentos de afiliados afiliados
         Schema::create('affiliate_folders', function (Blueprint $table) {  //Folder o carpeta de afiliado
             $table->bigIncrements('id');
             $table->bigInteger('affiliate_id')->unsigned();
@@ -292,9 +309,9 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('ret_fun_advisor_beneficiary');       
         Schema::drop('ret_fun_advisors');
         //Schema::drop('address_ret_fun_beneficiary');
-        // Schema::drop('address');
         Schema::drop('ret_fun_beneficiaries');
         Schema::drop('ret_fun_submitted_documents');
+        Schema::drop('ret_fun_observations');        
         Schema::drop('kinships');
         Schema::drop('retirement_funds');
         Schema::drop('ret_fun_procedures');
