@@ -59,7 +59,7 @@ export default {
       if(this.applicant_type  === '1'){
         this.show_apoderado_form = false;
         this.show_advisor_form = false;
-        if(modality_id == 4){ 
+        if(this.modality_id == 4){ 
           this.setDataSpouse();
         }else{
           this.setDataAffilate();

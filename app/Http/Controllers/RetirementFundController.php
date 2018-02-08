@@ -30,7 +30,7 @@ class RetirementFundController extends Controller
      */
     public function index()
     {        
-          
+             
         return view('ret_fun.index');
        
     }
@@ -79,7 +79,7 @@ class RetirementFundController extends Controller
         $retirement_found = new RetirementFund();
         $retirement_found->user_id = Auth::user()->id;
         $retirement_found->affiliate_id = $request->affiliate_id;
-        $retirement_found->procedure_modalities_id = $request->ret_fun_modality;
+        $retirement_found->procedure_modality_id = $request->ret_fun_modality;
         $retirement_found->ret_fun_procedure_id = $procedure->id;
         $retirement_found->city_start_id = Auth::user()->city_id;
         $retirement_found->city_end_id = Auth::user()->city_id;
@@ -108,7 +108,7 @@ class RetirementFundController extends Controller
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_found->id;
         $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;
-        $beneficiary->kinship_id = null;
+        $beneficiary->kinship_id = $request->applicant_kinship;
         $beneficiary->identity_card = $request->applicant_identity_card;
         $beneficiary->last_name = $request->applicant_last_name;
         $beneficiary->mothers_last_name = $request->applicant_mothers_last_name;
@@ -145,7 +145,7 @@ class RetirementFundController extends Controller
             $advisor_beneficiary = new RetFunAdvisorBeneficiary();
             $advisor_beneficiary->ret_fun_beneficiary_id = $beneficiary->id;
             $advisor_beneficiary->ret_fun_advisor_id = $advisor->id;
-            $advisor->save();
+            $advisor_beneficiary->save();
         }
         
         if($account_type == '3')
@@ -240,18 +240,33 @@ class RetirementFundController extends Controller
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         
-        $beneficiaries = RetFunBeneficiary::find($retirement_fund->beneficiary_id);
-        //$
-        $advisor = RetFunAdvisor::
-        //$tuto
+        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('type','desc')->get();
+        
+        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
+        
+        $beneficiary_avdisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
+        
+        if(isset($beneficiary_avdisor->id))
+            $advisor= RetFunAdvisor::find($beneficiary_avdisor->ret_fun_advisor_id);
+        else
+            $advisor = new RetFunAdvisor();
+        
+        $beneficiary_guardian = RetFunBeneficiaryLegalGuardian::where('ret_fun_beneficiary_id',$applicant->id)->first();
+        
+        if(isset($beneficiary_guardian->id))
+            $guardian = RetFunLegalGuardian::find($beneficiary_guardian->ret_fun_legal_guardian_id);
+        else 
+            $guardian = new RetFunLegalGuardian();                
         
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
             'beneficiaries' =>  $beneficiaries,
-            
+            'applicant' => $applicant,
+            'advisor'  =>  $advisor,
+            'legal_guardian'    =>  $guardian,            
         ];
-        return $data;
+        
         return view('ret_fun.show',$data);
     }
 
@@ -304,7 +319,7 @@ class RetirementFundController extends Controller
 
         $total = RetirementFund::select('retirement_funds.id')
                                 ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
-                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modalities_id','=','procedure_modalities.id')
+                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
                                 ->where('retirement_funds.code','LIKE',$code.'%')
                                 //->where('procedure_modalities.name','LIKE',$modality.'%')
@@ -315,7 +330,7 @@ class RetirementFundController extends Controller
                                 
         $ret_funds = RetirementFund::select('retirement_funds.id','affiliates.first_name as first_name','affiliates.last_name as last_name','procedure_modalities.name as modality','workflows.name as workflow','retirement_funds.code','retirement_funds.reception_date','retirement_funds.total')
                                 ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
-                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modalities_id','=','procedure_modalities.id')
+                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
                                 ->where('affiliates.first_name','LIKE',$first_name.'%')
                                 //->where('procedure_modalities.name','LIKE',$modality.'%')
@@ -345,6 +360,8 @@ class RetirementFundController extends Controller
                                     ->get();
         
         $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
+        if(!isset($spouse->id))
+            $spouse = new Spouse();
         $modalities = ProcedureModality::where('procedure_type_id','2')->select('id','name')->get();
         
         $kinships = Kinship::get();
@@ -359,8 +376,9 @@ class RetirementFundController extends Controller
             'cities'    =>  $cities,
             'ret'    =>  $cities,
             'spouse' =>  $spouse,
-        ];
-      
+        ];        
+        
+        //return $data;
         return view('ret_fun.create',$data);        
     }
     private function getNextCode($actual){

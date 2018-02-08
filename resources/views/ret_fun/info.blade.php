@@ -11,7 +11,7 @@
             <div class="col-md-6">
                 <dl class="dl-">
                     <dt>Modalidad:</dt>
-                    <dd>{{ $retirement_fund->procedure_modality->name }} </dd>
+                    <dd>{{-- $retirement_fund->procedure_modality->name --}} </dd>
                 </dl>
             </div>
         </div>
