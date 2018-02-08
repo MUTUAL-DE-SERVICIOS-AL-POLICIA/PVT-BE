@@ -91,6 +91,7 @@ class RetirementFundController extends Controller
         $retirement_fund->subtotal = 0;
         $retirement_fund->total = 0;
         $retirement_fund->save();                       
+
         
         foreach ($requirements  as  $requirement)
         {
@@ -392,5 +393,30 @@ class RetirementFundController extends Controller
         if(!isset($data[1]))
             return "1/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+    }
+    
+    public function printReception($id){
+       
+        //$institution = "MUTUAL DE SERVI";
+       $retirement_fund = RetirementFund::find($id);
+       
+       $title= "Fallecimiento";
+       $username = Auth::user()->username."-Recepcion";
+       $date=$retirement_fund->reception_date;//'6 de Febrero de 2018 - 10:10:48';
+       $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
+       $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();
+       //return $submitted_documents;
+//       $name='Juan';
+//       $ci='122345';
+//       $expedido='LP';
+//       $fec_nac='04 Ago. 1944';
+//       $edad='73 AÑOS';
+//       $lug_nac='SUC';
+//       
+        //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
+
+       // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
+       
+       return \PDF::loadView('ret_fun.print.reception',compact('title','username','date','applicant','submitted_documents'))->stream('recepcion.pdf');
     }
 }

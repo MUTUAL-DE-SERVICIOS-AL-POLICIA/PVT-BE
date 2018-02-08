@@ -9,18 +9,18 @@
    </tr>
    <tr >
        <td colspan="1"><strong>NOMBRE:</strong></td>
-       {{--  <td colspan="5" nowrap>{!! $name !!}</td>  --}}
+       <td colspan="5" nowrap>{!! $applicant->last_name." ".$applicant->first_name !!}</td>
    </tr>
    <tr>
        <td><strong>C.I.:</strong></td>
-       {{--  <td nowrap>{!! $eco_com_applicant->identity_card !!} {{$eco_com_applicant->city_identity_card->first_shortened ?? ''}}</td>  --}}
+       <td nowrap>{!! $applicant->identity_card !!} {{$applicant->city_identity_card->first_shortened ?? ''}}</td>
        <td><strong>DOMICILIO:</strong></td>
-       {{--  <td> {!! $eco_com_applicant->getShortBirthDate() !!}</td>  --}}
+        <td> {!! $applicant->cell_phone_number !!}</td>
    </tr>
    <tr>
        <td><strong>TELÉFONO:</strong></td>
-       {{--  <td>{!! explode(',',$eco_com_applicant->phone_number)[0] !!}<br/></td>  --}}
+       <td>{!! $applicant->phone_number !!}<br/></td>
        <td><strong>CELULAR:</strong></td>
-       {{--  <td>{!! explode(',',$eco_com_applicant->cell_phone_number)[0] !!}<br/></td>  --}}
+       <td>{!! $applicant->cell_phone_number !!}<br/></td>
    </tr>
 </table>
