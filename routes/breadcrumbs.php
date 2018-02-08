@@ -20,3 +20,9 @@ Breadcrumbs::register('show_retirement_fund', function($breadcrumbs, $retirement
 	$breadcrumbs->parent('retirement_fund');
 	$breadcrumbs->push	("Trámite Nro. ".$retirement_fund->code, URL::to('ret_fun/'.$retirement_fund->id));
 });
+
+
+Breadcrumbs::register('quota_aid_mortuary', function($breadcrumbs)
+{
+	$breadcrumbs->push('Cuota y Auxilio Mortuorio', URL::to('quota_aid'));
+});
