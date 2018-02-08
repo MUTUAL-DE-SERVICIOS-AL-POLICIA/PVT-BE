@@ -25,5 +25,47 @@
                 </div>
             </div>
         </div>
+        <div class="panel-body" v-else>
+            <div class="sk-folding-cube" v-show="show_spinner">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="dl-">
+                        <dt>Estado:</dt>
+                        <dd>
+                            {!! Form::select('affilate_state_id', $affiliate_states, null, ['placeholder' => 'Seleccione un estado', 'class' => 'form-control',
+                            'v-model' => 'form.affiliate_state' ]) !!}
+                        </dd>
+                        <dt>Tipo:</dt>
+                        <dd><input type="text" class="form-control" v-model="form.affiliate_type"></dd>
+                        <dt>Fecha de Ingreso a la Institucional Policial:</dt>
+                        <dd> <input type="text" class="form-control" v-model="form.affiliate_date_entry"></dd>
+                        <dt>Numero de Item:</dt>
+                        <dd> <input type="text" class="form-control" v-model="form.affiliate_item"></dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="dl-">
+                        <dt>Categoria:</dt>
+                        <dd>{!! Form::select('category_id', $categories, null, ['placeholder' => 'Seleccione una categoria',
+                            'class' => 'form-control', 'v-model' => 'form.affiliate_category']) !!}</dd>
+                        <dt>Grado:</dt>
+                        <dd>
+                            {!! Form::select('degree_id', $degrees, null, ['placeholder' => 'Seleccione un Grado', 'class' => 'form-control' , 'v-model'
+                            => 'form.affiliate_degree' ]) !!}
+                        </dd>
+                        <dt>Ente gestor:</dt>
+                        <dd>
+                            {!! Form::select('pension_entity_id', $pension_entities, null, ['placeholder' => 'Seleccione el Ente Gestor', 'class' =>
+                            'form-control', 'v-model' => 'form.affiliate_pension_entity' ]) !!}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -53,6 +53,7 @@ class RetirementFundController extends Controller
      */
     public function store(Request $request)
     {
+        
         $requirements = ProcedureRequirement::select('id')->get();        
         
         $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled',true)->select('id')->first();
@@ -76,28 +77,28 @@ class RetirementFundController extends Controller
             $code=$this->getNextCode ("");
         else        
             $code=$this->getNextCode ($ret_fund->code);
-        $retirement_found = new RetirementFund();
-        $retirement_found->user_id = Auth::user()->id;
-        $retirement_found->affiliate_id = $request->affiliate_id;
-        $retirement_found->procedure_modality_id = $request->ret_fun_modality;
-        $retirement_found->ret_fun_procedure_id = $procedure->id;
-        $retirement_found->city_start_id = Auth::user()->city_id;
-        $retirement_found->city_end_id = Auth::user()->city_id;
-        $retirement_found->code = $code;
-        $retirement_found->workflow_id = 4;
-        $retirement_found->wf_state_current_id = 1;
-        $retirement_found->reception_date = date('Y-m-d');
-        //$retirement_found->type = "Pago"; default value
-        $retirement_found->subtotal = 0;
-        $retirement_found->total = 0;
-        $retirement_found->save();
+        $retirement_fund = new RetirementFund();
+        $retirement_fund->user_id = Auth::user()->id;
+        $retirement_fund->affiliate_id = $request->affiliate_id;
+        $retirement_fund->procedure_modality_id = $request->ret_fun_modality;
+        $retirement_fund->ret_fun_procedure_id = $procedure->id;
+        $retirement_fund->city_start_id = Auth::user()->city_id;
+        $retirement_fund->city_end_id = Auth::user()->city_id;
+        $retirement_fund->code = $code;
+        $retirement_fund->workflow_id = 4;
+        $retirement_fund->wf_state_current_id = 1;
+        //$retirement_fund->type = "Pago"; default value
+        $retirement_fund->subtotal = 0;
+        $retirement_fund->total = 0;
+        $retirement_fund->save();                       
+
         
         foreach ($requirements  as  $requirement)
         {
             if($request->input('document'.$requirement->id) == 'checked')
             {
                 $submit = new RetFunSubmittedDocument();
-                $submit->retirement_fund_id = $retirement_found->id;
+                $submit->retirement_fund_id = $retirement_fund->id;
                 $submit->procedure_requirement_id = $requirement->id;
                 $submit->reception_date = date('Y-m-d');
                 $submit->comment = $request->input('comment'.$requirement->id);                
@@ -107,7 +108,7 @@ class RetirementFundController extends Controller
         $account_type = $request->input('accountType');    
 
         $beneficiary = new RetFunBeneficiary();
-        $beneficiary->retirement_fund_id = $retirement_found->id;
+        $beneficiary->retirement_fund_id = $retirement_fund->id;
         $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;
         $beneficiary->kinship_id = $request->applicant_kinship;
         $beneficiary->identity_card = $request->applicant_identity_card;
@@ -125,7 +126,7 @@ class RetirementFundController extends Controller
         if($account_type == '2')
         {
             $advisor = new RetFunAdvisor();
-            //$advisor->retirement_fund_id = $retirement_found->id;
+            //$advisor->retirement_fund_id = $retirement_fund->id;
             $advisor->city_identity_card_id = $request->applicant_city_identity_card;
             $advisor->kinship_id = null;
             $advisor->identity_card = $request->applicant_identity_card;
@@ -152,7 +153,7 @@ class RetirementFundController extends Controller
         if($account_type == '3')
         {
             $legal_guardian = new RetFunLegalGuardian();
-            $legal_guardian->retirement_fund_id = $retirement_found->id;
+            $legal_guardian->retirement_fund_id = $retirement_fund->id;
             $legal_guardian->city_identity_card_id = $request->applicant_city_identity_card;            
             $legal_guardian->identity_card = $request->applicant_identity_card  ;
             $legal_guardian->last_name = $request->applicant_last_name;
@@ -200,7 +201,7 @@ class RetirementFundController extends Controller
         for($i=0;$i<sizeof($first_name);$i++){
             if($first_name[$i] != "" && $last_name[$i] != ""){
                 $beneficiary = new RetFunBeneficiary();
-                $beneficiary->retirement_fund_id = $retirement_found->id;
+                $beneficiary->retirement_fund_id = $retirement_fund->id;
                 $beneficiary->city_identity_card_id = $city_id[$i];
                 $beneficiary->kinship_id = $kinship[$i];
                 $beneficiary->identity_card = $identity_card[$i];
@@ -221,10 +222,9 @@ class RetirementFundController extends Controller
         
         
         $data = [
-            
         ];
         
-        return view('ret_fun.show',$data);        
+        return redirect('ret_fun/'.$retirement_fund->id);
         
     }
 
@@ -259,13 +259,15 @@ class RetirementFundController extends Controller
         else 
             $guardian = new RetFunLegalGuardian();                
         
+        $procedures_modalities = ProcedureModality::all();
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
             'beneficiaries' =>  $beneficiaries,
             'applicant' => $applicant,
             'advisor'  =>  $advisor,
-            'legal_guardian'    =>  $guardian,            
+            'legal_guardian'    =>  $guardian,
+            'procedure_modalities' => $procedures_modalities,          
         ];
         
         return view('ret_fun.show',$data);
@@ -348,14 +350,14 @@ class RetirementFundController extends Controller
     
     public function generateProcedure(Affiliate $affiliate){  
         
-        $affiliate = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
                  
         $procedure_requirements = ProcedureRequirement::
                                     select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
-                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')                                    
+                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
