@@ -3,6 +3,7 @@
 namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Muserpol\Models\AffiliateFolder;
 
 class AffiliateFolderController extends Controller
 {
@@ -35,6 +36,13 @@ class AffiliateFolderController extends Controller
     public function store(Request $request)
     {
         //
+        $folder = new AffiliateFolder;
+        $folder->affiliate_id = $request->affiliate_id;
+        $folder->procedure_modality_id = $request->procedure_modality_id;
+        $folder->code_file = $request->code_file;
+        $folder->folder_number = $request->folder_number;
+        $folder->save();
+        return back()->withInput();
     }
 
     /**
