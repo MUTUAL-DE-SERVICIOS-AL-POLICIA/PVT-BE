@@ -23,23 +23,23 @@
                     icon="mdi mdi-format-list-checks"
                     {{--  :before-change="validateAsync"  --}}
                     >
-                        <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" inline-template>
-                            @include('ret_fun.step1_requirements')
-                        </ret-fun-step1-requirements>
+                        <quota-aid-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" inline-template>
+                            @include('quota_aid.step1_requirements')
+                        </quota-aid-step1-requirements>
                     </tab-content>
                     <tab-content
                         title="Datos del Solicitante"
                         icon="mdi mdi-account-edit">
-                        <ret-fun-step2-applicant :cities="{{ $cities }}" inline-template>
-                            @include('ret_fun.step2_applicant')
-                        </ret-fun-step2-applicant>
+                        <quota-aid-step2-applicant :cities="{{ $cities }}" inline-template>
+                            @include('quota_aid.step2_applicant')
+                        </quota-aid-step2-applicant>
                     </tab-content>
                     <tab-content
                     title="Datos de los Derechohabientes"
                     icon="mdi mdi-account-multiple-plus">
-                    <ret-fun-step3-beneficiaries :items="{{ $ret }}" inline-template>
-                        @include('ret_fun.step3_beneficiaries')
-                    </ret-fun-step3-beneficiaries>
+                    <quota-aid-step3-beneficiaries :items="{{ $ret }}" inline-template>
+                        @include('quota_aid.step3_beneficiaries')
+                    </quota-aid-step3-beneficiaries>
                 </tab-content>
                 {!! Form::submit('Click Me!') !!}
             </form-wizard>
