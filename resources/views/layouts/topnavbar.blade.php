@@ -8,13 +8,13 @@
                 </div>
             </form>
         </div>
-        <ul class="nav navbar-top-links navbar-right">
+        {{--  <ul class="nav navbar-top-links navbar-right">
             <li>
                 <a href="login.html">
                     <i class="fa fa-sign-out"></i> Log out
                 </a>
             </li>
-        </ul>
+        </ul>  --}}
 
     </nav>
 </div>

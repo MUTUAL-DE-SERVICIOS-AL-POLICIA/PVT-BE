@@ -10,7 +10,7 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row text-center">
-        <a href="{{route('create_ret_fun', $affiliate->id)}}">
+        <a href="{{route('create_ret_fun', $affiliate->id)}}" data-toggle="tooltip" data-placement="top" title="Crear Tramite de Fondo de Retiro">
             <button class="btn btn-info  dim" type="button"><i class="fa fa-paste"></i> </button>
         </a>
     </div>

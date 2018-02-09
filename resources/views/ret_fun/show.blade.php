@@ -25,7 +25,6 @@
             <input type="button" class="btn btn-info" value="Generar PDF"  target="_blank" onclick="location.href = '{{asset("ret_fun/".$retirement_fund->id."/print/reception")}}';">
         </div>
 
-        <button class="btn btn-danger  dim " type="button"><i class="fa fa-heart"></i></button>  
     </div>
     <div class="row">
         <div class="col-md-6">
