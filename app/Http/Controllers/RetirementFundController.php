@@ -20,6 +20,8 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunBeneficiaryLegalGuardian;
+use DateTime;
+use Muserpol\User;
 
 class RetirementFundController extends Controller
 {
@@ -394,15 +396,31 @@ class RetirementFundController extends Controller
             return "1/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
-    
+    private function getStringDate($string = "1800/01/01"){        
+        setlocale(LC_TIME, 'es_ES.utf8');        
+        $date = DateTime::createFromFormat("Y-m-d", $string);
+        if($date)
+            return strftime("%d de %B de %Y",$date->getTimestamp());
+        else 
+            return "sin fecha";
+        
+    }
     public function printReception($id){
        
-        //$institution = "MUTUAL DE SERVI";
+        
+        //$institution = "MUTUAL DE SERVI";tume abriste las heridad que ya daba por cuidaradas
+        //no quiero caer denuevo quein puede hablar del amor y defenerl que lea
        $retirement_fund = RetirementFund::find($id);
+       return $retirement_fund->procedure_modality->name;
+       //$modality = ProcedureModality::find();
+       //$type = 
+       //$user = User::find($retirement_fund->user_id);
        
        $title= "Fallecimiento";
        $username = Auth::user()->username."-Recepcion";
-       $date=$retirement_fund->reception_date;//'6 de Febrero de 2018 - 10:10:48';
+       //return $retirement_fund->reception_date;
+       $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';
+       //return $date;
        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
        $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();
        //return $submitted_documents;

@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth'], function() {
 
 
 	//QuotaAidMortuory
-	Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure');
+	Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
 	Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
 	Route::resource('quota_aid', 'QuotaAidMortuaryController');
 
