@@ -212,7 +212,7 @@
                         <div class="col-sm-8"><input type="text" name="beneficiary_number_address" v-model="beneficiary_number_address" class="form-control"></div>
                     </div>
                 </div>
-</div>
+            </div>
         </div>
-</div>
+    </div>
 </div>
