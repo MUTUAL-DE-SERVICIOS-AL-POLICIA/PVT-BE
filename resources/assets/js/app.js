@@ -33,6 +33,7 @@ Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
 //retirement Fund
 
 Vue.component('ret-fun-index', require('./components/ret_fun/Index.vue'));
+Vue.component('ret-fun-form', require('./components/ret_fun/Form.vue'));
 Vue.component('ret-fun-step1-requirements', require('./components/ret_fun/Step1Requirements.vue'));
 Vue.component('ret-fun-step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
 Vue.component('ret-fun-step3-beneficiaries', require('./components/ret_fun/Step3Beneficiaries.vue'));

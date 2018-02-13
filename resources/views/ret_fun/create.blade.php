@@ -18,27 +18,28 @@
         </div>
         <div class="col-md-12">
             <div class="ibox-content">
-                {!! Form::open(['url' => 'ret_fun', 'method' => 'POST']) !!}
+                {!! Form::open(['url' => 'ret_fun', 'method' => 'POST', 'id'=>'ret-fun-form']) !!}
                 <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
-                <form-wizard color="#1AB394" title="" subtitle="" back-button-text="Volver" next-button-text="Siguiente" finish-button-text="Finish"
-                    error-color="#ED5565">
-                    <tab-content title="Modalidad y Requisitos" icon="mdi mdi-format-list-checks">
-                        <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" inline-template>
-                            @include('ret_fun.step1_requirements')
-                        </ret-fun-step1-requirements>
-                    </tab-content>
-                    <tab-content title="Datos del Solicitante" icon="mdi mdi-account-edit">
-                        <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
-                            @include('ret_fun.step2_applicant')
-                        </ret-fun-step2-applicant>
-                    </tab-content>
-                    <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
-                        <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
-                            @include('ret_fun.step3_beneficiaries')
-                        </ret-fun-step3-beneficiaries>
-                    </tab-content>
-                    {!! Form::submit('Click Me!') !!}
-                </form-wizard>
+                <ret-fun-form inline-template>
+                    <form-wizard color="#1AB394" title="" subtitle="" back-button-text="Volver" next-button-text="Siguiente" finish-button-text="Finalizar"
+                        error-color="#ED5565" @on-complete="onFinish"  >
+                        <tab-content title="Modalidad y Requisitos" icon="mdi mdi-format-list-checks">
+                            <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" inline-template>
+                                @include('ret_fun.step1_requirements')
+                            </ret-fun-step1-requirements>
+                        </tab-content>
+                        <tab-content title="Datos del Solicitante" icon="mdi mdi-account-edit">
+                            <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
+                                @include('ret_fun.step2_applicant')
+                            </ret-fun-step2-applicant>
+                        </tab-content>
+                        <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
+                            <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
+                                @include('ret_fun.step3_beneficiaries')
+                            </ret-fun-step3-beneficiaries>
+                        </tab-content>
+                    </form-wizard>
+                </ret-fun-form>
                 {!! Form::close() !!}
             </div>
         </div>
