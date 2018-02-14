@@ -32,7 +32,7 @@ class SearcherController
         ];      
         $this->select = "*";
     }
-    public function search($id)
+    public function search($ci)
     {
         $this->getDefaults();                
         foreach ($this->tables as $table){
