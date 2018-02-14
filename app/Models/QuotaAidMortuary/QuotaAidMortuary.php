@@ -51,6 +51,6 @@ class QuotaAidMortuary extends Model
     }
     public function quota_aid_observation()
     {
-        return $this->hasMany('Muserpol\Models\quota_aid_observation');
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
     }
 }

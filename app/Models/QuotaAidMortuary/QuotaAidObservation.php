@@ -8,6 +8,6 @@ class QuotaAidObservation extends Model
 {
     public function quota_aid_mortuary()
     {
-        return $this -> belongsTo ('Muserpol\Models\QuotaAidMortuary');
+        return $this -> belongsTo ('Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary');
     }
 }
