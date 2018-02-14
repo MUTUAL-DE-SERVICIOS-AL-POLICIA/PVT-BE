@@ -6,7 +6,6 @@
                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
             </div>
         </div>
-
         <div class="panel-body " v-if="! editing">
             <div class="col-md-6">
                 <dl class="dl-">
