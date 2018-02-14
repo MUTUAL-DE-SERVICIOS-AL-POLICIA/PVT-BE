@@ -9,6 +9,7 @@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
+    
     <div class="row text-center">
         <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción"><i class="fa fa-print"></i></button>
         {{-- <button class="btn btn-warning dim" type="button"><i class="fa fa-warning"></i></button>

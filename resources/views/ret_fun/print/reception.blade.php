@@ -6,7 +6,7 @@
     <div>
     @include('ret_fun.print.applicant_info')
 
-    <span>Señor
+    <span>Señor:
             CNL. DESP. JHONNY DONATO CORONEL AYALA<br>
             <strong>
                 DIRECTOR GENERAL EJECUTIVO<br>
@@ -36,7 +36,7 @@
         </tr>
         @foreach($submitted_documents as $i=>$item)
             <tr>
-                <td style='text-align:center;'> <h3>{!! ++$i !!}</h3></td>
+                <td style='text-align:center;'> <h3>{!! $item->procedure_requirement->number !!}</h3></td>
                 <td style='text-align:center;'> <h3>{!! $item->procedure_requirement->procedure_document->name !!} </h3></td>
                 @if (true)
                     <td class="info" style='text-align:center;'>
