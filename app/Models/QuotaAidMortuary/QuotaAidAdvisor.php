@@ -34,7 +34,7 @@ class QuotaAidAdvisor extends Model
     }
     public function quota_aid_observation()
     {
-        return $this->belongsTo('Muserpol\Models\quota_aid_observation');
+        return $this->belongsTo('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
     }
     
 }

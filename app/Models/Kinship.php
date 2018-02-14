@@ -22,6 +22,6 @@ class Kinship extends Model
     }
     public function quota_aid_advisor()
     {
-        return $this->hasMany('Muserpol\Models\QuotaAidAdvisor');
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisor');
     }
 }
