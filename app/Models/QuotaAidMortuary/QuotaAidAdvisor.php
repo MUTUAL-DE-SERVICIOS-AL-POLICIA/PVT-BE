@@ -26,10 +26,15 @@ class QuotaAidAdvisor extends Model
     ];
     public function city_identity_card()
     {
-        return $this->belongsTo(City::class, 'city_identity_card_id', 'id');
+        return $this->belongsTo(City::class, 'city_identity_card_id','id');
     }
     public function kinship()
     {
         return $this->belongsTo('Muserpol\Models\Kinship');
     }
+    public function quota_aid_observation()
+    {
+        return $this->belongsTo('Muserpol\Models\quota_aid_observation');
+    }
+    
 }
