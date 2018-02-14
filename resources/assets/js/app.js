@@ -7,6 +7,7 @@
 
 require('./bootstrap');
 require('./inspinia');
+require('print-js')
 
 window.Vue = require('vue');
 
