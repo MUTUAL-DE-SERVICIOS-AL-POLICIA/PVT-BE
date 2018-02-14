@@ -20,4 +20,8 @@ class Kinship extends Model
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetFunApplicant');
     }
+    public function quota_aid_advisor()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidAdvisor');
+    }
 }
