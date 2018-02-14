@@ -32,11 +32,11 @@ class SearcherController
         ];      
         $this->select = "*";
     }
-    public function search($id)
+    public function search($ci)
     {
         $this->getDefaults();                
         foreach ($this->tables as $table){
-            $person = $table->where('identity_card',$id)->select($this->select)->first();
+            $person = $table->where('identity_card',$ci)->select($this->select)->first();
             if(isset($person->id))
                break;                
         }        
