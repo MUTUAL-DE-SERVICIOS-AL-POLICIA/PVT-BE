@@ -30,6 +30,9 @@
             }
         },
         methods:{
+            onChooseModality(){
+                events.$emit()
+            },
           hello:function(){
 
               //            requirementsList(requirements){
