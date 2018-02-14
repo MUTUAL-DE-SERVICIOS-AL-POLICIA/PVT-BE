@@ -14,7 +14,7 @@
                     <dt>Ciudad de Recepcion:</dt>
                     <dd>{{ $retirement_fund->city_start->name ?? '' }} </dd>
                     <dt>Fecha de Recepcion:</dt>
-                    <dd>{{ $retirement_fund->city_start->name ?? '' }} </dd>
+                    <dd>{{ $retirement_fund->reception_date ?? '' }} </dd>
                     <dt>Regional:</dt>
                     <dd>{{ $retirement_fund->city_end->name ?? '' }} </dd>
                 </dl>
