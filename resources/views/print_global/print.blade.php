@@ -16,10 +16,9 @@
                 <th style="width: 50%;border: 0px">
                     <h4>
                         <b>
-                            <u>
-                                MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"<br>
-                                DIRECCIÓN DE BENEFICIOS ECONOMICOS<br>
-                                UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO<br>
+                            <u>                              
+                                {{$header}}                               
+                                
                             </u>
                         </b>
                     </h4>

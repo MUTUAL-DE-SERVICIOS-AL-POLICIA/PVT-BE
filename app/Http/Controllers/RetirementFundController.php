@@ -407,16 +407,19 @@ class RetirementFundController extends Controller
     }
     public function printReception($id){
        
-        
-        //$institution = "MUTUAL DE SERVI";tume abriste las heridad que ya daba por cuidaradas
-        //no quiero caer denuevo quein puede hablar del amor y defenerl que lea
+       
+        //$institution = "MUTUAL DE SERVI";        
        $retirement_fund = RetirementFund::find($id);
-       return $retirement_fund->procedure_modality->name;
+       $header = "MUTIAL DE SERVICIOS AL POLIC&Iacute;A \"MUSERPOL\" DIRECCI&Oacute;N DE BENEFICIOS ECON&Oacute;MICOS UNIDAD DE OTORGACI&Oacute;N DE FONDO DE RETIRO POLICIAL, ".strtoupper($retirement_fund->procedure_modality->name);
+       $title = "REQUISITOS DEL BENEFICIO DE ".strtoupper($retirement_fund->procedure_modality->name)." – CUMPLIMIENTO DE SUS FUNCIONES N°";
+       $number = "1";
+       //$ref
+       //return $retirement_fund->procedure_modality->name;
        //$modality = ProcedureModality::find();
        //$type = 
-       //$user = User::find($retirement_fund->user_id);
+        //$user = User::find($retirement_fund->user_id);
        
-       $title= "Fallecimiento";
+       //$title= "Fallecimiento";
        $username = Auth::user()->username."-Recepcion";
        //return $retirement_fund->reception_date;
        $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';
@@ -435,6 +438,6 @@ class RetirementFundController extends Controller
 
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
        
-       return \PDF::loadView('ret_fun.print.reception',compact('title','username','date','applicant','submitted_documents'))->stream('recepcion.pdf');
+       return \PDF::loadView('ret_fun.print.reception',compact('title','username','date','applicant','submitted_documents','header','number'))->stream('recepcion.pdf');
     }
 }
