@@ -405,39 +405,18 @@ class RetirementFundController extends Controller
             return "sin fecha";
         
     }
-    public function printReception($id){
-       
-       
-        //$institution = "MUTUAL DE SERVI";        
+    public function printReception($id){                      
        $retirement_fund = RetirementFund::find($id);
        $header = "MUTIAL DE SERVICIOS AL POLIC&Iacute;A \"MUSERPOL\" DIRECCI&Oacute;N DE BENEFICIOS ECON&Oacute;MICOS UNIDAD DE OTORGACI&Oacute;N DE FONDO DE RETIRO POLICIAL, ".strtoupper($retirement_fund->procedure_modality->name);
        $title = "REQUISITOS DEL BENEFICIO DE ".strtoupper($retirement_fund->procedure_modality->name)." – CUMPLIMIENTO DE SUS FUNCIONES N°";
-       $number = "1";
-       //$ref
-       //return $retirement_fund->procedure_modality->name;
-       //$modality = ProcedureModality::find();
-       //$type = 
-        //$user = User::find($retirement_fund->user_id);
-       
-       //$title= "Fallecimiento";
-       $username = Auth::user()->username."-Recepcion";
-       //return $retirement_fund->reception_date;
-       $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';
-       //return $date;
+       $number = "1";     
+       $username = Auth::user()->username."-Recepcion";      
+       $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
-       $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();
-       //return $submitted_documents;
-//       $name='Juan';
-//       $ci='122345';
-//       $expedido='LP';
-//       $fec_nac='04 Ago. 1944';
-//       $edad='73 AÑOS';
-//       $lug_nac='SUC';
-//       
+       $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
 
-       // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
-       
+       // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
        return \PDF::loadView('ret_fun.print.reception',compact('title','username','date','applicant','submitted_documents','header','number'))->stream('recepcion.pdf');
     }
 }

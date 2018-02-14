@@ -21,12 +21,8 @@
                 }
             }
         },
-        mounted(){
-            console.log("hello world");
-        },
         methods:{
             edit_first_name: function(){
-                console.log(this.first_name.value)
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
