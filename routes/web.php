@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
 	Route::resource('ret_fun', 'RetirementFundController');
 	Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');        
-        Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundController@printReception');
+        Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundController@printReception')->name('ret_fun_print_reception');
 	Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->name('create_ret_fun');
 
 
