@@ -47,6 +47,9 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::resource('quota_aid', 'QuotaAidMortuaryController');
 
 	Route::resource('affiliate_folder','AffiliateFolderController');
+        
+        //searcherController
+        Route::get('search/{ci}','SearcherController@search');
 	
 });
 
