@@ -6,7 +6,7 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {{ Breadcrumbs::render('affiliate') }}
+        {{ Breadcrumbs::render('quota_aid_mortuary') }}
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">

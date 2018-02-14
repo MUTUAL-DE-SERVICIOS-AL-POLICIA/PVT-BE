@@ -4,7 +4,7 @@
 @endsection  --}}
 @section('content')
     <div>
-    @include('ret_fun.print.applicant_inf')
+    @include('ret_fun.print.applicant_info')
 
     <span>Señor
             CNL. DESP. JHONNY DONATO CORONEL AYALA<br>
@@ -34,21 +34,21 @@
             <th width="85%"><strong>REQUISITOS</strong></th>
             <th width="10%"><strong>V°B°</strong></th>
         </tr>
-        {{--  @foreach($eco_com_submitted_document as $i=>$item)
+        @foreach($submitted_documents as $i=>$item)
             <tr>
-                <td style='text-align:center;'> <h3>{!! $i+1 !!}</h3></td>
-                <td style='text-align:center;'> <h3>{!! $item->economic_complement_requirement->shortened !!} </h3></td>
-                @if ($item->status == 1)
+                <td style='text-align:center;'> <h3>{!! ++$i !!}</h3></td>
+                <td style='text-align:center;'> <h3>{!! $item->procedure_requirement->procedure_document->name !!} </h3></td>
+                @if (true)
                     <td class="info" style='text-align:center;'>
-                        <img class="circle" src="img/check.png" style="width:70%" alt="icon">
+                        <img class="circle" src="{{asset('images/check.png')}}" style="width:70%" alt="icon">
                     </td>
                 @else
                     <td class="info" style='text-align:center;'>
-                        <img class="circle" src="img/uncheck.png" style="width:60%" alt="icon">  
+                        <img class="circle" src="images/uncheck.png" style="width:60%" alt="icon">  
                     </td>
                 @endif
             </tr>
-        @endforeach  --}}
+        @endforeach
     </table>
     <table class="no-border">
             <td>
@@ -66,11 +66,11 @@
         </tr>
         <tr>
             <th class="info" style="border: 0px;text-align:center;">
-                {{--  <b>
-                    {!! $eco_com_applicant->getTitleNameFull() !!}<br/>
-                    C.I. {!! $eco_com_applicant->identity_card !!} {!! $eco_com_applicant->city_identity_card->first_shortened !!} <br/>
-                    Teléfono: {!! $eco_com_applicant->getPhone() !!}
-                </b>  --}}
+                <b>
+                    {!! $applicant->last_name." ".$applicant->first_name !!}<br/>
+                    C.I. {!! $applicant->identity_card !!} {!! $applicant->city_identity_card->first_shortened !!} <br/>
+                    {{-- Teléfono: {!! $eco_com_applicant->getPhone() !!} --}}
+                </b>
             </th>        
         </tr>
     </table>

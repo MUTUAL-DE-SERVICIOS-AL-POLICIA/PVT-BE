@@ -10,7 +10,7 @@
             <tr>
                 <th style="width: 25%;border: 0px;">
                     <div id="logo">
-                        <img src="{{ asset('images/logo.jpg') }}" >
+                        <img src="{{ asset('images/logo.jpg') }}" width="100" height="100"
                     </div>
                 </th>
                 <th style="width: 50%;border: 0px">
@@ -26,7 +26,7 @@
                 </th>
                 <th style="width: 25%;border: 0px">
                     <div id="logo2">
-                        <img src="{{ asset('images/escudo.jpg') }}" >
+                        <img src="{{ asset('images/escudo.jpg') }}" width="100" height="100">
                     </div>
                 </th>
             </tr>
@@ -38,7 +38,7 @@
                         <b>
                             Fecha Emisión:
                         </b>
-                        {!! $fec_emi !!}
+                        {!! $date !!}
                     </div>
                 </td>
                 {{--  @if(isset($user))  --}}
@@ -47,7 +47,7 @@
                         <b>
                             Usuario: 
                         </b> 
-                        {!! $usuario !!} <br>
+                        {!! $username !!} <br>
                     </div>
                 </td>
                 {{--  @endif  --}}
