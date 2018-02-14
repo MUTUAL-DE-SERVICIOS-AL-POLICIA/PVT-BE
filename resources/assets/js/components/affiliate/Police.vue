@@ -3,9 +3,6 @@
 		props:[
 			'affiliate'
 		],
-		mounted(){
-			console.log("police information");
-		},
 		data(){
 			return{
 				show_spinner:false,

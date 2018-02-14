@@ -10,7 +10,10 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row text-center">
-        <a href="{{route('create_ret_fun', $affiliate->id)}}">
+        <a href="{{route('create_ret_fun', $affiliate->id)}}" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO">
+            <button class="btn btn-info  dim" type="button" ><i class="fa fa-paste"></i> </button>
+        </a>
+        <a href="{{route('create_quota_aid', $affiliate->id)}}" data-toggle="tooltip" data-placement="top" title="Initar tr&aacute;mite de CUOTA Y AUXILIO MORTUORIO">
             <button class="btn btn-info  dim" type="button"><i class="fa fa-paste"></i> </button>
         </a>
     </div>
