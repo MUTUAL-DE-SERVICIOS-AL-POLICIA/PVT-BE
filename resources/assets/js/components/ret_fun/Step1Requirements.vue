@@ -3,7 +3,9 @@
 	export default{
 		props:[
 			'modalities',
-                        'requirements'
+            'requirements',
+            'user',
+            'cities'
 		],
         data(){
             return{
@@ -13,6 +15,7 @@
                 show_spinner: false,
                 modality_id: 3,
                 actual_target: 1,
+                city_end_id: this.user.city_id,
                 //requirement_list: [],
                 
 //                form:{
