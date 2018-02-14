@@ -1,5 +1,5 @@
 <div class="title2">
-   <strong class="code">Trámite Nº:  </strong>
+   <strong class="code">Trámite Nº:  {{$number}}</strong>
 </div>
 <table class="table" style="width:100%;">
    <tr>
