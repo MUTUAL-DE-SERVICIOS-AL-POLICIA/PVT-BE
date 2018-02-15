@@ -1,19 +1,37 @@
 
-<div class="inline">
+{{--  <div class="inline">
     <span class="rounded-tl bg-grey-darker border px-15 py-4">
-        holas
+        PRIMER NOMBRE
     </span>
     <span class="bg-grey-darker border px-15 py-4">
-        holas
+        SEGUNDO NOMBRE
+    </span>
+    <span class="bg-grey-darker border px-15 py-4">
+        PRIMER APELLIDO
+    </span>
+    <span class="bg-grey-darker border px-15 py-4">
+        SEGUNDO APELLIDO
     </span>
     <span class="rounded-tr bg-grey-darker border px-15 py-4">
-        holas
+        APELLIDO CASADA
     </span>
-</div>
-<table class="w-100 table-collapse border">
+</div>  --}}
+<table class="w-100 table-collapse">
     <tr>
-        <td colspan="6" class="border border-black border-solid text-center py-4 bg-grey-darker">
-            <span class="font-bold uppercase">INFORMACIÓN DEL BENEFICIARIO</span>
+        <td class="rounded-tl bg-grey-darker px-15 py-4">
+            PRIMER NOMBRE
+        </td>
+        <td class="bg-grey-darker px-15 py-4">
+            SEGUNDO NOMBRE
+        </td>
+        <td class="bg-grey-darker px-15 py-4">
+            PRIMER APELLIDO
+        </td>
+        <td class="bg-grey-darker px-15 py-4">
+            SEGUNDO APELLIDO
+        </td>
+        <td class="rounded-tr bg-grey-darker px-15 py-4">
+            APELLIDO CASADA
         </td>
     </tr>
     <tr>
