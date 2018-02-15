@@ -266,3 +266,7 @@ table {
 .rounded-tr{
   border-top-right-radius: .7rem;
 }
+
+.list-roman{
+  list-style-type:upper-roman;
+}
