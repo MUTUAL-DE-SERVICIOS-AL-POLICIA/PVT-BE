@@ -435,25 +435,6 @@ class RetirementFundController extends Controller
     //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','applicant','submitted_documents','header','number'));
        return \PDF::loadView('ret_fun.print.reception',compact('title', 'institution', 'direction','unit','username','date','modality','applicant','submitted_documents','header','number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
     }
-    public function legalReview($id){
-        $retirement_fund = RetirementFund::find($id);
-        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
-        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
-                              ->leftJoin('degrees','affiliates.id','=','degrees.id')
-                              ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-                              ->find($retirement_fund->affiliate_id);
-                
-        $data = [
-            'retirement_fund'   => $retirement_fund,
-            'documents' =>  $documents,
-            'affiliate' =>  $affiliate,
-        ];
-        return view('ret_fun.legal_review',$data);
-        foreach ($documents as $document)
-            echo $document->procedure_requirement->procedure_document->name. "<br>";
-        return 0;
-        return $data;
-    }
     public function storeLegalReview(Request $request,$id){
         //return 0;
         $retirement_fund = RetirementFund::find($id);
