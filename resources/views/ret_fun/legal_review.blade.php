@@ -1,55 +1,66 @@
-@extends('layouts.app')
-@section('title', 'Afiliados')
-@section('content')
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
-        {{-- {{ Breadcrumbs::render('show_affiliate', $affiliate) }} --}}
-    </div>
-</div>
-<div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <div class="col-md-12">
-            <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
-    @include('affiliates.simple_info', ['affiliate'=>$affiliate])
-            </affiliate-police>
+<div class="col-lg-12">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="pull-left">Documentos Presentados</h3>
+            <div class="text-right">
+                <button type="button" class="btn btn-primary" onclick="editLegalReview()">
+                     <i class="fa fa-search"> </i>     
+                </button>
+            </div>
         </div>
-        <div class="col-md-12">
-            <div class="ibox-content">
-                {{--!! Form::open(['url' => 'store_ret_fun_legal_review_create', 'method' => 'POST', 'id'=>$retirement_fund->id]) !!--}}
-                <form action="{{asset('ret_fun/'.$retirement_fund->id.'/legal_review/create')}}" method="POST">
-                {{ csrf_field() }}
-                <input type="hidden" name="retirement_fund_id" value="{{$retirement_fund->id}}">
-                <table class="table">
-                    <thead>
-                      <tr>
+        
+        <div class="panel-body">
+          <form action="{{asset('ret_fun/'.$retirement_fund->id.'/legal_review/create')}}" method="POST">
+            {{ csrf_field() }}
+            <div class="row">
+                <div class="ibox-content table-responsive">                    
+                    <table class="table">
+                        <thead>
+                         <tr>
                         <th class="col-md-1">N°</th>
                         <th class="col-md-9">Documentaci&oacute;n Presentada</th>
                         <th class="col-md-2">V°B°</th>
                       </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($documents as $document)                            
+                        </thead>
+                         <tbody>
+                            @foreach($documents as $document)                            
                             <tr>
                               <td>{{$document->procedure_requirement->number}}</td>
                               <td>{{$document->procedure_requirement->procedure_document->name}}</td>
                               <td class="text-center">
                                   <div class="checkbox">
-                                      <input type="checkbox" value="1"  name="document{{$document->id}}">
+                                      <input type="checkbox" class="documents_check" value="1"@if($document->is_valid) checked @endif name="document{{$document->id}}" disabled>
                                   </div>
                               </td>
                             </tr>
                             <tr>
                                 <td>Observaciones:</td>
-                                <td><input type="text" name="comment{{$document->id}}" class="from-control col-md-12" value="{{$document->comment}}"> </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                  </table>
-                <input type="submit" class="btn btn-info" value="CERTIFICAR">
-                </form>
-                {{--!! Form::close() !!--}}
+                                <td>
+                                    <p class="documents_comment_text">{{$document->comment}}</p>
+                                    <input type="text" style="display: none;" name="comment{{$document->id}}" class="from-control col-md-12 documents_comment" value="{{$document->comment}}"> 
+                                </td>
+                            </tr> 
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+              <input type="submit" class="btn btn-success documents_button col-md-6" style="display: none;" value="Guardar">
+              <input class="btn btn-info documents_button col-md-6" style="display: none;" onclick="editLegalReview()" value="cancelar">
+          </form>
+        </div>      
     </div>
 </div>
-@endsection
+<script>
+function editLegalReview(){
+ $('.documents_comment').toggle();
+ $('.documents_comment_text').toggle();
+ $('.documents_button').toggle();
+ $('.documents_check').each(function(i, obj) {              
+     if($(this).prop('disabled'))
+         $(this).attr('disabled', false);
+     else
+         $(this).attr('disabled', true);
+ }); 
+}
+</script> 

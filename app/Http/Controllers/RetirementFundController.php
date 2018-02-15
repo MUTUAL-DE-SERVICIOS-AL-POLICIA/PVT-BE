@@ -266,6 +266,7 @@ class RetirementFundController extends Controller
 
         $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
         $procedures_modalities = ProcedureModality::whereIn('id',$procedures_modalities_ids)->get();
+        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
 
         $data = [
             'retirement_fund' => $retirement_fund,
@@ -274,7 +275,8 @@ class RetirementFundController extends Controller
             'applicant' => $applicant,
             'advisor'  =>  $advisor,
             'legal_guardian'    =>  $guardian,
-            'procedure_modalities' => $procedures_modalities,          
+            'procedure_modalities' => $procedures_modalities,     
+            'documents' => $documents,
         ];
         
         return view('ret_fun.show',$data);
@@ -453,6 +455,7 @@ class RetirementFundController extends Controller
         return $data;
     }
     public function storeLegalReview(Request $request,$id){
+        //return 0;
         $retirement_fund = RetirementFund::find($id);
         $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         foreach ($documents as $document)
