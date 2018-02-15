@@ -11,8 +11,9 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     
     <div class="row text-center">
-        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
+        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>        
     </div>
+    
     <div class="row">
         <div class="col-md-6">
             @include('ret_fun.applicant_info', ['affiliate'=>$retirement_fund->affiliate])
@@ -27,11 +28,17 @@
         <div class="col-md-6">
             @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries])
         </div>
+        <div class="col-md-6">
+            @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])
+        </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
         </div>
     </div>
+    
+    
+    
 </div>
 @endsection

@@ -37,8 +37,11 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
 	Route::resource('ret_fun', 'RetirementFundController');
 	Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');        
-    Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
+
+  Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
 	Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->name('create_ret_fun');
+  Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
+
 
 
 	//QuotaAidMortuory
@@ -52,5 +55,6 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('search/{ci}','SearcherController@search');
         Route::get('search_ajax/{ci}','SearcherController@searchAjax');
 	
+        
 });
 

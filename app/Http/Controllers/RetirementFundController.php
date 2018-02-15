@@ -266,6 +266,7 @@ class RetirementFundController extends Controller
 
         $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
         $procedures_modalities = ProcedureModality::whereIn('id',$procedures_modalities_ids)->get();
+        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
 
         $data = [
             'retirement_fund' => $retirement_fund,
@@ -274,7 +275,8 @@ class RetirementFundController extends Controller
             'applicant' => $applicant,
             'advisor'  =>  $advisor,
             'legal_guardian'    =>  $guardian,
-            'procedure_modalities' => $procedures_modalities,          
+            'procedure_modalities' => $procedures_modalities,     
+            'documents' => $documents,
         ];
         
         return view('ret_fun.show',$data);
@@ -396,6 +398,62 @@ class RetirementFundController extends Controller
         //return $data;
         return view('ret_fun.create',$data);        
     }
-   
- 
+
+    private function getNextCode($actual){
+        $year =  date('Y');
+        if($actual == "")
+            return "1/".$year;
+        
+        $data = explode('/', $actual);        
+        if(!isset($data[1]))
+            return "1/".$year;                
+        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+    }
+    private function getStringDate($string = "1800/01/01"){        
+        setlocale(LC_TIME, 'es_ES.utf8');        
+        $date = DateTime::createFromFormat("Y-m-d", $string);
+        if($date)
+            return strftime("%d de %B de %Y",$date->getTimestamp());
+        else 
+            return "sin fecha";
+        
+    }
+    public function printReception($id){
+        $retirement_fund = RetirementFund::find($id);
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+       $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($retirement_fund->procedure_modality->name);
+       $number = "1";
+       $username = Auth::user()->username."-Recepcion";
+       $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
+       $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
+       $modality = $retirement_fund->procedure_modality->name;
+       $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
+        //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
+
+       // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
+    //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','applicant','submitted_documents','header','number'));
+       return \PDF::loadView('ret_fun.print.reception',compact('title', 'institution', 'direction','unit','username','date','modality','applicant','submitted_documents','header','number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
+    }
+    public function storeLegalReview(Request $request,$id){
+        //return 0;
+        $retirement_fund = RetirementFund::find($id);
+        $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
+        foreach ($submited_documents as $document)
+        {
+            $value= "comment".$document->id."";
+            $document->comment = $request->input($value);
+            $value= "document".$document->id."";
+            if($request->input($value) == '1')
+                $document->is_valid = true;
+            else 
+                $document->is_valid = false;
+            $document->save();    
+        }
+        
+        return redirect('ret_fun/'.$retirement_fund->id);
+        //return $retirement_fund;
+    }
+
 }
