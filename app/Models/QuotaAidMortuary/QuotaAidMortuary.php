@@ -19,23 +19,23 @@ class QuotaAidMortuary extends Model
     }
     public function procedure_modality()
     {
-        return $this->belongsTo('Muserpol\Models\Procedure_Modality', 'procedure_modalities_id');
+        return $this->belongsTo('Muserpol\Models\ProcedureModality', 'procedure_modality_id');
     }
     public function quota_aid_procedure()
     {
-        return $this->belongsTo('Muserpol\Models\quota_aid_procedures');
+        return $this->belongsTo('Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure');
     }
     public function city_start()
     {
-        return $this-belongsTo('Muserpol\Models\city', 'city_start_id');
+        return $this->belongsTo('Muserpol\Models\City', 'city_start_id');
     }
     public function city_end()
     {
-        return $this-belongsTo('Muserpol\Models\city', 'city_end_id');
+        return $this->belongsTo('Muserpol\Models\City', 'city_end_id');
     }
     public function quota_aid_beneficiaries()
 	{
-		return $this->hasMany('Muserpol\Models\RetirementFund\QuotaAidBeneficiaries');
+		return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary');
     }
     public function workflow()
     {
