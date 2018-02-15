@@ -14,6 +14,9 @@
                     last_name: this.affiliate.last_name,
                     mothers_last_name: this.affiliate.mothers_last_name,
                     gender: this.affiliate.gender,
+                    civil_status: this.affiliate.civil_status,
+                    phone_number: this.affiliate.phone_number,
+                    birth_date: this.affiliate.birth_date
                 },
                 first_name:{
                     value: this.affiliate.first_name,

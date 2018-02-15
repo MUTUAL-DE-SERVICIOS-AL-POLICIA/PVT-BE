@@ -88,11 +88,16 @@
                                 <div class="col-md-6">
                                     <dl class="dl-">
                                         <dt>Genero:</dt> <dd><input type="text" v-model="form.gender" class="form-control"></dd>
-                                        <dt>Estado Civil:</dt> <dd><input type="text" class="form-control"></dd>
-                                        <dt>Fecha de Nacimiento:</dt> <dd><input type="text" class="form-control"></dd>
+                                        <dt>Estado Civil:</dt> <dd><input  type="text"  v-model="form.civil_status" class="form-control"></dd>
+                                        
+                                        <dt>Fecha de Nacimiento:</dt> <dd>
+                                            <div class="input-group date" >
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input  v-model="form.birth_date" type="text" class="form-control" value="03/04/2014">
+                                            </div>
+                                            </dd>
                                         <dt>Edad:</dt> <dd><input type="text" class="form-control"></dd>
                                         <dt>Lugar de Nacimiento:</dt> <dd><input type="text" class="form-control"></dd>
-                                        <dt>Telefono:</dt> <dd><input type="text" class="form-control"></dd>
+                                        <dt>Telefono:</dt> <dd><input type="text" v-model="form.phone_number" class="form-control"></dd>
                                         <dt>Celular:</dt> <dd><input type="text" class="form-control"></dd>
                                     </dl>
                                 </div>
@@ -124,5 +129,7 @@
                      
         </div>    
     </div>
+
 </div>
+
 @endsection
