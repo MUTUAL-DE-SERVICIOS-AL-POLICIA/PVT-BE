@@ -136,14 +136,17 @@ class RetirementFundCertificationController extends Controller
     }
     public function printLegalReview($id){
         $retirement_fund = RetirementFund::find($id);
-        $submitted_documents = RetFunSubmittedDocument::find($retirement_fund->id);
+        $date=$this->getStringDate($retirement_fund->reception_date);
+        //$title = "CERTIFICACION DE ARCHIVO – ".strtoupper($retirement_fund->procedure_modality->name);       
+        $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
+        $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         $username = Auth::user()->username."-Recepcion";//agregar cuando haya roles
         $date=$this->getStringDate($retirement_fund->reception_date);
-        $data = [
-            'retirement_fund'   =>  $retirement_fund,
-            'submitted_documents'   => $submitted_documents,            
-        ];
-        return $retirement_fund;
+//        $data = [
+//            'retirement_fund'   =>  $retirement_fund,
+//            'submitted_documents'   => $submitted_documents,            
+//        ];
+        return \PDF::loadView('ret_fun.print.legal_certification', compact('date','username','title','retirement_fund','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
     }
      private function getNextCode($actual){
         $year =  date('Y');
