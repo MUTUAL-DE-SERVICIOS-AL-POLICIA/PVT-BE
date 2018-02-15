@@ -32,9 +32,8 @@ class QuotaAidAdvisor extends Model
     {
         return $this->belongsTo('Muserpol\Models\Kinship');
     }
-    public function quota_aid_observation()
+    public function quota_aid_advisor_beneficiary()
     {
-        return $this->belongsTo('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisorBeneficiary');
     }
-    
 }

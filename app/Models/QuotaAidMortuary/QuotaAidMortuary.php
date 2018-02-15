@@ -15,7 +15,7 @@ class QuotaAidMortuary extends Model
     }
     public function user()
     {
-        return $this->belongsTo('Muserpol\Models\User');
+        return $this->belongsTo('Muserpol\User');
     }
     public function procedure_modality()
     {
@@ -25,7 +25,7 @@ class QuotaAidMortuary extends Model
     {
         return $this->belongsTo('Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure');
     }
-    public function city_start()
+    public function city_start()    
     {
         return $this->belongsTo('Muserpol\Models\City', 'city_start_id');
     }
@@ -33,9 +33,17 @@ class QuotaAidMortuary extends Model
     {
         return $this->belongsTo('Muserpol\Models\City', 'city_end_id');
     }
-    public function quota_aid_beneficiaries()
+    public function quota_aid_submitted_document()
 	{
-		return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary');
+		return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument');
+    }
+    public function quota_aid_observation()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
+    }
+    public function quota_aid_beneficiary()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary');
     }
     public function workflow()
     {
@@ -44,13 +52,5 @@ class QuotaAidMortuary extends Model
     public function wf_state()
     {
         return $this->belongsTo('Muserpol\Model\WfState');
-    }
-    public function quota_aid_submitted_document()
-    {
-        return $this->hasMany('Muserpol\Model\QuotaAidMortuary\QuotaAidSubmittedDocument');
-    }
-    public function quota_aid_observation()
-    {
-        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
     }
 }
