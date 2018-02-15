@@ -127,12 +127,12 @@ class AffiliateController extends Controller
             'category',
             'degree',
         ]);
-        $datos = array(
+        $data = array(
             'retirement_fund'=>$retirement_fund,'affiliate'=>$affiliate,'cities'=>$cities,'categories'=>$categories
             ,'degrees'=>$degrees, 'pension_entities' =>$pension_entities,'affiliate_states'=>$affiliate_states
             ,'cuota'=>$cuota, 'auxilio'=>$auxilio
         );
-        return view('affiliates.show')->with($datos);
+        return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
         
     }
