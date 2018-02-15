@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Log;
 use Yajra\Datatables\Datatables;
 use Muserpol\Models\RetirementFund\RetirementFund;
-use Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 
 class AffiliateController extends Controller
 {
@@ -106,7 +106,17 @@ class AffiliateController extends Controller
         $degrees = Degree::all()->pluck('name', 'id');
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
-       
+        $quota_mortuaries = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get();
+        $cuota = null;
+        $auxilio = null;
+            foreach($quota_mortuaries as $quota_mortuary){
+                if($quota_mortuary->procedure_modality->procedure_type->module_id == 4){
+                   $cuota = $quota_mortuary;
+                }
+                if($quota_mortuary->procedure_modality->procedure_type->module_id == 5){
+                      $auxilio = $quota_mortuary;
+                    }
+            }
         
         $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->first();
         $affiliate->load([
@@ -117,7 +127,13 @@ class AffiliateController extends Controller
             'category',
             'degree',
         ]);
-        return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
+        $datos = array(
+            'retirement_fund'=>$retirement_fund,'affiliate'=>$affiliate,'cities'=>$cities,'categories'=>$categories
+            ,'degrees'=>$degrees, 'pension_entities' =>$pension_entities,'affiliate_states'=>$affiliate_states
+            ,'cuota'=>$cuota, 'auxilio'=>$auxilio
+        );
+        return view('affiliates.show')->with($datos);
+        //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
         
     }
 
