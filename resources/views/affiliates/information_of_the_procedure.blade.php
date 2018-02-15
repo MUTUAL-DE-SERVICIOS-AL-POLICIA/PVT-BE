@@ -1,4 +1,4 @@
-{{--<div class="col-lg-6">--}}
+
     <div class="panel panel-primary">       
         <div class="panel-body"> 
             <div class="box box-success box-solid">
@@ -79,5 +79,4 @@
                 </div>
             </div>
         </div>
-    </div> 
-{{--</div>--}} 
+    </div>
