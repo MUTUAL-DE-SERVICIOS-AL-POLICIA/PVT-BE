@@ -117,8 +117,12 @@
 {{--<div class="col-md-6">
                     <affiliate-police  :affiliate="{{ json_encode($affiliate) }}"></affiliate-police>
                     
-                </div> --}}
-            
+                </div> 
+        
+--}}
+        <div class="col-md-6">
+            @include('affiliates.information_of_the_procedure')                     
+        </div>    
     </div>
 </div>
 @endsection

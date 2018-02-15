@@ -15,26 +15,42 @@ class QuotaAidMortuary extends Model
     }
     public function user()
     {
-        return $this->belongsTo('Muserpol\Models\User');
+        return $this->belongsTo('Muserpol\User');
     }
     public function procedure_modality()
     {
-        return $this->belongsTo('Muserpol\Models\Procedure_Modality', 'procedure_modalities_id');
+        return $this->belongsTo('Muserpol\Models\ProcedureModality', 'procedure_modality_id');
     }
     public function quota_aid_procedure()
     {
-        return $this->belongsTo('Muserpol\Models\quota_aid_procedures');
+        return $this->belongsTo('Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure');
     }
-    public function city_start()
+    public function city_start()    
     {
-        return $this-belongsTo('Muserpol\Models\city', 'city_start_id');
+        return $this->belongsTo('Muserpol\Models\City', 'city_start_id');
     }
     public function city_end()
     {
-        return $this-belongsTo('Muserpol\Models\city', 'city_end_id');
+        return $this->belongsTo('Muserpol\Models\City', 'city_end_id');
     }
-    public function quota_aid_beneficiaries()
+    public function quota_aid_submitted_document()
 	{
-		return $this->hasMany('Muserpol\Models\RetirementFund\QuotaAidBeneficiaries');
+		return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument');
+    }
+    public function quota_aid_observation()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
+    }
+    public function quota_aid_beneficiary()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary');
+    }
+    public function workflow()
+    {
+        return $this->belongsTo('Muserpol\Model\Workflow');
+    }
+    public function wf_state()
+    {
+        return $this->belongsTo('Muserpol\Model\WfState');
     }
 }
