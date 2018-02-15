@@ -29,6 +29,6 @@ class QuotaAidBeneficiary extends Model
     }
     public function quota_aid_beneficiary_legal_guardian()
     {
-        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary');
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian');
     }
 }
