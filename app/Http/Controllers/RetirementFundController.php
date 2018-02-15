@@ -22,7 +22,7 @@ use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunBeneficiaryLegalGuardian;
 use DateTime;
 use Muserpol\User;
-
+use Carbon\Carbon;
 
 class RetirementFundController extends Controller
 {
@@ -87,6 +87,7 @@ class RetirementFundController extends Controller
         $retirement_fund->ret_fun_procedure_id = $procedure->id;
         $retirement_fund->city_start_id = Auth::user()->city_id;
         $retirement_fund->city_end_id = Auth::user()->city_id;
+        $retirement_fund->reception_date = Carbon::now();
         $retirement_fund->code = $code;
         $retirement_fund->workflow_id = 4;
         $retirement_fund->wf_state_current_id = 1;
