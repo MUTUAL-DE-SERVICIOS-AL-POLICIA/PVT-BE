@@ -438,8 +438,8 @@ class RetirementFundController extends Controller
     public function storeLegalReview(Request $request,$id){
         //return 0;
         $retirement_fund = RetirementFund::find($id);
-        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
-        foreach ($documents as $document)
+        $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
+        foreach ($submited_documents as $document)
         {
             $value= "comment".$document->id."";
             $document->comment = $request->input($value);
