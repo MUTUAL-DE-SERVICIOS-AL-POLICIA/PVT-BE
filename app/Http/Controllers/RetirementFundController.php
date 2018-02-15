@@ -86,7 +86,7 @@ class RetirementFundController extends Controller
         $retirement_fund->procedure_modality_id = $request->ret_fun_modality;
         $retirement_fund->ret_fun_procedure_id = $procedure->id;
         $retirement_fund->city_start_id = Auth::user()->city_id;
-        $retirement_fund->city_end_id = Auth::user()->city_id;
+        $retirement_fund->city_end_id = $request->city_end_id;
         $retirement_fund->reception_date = Carbon::now();
         $retirement_fund->code = $code;
         $retirement_fund->workflow_id = 4;
@@ -94,9 +94,9 @@ class RetirementFundController extends Controller
         //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal = 0;
         $retirement_fund->total = 0;
-        $retirement_fund->save();                       
+        $retirement_fund->reception_date = date('Y-m-d');
+        $retirement_fund->save();
 
-        
         foreach ($requirements  as  $requirement)
         {
             if($request->input('document'.$requirement->id) == 'checked')
@@ -357,6 +357,7 @@ class RetirementFundController extends Controller
     
     public function generateProcedure(Affiliate $affiliate){  
         
+        $user = Auth::User();
         $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
@@ -381,6 +382,7 @@ class RetirementFundController extends Controller
         $searcher = new SearcherController();
         
         $data = [
+            'user' => $user,
             'requirements' => $procedure_requirements,
             'modalities'    => $modalities,
             'affiliate'  => $affiliate,
@@ -413,18 +415,22 @@ class RetirementFundController extends Controller
             return "sin fecha";
         
     }
-    public function printReception($id){                      
-       $retirement_fund = RetirementFund::find($id);
-       $header = "MUTIAL DE SERVICIOS AL POLIC&Iacute;A \"MUSERPOL\" DIRECCI&Oacute;N DE BENEFICIOS ECON&Oacute;MICOS UNIDAD DE OTORGACI&Oacute;N DE FONDO DE RETIRO POLICIAL, ".strtoupper($retirement_fund->procedure_modality->name);
-       $title = "REQUISITOS DEL BENEFICIO DE ".strtoupper($retirement_fund->procedure_modality->name)." – CUMPLIMIENTO DE SUS FUNCIONES N°";
-       $number = "1";     
-       $username = Auth::user()->username."-Recepcion";      
+    public function printReception($id){
+        $retirement_fund = RetirementFund::find($id);
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+       $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($retirement_fund->procedure_modality->name);
+       $number = "1";
+       $username = Auth::user()->username."-Recepcion";
        $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
+       $modality = $retirement_fund->procedure_modality->name;
        $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
 
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
-       return \PDF::loadView('ret_fun.print.reception',compact('title','username','date','applicant','submitted_documents','header','number'))->stream('recepcion.pdf');
+    //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','applicant','submitted_documents','header','number'));
+       return \PDF::loadView('ret_fun.print.reception',compact('title', 'institution', 'direction','unit','username','date','modality','applicant','submitted_documents','header','number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
     }
 }
