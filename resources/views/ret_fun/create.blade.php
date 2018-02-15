@@ -20,7 +20,7 @@
                 <ret-fun-form inline-template>
                     <form-wizard color="#1AB394" title="" subtitle="" back-button-text="Volver" next-button-text="Siguiente" finish-button-text="Finalizar" error-color="#ED5565" @on-complete="onFinish">
                         <tab-content title="Modalidad y Requisitos" icon="mdi mdi-format-list-checks">
-                            <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" inline-template>
+                            <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" inline-template>
                                 @include('ret_fun.step1_requirements')
                             </ret-fun-step1-requirements>
                         </tab-content>
