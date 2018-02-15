@@ -89,6 +89,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigIncrements('id'); //identificador
             $table->bigInteger('retirement_fund_id')->unsigned(); // identificador de fondo de retiro
             $table->bigInteger('procedure_requirement_id')->unsigned();
+            $table->boolean('is_valid')->default(false); //esta vigente la modalidad hdp
             $table->date('reception_date'); // fecha de recepcion
             $table->text('comment')->nullable(); // observacion
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade'); // identificador de fondo de jubilacion
@@ -260,19 +261,21 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::create('scanned_documents', function (Blueprint $table) { //Escaneo de documentos de afiliado
+
+        Schema::create('affiliate_scanned_documents', function (Blueprint $table) { //Escaneo de documentos de afiliado
             $table->bigIncrements('id');
-            $table->bigInteger('affiliate_folder_id')->unsigned();
+            $table->bigInteger('affiliate_id')->unsigned();
             $table->bigInteger('procedure_document_id')->unsigned();
             $table->string('name');
             $table->text('url_file');
             $table->date('due_date')->nullable(); //fecha de vencimiento
             $table->text('comment')->nullable();
-            $table->foreign('affiliate_folder_id')->references('id')->on('affiliate_folders');
+            $table->foreign('affiliate_id')->references('id')->on('affiliates');
             $table->foreign('procedure_document_id')->references('id')->on('procedure_documents'); //
             $table->timestamps();
             $table->softDeletes();
         });
+        
         //Disponibilidad
         Schema::create('contribution_types', function (Blueprint $table) { //Tipos de Aportes
             $table->bigIncrements('id');
@@ -305,7 +308,6 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('ret_fun_legal_guardians');
         Schema::drop('ret_fun_advisor_beneficiary');       
         Schema::drop('ret_fun_advisors');
-        //Schema::drop('address_ret_fun_beneficiary');
         Schema::drop('ret_fun_beneficiaries');
         Schema::drop('ret_fun_submitted_documents');
         Schema::drop('ret_fun_observations');        
@@ -316,7 +318,6 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('procedure_documents');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types'); 
-      //  Schema::drop('ret_fun_address_applicants');
         
         
         
