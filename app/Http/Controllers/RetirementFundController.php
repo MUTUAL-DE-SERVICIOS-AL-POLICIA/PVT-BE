@@ -23,6 +23,7 @@ use Muserpol\Models\RetirementFund\RetFunBeneficiaryLegalGuardian;
 use DateTime;
 use Muserpol\User;
 use Carbon\Carbon;
+
 class RetirementFundController extends Controller
 {
     /**
@@ -377,6 +378,8 @@ class RetirementFundController extends Controller
         
         $cities = City::get();
         
+        $searcher = new SearcherController();
+        
         $data = [
             'requirements' => $procedure_requirements,
             'modalities'    => $modalities,
@@ -385,6 +388,7 @@ class RetirementFundController extends Controller
             'cities'    =>  $cities,
             'ret'    =>  $cities,
             'spouse' =>  $spouse,
+            'searcher'  =>  $searcher,
         ];        
         
         //return $data;
