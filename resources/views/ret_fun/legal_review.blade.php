@@ -45,7 +45,7 @@
                         @endforeach
                     </tbody>
                   </table>
-                <input type="submit" class="btn btn-info" value="Submit Button">
+                <input type="submit" class="btn btn-info" value="CERTIFICAR">
                 </form>
                 {{--!! Form::close() !!--}}
             </div>

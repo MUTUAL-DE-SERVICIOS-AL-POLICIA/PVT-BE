@@ -428,7 +428,7 @@ class RetirementFundController extends Controller
     }
     public function legalReview($id){
         $retirement_fund = RetirementFund::find($id);
-        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->get();
+        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
                               ->leftJoin('degrees','affiliates.id','=','degrees.id')
                               ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
@@ -447,7 +447,7 @@ class RetirementFundController extends Controller
     }
     public function storeLegalReview(Request $request,$id){
         $retirement_fund = RetirementFund::find($id);
-        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->get();
+        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         foreach ($documents as $document)
         {
             $value= "comment".$document->id."";
