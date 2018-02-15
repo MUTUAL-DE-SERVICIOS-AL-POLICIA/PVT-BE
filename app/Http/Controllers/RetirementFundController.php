@@ -398,6 +398,7 @@ class RetirementFundController extends Controller
         //return $data;
         return view('ret_fun.create',$data);        
     }
+
     private function getNextCode($actual){
         $year =  date('Y');
         if($actual == "")
@@ -454,4 +455,5 @@ class RetirementFundController extends Controller
         return redirect('ret_fun/'.$retirement_fund->id);
         //return $retirement_fund;
     }
+
 }
