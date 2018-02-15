@@ -426,4 +426,41 @@ class RetirementFundController extends Controller
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
        return \PDF::loadView('ret_fun.print.reception',compact('title','username','date','applicant','submitted_documents','header','number'))->stream('recepcion.pdf');
     }
+    public function legalReview($id){
+        $retirement_fund = RetirementFund::find($id);
+        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->get();
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
+                              ->leftJoin('degrees','affiliates.id','=','degrees.id')
+                              ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
+                              ->find($retirement_fund->affiliate_id);
+                
+        $data = [
+            'retirement_fund'   => $retirement_fund,
+            'documents' =>  $documents,
+            'affiliate' =>  $affiliate,
+        ];
+        return view('ret_fun.legal_review',$data);
+        foreach ($documents as $document)
+            echo $document->procedure_requirement->procedure_document->name. "<br>";
+        return 0;
+        return $data;
+    }
+    public function storeLegalReview(Request $request,$id){
+        $retirement_fund = RetirementFund::find($id);
+        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->get();
+        foreach ($documents as $document)
+        {
+            $value= "comment".$document->id."";
+            $document->comment = $request->input($value);
+            $value= "document".$document->id."";
+            if($request->input($value) == '1')
+                $document->is_valid = true;
+            else 
+                $document->is_valid = false;
+            $document->save();    
+        }
+        
+        return redirect('ret_fun/'.$retirement_fund->id);
+        //return $retirement_fund;
+    }
 }

@@ -13,6 +13,9 @@
     <div class="row text-center">
         <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
     </div>
+    <a href="{{route('ret_fun_legal_review_create', $retirement_fund->id)}}" data-toggle="tooltip" data-placement="top" title="Revisi&oacute;n Legal">
+        <button class="btn btn-info  dim" type="button"><i class="fa fa-paste"></i> </button>
+    </a>
     <div class="row">
         <div class="col-md-6">
             @include('ret_fun.applicant_info', ['affiliate'=>$retirement_fund->affiliate])
