@@ -127,7 +127,7 @@ class RetirementFundCertificationController extends Controller
         $affiliate = Affiliate::find($id);
         $retirement_fund = RetirementFund::where('affiliate_id',$affiliate->id)->first();        
         $date=$this->getStringDate($retirement_fund->reception_date);
-        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($retirement_fund->procedure_modality->name);       
+        $title = "CERTIFICACION DE ARCHIVO – ".strtoupper($retirement_fund->procedure_modality->name);       
         $username = Auth::user()->username."-Recepcion";//agregar cuando haya roles        
         $affiliate_folders = AffiliateFolder::where('affiliate_id',$affiliate->id)->get();
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();        
