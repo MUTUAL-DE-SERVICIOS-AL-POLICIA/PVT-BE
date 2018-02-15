@@ -49,15 +49,17 @@
                     <table align="center">
                         <tr align="center">
                             <th class="w-50"><strong>N°</strong></th>
-                            <th width="20%"><strong>NOMBRES</strong></th>
-                            <th width="20%"><strong>APELLIDO PATERNO</strong></th>
-                            <th width="20%"><strong>APELLIDO MATERNO</strong></th>
-                            <th width="20%"><strong>APELLIDO DE MATRIMONIO</strong></th>
+                            <th width="20%"><strong>PRIMER NOMBRE</strong></th>
+                            <th width="20%"><strong>SEGUNDO NOMBRE</strong></th>
+                            <th width="20%"><strong>PRIMER APELLIDO</strong></th>
+                            <th width="20%"><strong>SEGUNDO APELLIDO</strong></th>
+                            <th width="20%"><strong>APELLIDO DE CASADA</strong></th>
                             <th width="15%"><strong>PARENTESCO O VINCULO CON EL TITULAR</strong></th>
                         </tr>
                         {{--  @foreach($eco_com_submitted_document as $i=>$item)
                             <tr>
                                 <td style='text-align:center;'> <h3>{!! $i+1 !!}</h3></td>
+                                <td style='text-align:center;'> <h3>{!! $item->economic_complement_requirement->shortened !!} </h3></td>
                                 <td style='text-align:center;'> <h3>{!! $item->economic_complement_requirement->shortened !!} </h3></td>
                                 <td style='text-align:center;'> <h3>{!! $item->economic_complement_requirement->shortened !!} </h3></td>
                                 <td style='text-align:center;'> <h3>{!! $item->economic_complement_requirement->shortened !!} </h3></td>
