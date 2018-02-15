@@ -22,6 +22,7 @@ use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunBeneficiaryLegalGuardian;
 use DateTime;
 use Muserpol\User;
+use Carbon\Carbon;
 
 class RetirementFundController extends Controller
 {
@@ -86,6 +87,7 @@ class RetirementFundController extends Controller
         $retirement_fund->ret_fun_procedure_id = $procedure->id;
         $retirement_fund->city_start_id = Auth::user()->city_id;
         $retirement_fund->city_end_id = $request->city_end_id;
+        $retirement_fund->reception_date = Carbon::now();
         $retirement_fund->code = $code;
         $retirement_fund->workflow_id = 4;
         $retirement_fund->wf_state_current_id = 1;
@@ -261,7 +263,10 @@ class RetirementFundController extends Controller
         else 
             $guardian = new RetFunLegalGuardian();                
         
-        $procedures_modalities = ProcedureModality::all();
+
+        $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
+        $procedures_modalities = ProcedureModality::whereIn('id',$procedures_modalities_ids)->get();
+
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -374,6 +379,8 @@ class RetirementFundController extends Controller
         
         $cities = City::get();
         
+        $searcher = new SearcherController();
+        
         $data = [
             'user' => $user,
             'requirements' => $procedure_requirements,
@@ -383,6 +390,7 @@ class RetirementFundController extends Controller
             'cities'    =>  $cities,
             'ret'    =>  $cities,
             'spouse' =>  $spouse,
+            'searcher'  =>  $searcher,
         ];        
         
         //return $data;

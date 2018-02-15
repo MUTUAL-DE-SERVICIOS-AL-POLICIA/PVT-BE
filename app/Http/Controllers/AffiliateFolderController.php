@@ -89,4 +89,20 @@ class AffiliateFolderController extends Controller
     {
         //
     }
+    
+    public function printCertification($id){                      
+//       $retirement_fund = RetirementFund::find($id);
+//       $header = "MUTIAL DE SERVICIOS AL POLIC&Iacute;A \"MUSERPOL\" DIRECCI&Oacute;N DE BENEFICIOS ECON&Oacute;MICOS UNIDAD DE OTORGACI&Oacute;N DE FONDO DE RETIRO POLICIAL, ".strtoupper($retirement_fund->procedure_modality->name);
+//       $title = "REQUISITOS DEL BENEFICIO DE ".strtoupper($retirement_fund->procedure_modality->name)." – CUMPLIMIENTO DE SUS FUNCIONES N°";
+//       $number = "1";     
+//       $username = Auth::user()->username."-Recepcion";      
+//       $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
+//       $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
+//       $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
+//        //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
+//
+//       // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
+       return \PDF::loadView('ret_fun.print.reception',compact('title','username','date','applicant','submitted_documents','header','number'))->stream('recepcion.pdf');
+    }
+    
 }
