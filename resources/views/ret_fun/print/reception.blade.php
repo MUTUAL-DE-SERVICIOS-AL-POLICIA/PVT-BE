@@ -1,9 +1,6 @@
 @extends('print_global.print')
 @section('content')
     <div>
-        <div class="title2">
-            <span class="font-bold">Trámite Nº:</span> {{ $number }}
-        </div>
         @include('ret_fun.print.applicant_info', ['applicant'=>$applicant])
         <div>
             <div class="text-left mx-10 block">
@@ -22,27 +19,27 @@
     </div>
     <table class="table-info w-100">
         <thead class="bg-grey-darker">
-            <tr class="font-medium text-white text-sm">
+            <tr class="font-medium text-white text-sm font-bold">
                 <td colspan="3" class="text-center py-4">DOCUMENTOS RECEPCIONADOS</td>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td class="text-center p-5"><strong>N°</strong></td>
-                <td class="text-center p-5"><strong>REQUISITOS</strong></td>
-                <td class="p-5"><strong>V°B°</strong></td>
+            <tr class="bg-grey-lightest font-bold">
+                <td class="text-center p-5">N°</td>
+                <td class="text-center p-5">REQUISITOS</td>
+                <td class="text-center p-5">V°B°</td>
             </tr>
         @foreach($submitted_documents as $i=>$item)
             <tr>
                 <td class='text-center p-5'>{!! $item->procedure_requirement->number !!}</td>
                 <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
                 @if (true)
-                    <td class="text-center p-5">
-                        <img class="circle" src="{{asset('images/check.png')}}" >
+                    <td class="text-center">
+                        <i class="mdi mdi-close-box-outline"></i>
                     </td>
-                @else
-                    <td class="info" style='text-align:center;'>
-                        <img class="circle" src="images/uncheck.png" style="width:60%" alt="icon">  
+                    @else
+                    <td class="text-center">
+                            <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
                     </td>
                 @endif
             </tr>
