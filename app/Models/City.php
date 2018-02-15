@@ -31,9 +31,7 @@ class City extends Model
 	public function retirement_funds_city_start()
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund','city_start_id');
-	
-	}
-	
+	}	
 	public function retirement_funds_city_end()
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund','city_end_id');
@@ -53,7 +51,11 @@ class City extends Model
 	}
 	public function quota_aid_mortuaries()
     {
-        return $this->hasMany('Muserpol\Models\'QuotaAidMortuaries\QuotaAidMortuary', 'city_identity_card_id','id');
-    }
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary', 'city_identity_card_id','id');
+	}
+	public function quota_aid_advisor()
+	{
+		return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisor', 'city_identity_card_id','id');
+	}
 
 }

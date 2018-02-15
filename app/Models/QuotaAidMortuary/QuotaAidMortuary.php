@@ -45,4 +45,20 @@ class QuotaAidMortuary extends Model
     {
         return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary');
     }
+    public function workflow()
+    {
+        return $this->belongsTo('Muserpol\Model\Workflow');
+    }
+    public function wf_state()
+    {
+        return $this->belongsTo('Muserpol\Model\WfState');
+    }
+    public function quota_aid_submitted_document()
+    {
+        return $this->hasMany('Muserpol\Model\QuotaAidMortuary\QuotaAidSubmittedDocument');
+    }
+    public function quota_aid_observation()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
+    }
 }

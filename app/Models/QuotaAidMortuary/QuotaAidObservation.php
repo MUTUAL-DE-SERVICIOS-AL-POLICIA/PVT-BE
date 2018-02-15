@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class QuotaAidObservation extends Model
 {
+<<<<<<< HEAD
     //
     public function user()
     {
@@ -15,4 +16,10 @@ class QuotaAidObservation extends Model
     {
         return $this->belongsTo('Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary');
     }   
+=======
+    public function quota_aid_mortuary()
+    {
+        return $this -> belongsTo ('Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary');
+    }
+>>>>>>> upstream/master
 }
