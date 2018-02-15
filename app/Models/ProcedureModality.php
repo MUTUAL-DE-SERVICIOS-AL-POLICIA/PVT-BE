@@ -18,7 +18,7 @@ class ProcedureModality extends Model
 
     public function retirement_funds()
     {
-        return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund','procedure_modalities_id');
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund','procedure_modality_id');
     }
 
     public function affiliate_folders()
@@ -27,9 +27,7 @@ class ProcedureModality extends Model
     }
     public function quota_aid_mortuaries()
     {
-        return $this->hasMany('Muserpol\Models\'QuotaAidMortuaries\QuotaAidMortuary');
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary', 'procedure_modality_id');
     }
-
-    
 
 }
