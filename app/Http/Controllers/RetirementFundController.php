@@ -245,7 +245,7 @@ class RetirementFundController extends Controller
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         
-        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('type','desc')->get();
+        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('type','desc')->get();        
         
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
         
@@ -267,7 +267,9 @@ class RetirementFundController extends Controller
         $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
         $procedures_modalities = ProcedureModality::whereIn('id',$procedures_modalities_ids)->get();
         $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
-
+        $cities = City::get();
+        $kinships = Kinship::get();        
+        
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -276,7 +278,9 @@ class RetirementFundController extends Controller
             'advisor'  =>  $advisor,
             'legal_guardian'    =>  $guardian,
             'procedure_modalities' => $procedures_modalities,     
-            'documents' => $documents,
+            'documents' => $documents,            
+            'cities'    =>  $cities,
+            'kinships'   =>  $kinships
         ];
         
         return view('ret_fun.show',$data);
@@ -454,6 +458,27 @@ class RetirementFundController extends Controller
         
         return redirect('ret_fun/'.$retirement_fund->id);
         //return $retirement_fund;
+    }
+    public function updateBeneficiaries(Request $request){
+        $i = 0;
+        $ben = 0;
+        foreach ($request->all() as $ben){            
+            $beneficiary = RetFunBeneficiary::find($ben['id']);
+            $beneficiary->city_identity_card_id = $ben['city_identity_card_id'];
+            $beneficiary->kinship_id = $ben['kinship_id'];
+            $beneficiary->identity_card = $ben['identity_card'];
+            $beneficiary->last_name = $ben['last_name'];
+            $beneficiary->mothers_last_name = $ben['mothers_last_name'];
+            $beneficiary->first_name = $ben['first_name'];
+            $beneficiary->second_name = $ben['second_name'];
+            $beneficiary->surname_husband = $ben['surname_husband'];
+            $beneficiary->gender = $ben['gender'];
+            $beneficiary->phone_number = $ben['phone_number'];
+            $beneficiary->cell_phone_number = $ben['cell_phone_number'];
+            $beneficiary->save();
+            $i++;                    
+        }
+        return json_encode(0);
     }
 
 }

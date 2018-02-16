@@ -20,8 +20,12 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->name("main");
 
 	Route::resource('affiliate', 'AffiliateController');
+
 	Route::patch('/update_affiliate/{affiliate}', 'AffiliateController@update')->name('update_affiliate');
 	Route::patch('/update_affiliate_police/{affiliate}', 'AffiliateController@update_affiliate_police')->name('update_affiliate_police');
+
+	Route::patch('/update_beneficiaries/{retirement_fund}','RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
+
 	Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
 
 
@@ -59,7 +63,6 @@ Route::group(['middleware' => 'auth'], function () {
         //searcherController
 	Route::get('search/{ci}', 'SearcherController@search');
 	Route::get('search_ajax', 'SearcherController@searchAjax');
-
 
 });
 
