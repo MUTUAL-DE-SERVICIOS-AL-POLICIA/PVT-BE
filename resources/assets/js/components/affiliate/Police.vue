@@ -25,24 +25,16 @@
 			update: function () {	
 				let uri = `/update_affiliate_police/${this.affiliate.id}`;
 				this.show_spinner=true;
-				 axios.patch(uri,this.form)
-					  .then(function(response) {
-					    console.log(response.data);
-					    console.log(response.status);
-					    console.log(response.statusText);
-					    console.log(response.headers);
-					    console.log(response.config);
-					  });
-				// axios.patch(uri,this.form)
-				// 	.then(()=>{
-				// 		this.editing = false;
-				// 		this.show_spinner = false;
-				// 		console.log(response);
-				// 		flash('Informacion Policial Actualizada');
-				// 	}).catch((response)=>{
-				// 		flash('Error al actualizar Informacion Policial: '+response.message,'error');
-				// 		this.show_spinner = false;
-				// 	});
+				axios.patch(uri,this.form)
+					.then(response=>{
+						this.editing = false;
+						this.show_spinner = false;
+						console.log(response+'cechuz y karen');	
+						flash('Informacion Policial Actualizada');
+					}).catch((response)=>{
+						flash('Error al actualizar Informacion Policial: '+response.message,'error');
+						this.show_spinner = false;
+					});
 			}
 		}
 	}

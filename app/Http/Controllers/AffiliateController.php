@@ -190,9 +190,8 @@ class AffiliateController extends Controller
         $affiliate->degree_id = $request->affiliate_degree;
         $affiliate->pension_entity_id = $request->affiliate_pension_entity;
         $affiliate->save();
-
-
-
+        
+        return $affiliate;
     }
 
     /**
