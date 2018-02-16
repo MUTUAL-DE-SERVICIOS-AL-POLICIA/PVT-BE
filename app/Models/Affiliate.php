@@ -42,6 +42,11 @@ class Affiliate extends Model
         'item'
     ];
 
+    public function spouse()
+    {
+        return $this->hasMany('Muserpol\Models\Spouse');
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
