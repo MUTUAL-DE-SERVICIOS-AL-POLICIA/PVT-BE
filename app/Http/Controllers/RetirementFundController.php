@@ -245,8 +245,7 @@ class RetirementFundController extends Controller
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         
-        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('type','desc')->get();
-        $beneficiary = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('type','desc')->first();
+        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('type','desc')->get();        
         
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
         
@@ -279,8 +278,7 @@ class RetirementFundController extends Controller
             'advisor'  =>  $advisor,
             'legal_guardian'    =>  $guardian,
             'procedure_modalities' => $procedures_modalities,     
-            'documents' => $documents,
-            'beneficiary'   =>  $beneficiary,
+            'documents' => $documents,            
             'cities'    =>  $cities,
             'kinships'   =>  $kinships
         ];

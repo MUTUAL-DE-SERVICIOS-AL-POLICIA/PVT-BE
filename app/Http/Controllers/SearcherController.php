@@ -73,7 +73,7 @@ class Person{
          $this->second_name = $obj->second_name ?? '';
          $this->last_name = $obj->last_name ?? '';
          $this->mothers_last_name =$obj->mothers_last_name ?? '';
-         $this->identity_card_id = $obj->identity_card_id ?? '';
+         $this->identity_card = $obj->identity_card ?? '';
          $this->kinship_id = $obj->kinship_id ?? null;
          $this->phone_number = $obj->phone_number ?? '';
          $this->cell_phone_number = $obj->cell_phone_number ?? '';
