@@ -26,7 +26,7 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries])
+            @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
         </div>
         <div class="col-md-6">
             @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])
