@@ -16,11 +16,25 @@
                     gender: this.affiliate.gender,
                     civil_status: this.affiliate.civil_status,
                     phone_number: this.affiliate.phone_number,
-                    birth_date: this.affiliate.birth_date
+                    cell_phone_number: this.affiliate.cell_phone_number,
+                    birth_date: this.affiliate.birth_date,
+                    
                 },
                 first_name:{
                     value: this.affiliate.first_name,
                     edit: false,
+                }
+            }
+        },
+        computed:{
+            age: function(){
+                var birthday = +new Date(this.affiliate.birth_date); 
+                if(this.affiliate.birth_date!=null){
+
+                    return~~ ((Date.now() - birthday) / (31557600000));
+                }else
+                {
+                    return '';
                 }
             }
         },
