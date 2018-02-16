@@ -59,7 +59,7 @@ Route::group(['middleware' => 'auth'], function() {
         //searcherController
         Route::get('search/{ci}','SearcherController@search');
         Route::get('search_ajax/{ci}','SearcherController@searchAjax');
-	
+        
         
 });
 
