@@ -28,8 +28,14 @@
         },
         computed:{
             age: function(){
-                var birthday = +new Date(this.affiliate.birth_date);   
-                return~~ ((Date.now() - birthday) / (31557600000));
+                var birthday = +new Date(this.affiliate.birth_date); 
+                if(this.affiliate.birth_date!=null){
+
+                    return~~ ((Date.now() - birthday) / (31557600000));
+                }else
+                {
+                    return '';
+                }
             }
         },
         methods:{

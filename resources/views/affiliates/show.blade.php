@@ -17,6 +17,7 @@
             <button class="btn btn-info btn-sm  dim" type="button"><i class="fa fa-paste"></i> </button>
         </a>
     </div>
+
     <div class="row">
         <div class="col-md-6">
             <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
@@ -45,7 +46,7 @@
                                         <dt>Genero:</dt> <dd>{{ $affiliate->gender }}</dd>
                                         <dt>Estado Civil:</dt> <dd>{{ $affiliate->civil_status }}</dd>
                                         <dt>Fecha de Nacimiento:</dt> <dd>{{ $affiliate->birth_date }}</dd>
-                                        <dt>Edad:</dt> <dd> @{{ age }} </dd>
+                                        <dt>Edad:</dt> <dd> @{{ age  }} </dd>
                                         <dt>Lugar de Nacimiento:</dt> <dd>{{ !!$affiliate->city_birth ? $affiliate->city_birth->name : '' }}</dd>
                                         <dt>Telefono:</dt> <dd>{{ $affiliate->phone_number }}</dd>
                                         <dt>Celular:</dt> <dd>{{ $affiliate->cell_phone_number }}</dd>
@@ -76,7 +77,7 @@
                                 <div class="col-md-6">
                                     <dl class="dl-">
                                         <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">
-                                            {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}
+                                            {!! Form::select('city_identity_card_id', $cities, $affiliate->city_identity_card->id  , ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}
                                         </dd>
                                         <dt>Primer Nombre:</dt> <dd><input type="text" v-model="form.first_name" class="form-control"></dd>
                                         <dt>Segundo Nombre:</dt> <dd><input type="text" v-model="form.second_name" class="form-control"></dd>
@@ -96,7 +97,7 @@
                                             </div>
                                             </dd>
                                         <dt>Edad:</dt> <dd><input v-model="age" type="text" class="form-control" disabled></dd>
-                                        <dt>Lugar de Nacimiento:</dt> <dd><input v-model="form.birth_date" type="text" class="form-control"></dd>
+                                        <dt>Lugar de Nacimiento:</dt> <dd>{!! Form::select('city_birth_id', $birth_cities, $affiliate->city_birth_id  , ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}</dd>
                                         <dt>Telefono:</dt> <dd><input type="text" v-model="form.phone_number" class="form-control"></dd>
                                         <dt>Celular:</dt> <dd><input type="text" v-model="form.cell_phone_number" class="form-control"></dd>
                                     </dl>
