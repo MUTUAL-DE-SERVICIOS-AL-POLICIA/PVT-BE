@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     change_applicant: function() {
-      var modality_id=document.getElementById('ret_fun_modality').value;
+      let modality_id=document.getElementById('ret_fun_modality').value;
       if(this.applicant_type  === '2'){
         this.show_advisor_form = !this.show_advisor_form;
         this.show_apoderado_form = false;
@@ -53,14 +53,19 @@ export default {
         return;
       }
       if(this.applicant_type  === '3'){
-        this.show_apoderado_form = !this.show_advisor_form;
+        this.show_apoderado_form = !this.show_apoderado_form;
         this.show_advisor_form = false;
+        if(modality_id == 4){
+          this.setDataSpouse();
+        }else{
+          this.setDataAffilate();
+        }
         return;
       }
       if(this.applicant_type  === '1'){
         this.show_apoderado_form = false;
         this.show_advisor_form = false;
-        if(this.modality_id == 4){ 
+        if(modality_id == 4){
           this.setDataSpouse();
         }else{
           this.setDataAffilate();
@@ -78,6 +83,7 @@ export default {
       this.applicant_identity_card = '';
       this.applicant_city_identity_card = '';
       this.applicant_gender = '';
+      this.applicant_kinship = '';
     },
     setDataAffilate: function(){
         this.applicant_first_name = this.affiliate.first_name;
@@ -96,12 +102,14 @@ export default {
         this.applicant_second_name = this.spouse.second_name;
         this.applicant_last_name = this.spouse.last_name;
         this.applicant_mothers_last_name = this.spouse.mothers_last_name;
-        this.applicant_surname_husband = this.spouse.surname_husband;
         this.applicant_surname_husband = this.spouse.surname_husband,
         this.applicant_identity_card = this.spouse.identity_card;
         this.applicant_city_identity_card = this.spouse.city_identity_card_id;
-        this.applicant_gender = this.spouse.gender;
+        this.applicant_gender = this.setSpouseGender();
         this.applicant_kinship = 2;
+    },
+    setSpouseGender(){
+      return this.affiliate.gender == 'M' ? 'F' : 'M';
     }
 
   }

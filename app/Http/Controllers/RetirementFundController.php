@@ -424,8 +424,8 @@ class RetirementFundController extends Controller
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($retirement_fund->procedure_modality->name);
-       $number = "1";
-       $username = Auth::user()->username."-Recepcion";
+       $number = $retirement_fund->code;
+       $username = Auth::user()->username;
        $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
        $modality = $retirement_fund->procedure_modality->name;
@@ -433,7 +433,7 @@ class RetirementFundController extends Controller
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
 
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
-    //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','applicant','submitted_documents','header','number'));
+    //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','modality','applicant','submitted_documents','header','number'));
        return \PDF::loadView('ret_fun.print.reception',compact('title', 'institution', 'direction','unit','username','date','modality','applicant','submitted_documents','header','number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
     }
     public function storeLegalReview(Request $request,$id){
