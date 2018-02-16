@@ -266,6 +266,7 @@ class RetirementFundController extends Controller
 
         $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
         $procedures_modalities = ProcedureModality::whereIn('id',$procedures_modalities_ids)->get();
+        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
 
         $data = [
             'retirement_fund' => $retirement_fund,
@@ -274,7 +275,8 @@ class RetirementFundController extends Controller
             'applicant' => $applicant,
             'advisor'  =>  $advisor,
             'legal_guardian'    =>  $guardian,
-            'procedure_modalities' => $procedures_modalities,          
+            'procedure_modalities' => $procedures_modalities,     
+            'documents' => $documents,
         ];
         
         return view('ret_fun.show',$data);
@@ -396,6 +398,7 @@ class RetirementFundController extends Controller
         //return $data;
         return view('ret_fun.create',$data);        
     }
+
     private function getNextCode($actual){
         $year =  date('Y');
         if($actual == "")
@@ -433,4 +436,24 @@ class RetirementFundController extends Controller
     //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','modality','applicant','submitted_documents','header','number'));
        return \PDF::loadView('ret_fun.print.reception',compact('title', 'institution', 'direction','unit','username','date','modality','applicant','submitted_documents','header','number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
     }
+    public function storeLegalReview(Request $request,$id){
+        //return 0;
+        $retirement_fund = RetirementFund::find($id);
+        $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
+        foreach ($submited_documents as $document)
+        {
+            $value= "comment".$document->id."";
+            $document->comment = $request->input($value);
+            $value= "document".$document->id."";
+            if($request->input($value) == '1')
+                $document->is_valid = true;
+            else 
+                $document->is_valid = false;
+            $document->save();    
+        }
+        
+        return redirect('ret_fun/'.$retirement_fund->id);
+        //return $retirement_fund;
+    }
+
 }

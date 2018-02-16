@@ -422,4 +422,9 @@ table {
 .rounded-tr{
   border-top-right-radius: .7rem;
 }
+
 .leading-none	{line-height: 1;}
+
+.list-roman{
+  list-style-type:upper-roman;
+}

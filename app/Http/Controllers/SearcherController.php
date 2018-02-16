@@ -99,7 +99,7 @@ class Person{
              case "Muserpol\Models\RetirementFund\RetFunAdvisor":
                  return "tutor";
              default :
-                 return  "No econtrado";                 
+                 return  "No encontrado";                 
          }
      }
     }
