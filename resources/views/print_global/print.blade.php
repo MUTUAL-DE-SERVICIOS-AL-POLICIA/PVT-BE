@@ -3,45 +3,56 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>PLATAFORMA VIRTUAL - MUSERPOL {{-- $title --}}</title>
+    
+    <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
 </head>
 <body>
-    <table class="table-header">
+    <table class="w-100 m-b-10">
         <tr>
-            <th class="w-20 p-5">
-                <div class="logo-left">
+            <th class="w-20 text-left">
+                <div class="text-center">
                     <img src="{{ asset('images/logo.jpg') }}" class="w-100">
                 </div>
             </th>
-            <th class="w-50 p-5">
-                <h4 class="font-bold uppercase">
+            <th class="w-50">
+                <p class="font-bold uppercase leading-none text-sm" >
                     {{ $institution ?? 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"' }} <br>
                     {{ $direction ?? 'DIRECCIÓN DE BENEFICIOS ECONÓMICOS' }} <br>
-                    {{ $unit ?? 'UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO' }} <br>
-                </h4>
+                    {{ $unit ?? 'UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO' }}
+                </p>
             </th>
-            <th class="w-20 p-5">
-                <div class="logo-right">
-                    <img src="{{ asset('images/escudo.jpg') }}" class="w-75">
-                </div>
+            <th class="w-20">
+                <table class="table-code">
+                    <tbody>
+                        <tr>
+                            <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
+                            <td class="text-bold text-sm">{!! $number !!}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center bg-grey-darker text-xxs text-white">Fecha de Emisión</td>
+                            <td class="text-xs">{{ $date }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
+                            <td class="text-xs">{!! $username !!}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </th>
         </tr>
-    </table>
-    <table class="w-100">
         <tr>
-            <td class="w-50 text-left">
-                <span class="font-bold capitalize">Fecha Emisión: </span>{!! $date !!}
-            </td>
-            <td class="w-50 text-right">
-                <span class="font-bold capitalize">Usuario: </span>{!! $username !!}
+            <td colspan="3" class="font-bold text-center text-xl uppercase">
+                {{ $title }}
+                @if (isset($subtitle))
+                    <br>{{ $subtitle ?? '' }}
+                @endif
             </td>
         </tr>
     </table>
+
     <div class="block">
-        <h2 class="text-center uppercase">{{ $title }}</h2>
-        @if (isset($subtitle))
-            <h3 class="text-center uppercase">{{ $subtitle ?? '' }}</h3>
-        @endif
+        
         @yield('content')
     </div>
     <footer>

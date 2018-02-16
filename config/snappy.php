@@ -8,6 +8,9 @@ return array(
         'timeout' => false,
         'options' => array(
         'footer-font-size' => 9,
+        'margin-top'=> 5,
+        'margin-left'=> 10,
+        'margin-right'=> 5
         ),
     ),
     'image' => array(
