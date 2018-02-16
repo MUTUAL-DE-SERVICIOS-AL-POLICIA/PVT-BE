@@ -45,9 +45,9 @@ class SearcherController
         $operson->parsePerson($person);        
         return $operson;        
     }
-    public function searchAjax($ci){
+    public function searchAjax(Request $request){
         $this->getDefaults();
-        return json_encode($this->search($ci));        
+        return json_encode($this->search($request->ci));        
     }    
     
 }
