@@ -292,7 +292,7 @@ class CreateRetirementFundTables extends Migration {
 
 
         Schema::table('role_user', function (Blueprint $table) {
-            $table->string('cite');
+            $table->string('cite')->nullable();
         });
         
         Schema::create('ret_fun_increments', function (Blueprint $table) {
