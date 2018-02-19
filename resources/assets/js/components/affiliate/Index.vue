@@ -31,7 +31,6 @@ export default {
       pageSizeOptions: [5, 10, 15, 20],
       columns: (() => {
         const cols = [
-          { title: 'ID', field: 'id', label: 'Affiliate ID', sortable: true, visible: 'true' },          
           { title: 'C.I.', field: 'identity_card', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Matrícula', field: 'registration', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Grado', field: 'degree', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
