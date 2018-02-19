@@ -15,7 +15,7 @@
                         <div class="panel-body " v-if="! editing " >                            
                             <div class="col-md-6">
                                 <dl class="dl-">
-                                    <dt>Cedula de identidad:</dt> <dd>@{{ beneficiary.identity_card }}  {{ !!$beneficiary->city_identity_card ? $beneficiary->city_identity_card->first_shortened : '' }}</dd>
+                                    <dt>Cedula de identidad:</dt> <dd>@{{ beneficiary.identity_card }}  @{{ beneficiary.city_identity_card ? beneficiary.city_identity_card.first_shortened : '' }}</dd>
                                     <dt>Primer Nombre:</dt> <dd>@{{ beneficiary.first_name }}</dd>                                   
                                     <dt>Segundo Nombre:</dt> <dd>@{{ beneficiary.second_name }}</dd>
                                     <dt>Apellido Paterno:</dt> <dd>@{{ beneficiary.last_name }}</dd>
