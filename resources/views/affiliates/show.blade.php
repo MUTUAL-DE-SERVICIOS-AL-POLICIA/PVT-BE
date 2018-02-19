@@ -77,7 +77,7 @@
                                 <div class="col-md-6">
                                     <dl class="dl-">
                                         <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">
-                                            {!! Form::select('city_identity_card_id', $cities, $affiliate->city_identity_card->id  , ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}
+                                            {!! Form::select('city_identity_card_id', $cities, $affiliate->city_identity_card->id ?? null, ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}
                                         </dd>
                                         <dt><label>Primer Nombre:</label></dt> <dd><input type="text" v-model="form.first_name" class="form-control"></dd>
                                         <dt>Segundo Nombre:</dt> <dd><input type="text" v-model="form.second_name" class="form-control"></dd>

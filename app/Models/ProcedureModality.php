@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProcedureModality extends Model
 {
+    public $timestamps = false;
     public function procedure_type()
     {
         return $this->belongsTo('Muserpol\Models\ProcedureType');

@@ -15,7 +15,7 @@
                         <div class="panel-body " v-if="! editing " >                            
                             <div class="col-md-6">
                                 <dl class="dl-">
-                                    <dt>Cedula de identidad:</dt> <dd>@{{ beneficiary.identity_card }}  @{{ beneficiary.city_identity_card ? beneficiary.city_identity_card.first_shortened : '' }}</dd>
+                                    <dt>Cedula de identidad:</dt> <dd>@{{ beneficiary.identity_card }}  @{{ getCity(beneficiary.city_identity_card_id) }}</dd>
                                     <dt>Primer Nombre:</dt> <dd>@{{ beneficiary.first_name }}</dd>                                   
                                     <dt>Segundo Nombre:</dt> <dd>@{{ beneficiary.second_name }}</dd>
                                     <dt>Apellido Paterno:</dt> <dd>@{{ beneficiary.last_name }}</dd>
@@ -25,7 +25,7 @@
                             </div>
                             <div class="col-md-6">
                                 <dl class="dl-">
-                                    <dt>Parentesco:</dt> <dd>@{{ beneficiary.kinship }}</dd>
+                                    <dt>Parentesco:</dt> <dd>@{{ getKinship(beneficiary.kinship_id) }}</dd>
                                     <dt>Genero:</dt> <dd>@{{ beneficiary.gender }}</dd>
                                     <dt>Estado Civil:</dt> <dd>@{{ beneficiary.civil_status }}</dd>
                                     <dt>Fecha de Nacimiento:</dt> <dd>@{{ beneficiary.birth_date }}</dd>
@@ -71,7 +71,7 @@
                                                 @{{ kinship.name }}
                                             </option>
                                     </select>
-                                    <dt>Estado Civil:</dt> <dd><input  type="text"  class="form-control"></dd>
+                                    <dt>Estado Civil:</dt> <dd><input  type="text"  class="form-control" v-model="ben[iterator].civil_status"></dd>
 
                                     <dt>Fecha de Nacimiento:</dt> <dd>
                                         <div class="input-group date" >
