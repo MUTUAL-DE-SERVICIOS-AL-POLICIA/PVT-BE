@@ -18,7 +18,7 @@
     
     <div class="row">
         <div class="col-md-6">
-            @include('ret_fun.applicant_info', ['affiliate'=>$retirement_fund->affiliate])
+            {{--  @include('ret_fun.applicant_info', ['affiliate'=>$retirement_fund->affiliate])  --}}
         </div>
         <div class="col-md-6">
             <ret-fun-info :retirement-fund="{{ $retirement_fund }}" inline-template>

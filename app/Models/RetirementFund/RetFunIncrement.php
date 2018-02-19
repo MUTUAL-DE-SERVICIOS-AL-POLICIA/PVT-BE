@@ -44,10 +44,10 @@ class RetFunIncrement extends Model
             else 
                 $increment->number = $inc2->number+1;
             $increment->save();
-            $cite = $increment->role->cite." - ".$increment->number;
+            $cite = $increment->role->cite."/Nro  ".$increment->number;
         }                        
         else
-            $cite = $inc->role->cite." - ".$inc->number;
+            $cite = $inc->role->cite."/Nro ".$inc->number;
         return $cite;
     }
 //    public static function getCite($user_id, $role_id, $retirement_fund_id){
