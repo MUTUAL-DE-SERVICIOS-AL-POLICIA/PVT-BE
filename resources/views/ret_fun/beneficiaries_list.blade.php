@@ -46,6 +46,7 @@
                             <div class="col-md-6">
                                 <dl class="dl-">
                                     <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="ben[iterator].identity_card" class="form-control">
+                                        <button @click="searchLegalGuardian(iterator)" type="button" role="button"><i class="fa fa-search"></i></button>
                                         <select class="form-control m-b" v-model='ben[iterator].city_identity_card_id'>
                                             <option v-for="city in cities" 
                                                     :selected="city.id == beneficiary.city_identity_card_id ? 'selected' : ''"

@@ -24,7 +24,7 @@ Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliat
 {
 	$breadcrumbs->parent('retirement_fund');
 	$breadcrumbs->push("Nuevo Tramite");
-	$breadcrumbs->push($affiliate->first_name, URL::to('affiliate/' . $affiliate->id));
+	$breadcrumbs->push($affiliate->first_name, route('affiliate.show', $affiliate->id));
 });
 
 

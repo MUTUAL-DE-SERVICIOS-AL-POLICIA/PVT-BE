@@ -50,6 +50,22 @@
                         return this.kinships[i].name;
                 return "S/N";
             },
+            searchApplicant(iterator){
+                let ci= this.ben[iterator],identity_card;
+                alert(ci);
+                axios.get('/search_ajax', {
+                    params: {
+                    ci
+                    }
+                })
+                .then( (response) => {
+                    let data = response.data;
+                    this.setDataApplicant(data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                },
             update () {
                 console.log(this.ben[0].identity_card+"console");        
                 //console.log(this.$refs.name_ben[0].value);
