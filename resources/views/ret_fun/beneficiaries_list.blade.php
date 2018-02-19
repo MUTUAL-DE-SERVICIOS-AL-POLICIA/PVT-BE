@@ -29,7 +29,7 @@
                                     <dt>Genero:</dt> <dd>@{{ beneficiary.gender }}</dd>
                                     <dt>Estado Civil:</dt> <dd>@{{ beneficiary.civil_status }}</dd>
                                     <dt>Fecha de Nacimiento:</dt> <dd>@{{ beneficiary.birth_date }}</dd>
-                                    <dt>Edad:</dt> <dd> @{{ age  }} </dd>                                    
+                                    <dt>Edad:</dt> <dd> {{-- @{{ age  }} --}} </dd>
                                     <dt>Telefono:</dt> <dd>@{{ beneficiary.phone_number }}</dd>
                                     <dt>Celular:</dt> <dd>@{{ beneficiary.cell_phone_number }}</dd>
                                 </dl>
