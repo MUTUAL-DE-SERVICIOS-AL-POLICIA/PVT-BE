@@ -19,16 +19,16 @@ class QuotaAidBeneficiary extends Model
     {
         return $this->belongsTo('Muserpol\Models\Kinship');
     }
-    public function address_quota_aid_beneficiary()
+    public function address() //aca
     {
-        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\AddressQuotaAidBeneficiary');
+        return $this->belongToMany('Muserpol\Models\Address', 'address_quota_aid_beneficiary', 'quota_aid_beneficiary_id', 'address_id');
     }
-    public function quota_aid_advisor_beneficiary()
+    public function quota_aid_advisors()
     {
-        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisorBeneficiary');
+        return $this->belongsToMany('Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisor', 'quota_aid_advisor_beneficiary', 'quota_aid_beneficiary_id', 'quota_aid_advisor_id');
     }
-    public function quota_aid_beneficiary_legal_guardian()
+    public function quota_aid_legal_guardians()
     {
-        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian');
+        return $this->belongsToMany('Muserpol\Models\QuotaAidMortuary\QuotaAidLegalGuardian', 'quota_aid_beneficiary_legal_guardian', 'quota_aid_beneficiary_id', 'quota_aid_legal_guardian_id');
     }
 }
