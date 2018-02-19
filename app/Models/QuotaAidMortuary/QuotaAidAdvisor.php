@@ -3,7 +3,7 @@
 namespace Muserpol\Models\QuotaAidMortuary;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class QuotaAidAdvisor extends Model
 {
     use SoftDeletes;
@@ -24,16 +24,16 @@ class QuotaAidAdvisor extends Model
         'phone_number',
         'cel_phone_number',
     ];
-    public function city_identity_card()
+    public function city_identity_card()    
     {
-        return $this->belongsTo(City::class, 'city_identity_card_id','id');
+        return $this->belongsTo('Muserpol\Models\City', 'city_identity_card_id');
     }
     public function kinship()
     {
         return $this->belongsTo('Muserpol\Models\Kinship');
     }
-    public function quota_aid_advisor_beneficiary()
+    public function quota_aid_beneficiary()
     {
-        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisorBeneficiary');
+        return $this->belongsToMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary', 'quota_aid_advisor_beneficiary', 'quota_aid_beneficiary_id', 'quota_aid_advisor_id');
     }
 }

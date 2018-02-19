@@ -109,29 +109,30 @@ class RetirementFundCertificationController extends Controller
         $retirement_fund = RetirementFund::find($id);
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $modality = $retirement_fund->procedure_modality->name;
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($retirement_fund->procedure_modality->name);
+        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($modality);
         $number = "1";
-        $username = Auth::user()->username."-Recepcion";//agregar cuando haya roles
+        $username = Auth::user()->username;//agregar cuando haya roles
         $date=$this->getStringDate($retirement_fund->reception_date);
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
-        $modality = $retirement_fund->procedure_modality->name;
         $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
 
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
-    //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','applicant','submitted_documents','header','number'));
+    //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','modality','applicant','submitted_documents','header','number'));
        return \PDF::loadView('ret_fun.print.reception',compact('title', 'institution', 'direction','unit','username','date','modality','applicant','submitted_documents','header','number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
     }
     public function printFile($id){
         $affiliate = Affiliate::find($id);
-        $retirement_fund = RetirementFund::where('affiliate_id',$affiliate->id)->first();        
+        $retirement_fund = RetirementFund::where('affiliate_id',$affiliate->id)->get()->last();        
+        $number = $retirement_fund->code;
         $date=$this->getStringDate($retirement_fund->reception_date);
         $title = "CERTIFICACION DE ARCHIVO – ".strtoupper($retirement_fund->procedure_modality->name);       
-        $username = Auth::user()->username."-Recepcion";//agregar cuando haya roles        
+        $username = Auth::user()->username;//agregar cuando haya roles        
         $affiliate_folders = AffiliateFolder::where('affiliate_id',$affiliate->id)->get();
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();        
-        return \PDF::loadView('ret_fun.print.file_certification', compact('date','username','title','retirement_fund','affiliate_folders','applicant'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
+        return \PDF::loadView('ret_fun.print.file_certification', compact('date','username','title','number','retirement_fund','affiliate','affiliate_folders','applicant'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
         
     }
     public function printLegalReview($id){
@@ -140,13 +141,14 @@ class RetirementFundCertificationController extends Controller
         //$title = "CERTIFICACION DE ARCHIVO – ".strtoupper($retirement_fund->procedure_modality->name);       
         $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
         $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
-        $username = Auth::user()->username."-Recepcion";//agregar cuando haya roles
+        $username = Auth::user()->username;//agregar cuando haya roles
         $date=$this->getStringDate($retirement_fund->reception_date);
+        $affiliate = $retirement_fund->affiliate;
 //        $data = [
 //            'retirement_fund'   =>  $retirement_fund,
 //            'submitted_documents'   => $submitted_documents,            
 //        ];
-        return \PDF::loadView('ret_fun.print.legal_certification', compact('date','username','title','retirement_fund','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
+        return \PDF::loadView('ret_fun.print.legal_certification', compact('date','username','title','retirement_fund','affiliate','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
     }
      private function getNextCode($actual){
         $year =  date('Y');
