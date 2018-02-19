@@ -99,7 +99,7 @@ class RetirementFundController extends Controller
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
                 
-        $cite= RetFunIncrement::getNextCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
+        $cite= RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
         
         foreach ($requirements  as  $requirement)
         {
@@ -226,11 +226,7 @@ class RetirementFundController extends Controller
                 $beneficiary->type = "N";
                 $beneficiary->save();                
             }        
-        }
-        //$procedure_type = 2; //FONDO DE RETIRO
-        //$cite= Increment::getCite(Auth::user()->id,Session::get('rol_id'),$procedure_type);
-        
-        
+        }                        
         $data = [
         ];
         
