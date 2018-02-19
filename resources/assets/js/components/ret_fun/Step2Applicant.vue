@@ -44,6 +44,58 @@ export default {
     }
   },
   methods: {
+
+    searchApplicant: function(){
+      let ci= document.getElementsByName('applicant_identity_card')[0].value;
+      axios.get('/search_ajax', {
+        params: {
+          ci
+        }
+      })
+      .then( (response) => {
+        let data = response.data;
+        this.setDataApplicant(data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    searchLegalGuardian: function(){
+      let ci= document.getElementsByName('legal_guardian_identity_card')[0].value;
+      axios.get('/search_ajax', {
+        params: {
+          ci
+        }
+      })
+      .then((response) => {
+        let data = response.data;
+        this.setDataLegalGuardian(data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    setDataApplicant(data){
+      this.applicant_first_name = data.first_name;
+      this.applicant_second_name = data.second_name;
+      this.applicant_last_name = data.last_name;
+      this.applicant_mothers_last_name = data.mothers_last_name;
+      this.applicant_surname_husband = data.surname_husband;
+      this.applicant_surname_husband = data.surname_husband,
+      this.applicant_identity_card = data.identity_card;
+      this.applicant_city_identity_card = data.city_identity_card_id;
+      this.applicant_gender = data.gender;
+      this.applicant_kinship = data.kinship_id;
+    },
+    setDataLegalGuardian(data){
+      this.legal_guardian_first_name = data.first_name;
+      this.legal_guardian_second_name = data.second_name;
+      this.legal_guardian_last_name = data.last_name;
+      this.legal_guardian_mothers_last_name = data.mothers_last_name;
+      this.legal_guardian_surname_husband = data.surname_husband;
+      this.legal_guardian_identity_card = data.identity_card;
+      this.legal_guardian_city_identity_card = data.city_identity_card_id;
+    },
     change_applicant: function() {
       let modality_id=document.getElementById('ret_fun_modality').value;
       if(this.applicant_type  === '2'){

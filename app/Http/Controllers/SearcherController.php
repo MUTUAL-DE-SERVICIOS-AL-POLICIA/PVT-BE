@@ -42,12 +42,12 @@ class SearcherController
         }        
 
         $operson = new Person();
-        $operson->parsePerson($person);        
+        $operson->parsePerson($person);      
         return $operson;        
     }
-    public function searchAjax($ci){
+    public function searchAjax(Request $request){
         $this->getDefaults();
-        return json_encode($this->search($ci));        
+        return json_encode($this->search($request->ci));        
     }    
     
 }
@@ -66,6 +66,7 @@ class Person{
      var $class;
      var $type;
      var $gender;
+     var $birth_date;
      public function parsePerson($obj){
          $this->id = $obj->id ?? '';
          $this->first_name = $obj->first_name ?? '';
@@ -73,14 +74,15 @@ class Person{
          $this->last_name = $obj->last_name ?? '';
          $this->mothers_last_name =$obj->mothers_last_name ?? '';
          $this->identity_card = $obj->identity_card ?? '';
-         $this->kinship = $obj->kinship ?? null;
+         $this->kinship_id = $obj->kinship_id ?? null;
          $this->phone_number = $obj->phone_number ?? '';
          $this->cell_phone_number = $obj->cell_phone_number ?? '';
          $this->surname_husband = $obj->surname_husband ?? '';
          $this->class = get_class($obj) ?? 'desconocido';
          $this->type = $this->getClassObject();
-         $this->city_identity_card = $obj->city_identity_card ?? null;
+         $this->city_identity_card_id = $obj->city_identity_card_id ?? null;
          $this->gender = $obj->gender ?? '';         
+         $this->birth_date = $obj->birth_date ?? '';
      }
      function __toString() {
          return $this->last_name." ".$this->first_name;

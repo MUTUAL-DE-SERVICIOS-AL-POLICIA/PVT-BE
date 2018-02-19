@@ -9,25 +9,29 @@
 | by your application. Just tell Laravel the URIs it should respond
 | to using a Closure or controller method. Build something great!
 |
-*/
+ */
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
 
 Auth::routes();
 //afiliates
-Route::group(['middleware' => 'auth'], function() {
-	
+Route::group(['middleware' => 'auth'], function () {
+
 	Route::get('/', 'HomeController@index')->name("main");
 
 	Route::resource('affiliate', 'AffiliateController');
-	Route::patch('/update_affiliate/{affiliate}','AffiliateController@update')->name('update_affiliate');
-	Route::patch('/update_affiliate_police/{affiliate}','AffiliateController@update_affiliate_police')->name('update_affiliate_police');
+
+	Route::patch('/update_affiliate/{affiliate}', 'AffiliateController@update')->name('update_affiliate');
+	Route::patch('/update_affiliate_police/{affiliate}', 'AffiliateController@update_affiliate_police')->name('update_affiliate_police');
+
+	Route::patch('/update_beneficiaries/{retirement_fund}','RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
+
 	Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
-	
 
 
-	Route::get('changerol','UserController@changerol');
-	Route::post('postchangerol','UserController@postchangerol');
+
+	Route::get('changerol', 'UserController@changerol');
+	Route::post('postchangerol', 'UserController@postchangerol');
 
 	//retirement fund
 	//RetirementFundRequirements
@@ -36,16 +40,16 @@ Route::group(['middleware' => 'auth'], function() {
 	// Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
 	Route::resource('ret_fun', 'RetirementFundController');
-	Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');        
+	Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 
-  	Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
-        Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
-        
-        Route::get('affiliate/{affiliate}/print/file','RetirementFundCertificationController@printFile')->name('ret_fun_print_file');
-        
-        
+	Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
+	Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
+
+	Route::get('affiliate/{affiliate}/print/file', 'RetirementFundCertificationController@printFile')->name('ret_fun_print_file');
+
+
 	Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->name('create_ret_fun');
-  	Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
+	Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
 
 
@@ -54,12 +58,11 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
 	Route::resource('quota_aid', 'QuotaAidMortuaryController');
 
-	Route::resource('affiliate_folder','AffiliateFolderController');
-        
+	Route::resource('affiliate_folder', 'AffiliateFolderController');
+
         //searcherController
-        Route::get('search/{ci}','SearcherController@search');
-        Route::get('search_ajax/{ci}','SearcherController@searchAjax');
-	
-        
+	Route::get('search/{ci}', 'SearcherController@search');
+	Route::get('search_ajax', 'SearcherController@searchAjax');
+
 });
 
