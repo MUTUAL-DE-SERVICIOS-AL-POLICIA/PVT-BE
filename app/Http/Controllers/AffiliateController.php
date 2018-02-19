@@ -102,6 +102,7 @@ class AffiliateController extends Controller
     public function show(Affiliate $affiliate)
     {
         $cities = City::all()->pluck('first_shortened', 'id');
+        $birth_cities = City::all()->pluck('name', 'id');
         $categories = Category::all()->pluck('name', 'id');
         $degrees = Degree::all()->pluck('name', 'id');
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
@@ -131,6 +132,7 @@ class AffiliateController extends Controller
             'retirement_fund'=>$retirement_fund,
             'affiliate'=>$affiliate,
             'cities'=>$cities,
+            'birth_cities'=>$birth_cities,
             'categories'=>$categories,
             'degrees'=>$degrees,
             'pension_entities' =>$pension_entities,
@@ -174,6 +176,8 @@ class AffiliateController extends Controller
         $affiliate->birth_date = $request->birth_date;
         $affiliate->save();
 
+        return $affiliate;
+
     }
     public function update_affiliate_police(Request $request, Affiliate $affiliate)
     {
@@ -186,9 +190,8 @@ class AffiliateController extends Controller
         $affiliate->degree_id = $request->affiliate_degree;
         $affiliate->pension_entity_id = $request->affiliate_pension_entity;
         $affiliate->save();
-
-
-
+        
+        return $affiliate;
     }
 
     /**

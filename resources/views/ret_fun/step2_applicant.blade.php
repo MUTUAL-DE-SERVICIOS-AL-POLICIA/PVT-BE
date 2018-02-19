@@ -50,7 +50,10 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group"><label class="col-sm-6 control-label">Carnet de Identidad</label>
-                            <div class="col-sm-6"><input type="text" name="applicant_identity_card" v-model="applicant_identity_card" class="form-control"></div>
+                            <div class="col-sm-6">
+                                <input type="text" name="applicant_identity_card" v-model="applicant_identity_card" class="form-control">
+                                <button @click="searchApplicant" type="button" role="button"><i class="fa fa-search"></i></button>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -154,7 +157,9 @@
                     <div class="row">
                         <div class="col-md-5">
                             <div class="form-group"><label class="col-sm-6 control-label">Carnet de Identidad</label>
-                                <div class="col-sm-6"><input type="text" name="legal_guardian_identity_card" v-model="legal_guardian_identity_card" class="form-control"></div>
+                                <div class="col-sm-6"><input type="text" name="legal_guardian_identity_card" v-model="legal_guardian_identity_card" class="form-control">
+                                    <button @click="searchLegalGuardian" type="button" role="button"><i class="fa fa-search"></i></button>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-7">

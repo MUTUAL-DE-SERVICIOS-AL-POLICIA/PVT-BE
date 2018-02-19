@@ -7,20 +7,22 @@
             return{
                 editing: false,
                 show_spinner: false,
-                form:{
-                    identity_card: this.affiliate.identity_card,
-                    first_name: this.affiliate.first_name,
-                    second_name: this.affiliate.second_name,
-                    last_name: this.affiliate.last_name,
-                    mothers_last_name: this.affiliate.mothers_last_name,
-                    gender: this.affiliate.gender,
-                    civil_status: this.affiliate.civil_status,
-                    phone_number: this.affiliate.phone_number,
-                    birth_date: this.affiliate.birth_date
-                },
+                form:this.affiliate,
                 first_name:{
                     value: this.affiliate.first_name,
                     edit: false,
+                }
+            }
+        },
+        computed:{
+            age: function(){
+                var birthday = +new Date(this.form.birth_date); 
+                if(this.form.birth_date!=null){
+
+                    return~~ ((Date.now() - birthday) / (31557600000));
+                }else
+                {
+                    return '';
                 }
             }
         },
@@ -34,9 +36,12 @@
                 let uri = `/update_affiliate/${this.affiliate.id}`;
                 this.show_spinner=true;
                 axios.patch(uri,this.form)
-                    .then(()=>{
+                    .then(response=>{
                         this.editing = false;
                         this.show_spinner=false;
+                        this.form = response.data;
+                       // this.form.birth_date = response.data.birth_date;
+                        this.first_name = response.data.first_name;                          
                         flash('Informacion del Afiliado Actualizada');
                     }).catch((response)=>{
                         this.show_spinner=false;

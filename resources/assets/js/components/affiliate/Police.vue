@@ -26,9 +26,10 @@
 				let uri = `/update_affiliate_police/${this.affiliate.id}`;
 				this.show_spinner=true;
 				axios.patch(uri,this.form)
-					.then(()=>{
+					.then(response=>{
 						this.editing = false;
 						this.show_spinner = false;
+						console.log(response+'cechuz y karen');	
 						flash('Informacion Policial Actualizada');
 					}).catch((response)=>{
 						flash('Error al actualizar Informacion Policial: '+response.message,'error');

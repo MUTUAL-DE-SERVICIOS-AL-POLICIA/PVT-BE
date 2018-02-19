@@ -6,15 +6,15 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateMortuaryQuotaAndMortuaryAid extends Migration
 {
-   
+
     public function up()
-    {             
+    {
         Schema::create('quota_aid_procedures', function (Blueprint $table) { // Cuantia
             $table->bigIncrements('id'); //identificador
             $table->bigInteger('hierarchy_id')->unsigned(); //identificador jerarquia
-            $table->enum('type_mortuary', ['Titular', 'Conyuge', 'Viuda'])->nullable(); //tipo fallecido            
-            $table->bigInteger('procedure_modality_id')->unsigned(); //identificador modalidad                
-            $table->decimal('amount', 13, 2); // monto            
+            $table->enum('type_mortuary', ['Titular', 'Conyuge', 'Viuda'])->nullable(); //tipo fallecido
+            $table->bigInteger('procedure_modality_id')->unsigned(); //identificador modalidad
+            $table->decimal('amount', 13, 2); // monto
             $table->date('year'); // año
             $table->foreign('hierarchy_id')->references('id')->on('hierarchies')->onDelete('cascade');
             $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities')->onDelete('cascade');
@@ -26,15 +26,15 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('affiliate_id')->unsigned(); //identificador afiliado
             $table->bigInteger('quota_aid_procedure_id')->unsigned(); //identificador de cuantia
-            $table->bigInteger('procedure_modality_id')->unsigned()->nullable(); //identificador de tipo de modalidad            
+            $table->bigInteger('procedure_modality_id')->unsigned()->nullable(); //identificador de tipo de modalidad
             $table->bigInteger('city_start_id')->unsigned()->nullable(); //ciudad donde se inicia el tramite.
             $table->bigInteger('city_end_id')->unsigned()->nullable(); //ciudad donde se entrega el pago.
-            $table->string('code')->unique(); //codigo 
+            $table->string('code')->unique(); //codigo
             $table->date('reception_date')->nullable(); //fecha de nacimento
             $table->decimal('subtotal', 13, 2); // sub total
             $table->decimal('total', 13, 2); // total
             $table->bigInteger('workflow_id')->unsigned(); // identificador de flujo
-            $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado         
+            $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado
             $table->foreign('affiliate_id')->references('id')->on('affiliates')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('quota_aid_procedure_id')->references('id')->on('quota_aid_procedures');
@@ -45,7 +45,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->foreign('wf_state_current_id')->references('id')->on('wf_states');
             $table->timestamps();
             $table->softDeletes();
-        });   
+        });
 
         Schema::create('quota_aid_submitted_documents', function (Blueprint $table) {
             $table->bigIncrements('id'); //identificador
@@ -60,7 +60,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('quota_aid_observations', function(Blueprint $table) {   //observaciones de Quota y Auxilio
+        Schema::create('quota_aid_observations', function (Blueprint $table) {   //observaciones de Quota y Auxilio
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('quota_aid_mortuary_id')->unsigned();
@@ -73,7 +73,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        
+
         Schema::create('quota_aid_beneficiaries', function (Blueprint $table) {
             $table->bigIncrements('id'); // identifiador
             $table->bigInteger('quota_aid_mortuary_id')->unsigned(); //identificador de cuota y auxilio mortuoria
@@ -109,7 +109,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->timestamps();
         });
 
-       
+
         Schema::create('quota_aid_advisors', function (Blueprint $table) { // tabla tutor
             $table->bigIncrements('id');
             $table->bigInteger('city_identity_card_id')->unsigned()->nullable(); //identificación del ci
@@ -125,7 +125,7 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->enum('type', ['Natural', 'Legal']);
             //datos de tutor legal
             $table->string('name_court')->nullable(); //legal
-            $table->string('resolution_number')->nullable(); //legal 
+            $table->string('resolution_number')->nullable(); //legal
             $table->date('resolution_date')->nullable(); //legal
             // fin datos de tutor legal
             $table->string('phone_number')->nullable(); //numero de telefono
@@ -137,11 +137,11 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
         });
 
         Schema::create('quota_aid_advisor_beneficiary', function (Blueprint $table) {//tabla tutor beneficiario
-           $table->bigIncremental('id');
+            $table->bigIncrements('id');
             $table->bigInteger('quota_aid_beneficiary_id')->unsigned();
             $table->bigInteger('quota_aid_advisor_id')->unsigned();
             $table->foreign('quota_aid_beneficiary_id')->references('id')->on('quota_aid_beneficiaries');
-            $table->foreign('quota_aid_advisor_id')->references('id')->on('quota_aid_advisors');            
+            $table->foreign('quota_aid_advisor_id')->references('id')->on('quota_aid_advisors');
         });
 
         Schema::create('quota_aid_legal_guardians', function (Blueprint $table) { // apoderado
@@ -162,16 +162,15 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-            
+
         Schema::create('quota_aid_beneficiary_legal_guardian', function (Blueprint $table) { //Beneficiario-apoderado
-            $table->bigIncremental('id');
+            $table->bigIncrements('id');
             $table->bigInteger('quota_aid_beneficiary_id')->unsigned(); //identificador del beneficiario
             $table->bigInteger('quota_aid_legal_guardian_id')->unsigned(); //identificador del tutor
             $table->foreign('quota_aid_beneficiary_id')->references('id')->on('quota_aid_beneficiaries');
             $table->foreign('quota_aid_legal_guardian_id')->references('id')->on('quota_aid_legal_guardians');
-            $table->primary('quota_aid_beneficiary_id');
-          });        
-    }   
+        });
+    }
     public function down()
     {
         Schema::drop('quota_aid_beneficiary_legal_guardian');
@@ -179,12 +178,10 @@ class CreateMortuaryQuotaAndMortuaryAid extends Migration
         Schema::drop('quota_aid_advisor_beneficiary');
         Schema::drop('quota_aid_advisors');
         Schema::drop('address_quota_aid_beneficiary');
-        Schema::drop('quota_aid_observations');        
+        Schema::drop('quota_aid_observations');
         Schema::drop('quota_aid_beneficiaries');
         Schema::drop('quota_aid_submitted_documents');
         Schema::drop('quota_aid_mortuaries');
         Schema::drop('quota_aid_procedures');
-
-        
     }
 }

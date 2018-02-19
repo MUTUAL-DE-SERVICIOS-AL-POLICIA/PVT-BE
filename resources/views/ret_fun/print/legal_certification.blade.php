@@ -8,7 +8,7 @@
         {{--  @include('print.aplicant_info')  --}}
     </div>
     <span>
-        <strong>MOTIVO:</strong>Fondo de Retiro
+        <strong>MOTIVO:</strong>{{strtoupper($retirement_fund->procedure_modality->procedure_type->name." al ".$retirement_fund->procedure_modality->name)}}
     </span>
     <table>
         {{--  <tr>
@@ -19,11 +19,11 @@
             <th class="w-80"><strong>DOCUMENTACIÓN PRESENTADA</strong></th>
             <th class="w-10"><strong>V°B°</strong></th>
         </tr>
-        {{--  @foreach($submitted_documents as $i=>$item)
+        @foreach($submitted_documents as $i=>$item)
             <tr>
-                <td class='border text-center p-5'>{!! $item->procedure_requirement->number !!}</td>
-                <td class='border text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
-                @if (true)
+                <td class='border text-center p-5'>{{$item->procedure_requirement->number}}</td>
+                <td class='border text-justify p-5'>{{$item->procedure_requirement->procedure_document->name}} </td>
+                @if ($item->is_valid)
                     <td class="border text-center p-5">
                         <img class="circle" src="{{asset('images/check.png')}}" >
                     </td>
@@ -33,7 +33,7 @@
                     </td>
                 @endif
             </tr>
-        @endforeach  --}}
+        @endforeach
     </table>
     <p class="text-justify border p-10">
         El Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de acuerdo al
