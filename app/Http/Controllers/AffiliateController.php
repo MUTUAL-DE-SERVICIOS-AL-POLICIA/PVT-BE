@@ -185,13 +185,13 @@ class AffiliateController extends Controller
     public function update_affiliate_police(Request $request, Affiliate $affiliate)
     {
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
-        $affiliate->affiliate_state_id = $request->affiliate_state;
-        $affiliate->type = $request->affiliate_type;
-        $affiliate->date_entry = $request->affiliate_date_entry;
-        $affiliate->item = $request->affiliate_item;
-        $affiliate->category_id = $request->affiliate_category;
-        $affiliate->degree_id = $request->affiliate_degree;
-        $affiliate->pension_entity_id = $request->affiliate_pension_entity;
+        $affiliate->affiliate_state_id = $request->affiliate_state_id;
+        $affiliate->type = $request->type;
+        $affiliate->date_entry = $request->date_entry;
+        $affiliate->item = $request->item;
+        $affiliate->category_id = $request->category_id;
+        $affiliate->degree_id = $request->degree_id;
+        $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->save();
         
         return $affiliate;

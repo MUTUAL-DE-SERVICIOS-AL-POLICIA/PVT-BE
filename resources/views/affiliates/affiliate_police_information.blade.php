@@ -6,9 +6,11 @@
                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
             </div>
         </div>
+
         <div class="panel-body" v-if="! editing	">
             <div class="row">
                 <div class="col-md-6">
+                  
                     <dl class="dl-">
                         <dt>Estado:</dt> <dd>{{ $affiliate->affiliate_state->name ?? '' }}</dd>
                         <dt>Tipo:</dt> <dd>{{ $affiliate->type }}</dd>
@@ -38,30 +40,30 @@
                         <dt>Estado:</dt>
                         <dd>
                             {!! Form::select('affilate_state_id', $affiliate_states, null, ['placeholder' => 'Seleccione un estado', 'class' => 'form-control',
-                            'v-model' => 'form.affiliate_state' ]) !!}
+                            'v-model' => 'form.affilate_state_id' ]) !!}
                         </dd>
                         <dt>Tipo:</dt>
-                        <dd><input type="text" class="form-control" v-model="form.affiliate_type"></dd>
-                        <dt>Fecha de Ingreso a la Institucional Policial:</dt>
-                        <dd> <input type="text" class="form-control" v-model="form.affiliate_date_entry"></dd>
+                        <dd><input type="text" class="form-control" v-model="form.type"></dd>
+                        <dt>Fecha de Ingreso a la Institucional Policial:</dt>  
+                        <dd> <input type="text" class="form-control" v-model="form.date_entry"></dd>
                         <dt>Numero de Item:</dt>
-                        <dd> <input type="text" class="form-control" v-model="form.affiliate_item"></dd>
+                        <dd> <input type="text" class="form-control" v-model="form.item"></dd>
                     </dl>
                 </div>
                 <div class="col-md-6">
                     <dl class="dl-">
                         <dt>Categoria:</dt>
                         <dd>{!! Form::select('category_id', $categories, null, ['placeholder' => 'Seleccione una categoria',
-                            'class' => 'form-control', 'v-model' => 'form.affiliate_category']) !!}</dd>
+                            'class' => 'form-control', 'v-model' => 'form.category_id']) !!}</dd>
                         <dt>Grado:</dt>
                         <dd>
                             {!! Form::select('degree_id', $degrees, null, ['placeholder' => 'Seleccione un Grado', 'class' => 'form-control' , 'v-model'
-                            => 'form.affiliate_degree' ]) !!}
+                            => 'form.degree_id' ]) !!}
                         </dd>
                         <dt>Ente gestor:</dt>
                         <dd>
                             {!! Form::select('pension_entity_id', $pension_entities, null, ['placeholder' => 'Seleccione el Ente Gestor', 'class' =>
-                            'form-control', 'v-model' => 'form.affiliate_pension_entity' ]) !!}
+                            'form-control', 'v-model' => 'form.pension_entity_id' ]) !!}
                         </dd>
                     </dl>
                 </div>
