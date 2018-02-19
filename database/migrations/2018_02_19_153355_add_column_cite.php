@@ -13,7 +13,7 @@ class AddColumnCite extends Migration
      */
     public function up()
     {
-        Schema::table('roles', function (Blueprint $table) {
+        Schema::table('role_user', function (Blueprint $table) {
             $table->string('cite');
         });
     }
@@ -25,7 +25,7 @@ class AddColumnCite extends Migration
      */
     public function down()
     {
-        Schema::table('roles', function (Blueprint $table) {
+        Schema::table('role_user', function (Blueprint $table) {
             $table->dropColumn('cite');
         });
     }
