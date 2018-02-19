@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call(QuotaSeeder::class);
         $this->call(WorkFlowAndStates::class);
         $this->call(SequenceSeeder::class);
+        $this->call(ShortenedModalitiesSeeder::class);
         $this->command->info('Todo ok finalizado! DAVID y NADIA'); 
     }
 }
