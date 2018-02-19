@@ -34,8 +34,7 @@ class RetirementFundController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {        
-                
+    {                
         return view('ret_fun.index');
        
     }
