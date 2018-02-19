@@ -66,12 +66,15 @@
                     </dl>
                 </div>
             </div>
-            <div v-show="editing" class="panel-footer">
+            <div class="row">
+                <div v-show="editing" class="panel-footer">
                     <div class="text-center">
                         <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
                         <button class="btn btn-primary" type="button" @click="update"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
                     </div>
+                </div>
             </div>
+            
         </div>
     </div>
 </div>

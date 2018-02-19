@@ -174,6 +174,9 @@ class AffiliateController extends Controller
         $affiliate->gender = $request->gender;
         $affiliate->civil_status = $request->civil_status;
         $affiliate->birth_date = $request->birth_date;
+        $affiliate->phone_number = $request->phone_number;
+        $affiliate->cell_phone_number = $request->cell_phone_number;
+
         $affiliate->save();
 
         return $affiliate;
