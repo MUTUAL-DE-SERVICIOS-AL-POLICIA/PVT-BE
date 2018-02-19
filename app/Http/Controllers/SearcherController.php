@@ -33,7 +33,7 @@ class SearcherController
         $this->select = "*";
     }
     public function search($ci)
-    {
+    {                
         $this->getDefaults();                
         foreach ($this->tables as $table){
             $person = $table->where('identity_card',$ci)->select($this->select)->first();
