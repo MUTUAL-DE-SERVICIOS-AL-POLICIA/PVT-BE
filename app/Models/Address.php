@@ -15,4 +15,9 @@ class Address extends Model
     {
     	return $this->belongsToMany(Affiliate::class);
     }
+
+    public function quota_aid_beneficiaries() 
+    {
+        return $this->belongToMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary', 'address_quota_aid_beneficiary', 'quota_aid_beneficiary_id', 'address_id');
+    }
 }
