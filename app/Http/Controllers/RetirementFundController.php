@@ -35,9 +35,7 @@ class RetirementFundController extends Controller
      */
     public function index()
     {        
-        
-        $cite= RetFunIncrement::getNextCite(Auth::user()->id,Session::get('rol_id'),2);
-        return $cite;
+                
         return view('ret_fun.index');
        
     }
