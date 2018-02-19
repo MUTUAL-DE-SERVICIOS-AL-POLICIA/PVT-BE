@@ -50,9 +50,4 @@ class RetFunIncrement extends Model
             $cite = $inc->role->cite." - ".$inc->number;
         return $cite;
     }
-//    public static function getCite($user_id, $role_id, $retirement_fund_id){
-//        $increment = RetFunIncrement::where('user_id',$user_id)->where('role_id',$role_id)->where('retirement_fund_id',$retirement_fund_id)->orderBy('number','DESC')->orderBy('id','DESC')->first();
-//        $cite = $increment->role->cite." - ".$increment->number;
-//        return $cite;        
-//    }
 }
