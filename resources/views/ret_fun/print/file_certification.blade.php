@@ -32,8 +32,8 @@
                     </thead>
                     @foreach($affiliate_folders as $i=>$item)
                         <tr>
-                            <td class="text-center uppercase font-bold px-5 py-3">{!! $item->procedure_modality->name !!} </td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{!! $item->procedure_modality->shortened !!}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{!! $item->procedure_modality->name ?? 'ERROR' !!} </td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{!! $item->procedure_modality->shortened ?? 'ERROR' !!}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">SI</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{!! $item->description !!}</td>
                         </tr>
@@ -42,7 +42,7 @@
                 @else
                 <p class="font-bold">NINGUNO</p>
                 @endif
-                <li><strong>TRÁMITE ACTUAL PRESENTADO POR {{$retirement_fund->procedure_modality->shortened}}</strong></li>
+                <li><strong>TRÁMITE ACTUAL PRESENTADO POR {{$retirement_fund->procedure_modality->shortened ?? 'ERROR'}}</strong></li>
                     <p>
                         SOLICITADO POR:
                     </p>

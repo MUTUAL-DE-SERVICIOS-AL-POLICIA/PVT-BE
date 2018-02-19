@@ -1,3 +1,5 @@
+
+
 <div class="col-lg-12">
     <div class="panel panel-primary">
         <div class="panel-heading">
@@ -51,16 +53,18 @@
         </div>      
     </div>
 </div>
+@section('scripts')
 <script>
-function editLegalReview(){
- $('.documents_comment').toggle();
- $('.documents_comment_text').toggle();
- $('.documents_button').toggle();
- $('.documents_check').each(function(i, obj) {              
-     if($(this).prop('disabled'))
-         $(this).attr('disabled', false);
-     else
-         $(this).attr('disabled', true);
- }); 
-}
+    function editLegalReview(){
+        $('.documents_comment').toggle();
+        $('.documents_comment_text').toggle();
+        $('.documents_button').toggle();
+        $('.documents_check').each(function(i, obj) {              
+            if($(this).prop('disabled'))
+            $(this).attr('disabled', false);
+            else
+            $(this).attr('disabled', true);
+        }); 
+    }
 </script> 
+@endsection
