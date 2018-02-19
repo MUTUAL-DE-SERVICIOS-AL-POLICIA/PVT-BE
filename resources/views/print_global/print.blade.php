@@ -27,7 +27,7 @@
                     <tbody>
                         <tr>
                             <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
-                            <td class="text-bold text-sm">{!! $number !!}</td>
+                            <td class="text-bold text-sm">{!! $number ?? 'ERROR' !!}</td>
                         </tr>
                         <tr>
                             <td class="text-center bg-grey-darker text-xxs text-white">Fecha de Emisión</td>
@@ -45,7 +45,7 @@
             <td colspan="3" class="font-bold text-center text-xl uppercase">
                 {{ $title }}
                 @if (isset($subtitle))
-                    <br>{{ $subtitle ?? '' }}
+                    <br><span class="font-medium">{{ $subtitle ?? '' }}</span>
                 @endif
             </td>
         </tr>

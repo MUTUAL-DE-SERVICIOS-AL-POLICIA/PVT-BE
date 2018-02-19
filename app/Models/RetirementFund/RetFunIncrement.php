@@ -46,10 +46,10 @@ class RetFunIncrement extends Model
             else 
                 $increment->number = $inc2->number+1;
             $increment->save();
-            $cite = $role_user->cite." - ".$increment->number;
+            $cite = $role_user->cite."/Nro ".$increment->number;
         }                        
         else
-            $cite = $role_user->cite." - ".$inc->number;
+            $cite = $role_user->cite."/Nro ".$inc->number;
         return $cite;
     }
 }

@@ -32,24 +32,24 @@
                             <div class="panel-body " v-if="! editing " >
                                 <div class="col-md-6">
                                     <dl class="dl-">
-                                        <dt>Cedula de identidad:</dt> <dd>{{ $affiliate->identity_card }}  {{ !!$affiliate->city_identity_card ? $affiliate->city_identity_card->first_shortened : '' }}</dd>
-                                        <dt>Primer Nombre:</dt> <dd>{{ $affiliate->first_name }}</dd>
+                                        <dt>Cedula de identidad:</dt> <dd>@{{ form.identity_card }}  {{ !!$affiliate->city_identity_card ? $affiliate->city_identity_card->first_shortened : '' }}</dd>
+                                        <dt>Primer Nombre:</dt> <dd>@{{ form.first_name}}</dd>
                                         <input type="text" class="form-control" v-model="first_name.value" v-show="first_name.edit ==  true">
-                                        <dt>Segundo Nombre:</dt> <dd>{{ $affiliate->second_name }}</dd>
-                                        <dt>Apellido Paterno:</dt> <dd>{{ $affiliate->last_name }}</dd>
-                                        <dt>Apellido Materno:</dt> <dd>{{ $affiliate->mothers_last_name }}</dd>
-                                        <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'">{{ $affiliate->surname_husband }}</dd>
+                                        <dt>Segundo Nombre:</dt> <dd> @{{ form.second_name }}</dd>
+                                        <dt>Apellido Paterno:</dt> <dd>@{{ form.last_name }}</dd>
+                                        <dt>Apellido Materno:</dt> <dd>@{{ form.mothers_last_name }}</dd>
+                                        <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'">@{{ form.surname_husband }}</dd>
                                     </dl>
                                 </div>
                                 <div class="col-md-6">
                                     <dl class="dl-">
-                                        <dt>Genero:</dt> <dd>{{ $affiliate->gender }}</dd>
-                                        <dt>Estado Civil:</dt> <dd>{{ $affiliate->civil_status }}</dd>
-                                        <dt>Fecha de Nacimiento:</dt> <dd>{{ $affiliate->birth_date }}</dd>
+                                        <dt>Genero:</dt> <dd>@{{ form.gender }}</dd>
+                                        <dt>Estado Civil:</dt> <dd>@{{ form.civil_status }}</dd>
+                                        <dt>Fecha de Nacimiento:</dt> <dd>@{{ form.birth_date }}</dd>
                                         <dt>Edad:</dt> <dd> @{{ age  }} </dd>
                                         <dt>Lugar de Nacimiento:</dt> <dd>{{ !!$affiliate->city_birth ? $affiliate->city_birth->name : '' }}</dd>
-                                        <dt>Telefono:</dt> <dd>{{ $affiliate->phone_number }}</dd>
-                                        <dt>Celular:</dt> <dd>{{ $affiliate->cell_phone_number }}</dd>
+                                        <dt>Telefono:</dt> <dd>@{{ form.phone_number }}</dd>
+                                        <dt>Celular:</dt> <dd>@{{ form.cell_phone_number }}</dd>
                                     </dl>
                                 </div>
                             </div>
@@ -77,9 +77,9 @@
                                 <div class="col-md-6">
                                     <dl class="dl-">
                                         <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">
-                                            {!! Form::select('city_identity_card_id', $cities, $affiliate->city_identity_card->id  , ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}
+                                            {!! Form::select('city_identity_card_id', $cities, $affiliate->city_identity_card->id ?? null, ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}
                                         </dd>
-                                        <dt>Primer Nombre:</dt> <dd><input type="text" v-model="form.first_name" class="form-control"></dd>
+                                        <dt><label>Primer Nombre:</label></dt> <dd><input type="text" v-model="form.first_name" class="form-control"></dd>
                                         <dt>Segundo Nombre:</dt> <dd><input type="text" v-model="form.second_name" class="form-control"></dd>
                                         <dt>Apellido Paterno:</dt> <dd><input type="text" v-model="form.last_name" class="form-control"></dd>
                                         <dt>Apellido Materno:</dt> <dd><input type="text" v-model="form.mothers_last_name" class="form-control"></dd>
