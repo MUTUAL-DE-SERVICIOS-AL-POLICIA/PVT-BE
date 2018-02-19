@@ -226,11 +226,7 @@ class RetirementFundController extends Controller
                 $beneficiary->type = "N";
                 $beneficiary->save();                
             }        
-        }
-        //$procedure_type = 2; //FONDO DE RETIRO
-        //$cite= Increment::getCite(Auth::user()->id,Session::get('rol_id'),$procedure_type);
-        
-        
+        }                        
         $data = [
         ];
         
