@@ -47,10 +47,10 @@ class QuotaAidMortuary extends Model
     }
     public function workflow()
     {
-        return $this->belongsTo('Muserpol\Model\Workflow');
+        return $this->belongsTo('Muserpol\Workflow');
     }
     public function wf_state()
     {
-        return $this->belongsTo('Muserpol\Model\WfState');
+        return $this->belongsTo('Muserpol\WfState', 'wf_state_current_id');
     }
 }
