@@ -13,7 +13,6 @@ class CreateRetirementFundTables extends Migration {
      */
     public function up() 
     {    
-
         //Fondo de retiro
         Schema::create('procedure_types', function(Blueprint $table) {
             $table->bigIncrements('id');
@@ -227,6 +226,19 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('ret_fun_legal_guardian_id')->references('id')->on('ret_fun_legal_guardians');
             $table->timestamps();
         });
+
+        Schema::create('ret_fun_increments', function (Blueprint $table) {
+            $table->bigIncrements('id'); //identificador
+            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('role_id')->unsigned();
+            $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->bigInteger('number')->unsigned(); //numero correlativo
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
+            $table->timestamps();
+            $table->softDeletes();
+        });
         
         Schema::create('procedure_interval_types', function(Blueprint $table) {
             $table->bigIncrements('id');
@@ -275,7 +287,7 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-        
+
         //Disponibilidad
         Schema::create('contribution_types', function (Blueprint $table) { //Tipos de Aportes
             $table->bigIncrements('id');
@@ -290,23 +302,9 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
         });
 
-
         Schema::table('role_user', function (Blueprint $table) {
             $table->string('cite')->nullable();
-        });
-        
-        Schema::create('ret_fun_increments', function (Blueprint $table) {
-            $table->bigIncrements('id'); //identificador
-            $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('role_id')->unsigned();                       
-            $table->bigInteger('retirement_fund_id')->unsigned();            
-            $table->bigInteger('number')->unsigned(); //numero correlativo            
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
-            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
-            $table->timestamps();
-        });
-
+        });       
     }
 
     /**
@@ -315,17 +313,20 @@ class CreateRetirementFundTables extends Migration {
      * @return void
      */
     public function down() {
+
         Schema::table('role_user', function (Blueprint $table) {
             $table->dropColumn('cite');
         });
 
         Schema::table('contributions', function (Blueprint $table) {
             $table->dropColumn('contribution_type_id');
-            
         });
+
         Schema::drop('contribution_types');
-        Schema::drop('scanned_documents');
-        Schema::drop('affiliate_folders');     
+        Schema::drop('affiliate_scanned_documents');
+        Schema::drop('affiliate_folders'); 
+        Schema::drop('ret_fun_intervals');
+        Schema::drop('ret_fun_increments');
         Schema::drop('ret_fun_beneficiary_legal_guardian');
         Schema::drop('ret_fun_legal_guardians');
         Schema::drop('ret_fun_advisor_beneficiary');       
@@ -340,13 +341,6 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('procedure_documents');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types'); 
-        Schema::drop('ret_fun_increments');
-        
-        
-        
-
-        
-        
     }
 
 }

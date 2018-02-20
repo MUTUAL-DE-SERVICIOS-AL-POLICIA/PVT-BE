@@ -11,8 +11,7 @@ class ShortenedModalitiesSeeder extends Seeder
      */
     public function run()
     {
-        //
-           
+        //          
         $fallecimiento=ProcedureModality::find('1');
         $fallecimiento->shortened='FRPS - FALL';
         $fallecimiento->save();

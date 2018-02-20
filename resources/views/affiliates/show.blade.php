@@ -32,7 +32,7 @@
                             <div class="panel-body " v-if="! editing " >
                                 <div class="col-md-6">
                                     <dl class="dl-">
-                                        <dt>Cedula de identidad:</dt> <dd>@{{ form.identity_card }}  {{ !!$affiliate->city_identity_card ? $affiliate->city_identity_card->first_shortened : '' }}</dd>
+                                        <dt>Cedula de identidad:</dt> <dd>@{{ form.identity_card }}  @{{ city_identity_card_name }}</dd>
                                         <dt>Primer Nombre:</dt> <dd>@{{ form.first_name}}</dd>
                                         <input type="text" class="form-control" v-model="first_name.value" v-show="first_name.edit ==  true">
                                         <dt>Segundo Nombre:</dt> <dd> @{{ form.second_name }}</dd>
@@ -43,11 +43,11 @@
                                 </div>
                                 <div class="col-md-6">
                                     <dl class="dl-">
-                                        <dt>Genero:</dt> <dd>@{{ form.gender }}</dd>
-                                        <dt>Estado Civil:</dt> <dd>@{{ form.civil_status }}</dd>
+                                        <dt>Genero:</dt> <dd>@{{ gender_name }}</dd>
+                                        <dt>Estado Civil:</dt> <dd>@{{ civil_status_name }}</dd>
                                         <dt>Fecha de Nacimiento:</dt> <dd>@{{ form.birth_date }}</dd>
                                         <dt>Edad:</dt> <dd> @{{ age  }} </dd>
-                                        <dt>Lugar de Nacimiento:</dt> <dd>{{ !!$affiliate->city_birth ? $affiliate->city_birth->name : '' }}</dd>
+                                        <dt>Lugar de Nacimiento:</dt> <dd> @{{ city_birth_name}}</dd>
                                         <dt>Telefono:</dt> <dd>@{{ form.phone_number }}</dd>
                                         <dt>Celular:</dt> <dd>@{{ form.cell_phone_number }}</dd>
                                     </dl>
@@ -77,7 +77,7 @@
                                 <div class="col-md-6">
                                     <dl class="dl-">
                                         <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">
-                                            {!! Form::select('city_identity_card_id', $cities, $affiliate->city_identity_card->id ?? null, ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}
+                                            {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control','v-model' => 'form.city_identity_card_id']) !!}
                                         </dd>
                                         <dt><label>Primer Nombre:</label></dt> <dd><input type="text" v-model="form.first_name" class="form-control"></dd>
                                         <dt>Segundo Nombre:</dt> <dd><input type="text" v-model="form.second_name" class="form-control"></dd>
@@ -88,16 +88,21 @@
                                 </div>
                                 <div class="col-md-6">
                                     <dl class="dl-">
-                                        <dt>Genero:</dt> <dd><input type="text" v-model="form.gender" class="form-control"></dd>
-                                        <dt>Estado Civil:</dt> <dd><input  type="text"  v-model="form.civil_status" class="form-control"></dd>
-                                        
+                                        <dt>Genero:</dt> <dd>
+                                            {!! Form::select('gender', ['F'=>'Femenino','M'=>'Masculino'], null, ['placeholder' => 'Seleccione genero', 'class' => 'form-control','v-model' => 'form.gender']) !!}
+                                                        </dd>
+                                        <dt>Estado Civil:</dt> <dd>
+                                            {!! Form::select('civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'], null, ['placeholder' => 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'form.civil_status']) !!}
+                                              
+                                                               </dd>
+
                                         <dt>Fecha de Nacimiento:</dt> <dd>
                                             <div class="input-group date" >
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input  v-model="form.birth_date" type="text" class="form-control">
                                             </div>
                                             </dd>
                                         <dt>Edad:</dt> <dd><input v-model="age" type="text" class="form-control" disabled></dd>
-                                        <dt>Lugar de Nacimiento:</dt> <dd>{!! Form::select('city_birth_id', $birth_cities, $affiliate->city_birth_id  , ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}</dd>
+                                        <dt>Lugar de Nacimiento:</dt> <dd>{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control','v-model'=>'form.city_birth_id']) !!}</dd>
                                         <dt>Telefono:</dt> <dd><input type="text" v-model="form.phone_number" class="form-control"></dd>
                                         <dt>Celular:</dt> <dd><input type="text" v-model="form.cell_phone_number" class="form-control"></dd>
                                     </dl>

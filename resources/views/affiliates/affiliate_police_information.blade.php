@@ -12,17 +12,17 @@
                 <div class="col-md-6">
                   
                     <dl class="dl-">
-                        <dt>Estado:</dt> <dd>{{ $affiliate->affiliate_state->name ?? '' }}</dd>
-                        <dt>Tipo:</dt> <dd>{{ $affiliate->type }}</dd>
-                        <dt>Fecha de Ingreso a la Institucional Policial:</dt> <dd> {{ $affiliate->date_entry }}</dd>
-                        <dt>Numero de Item:</dt> <dd> {{ $affiliate->item }}</dd>
+                        <dt>Estado:</dt> <dd>@{{ state_name }}</dd>
+                        <dt>Tipo:</dt> <dd>@{{ form.type }}</dd>
+                        <dt>Fecha de Ingreso a la Institucional Policial:</dt> <dd> @{{ form.date_entry }}</dd>
+                        <dt>Numero de Item:</dt> <dd> @{{ form.item }}</dd>
                     </dl>
                 </div>
                 <div class="col-md-6">
                     <dl class="dl-">
-                        <dt>Categoria:</dt> <dd>{{ $affiliate->category->name ?? '' }}</dd>
-                        <dt>Grado:</dt> <dd data-toggle="tooltip" data-placement="right" title="{{ $affiliate->degree->name ?? '' }}">{{ $affiliate->degree->shortened ?? '' }} </dd>
-                        <dt>Ente gestor:</dt> <dd data-toggle="tooltip" data-placement="right" title="{{ $affiliate->pension_entity->type ?? '' }}">{{ $affiliate->pension_entity->name ?? '' }}</dd>
+                        <dt>Categoria:</dt> <dd>@{{ category_name }}</dd>
+                        <dt>Grado:</dt> <dd > @{{degree_name}} </dd>
+                        <dt>Ente gestor:</dt> <dd >@{{pension_entity_name}}</dd>
                     </dl>
                 </div>
             </div>
@@ -35,15 +35,17 @@
                 <div class="sk-cube3 sk-cube"></div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6">  
                     <dl class="dl-">
                         <dt>Estado:</dt>
                         <dd>
-                            {!! Form::select('affilate_state_id', $affiliate_states, null, ['placeholder' => 'Seleccione un estado', 'class' => 'form-control',
-                            'v-model' => 'form.affilate_state_id' ]) !!}
+                            {!! Form::select('affiliate_state_id', $affiliate_states, null, ['placeholder' => 'Seleccione un estado', 'class' => 'form-control',
+                            'v-model' => 'form.affiliate_state_id' ]) !!}
                         </dd>
                         <dt>Tipo:</dt>
-                        <dd><input type="text" class="form-control" v-model="form.type"></dd>
+                        <dd>{!! Form::select('type', ['Comando'=>'Comando','Batallón'=>'Batallón'], null, ['placeholder' => 'Seleccione un tipo', 'class' => 'form-control',
+                            'v-model' => 'form.type' ]) !!}
+                        </dd>
                         <dt>Fecha de Ingreso a la Institucional Policial:</dt>  
                         <dd> <input type="text" class="form-control" v-model="form.date_entry"></dd>
                         <dt>Numero de Item:</dt>
