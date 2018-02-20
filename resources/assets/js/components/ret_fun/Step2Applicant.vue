@@ -1,4 +1,5 @@
 <script>
+import {mapGetters} from 'vuex';
 export default {
   props:[
     'modality',
@@ -41,10 +42,15 @@ export default {
       applicant_type: null,
       show_advisor_form: false,
       show_apoderado_form: false,
+      applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
     }
   },
+  computed:{
+    ...mapGetters({
+            retfun: 'getData'
+        }),
+  },
   methods: {
-
     searchApplicant: function(){
       let ci= document.getElementsByName('applicant_identity_card')[0].value;
       axios.get('/search_ajax', {
@@ -97,14 +103,16 @@ export default {
       this.legal_guardian_city_identity_card = data.city_identity_card_id;
     },
     change_applicant: function() {
-      let modality_id=document.getElementById('ret_fun_modality').value;
-      if(this.applicant_type  === '2'){
+      // let modality_id_ = 
+
+      let modality_id=this.retfun.modality_id;
+      if(this.applicant_type  == '2'){
         this.show_advisor_form = !this.show_advisor_form;
         this.show_apoderado_form = false;
         this.resetAffiliate();
         return;
       }
-      if(this.applicant_type  === '3'){
+      if(this.applicant_type  == '3'){
         this.show_apoderado_form = !this.show_apoderado_form;
         this.show_advisor_form = false;
         if(modality_id == 4){
@@ -114,7 +122,7 @@ export default {
         }
         return;
       }
-      if(this.applicant_type  === '1'){
+      if(this.applicant_type  == '1'){
         this.show_apoderado_form = false;
         this.show_advisor_form = false;
         if(modality_id == 4){

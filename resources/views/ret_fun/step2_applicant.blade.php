@@ -11,9 +11,7 @@
                 <div class="form-group"><label class="col-sm-4 control-label">Tipo de Solicitante</label>
                     <div class="col-sm-4">
                         <select class="form-control m-b" name="accountType" @change="change_applicant()" v-model="applicant_type">
-                            <option value="1">Beneficiario</option>                            
-                            <option value="2">Tutor</option>
-                            <option value="3">Apoderado</option>
+                            <option v-for="(type,index) in applicant_types"   :value="index+1">@{{type}} </option>
                         </select>
                     </div>
                 </div>
