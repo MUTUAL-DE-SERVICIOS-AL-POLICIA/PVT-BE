@@ -60,6 +60,7 @@ class ShortenedModalitiesSeeder extends Seeder
         $amviuda->shortened='AM - VF';
         $amviuda->save();
 
+<<<<<<< HEAD
         $anticipofr=ProcedureModality::find('13');
         $anticipofr->shortened='FRPS - ANT';
         $anticipofr->save();
@@ -71,5 +72,37 @@ class ShortenedModalitiesSeeder extends Seeder
         $expediente=ProcedureModality::find('15');
         $expediente->shortened='ET';
         $expediente->save();       
+=======
+        //revisar
+        // $anticipofr=ProcedureModality::find('13');
+        // $anticipofr->shortened='FRPS - ANT';
+        // $anticipofr->save();
+
+        // $itemcero=ProcedureModality::find('14');
+        // $itemcero->shortened='A.V. ITEM "0"';
+        // $itemcero->save();
+
+        // $expediente=ProcedureModality::find('15');
+        // $expediente->shortened='ET';
+        // $expediente->save();
+
+
+
+
+
+
+
+
+
+
+
+        
+        
+
+
+    
+
+        
+>>>>>>> upstream/master
     }
 }

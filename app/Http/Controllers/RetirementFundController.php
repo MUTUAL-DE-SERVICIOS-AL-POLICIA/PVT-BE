@@ -23,6 +23,8 @@ use Muserpol\Models\RetirementFund\RetFunBeneficiaryLegalGuardian;
 use DateTime;
 use Muserpol\User;
 use Carbon\Carbon;
+use Muserpol\Models\RetirementFund\RetFunIncrement;
+use Session;
 
 class RetirementFundController extends Controller
 {
@@ -32,8 +34,7 @@ class RetirementFundController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {        
-             
+    {                
         return view('ret_fun.index');
        
     }
@@ -96,7 +97,9 @@ class RetirementFundController extends Controller
         $retirement_fund->total = 0;
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
-
+                
+        $cite= RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
+        
         foreach ($requirements  as  $requirement)
         {
             if($request->input('document'.$requirement->id) == 'checked')
@@ -222,9 +225,7 @@ class RetirementFundController extends Controller
                 $beneficiary->type = "N";
                 $beneficiary->save();                
             }        
-        }
-        
-        
+        }                        
         $data = [
         ];
         
@@ -471,7 +472,7 @@ class RetirementFundController extends Controller
             $beneficiary->mothers_last_name = $ben['mothers_last_name'];
             $beneficiary->first_name = $ben['first_name'];
             $beneficiary->second_name = $ben['second_name'];
-            $beneficiary->surname_husband = $ben['surname_husband'];
+            $beneficiary->surname_husband = $ben['surname_husband'];            
             $beneficiary->gender = $ben['gender'];
             $beneficiary->phone_number = $ben['phone_number'];
             $beneficiary->cell_phone_number = $ben['cell_phone_number'];

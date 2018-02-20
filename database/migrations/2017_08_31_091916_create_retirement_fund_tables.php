@@ -290,6 +290,23 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
         });
 
+
+        Schema::table('role_user', function (Blueprint $table) {
+            $table->string('cite')->nullable();
+        });
+        
+        Schema::create('ret_fun_increments', function (Blueprint $table) {
+            $table->bigIncrements('id'); //identificador
+            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('role_id')->unsigned();                       
+            $table->bigInteger('retirement_fund_id')->unsigned();            
+            $table->bigInteger('number')->unsigned(); //numero correlativo            
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
+            $table->timestamps();
+        });
+
     }
 
     /**
@@ -298,8 +315,13 @@ class CreateRetirementFundTables extends Migration {
      * @return void
      */
     public function down() {
+        Schema::table('role_user', function (Blueprint $table) {
+            $table->dropColumn('cite');
+        });
+
         Schema::table('contributions', function (Blueprint $table) {
             $table->dropColumn('contribution_type_id');
+            
         });
         Schema::drop('contribution_types');
         Schema::drop('scanned_documents');
@@ -318,6 +340,7 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('procedure_documents');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types'); 
+        Schema::drop('ret_fun_increments');
         
         
         

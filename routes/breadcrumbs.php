@@ -20,6 +20,12 @@ Breadcrumbs::register('show_retirement_fund', function($breadcrumbs, $retirement
 	$breadcrumbs->parent('retirement_fund');
 	$breadcrumbs->push	("Trámite Nro. ".$retirement_fund->code, URL::to('ret_fun/'.$retirement_fund->id));
 });
+Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('retirement_fund');
+	$breadcrumbs->push("Nuevo Tramite");
+	$breadcrumbs->push($affiliate->first_name, route('affiliate.show', $affiliate->id));
+});
 
 
 Breadcrumbs::register('quota_aid_mortuary', function($breadcrumbs)

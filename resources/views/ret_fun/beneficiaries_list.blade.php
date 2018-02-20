@@ -15,7 +15,7 @@
                         <div class="panel-body " v-if="! editing " >                            
                             <div class="col-md-6">
                                 <dl class="dl-">
-                                    <dt>Cedula de identidad:</dt> <dd>@{{ beneficiary.identity_card }}  @{{ beneficiary.city_identity_card ? beneficiary.city_identity_card.first_shortened : '' }}</dd>
+                                    <dt>Cedula de identidad:</dt> <dd>@{{ beneficiary.identity_card }}  @{{ getCity(beneficiary.city_identity_card_id) }}</dd>
                                     <dt>Primer Nombre:</dt> <dd>@{{ beneficiary.first_name }}</dd>                                   
                                     <dt>Segundo Nombre:</dt> <dd>@{{ beneficiary.second_name }}</dd>
                                     <dt>Apellido Paterno:</dt> <dd>@{{ beneficiary.last_name }}</dd>
@@ -25,11 +25,11 @@
                             </div>
                             <div class="col-md-6">
                                 <dl class="dl-">
-                                    <dt>Parentesco:</dt> <dd>@{{ beneficiary.kinship }}</dd>
+                                    <dt>Parentesco:</dt> <dd>@{{ getKinship(beneficiary.kinship_id) }}</dd>
                                     <dt>Genero:</dt> <dd>@{{ beneficiary.gender }}</dd>
                                     <dt>Estado Civil:</dt> <dd>@{{ beneficiary.civil_status }}</dd>
                                     <dt>Fecha de Nacimiento:</dt> <dd>@{{ beneficiary.birth_date }}</dd>
-                                    <dt>Edad:</dt> <dd> @{{ age  }} </dd>                                    
+                                    <dt>Edad:</dt> <dd> {{-- @{{ age  }} --}} </dd>
                                     <dt>Telefono:</dt> <dd>@{{ beneficiary.phone_number }}</dd>
                                     <dt>Celular:</dt> <dd>@{{ beneficiary.cell_phone_number }}</dd>
                                 </dl>
@@ -46,6 +46,7 @@
                             <div class="col-md-6">
                                 <dl class="dl-">
                                     <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="ben[iterator].identity_card" class="form-control">
+                                        <button @click="searchLegalGuardian(iterator)" type="button" role="button"><i class="fa fa-search"></i></button>
                                         <select class="form-control m-b" v-model='ben[iterator].city_identity_card_id'>
                                             <option v-for="city in cities" 
                                                     :selected="city.id == beneficiary.city_identity_card_id ? 'selected' : ''"
@@ -71,7 +72,7 @@
                                                 @{{ kinship.name }}
                                             </option>
                                     </select>
-                                    <dt>Estado Civil:</dt> <dd><input  type="text"  class="form-control"></dd>
+                                    <dt>Estado Civil:</dt> <dd><input  type="text"  class="form-control" v-model="ben[iterator].civil_status"></dd>
 
                                     <dt>Fecha de Nacimiento:</dt> <dd>
                                         <div class="input-group date" >

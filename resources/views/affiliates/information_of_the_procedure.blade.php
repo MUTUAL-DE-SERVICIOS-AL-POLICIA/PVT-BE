@@ -15,12 +15,12 @@
                                 <dl class="dl-horizontal">
                                     <dt>Codigo:</dt><dd>{{ $retirement_fund->code }}</dd>
                                     <dt>Fecha de recepcion:</dt><dd>{{ $retirement_fund->reception_date }}</dd>
-                                    <dt>Ciudad inicio Tramite:</dt><dd>{{ $retirement_fund->city_start->name }}</dd>
-                                    <dt>Modalidad:</dt><dd>{{ $retirement_fund->procedure_modality->name }}</dd>
+                                    <dt>Ciudad inicio Tramite:</dt><dd>{{ $retirement_fund->city_start->name ?? 'ERROR' }}</dd>
+                                    <dt>Modalidad:</dt><dd>{{ $retirement_fund->procedure_modality->name ?? 'ERROR' }}</dd>
                                     <dt>Tipo:</dt><dd>{{ $retirement_fund->type }}</dd>
                                     <dt>Subtotal:</dt><dd>{{ $retirement_fund->subtotal }}</dd>
                                     <dt>Total:</dt><dd>{{ $retirement_fund->total }}</dd>
-                                    <dt>Ciudad de Pago:</dt><dd>{{ $retirement_fund->city_end->name }}</dd>
+                                    <dt>Ciudad de Pago:</dt><dd>{{ $retirement_fund->city_end->name ?? 'ERROR' }}</dd>
                                 </dl>
                                     
                                 <center><p><a class="btn btn-primary" href="/ret_fun/{{ $retirement_fund->affiliate_id }}" role="button">Ver</a></p></center>
