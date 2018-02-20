@@ -12,19 +12,21 @@
             <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
     @include('affiliates.simple_info', ['affiliate'=>$affiliate])
             </affiliate-police>
+            <hr>
+            <ret-fun-create-info></ret-fun-create-info>
         </div>
         <div class="col-md-12">
             <div class="ibox-content">
                 {!! Form::open(['url' => 'ret_fun', 'method' => 'POST', 'id'=>'ret-fun-form']) !!}
                 <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
                 <ret-fun-form inline-template>
-                    <form-wizard color="#1AB394" title="" subtitle="" back-button-text="Volver" next-button-text="Siguiente" finish-button-text="Finalizar" error-color="#ED5565" @on-complete="onFinish">
+                    <form-wizard color="#1AB394" title=""  subtitle="" back-button-text="Volver" next-button-text="Siguiente" finish-button-text="Finalizar" error-color="#ED5565" @on-complete="onFinish">
                         <tab-content title="Modalidad y Requisitos" icon="mdi mdi-format-list-checks">
                             <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" inline-template>
                                 @include('ret_fun.step1_requirements')
                             </ret-fun-step1-requirements>
                         </tab-content>
-                        <tab-content title="Datos del Solicitante" icon="mdi mdi-account-edit">
+                        <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="sendApplicant">
                             <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
                                 @include('ret_fun.step2_applicant')
                             </ret-fun-step2-applicant>
