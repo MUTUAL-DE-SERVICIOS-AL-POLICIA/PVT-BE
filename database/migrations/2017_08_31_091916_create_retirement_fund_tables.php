@@ -48,6 +48,16 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
+        Schema::create('procedure_interval_types', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('procedure_modality_id')->unsigned(); //identificador de tipo de modalidad
+            $table->string('name')->nullable();
+            $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+
         Schema::create('ret_fun_procedures', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->decimal('annual_yield', 13, 2); //rendimiento anual porcentaje
@@ -239,15 +249,6 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-        
-        Schema::create('procedure_interval_types', function(Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('procedure_modality_id')->unsigned(); //identificador de tipo de modalidad
-            $table->string('name')->nullable();
-            $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
-            $table->timestamps();
-            $table->softDeletes();
-        });
 
         Schema::create('ret_fun_intervals', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -288,7 +289,6 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
-        //Disponibilidad
         Schema::create('contribution_types', function (Blueprint $table) { //Tipos de Aportes
             $table->bigIncrements('id');
             $table->string('name');
@@ -304,7 +304,29 @@ class CreateRetirementFundTables extends Migration {
 
         Schema::table('role_user', function (Blueprint $table) {
             $table->string('cite')->nullable();
-        });       
+        }); 
+        
+        Schema::create('ufv_rates', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->date('date');
+            $table->double('index', 5, 3);
+            $table->timestamps();
+        });
+        
+        Schema::create('eco_com_observations', function (Blueprint $table) {   //observaciones de complemento
+            $table->bigIncrements('id');
+            $table->bigInteger('user_id')->unsigned(); //usuario
+            $table->bigInteger('economic_omplement_id')->unsigned(); //id complemento
+            $table->bigInteger('observation_type_id')->unsigned();  //tipo de observacion
+            $table->date('date');       //fecha de observacion
+            $table->longText('message'); // Dato comentario
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('economic_omplement_id')->references('id')->on('economic_complements')->onDelete('cascade');
+            $table->foreign('observation_type_id')->references('id')->on('observation_types');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
     }
 
     /**
@@ -322,6 +344,8 @@ class CreateRetirementFundTables extends Migration {
             $table->dropColumn('contribution_type_id');
         });
 
+        Schema::drop('eco_com_observations');
+        Schema::drop('ufv_rates');
         Schema::drop('contribution_types');
         Schema::drop('affiliate_scanned_documents');
         Schema::drop('affiliate_folders'); 
@@ -341,6 +365,8 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('procedure_documents');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types'); 
+                Schema::drop('procedure_interval_types');
+
     }
 
 }
