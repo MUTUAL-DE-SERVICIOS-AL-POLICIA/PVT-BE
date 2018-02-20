@@ -1,6 +1,12 @@
 <template>
     <div>
-        <ret-fun-beneficiary v-for="benef in beneficiaries" :beneficiary="benef" :key='benef.id' :cities="cities" :kinships="kinships" ></ret-fun-beneficiary>
+        <ret-fun-beneficiary v-for="(beneficiary, index) in beneficiaries"
+                             :beneficiary="beneficiary"
+                             :key='index'
+                             :cities="cities"
+                             :kinships="kinships"
+                             v-on:remove="removeBeneficiary(index)">
+        </ret-fun-beneficiary>
         <div class="row">
             <button class="btn btn-success" @click="addBeneficiary()" type="button" ><i class="fa fa-plus"></i></button>
         </div>
@@ -29,14 +35,21 @@ export default {
   methods: {
       addBeneficiary(){
           let beneficiary = {
-              'id':100,
-            'name': "",
-            'first_shortened': "",
-            'second_shortened': "",
-            'third_shortened': ""
+                first_name: null,
+                second_name: null,
+                last_name: null,
+                mothers_last_name: null,
+                surname_husband: null,
+                identity_card: null,
+                city_identity_card: null,
+                birth_date: null,
+                kinship: null,
         }
         this.beneficiaries.push(beneficiary);
-      }
+      },
+    removeBeneficiary(index){
+        this.beneficiaries.splice(index,1);
+    }
   }
 }
 </script>
