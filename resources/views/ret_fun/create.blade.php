@@ -9,9 +9,9 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-md-12">
-            <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
+            {{--  <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
     @include('affiliates.simple_info', ['affiliate'=>$affiliate])
-            </affiliate-police>
+            </affiliate-police>  --}}
             <hr>
             <ret-fun-create-info></ret-fun-create-info>
         </div>

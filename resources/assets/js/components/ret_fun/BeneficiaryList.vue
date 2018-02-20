@@ -1,12 +1,17 @@
 <template>
     <div>
         Solicitante
-        <ret-fun-beneficiary :beneficiary="retfun.applicant" :cities="cities" :kinships="kinships"></ret-fun-beneficiary>
+        <ret-fun-beneficiary :beneficiary="retfun.applicant"
+                 :cities="cities"
+                 :kinships="kinships"
+                 :editable="false"
+                 ></ret-fun-beneficiary>
         <ret-fun-beneficiary v-for="(beneficiary, index) in beneficiaries"
                              :beneficiary="beneficiary"
                              :key='index'
                              :cities="cities"
                              :kinships="kinships"
+                             :editable="true"
                              v-on:remove="removeBeneficiary(index)">
         </ret-fun-beneficiary>
         <div class="row">
