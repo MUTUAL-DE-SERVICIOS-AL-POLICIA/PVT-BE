@@ -7,33 +7,38 @@
 			return{
 				show_spinner:false,
 				editing:false,
-				form:this.affiliate
-				// form:{
-				// 	affiliate_state: !! this.affiliate.affiliate_state ? this.affiliate.affiliate_state.id : null,
-				// 	affiliate_type: this.affiliate.type,
-				// 	affiliate_date_entry: this.affiliate.date_entry,
-				// 	affiliate_item: this.affiliate.item,
-				// 	affiliate_category: !! this.affiliate.category ? this.affiliate.category.id : null,
-				// 	affiliate_degree: !! this.affiliate.degree ? this.affiliate.degree.id : null,
-				// 	affiliate_pension_entity: !! this.affiliate.pension_entity ? this.affiliate.pension_entity.id : null,
-				// }
+				form:this.affiliate,
+				state: this.affiliate.affiliate_state,
+				category: this.affiliate.category,
+				degree: this.affiliate.degree,
+				pension_entity: this.affiliate.pension_entity
+		
 			}
 		},
-		// computed:{
-		// 	state: function(){
-					
-		// 		var state_name='';
-		// 		console.log(this.form);
-			
-		// 		return state_name;
-		// 	}
+		computed:{
+			state_name: function(){
+				// console.log('reactividad hdp ');
+				return !!this.state? this.state.name:'';
+			},
+			category_name: function(){
+				// console.log('reactividad hdp 2 ');
+				return !!this.category? this.category.name:'';		
+			},
+			degree_name: function(){
+				// console.log('reactividad hdp 3');
+				return !!this.degree? this.degree.name:'';
+			},
+			pension_entity_name: function(){
+				// console.log('reactividad hdp 4');
+				return !!this.pension_entity? this.pension_entity.name:'';
+			}
 
-		// }
-		// ,
+		}
+		,
 		methods: {
 			toggle_editing: function () {
 				this.editing = !this.editing;
-				console.log(this.form);
+				// console.log(this.form);
 			},
 			update: function () {	
 				let uri = `/update_affiliate_police/${this.affiliate.id}`;
@@ -42,18 +47,12 @@
 					.then(response=>{
 						this.editing = false;
 						this.show_spinner = false;
-						console.log(response.data);	
-						this.form = response.data;
-						console.log(this.form);
-						// this.form.affiliate_state_id = response.data.affiliate_state_id;
-						// this.form.affiliate_type = response.data.type;
-						// this.form.affiliate_date_entry_id = response.data.date_entry;
-						// this.form.affiliate_category_id = response.data.category_id;
-						// this.form.affiliate_degree_id = response.data.degree_id;
-						// this.form.affiliate_pension_entity_id = response.data.pension_entity_id;
-
-						//this.form.affiliate_category = response.data.category.id;
-
+						this.form = response.data.affiliate;
+						this.state = response.data.state;
+						this.category = response.data.category;
+						this.degree = response.data.degree;
+						this.pension_entity = response.data.pension_entity;
+						console.log('Lechuza y Karem');
 						flash('Informacion Policial Actualizada');
 					}).catch((response)=>{
 						flash('Error al actualizar Informacion Policial: '+response.message,'error');
