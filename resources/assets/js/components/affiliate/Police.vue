@@ -69,7 +69,9 @@
 						this.category = response.data.category;
 						this.degree = response.data.degree;
 						this.pension_entity = response.data.pension_entity;
-
+						this.values.date_entry = response.data.affiliate.date_entry;
+						this.values.item = response.data.affiliate.item;
+						this.values.type = response.data.affiliate.type; 
 						console.log('Lechuza y Karem');
 						flash('Informacion Policial Actualizada');
 					}).catch((response)=>{
