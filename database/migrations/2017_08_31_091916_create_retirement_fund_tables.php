@@ -57,7 +57,6 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
-
         Schema::create('ret_fun_procedures', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->decimal('annual_yield', 13, 2); //rendimiento anual porcentaje
@@ -163,7 +162,7 @@ class CreateRetirementFundTables extends Migration {
           	$table->timestamps();
         });
       
-        Schema::create('address_ret_fun_beneficiary', function(Blueprint $table) {
+        Schema::create('ret_fun_address_beneficiary', function(Blueprint $table) {
             $table->bigIncrements('id'); 
             $table->bigInteger('ret_fun_beneficiary_id')->unsigned();
             $table->bigInteger('address_id')->unsigned();
@@ -228,7 +227,7 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
       
-      	Schema::create('ret_fun_beneficiary_legal_guardian', function (Blueprint $table) { //Beneficiario-apoderado
+      	Schema::create('ret_fun_legal_guardian_beneficiary', function (Blueprint $table) { //Beneficiario-apoderado
             $table->bigIncrements('id');
             $table->bigInteger('ret_fun_beneficiary_id')->unsigned(); //identificador del beneficiario
             $table->bigInteger('ret_fun_legal_guardian_id')->unsigned(); //identificador del tutor
@@ -262,7 +261,6 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
-        //documentos de afiliados afiliados
         Schema::create('affiliate_folders', function (Blueprint $table) {  //Folder o carpeta de afiliado
             $table->bigIncrements('id');
             $table->bigInteger('affiliate_id')->unsigned();
@@ -296,20 +294,11 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
-        Schema::table('contributions', function (Blueprint $table) { //Escaneo de documentos de afiliado
-            $table->bigInteger('contribution_type_id')->unsigned()->nullable();
-            $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
-        });
-
-        Schema::table('role_user', function (Blueprint $table) {
-            $table->string('cite')->nullable();
-        }); 
         
         Schema::create('ufv_rates', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->date('date');
-            $table->double('index', 5, 3);
+            $table->double('index', 5, 5);
             $table->timestamps();
         });
         
@@ -325,6 +314,15 @@ class CreateRetirementFundTables extends Migration {
             $table->foreign('observation_type_id')->references('id')->on('observation_types');
             $table->timestamps();
             $table->softDeletes();
+        });
+
+        Schema::table('contributions', function (Blueprint $table) { //Escaneo de documentos de afiliado
+            $table->bigInteger('contribution_type_id')->unsigned()->nullable();
+            $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
+        });
+
+        Schema::table('role_user', function (Blueprint $table) {
+            $table->string('cite')->nullable();
         });
 
     }
@@ -351,22 +349,23 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('affiliate_folders'); 
         Schema::drop('ret_fun_intervals');
         Schema::drop('ret_fun_increments');
-        Schema::drop('ret_fun_beneficiary_legal_guardian');
+        Schema::drop('ret_fun_legal_guardian_beneficiary');
         Schema::drop('ret_fun_legal_guardians');
         Schema::drop('ret_fun_advisor_beneficiary');       
         Schema::drop('ret_fun_advisors');
+        Schema::drop('ret_fun_address_beneficiary');
+        Schema::drop('addresses');
         Schema::drop('ret_fun_beneficiaries');
-        Schema::drop('ret_fun_submitted_documents');
-        Schema::drop('ret_fun_observations');        
         Schema::drop('kinships');
+        Schema::drop('ret_fun_observations');
+        Schema::drop('ret_fun_submitted_documents');
         Schema::drop('retirement_funds');
         Schema::drop('ret_fun_procedures');
+        Schema::drop('procedure_interval_types');
         Schema::drop('procedure_requirements');
         Schema::drop('procedure_documents');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types'); 
-                Schema::drop('procedure_interval_types');
-
     }
 
 }
