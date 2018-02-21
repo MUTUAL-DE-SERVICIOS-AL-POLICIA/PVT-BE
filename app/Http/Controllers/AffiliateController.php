@@ -107,7 +107,8 @@ class AffiliateController extends Controller
         $degrees = Degree::all()->pluck('name', 'id');
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
-        $quota_mortuaries = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get();
+        // $quota_mortuaries = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get();
+        $quota_mortuaries = [];
         $cuota = null;
         $auxilio = null;
             foreach($quota_mortuaries as $quota_mortuary){
