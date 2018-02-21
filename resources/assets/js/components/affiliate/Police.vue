@@ -38,7 +38,6 @@
 		methods: {
 			toggle_editing: function () {
 				this.editing = !this.editing;
-				// console.log(this.form);
 			},
 			update: function () {	
 				let uri = `/update_affiliate_police/${this.affiliate.id}`;
