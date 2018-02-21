@@ -13,6 +13,18 @@
                 first_name:{
                     value: this.affiliate.first_name,
                     edit: false,
+                },
+                values:{
+                    identity_card:this.affiliate.identity_card,
+                    first_name: this.affiliate.first_name,
+                    second_name: this.affiliate.second_name,
+                    last_name: this.affiliate.last_name,
+                    mothers_last_name: this.affiliate.mothers_last_name,
+                    birth_date: this.affiliate.birth_date,
+                    phone_number: this.affiliate.phone_number,
+                    cell_phone_number: this.affiliate.cell_phone_number,
+                    gender: this.affiliate.gender,
+                    civil_status: this.affiliate.civil_status
                 }
             }
         },
@@ -77,7 +89,23 @@
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
-                console.log(this.form);
+                if(this.editing==false)
+                {
+                    this.form.identity_card = this.values.identity_card;
+                    this.form.first_name =  this.values.first_name;
+                    this.form.second_name =  this.values.second_name;
+                    this.form.last_name =  this.values.last_name;
+                    this.form.mothers_last_name =  this.values.mothers_last_name;
+                    this.form.birth_date =  this.values.birth_date;
+                    this.form.phone_number =  this.values.phone_number;
+                    this.form.cell_phone_number =  this.values.cell_phone_numbe;
+                    this.form.gender = this.values.gender;
+                    this.form.civil_status = this.values.civil_status;
+                    this.form.city_birth_id = this.city_birth.id;
+                    this.form.city_identity_card_id = this.city_identity_card.id;
+
+                }
+                // console.log(this.form);
             },
             update () {
                 let uri = `/update_affiliate/${this.affiliate.id}`;
@@ -88,8 +116,19 @@
                         this.show_spinner=false;
                         this.form = response.data.affiliate;
                         this.city_birth = response.data.city_birth;
-                        this.city_identity_card = response.data.city_identity_card;
-                        // this.first_name = response.data.affiliate.first_name;                          
+                        this.city_identity_card = response.data.city_identity_card; 
+                        console.log(response);
+                        this.values.identity_card = response.data.affiliate.identity_card;
+                        this.values.first_name =  response.data.affiliate.first_name;
+                        this.values.second_name =  response.data.affiliate.second_name;
+                        this.values.last_name =  response.data.affiliate.last_name;
+                        this.values.mothers_last_name =  response.data.affiliate.mothers_last_name;
+                        this.values.birth_date =  response.data.affiliate.birth_date;
+                        this.values.phone_number =  response.data.affiliate.phone_number;
+                        this.values.cell_phone_number =  response.data.affiliate.cell_phone_numbe;
+                        this.values.gender = response.data.affiliate.gender;
+                        this.values.civil_status = response.data.affiliate.civil_status;
+
                         flash('Informacion del Afiliado Actualizada');
                     }).catch((response)=>{
                         this.show_spinner=false;
