@@ -13,7 +13,7 @@ class CreateRetirementFundTables extends Migration {
      */
     public function up() 
     {    
-        //Fondo de retiro
+
         Schema::create('procedure_types', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('module_id')->unsigned()->nullable();

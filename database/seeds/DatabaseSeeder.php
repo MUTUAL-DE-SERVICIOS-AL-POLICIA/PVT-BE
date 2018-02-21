@@ -12,8 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(ProcedureTablesSeeder::class);
-        $this->call(SequenceSeeder::class);
         $this->call(KinshipSeeder::class);
+        // $this->call(SequenceSeeder::class);
         // $this->call(QuotaSeeder::class);
         
         $this->command->info('Todo ok finalizado! DAVID y NADIA'); 
