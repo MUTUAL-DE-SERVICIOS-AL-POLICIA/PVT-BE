@@ -11,7 +11,12 @@
 				state: this.affiliate.affiliate_state,
 				category: this.affiliate.category,
 				degree: this.affiliate.degree,
-				pension_entity: this.affiliate.pension_entity
+				pension_entity: this.affiliate.pension_entity,
+				values:{
+						date_entry: this.affiliate.date_entry,
+						item: this.affiliate.item,
+						type: this.affiliate.type
+					}
 		
 			}
 		},
@@ -38,6 +43,19 @@
 		methods: {
 			toggle_editing: function () {
 				this.editing = !this.editing;
+			
+				if(this.editing==false)
+				{
+					this.form.affiliate_state_id = this.state.id;
+					this.form.date_entry = this.values.date_entry;
+					this.form.item = this.values.item;
+					this.form.category_id  = this.category.id;
+					this.form.degree_id  = this.degree.id;
+					this.form.pension_entity_id = this.pension_entity.id;
+					this.form.state_id = this.state.id;
+					this.form.type = this.values.type;
+					console.log('restaurando valor');
+				}
 			},
 			update: function () {	
 				let uri = `/update_affiliate_police/${this.affiliate.id}`;
@@ -51,6 +69,7 @@
 						this.category = response.data.category;
 						this.degree = response.data.degree;
 						this.pension_entity = response.data.pension_entity;
+
 						console.log('Lechuza y Karem');
 						flash('Informacion Policial Actualizada');
 					}).catch((response)=>{
