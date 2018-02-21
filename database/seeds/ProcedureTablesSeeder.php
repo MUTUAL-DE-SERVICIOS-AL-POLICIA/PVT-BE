@@ -18,22 +18,25 @@ class ProcedureTablesSeeder extends Seeder {
         ]);
 
         DB::table('procedure_modalities')->insert([
-            ['id' => '1', 'procedure_type_id' => '1', 'name' => 'Fallecimiento'],
-            ['id' => '2', 'procedure_type_id' => '1', 'name' => 'Retiro forzoso(Invalidez Permanente)'],
-            ['id' => '3', 'procedure_type_id' => '2', 'name' => 'Jubilación'],
-            ['id' => '4', 'procedure_type_id' => '2', 'name' => 'Fallecimiento'],
-            ['id' => '5', 'procedure_type_id' => '2', 'name' => 'Retiro forzoso'],
-            ['id' => '6', 'procedure_type_id' => '2', 'name' => 'Retiro forzoso(Invalidez Permanente)'],
-            ['id' => '7', 'procedure_type_id' => '2', 'name' => 'Retiro Voluntario'],
+            ['id' => '1', 'procedure_type_id' => '1', 'name' => 'Fallecimiento', 'shortened' => 'FRPS - FALL'],
+            ['id' => '2', 'procedure_type_id' => '1', 'name' => 'Retiro forzoso(Invalidez Permanente)', 'shortened' => 'FRPS - RFI'],
+            ['id' => '3', 'procedure_type_id' => '2', 'name' => 'Jubilación', 'shortened' => 'FRPS - JUB'],
+            ['id' => '4', 'procedure_type_id' => '2', 'name' => 'Fallecimiento', 'shortened' => 'FRPS - FALL'],
+            ['id' => '5', 'procedure_type_id' => '2', 'name' => 'Retiro forzoso', 'shortened' => 'FRPS - RF'],
+            ['id' => '6', 'procedure_type_id' => '2', 'name' => 'Retiro forzoso(Invalidez Permanente)', 'shortened' => 'FRPS - RFI'],
+            ['id' => '7', 'procedure_type_id' => '2', 'name' => 'Retiro Voluntario', 'shortened' => 'FRPS - RV'],
 
-            ['id' => '8', 'procedure_type_id' => '3', 'name' => 'Fallecimiento del titular en cumplimiento de funciones'],
-            ['id' => '9', 'procedure_type_id' => '3', 'name' => 'Fallecimiento del titular por Riesgo Comun'],
-            ['id' => '10', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del titular'],
-            ['id' => '11', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del o de la conyugue'],
-            ['id' => '12', 'procedure_type_id' => '4', 'name' => 'Fallecimiento de la o del viudo'],
-           
+            ['id' => '8', 'procedure_type_id' => '3', 'name' => 'Fallecimiento del titular en cumplimiento de funciones', 'shortened' => 'CM - TFCF'],
+            ['id' => '9', 'procedure_type_id' => '3', 'name' => 'Fallecimiento del titular por Riesgo Comun', 'shortened' => 'CM - TFRC'],
+            ['id' => '10', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del titular', 'shortened' => 'AM - TF'],
+            ['id' => '11', 'procedure_type_id' => '4', 'name' => 'Fallecimiento del o de la conyugue', 'shortened' => 'AM - CF'],
+            ['id' => '12', 'procedure_type_id' => '4', 'name' => 'Fallecimiento de la o del viudo', 'shortened' => 'AM - VF'],
 
+            ['id' => '13','procedure_type_id' => '3', 'name' => 'Anticipo Fondo de Retiro Policial', 'shortened' => 'FRPS - ANT', 'is_valid'=> false],
+            ['id' => '14','procedure_type_id' => '3', 'name' => 'Aporte Voluntario Item "0" ', 'shortened' => 'A.V. ITEM "0"'],
+            ['id' => '15','procedure_type_id' => '3', 'name' => 'Expediente Transitorio ', 'shortened' => 'ET', 'is_valid' =>false],
         ]);
+        
         DB::table('procedure_documents')->insert([
             ['id' => '1', 'name' => 'Comprobante de depósito bancario de Bs.- 25 por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL.'],
             ['id' => '2', 'name' => 'Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud a ser otorgado por la MUSERPOL a momento de inicio de trámite.'],
@@ -69,6 +72,7 @@ class ProcedureTablesSeeder extends Seeder {
             ['id' => '32', 'name' => 'Certificado de defunción de la o del viudo original y actualizado'],
             ['id' => '33', 'name' => 'Fotocopia simple de la cédula de identidad de la o del viudo'],
         ]);
+
         DB::table('procedure_requirements')->insert([
             ['procedure_modality_id' => '3', 'procedure_document_id' => '1', 'number' => '1'],
             ['procedure_modality_id' => '3', 'procedure_document_id' => '2', 'number' => '2'],
