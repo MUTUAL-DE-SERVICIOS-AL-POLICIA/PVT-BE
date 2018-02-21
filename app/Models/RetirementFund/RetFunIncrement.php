@@ -3,6 +3,7 @@
 namespace Muserpol\Models\RetirementFund;
 
 use Illuminate\Database\Eloquent\Model;
+use Muserpol\Models\RoleUser;
 
 class RetFunIncrement extends Model
 {       
@@ -29,10 +30,11 @@ class RetFunIncrement extends Model
                 ->where('retirement_fund_id',$retirement_fund_id)
                 ->whereYear('created_at','=',$year)
                 ->orderBy('number','DESC')->orderBy('id','DESC')->first();                
+        
+        $role_user = RoleUser::where('user_id',$user_id)->where('role_id',$role_id)->first();
         if(!isset($inc->id)){
             $inc2 = RetFunIncrement::where('user_id',$user_id)
-                ->where('role_id',$role_id)
-                //->where('retirement_fund_id',$retirement_fund_id)
+                ->where('role_id',$role_id)                
                 ->whereYear('created_at','=',$year)
                 ->orderBy('number','DESC')->orderBy('id','DESC')->first();
             $increment = new RetFunIncrement();
@@ -44,15 +46,10 @@ class RetFunIncrement extends Model
             else 
                 $increment->number = $inc2->number+1;
             $increment->save();
-            $cite = $increment->role->cite." - ".$increment->number;
+            $cite = $role_user->cite."/Nro ".$increment->number;
         }                        
         else
-            $cite = $inc->role->cite." - ".$inc->number;
+            $cite = $role_user->cite."/Nro ".$inc->number;
         return $cite;
     }
-//    public static function getCite($user_id, $role_id, $retirement_fund_id){
-//        $increment = RetFunIncrement::where('user_id',$user_id)->where('role_id',$role_id)->where('retirement_fund_id',$retirement_fund_id)->orderBy('number','DESC')->orderBy('id','DESC')->first();
-//        $cite = $increment->role->cite." - ".$increment->number;
-//        return $cite;        
-//    }
 }

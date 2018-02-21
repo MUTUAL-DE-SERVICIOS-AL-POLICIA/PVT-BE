@@ -11,12 +11,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
         $this->call(ProcedureTablesSeeder::class);
-        $this->call(QuotaSeeder::class);
-        $this->call(WorkFlowAndStates::class);
-        $this->call(SequenceSeeder::class);
-        $this->call(ShortenedModalitiesSeeder::class);
+        $this->call(KinshipSeeder::class);
+        // $this->call(SequenceSeeder::class);
+        // $this->call(QuotaSeeder::class);
+        
         $this->command->info('Todo ok finalizado! DAVID y NADIA'); 
     }
 }

@@ -29,7 +29,7 @@
                                     <dt>Genero:</dt> <dd>@{{ beneficiary.gender }}</dd>
                                     <dt>Estado Civil:</dt> <dd>@{{ beneficiary.civil_status }}</dd>
                                     <dt>Fecha de Nacimiento:</dt> <dd>@{{ beneficiary.birth_date }}</dd>
-                                    <dt>Edad:</dt> <dd> @{{ age  }} </dd>                                    
+                                    <dt>Edad:</dt> <dd> ERROR </dd>
                                     <dt>Telefono:</dt> <dd>@{{ beneficiary.phone_number }}</dd>
                                     <dt>Celular:</dt> <dd>@{{ beneficiary.cell_phone_number }}</dd>
                                 </dl>
@@ -46,6 +46,7 @@
                             <div class="col-md-6">
                                 <dl class="dl-">
                                     <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="ben[iterator].identity_card" class="form-control">
+                                        <button @click="searchPerson(iterator)" type="button" role="button"><i class="fa fa-search"></i></button>
                                         <select class="form-control m-b" v-model='ben[iterator].city_identity_card_id'>
                                             <option v-for="city in cities" 
                                                     :selected="city.id == beneficiary.city_identity_card_id ? 'selected' : ''"

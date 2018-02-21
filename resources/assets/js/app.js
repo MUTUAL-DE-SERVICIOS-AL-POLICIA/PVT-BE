@@ -22,9 +22,13 @@ window.flash = function (message, level = 'success') {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-import VueFormWizard from 'vue-form-wizard';
+ /**VUEX */
+ import store from './store/index';
+
+ import VueFormWizard from 'vue-form-wizard';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 Vue.use(VueFormWizard);
+
 
 Vue.component('flash', require('./components/Flash.vue'));
 
@@ -35,6 +39,7 @@ Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
 
 Vue.component('ret-fun-index', require('./components/ret_fun/Index.vue'));
 Vue.component('ret-fun-form', require('./components/ret_fun/Form.vue'));
+Vue.component('ret-fun-create-info', require('./components/ret_fun/CreateInfo.vue'));
 Vue.component('ret-fun-step1-requirements', require('./components/ret_fun/Step1Requirements.vue'));
 Vue.component('ret-fun-step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
 Vue.component('ret-fun-step3-beneficiaries', require('./components/ret_fun/Step3Beneficiaries.vue'));
@@ -53,4 +58,6 @@ Vue.component('quota-aid-step2-applicant', require('./components/quota_aid/Step2
 Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/Step3Beneficiaries.vue'));
 const app = new Vue({
     el: '#app',
+    store
+    
 });

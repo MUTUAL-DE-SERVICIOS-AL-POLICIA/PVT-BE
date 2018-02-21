@@ -18,11 +18,18 @@
     
     <div class="row">
         <div class="col-md-6">
-            @include('ret_fun.applicant_info', ['affiliate'=>$retirement_fund->affiliate])
+            {{-- @if($retirement_fund->modality_id==1) --}}
+            <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
+                   @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities])
+            </affiliate-show>             
+            {{-- @else --}}
+                {{-- @include('ret_fun.applicant_info', ['affiliate'=>$retirement_fund->affiliate]) --}}
+            {{-- @endif --}}
         </div>
+            
         <div class="col-md-6">
-            <ret-fun-info :retirement-fund="{{ $retirement_fund }}" inline-template>
-                @include('ret_fun.info', ['retirement_fund'=>$retirement_fund])
+            <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" inline-template>
+                @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
             </ret-fun-info>
         </div>
     </div>
