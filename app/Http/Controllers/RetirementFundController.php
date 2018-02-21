@@ -271,6 +271,9 @@ class RetirementFundController extends Controller
         $cities = City::get();
         $kinships = Kinship::get();        
         
+        $cities_pluck = City::all()->pluck('first_shortened', 'id');
+        $birth_cities = City::all()->pluck('name', 'id');
+
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -281,7 +284,9 @@ class RetirementFundController extends Controller
             'procedure_modalities' => $procedures_modalities,     
             'documents' => $documents,            
             'cities'    =>  $cities,
-            'kinships'   =>  $kinships
+            'kinships'   =>  $kinships,
+            'cities_pluck' => $cities_pluck,
+            'birth_cities' => $birth_cities
         ];
         
         return view('ret_fun.show',$data);
@@ -480,6 +485,18 @@ class RetirementFundController extends Controller
             $i++;                    
         }
         return json_encode(0);
+    }
+
+    public function updateInformation(Request $request)
+    {
+        $retirement_fund = RetirementFund::find($request->id);
+        $retirement_fund->city_end_id = $request->city_end_id;
+        $retirement_fund->city_start_id = $request->city_start_id;
+        $retirement_fund->reception_date = $request->reception_date;
+        $retirement_fund->save();
+
+        $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality'=>$retirement_fund->procedure_modality,'city_start'=>$retirement_fund->city_start,'city_end'=>$retirement_fund->city_end );
+        return $datos;
     }
 
 }
