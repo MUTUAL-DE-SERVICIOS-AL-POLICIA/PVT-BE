@@ -113,7 +113,8 @@ class RetirementFundController extends Controller
             }                
         }
         $account_type = $request->input('accountType');    
-
+        
+        
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_fund->id;
         $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;
@@ -125,11 +126,10 @@ class RetirementFundController extends Controller
         $beneficiary->second_name = $request->applicant_second_name;
         $beneficiary->surname_husband = $request->applicant_surname_husband;        
         $beneficiary->gender = "M";        
-        $beneficiary->phone_number = $request->applicant_phone_number;
-        $beneficiary->cell_phone_number = $request->applicant_cell_phone_number;        
+        $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
+        $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_phone_number));        
         $beneficiary->type = "S";
         $beneficiary->save();
-                
         if($account_type == '2')
         {
             $advisor = new RetFunAdvisor();
@@ -370,7 +370,7 @@ class RetirementFundController extends Controller
     public function generateProcedure(Affiliate $affiliate){  
         
         $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
