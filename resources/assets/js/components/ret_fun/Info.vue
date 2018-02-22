@@ -15,7 +15,10 @@ export default {
           form:this.retirement_fund,
           city_end: this.rf_city_end,
           city_start: this.rf_city_start,
-          procedure_modality: this.rf_procedure_modality
+          procedure_modality: this.rf_procedure_modality,
+          values:{
+              reception_date: this.retirement_fund.reception_date
+          }
       }
   },
   computed:{
@@ -33,8 +36,13 @@ export default {
   methods:{
       toggle_editing: function () {
 			this.editing = !this.editing;
-      // console.log(this.form);
-      // console.log(this.city_s);
+        if(this.editing==false)
+        {
+            this.form.reception_date = this.values.reception_date;
+            this.form.city_end_id = this.city_end.id;
+            this.form.city_start_id = this.city_start.id;
+            this.form.procedure_modality_id = this.procedure_modality.id; 
+        }
 		  },
       update: function () {  
         let uri = `/update_information_rf`;
@@ -47,6 +55,7 @@ export default {
             this.city_end = response.data.city_end;
             this.city_start = response.data.city_start;
             this.form = response.data.retirement_fund;
+            this.values.reception_date = response.data.retirement_fund.reception_date;
             console.log('Lechuza y Karem');
             // console.log(response.data);
 
