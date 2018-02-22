@@ -6,7 +6,7 @@
             <h3 class="pull-left">Documentos Presentados</h3>
             <div class="text-right">
                 <button type="button" class="btn btn-primary" onclick="editLegalReview()">
-                     <i class="fa fa-search"> </i>     
+                     <i id='icon' class="fa fa-lock"> </i>     
                 </button>
             </div>
         </div>
@@ -47,14 +47,15 @@
                     </table>
                 </div>
             </div>
-              <input type="submit" class="btn btn-success documents_button col-md-6" style="display: none;" value="Guardar">
-              <input class="btn btn-info documents_button col-md-6" style="display: none;" onclick="editLegalReview()" value="cancelar">
+              <button type="submit" class="btn btn-primary documents_button col-md-6" style="display: none;" value="Guardar"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+              <button class="btn btn-danger documents_button col-md-6" style="display: none;" onclick="editLegalReview()" value="cancelar"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
           </form>
         </div>      
     </div>
 </div>
 @section('scripts')
 <script>
+    var editing = false;
     function editLegalReview(){
         $('.documents_comment').toggle();
         $('.documents_comment_text').toggle();
@@ -65,6 +66,11 @@
             else
             $(this).attr('disabled', true);
         }); 
+        editing = !editing;
+        if(editing)
+          $("#icon").attr('class','fa fa-unlock');  
+        else
+          $("#icon").attr('class','fa fa-lock');
     }
 </script> 
 @endsection
