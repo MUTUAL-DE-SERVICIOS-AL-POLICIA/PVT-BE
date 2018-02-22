@@ -64,5 +64,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('search/{ci}', 'SearcherController@search');
 	Route::get('search_ajax', 'SearcherController@searchAjax');
 
+	//Contributions
+	Route::resource('contribution', 'ContributionController');
+	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution');
+
 });
 

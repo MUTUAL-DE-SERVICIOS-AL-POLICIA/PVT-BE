@@ -56,6 +56,10 @@ Vue.component('quota-aid-mortuary-index', require('./components/quota_aid/Index.
 Vue.component('quota-aid-step1-requirements', require('./components/quota_aid/Step1Requirements.vue'));
 Vue.component('quota-aid-step2-applicant', require('./components/quota_aid/Step2Applicant.vue'));
 Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/Step3Beneficiaries.vue'));
+
+//Contributions
+Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
+
 const app = new Vue({
     el: '#app',
     store

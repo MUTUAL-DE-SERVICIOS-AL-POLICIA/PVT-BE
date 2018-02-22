@@ -2,9 +2,9 @@
 
 namespace Muserpol\Http\Controllers;
 
-use Muserpol\Contribution;
+use Muserpol\Models\Contribution;
 use Illuminate\Http\Request;
-
+use Muserpol\Models\Affiliate;
 class ContributionController extends Controller
 {
     /**
@@ -24,7 +24,7 @@ class ContributionController extends Controller
      */
     public function create()
     {
-        //
+       
     }
 
     /**
@@ -81,5 +81,9 @@ class ContributionController extends Controller
     public function destroy(Contribution $contribution)
     {
         //
+    }
+    public function generateContribution(Affiliate $affiliate)
+    {
+        return View('contribution.create',$affiliate);
     }
 }
