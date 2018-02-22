@@ -2,6 +2,7 @@
 
 namespace Muserpol\Http\Controllers;
 
+<<<<<<< HEAD
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
@@ -10,6 +11,11 @@ use Ixudra\Curl\Facades\Curl;
 use Carbon\Carbon;
 use Auth;
 use Validator;
+=======
+use Muserpol\Models\Contribution;
+use Illuminate\Http\Request;
+use Muserpol\Models\Affiliate;
+>>>>>>> upstream/master
 class ContributionController extends Controller
 {
     /**
@@ -53,7 +59,7 @@ class ContributionController extends Controller
      */
     public function create()
     {
-        //
+       
     }
 
     /**
@@ -136,5 +142,9 @@ class ContributionController extends Controller
     public function destroy(Contribution $contribution)
     {
         //
+    }
+    public function generateContribution(Affiliate $affiliate)
+    {
+        return View('contribution.create',$affiliate);
     }
 }

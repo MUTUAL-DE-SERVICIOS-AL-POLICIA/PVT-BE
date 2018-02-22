@@ -199,7 +199,7 @@ class QuotaAidMortuaryController extends Controller
             $legal_guardian->notary = $request->legal_guardian_notary;
             $legal_guardian->save();
             
-            $beneficiary_legal_guardian = new RetFunBeneficiaryLegalGuardian();
+            $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
             $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
             $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
@@ -214,7 +214,7 @@ class QuotaAidMortuaryController extends Controller
         $address->number_address = $request->beneficiary_number_address;
         $address->save();
         
-        $address_rel = new AddressRetFunBeneficiary();
+        $address_rel = new RetFunAddressBeneficiary();
         $address_rel->ret_fun_beneficiary_id = $beneficiary->id;
         $address_rel->address_id = $address->id;
         $address_rel->save();
@@ -282,7 +282,7 @@ class QuotaAidMortuaryController extends Controller
 //        else
 //            $advisor = new RetFunAdvisor();
 //        
-//        $beneficiary_guardian = RetFunBeneficiaryLegalGuardian::where('ret_fun_beneficiary_id',$applicant->id)->first();
+//        $beneficiary_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
 //        
 //        if(isset($beneficiary_guardian->id))
 //            $guardian = RetFunLegalGuardian::find($beneficiary_guardian->ret_fun_legal_guardian_id);

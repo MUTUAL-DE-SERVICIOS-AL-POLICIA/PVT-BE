@@ -206,6 +206,11 @@ class ProcedureTablesSeeder extends Seeder {
             ['procedure_modality_id' => '12', 'procedure_document_id' => '25', 'number' => '9'],
             ['procedure_modality_id' => '12', 'procedure_document_id' => '17', 'number' => '9'],
         ]);
+
+        DB::table('ret_fun_procedures')->insert([
+            ['annual_yield' => '1', 'administrative_expenses' => '1', 'contributions_number' => '10'],
+        ]);
+
     }
 
 }

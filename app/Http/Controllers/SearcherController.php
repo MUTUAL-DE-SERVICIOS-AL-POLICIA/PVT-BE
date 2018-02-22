@@ -75,8 +75,8 @@ class Person{
          $this->mothers_last_name =$obj->mothers_last_name ?? '';
          $this->identity_card = $obj->identity_card ?? '';
          $this->kinship_id = $obj->kinship_id ?? null;
-         $this->phone_number = $obj->phone_number ?? '';
-         $this->cell_phone_number = $obj->cell_phone_number ?? '';
+         $this->phone_number = $this->parsePhone($obj->phone_number) ?? '';
+         $this->cell_phone_number = $this->parsePhone($obj->cell_phone_number) ?? '';
          $this->surname_husband = $obj->surname_husband ?? '';
          $this->class = get_class($obj) ?? 'desconocido';
          $this->type = $this->getClassObject();
@@ -86,6 +86,16 @@ class Person{
      }
      function __toString() {
          return $this->last_name." ".$this->first_name;
+     }
+     public function parsePhone($phones)
+     {
+         $array_phone=[];
+         foreach (explode(',', $phones) as $phone) {
+            $json_phone = new \stdClass;
+            $json_phone->value = $phone;
+            array_push($array_phone, $json_phone);
+         }
+         return $array_phone;
      }
      private function getClassObject()
      {
