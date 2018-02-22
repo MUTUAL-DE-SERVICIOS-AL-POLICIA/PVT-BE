@@ -89,13 +89,29 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group"><label class="col-sm-6 control-label">Telefono del Solicitante</label>
-                            <div class="col-sm-6"><input type="text" name="applicant_phone_number" v-model="applicant_phone_number" class="form-control"></div>
+                        <div class="form-group"><label class="col-sm-3 control-label">Telefono del Solicitante</label>
+                            <div v-for="(phone,index) in applicant_phone_numbers">
+                                <div class="col-sm-6">
+                                    <input type="text" name="applicant_phone_number[]" v-model="phone.value" :key="index" class="form-control">
+                                </div>
+                                <div class="col-sm-1 no-padding">
+                                    <button class="btn btn-danger" v-show="applicant_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" type="button" @click="addPhoneNumber"><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group"><label class="col-sm-6 control-label">Celular del Solicitante</label>
-                            <div class="col-sm-6"><input type="text" name="applicant_cell_phone_number" v-model="applicant_cell_phone_number" class="form-control"></div>
+                        <div class="form-group"><label class="col-sm-3 control-label">Celular del Solicitante</label>
+                            <div v-for="(cell_phone,index) in applicant_cell_phone_numbers">
+                                <div class="col-sm-6 no-padding">
+                                    <input type="text" name="applicant_cell_phone_number[]" v-model="cell_phone.value" :key="index" class="form-control">
+                                </div>
+                                <div class="col-sm-1 no-padding">
+                                    <button class="btn btn-danger" v-show="applicant_cell_phone_numbers.length > 1" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" type="button" @click="addCellPhoneNumber"><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
