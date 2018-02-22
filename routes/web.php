@@ -66,7 +66,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	//Contributions
 	Route::resource('contribution', 'ContributionController');
-	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution');
+	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
 
 });
 
