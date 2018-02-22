@@ -64,13 +64,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('search/{ci}', 'SearcherController@search');
 	Route::get('search_ajax', 'SearcherController@searchAjax');
 
-<<<<<<< HEAD
-	Route::get('/contribution/{id}', 'ContributionController@getMonth')->name('calculo_interes');
-=======
 	//Contributions
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
-
->>>>>>> upstream/master
+	Route::get('/contribution/{id}', 'ContributionController@getMonth')->name('calculo_interes');
+		
 });
 
