@@ -11,7 +11,7 @@ use Muserpol\Models\City;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
-use Muserpol\Models\RetirementFund\AddressRetFunBeneficiary;
+use Muserpol\Models\RetirementFund\RetFunAddressBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Auth;
 use Validator;
@@ -19,7 +19,7 @@ use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
-use Muserpol\Models\RetirementFund\RetFunBeneficiaryLegalGuardian;
+use Muserpol\Models\RetirementFund\RetFunLegalGuardianBeneficiary;
 use DateTime;
 use Muserpol\User;
 use Carbon\Carbon;
@@ -113,7 +113,8 @@ class RetirementFundController extends Controller
             }                
         }
         $account_type = $request->input('accountType');    
-
+        
+        
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_fund->id;
         $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;
@@ -125,11 +126,10 @@ class RetirementFundController extends Controller
         $beneficiary->second_name = $request->applicant_second_name;
         $beneficiary->surname_husband = $request->applicant_surname_husband;        
         $beneficiary->gender = "M";        
-        $beneficiary->phone_number = $request->applicant_phone_number;
-        $beneficiary->cell_phone_number = $request->applicant_cell_phone_number;        
+        $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
+        $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_phone_number));        
         $beneficiary->type = "S";
         $beneficiary->save();
-                
         if($account_type == '2')
         {
             $advisor = new RetFunAdvisor();
@@ -176,7 +176,7 @@ class RetirementFundController extends Controller
             $legal_guardian->notary = $request->legal_guardian_notary;
             $legal_guardian->save();
             
-            $beneficiary_legal_guardian = new RetFunBeneficiaryLegalGuardian();
+            $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
             $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
             $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
@@ -191,7 +191,7 @@ class RetirementFundController extends Controller
         $address->number_address = $request->beneficiary_number_address;
         $address->save();
         
-        $address_rel = new AddressRetFunBeneficiary();
+        $address_rel = new RetFunAddressBeneficiary();
         $address_rel->ret_fun_beneficiary_id = $beneficiary->id;
         $address_rel->address_id = $address->id;
         $address_rel->save();
@@ -257,7 +257,7 @@ class RetirementFundController extends Controller
         else
             $advisor = new RetFunAdvisor();
         
-        $beneficiary_guardian = RetFunBeneficiaryLegalGuardian::where('ret_fun_beneficiary_id',$applicant->id)->first();
+        $beneficiary_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
         
         if(isset($beneficiary_guardian->id))
             $guardian = RetFunLegalGuardian::find($beneficiary_guardian->ret_fun_legal_guardian_id);
@@ -370,7 +370,7 @@ class RetirementFundController extends Controller
     public function generateProcedure(Affiliate $affiliate){  
         
         $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);

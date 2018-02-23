@@ -4,8 +4,9 @@ namespace Muserpol\Models\RetirementFund;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AddressRetFunBeneficiary extends Model
+class RetFunAddressBeneficiary extends Model
 {
-    protected $table = "address_ret_fun_beneficiary";
+    protected $table = "ret_fun_address_beneficiary";
     //public $timestamps = false;
+    
 }

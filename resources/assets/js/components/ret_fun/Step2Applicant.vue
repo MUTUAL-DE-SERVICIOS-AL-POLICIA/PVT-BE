@@ -24,6 +24,8 @@ export default {
       advisor_resolution_number: '',
       advisor_resolution_date: '',
       applicant_gender: '',
+      applicant_phone_numbers: [],
+      applicant_cell_phone_numbers: [],
       legal_guardian_first_name: '',
       legal_guardian_second_name: '',
       legal_guardian_first_name: '',
@@ -45,12 +47,33 @@ export default {
       applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
     }
   },
+  created(){
+    //this or define initial value  => [{ value:null }]
+    this.addPhoneNumber();
+    this.addCellPhoneNumber();
+  },
   computed:{
     ...mapGetters({
             retfun: 'getData'
         }),
   },
   methods: {
+    addPhoneNumber(){
+      this.applicant_phone_numbers.push({value:null});
+    },
+    deletePhoneNumber(index){
+      this.applicant_phone_numbers.splice(index,1);
+      if(this.applicant_phone_numbers.length < 1)
+        this.addPhoneNumber()
+    },
+    addCellPhoneNumber(){
+      this.applicant_cell_phone_numbers.push({value:null});
+    },
+    deleteCellPhoneNumber(index){
+      this.applicant_cell_phone_numbers.splice(index,1);
+      if(this.applicant_cell_phone_numbers.length < 1)
+        this.addCellPhoneNumber()
+    },
     searchApplicant: function(){
       let ci= document.getElementsByName('applicant_identity_card')[0].value;
       axios.get('/search_ajax', {
@@ -61,6 +84,8 @@ export default {
       .then( (response) => {
         let data = response.data;
         this.setDataApplicant(data);
+        console.log(data);
+        
       })
       .catch(function (error) {
         console.log(error);
@@ -92,6 +117,8 @@ export default {
       this.applicant_city_identity_card = data.city_identity_card_id;
       this.applicant_gender = data.gender;
       this.applicant_kinship = data.kinship_id;
+      this.applicant_phone_numbers = data.phone_number;
+      this.applicant_cell_phone_numbers = data.cell_phone_number;
     },
     setDataLegalGuardian(data){
       this.legal_guardian_first_name = data.first_name;
@@ -144,6 +171,8 @@ export default {
       this.applicant_city_identity_card = '';
       this.applicant_gender = '';
       this.applicant_kinship = '';
+      this.applicant_cell_phone_numbers = [{value:null}]
+      this.applicant_phone_numbers = [{value:null}];
     },
     setDataAffilate: function(){
         this.applicant_first_name = this.affiliate.first_name;
@@ -155,7 +184,17 @@ export default {
         this.applicant_identity_card = this.affiliate.identity_card;
         this.applicant_city_identity_card = this.affiliate.city_identity_card_id;
         this.applicant_gender = this.affiliate.gender;
+        this.applicant_phone_numbers = !! this.affiliate.phone_number ? this.parsePhone(this.affiliate.phone_number.split(',')) : [{value:null}];
+        this.applicant_cell_phone_numbers = !! this.affiliate.cell_phone_number ? this.parsePhone(this.affiliate.cell_phone_number.split(',')) : [{value:null}];
         this.applicant_kinship = 1;
+    },
+    parsePhone(phones){
+      let objects_array_phones=[];
+      phones.forEach(element => {
+        objects_array_phones.push({value:element})
+      });
+      return objects_array_phones;
+
     },
     setDataSpouse: function(){
       this.applicant_first_name = this.spouse.first_name;
