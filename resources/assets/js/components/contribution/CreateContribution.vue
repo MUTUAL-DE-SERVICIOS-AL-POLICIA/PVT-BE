@@ -6,12 +6,13 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary"><i class="fa" ></i> </button>
+                        <button data-animation="flip" class="btn btn-primary" onclick="printJS('print', 'html')"><i class="fa fa-print" ></i> </button>
+                      
                     </div>
                 </div>
 
-                <div class="panel-body " >  
-                    <div class="row">
+                <div class="panel-body" id ="print">  
+                    <div class="row" >
 
                         <div class="col-md-12" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
@@ -62,13 +63,10 @@
                             </tr>                            
                         </tbody>
                     </table>
-
-
-                    <div class="col-md-12">
-                                <button class="btn btn-primary " type="button"><i class="fa fa-check"></i>&nbsp;Guardar</button> 
-                    </div>
+                    <button class="btn btn-primary " type="button"><i class="fa fa-save"></i>&nbsp;Guardar</button>
 
                 </div>
+               
             </div>
         </div>
     </div>

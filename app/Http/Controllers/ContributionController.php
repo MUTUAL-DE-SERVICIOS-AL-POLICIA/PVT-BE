@@ -5,6 +5,7 @@ namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
+
 use Muserpol\Models\User;
 use Ixudra\Curl\Facades\Curl;
 use Carbon\Carbon;
@@ -109,7 +110,8 @@ class ContributionController extends Controller
 
     /**
      * Display the specified resource.
-     *
+     *use Muserpol\Models\AffiliateState;
+
      * @param  \Muserpol\Contribution  $contribution
      * @return \Illuminate\Http\Response
      */
@@ -153,10 +155,12 @@ class ContributionController extends Controller
     }
     public function generateContribution(Affiliate $affiliate)
     {   
-        $data = [
-            'contributions'    =>  self::getMonthContributions($affiliate->id), 
-            'affiliate' =>  $affiliate
-        ];
-        return View('contribution.create',$data);
+        
+        $data = array(
+            'contributions' => self::getMonthContributions($affiliate->id), 
+            'affiliate'=> $affiliate,
+        );
+        
+        return View('contribution.create')->with($data);
     }
 }
