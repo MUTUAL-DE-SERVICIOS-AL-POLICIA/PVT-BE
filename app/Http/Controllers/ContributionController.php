@@ -2,9 +2,12 @@
 
 namespace Muserpol\Http\Controllers;
 
-use Muserpol\Contribution;
+
 use Illuminate\Http\Request;
 
+use Muserpol\Models\Affiliate;
+use Muserpol\Models\Contribution\Contribution;
+use DateTime;
 class ContributionController extends Controller
 {
     /**
@@ -81,5 +84,36 @@ class ContributionController extends Controller
     public function destroy(Contribution $contribution)
     {
         //
+    }
+
+    public function adicionalInfo(Affiliate $affiliate)
+    {
+        $contributions = Contribution::where('affiliate_id', $affiliate->id)->get();
+        $fondoret = null;
+        $quotaaid = null;
+        foreach($contributions as $contribution){
+            $fondoret = $contribution->retirement_fund + $fondoret;
+            $quotaaid = $contribution->mortuary_quota + $quotaaid;
+        }
+        $total = $fondoret + $quotaaid;
+        $dateentry=$this->getStringDate($affiliate->date_entry);
+        //return $fondoret.'    '.$quotaaid.'    '.$total.'    '.$affiliate->date_entry;
+        $data= array( 
+            'fondoret' => $fondoret,
+            'quotaaid' => $quotaaid,
+            'total' => $total,
+            'dateentry' => $dateentry
+        );
+        return view('contribution.aditional_info')->with($data);
+    }
+
+    private function getStringDate($string = "1800/01/01"){        
+        setlocale(LC_TIME, 'es_ES.utf8');        
+        $date = DateTime::createFromFormat("Y-m-d", $string);
+        if($date)
+            return strftime("%d de %B de %Y",$date->getTimestamp());
+        else 
+            return "sin fecha";
+        
     }
 }
