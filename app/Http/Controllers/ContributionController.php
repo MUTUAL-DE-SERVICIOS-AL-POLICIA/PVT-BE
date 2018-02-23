@@ -78,7 +78,7 @@ class ContributionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store_direct_contribution(Request $request)
+    public function storeDirectContribution(Request $request)
     {
         $validator=Validator::make($request-all(),[]);
         $validator->after(function($validator){
