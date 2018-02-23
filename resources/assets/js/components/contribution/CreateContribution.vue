@@ -13,7 +13,7 @@
 
                 <div class="panel-body" id ="print">  
                     <div class="row" >
-
+                        
                         <div class="col-md-12" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
                             <select class="form-control">
@@ -75,92 +75,29 @@
 </template>
 <script>
 export default {
-  //props:['key'],
-
-  data() {
+  
+   props: ['contributions1','cont1'],
+  data() {   
     return {
-      contributions: [
-        {
-            year: "2016",
-            month: "01",
-            monthyear: "01/2018",
-            sueldo: 0,
-            aporte: 0,
-            interes: 0,
-            subtotal:0,
-            
-          
-        },
-        {
-        year: "2017",
-        month: "12",
-        monthyear: "12/2017",
-        sueldo: 0,
-            aporte: 0,
-            interes: 0,
-            subtotal:0
-          
-        },
-        {
-          year: "2018",
-          month: "11",
-          monthyear: "11/2017",
-          sueldo: 0,
-            aporte: 0,
-            interes: 0,
-            subtotal:0
-          
-        }
-       
-      ],
+      contributions: [],
       total:0
       
     };
   },
    
-  mounted() {},
+  mounted() {
+   this.contributions = this.contributions1;
+  },
   methods: {
-      RemoveRow(index) {
-        
-         
+      RemoveRow(index) {         
         this.contributions.splice(index,1);
         this.SumTotal();
       },
       Refresh() {
+        console.log(this.contributions1);
         
-        this.contributions = [
-         {
-            year: "2016",
-            month: "01",
-            monthyear: "01/2018",
-            sueldo: 0,
-            aporte: 0,
-            interes: 0,
-            subtotal:0,
-            
-          
-        },
-        {
-            year: "2017",
-            month: "12",
-            monthyear: "12/2017",
-            sueldo: 0,
-            aporte: 0,
-            interes: 0,
-            subtotal:0
-          
-        },
-        {
-            year: "2018",
-            month: "11",
-            monthyear: "11/2017",
-            sueldo: 0,
-            aporte: 0,
-            interes: 0,
-            subtotal:0          
-        }
-       
-      ];
+        this.contributions = this.cont1;       
+      
       },
       CalcularAporte(con, index){
           if(con.sueldo >0)
