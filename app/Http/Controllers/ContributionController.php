@@ -157,10 +157,10 @@ class ContributionController extends Controller
     {   
         
         $data = array(
-           
-            'affiliate'=>$affiliate,          
-           
+            'contributions' => self::getMonthContributions($affiliate->id), 
+            'affiliate'=> $affiliate,
         );
+        
         return View('contribution.create')->with($data);
     }
 }
