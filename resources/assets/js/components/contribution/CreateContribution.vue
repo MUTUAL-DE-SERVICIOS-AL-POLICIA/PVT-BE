@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="col-lg-12">
-            <div class="panel panel-primary" >
+            <div class="panel panel-primary"  :class="show_spinner ? 'sk-loading' : ''" >
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
                     <div class="text-right">
@@ -12,6 +12,12 @@
                 </div>
 
                 <div class="panel-body" id ="print">  
+                    <div class="sk-folding-cube" v-show="show_spinner">
+                        <div class="sk-cube1 sk-cube"></div>
+                        <div class="sk-cube2 sk-cube"></div>
+                        <div class="sk-cube4 sk-cube"></div>
+                        <div class="sk-cube3 sk-cube"></div>
+                    </div>
                     <div class="row" >
                         
                         <div class="col-md-12" style="margin-bottom:20px">
@@ -27,15 +33,16 @@
                         <thead>
                         <tr>
                             <th class="footable-visible footable-first-column footable-sortable">Mes/Año<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Sueldo<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Aporte<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Interes<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">F.R.P.<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">CM<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte<span class="footable-sort-indicator"></span></th>
                             <th>Opciones</th>                                    
                         </tr>
                         </thead>
                         <tbody>
-                            <tr style="" v-for="(con, index) in contributions" :key="index">
+                            <tr style="" v-for="(con, index) in contributions" :key="index" id="form">
                                 <td>                                    
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
@@ -43,7 +50,10 @@
                                     <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)" ref="s1"  class="form-control"  name="aportes[]">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.aporte" class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.fr" class="form-control" name="aportes[]">
+                                </td>
+                                <td>
+                                    <input type="text" v-model = "con.cm" class="form-control" name="aportes[]">
                                 </td>
                                 <td>
                                     <input type="text" v-model = "con.interes" class="form-control" name="aportes[]">
@@ -59,7 +69,7 @@
                             <tr>
                                 <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
                                 <td colspan="3"><input type="text" v-model ="total" disabled class="form-control"></td>
-                                <td> <button class="btn btn-success btn-circle" @click="Refresh" type="button"><i class="fa fa-link"></i></button></td>
+                                <td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>
                             </tr>                            
                         </tbody>
                     </table>
@@ -76,11 +86,13 @@
 <script>
 export default {
   
-   props: ['contributions1','cont1'],
+   props: ['contributions1'],
   data() {   
     return {
       contributions: [],
-      total:0
+      total:0,
+      ufv:0,
+      show_spinner:false
       
     };
   },
@@ -94,32 +106,55 @@ export default {
         this.SumTotal();
       },
       Refresh() {
-        console.log(this.contributions1);
-        
-        this.contributions = this.cont1;       
+        this.contributions = this.contributions1;       
       
       },
       CalcularAporte(con, index){
           if(con.sueldo >0)
           {
             
-            con.aporte = con.sueldo * 0.5;
+           /* con.aporte = con.sueldo * 0.5;
             con.interes = con.aporte +10;
-            con.subtotal = con.aporte + con.interes;
+            con.subtotal = con.aporte + con.interes;*/
+            //console.log(con.year + '-' + con.month);
+            this.show_spinner=true
+            axios.post('/get-interest',{con})
+            .then(response => {
+                
+                this.ufv = response.data
+                con.fr = con.sueldo * 0.0477;
+                con.cm = con.sueldo * 0.0109;
+                con.interes = parseFloat(this.ufv);
+                con.subtotal = con.fr + con.cm + con.interes;
+            
+                this.show_spinner=false;
 
-          }
+                this.SumTotal();
+            
+            })
+            .catch(e => {
+                
+                this.show_spinner=false;
+                alert(e)
+            
+            })
+
          
-          this.SumTotal();
+          }
           if(index +1 < this.contributions.length)
             this.$refs.s1[index +1].focus();            
           
       },
       
       SumTotal(){
-             let total1 = 0;
+            let total1 = 0;
             this.contributions.forEach(con => {                            
-                total1 = total1 + con.subtotal ;
-            });              
+                total1 += parseFloat(con.subtotal) ;
+
+                
+           });
+
+            
             this.total = total1;
 
       }
