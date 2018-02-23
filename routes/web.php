@@ -67,7 +67,6 @@ Route::group(['middleware' => 'auth'], function () {
 	//Contributions
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
-	Route::get('/contributionss/{id}', 'ContributionController@getMonth')->name('calculo_interes');
 		
 });
 
