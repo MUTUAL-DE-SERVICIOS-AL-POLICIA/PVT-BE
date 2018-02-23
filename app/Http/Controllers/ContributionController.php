@@ -46,10 +46,7 @@ class ContributionController extends Controller
     /**
      * Display the specified resource.
      *use Muserpol\Models\AffiliateState;
-use Muserpol\Models\Category;
-use Muserpol\Models\City;
-use Muserpol\Models\Degree;
-use Muserpol\Models\PensionEntity;
+
      * @param  \Muserpol\Contribution  $contribution
      * @return \Illuminate\Http\Response
      */
