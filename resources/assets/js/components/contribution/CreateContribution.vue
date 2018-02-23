@@ -22,7 +22,7 @@
                                 <option value="3">Item 02</option>
                             </select>
                         </div>
-                    </div>cheveres
+                    </div>
                     <table class="table table-striped" data-page-size="15">
                         <thead>
                         <tr>
