@@ -63,13 +63,10 @@
                             </tr>                            
                         </tbody>
                     </table>
-
-
-                    <div class="col-md-12">
-                                <button class="btn btn-primary " type="button"><i class="fa fa-check"></i>&nbsp;Guardar</button> 
-                    </div>
+                    <button class="btn btn-primary " type="button"><i class="fa fa-save"></i>&nbsp;Guardar</button>
 
                 </div>
+               
             </div>
         </div>
     </div>

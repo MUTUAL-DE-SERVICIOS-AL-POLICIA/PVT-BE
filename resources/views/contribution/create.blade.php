@@ -9,9 +9,9 @@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
-    
+    <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
+        @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
+    </affiliate-police>
     <contribution-create></contribution-create>
-    
-    
 </div>
 @endsection
