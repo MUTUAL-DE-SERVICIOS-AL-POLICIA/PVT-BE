@@ -17,7 +17,7 @@ class ContributionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getInteres(Request $request)
+    public function getInterest(Request $request)
     {        
         $dateStart = $request->txtFecha;
         $dateEnd = $request->txtFechaFin;
@@ -26,7 +26,7 @@ class ContributionController extends Controller
         return $foo;      
     }
 
-    public function getContributions($id)
+    public function getMonthContributions($id)
     {
         $lastMonths = Contribution::where('affiliate_id', $id)
         ->orderBy('month_year','desc')
@@ -38,16 +38,9 @@ class ContributionController extends Controller
          $contribution = array();
          if($diff>2)
          {
-            /* $month[0] = $now->subMonths(1)->format('m-Y');
-            $month[1] = $now->subMonths(1)->format('m-Y');
-            $month[2] = $now->subMonths(3)->format('m-Y');
-             */ 
-            $month1 = $now->subMonths(1);//->format('m-Y');
-            $month2 = $now->subMonths(1);//->format('m-Y');
-            $month3 = $now->subMonths(1);//->format('m-Y');
-          //  $contribution2 = new Contribution();
-
-            // $month=array ('mes1' => $month1, 'mes2'=>$month2, 'mes3'=>$month3);
+           $month1 = $now->subMonths(1);
+            $month2 = $now->subMonths(1);
+            $month3 = $now->subMonths(1);
             $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'aporte'=>0, 'interes'=>0, 'subtotal'=>0);
             $contribution2 = array('year'=>$month2->format('Y'), 'month'=>$month2->format('m'), 'monthyear'=>$month2->format('m-Y'), 'sueldo'=>0, 'aporte'=>0, 'interes'=>0, 'subtotal'=>0);
             $contribution3 = array('year'=>$month3->format('Y'), 'month'=>$month3->format('m'), 'monthyear'=>$month3->format('m-Y'), 'sueldo'=>0, 'aporte'=>0, 'interes'=>0, 'subtotal'=>0);
@@ -58,7 +51,6 @@ class ContributionController extends Controller
              for ($i = 0; $i < $diff; $i++)
              { 
                 $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'aporte'=>0, 'interes'=>0, 'subtotal'=>0);
-                // $month[$i] = $now->subMonths(1)->format('m-Y');
                 $contributions.array_push($contribution);
              }
          }
@@ -86,7 +78,7 @@ class ContributionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store_direct_contribution(Request $request)
     {
         $validator=Validator::make($request-all(),[]);
         $validator->after(function($validator){
@@ -161,15 +153,8 @@ class ContributionController extends Controller
     }
     public function generateContribution(Affiliate $affiliate)
     {   
-        // $months = self::getMonth($affiliate->id);
-        // $c1 = array('year'=>'', 'month'=>'', 'monthyear'=>'', 'sueldo'=>0, 'aporte'=>0, 'interes'=>0, 'subtotal'=>0);
-
-        // $contributions = array('contributions' => array($c1,$c1,$c1));
-        // return $contributions;
-
         $data = [
-            'contributions'    =>  self::getContributions($affiliate->id), 
-
+            'contributions'    =>  self::getMonthContributions($affiliate->id), 
             'affiliate' =>  $affiliate
         ];
         return View('contribution.create',$data);
