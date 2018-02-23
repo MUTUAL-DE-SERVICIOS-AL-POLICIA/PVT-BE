@@ -11,6 +11,8 @@ use Ixudra\Curl\Facades\Curl;
 use Carbon\Carbon;
 use Auth;
 use Validator;
+use DateTime;
+use Muserpol\Helpers\Util;
 class ContributionController extends Controller
 {
     /**
@@ -156,6 +158,28 @@ class ContributionController extends Controller
     {
         //
     }
+
+    public function adicionalInfo(Affiliate $affiliate)
+    {
+        $contributions = Contribution::where('affiliate_id', $affiliate->id)->get();
+        $fondoret = null;
+        $quotaaid = null;
+        foreach($contributions as $contribution){
+            $fondoret = $contribution->retirement_fund + $fondoret;
+            $quotaaid = $contribution->mortuary_quota + $quotaaid;
+        }
+        $total = $fondoret + $quotaaid;
+        $dateentry = Util::getStringDate($affiliate->date_entry);
+        //return $fondoret.'    '.$quotaaid.'    '.$total.'    '.$affiliate->date_entry;
+        $data= array( 
+            'fondoret' => $fondoret,
+            'quotaaid' => $quotaaid,
+            'total' => $total,
+            'dateentry' => $dateentry
+        );
+        return view('contribution.aditional_info')->with($data);
+    }
+        
     public function generateContribution(Affiliate $affiliate)
     {   
             $contributions = self::getMonthContributions($affiliate->id);           

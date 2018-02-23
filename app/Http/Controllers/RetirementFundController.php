@@ -25,6 +25,7 @@ use Muserpol\User;
 use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunIncrement;
 use Session;
+use Muserpol\Helpers\Util;
 
 class RetirementFundController extends Controller
 {
@@ -419,15 +420,7 @@ class RetirementFundController extends Controller
             return "1/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
-    private function getStringDate($string = "1800/01/01"){        
-        setlocale(LC_TIME, 'es_ES.utf8');        
-        $date = DateTime::createFromFormat("Y-m-d", $string);
-        if($date)
-            return strftime("%d de %B de %Y",$date->getTimestamp());
-        else 
-            return "sin fecha";
-        
-    }
+    
     public function printReception($id){
         $retirement_fund = RetirementFund::find($id);
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
@@ -436,7 +429,7 @@ class RetirementFundController extends Controller
        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($retirement_fund->procedure_modality->name);
        $number = $retirement_fund->code;
        $username = Auth::user()->username;
-       $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
+       $date=$this->Util::getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
        $modality = $retirement_fund->procedure_modality->name;
        $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
