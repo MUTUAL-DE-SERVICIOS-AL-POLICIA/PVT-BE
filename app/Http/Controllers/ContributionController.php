@@ -31,14 +31,29 @@ class ContributionController extends Controller
         $lastMonths = Contribution::where('affiliate_id', $id)
         ->orderBy('month_year','desc')
         ->first(); 
-        $now = Carbon::now();
-         //return $lastMonths->month_year;
+        $now = Carbon::now();      
          $arrayDat = explode('-', $lastMonths->month_year);
-         $lastMont = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-        return $lastMont;
-        
-        $difff = DATEDIFF($now,$lastMonths->month_year);
-        return $difff;
+         $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
+         $diff = $now->diffInMonths($lastMonths);  
+         if($diff>2)
+         {
+            /* $month[0] = $now->subMonths(1)->format('m-Y');
+            $month[1] = $now->subMonths(1)->format('m-Y');
+            $month[2] = $now->subMonths(3)->format('m-Y');
+             */ 
+            $month1 = $now->subMonths(1)->format('m-Y');
+            $month2 = $now->subMonths(1)->format('m-Y');
+            $month3 = $now->subMonths(1)->format('m-Y');
+            $month=array ('mes1' => $month1, 'mes2'=>$month2, 'mes3'=>$month3);
+         }
+         else
+         {
+             for ($i = 0; $i < $diff; $i++)
+             { 
+                $month[$i] = $now->subMonths(1)->format('m-Y');
+             }
+         }
+         return $month;
     }
     
     public function index()
@@ -68,9 +83,7 @@ class ContributionController extends Controller
         $validator->after(function($validator){
             if(false)            
                 $validator->errors()-add('Aporte', 'El aporte no puede ser realizado');
-
-         }); 
-        
+         });         
         if($validator->fails())
         {
             return $validator->errors();   
@@ -101,7 +114,7 @@ class ContributionController extends Controller
      */
     public function show(Contribution $contribution)
     {
-        
+       return 'Cechus y Anitaaaaa!!';
     }
 
     /**
@@ -138,7 +151,7 @@ class ContributionController extends Controller
         //
     }
     public function generateContribution(Affiliate $affiliate)
-    {
+    {   
         return View('contribution.create',$affiliate);
     }
 }
