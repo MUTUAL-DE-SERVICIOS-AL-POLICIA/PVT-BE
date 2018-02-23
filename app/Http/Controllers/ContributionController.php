@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Auth;
 use Validator;
 use DateTime;
+use Muserpol\Helpers\Util;
 class ContributionController extends Controller
 {
     /**
@@ -163,7 +164,7 @@ class ContributionController extends Controller
             $quotaaid = $contribution->mortuary_quota + $quotaaid;
         }
         $total = $fondoret + $quotaaid;
-        $dateentry=$this->getStringDate($affiliate->date_entry);
+        $dateentry = Util::getStringDate($affiliate->date_entry);
         //return $fondoret.'    '.$quotaaid.'    '.$total.'    '.$affiliate->date_entry;
         $data= array( 
             'fondoret' => $fondoret,
@@ -172,15 +173,6 @@ class ContributionController extends Controller
             'dateentry' => $dateentry
         );
         return view('contribution.aditional_info')->with($data);
-    }
-
-    private function getStringDate($string = "1800/01/01"){        
-        setlocale(LC_TIME, 'es_ES.utf8');        
-        $date = DateTime::createFromFormat("Y-m-d", $string);
-        if($date)
-            return strftime("%d de %B de %Y",$date->getTimestamp());
-        else 
-            return "sin fecha";
     }
         
     public function generateContribution(Affiliate $affiliate)
