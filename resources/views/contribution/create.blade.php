@@ -13,7 +13,7 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
    
-    <p><pre>query: {{ json_encode($contributions) }}</pre></p>
+     {{-- <p><pre>query: {{ json_encode($contributions) }}</pre></p> ---}}
     <contribution-create :contributions1="{{ json_encode($contributions) }}" ></contribution-create>
 </div>
 @endsection
