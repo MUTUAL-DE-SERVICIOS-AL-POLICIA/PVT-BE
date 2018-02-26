@@ -73,7 +73,7 @@
                             </tr>                            
                         </tbody>
                     </table>
-                    <button class="btn btn-primary " type="button"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+                    <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>
 
                 </div>
                
@@ -111,12 +111,8 @@ export default {
       },
       CalcularAporte(con, index){
           if(con.sueldo >0)
-          {
-            
-           /* con.aporte = con.sueldo * 0.5;
-            con.interes = con.aporte +10;
-            con.subtotal = con.aporte + con.interes;*/
-            //console.log(con.year + '-' + con.month);
+          {          
+          
             this.show_spinner=true
             axios.post('/get-interest',{con})
             .then(response => {
@@ -149,17 +145,76 @@ export default {
       SumTotal(){
             let total1 = 0;
             this.contributions.forEach(con => {                            
-                total1 += parseFloat(con.subtotal) ;
-
-                
+                total1 += parseFloat(con.subtotal) ;                
            });
+        this.total = total1;
+
+      },
+      Guardar(){
+        
+        //console.log(this.contributions);
+        this.contributions =  this.contributions.filter((item)=> {
+            return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+        });
+        //console.log(this.contributions);         
+        if(this.contributions.length > 0)
+        {   
+            this.$swal({
+            title: 'Esta usted seguro de guardar?',
+            text: "whatever",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+             cancelButtonText: 'Cancelar'
+            }).then((result) => {
+            if (result.value) {
+                
+                var contri = this.contributions;
+                axios.post('/contribution_save',{contri})
+                .then(response => {
+                console.log(response.data);                
+                })
+                .catch(e => {
+                this.show_spinner = false;
+                alert(e);
+                })
+
+                this.$swal({
+                title: 'Pago realizado',
+                showConfirmButton: false,
+                timer: 1500,
+                type: 'success'
+                })
+            }
+            })
 
             
-            this.total = total1;
+        }
+        else
+        {
+                        
+                        
+           
+            //alert("No existen registros");
+        }
+        
+        
+    
+    },
 
-      }
+
+    
+
   },
+  computed: {
+      disabledSaved(){
+       return this.contributions.some((c)=> c.subtotal > 0 );
+      }
+  }
+
  
-};
+}
 </script>
 
