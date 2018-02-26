@@ -10,14 +10,14 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row text-center">
-        <a href="{{route('create_ret_fun', $affiliate->id)}}" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO">
-            <button class="btn btn-info btn-sm dim" type="button" ><i class="fa fa-paste"></i> </button>
+        <a href="{{route('create_ret_fun', $affiliate->id)}}">
+            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO" ><i class="fa fa-paste"></i></button>
         </a>
-        <a href="{{route('create_quota_aid', $affiliate->id)}}" data-toggle="tooltip" data-placement="top" title="Initar tr&aacute;mite de CUOTA Y AUXILIO MORTUORIO">
-            <button class="btn btn-info btn-sm  dim" type="button"><i class="fa fa-paste"></i> </button>
+        <a href="{{route('create_quota_aid', $affiliate->id)}}" >
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Initar tr&aacute;mite de CUOTA Y AUXILIO MORTUORIO"><i class="fa fa-paste"></i> </button>
         </a>
-        <a href="{{route('create_contribution', $affiliate->id)}}" data-toggle="tooltip" data-placement="top" title="Initar tr&aacute;mite de PAGO DE APORTES">
-            <button class="btn btn-info btn-sm  dim" type="button"><i class="fa fa-paste"></i> </button>
+        <a href="{{route('create_contribution', $affiliate->id)}}" >
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Initar tr&aacute;mite de PAGO DE APORTES"><i class="fa fa-paste"></i> </button>
         </a>
     </div>
 

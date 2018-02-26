@@ -117,7 +117,7 @@ class RetirementFundCertificationController extends Controller
         $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($modality);
         $number = $retirement_fund->code;
         $username = Auth::user()->username;//agregar cuando haya roles
-        $date=$this->Util::getStringDate($retirement_fund->reception_date);
+        $date=Util::getStringDate($retirement_fund->reception_date);
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
         $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
@@ -130,7 +130,7 @@ class RetirementFundCertificationController extends Controller
         $affiliate = Affiliate::find($id);
         $retirement_fund = RetirementFund::where('affiliate_id',$affiliate->id)->get()->last();        
         $number = $retirement_fund->code;
-        $date=$this->Util::getStringDate($retirement_fund->reception_date);
+        $date=Util::getStringDate($retirement_fund->reception_date);
         $title = "CERTIFICACION DE ARCHIVO – ".strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');       
         $username = Auth::user()->username;//agregar cuando haya roles        
         $affiliate_folders = AffiliateFolder::where('affiliate_id',$affiliate->id)->get();
@@ -142,12 +142,12 @@ class RetirementFundCertificationController extends Controller
     }
     public function printLegalReview($id){
         $retirement_fund = RetirementFund::find($id);
-        $date=$this->Util::getStringDate($retirement_fund->reception_date);
+        $date=Util::getStringDate($retirement_fund->reception_date);
         //$title = "CERTIFICACION DE ARCHIVO – ".strtoupper($retirement_fund->procedure_modality->name);       
         $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
         $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         $username = Auth::user()->username;//agregar cuando haya roles
-        $date=$this->Util::getStringDate($retirement_fund->reception_date);
+        $date=Util::getStringDate($retirement_fund->reception_date);
         $affiliate = $retirement_fund->affiliate;
         $number = $retirement_fund->code;
 //        $data = [
@@ -157,6 +157,18 @@ class RetirementFundCertificationController extends Controller
         $cite = RetFunIncrement::getCite(Auth::user()->id, Session::get('rol_id'), $retirement_fund->id);
         $subtitle = $cite;
         return \PDF::loadView('ret_fun.print.legal_certification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
+    }
+    public function printBeneficiariesQualification($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $date =  date('d/m/Y');
+        $title = $retirement_fund->procedure_modality->procedure_type->module->name;
+        $username = Auth::user()->username;//agregar cuando haya roles
+        $affiliate = $retirement_fund->affiliate;
+        $number = $retirement_fund->code;
+        // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
+        return \PDF::loadView('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
+
     }
      private function getNextCode($actual){
         $year =  date('Y');

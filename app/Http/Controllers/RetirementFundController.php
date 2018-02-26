@@ -429,7 +429,7 @@ class RetirementFundController extends Controller
        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($retirement_fund->procedure_modality->name);
        $number = $retirement_fund->code;
        $username = Auth::user()->username;
-       $date=$this->Util::getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
+       $date=Util::getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
        $modality = $retirement_fund->procedure_modality->name;
        $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
