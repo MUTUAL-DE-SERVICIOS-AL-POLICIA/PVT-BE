@@ -117,7 +117,7 @@ class RetirementFundCertificationController extends Controller
         $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($modality);
         $number = $retirement_fund->code;
         $username = Auth::user()->username;//agregar cuando haya roles
-        $date=$this->Util::getStringDate($retirement_fund->reception_date);
+        $date=Util::getStringDate($retirement_fund->reception_date);
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
         $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
@@ -130,7 +130,7 @@ class RetirementFundCertificationController extends Controller
         $affiliate = Affiliate::find($id);
         $retirement_fund = RetirementFund::where('affiliate_id',$affiliate->id)->get()->last();        
         $number = $retirement_fund->code;
-        $date=$this->Util::getStringDate($retirement_fund->reception_date);
+        $date=Util::getStringDate($retirement_fund->reception_date);
         $title = "CERTIFICACION DE ARCHIVO – ".strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');       
         $username = Auth::user()->username;//agregar cuando haya roles        
         $affiliate_folders = AffiliateFolder::where('affiliate_id',$affiliate->id)->get();
@@ -142,12 +142,12 @@ class RetirementFundCertificationController extends Controller
     }
     public function printLegalReview($id){
         $retirement_fund = RetirementFund::find($id);
-        $date=$this->Util::getStringDate($retirement_fund->reception_date);
+        $date=Util::getStringDate($retirement_fund->reception_date);
         //$title = "CERTIFICACION DE ARCHIVO – ".strtoupper($retirement_fund->procedure_modality->name);       
         $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
         $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         $username = Auth::user()->username;//agregar cuando haya roles
-        $date=$this->Util::getStringDate($retirement_fund->reception_date);
+        $date=Util::getStringDate($retirement_fund->reception_date);
         $affiliate = $retirement_fund->affiliate;
         $number = $retirement_fund->code;
 //        $data = [
