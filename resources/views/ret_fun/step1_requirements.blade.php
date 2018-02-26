@@ -14,14 +14,47 @@
         <div class="col-md-6">
             <div class="form-group"><label class="col-sm-4 control-label">Modalidad</label>
                 <div class="col-sm-8">
-                    <select v-model="modality" v-on:change="onChooseModality" ref="modality" name="ret_fun_modality" id="ret_fun_modality">
+                    <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality" name="ret_fun_modality" id="ret_fun_modality">
                         <option v-for="(modality, index) in modalities" :value="modality.id" :key="index">@{{modality.name}}</option>
                     </select>
                 </div>
             </div>
         </div>
     </div>
-    <div class="panel panel-success" v-for="(requirement, index) in requirementsList" :key="index">
+    <h2>Lista de Requisitos</h2>
+    <div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="vote-item" v-for="(requirement, index) in requirementList" :key="index">
+            <div class="row" @click="checked(index)" style="cursor:pointer" >
+                <div class="col-md-10">
+                    <div class="vote-actions">
+                        {{--  <h1 v-show="groupNumbers(requirement.number) === true">  --}}
+                        <h1>
+                            @{{requirement.number}}
+                        </h1>
+                    </div>
+                    <span class="vote-title">@{{requirement.document}}</span>
+                    <div class="vote-info">
+                        <div class="col-md-2 no-margins no-padding">
+                            <i class="fa fa-comments-o"></i> Comentario:
+                        </div>
+                        <div class="col-md-6 no-margins no-padding">
+                            <input type="text" :name="'comment'+requirement.id" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 ">
+                    <div class="vote-icon">
+                        <input type="checkbox" v-model="requirement.status" value="checked" :name="'document'+requirement.id" class="largerCheckbox" >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {{--  <div class="panel panel-success" v-for="(requirement, index) in requirementList" :key="index">
         <span v-if="requirement.number != actualTarget(requirement.number)">
            <div class="panel-heading">@{{requirement.number}}</div>
        </span>
@@ -43,5 +76,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>  --}}
 </div>
