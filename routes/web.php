@@ -68,8 +68,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('affiliate/{affiliate}/contribution/info', 'ContributionController@adicionalInfo');
 
 	//Contributions
+
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
+	Route::post('get-interest','ContributionController@getInterest');
 		
 });
 

@@ -22,11 +22,12 @@ class ContributionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getInterest(Request $request)
-    {        
-        $dateStart = $request->txtFecha;
-        $dateEnd = $request->txtFechaFin;
-        $mount = $request->txtMonto;
-        $foo =file_get_contents('https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha='.$dateStart.'&txtFechaFin='.$dateEnd.'&txtMonto='.$mount.'&txtCalcula=2');
+    {
+        $dateStart = '01/'.$request->con['month'].'/'.$request->con['year'];
+        $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');      
+        $mount = $request->con['sueldo'];
+        $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha='.$dateStart.'&txtFechaFin='.$dateEnd.'&txtMonto='.$mount.'&txtCalcula=2';
+        $foo =file_get_contents($uri);
         return $foo;      
     }
 
@@ -38,23 +39,24 @@ class ContributionController extends Controller
         $now = Carbon::now();      
          $arrayDat = explode('-', $lastMonths->month_year);
          $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-         $diff = $now->diffInMonths($lastMonths);  
+         $diff = $now->diffInMonths($lastMonths); 
          $contribution = array();
          if($diff>2)
-         {
-           $month1 = $now->subMonths(1);
-            $month2 = $now->subMonths(1);
-            $month3 = $now->subMonths(1);
-            $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'aporte'=>0, 'interes'=>0, 'subtotal'=>0);
-            $contribution2 = array('year'=>$month2->format('Y'), 'month'=>$month2->format('m'), 'monthyear'=>$month2->format('m-Y'), 'sueldo'=>0, 'aporte'=>0, 'interes'=>0, 'subtotal'=>0);
-            $contribution3 = array('year'=>$month3->format('Y'), 'month'=>$month3->format('m'), 'monthyear'=>$month3->format('m-Y'), 'sueldo'=>0, 'aporte'=>0, 'interes'=>0, 'subtotal'=>0);
+         {  
+            $month1 = Carbon::now()->subMonths(1);                      
+            $month2 = Carbon::now()->subMonths(2);        
+            $month3 = Carbon::now()->subMonths(3);
+            //dd($month1.' '.$month2.' '.$month3);
+            $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0);
+            $contribution2 = array('year'=>$month2->format('Y'), 'month'=>$month2->format('m'), 'monthyear'=>$month2->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0);
+            $contribution3 = array('year'=>$month3->format('Y'), 'month'=>$month3->format('m'), 'monthyear'=>$month3->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0);
             $contributions = array($contribution1,$contribution2,$contribution3);
          }  
          else
          {
              for ($i = 0; $i < $diff; $i++)
              { 
-                $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'aporte'=>0, 'interes'=>0, 'subtotal'=>0);
+                $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0);
                 $contributions.array_push($contribution);
              }
          }
@@ -180,12 +182,7 @@ class ContributionController extends Controller
         
     public function generateContribution(Affiliate $affiliate)
     {   
-        
-        $data = array(
-            'contributions' => self::getMonthContributions($affiliate->id), 
-            'affiliate'=> $affiliate,
-        );
-        
-        return View('contribution.create')->with($data);
+        $contributions = self::getMonthContributions($affiliate->id);           
+        return View('contribution.create',compact('affiliate', 'contributions'));
     }
 }
