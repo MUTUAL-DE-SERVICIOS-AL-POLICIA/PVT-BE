@@ -189,12 +189,11 @@ export default {
         this.applicant_kinship = 1;
     },
     parsePhone(phones){
-      let objects_array_phones=[];
-      phones.forEach(element => {
-        objects_array_phones.push({value:element})
+      return phones.map(phone => {
+        return {
+          value: phone.trim()
+        }
       });
-      return objects_array_phones;
-
     },
     setDataSpouse: function(){
       this.applicant_first_name = this.spouse.first_name;

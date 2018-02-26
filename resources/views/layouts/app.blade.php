@@ -12,6 +12,7 @@
     @section('styles')
     @show
     <style>
+        input.largerCheckbox { width: 30px; height: 30px; }
         .toast-title {
             font-weight: 700
         }

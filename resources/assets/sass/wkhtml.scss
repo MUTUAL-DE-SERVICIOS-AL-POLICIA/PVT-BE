@@ -1,0 +1,521 @@
+/**
+author: cechus
+date: 15-02-2018
+*/
+
+//colors
+$black: #000;
+$color_catskill_white_approx: #f1f5f8;
+$color_shuttle_gray_approx: #5d6975;
+$white: #fff;
+$color_shark_approx: #22292f;
+$color_geyser_approx: #dae1e7;
+
+//fonts
+$font_0: sans-serif;
+
+//@extend-elements
+//original selectors
+//html, body
+%extend_1 {
+	padding: 10px;
+	margin: 0;
+	font-family: $font_0;
+	height: 100%;
+}
+
+
+html {
+	@extend %extend_1;
+}
+body {
+	@extend %extend_1;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 0.75em;
+	border: 1px solid $black;
+}
+table {
+	width: 100%;
+}
+.table-info {
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: .75em;
+	overflow: hidden;
+	border-spacing: 0;
+	thead tr td {
+		border-left: 1px solid $white;
+		border-top: 1px solid $color_shuttle_gray_approx;
+		border-bottom: 1px solid $color_shuttle_gray_approx;
+		&:first-child {
+			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+			border-radius: 1em 0 0 0;
+			border-left: 1px solid $color_shuttle_gray_approx;
+		}
+		&:last-child {
+			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+			border-radius: 0 0.75em 0 0;
+			border-right: 1px solid $color_shuttle_gray_approx;
+		}
+		&:only-child {
+			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+			border-radius: 0.75em 0.75em 0 0;
+		}
+	}
+	table thead tr td:last-child {
+		border-left: none;
+	}
+	tbody tr {
+		td {
+			border-left: 1px solid $color_shuttle_gray_approx;
+			border-bottom: 1px solid $color_shuttle_gray_approx;
+			&:last-child {
+				border-right: 1px solid $color_shuttle_gray_approx;
+			}
+		}
+		&:last-child td {
+			&:last-child {
+				border-right: 1px solid $color_shuttle_gray_approx;
+				//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+				border-radius: 0 0 0.75em 0;
+			}
+			&:first-child {
+				//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+				border-radius: 0 0 0 0.75em;
+			}
+			&:only-child {
+				//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+				border-radius: 0 0 1em 1em;
+			}
+		}
+	}
+}
+.table-code {
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: .75em;
+	border-spacing: 0;
+	tbody tr {
+		td {
+			&:last-child {
+				border-right: 1px solid $color_shuttle_gray_approx;
+				border-bottom: 1px solid $color_shuttle_gray_approx;
+			}
+			&:only-child {
+				border-right: 1px solid $color_shuttle_gray_approx;
+				border-left: 1px solid $color_shuttle_gray_approx;
+			}
+			&:first-child {
+				border-bottom: 1px solid $white;
+			}
+		}
+		&:first-child td {
+			&:last-child {
+				//Instead of the line below you could use @include border-top-right-radius($radius)
+				border-top-right-radius: .75em;
+				border-top: 1px solid $color_shuttle_gray_approx;
+				border-right: 1px solid $color_shuttle_gray_approx;
+			}
+			&:first-child {
+				//Instead of the line below you could use @include border-top-left-radius($radius)
+				border-top-left-radius: .75em;
+			}
+		}
+		&:last-child td {
+			&:first-child {
+				//Instead of the line below you could use @include border-bottom-left-radius($radius)
+				border-bottom-left-radius: .75em;
+				border-bottom: none;
+			}
+			&:last-child {
+				//Instead of the line below you could use @include border-bottom-right-radius($radius)
+				border-bottom-right-radius: .75em;
+				border-right: 1px solid $color_shuttle_gray_approx;
+			}
+			&:only-child {
+				//Instead of the line below you could use @include border-bottom-right-radius($radius)
+				border-bottom-right-radius: .75em;
+				//Instead of the line below you could use @include border-bottom-left-radius($radius)
+				border-bottom-left-radius: .75em;
+				border-right: 1px solid $color_shuttle_gray_approx;
+				border-left: 1px solid $color_shuttle_gray_approx;
+				border-bottom: 1px solid $color_shuttle_gray_approx;
+			}
+		}
+	}
+}
+.table-collapse {
+	border-collapse: collapse;
+}
+.border-grey-darker {
+	border-color: $color_shuttle_gray_approx;
+	border-style: solid;
+	border-width: 1px;
+}
+.border {
+	border-color: $color_shuttle_gray_approx;
+	border-style: solid;
+	border-width: 1px;
+}
+.border-b {
+	border-bottom: 1px solid $white;
+	border-color: $color_shark_approx;
+	border-style: solid;
+	border-bottom-width: 1px,;
+}
+.border-t {
+	border-color: $color_shark_approx;
+	border-style: solid;
+	border-top-width: 1px,;
+}
+.border-r {
+	border-color: $color_shark_approx;
+	border-style: solid;
+	border-right-width: 1px,;
+}
+.border-l {
+	border-color: $color_shark_approx;
+	border-style: solid;
+	border-left-width: 1px;
+}
+.inline {
+	display: inline;
+}
+.inline-block {
+	display: inline-block;
+}
+.block {
+	display: block;
+}
+.table {
+	display: table;
+}
+.table-row {
+	display: table-row;
+}
+.text-left {
+	text-align: left;
+}
+.text-center {
+	text-align: center;
+}
+.text-right {
+	text-align: right;
+}
+.text-justify {
+	text-align: justify;
+}
+.w-10 {
+	width: 10%;
+}
+.w-15 {
+	width: 15%;
+}
+.w-20 {
+	width: 20%;
+}
+.w-25 {
+	width: 25%;
+}
+.w-30 {
+	width: 30%;
+}
+.w-33 {
+	width: 33%;
+}
+.w-35 {
+	width: 35%;
+}
+.w-38 {
+	width: 38%;
+}
+.w-39 {
+	width: 39.5%;
+}
+.w-40 {
+	width: 40%;
+}
+.w-45 {
+	width: 45%;
+}
+.w-50 {
+	width: 50%;
+}
+.w-60 {
+	width: 60%;
+}
+.w-75 {
+	width: 75%;
+}
+.w-100 {
+	width: 100%;
+}
+.mw-100 {
+	max-width: 100%;
+}
+.p-10 {
+	padding: 10px;
+}
+.p-5 {
+	padding: 5px;
+}
+.py-4 {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+.py-3 {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+.py-2 {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.px-15 {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.px-10 {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.px-5 {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.px-4 {
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.px-3 {
+	padding-left: 3px;
+	padding-right: 3px;
+}
+.px-2 {
+	padding-left: 2px;
+	padding-right: 2px;
+}
+.mx-10 {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.mx-5 {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.m-b-5 {
+	margin-bottom: 5px;
+}
+.m-b-10 {
+	margin-bottom: 10px;
+}
+.m-b-15 {
+	margin-bottom: 15px;
+}
+.m-b-20 {
+	margin-bottom: 20px;
+}
+.m-b-25 {
+	margin-bottom: 25px;
+}
+.m-b-50 {
+	margin-bottom: 50px;
+}
+.m-t-5 {
+	margin-top: 5px;
+}
+.m-t-10 {
+	margin-top: 10px;
+}
+.m-t-15 {
+	margin-top: 15px;
+}
+.m-t-20 {
+	margin-top: 20px;
+}
+.m-t-25 {
+	margin-top: 25px;
+}
+.m-t-30 {
+	margin-top: 30px;
+}
+.m-t-35 {
+	margin-top: 35px;
+}
+.m-t-50 {
+	margin-top: 50px;
+}
+.pin-t {
+	top: 0;
+}
+.pin-r {
+	right: 0;
+}
+.pin-b {
+	bottom: 0;
+}
+.pin-l {
+	left: 0;
+}
+.pin-y {
+	top: 0;
+	bottom: 0;
+}
+.pin-x {
+	right: 0;
+	left: 0;
+}
+.pin {
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+.pin-none {
+	top: auto;
+	right: auto;
+	bottom: auto;
+	left: auto;
+}
+.bg-grey-darker {
+	background-color: $color_shuttle_gray_approx;
+}
+.bg-grey-lightest {
+	background-color: $color_geyser_approx;
+}
+.font-hairline {
+	font-weight: 100;
+}
+.font-thin {
+	font-weight: 200;
+}
+.font-light {
+	font-weight: 300;
+}
+.font-normal {
+	font-weight: 400;
+}
+.font-medium {
+	font-weight: 500;
+}
+.font-semibold {
+	font-weight: 600;
+}
+.font-bold {
+	font-weight: 700;
+}
+.font-extrabold {
+	font-weight: 800;
+}
+.font-black {
+	font-weight: 900;
+}
+.uppercase {
+	text-transform: uppercase;
+}
+.lowercase {
+	text-transform: lowercase;
+}
+.capitalize {
+	text-transform: capitalize;
+}
+.normal-case {
+	text-transform: none;
+}
+.underline {
+	text-decoration: underline;
+}
+.line-through {
+	text-decoration: line-through;
+}
+.no-underline {
+	text-decoration: none;
+}
+.text-black {
+	color: $color_shark_approx;
+}
+.text-white {
+	color: $white;
+}
+.text-xxxs {
+	font-size: 8px;
+}
+.text-xxs {
+	font-size: 10px;
+}
+.text-xs {
+	font-size: 12px;
+}
+.text-sm {
+	font-size: 14px;
+}
+.text-base {
+	font-size: 16px;
+}
+.text-lg {
+	font-size: 18px;
+}
+.text-xl {
+	font-size: 20px;
+}
+.text-2xl {
+	font-size: 24px;
+}
+.text-3xl {
+	font-size: 30px;
+}
+.text-4xl {
+	font-size: 36px;
+}
+.text-5xl {
+	font-size: 3rem;
+}
+.rounded {
+	//Instead of the line below you could use @include border-top-left-radius($radius)
+	border-top-left-radius: .7rem;
+	//Instead of the line below you could use @include border-top-right-radius($radius)
+	border-top-right-radius: .7rem;
+	//Instead of the line below you could use @include border-bottom-right-radius($radius)
+	border-bottom-right-radius: .7rem;
+	//Instead of the line below you could use @include border-bottom-left-radius($radius)
+	border-bottom-left-radius: .7rem;
+}
+.rounded-t {
+	//Instead of the line below you could use @include border-top-left-radius($radius)
+	border-top-left-radius: .7rem;
+	//Instead of the line below you could use @include border-top-right-radius($radius)
+	border-top-right-radius: .7rem;
+}
+.rounded-tl {
+	//Instead of the line below you could use @include border-top-left-radius($radius)
+	border-top-left-radius: .7rem;
+}
+.rounded-tr {
+	//Instead of the line below you could use @include border-top-right-radius($radius)
+	border-top-right-radius: .7rem;
+}
+.leading-none {
+	line-height: 1;
+}
+.list-roman {
+	list-style-type: upper-roman;
+}
+.align-baseline {
+	vertical-align: baseline;
+}
+.align-top {
+	vertical-align: top;
+}
+.align-middle {
+	vertical-align: middle;
+}
+.align-bottom {
+	vertical-align: bottom;
+}
+.align-text-top {
+	vertical-align: text-top;
+}
+.align-text-bottom {
+	vertical-align: text-bottom;
+}
+.table-striped tr:nth-child(even) {
+	background: $color_catskill_white_approx;
+}

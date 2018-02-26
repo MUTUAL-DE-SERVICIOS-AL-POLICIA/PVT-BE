@@ -16,6 +16,8 @@ body{
 table {
   width: 100%;
 }
+.table-striped tr:nth-child(even){background:#F1F5F8}
+
 .table-info{
   border-radius:.75em;
   overflow: hidden;
@@ -189,8 +191,26 @@ table {
 .w-25{
   width: 25%;
 }
+.w-30{
+  width: 30%;
+}
 .w-33{
   width: 33%;
+}
+.w-35{
+  width: 35%;
+}
+.w-38{
+  width: 38%;
+}
+.w-39{
+  width: 39.5%;
+}
+.w-40{
+  width: 40%;
+}
+.w-45{
+  width: 45%;
 }
 .w-50{
   width: 50%;
@@ -431,3 +451,9 @@ table {
 .list-roman{
   list-style-type:upper-roman;
 }
+.align-baseline{	vertical-align: baseline;}
+.align-top{	vertical-align: top;}
+.align-middle{	vertical-align: middle;}
+.align-bottom{	vertical-align: bottom;}
+.align-text-top{ vertical-align: text-top;}
+.align-text-bottom{	vertical-align: text-bottom;}
