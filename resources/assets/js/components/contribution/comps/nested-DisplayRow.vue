@@ -2,20 +2,19 @@
   <div class="-nested-dsp-row-comp">
     <button class="btn btn-xs btn-link -nested-dsp-row-close-btn"
       @click="nested.$toggle(false)">
-      <i class="fa fa-times fa-lg"></i>
+      <i class="fa fa-times fa-lg"></i>Guardar
     </button>
+      
     <dl class="dl-horizontal">
-      <template v-for="(val, key) in row">
-        <dt>{{ key }}</dt>
-        <dd>
-          {{ val }}
-          <button v-if="key === 'friends'" class="btn btn-xs btn-default"
-            @click="nested.$toggle('FriendsTable', true)"
-            title="Display friends table">
-            <i class="fa fa-users"></i>
-            {{ row.friends.length }}
-          </button>
-        </dd>        
+      <template >
+        <table class="col-md-12">
+            <tr v-for="item in data">
+                <td class="col-md-3"></td>
+                <td class="col-md-3">Alfreds Futterkiste</td>
+                <td class="col-md-3">Maria Anders</td>
+                <td class="col-md-3">Germany</td>
+            </tr>
+        </table>          
       </template>
     </dl>
   </div>

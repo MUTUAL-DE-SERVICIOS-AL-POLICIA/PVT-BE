@@ -53,8 +53,8 @@ class Contribution extends Model
     }
 
     public function degree()
-    {
-        return $this->belongsTo('Muserpol\Models\Degree');
+    {        
+        return $this->belongsTo(\Muserpol\Models\Degree::class);
     }
 
     public function category()

@@ -20,9 +20,6 @@ class RetFunIncrement extends Model
     {
     	return $this->belongsTo(RetirementFund::class);
     }
-//    public function getCite(User $user, Role $role, ProcedureType $procedure_type){
-//        $increments = Increment::where('user_id',$user->id)->where('role_id',$role_id)->where('procedure_type_id',$proce)->first();
-//    }
     public static function getCite($user_id, $role_id, $retirement_fund_id){        
         $year =  date('Y');
         $inc = RetFunIncrement::where('user_id',$user_id)
