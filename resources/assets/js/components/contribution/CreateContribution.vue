@@ -20,12 +20,12 @@
                     </div>
                     <div class="row" >
                         
-                        <div class="col-import Cleave from 'vue-cleave'md-12" style="margin-bottom:20px">
+                        <div class="col-import Cleave from 'vue-cleave'md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
-                            <select class="form-control">
-                                <option value="1">Auxilio mortuorio</option>
-                                <option value="2">Item 0</option>
-                                <option value="3">Item 02</option>
+                            <select v-model="tipo" class="form-control">
+                                <option value="1">Item 0</option>
+                                <option value="2">Proceso diciplinario</option>
+                                <option value="3">Baja medica</option>
                             </select>
                         </div>
                         
@@ -92,6 +92,7 @@ export default {
     return {
       contributions: [],
       total:0,
+      tipo:null,
       ufv:0,
       show_spinner:false
       
@@ -175,8 +176,8 @@ export default {
             }).then((result) => {
             if (result.value) {
                 
-                var contri = this.contributions;
-                axios.post('/contribution_save',{contri})
+                var aportes = this.contributions;
+                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo})
                 .then(response => {
                 console.log(response.data);                
                 })
