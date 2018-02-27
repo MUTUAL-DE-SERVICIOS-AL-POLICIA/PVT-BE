@@ -14,6 +14,7 @@ use DateTime;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Category;
+use Muserpol\Models\City;
 
 
 class ContributionController extends Controller
@@ -163,6 +164,8 @@ class ContributionController extends Controller
 
     
     public function getAffiliateContributions(Affiliate $affiliate){        
+        
+        //codigo para obtener totales para el resument
         $contributions = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','DESC')->get();
         $reims = Reimbursement::where('affiliate_id',$affiliate->id)->get();
         
@@ -170,8 +173,18 @@ class ContributionController extends Controller
         $group_reim = [];
         foreach ($reims as $reim)
             $group_reim[$reim->month_year] = $reim;
-        foreach ($contributions as $contribution)        
+        
+        $fondoret = 0;
+        $quotaaid = 0;
+        foreach ($contributions as $contribution){
             $group[$contribution->month_year] = $contribution;          
+            $fondoret = $contribution->retirement_fund + $fondoret;
+            $quotaaid = $contribution->mortuary_quota + $quotaaid;
+        }
+                                
+        $total = $fondoret + $quotaaid;
+        $dateentry = Util::getStringDate($affiliate->date_entry);        
+                                                
         $categories = Category::get();        
         $end = explode('-', $affiliate->date_entry);        
         $newcontributions = [];
@@ -179,14 +192,26 @@ class ContributionController extends Controller
         $year_end = $end[0]; 
         $month_start = (date('m')-1);
         $year_start = date('Y');
+        
+        
+        
+        $summary= array( 
+            'fondoret' => $fondoret,
+            'quotaaid' => $quotaaid,
+            'total' => $total,
+            'dateentry' => $dateentry
+        );
+        $cities = City::get();
         $data = [            
             'contributions' => $group,
             'reims' =>  $group_reim,
             'affiliate_id'  =>  $affiliate->id,
-            'categories'    =>  $categories,
-            'monthi'    => 1,
+            'categories'    =>  $categories,            
             'year_start'    =>  $year_start,
             'year_end'  => $year_end,
+            'summary'   =>  $summary,
+            'affiliate' => $affiliate,
+            'cities'  =>  $cities,
         ];
         
         return view('contribution.affiliate_contributions_edit',$data);        
@@ -247,27 +272,6 @@ class ContributionController extends Controller
             }
         }
         return json_encode($contribution);
-    }
-
-    public function adicionalInfo(Affiliate $affiliate)
-    {
-        $contributions = Contribution::where('affiliate_id', $affiliate->id)->get();
-        $fondoret = null;
-        $quotaaid = null;
-        foreach($contributions as $contribution){
-            $fondoret = $contribution->retirement_fund + $fondoret;
-            $quotaaid = $contribution->mortuary_quota + $quotaaid;
-        }
-        $total = $fondoret + $quotaaid;
-        $dateentry = Util::getStringDate($affiliate->date_entry);
-        //return $fondoret.'    '.$quotaaid.'    '.$total.'    '.$affiliate->date_entry;
-        $data= array( 
-            'fondoret' => $fondoret,
-            'quotaaid' => $quotaaid,
-            'total' => $total,
-            'dateentry' => $dateentry
-        );
-        return view('contribution.aditional_info')->with($data);
     }
         
     public function generateContribution(Affiliate $affiliate)
