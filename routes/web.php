@@ -16,14 +16,13 @@ Route::get('/minor', 'HomeController@minor')->name("minor");
 Auth::routes();
 // User 
 Route::resource('user', 'UserController');
-
-
-
-
 //afiliates
 Route::group(['middleware' => 'auth'], function () {
-
+                
 	Route::get('/', 'HomeController@index')->name("main");
+        
+        //ROUTES TO CONFIGURE SYSTEM PARAMENTERS
+        Route::get('configure','HomeController@configure');
 
 	Route::resource('affiliate', 'AffiliateController');
 
@@ -70,10 +69,14 @@ Route::group(['middleware' => 'auth'], function () {
         //searcherController
 	Route::get('search/{ci}', 'SearcherController@search');
 	Route::get('search_ajax', 'SearcherController@searchAjax');
-//contribucion
-	Route::get('affiliate/{affiliate}/contribution/info', 'ContributionController@adicionalInfo');
-
-	//Contributions
+        
+        //Contributions
+        Route::resource('contribution','ContributionController');
+        Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions');                
+        Route::post('store_contributions','ContributionController@storeContributions');
+        Route::resource('reimbursement','ReimbursementController');
+        Route::get('affiliate/{affiliate}/contribution/info', 'ContributionController@adicionalInfo');
+        
 
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');

@@ -22,6 +22,7 @@ class RetFunIncrement extends Model
     }
 
     public static function getIncrement($role_id, $retirement_fund_id){        
+
         $year =  date('Y');
         $inc = RetFunIncrement::where('role_id',$role_id)
                 ->where('retirement_fund_id',$retirement_fund_id)

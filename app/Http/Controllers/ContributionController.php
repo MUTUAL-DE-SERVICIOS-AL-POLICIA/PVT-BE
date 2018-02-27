@@ -5,7 +5,6 @@ namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
-
 use Muserpol\Models\User;
 use Ixudra\Curl\Facades\Curl;
 use Carbon\Carbon;
@@ -13,6 +12,9 @@ use Auth;
 use Validator;
 use DateTime;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\Contribution\Reimbursement;
+use Muserpol\Models\Category;
+
 
 class ContributionController extends Controller
 {
@@ -65,9 +67,9 @@ class ContributionController extends Controller
     
     public function index()
     {
-        //
+        return 123123;
     }
-
+        
     /**
      * Show the form for creating a new resource.
      *
@@ -159,6 +161,94 @@ class ContributionController extends Controller
         //
     }
 
+    
+    public function getAffiliateContributions(Affiliate $affiliate){        
+        $contributions = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','DESC')->get();
+        $reims = Reimbursement::where('affiliate_id',$affiliate->id)->get();
+        
+        $group = [];
+        $group_reim = [];
+        foreach ($reims as $reim)
+            $group_reim[$reim->month_year] = $reim;
+        foreach ($contributions as $contribution)        
+            $group[$contribution->month_year] = $contribution;          
+        $categories = Category::get();        
+        $end = explode('-', $affiliate->date_entry);        
+        $newcontributions = [];
+        $month_end = $end[1];
+        $year_end = $end[0]; 
+        $month_start = (date('m')-1);
+        $year_start = date('Y');
+        $data = [            
+            'contributions' => $group,
+            'reims' =>  $group_reim,
+            'affiliate_id'  =>  $affiliate->id,
+            'categories'    =>  $categories,
+            'monthi'    => 1,
+            'year_start'    =>  $year_start,
+            'year_end'  => $year_end,
+        ];
+        
+        return view('contribution.affiliate_contributions_edit',$data);        
+    }
+    
+    public function storeContributions(Request $request){
+             
+        foreach ($request->iterator as $key=>$iterator)
+        {
+            
+            $contribution = Contribution::where('affiliate_id',$request->affiliate_id)->where('month_year',$key)->first();
+            if(isset($contribution->id))
+            {
+                //$string.=$total;
+                
+                $contribution->total = $request->total[$key] ?? $contribution->total;
+                $contribution->base_wage = $request->base_wage[$key] ?? $contribution->base_wage;
+                
+                if($request->category[$key]!=$contribution->category_id){
+                    $category = Category::find($request->category[$key]);
+                    $contribution->category_id = $category->id;
+                    $contribution->seniority_bonus = $category->percentage*$contribution->base_wage;
+                }
+                $contribution->gain = $request->gain[$key] ?? $contribution->gain;
+                $contribution->save();
+            }
+            else 
+            {
+//                $contribution = new Contribution();
+//                $contribution->user_id = Auth::user()->id;
+//                $contribution->total = $total;
+                
+                $affiliate = Affiliate::find($request->affiliate_id);
+                $contribution = new Contribution();
+                $contribution->user_id = Auth::user()->id;
+                $contribution->affiliate_id = $request->affiliate_id;
+                $contribution->degree_id = $affiliate->degree_id;
+                $contribution->unit_id = $affiliate->unit_id;
+                $contribution->breakdown_id = $affiliate->breakdown_id;
+                $contribution->base_wage = $request->base_wage[$key] ?? 0;
+                $category = Category::find($request->category[$key]);
+                $contribution->category_id = $category->id;
+                $contribution->seniority_bonus = $category->percentage*$contribution->base_wage;
+                //return $category->percentage*$contribution->base_wage;
+                $contribution->study_bonus = 0;
+                $contribution->position_bonus = 0;
+                $contribution->border_bonus = 0;
+                $contribution->east_bonus = 0;
+                $contribution->quotable = 0;
+                $contribution->month_year = $key;
+                $contribution->gain = $request->gain[$key] ?? 0;
+                $contribution->retirement_fund = 0;
+                $contribution->mortuary_quota = 0;
+                $contribution->total = $request->total[$key] ?? 0;
+                //$contribution->interes = 0;
+                $contribution->type='Planilla';
+                $contribution->save();                        
+            }
+        }
+        return json_encode($contribution);
+    }
+
     public function adicionalInfo(Affiliate $affiliate)
     {
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->get();
@@ -184,5 +274,6 @@ class ContributionController extends Controller
     {   
         $contributions = self::getMonthContributions($affiliate->id);           
         return View('contribution.create',compact('affiliate', 'contributions'));
+
     }
 }
