@@ -189,7 +189,7 @@ class ContributionController extends Controller
             'year_end'  => $year_end,
         ];
         
-        return view('contribution.affiliate_contributions',$data);        
+        return view('contribution.affiliate_contributions_edit',$data);        
     }
     
     public function storeContributions(Request $request){
