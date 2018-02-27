@@ -15,4 +15,13 @@ class Util
         else 
             return "sin fecha";
     }
+    public static function formatMoney($value)
+    {
+        if ($value) {
+            $value = number_format($value, 2, ',', '.');
+            return $value;
+        }
+        return null;
+    }
+
 }
