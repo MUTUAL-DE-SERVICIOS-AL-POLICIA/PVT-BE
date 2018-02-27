@@ -213,14 +213,23 @@ class ContributionController extends Controller
     }
     public function storeContributions(Request $request){
              
-        foreach ($request->total as $key=>$total)
+        foreach ($request->iterator as $key=>$iterator)
         {
             
             $contribution = Contribution::where('affiliate_id',$request->affiliate_id)->where('month_year',$key)->first();
             if(isset($contribution->id))
             {
                 //$string.=$total;
-                $contribution->total = $total;
+                
+                $contribution->total = $request->total[$key] ?? $contribution->total;
+                $contribution->base_wage = $request->base_wage[$key] ?? $contribution->base_wage;
+                
+                if($request->category[$key]!=$contribution->category_id){
+                    $category = Category::find($request->category[$key]);
+                    $contribution->category_id = $category->id;
+                    $contribution->seniority_bonus = $category->percentage*$contribution->base_wage;
+                }
+                $contribution->gain = $request->gain[$key] ?? $contribution->gain;
                 $contribution->save();
             }
             else 
@@ -229,26 +238,28 @@ class ContributionController extends Controller
 //                $contribution->user_id = Auth::user()->id;
 //                $contribution->total = $total;
                 
-                $affiliate = Affiliate::find(1);
+                $affiliate = Affiliate::find($request->affiliate_id);
                 $contribution = new Contribution();
                 $contribution->user_id = Auth::user()->id;
-                $contribution->affiliate_id = $affiliate->id;
+                $contribution->affiliate_id = $request->affiliate_id;
                 $contribution->degree_id = $affiliate->degree_id;
                 $contribution->unit_id = $affiliate->unit_id;
                 $contribution->breakdown_id = $affiliate->breakdown_id;
-                $contribution->category_id = $affiliate->category_id;
-                $contribution->base_wage = $request->base_wage[$key];
-                $contribution->seniority_bonus = 0;
+                $contribution->base_wage = $request->base_wage[$key] ?? 0;
+                $category = Category::find($request->category[$key]);
+                $contribution->category_id = $category->id;
+                $contribution->seniority_bonus = $category->percentage*$contribution->base_wage;
+                //return $category->percentage*$contribution->base_wage;
                 $contribution->study_bonus = 0;
                 $contribution->position_bonus = 0;
                 $contribution->border_bonus = 0;
                 $contribution->east_bonus = 0;
                 $contribution->quotable = 0;
                 $contribution->month_year = $key;
-                $contribution->gain = 0;
+                $contribution->gain = $request->gain[$key] ?? 0;
                 $contribution->retirement_fund = 0;
                 $contribution->mortuary_quota = 0;
-                $contribution->total = $total;
+                $contribution->total = $request->total[$key] ?? 0;
                 //$contribution->interes = 0;
                 $contribution->type='Planilla';
                 $contribution->save();                        

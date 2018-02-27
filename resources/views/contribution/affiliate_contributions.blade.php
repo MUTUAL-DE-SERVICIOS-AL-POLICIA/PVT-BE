@@ -92,6 +92,9 @@
                 
                  <td>
            <table>
+               <tr><td>
+                   <input type="hidden" disabled name="iterator[{{$period}}]" value="{{$contributions[$period]->id}}">
+                   </td></tr>
             <tr>
             <td> 
                 <div contenteditable="true" class="editcontent">{{$contributions[$period]->base_wage}} </div> 
@@ -130,6 +133,11 @@
             @else
                  <td>
            <table>
+               <tr>
+            <td> 
+               <input type="hidden" disabled name="iterator[{{$period}}]" value="0">
+               </td>
+            </tr>
             <tr>
             <td> 
                 <div contenteditable="true" class="editcontent">0</div> 
@@ -274,6 +282,8 @@
 $('.editcontent').blur(function() {        
     $(this).next('input').val($(this).html()); 
     $(this).next('input').removeAttr('disabled');        
+    $(this).closest('table').find('tr:first').find('td:first').find('input').removeAttr('disabled');
+
 });
 function createReimbursement(year){
     //alert(year);

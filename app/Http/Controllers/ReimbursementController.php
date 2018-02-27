@@ -47,7 +47,7 @@ class ReimbursementController extends Controller
         $reim->month_year = $request->year.'-'.$request->month.'-01';
         $reim->type = "Planilla";        
         $reim->base_wage = $request->salary;
-        $reim->seniority_bonus = $category->percentage*$reim->base_wage;        
+        $reim->seniority_bonus = $category->percentage*$reim->base_wage;
         $reim->study_bonus = 0;
         $reim->position_bonus = 0;
         $reim->border_bonus = 0;
