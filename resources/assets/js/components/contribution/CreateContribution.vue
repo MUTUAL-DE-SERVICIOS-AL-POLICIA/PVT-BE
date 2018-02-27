@@ -50,16 +50,16 @@
                                     <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)" ref="s1"  class="form-control"  name="aportes[]">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.fr" class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.fr" disabled class="form-control" name="aportes[]">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.cm" class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.cm" disabled class="form-control" name="aportes[]">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.interes" class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.interes" disabled class="form-control" name="aportes[]">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.subtotal" class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control" name="aportes[]">
                                 </td>
                                 <td>
                                     <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
