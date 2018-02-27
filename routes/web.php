@@ -74,9 +74,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('contribution','ContributionController');
         Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions');                
         Route::post('store_contributions','ContributionController@storeContributions');
-        Route::resource('reimbursement','ReimbursementController');
-        Route::get('affiliate/{affiliate}/contribution/info', 'ContributionController@adicionalInfo');
-        
+        Route::resource('reimbursement','ReimbursementController');       
 
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
