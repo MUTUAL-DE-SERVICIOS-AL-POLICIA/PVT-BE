@@ -170,22 +170,9 @@ class ContributionController extends Controller
         $group_reim = [];
         foreach ($reims as $reim)
             $group_reim[$reim->month_year] = $reim;
-        foreach ($contributions as $contribution)
-        {   
-            $group[$contribution->month_year] = $contribution;
-            
-//            $index = explode("-", $contribution->month_year);            
-//            $index = $index[0];
-//            if(!isset($group[$index]))
-//                    $group[$index] = [];
-//            array_push($group[$index], $contribution);
-            
-            //array_pu
-                    
-        }        
-        $categories = Category::get();
-        //return $group;
-        //return $affiliate->date_entry;
+        foreach ($contributions as $contribution)        
+            $group[$contribution->month_year] = $contribution;          
+        $categories = Category::get();        
         $end = explode('-', $affiliate->date_entry);        
         $newcontributions = [];
         $month_end = $end[1];
@@ -202,43 +189,7 @@ class ContributionController extends Controller
             'year_end'  => $year_end,
         ];
         
-        return view('contribution.affiliate_contributions',$data);
-        
-        echo $month_end." ".$year_end."-".$month_start." ".$year_start; 
-        $contributions = [];
-        while($month_end!=$month_start || $year_start != $year_end)  {
-            $formated_date = $year_start."-".($month_start<10?"0".$month_start:$month_start)."-01";
-            $contri  = Contribution::where('affiliate_id',$affiliate->id)->where('month_year',$formated_date)->first();
-            if(!isset($contri->id)){
-                $contri = new Contribution();
-                $contri->month_year = $formated_date;
-            }
-            
-            //echo $contri->month_year."<br>";
-            array_push($contributions, $contri);
-            ///echo "<br>".$month_start." ".$year_start; 
-            if($month_start == 1){
-                $year_start--;
-                $month_start=12;
-            }
-            else
-            {
-                $month_start--;
-            }
-        }
-        //return 0;
-        
-//        while ()
-//        foreach ($contributions as $contribution)
-//        {
-//            
-//            if($month == 1)
-//            {
-//                $year = $year-1;
-//            }
-//        }
-//return 0;
-        return view('contribution.affiliate_contributions',$data);
+        return view('contribution.affiliate_contributions',$data);        
     }
     
     public function storeContributions(Request $request){
