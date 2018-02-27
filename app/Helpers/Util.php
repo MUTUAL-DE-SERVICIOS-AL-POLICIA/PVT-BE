@@ -15,4 +15,11 @@ class Util
         else 
             return "sin fecha";
     }
+
+    public static function ucw($string)
+	{
+		if ($string) {
+			return ucwords(mb_strtolower($string,'UTF-8'));
+		}
+	}
 }
