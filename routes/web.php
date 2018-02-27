@@ -14,6 +14,12 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
 
 Auth::routes();
+// User 
+Route::resource('user', 'UserController');
+
+
+
+
 //afiliates
 Route::group(['middleware' => 'auth'], function () {
 

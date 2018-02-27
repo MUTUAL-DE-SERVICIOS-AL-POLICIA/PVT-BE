@@ -12,6 +12,10 @@
                         <li><a href="#"> <i class="fa fa-address-card-o"></i> Perfil</a></li>
                         <li class="divider"></li>
                         <li><a href={{URL('changerol')}}><i class="fa fa-exchange"></i>  Cambiar de Rol</a></li>
+                        @if(Session::get('rol_id')=='1')
+                            <li class="divider"></li>
+                            <li><a href="{{ url('user')}}"><i class="fa fa-users"></i> Usuarios</a></li>
+                        @endif                       
 
                         <li class="divider"></li>
                         <li><a href="{{ url('logout')}}"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
