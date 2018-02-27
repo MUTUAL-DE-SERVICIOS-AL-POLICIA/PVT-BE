@@ -8,6 +8,8 @@ use Auth;
 use Session;
 use Muserpol\Models\Role;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\Module;
+use Muserpol\Models\City;
 
 class UserController extends Controller
 {
@@ -64,7 +66,15 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        //registro
+        $modules = Module::all();
+        $cities = City::all();
+        $data = array(
+            'modules'=>$modules,
+            'cities' => $cities,
+        );
+        
+        return view('users.registro')->with($data);
     }
 
     /**
@@ -75,7 +85,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //grabar
     }
 
     /**
@@ -86,7 +96,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        //mostrar
     }
 
     /**
@@ -97,7 +107,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        //editar
     }
 
     /**

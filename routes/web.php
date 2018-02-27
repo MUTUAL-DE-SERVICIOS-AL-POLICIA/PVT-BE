@@ -16,6 +16,7 @@ Route::get('/minor', 'HomeController@minor')->name("minor");
 Auth::routes();
 // User 
 Route::resource('user', 'UserController');
+Route::get('user/create', 'UserController@create');
 
 
 
