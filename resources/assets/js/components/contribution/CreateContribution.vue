@@ -48,7 +48,7 @@
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)" ref="s1" autofocus class="form-control"  name="aportes[]">
+                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control"  name="aportes[]">
                                 </td>
                                 <td>
                                     <input type="text"  v-model = "con.fr" disabled class="form-control" name="aportes[]">
@@ -122,10 +122,10 @@ export default {
             .then(response => {
                 
                 this.ufv = response.data
-                con.fr = con.sueldo * 0.0477;
+                con.fr = con.sueldo * 0.0477,2;
                 con.cm = con.sueldo * 0.0109;
                 con.interes = parseFloat(this.ufv);
-                con.subtotal = con.fr + con.cm + con.interes;
+                con.subtotal =  con.fr + con.cm + con.interes;
             
                 this.show_spinner=false;
 
