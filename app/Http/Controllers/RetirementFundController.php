@@ -11,7 +11,7 @@ use Muserpol\Models\City;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
-use Muserpol\Models\RetirementFund\AddressRetFunBeneficiary;
+use Muserpol\Models\RetirementFund\RetFunAddressBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Auth;
 use Validator;
@@ -19,12 +19,13 @@ use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
-use Muserpol\Models\RetirementFund\RetFunBeneficiaryLegalGuardian;
+use Muserpol\Models\RetirementFund\RetFunLegalGuardianBeneficiary;
 use DateTime;
 use Muserpol\User;
 use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunIncrement;
 use Session;
+use Muserpol\Helpers\Util;
 
 class RetirementFundController extends Controller
 {
@@ -98,7 +99,7 @@ class RetirementFundController extends Controller
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
                 
-        $cite= RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
+        //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
         
         foreach ($requirements  as  $requirement)
         {
@@ -113,7 +114,8 @@ class RetirementFundController extends Controller
             }                
         }
         $account_type = $request->input('accountType');    
-
+        
+        
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_fund->id;
         $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;
@@ -125,11 +127,10 @@ class RetirementFundController extends Controller
         $beneficiary->second_name = $request->applicant_second_name;
         $beneficiary->surname_husband = $request->applicant_surname_husband;        
         $beneficiary->gender = "M";        
-        $beneficiary->phone_number = $request->applicant_phone_number;
-        $beneficiary->cell_phone_number = $request->applicant_cell_phone_number;        
+        $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
+        $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_phone_number));        
         $beneficiary->type = "S";
         $beneficiary->save();
-                
         if($account_type == '2')
         {
             $advisor = new RetFunAdvisor();
@@ -176,7 +177,7 @@ class RetirementFundController extends Controller
             $legal_guardian->notary = $request->legal_guardian_notary;
             $legal_guardian->save();
             
-            $beneficiary_legal_guardian = new RetFunBeneficiaryLegalGuardian();
+            $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
             $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
             $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
@@ -191,7 +192,7 @@ class RetirementFundController extends Controller
         $address->number_address = $request->beneficiary_number_address;
         $address->save();
         
-        $address_rel = new AddressRetFunBeneficiary();
+        $address_rel = new RetFunAddressBeneficiary();
         $address_rel->ret_fun_beneficiary_id = $beneficiary->id;
         $address_rel->address_id = $address->id;
         $address_rel->save();
@@ -257,7 +258,7 @@ class RetirementFundController extends Controller
         else
             $advisor = new RetFunAdvisor();
         
-        $beneficiary_guardian = RetFunBeneficiaryLegalGuardian::where('ret_fun_beneficiary_id',$applicant->id)->first();
+        $beneficiary_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
         
         if(isset($beneficiary_guardian->id))
             $guardian = RetFunLegalGuardian::find($beneficiary_guardian->ret_fun_legal_guardian_id);
@@ -271,6 +272,9 @@ class RetirementFundController extends Controller
         $cities = City::get();
         $kinships = Kinship::get();        
         
+        $cities_pluck = City::all()->pluck('first_shortened', 'id');
+        $birth_cities = City::all()->pluck('name', 'id');
+
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -281,7 +285,9 @@ class RetirementFundController extends Controller
             'procedure_modalities' => $procedures_modalities,     
             'documents' => $documents,            
             'cities'    =>  $cities,
-            'kinships'   =>  $kinships
+            'kinships'   =>  $kinships,
+            'cities_pluck' => $cities_pluck,
+            'birth_cities' => $birth_cities
         ];
         
         return view('ret_fun.show',$data);
@@ -365,7 +371,7 @@ class RetirementFundController extends Controller
     public function generateProcedure(Affiliate $affiliate){  
         
         $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
@@ -414,15 +420,7 @@ class RetirementFundController extends Controller
             return "1/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
-    private function getStringDate($string = "1800/01/01"){        
-        setlocale(LC_TIME, 'es_ES.utf8');        
-        $date = DateTime::createFromFormat("Y-m-d", $string);
-        if($date)
-            return strftime("%d de %B de %Y",$date->getTimestamp());
-        else 
-            return "sin fecha";
-        
-    }
+    
     public function printReception($id){
         $retirement_fund = RetirementFund::find($id);
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
@@ -431,7 +429,7 @@ class RetirementFundController extends Controller
        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($retirement_fund->procedure_modality->name);
        $number = $retirement_fund->code;
        $username = Auth::user()->username;
-       $date=$this->getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
+       $date=Util::getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
        $modality = $retirement_fund->procedure_modality->name;
        $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
@@ -480,6 +478,18 @@ class RetirementFundController extends Controller
             $i++;                    
         }
         return json_encode(0);
+    }
+
+    public function updateInformation(Request $request)
+    {
+        $retirement_fund = RetirementFund::find($request->id);
+        $retirement_fund->city_end_id = $request->city_end_id;
+        $retirement_fund->city_start_id = $request->city_start_id;
+        $retirement_fund->reception_date = $request->reception_date;
+        $retirement_fund->save();
+
+        $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality'=>$retirement_fund->procedure_modality,'city_start'=>$retirement_fund->city_start,'city_end'=>$retirement_fund->city_end );
+        return $datos;
     }
 
 }

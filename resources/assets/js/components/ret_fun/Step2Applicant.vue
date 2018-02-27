@@ -1,4 +1,5 @@
 <script>
+import {mapGetters} from 'vuex';
 export default {
   props:[
     'modality',
@@ -23,6 +24,8 @@ export default {
       advisor_resolution_number: '',
       advisor_resolution_date: '',
       applicant_gender: '',
+      applicant_phone_numbers: [],
+      applicant_cell_phone_numbers: [],
       legal_guardian_first_name: '',
       legal_guardian_second_name: '',
       legal_guardian_first_name: '',
@@ -41,10 +44,36 @@ export default {
       applicant_type: null,
       show_advisor_form: false,
       show_apoderado_form: false,
+      applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
     }
   },
+  created(){
+    //this or define initial value  => [{ value:null }]
+    this.addPhoneNumber();
+    this.addCellPhoneNumber();
+  },
+  computed:{
+    ...mapGetters({
+            retfun: 'getData'
+        }),
+  },
   methods: {
-
+    addPhoneNumber(){
+      this.applicant_phone_numbers.push({value:null});
+    },
+    deletePhoneNumber(index){
+      this.applicant_phone_numbers.splice(index,1);
+      if(this.applicant_phone_numbers.length < 1)
+        this.addPhoneNumber()
+    },
+    addCellPhoneNumber(){
+      this.applicant_cell_phone_numbers.push({value:null});
+    },
+    deleteCellPhoneNumber(index){
+      this.applicant_cell_phone_numbers.splice(index,1);
+      if(this.applicant_cell_phone_numbers.length < 1)
+        this.addCellPhoneNumber()
+    },
     searchApplicant: function(){
       let ci= document.getElementsByName('applicant_identity_card')[0].value;
       axios.get('/search_ajax', {
@@ -55,6 +84,8 @@ export default {
       .then( (response) => {
         let data = response.data;
         this.setDataApplicant(data);
+        console.log(data);
+        
       })
       .catch(function (error) {
         console.log(error);
@@ -86,6 +117,8 @@ export default {
       this.applicant_city_identity_card = data.city_identity_card_id;
       this.applicant_gender = data.gender;
       this.applicant_kinship = data.kinship_id;
+      this.applicant_phone_numbers = data.phone_number;
+      this.applicant_cell_phone_numbers = data.cell_phone_number;
     },
     setDataLegalGuardian(data){
       this.legal_guardian_first_name = data.first_name;
@@ -97,14 +130,16 @@ export default {
       this.legal_guardian_city_identity_card = data.city_identity_card_id;
     },
     change_applicant: function() {
-      let modality_id=document.getElementById('ret_fun_modality').value;
-      if(this.applicant_type  === '2'){
+      // let modality_id_ = 
+
+      let modality_id=this.retfun.modality_id;
+      if(this.applicant_type  == '2'){
         this.show_advisor_form = !this.show_advisor_form;
         this.show_apoderado_form = false;
         this.resetAffiliate();
         return;
       }
-      if(this.applicant_type  === '3'){
+      if(this.applicant_type  == '3'){
         this.show_apoderado_form = !this.show_apoderado_form;
         this.show_advisor_form = false;
         if(modality_id == 4){
@@ -114,7 +149,7 @@ export default {
         }
         return;
       }
-      if(this.applicant_type  === '1'){
+      if(this.applicant_type  == '1'){
         this.show_apoderado_form = false;
         this.show_advisor_form = false;
         if(modality_id == 4){
@@ -136,6 +171,8 @@ export default {
       this.applicant_city_identity_card = '';
       this.applicant_gender = '';
       this.applicant_kinship = '';
+      this.applicant_cell_phone_numbers = [{value:null}]
+      this.applicant_phone_numbers = [{value:null}];
     },
     setDataAffilate: function(){
         this.applicant_first_name = this.affiliate.first_name;
@@ -147,7 +184,16 @@ export default {
         this.applicant_identity_card = this.affiliate.identity_card;
         this.applicant_city_identity_card = this.affiliate.city_identity_card_id;
         this.applicant_gender = this.affiliate.gender;
+        this.applicant_phone_numbers = !! this.affiliate.phone_number ? this.parsePhone(this.affiliate.phone_number.split(',')) : [{value:null}];
+        this.applicant_cell_phone_numbers = !! this.affiliate.cell_phone_number ? this.parsePhone(this.affiliate.cell_phone_number.split(',')) : [{value:null}];
         this.applicant_kinship = 1;
+    },
+    parsePhone(phones){
+      return phones.map(phone => {
+        return {
+          value: phone.trim()
+        }
+      });
     },
     setDataSpouse: function(){
       this.applicant_first_name = this.spouse.first_name;

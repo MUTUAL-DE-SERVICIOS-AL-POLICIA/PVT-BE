@@ -12,10 +12,6 @@
                 show_spinner: false,
                 ben:this.original_beneficiaries,
                 iterator:-1,
-//                first_name:{
-//                    value: this.beneficiary.first_name,
-//                    edit: false,
-//                }
             }
         },
         computed:{
@@ -50,9 +46,9 @@
                         return this.kinships[i].name;
                 return "S/N";
             },
-            searchApplicant(iterator){
-                let ci= this.ben[iterator],identity_card;
-                alert(ci);
+            searchPerson(iterator){
+                let ci= this.ben[iterator].identity_card;
+                
                 axios.get('/search_ajax', {
                     params: {
                     ci
@@ -60,12 +56,23 @@
                 })
                 .then( (response) => {
                     let data = response.data;
-                    this.setDataApplicant(data);
+                    this.setDataBeneficiary(data, iterator);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
                 },
+                setDataBeneficiary(data, index) {
+                    this.ben[index].first_name = data.first_name;
+                    this.ben[index].second_name = data.second_name;
+                    this.ben[index].last_name = data.last_name;
+                    this.ben[index].mothers_last_name = data.mothers_last_name;
+                    this.ben[index].surname_husband = data.surname_husband;
+                    this.ben[index].identity_card = data.identity_card;
+                    this.ben[index].city_identity_card_id = data.city_identity_card_id;
+                    this.ben[index].birth_date = data.birth_date;
+                    this.ben[index].kinship_id = data.kinship_id;
+                    },
             update () {
                 console.log(this.ben[0].identity_card+"console");        
                 //console.log(this.$refs.name_ben[0].value);

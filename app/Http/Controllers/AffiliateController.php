@@ -107,7 +107,8 @@ class AffiliateController extends Controller
         $degrees = Degree::all()->pluck('name', 'id');
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
-        $quota_mortuaries = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get();
+        // $quota_mortuaries = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get();
+        $quota_mortuaries = [];
         $cuota = null;
         $auxilio = null;
             foreach($quota_mortuaries as $quota_mortuary){
@@ -176,10 +177,13 @@ class AffiliateController extends Controller
         $affiliate->birth_date = $request->birth_date;
         $affiliate->phone_number = $request->phone_number;
         $affiliate->cell_phone_number = $request->cell_phone_number;
+        $affiliate->city_birth_id = $request->city_birth_id;
+        $affiliate->city_identity_card_id =$request->city_identity_card_id;
 
         $affiliate->save();
 
-        return $affiliate;
+        $datos=array('affiliate' => $affiliate ,'city_birth' => $affiliate->city_birth,'city_identity_card' => $affiliate->city_identity_card);
+        return $datos;
 
     }
     public function update_affiliate_police(Request $request, Affiliate $affiliate)
@@ -194,7 +198,8 @@ class AffiliateController extends Controller
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->save();
         
-        return $affiliate;
+        $datos = array('affiliate'=>$affiliate,'state'=>$affiliate->affiliate_state,'category'=>$affiliate->category,'degree'=>$affiliate->degree,'pension_entity'=>$affiliate->pension_entity);
+        return $datos;
     }
 
     /**

@@ -20,22 +20,21 @@ class RetFunIncrement extends Model
     {
     	return $this->belongsTo(RetirementFund::class);
     }
-    public static function getCite($user_id, $role_id, $retirement_fund_id){        
+
+    public static function getIncrement($role_id, $retirement_fund_id){        
+
         $year =  date('Y');
-        $inc = RetFunIncrement::where('user_id',$user_id)
-                ->where('role_id',$role_id)
+        $inc = RetFunIncrement::where('role_id',$role_id)
                 ->where('retirement_fund_id',$retirement_fund_id)
                 ->whereYear('created_at','=',$year)
                 ->orderBy('number','DESC')->orderBy('id','DESC')->first();                
         
-        $role_user = RoleUser::where('user_id',$user_id)->where('role_id',$role_id)->first();
+        $role_user = RoleUser::where('role_id',$role_id)->first();
         if(!isset($inc->id)){
-            $inc2 = RetFunIncrement::where('user_id',$user_id)
-                ->where('role_id',$role_id)                
+            $inc2 = RetFunIncrement::where('role_id',$role_id)                
                 ->whereYear('created_at','=',$year)
                 ->orderBy('number','DESC')->orderBy('id','DESC')->first();
             $increment = new RetFunIncrement();
-            $increment->user_id = $user_id;
             $increment->role_id = $role_id;
             $increment->retirement_fund_id = $retirement_fund_id;
             if(!isset($inc2->id))
@@ -43,10 +42,12 @@ class RetFunIncrement extends Model
             else 
                 $increment->number = $inc2->number+1;
             $increment->save();
-            $cite = $role_user->cite."/Nro ".$increment->number;
+            $increment = $increment->number;
         }                        
         else
-            $cite = $role_user->cite."/Nro ".$inc->number;
-        return $cite;
+            $increment = $inc->number;
+        return $increment."/".$year;
+
+        
     }
 }

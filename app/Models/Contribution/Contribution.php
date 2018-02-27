@@ -15,7 +15,6 @@ class Contribution extends Model
         'user_id',
         'affiliate_id',
         'type',
-        'direct_contribution_id',
         'degree_id',
         'unit_id',
         'breakdown_id',

@@ -10,4 +10,10 @@ class ProcedureType extends Model
     {
         return $this->hasMany('Muserpol\Models\ProcedureModality');
     }
+    
+    public function module()
+    {
+        return $this->belongsTo('Muserpol\Models\Module');
+    }
+
 }

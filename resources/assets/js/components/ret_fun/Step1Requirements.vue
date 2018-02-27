@@ -1,5 +1,6 @@
 
 <script>
+import { mapState, mapMutations } from 'vuex';
 	export default{
 		props:[
 			'modalities',
@@ -9,84 +10,73 @@
 		],
         data(){
             return{
-
                 editing: false,
+                requirementList: [],
                 modality: null,
                 show_spinner: false,
                 modality_id: 3,
                 actual_target: 1,
                 city_end_id: this.user.city_id,
-                //requirement_list: [],
-                
-//                form:{
-//                    identity_card: this.affiliate.identity_card,
-//                    first_name: this.affiliate.first_name,
-//                    second_name: this.affiliate.second_name,
-//                    last_name: this.affiliate.last_name,
-//                    mothers_last_name: this.affiliate.mothers_last_name,
-//                    gender: this.affiliate.gender,
-//                },
-//                first_name:{
-//                    value: this.affiliate.first_name,
-//                    edit: false,
-//                }
+                my_index: 1
             }
+        },
+        mounted(){
+            this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
         },
         methods:{
-            onChooseModality(){
-                events.$emit()
-            },
-          hello:function(){
-
-              //            requirementsList(requirements){
-//         requirements.filter(function (x) { return x.modality_id > this.modalit; })[0];
-//            }
-          },
-          actualTarget:function(data){
-                //console.log(this.actual_target+' '+data);
-                var tar = this.actual_target;
-                this.actual_target = data;
-                return tar;
-            }
-        },
-//        mounted(){
-//            //console.log(this.requirements);
-//        },
-        computed:{
-            requirementsList(){
-                // bus.$emit('modality_on_f', $this.modality);
-                var list = [];
-                for(var i=0;i<this.requirements.length;i++){
-                    if(this.modality == this.requirements[i].modality_id)
-                        list.push(this.requirements[i]);
+            onChooseModality(event){
+                const options = event.target.options;
+                const selectedOption = options[options.selectedIndex];
+                const selectedText = selectedOption.textContent;
+                var object={
+                    name:selectedText,
+                    id: this.modality
                 }
-                return list;
+                this.getRequirements();
+              this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
             },
-            
-//            getModality(){
-//                return this.modality;
-//            }
+            getRequirements(){
+                this.requirementList = this.requirements.filter((r) => {
+                    if (r.modality_id == this.modality) {
+                        r['status'] = false;
+                        return r;
+                    }
+                });
+            },
+            checked(index){
+                this.requirementList[index].status =  ! this.requirementList[index].status;
+            },
+            onChooseCity(event){
+                const options = event.target.options;
+                const selectedOption = options[options.selectedIndex];
+                const selectedText = selectedOption.textContent;
+                this.$store.commit('setCity',selectedText)
+            },
+            groupNumbers(number){
+                // return (parseInt(number) % 2) == 0;
+                console.log(`number: ${number}, index: ${this.my_index}, bool: ${number == this.my_index}`);
+                if (parseInt(number) == parseInt(this.my_index)) {
+                    this.my_index++;
+                    return true;
+                }
+                return false;
+            },
+        //   actualTarget:function(data){
+        //         var tar = this.actual_target;
+        //         this.actual_target = data;
+        //         return tar;
+        //     }
         },
-//        methods:{
-//            edit_first_name: function(){
-//                console.log(this.first_name.value)
-//            },
-//            toggle_editing:function () {
-//                this.editing = !this.editing;
-//            },
-//            update () {
-//                let uri = `/update_affiliate/${this.affiliate.id}`;
-//                this.show_spinner=true;
-//                axios.patch(uri,this.form)
-//                    .then(()=>{
-//                        this.editing = false;
-//                        this.show_spinner=false;
-//                        flash('Informacion del Afiliado Actualizada');
-//                    }).catch((response)=>{
-//                        this.show_spinner=false;
-//                        flash('Error al actualizar el afiliado: '+response.message,'error');
-//                    })
-//            }
-//        }
+        // computed:{
+        //     requirementsList(){
+        //         var list = [];
+        //         for(var i=0;i<this.requirements.length;i++){
+        //             if(this.modality == this.requirements[i].modality_id)
+        //                 list.push(this.requirements[i]);
+        //         }
+        //         return list;
+        //     },
+            
+        // },
 	}
 </script>

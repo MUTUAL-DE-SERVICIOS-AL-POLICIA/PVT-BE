@@ -6,13 +6,13 @@
             <h3 class="pull-left">Documentos Presentados</h3>
             <div class="text-right">
                 <button type="button" class="btn btn-primary" onclick="editLegalReview()">
-                     <i class="fa fa-search"> </i>     
+                     <i id='icon' class="fa fa-lock"> </i>     
                 </button>
             </div>
         </div>
         
+      <form action="{{asset('ret_fun/'.$retirement_fund->id.'/legal_review/create')}}" method="POST">
         <div class="panel-body">
-          <form action="{{asset('ret_fun/'.$retirement_fund->id.'/legal_review/create')}}" method="POST">
             {{ csrf_field() }}
             <div class="row">
                 <div class="ibox-content table-responsive">                    
@@ -47,14 +47,22 @@
                     </table>
                 </div>
             </div>
-              <input type="submit" class="btn btn-success documents_button col-md-6" style="display: none;" value="Guardar">
-              <input class="btn btn-info documents_button col-md-6" style="display: none;" onclick="editLegalReview()" value="cancelar">
-          </form>
+            <div class="panel-footer">
+              <div class="text-center">
+                <button type="button" id="bt_legal_cancel" class="btn btn-danger documents_button " onclick="editLegalReview()" value="cancelar"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
+                <button type="submit" id="bt_legal_guardar" class="btn btn-primary documents_button " value="Guardar"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+              </div>
+            </div>
+              
         </div>      
+      </form>
     </div>
 </div>
 @section('scripts')
 <script>
+    var editing = false;
+    $("#bt_legal_cancel").hide();  
+    $("#bt_legal_guardar").hide(); 
     function editLegalReview(){
         $('.documents_comment').toggle();
         $('.documents_comment_text').toggle();
@@ -65,6 +73,22 @@
             else
             $(this).attr('disabled', true);
         }); 
+
+        editing = !editing;
+        if(editing){
+
+          $("#icon").attr('class','fa fa-unlock');
+          $("#bt_legal_cancel").show();  
+          $("#bt_legal_guardar").show();  
+        }
+        else{
+          $("#icon").attr('class','fa fa-lock');
+          // location.reload();
+           $("#bt_legal_cancel").hide();  
+          $("#bt_legal_guardar").hide();  
+        }
+          
+
     }
 </script> 
 @endsection

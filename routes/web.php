@@ -14,6 +14,8 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
 
 Auth::routes();
+// User 
+Route::resource('user', 'UserController');
 //afiliates
 Route::group(['middleware' => 'auth'], function () {
                 
@@ -48,13 +50,14 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
 	Route::get('affiliate/{affiliate}/print/file', 'RetirementFundCertificationController@printFile')->name('ret_fun_print_file');
 	Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
+	Route::get('ret_fun/{retirement_fund}/print/beneficiaries_qualification', 'RetirementFundCertificationController@printBeneficiariesQualification')->name('ret_fun_print_beneficiaries_qualification');
 
 
 
 	Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->name('create_ret_fun');
 	Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
-
+	Route::patch('/update_information_rf','RetirementFundController@updateInformation')->name('update_information_rf');
 
 	//QuotaAidMortuory
 	Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
@@ -69,11 +72,15 @@ Route::group(['middleware' => 'auth'], function () {
         
         //Contributions
         Route::resource('contribution','ContributionController');
-        Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions');        
-        Route::get('get_all_contribution', 'ContributionController@getAllContribution');
+        Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions');                
         Route::post('store_contributions','ContributionController@storeContributions');
         Route::resource('reimbursement','ReimbursementController');
+        Route::get('affiliate/{affiliate}/contribution/info', 'ContributionController@adicionalInfo');
         
 
+	Route::resource('contribution', 'ContributionController');
+	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
+	Route::post('get-interest','ContributionController@getInterest');
+		
 });
 
