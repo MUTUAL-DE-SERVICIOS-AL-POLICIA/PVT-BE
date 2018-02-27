@@ -20,7 +20,7 @@
                     </div>
                     <div class="row" >
                         
-                        <div class="col-md-12" style="margin-bottom:20px">
+                        <div class="col-import Cleave from 'vue-cleave'md-12" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
                             <select class="form-control">
                                 <option value="1">Auxilio mortuorio</option>
@@ -28,6 +28,7 @@
                                 <option value="3">Item 02</option>
                             </select>
                         </div>
+                        
                     </div>
                     <table class="table table-striped" data-page-size="15">
                         <thead>
@@ -47,7 +48,7 @@
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)" ref="s1"  class="form-control"  name="aportes[]">
+                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)" ref="s1" autofocus class="form-control"  name="aportes[]">
                                 </td>
                                 <td>
                                     <input type="text"  v-model = "con.fr" disabled class="form-control" name="aportes[]">
@@ -80,10 +81,10 @@
             </div>
         </div>
     </div>
-</div>
-
+</div> 
 </template>
 <script>
+
 export default {
   
    props: ['contributions1'],
@@ -98,7 +99,10 @@ export default {
   },
    
   mounted() {
-   this.contributions = this.contributions1;
+   this.contributions = this.contributions1;    
+  },
+  created(){
+      
   },
   methods: {
       RemoveRow(index) {         
@@ -110,9 +114,9 @@ export default {
       
       },
       CalcularAporte(con, index){
-          if(con.sueldo >0)
+          if(parseFloat(con.sueldo) >0)
           {          
-          
+                
             this.show_spinner=true
             axios.post('/get-interest',{con})
             .then(response => {

@@ -33,6 +33,7 @@ import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
 
+
 Vue.component('flash', require('./components/Flash.vue'));
 
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));

@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "cleave.js": "^1.1.1",
     "laravel-mix-purgecss": "^1.0.5",
     "mdi": "^2.1.19",
     "mockjs": "^1.0.1-beta3",
