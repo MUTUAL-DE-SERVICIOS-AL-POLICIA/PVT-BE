@@ -1,5 +1,5 @@
 
-<div class="col-md-6">
+<div class="col-md-12">
     <div class="panel panel-primary" >
         <div class="panel-body " >
             <div class="box box-success box-solid">
@@ -21,7 +21,7 @@
                                                 Fecha de Ingreso
                                             </div>
                                             <div class="col-md-6">
-                                                {{ $dateentry }}
+                                                {{ $summary['dateentry'] }}
                                             </div>
                                         </div>
                                     </td>
@@ -33,7 +33,7 @@
                                                 Total Aporte
                                             </div>
                                             <div class="col-md-6">
-                                                Bs {{ number_format($total,2) }}
+                                                Bs {{ number_format($summary['total'],2) }}
                                             </div>
                                         </div>
                                     </td>
@@ -49,7 +49,7 @@
                                                 Total Fondo Retiro
                                             </div>
                                             <div class="col-md-6">
-                                                Bs {{ number_format($fondoret,2) }}
+                                                Bs {{ number_format($summary['fondoret'],2) }}
                                             </div>
                                         </div>
                                     </td>
@@ -61,7 +61,7 @@
                                                 Total Cuota Mortuoria
                                             </div>
                                             <div class="col-md-6">
-                                                Bs {{ number_format($quotaaid,2) }}
+                                                Bs {{ number_format($summary['quotaaid'],2) }}
                                             </div>
                                         </div>
                                     </td>

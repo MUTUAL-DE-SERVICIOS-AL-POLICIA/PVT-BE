@@ -17,7 +17,21 @@
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-6">
+    <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
+                   @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$cities])
+            </affiliate-show> 
+            </div>        
+            <div class="col-md-6">
+                @include('contribution.aditional_info',['summary',$summary]) 
+            </div> 
+        </div>
+    </div>
+    
     <div class="row">
+        
         <div class="col-md-12">
             <div class="text-center m-t-lg">               
                 <form>
