@@ -123,7 +123,7 @@ export default {
             .then(response => {
                 
                 this.ufv = response.data
-                con.fr = con.sueldo * 0.0477,2;
+                con.fr = con.sueldo * 0.0477;
                 con.cm = con.sueldo * 0.0109;
                 con.interes = parseFloat(this.ufv);
                 con.subtotal =  con.fr + con.cm + con.interes;
