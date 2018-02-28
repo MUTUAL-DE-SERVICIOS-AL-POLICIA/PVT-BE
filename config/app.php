@@ -178,6 +178,7 @@ return [
         Muserpol\Providers\RouteServiceProvider::class,
         //dependences
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Yajra\DataTables\ButtonsServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Barryvdh\Snappy\ServiceProvider::class,
 
