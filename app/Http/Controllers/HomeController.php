@@ -24,7 +24,7 @@ class HomeController extends Controller
         return view('home');
     }
     
-    public function settings(){
+    public function retFunSettings(){
         $ret_fun_procedure = RetFunProcedure::where('is_enabled','true')->first();
         
         $data = [
