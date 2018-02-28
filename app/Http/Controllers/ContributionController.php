@@ -5,6 +5,13 @@ namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
+
+use Muserpol\Models\City;
+use Muserpol\Models\AffiliateState;
+use Muserpol\Models\Category;
+use Muserpol\Models\Degree;
+use Muserpol\Models\PensionEntity;
+
 use Muserpol\Models\User;
 use Ixudra\Curl\Facades\Curl;
 use Carbon\Carbon;
@@ -12,10 +19,10 @@ use Auth;
 use Validator;
 use DateTime;
 use Muserpol\Helpers\Util;
+
+use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
-use Muserpol\Models\Category;
 use Muserpol\Models\Voucher;
-use Muserpol\Models\City;
 
 
 class ContributionController extends Controller
@@ -187,11 +194,83 @@ class ContributionController extends Controller
      * @param  \Muserpol\Contribution  $contribution
      * @return \Illuminate\Http\Response
      */
-    public function show(Contribution $contribution)
+    public function show(Affiliate $affiliate)
     {
-       return 'Cechus y Anitaaaaa!!';
+        $cities = City::all();
+        $birth_cities = City::all()->pluck('name', 'id');
+        $affiliate_states = AffiliateState::all()->pluck('name', 'id');
+        $categories = Category::all()->pluck('name', 'id');
+        $degrees = Degree::all()->pluck('name', 'id');
+        $pension_entities = PensionEntity::all()->pluck('name', 'id');
+        $data = [
+            'affiliate' => $affiliate,
+            'cities' => $cities,
+            'birth_cities' => $birth_cities,
+            'affiliate_states' => $affiliate_states,
+            'categories' => $categories,
+            'degrees' => $degrees,
+            'pension_entities' => $pension_entities,
+        ];
+        return view('contribution.show', $data);
     }
 
+    public function getAffiliateContributionsDatatables(DataTables $datatables, $affiliate_id)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        $query = $affiliate->contributions()->orderBy('month_year', 'desc')->get();
+
+        return $datatables->of($query)
+            ->editColumn('month_year', function ($contribution) {
+                return Carbon::parse($contribution->month_year)->month . "-" . Carbon::parse($contribution->month_year)->year;
+            })
+            ->editColumn('degree_id', function ($contribution) {
+                return $contribution->degree_id ? $contribution->degree->hierarchy->code . "-" . $contribution->degree->code : '';
+            })
+            ->editColumn('unit_id', function ($contribution) {
+                return $contribution->unit_id ? $contribution->unit->code : '';
+            })
+            ->editColumn('base_wage', function ($contribution) {
+                return Util::formatMoney($contribution->base_wage);
+            })
+            ->editColumn('seniority_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->seniority_bonus);
+            })
+            ->editColumn('study_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->study_bonus);
+            })
+            ->editColumn('position_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->position_bonus);
+            })
+            ->editColumn('border_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->border_bonus);
+            })
+            ->editColumn('east_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->east_bonus);
+            })
+            ->editColumn('public_security_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->public_security_bonus);
+            })
+            ->editColumn('gain', function ($contribution) {
+                return Util::formatMoney($contribution->gain);
+            })
+            ->editColumn('quotable', function ($contribution) {
+                return Util::formatMoney($contribution->quotable);
+            })
+            ->editColumn('retirement_fund', function ($contribution) {
+                return Util::formatMoney($contribution->retirement_fund);
+            })
+            ->editColumn('mortuary_quota', function ($contribution) {
+                return Util::formatMoney($contribution->mortuary_quota);
+            })
+            ->editColumn('total', function ($contribution) {
+                return Util::formatMoney($contribution->total);
+            })
+            ->editColumn('breakdown_id', function ($contribution) {
+                return '<span data-toggle="tooltip" data-placement="top" title="' . ($contribution->breakdown->name ?? 'ERROR') . '">' . $contribution->breakdown_id . '</span>';
+            })
+            ->rawColumns(['breakdown_id'])
+            ->make(true);
+    }
     /**
      * Show the form for editing the specified resource.
      *
