@@ -17,7 +17,7 @@ Auth::routes();
 // User 
 Route::resource('user', 'UserController');
 Route::get('user/create', 'UserController@create');
-
+Route::post('registrar', ['as'=>'registrar', 'uses'=>'UserController@store']);
 
 
 

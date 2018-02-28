@@ -69,11 +69,13 @@ class UserController extends Controller
         //registro
         $modules = Module::all();
         $cities = City::all();
+        $roles = Role::all();
         $data = array(
-            'modules'=>$modules,
+            'modules'=> $modules,
             'cities' => $cities,
+            'roles' => $roles
         );
-        
+       // return $roles;
         return view('users.registro')->with($data);
     }
 
@@ -85,7 +87,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //grabar
+        $user=new User;
+        
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->phone = $request->phone;
+        $user->position = $request->position;
+        $user->username = $request->username;
+        $user->city_id=$request->city;
+        $user->password = bcrypt($request->password);
+        $user->save();
     }
 
     /**
