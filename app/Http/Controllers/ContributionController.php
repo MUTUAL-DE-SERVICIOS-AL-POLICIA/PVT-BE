@@ -90,9 +90,8 @@ class ContributionController extends Controller
     }
     
     public function index()
-    {
-        return \Muserpol\User::get();
-        return 123123;
+    {        
+        return 0;
     }
         
     /**
