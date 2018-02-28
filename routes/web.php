@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('affiliate/{affiliate}/print/file', 'RetirementFundCertificationController@printFile')->name('ret_fun_print_file');
 	Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
 	Route::get('ret_fun/{retirement_fund}/print/beneficiaries_qualification', 'RetirementFundCertificationController@printBeneficiariesQualification')->name('ret_fun_print_beneficiaries_qualification');
+	Route::get('ret_fun/{retirement_fund}/print/commitment_letter', 'RetirementFundCertificationController@printCommitmentLetter')->name('ret_fun_print_commitment_letter');
 
 
 
