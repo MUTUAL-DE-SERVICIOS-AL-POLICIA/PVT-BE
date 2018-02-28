@@ -39,31 +39,46 @@ class ContributionController extends Controller
     {
         $lastMonths = Contribution::where('affiliate_id', $id)
         ->orderBy('month_year','desc')
-        ->first(); 
-        $now = Carbon::now();      
-         $arrayDat = explode('-', $lastMonths->month_year);
-         $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-         $diff = $now->diffInMonths($lastMonths); 
-         $contribution = array();
-         if($diff>2)
-         {  
+        ->first();
+        if($lastMonths)
+        {
+            $now = Carbon::now();      
+            $arrayDat = explode('-', $lastMonths->month_year);
+            $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
+            $diff = $now->diffInMonths($lastMonths); 
+            $contribution = array();
+            if($diff>2)
+            {  
+                $month1 = Carbon::now()->subMonths(1);                 
+                $month2 = Carbon::now()->subMonths(2);        
+                $month3 = Carbon::now()->subMonths(3);
+                //dd($month1.' '.$month2.' '.$month3);
+                $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
+                $contribution2 = array('year'=>$month2->format('Y'), 'month'=>$month2->format('m'), 'monthyear'=>$month2->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0, 'affiliate_id'=>$id);
+                $contribution3 = array('year'=>$month3->format('Y'), 'month'=>$month3->format('m'), 'monthyear'=>$month3->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
+                $contributions = array($contribution1,$contribution2,$contribution3);
+            }  
+            else
+            {
+                for ($i = 0; $i < $diff; $i++)
+                {   $month1 = Carbon::now()->subMonths(1);
+                    $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
+                    $contributions.array_push($contribution);
+                }
+            }
+        }
+        else
+        {
             $month1 = Carbon::now()->subMonths(1);                      
             $month2 = Carbon::now()->subMonths(2);        
             $month3 = Carbon::now()->subMonths(3);
-            //dd($month1.' '.$month2.' '.$month3);
+                //dd($month1.' '.$month2.' '.$month3);
             $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
             $contribution2 = array('year'=>$month2->format('Y'), 'month'=>$month2->format('m'), 'monthyear'=>$month2->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0, 'affiliate_id'=>$id);
             $contribution3 = array('year'=>$month3->format('Y'), 'month'=>$month3->format('m'), 'monthyear'=>$month3->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
             $contributions = array($contribution1,$contribution2,$contribution3);
-         }  
-         else
-         {
-             for ($i = 0; $i < $diff; $i++)
-             { 
-                $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0);
-                $contributions.array_push($contribution);
-             }
-         }
+        }
+        
          return $contributions;
     }
     
@@ -123,27 +138,41 @@ class ContributionController extends Controller
         $voucher->code = $code;
         $voucher->save();
        // return $voucher;
-        // $request->aportes;
+        //return $request->aportes;
         foreach($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {   
             $aporte=(object)$ap;
-           // return $aporte->fr;
+            //sreturn $aporte->affiliate_id;
             $affiliate = Affiliate::find($aporte->affiliate_id);
             $contribution = new Contribution();
             $contribution->user_id = Auth::user()->id;
-            $contribution->affiliate_id = $affiliate->affiliate_id;
+            $contribution->affiliate_id = $affiliate->id;
             $contribution->degree_id = $affiliate->degree_id;
             $contribution->unit_id = $affiliate->unit_id;
             $contribution->breakdown_id = $affiliate->breakdown_id;
             $contribution->category_id = $affiliate->category_id;
             $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);  
             $contribution->type='Directo';     
+            $contribution->base_wage = $aporte->sueldo;
+            $contribution->dignity_pension = 0;
+            $contribution->seniority_bonus = 0;
+            $contribution->study_bonus = 0;
+            $contribution->position_bonus = 0;
+            $contribution->border_bonus = 0;
+            $contribution->east_bonus = 0;
+            $contribution->public_security_bonus = 0;
+            $contribution->deceased = 0;
+            $contribution->natality = 0;
+            $contribution->lactation = 0;
+            $contribution->prenatal = 0;
+            $contribution->subsidy = 0;
             $contribution->gain = $aporte->sueldo;
+            $contribution->payable_liquid = 0;
+            $contribution->quotable = 0;
             $contribution->retirement_fund = $aporte->fr;
-            $contribution->mortuary_quota = $aporte->fr;
+            $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
-            $contribution->ipc = $aporte->interes;
-            
+            $contribution->ipc = $aporte->interes;            
             $contribution->save();
             //return $contribution;
         }
