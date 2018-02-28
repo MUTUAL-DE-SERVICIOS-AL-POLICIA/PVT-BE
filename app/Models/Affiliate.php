@@ -4,6 +4,7 @@ namespace Muserpol\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Muserpol\Helpers\Util;
 
 class Affiliate extends Model
 {
@@ -92,5 +93,14 @@ class Affiliate extends Model
     public function quota_aid_mortuaries()
     {
         return $this->hasMany('Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary');
+    }
+
+    /**
+     * methods
+     */
+    public function fullName()
+    {
+        $name = $this->first_name.' '.$this->second_name.' '.$this->last_name.' '.$this->mothers_last_name.' '.$this->applicant_surname_husband;
+        return Util::removeSpaces($name);
     }
 }

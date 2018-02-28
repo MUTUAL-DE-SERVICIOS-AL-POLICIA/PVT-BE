@@ -10,6 +10,9 @@
 | to using a Closure or controller method. Build something great!
 |
  */
+
+use Muserpol\DataTables\AffiliateContributionsDataTable;
+
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
 
@@ -52,6 +55,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('affiliate/{affiliate}/print/file', 'RetirementFundCertificationController@printFile')->name('ret_fun_print_file');
 	Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
 	Route::get('ret_fun/{retirement_fund}/print/beneficiaries_qualification', 'RetirementFundCertificationController@printBeneficiariesQualification')->name('ret_fun_print_beneficiaries_qualification');
+	Route::get('ret_fun/{retirement_fund}/print/commitment_letter', 'RetirementFundCertificationController@printCommitmentLetter')->name('ret_fun_print_commitment_letter');
 
 
 
@@ -79,7 +83,17 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
+	Route::get('affiliate/{affiliate}/contribution', 'ContributionController@show')->name('show_contribution');
+	Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
+	// Route::get('get_affiliate_contributions/{affiliate_id}', function (AffiliateContributionsDataTable $dataTable, $affiliate_id) {
+	// 	return $dataTable->with('affiliate_id', $affiliate_id)
+	// 					 ->render('contribution.show');
+	// });
+	// Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributions')->name('affiliate_contributions');
+
 	Route::post('get-interest','ContributionController@getInterest');
+	Route::post('contribution_save','ContributionController@storeDirectContribution');
+
 		
 });
 

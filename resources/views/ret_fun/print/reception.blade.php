@@ -51,7 +51,7 @@
         <tr>
             <th class="no-border text-center" style=" width:60%">
                 <p class="font-bold">----------------------------------------------------<br>
-                {!! $applicant->last_name." ".$applicant->first_name !!}<br/>
+                {!! $applicant->fullName() !!}<br/>
                 C.I. {!! $applicant->identity_card !!} {!! $applicant->city_identity_card->first_shortened!!}
                 </p>
             </th>

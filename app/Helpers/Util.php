@@ -16,10 +16,27 @@ class Util
             return "sin fecha";
     }
 
+    public static function formatMoney($value)
+    {
+        if ($value) {
+            $value = number_format($value, 2, ',', '.');
+            return $value;
+        }
+        return null;
+    }
+
+
     public static function ucw($string)
 	{
 		if ($string) {
 			return ucwords(mb_strtolower($string,'UTF-8'));
 		}
-	}
+    }
+    public static function removeSpaces($text)
+    {
+        $re = '/\s+/';
+        $subst = ' ';
+        $result = preg_replace($re, $subst, $text);
+        return $result ? trim($result) : null;
+    }
 }
