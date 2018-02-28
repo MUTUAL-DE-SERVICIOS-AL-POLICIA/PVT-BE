@@ -15,7 +15,7 @@
             <i class="fa fa-users"></i>
             {{ row.friends.length }}
           </button>
-        </dd>
+        </dd>        
       </template>
     </dl>
   </div>

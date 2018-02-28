@@ -15,6 +15,7 @@ class Util
         else 
             return "sin fecha";
     }
+
     public static function formatMoney($value)
     {
         if ($value) {
@@ -24,4 +25,11 @@ class Util
         return null;
     }
 
+
+    public static function ucw($string)
+	{
+		if ($string) {
+			return ucwords(mb_strtolower($string,'UTF-8'));
+		}
+	}
 }

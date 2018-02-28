@@ -30,6 +30,7 @@ use DateTime;
 use Muserpol\User;
 use Carbon\Carbon;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 
 class RetirementFundCertificationController extends Controller
 {
@@ -135,7 +136,7 @@ class RetirementFundCertificationController extends Controller
         $username = Auth::user()->username;//agregar cuando haya roles        
         $affiliate_folders = AffiliateFolder::where('affiliate_id',$affiliate->id)->get();
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
-        $cite = RetFunIncrement::getCite(Auth::user()->id, Session::get('rol_id'), $retirement_fund->id);
+        $cite = RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
         $subtitle = $cite;
         return \PDF::loadView('ret_fun.print.file_certification', compact('date','subtitle','username','cite','title','number','retirement_fund','affiliate','affiliate_folders','applicant'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
         
@@ -154,7 +155,7 @@ class RetirementFundCertificationController extends Controller
 //            'retirement_fund'   =>  $retirement_fund,
 //            'submitted_documents'   => $submitted_documents,            
 //        ];
-        $cite = RetFunIncrement::getCite(Auth::user()->id, Session::get('rol_id'), $retirement_fund->id);
+        $cite = RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
         $subtitle = $cite;
         return \PDF::loadView('ret_fun.print.legal_certification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
     }
@@ -170,7 +171,29 @@ class RetirementFundCertificationController extends Controller
         return \PDF::loadView('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
 
     }
-     private function getNextCode($actual){
+    public function printCommitmentLetter($id)
+    {
+        $affiliate = Affiliate::find($id);
+        $date =  Util::getStringDate(date('Y-m-d'));
+        $username = Auth::user()->username;//agregar cuando haya roles
+        $city = Auth::user()->city->name;
+        if( $affiliate->affiliate_state->name == "Fallecido"){
+            $title = "COMPROMISO DE PAGO - APORTE PARA SOLICITANTES PARA EL PAGO DE APORTE DIRECTO DE LAS (OS) VIUDAS (OS) DEL  SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
+            $spouses = Spouse::where('affiliate_id',$affiliate->id)->first();        
+            $beneficiary="en mi calidad de viuda (o)";
+            $glosa="Soy beneficiaria(o) (derechohabiente) con una prestación en curso de pago del Sistema Integral de Pensiones (SIP).";
+            $bene=$spouses;
+        }else{
+            $title = "COMPROMISO DE PAGO - APORTE PARA SOLICITANTES PARA EL PAGO DE APORTE DIRECTO DEL SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
+            $beneficiary="como miembro del servicio pasivo de la Policía Boliviana";
+            $glosa="Recibo una prestación en curso de pago del Sistema Integral de Pensiones.";
+            $bene=$affiliate;
+        }
+        // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
+        return \PDF::loadView('ret_fun.print.commitment_letter', compact('date','subtitle','username','title','retirement_fund','affiliate','submitted_documents','beneficiary','glosa','bene','city'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('commitment_letter.pdf');
+    }
+    
+    private function getNextCode($actual){
         $year =  date('Y');
         if($actual == "")
             return "1/".$year;

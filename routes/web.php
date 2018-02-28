@@ -17,10 +17,15 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
 
 Auth::routes();
+// User 
+Route::resource('user', 'UserController');
 //afiliates
 Route::group(['middleware' => 'auth'], function () {
-
+                
 	Route::get('/', 'HomeController@index')->name("main");
+        
+        //ROUTES TO CONFIGURE SYSTEM PARAMENTERS
+        Route::get('configure','HomeController@configure');
 
 	Route::resource('affiliate', 'AffiliateController');
 
@@ -49,6 +54,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('affiliate/{affiliate}/print/file', 'RetirementFundCertificationController@printFile')->name('ret_fun_print_file');
 	Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
 	Route::get('ret_fun/{retirement_fund}/print/beneficiaries_qualification', 'RetirementFundCertificationController@printBeneficiariesQualification')->name('ret_fun_print_beneficiaries_qualification');
+	Route::get('ret_fun/{retirement_fund}/print/commitment_letter', 'RetirementFundCertificationController@printCommitmentLetter')->name('ret_fun_print_commitment_letter');
 
 
 
@@ -67,19 +73,25 @@ Route::group(['middleware' => 'auth'], function () {
         //searcherController
 	Route::get('search/{ci}', 'SearcherController@search');
 	Route::get('search_ajax', 'SearcherController@searchAjax');
-//contribucion
-	Route::get('affiliate/{affiliate}/contribution/info', 'ContributionController@adicionalInfo');
+        
+        //Contributions
+        Route::resource('contribution','ContributionController');
+        Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions');                
+        Route::post('store_contributions','ContributionController@storeContributions');
+        Route::resource('reimbursement','ReimbursementController');       
 
-	//Contributions
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
 	Route::get('affiliate/{affiliate}/contribution', 'ContributionController@show')->name('show_contribution');
-	Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributions')->name('affiliate_contributions');
+	Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
 	// Route::get('get_affiliate_contributions/{affiliate_id}', function (AffiliateContributionsDataTable $dataTable, $affiliate_id) {
 	// 	return $dataTable->with('affiliate_id', $affiliate_id)
 	// 					 ->render('contribution.show');
 	// });
 	// Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributions')->name('affiliate_contributions');
+
+	Route::post('get-interest','ContributionController@getInterest');
+
 		
 });
 

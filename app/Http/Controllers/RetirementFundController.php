@@ -99,7 +99,7 @@ class RetirementFundController extends Controller
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
                 
-        $cite= RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
+        //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
         
         foreach ($requirements  as  $requirement)
         {

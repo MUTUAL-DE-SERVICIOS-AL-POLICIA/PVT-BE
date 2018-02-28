@@ -22,4 +22,12 @@ class HomeController extends Controller
     {
         return view('home');
     }
+    
+    public function configure(){
+        
+        $data = [
+            
+        ];
+        return view('home.config',$data);
+    }
 }
