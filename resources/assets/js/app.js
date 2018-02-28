@@ -32,6 +32,9 @@ Vue.use(VueFormWizard);
 
 Vue.component('flash', require('./components/Flash.vue'));
 
+//configurations files
+//Vue.component('ret-fun-procedure', require('./components/config/RetFunProcedure.vue'));
+
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
 Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vue'));
 Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
@@ -57,9 +60,8 @@ Vue.component('quota-aid-step1-requirements', require('./components/quota_aid/St
 Vue.component('quota-aid-step2-applicant', require('./components/quota_aid/Step2Applicant.vue'));
 Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/Step3Beneficiaries.vue'));
 
-//Contributions
-Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 
+Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 const app = new Vue({
     el: '#app',
     store

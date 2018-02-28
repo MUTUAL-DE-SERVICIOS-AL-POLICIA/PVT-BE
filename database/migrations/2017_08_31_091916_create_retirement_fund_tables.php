@@ -238,11 +238,9 @@ class CreateRetirementFundTables extends Migration {
 
         Schema::create('ret_fun_increments', function (Blueprint $table) {
             $table->bigIncrements('id'); //identificador
-            $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('role_id')->unsigned();
             $table->bigInteger('retirement_fund_id')->unsigned();
             $table->bigInteger('number')->unsigned(); //numero correlativo
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
             $table->timestamps();
@@ -287,13 +285,7 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('contribution_types', function (Blueprint $table) { //Tipos de Aportes
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('shortened');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+
         
         Schema::create('ufv_rates', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -316,13 +308,18 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
+        Schema::create('contribution_types', function (Blueprint $table) { //Tipos de Aportes
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('shortened');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+
         Schema::table('contributions', function (Blueprint $table) { //Escaneo de documentos de afiliado
             $table->bigInteger('contribution_type_id')->unsigned()->nullable();
             $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
-        });
-
-        Schema::table('role_user', function (Blueprint $table) {
-            $table->string('cite')->nullable();
         });
 
     }
@@ -334,17 +331,13 @@ class CreateRetirementFundTables extends Migration {
      */
     public function down() {
 
-        Schema::table('role_user', function (Blueprint $table) {
-            $table->dropColumn('cite');
-        });
-
         Schema::table('contributions', function (Blueprint $table) {
             $table->dropColumn('contribution_type_id');
         });
 
-        Schema::drop('eco_com_observations');
-        Schema::drop('ufv_rates');
         Schema::drop('contribution_types');
+        Schema::drop('eco_com_observations');
+        Schema::drop('ufv_rates');     
         Schema::drop('affiliate_scanned_documents');
         Schema::drop('affiliate_folders'); 
         Schema::drop('ret_fun_intervals');

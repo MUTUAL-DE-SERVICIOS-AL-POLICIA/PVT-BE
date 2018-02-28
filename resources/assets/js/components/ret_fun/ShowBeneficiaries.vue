@@ -79,8 +79,7 @@
                 let uri = `/update_beneficiaries/322`;
                 this.show_spinner=true;
                 axios.patch(uri,this.ben)
-                    .then(()=>{
-                        
+                    .then(()=>{                       
                         this.editing = false;
                         this.show_spinner=false;
                         this.beneficiaries = this.ben;
