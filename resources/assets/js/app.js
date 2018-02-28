@@ -32,8 +32,8 @@ Vue.use(VueFormWizard);
 
 Vue.component('flash', require('./components/Flash.vue'));
 
-//configurations files
-//Vue.component('ret-fun-procedure', require('./components/config/RetFunProcedure.vue'));
+//setting files
+Vue.component('ret-fun-procedure', require('./components/setting/RetFunProcedure.vue'));
 
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
 Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vue'));

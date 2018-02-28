@@ -3,6 +3,7 @@
 namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Muserpol\Models\RetirementFund\RetFunProcedure;
 
 class HomeController extends Controller
 {
@@ -23,11 +24,12 @@ class HomeController extends Controller
         return view('home');
     }
     
-    public function configure(){
+    public function settings(){
+        $ret_fun_procedure = RetFunProcedure::where('is_enabled','true')->first();
         
         $data = [
-            
+            'ret_fun_procedure' =>  $ret_fun_procedure
         ];
-        return view('home.config',$data);
+        return view('home.settings',$data);
     }
 }
