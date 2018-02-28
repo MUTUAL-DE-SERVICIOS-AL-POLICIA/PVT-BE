@@ -20,7 +20,7 @@
                     </div>
                     <div class="row" >
                         
-                        <div class="col-import Cleave from 'vue-cleave'md-6" style="margin-bottom:20px">
+                        <div class="col-md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
                             <select v-model="tipo" class="form-control">
                                 <option value="1">Item 0</option>
