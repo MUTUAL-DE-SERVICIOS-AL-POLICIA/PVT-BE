@@ -20,14 +20,15 @@
                     </div>
                     <div class="row" >
                         
-                        <div class="col-md-12" style="margin-bottom:20px">
+                        <div class="col-md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
-                            <select class="form-control">
-                                <option value="1">Auxilio mortuorio</option>
-                                <option value="2">Item 0</option>
-                                <option value="3">Item 02</option>
+                            <select v-model="tipo" class="form-control">
+                                <option value="1">Item 0</option>
+                                <option value="2">Proceso diciplinario</option>
+                                <option value="3">Baja medica</option>
                             </select>
                         </div>
+                        
                     </div>
                     <table class="table table-striped" data-page-size="15">
                         <thead>
@@ -47,19 +48,19 @@
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)" ref="s1"  class="form-control"  name="aportes[]">
+                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control"  name="aportes[]">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.fr" class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.fr" disabled class="form-control" name="aportes[]">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.cm" class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.cm" disabled class="form-control" name="aportes[]">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.interes" class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.interes" disabled class="form-control" name="aportes[]">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.subtotal" class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control" name="aportes[]">
                                 </td>
                                 <td>
                                     <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
@@ -73,17 +74,17 @@
                             </tr>                            
                         </tbody>
                     </table>
-                    <button class="btn btn-primary " type="button"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+                    <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>
 
                 </div>
                
             </div>
         </div>
     </div>
-</div>
-
+</div> 
 </template>
 <script>
+
 export default {
   
    props: ['contributions1'],
@@ -91,6 +92,7 @@ export default {
     return {
       contributions: [],
       total:0,
+      tipo:null,
       ufv:0,
       show_spinner:false
       
@@ -98,7 +100,10 @@ export default {
   },
    
   mounted() {
-   this.contributions = this.contributions1;
+   this.contributions = this.contributions1;    
+  },
+  created(){
+      
   },
   methods: {
       RemoveRow(index) {         
@@ -110,13 +115,9 @@ export default {
       
       },
       CalcularAporte(con, index){
-          if(con.sueldo >0)
-          {
-            
-           /* con.aporte = con.sueldo * 0.5;
-            con.interes = con.aporte +10;
-            con.subtotal = con.aporte + con.interes;*/
-            //console.log(con.year + '-' + con.month);
+          if(parseFloat(con.sueldo) >0)
+          {          
+                
             this.show_spinner=true
             axios.post('/get-interest',{con})
             .then(response => {
@@ -125,7 +126,7 @@ export default {
                 con.fr = con.sueldo * 0.0477;
                 con.cm = con.sueldo * 0.0109;
                 con.interes = parseFloat(this.ufv);
-                con.subtotal = con.fr + con.cm + con.interes;
+                con.subtotal =  con.fr + con.cm + con.interes;
             
                 this.show_spinner=false;
 
@@ -149,17 +150,76 @@ export default {
       SumTotal(){
             let total1 = 0;
             this.contributions.forEach(con => {                            
-                total1 += parseFloat(con.subtotal) ;
-
-                
+                total1 += parseFloat(con.subtotal) ;                
            });
+        this.total = total1;
+
+      },
+      Guardar(){
+        
+        //console.log(this.contributions);
+        this.contributions =  this.contributions.filter((item)=> {
+            return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+        });
+        //console.log(this.contributions);         
+        if(this.contributions.length > 0)
+        {   
+            this.$swal({
+            title: 'Esta usted seguro de guardar?',
+            text: "whatever",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+             cancelButtonText: 'Cancelar'
+            }).then((result) => {
+            if (result.value) {
+                
+                var aportes = this.contributions;
+                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo})
+                .then(response => {
+                console.log(response.data);                
+                })
+                .catch(e => {
+                this.show_spinner = false;
+                alert(e);
+                })
+
+                this.$swal({
+                title: 'Pago realizado',
+                showConfirmButton: false,
+                timer: 1500,
+                type: 'success'
+                })
+            }
+            })
 
             
-            this.total = total1;
+        }
+        else
+        {
+                        
+                        
+           
+            //alert("No existen registros");
+        }
+        
+        
+    
+    },
 
-      }
+
+    
+
   },
+  computed: {
+      disabledSaved(){
+       return this.contributions.some((c)=> c.subtotal > 0 );
+      }
+  }
+
  
-};
+}
 </script>
 
