@@ -23,22 +23,37 @@
                 </p>
             </th>
             <th class="w-20">
-                <table class="table-code">
-                    <tbody>
-                        <tr>
-                            <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
-                            <td class="text-bold text-sm">{!! $number ?? 'ERROR' !!}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center bg-grey-darker text-xxs text-white">Fecha de Emisión</td>
-                            <td class="text-xs">{{ $date }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
-                            <td class="text-xs">{!! $username !!}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                @if(isset($number))
+                    <table class="table-code">
+                        <tbody>
+                            <tr>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
+                                <td class="text-bold text-sm">{!! $number ?? 'ERROR' !!}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Fecha de Emisión</td>
+                                <td class="text-xs">{{ $date }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
+                                <td class="text-xs">{!! $username !!}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @else
+                    <table class="table-code">
+                        <tbody>
+                            <tr>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Fecha de Emisión</td>
+                                <td class="text-xs">{{ $date }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
+                                <td class="text-xs">{!! $username !!}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @endif
             </th>
         </tr>
         <tr>
