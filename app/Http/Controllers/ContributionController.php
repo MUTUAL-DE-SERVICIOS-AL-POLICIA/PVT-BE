@@ -67,12 +67,17 @@ class ContributionController extends Controller
             }  
             else
             {
-                for ($i = 0; $i < $diff; $i++)
-                {   $month1 = Carbon::now()->subMonths(1);
-                    $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
-                    $contributions.array_push($contribution);
-                }
+            $contributions[]=null;
+            for ($i = 0; $i < $diff; $i++)
+            { 
+            $month_diff = Carbon::now()->subMonths($i+1);
+            $month = explode('-', $month_diff);
+            $montyear = $month_diff->format('m-Y');
+            $contribution = array('year'=>$month[0], 'month'=>$month[1], 'monthyear'=>$montyear, 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0);
+            $contributions[$i]=$contribution;
             }
+            }
+            
         }
         else
         {

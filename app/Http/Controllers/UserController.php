@@ -3,12 +3,14 @@
 namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
-use User;
+use Muserpol\User;
 use Auth;
 use Session;
 use Muserpol\Models\Role;
 use Muserpol\Helpers\Util;
-
+use Yajra\Datatables\Datatables;
+use DB;
+//use Muserpol\Http\Controllers\DataTables;
 class UserController extends Controller
 {
     /**
@@ -18,12 +20,45 @@ class UserController extends Controller
      */ 
    
 //aca------------
-    public function index()
-    {
-     
-        return view('users.index');
+public function index()
+{
+return view('users.index');
+}
+/**
+* Process datatables ajax request.
+*
+* @return \Illuminate\Http\JsonResponse
+*/
+public function anyData()
+{
+$users = User::all();
+//DB::statement(DB::raw('set @rownum=0'));
+return Datatables::of($users)
+        ->addColumn('action', function ($u) {
+return '<a href="#edit-'.$u->id.'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
+            })
+        ->editColumn('city_id',function ($u)
+        {
+return $u->city->name ?? ""; 
+        })
+        ->editColumn('first_name', function($u)
+        {
+return $u->first_name.' '.$u->last_name ?? "";
+        })
+        // ->setRowId('phone')
+        //     ->setRowClass(function ($u) {
+        //         return $u->id % 2 == 0 ? 'alert-success' : 'alert-warning';
+        //     })
+        //     ->setRowData([
+        //         'phone' => 'test',
+        //     ])
+        // ->setRowAttr([
+        //     'color' => 'red',
+        //     ])
+        ->make(true);
         
-    }
+} 
+
     public function Data()
     {
         $users = User::select(['id','username', 'first_name', 'last_name','position', 'phone','status','city_id'])->where('id', '>', 1);
