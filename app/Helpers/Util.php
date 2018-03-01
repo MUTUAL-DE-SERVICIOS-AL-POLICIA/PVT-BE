@@ -44,4 +44,16 @@ class Util
         $date =  Util::getStringDate(date('Y-m-d'));            
         return ($title."--".$affi->last_name."_".$affi->first_name."--".$date.".pdf");
     }
+
+    public static function getNextCode($actual){
+        $year =  date('Y');
+        if($actual == "")
+            return "1/".$year;
+        
+        $data = explode('/', $actual);        
+        if(!isset($data[1]))
+            return "1/".$year;                
+        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+    }
+
 }

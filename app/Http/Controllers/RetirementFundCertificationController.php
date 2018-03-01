@@ -30,7 +30,6 @@ use DateTime;
 use Muserpol\User;
 use Carbon\Carbon;
 use Muserpol\Helpers\Util;
-use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 
 class RetirementFundCertificationController extends Controller
 {
@@ -203,14 +202,4 @@ class RetirementFundCertificationController extends Controller
         return \PDF::loadView('ret_fun.print.commitment_letter', compact('date','subtitle','username','title','retirement_fund','affiliate','submitted_documents','beneficiary','glosa','bene','city'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     
-    private function getNextCode($actual){
-        $year =  date('Y');
-        if($actual == "")
-            return "1/".$year;
-        
-        $data = explode('/', $actual);        
-        if(!isset($data[1]))
-            return "1/".$year;                
-        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
-    }
 }
