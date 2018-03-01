@@ -22,7 +22,7 @@
                         
                         <div class="col-md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
-                            <select v-model="tipo" class="form-control">
+                            <select required v-model="tipo" class="form-control">
                                 <option value="1">Item 0</option>
                                 <option value="2">Proceso diciplinario</option>
                                 <option value="3">Baja medica</option>
@@ -45,7 +45,7 @@
                         <tbody>
                             <tr style="" v-for="(con, index) in contributions" :key="index" id="form">
                                 <td>                                    
-                                    <input type="text"  v-model="con.monthyear" disabled class="form-control">
+                                    <input type="text"  v-model="con.monthyear" disabled class="form-control" >
                                 </td>
                                 <td>
                                     <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control"  name="aportes[]">
@@ -68,8 +68,10 @@
                                 
                             </tr>
                             <tr>
-                                <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
-                                <td colspan="3"><input type="text" v-model ="total" disabled class="form-control"></td>
+                                <td ><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
+                                <td ><input type="text" v-model ="total" disabled class="form-control"></td>
+                                <td><label>Literal:</label></td>
+                                <!-- <td colspan="3"><input type="text" v-model ="literal" disabled class="form-control"></td> -->
                                 <td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>
                             </tr>                            
                         </tbody>
@@ -156,7 +158,8 @@ export default {
 
       },
       Guardar(){
-        
+        if(this.tipo == null || this.tipo == '')
+        return ;
         //console.log(this.contributions);
         this.contributions =  this.contributions.filter((item)=> {
             return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
@@ -177,6 +180,8 @@ export default {
             if (result.value) {
                 
                 var aportes = this.contributions;
+                console.log(aportes);
+                
                 axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo})
                 .then(response => {
                 console.log(response.data);                

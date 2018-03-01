@@ -23,8 +23,7 @@ use Muserpol\Helpers\Util;
 use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
-
-
+use Illuminate\Support\Facades\Log;
 class ContributionController extends Controller
 {
     /**
@@ -67,10 +66,19 @@ class ContributionController extends Controller
             }  
             else
             {
-                for ($i = 0; $i < $diff; $i++)
+                /*for ($i = 0; $i < $diff; $i++)
                 {   $month1 = Carbon::now()->subMonths(1);
                     $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
                     $contributions.array_push($contribution);
+                }*/
+                $contributions[]=null;
+                for ($i = 0; $i < $diff; $i++)
+                { 
+                    $month_diff = Carbon::now()->subMonths($i+1);
+                    $month = explode('-', $month_diff);
+                    $montyear = $month_diff->format('m-Y');
+                    $contribution = array('year'=>$month[0], 'month'=>$month[1], 'monthyear'=>$montyear, 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0);
+                    $contributions[$i]=$contribution;
                 }
             }
         }
@@ -119,7 +127,7 @@ class ContributionController extends Controller
 
     public function storeDirectContribution(Request $request)
     {
-       /*$validator=Validator::make($request-all(),[]);
+       $validator=Validator::make($request-all(),[]);
         $validator->after(function($validator){
             if(false)            
                 $validator->errors()-add('Aporte', 'El aporte no puede ser realizado');
@@ -127,7 +135,7 @@ class ContributionController extends Controller
         if($validator->fails())
         {
             return $validator->errors();   
-        }*/
+        }
        
         // Se guarda voucher fecha, total 1 reg
         $voucher_code  = Voucher::select('id','code')->orderby('id','desc')->first();
@@ -143,9 +151,8 @@ class ContributionController extends Controller
         $voucher->total = $request->total;
         $voucher->payment_date = Carbon::now();
         $voucher->code = $code;
-        $voucher->save();
-       // return $voucher;
-        //return $request->aportes;
+        $voucher->save();       
+        //Log::info("Hola");
         foreach($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {   
             $aporte=(object)$ap;
@@ -179,11 +186,12 @@ class ContributionController extends Controller
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
-            $contribution->ipc = $aporte->interes;            
+            $contribution->ipc = $aporte->interes;
             $contribution->save();
+            //Log::info(json_encode($contribution));
             //return $contribution;
         }
-       
+        
        
     }
 
