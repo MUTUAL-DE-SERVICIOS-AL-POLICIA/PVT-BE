@@ -25,7 +25,7 @@ class Util
         return null;
     }
 
-
+    
     public static function ucw($string)
 	{
 		if ($string) {
