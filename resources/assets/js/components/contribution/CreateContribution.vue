@@ -22,11 +22,12 @@
                         
                         <div class="col-md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
-                            <select required v-model="tipo" class="form-control">
+                            <select v-model="tipo" name="tipo" v-validate="'required'" :class="{'form-control': true, 'error': errors.has('tipo')}">
                                 <option value="1">Item 0</option>
                                 <option value="2">Proceso diciplinario</option>
                                 <option value="3">Baja medica</option>
                             </select>
+                            <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
                         
                     </div>
@@ -89,20 +90,23 @@
 
 export default {
   
-   props: ['contributions1'],
+   props: ['contributions1','afid'],
   data() {   
     return {
       contributions: [],
       total:0,
       tipo:null,
       ufv:0,
+      estado: true,
+      afi_id:null,
       show_spinner:false
       
     };
   },
    
   mounted() {
-   this.contributions = this.contributions1;    
+   this.contributions = this.contributions1;  
+   this.afi_id = this.afid;  
   },
   created(){
       
@@ -158,57 +162,60 @@ export default {
 
       },
       Guardar(){
-        if(this.tipo == null || this.tipo == '')
-        return ;
-        //console.log(this.contributions);
-        this.contributions =  this.contributions.filter((item)=> {
-            return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+        //var estado = true;
+        this.$validator.validateAll().then(() => {
+            console.log('form is valid')
+           // alert("fsdfs")
+          this.estado = false;
+        }).catch(() => {
+            console.log('errors exist', this.errors)
         });
-        //console.log(this.contributions);         
-        if(this.contributions.length > 0)
-        {   
-            this.$swal({
-            title: 'Esta usted seguro de guardar?',
-            text: "whatever",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar',
-             cancelButtonText: 'Cancelar'
-            }).then((result) => {
-            if (result.value) {
-                
-                var aportes = this.contributions;
-                console.log(aportes);
-                
-                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo})
-                .then(response => {
-                console.log(response.data);                
-                })
-                .catch(e => {
-                this.show_spinner = false;
-                alert(e);
-                })
-
-                this.$swal({
-                title: 'Pago realizado',
-                showConfirmButton: false,
-                timer: 1500,
-                type: 'success'
-                })
-            }
-            })
-
-            
-        }
-        else
+        //console.log(this.contributions);
+        console.log(this.tipo);
+        
+        if(this.tipo !== null) 
         {
-                        
-                        
-           
-            //alert("No existen registros");
-        }
+            this.contributions =  this.contributions.filter((item)=> {
+                return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+            });       
+      
+            if(this.contributions.length > 0)
+            {   
+                this.$swal({
+                title: 'Esta usted seguro de guardar?',
+                text: "whatever",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                if (result.value) {
+                    
+                    var aportes = this.contributions;
+                    console.log(aportes);
+                    
+                    axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
+                    .then(response => {
+                    console.log(response.data);                
+                    })
+                    .catch(e => {
+                    this.show_spinner = false;
+                    alert(e);
+                    })
+
+                    this.$swal({
+                    title: 'Pago realizado',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    type: 'success'
+                    })
+                }
+                })            
+            }
+        }      
+        
         
         
     

@@ -127,7 +127,7 @@ class ContributionController extends Controller
 
     public function storeDirectContribution(Request $request)
     {
-       $validator=Validator::make($request-all(),[]);
+        /*$validator=Validator::make($request-all(),[]);
         $validator->after(function($validator){
             if(false)            
                 $validator->errors()-add('Aporte', 'El aporte no puede ser realizado');
@@ -135,9 +135,10 @@ class ContributionController extends Controller
         if($validator->fails())
         {
             return $validator->errors();   
-        }
+        }*/
        
         // Se guarda voucher fecha, total 1 reg
+        Log::info(json_encode($request->all()));
         $voucher_code  = Voucher::select('id','code')->orderby('id','desc')->first();
         if(!isset($voucher_code->id))
             $code=$this->getNextCode ("");
@@ -146,7 +147,7 @@ class ContributionController extends Controller
         
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
-        $voucher->affiliate_id = $request->aportes[0]['affiliate_id'];
+        $voucher->affiliate_id = $request->afid;
         $voucher->voucher_type_id = $request->tipo;
         $voucher->total = $request->total;
         $voucher->payment_date = Carbon::now();
@@ -157,7 +158,7 @@ class ContributionController extends Controller
         {   
             $aporte=(object)$ap;
             //sreturn $aporte->affiliate_id;
-            $affiliate = Affiliate::find($aporte->affiliate_id);
+            $affiliate = Affiliate::find($request->afid);
             $contribution = new Contribution();
             $contribution->user_id = Auth::user()->id;
             $contribution->affiliate_id = $affiliate->id;
