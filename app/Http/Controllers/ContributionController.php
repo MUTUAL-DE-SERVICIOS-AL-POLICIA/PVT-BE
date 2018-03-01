@@ -5,6 +5,13 @@ namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
+
+use Muserpol\Models\City;
+use Muserpol\Models\AffiliateState;
+use Muserpol\Models\Category;
+use Muserpol\Models\Degree;
+use Muserpol\Models\PensionEntity;
+
 use Muserpol\Models\User;
 use Ixudra\Curl\Facades\Curl;
 use Carbon\Carbon;
@@ -12,9 +19,10 @@ use Auth;
 use Validator;
 use DateTime;
 use Muserpol\Helpers\Util;
+
+use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
-use Muserpol\Models\Category;
-use Muserpol\Models\City;
+use Muserpol\Models\Voucher;
 
 
 class ContributionController extends Controller
@@ -38,37 +46,52 @@ class ContributionController extends Controller
     {
         $lastMonths = Contribution::where('affiliate_id', $id)
         ->orderBy('month_year','desc')
-        ->first(); 
-        $now = Carbon::now();      
-         $arrayDat = explode('-', $lastMonths->month_year);
-         $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-         $diff = $now->diffInMonths($lastMonths); 
-         $contribution = array();
-         if($diff>2)
-         {  
+        ->first();
+        if($lastMonths)
+        {
+            $now = Carbon::now();      
+            $arrayDat = explode('-', $lastMonths->month_year);
+            $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
+            $diff = $now->diffInMonths($lastMonths); 
+            $contribution = array();
+            if($diff>2)
+            {  
+                $month1 = Carbon::now()->subMonths(1);                 
+                $month2 = Carbon::now()->subMonths(2);        
+                $month3 = Carbon::now()->subMonths(3);
+                //dd($month1.' '.$month2.' '.$month3);
+                $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
+                $contribution2 = array('year'=>$month2->format('Y'), 'month'=>$month2->format('m'), 'monthyear'=>$month2->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0, 'affiliate_id'=>$id);
+                $contribution3 = array('year'=>$month3->format('Y'), 'month'=>$month3->format('m'), 'monthyear'=>$month3->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
+                $contributions = array($contribution1,$contribution2,$contribution3);
+            }  
+            else
+            {
+                for ($i = 0; $i < $diff; $i++)
+                {   $month1 = Carbon::now()->subMonths(1);
+                    $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
+                    $contributions.array_push($contribution);
+                }
+            }
+        }
+        else
+        {
             $month1 = Carbon::now()->subMonths(1);                      
             $month2 = Carbon::now()->subMonths(2);        
             $month3 = Carbon::now()->subMonths(3);
-            //dd($month1.' '.$month2.' '.$month3);
-            $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0);
-            $contribution2 = array('year'=>$month2->format('Y'), 'month'=>$month2->format('m'), 'monthyear'=>$month2->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0);
-            $contribution3 = array('year'=>$month3->format('Y'), 'month'=>$month3->format('m'), 'monthyear'=>$month3->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0);
+                //dd($month1.' '.$month2.' '.$month3);
+            $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
+            $contribution2 = array('year'=>$month2->format('Y'), 'month'=>$month2->format('m'), 'monthyear'=>$month2->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0, 'affiliate_id'=>$id);
+            $contribution3 = array('year'=>$month3->format('Y'), 'month'=>$month3->format('m'), 'monthyear'=>$month3->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
             $contributions = array($contribution1,$contribution2,$contribution3);
-         }  
-         else
-         {
-             for ($i = 0; $i < $diff; $i++)
-             { 
-                $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0);
-                $contributions.array_push($contribution);
-             }
-         }
+        }
+        
          return $contributions;
     }
     
     public function index()
-    {
-        return 123123;
+    {        
+        return 0;
     }
         
     /**
@@ -81,15 +104,10 @@ class ContributionController extends Controller
        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function storeDirectContribution(Request $request)
     {
-        $validator=Validator::make($request-all(),[]);
+       /*$validator=Validator::make($request-all(),[]);
         $validator->after(function($validator){
             if(false)            
                 $validator->errors()-add('Aporte', 'El aporte no puede ser realizado');
@@ -97,23 +115,64 @@ class ContributionController extends Controller
         if($validator->fails())
         {
             return $validator->errors();   
+        }*/
+       
+        // Se guarda voucher fecha, total 1 reg
+        $voucher_code  = Voucher::select('id','code')->orderby('id','desc')->first();
+        if(!isset($voucher_code->id))
+            $code=Util::getNextCode ("");
+        else        
+            $code=Util::getNextCode ($voucher_code->code);
+        
+        $voucher = new Voucher();
+        $voucher->user_id = Auth::user()->id;
+        $voucher->affiliate_id = $request->aportes[0]['affiliate_id'];
+        $voucher->voucher_type_id = $request->tipo;
+        $voucher->total = $request->total;
+        $voucher->payment_date = Carbon::now();
+        $voucher->code = $code;
+        $voucher->save();
+       // return $voucher;
+        //return $request->aportes;
+        foreach($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
+        {   
+            $aporte=(object)$ap;
+            //sreturn $aporte->affiliate_id;
+            $affiliate = Affiliate::find($aporte->affiliate_id);
+            $contribution = new Contribution();
+            $contribution->user_id = Auth::user()->id;
+            $contribution->affiliate_id = $affiliate->id;
+            $contribution->degree_id = $affiliate->degree_id;
+            $contribution->unit_id = $affiliate->unit_id;
+            $contribution->breakdown_id = $affiliate->breakdown_id;
+            $contribution->category_id = $affiliate->category_id;
+            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);  
+            $contribution->type='Directo';     
+            $contribution->base_wage = $aporte->sueldo;
+            $contribution->dignity_pension = 0;
+            $contribution->seniority_bonus = 0;
+            $contribution->study_bonus = 0;
+            $contribution->position_bonus = 0;
+            $contribution->border_bonus = 0;
+            $contribution->east_bonus = 0;
+            $contribution->public_security_bonus = 0;
+            $contribution->deceased = 0;
+            $contribution->natality = 0;
+            $contribution->lactation = 0;
+            $contribution->prenatal = 0;
+            $contribution->subsidy = 0;
+            $contribution->gain = $aporte->sueldo;
+            $contribution->payable_liquid = 0;
+            $contribution->quotable = 0;
+            $contribution->retirement_fund = $aporte->fr;
+            $contribution->mortuary_quota = $aporte->cm;
+            $contribution->total = $aporte->subtotal;
+            $contribution->ipc = $aporte->interes;            
+            $contribution->save();
+            //return $contribution;
         }
-        $affiliate = Affiliate::find($request->affiliate_id);
-        $contribution = new Contribution();
-        $contribution->user_id = Auth::user()->id;
-        $contribution->affiliate_id = $affiliate->affiliate_id;
-        $contribution->degree_id = $affiliate->degree_id;
-        $contribution->unit_id = $affiliate->unit_id;
-        $contribution->breakdown_id = $affiliate->breakdown_id;
-        $contribution->category_id = $affiliate->category_id;
-        $contribution->month_year = date('Y-m-d');       
-        $contribution->gain = 0;
-        $contribution->retirement_fund = 0;
-        $contribution->mortuary_quota = 0;
-        $contribution->total = 0;
-        $contribution->interes = 0;
-        $contribution->type='Directo';
-        $contribution->save();
+       
+       
     }
 
     /**
@@ -123,11 +182,83 @@ class ContributionController extends Controller
      * @param  \Muserpol\Contribution  $contribution
      * @return \Illuminate\Http\Response
      */
-    public function show(Contribution $contribution)
+    public function show(Affiliate $affiliate)
     {
-       return 'Cechus y Anitaaaaa!!';
+        $cities = City::all();
+        $birth_cities = City::all()->pluck('name', 'id');
+        $affiliate_states = AffiliateState::all()->pluck('name', 'id');
+        $categories = Category::all()->pluck('name', 'id');
+        $degrees = Degree::all()->pluck('name', 'id');
+        $pension_entities = PensionEntity::all()->pluck('name', 'id');
+        $data = [
+            'affiliate' => $affiliate,
+            'cities' => $cities,
+            'birth_cities' => $birth_cities,
+            'affiliate_states' => $affiliate_states,
+            'categories' => $categories,
+            'degrees' => $degrees,
+            'pension_entities' => $pension_entities,
+        ];
+        return view('contribution.show', $data);
     }
 
+    public function getAffiliateContributionsDatatables(DataTables $datatables, $affiliate_id)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        $query = $affiliate->contributions()->orderBy('month_year', 'desc')->get();
+
+        return $datatables->of($query)
+            ->editColumn('month_year', function ($contribution) {
+                return Carbon::parse($contribution->month_year)->month . "-" . Carbon::parse($contribution->month_year)->year;
+            })
+            ->editColumn('degree_id', function ($contribution) {
+                return $contribution->degree_id ? $contribution->degree->hierarchy->code . "-" . $contribution->degree->code : '';
+            })
+            ->editColumn('unit_id', function ($contribution) {
+                return $contribution->unit_id ? $contribution->unit->code : '';
+            })
+            ->editColumn('base_wage', function ($contribution) {
+                return Util::formatMoney($contribution->base_wage);
+            })
+            ->editColumn('seniority_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->seniority_bonus);
+            })
+            ->editColumn('study_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->study_bonus);
+            })
+            ->editColumn('position_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->position_bonus);
+            })
+            ->editColumn('border_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->border_bonus);
+            })
+            ->editColumn('east_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->east_bonus);
+            })
+            ->editColumn('public_security_bonus', function ($contribution) {
+                return Util::formatMoney($contribution->public_security_bonus);
+            })
+            ->editColumn('gain', function ($contribution) {
+                return Util::formatMoney($contribution->gain);
+            })
+            ->editColumn('quotable', function ($contribution) {
+                return Util::formatMoney($contribution->quotable);
+            })
+            ->editColumn('retirement_fund', function ($contribution) {
+                return Util::formatMoney($contribution->retirement_fund);
+            })
+            ->editColumn('mortuary_quota', function ($contribution) {
+                return Util::formatMoney($contribution->mortuary_quota);
+            })
+            ->editColumn('total', function ($contribution) {
+                return Util::formatMoney($contribution->total);
+            })
+            ->editColumn('breakdown_id', function ($contribution) {
+                return '<span data-toggle="tooltip" data-placement="top" title="' . ($contribution->breakdown->name ?? 'ERROR') . '">' . $contribution->breakdown_id . '</span>';
+            })
+            ->rawColumns(['breakdown_id'])
+            ->make(true);
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -220,13 +351,10 @@ class ContributionController extends Controller
     public function storeContributions(Request $request){
              
         foreach ($request->iterator as $key=>$iterator)
-        {
-            
+        {            
             $contribution = Contribution::where('affiliate_id',$request->affiliate_id)->where('month_year',$key)->first();
             if(isset($contribution->id))
-            {
-                //$string.=$total;
-                
+            {                                
                 $contribution->total = $request->total[$key] ?? $contribution->total;
                 $contribution->base_wage = $request->base_wage[$key] ?? $contribution->base_wage;
                 

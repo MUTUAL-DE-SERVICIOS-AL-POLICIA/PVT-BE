@@ -65,4 +65,8 @@ class Contribution extends Model
     {
         return $this->belongsTo('Muserpol\Models\Contribution\ContributionType');
     }
+    public function unit()
+    {
+        return $this->belongsTo('Muserpol\Models\Unit');
+    }
 }

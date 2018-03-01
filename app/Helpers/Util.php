@@ -16,10 +16,44 @@ class Util
             return "sin fecha";
     }
 
+    public static function formatMoney($value)
+    {
+        if ($value) {
+            $value = number_format($value, 2, ',', '.');
+            return $value;
+        }
+        return null;
+    }
+
+    
     public static function ucw($string)
 	{
 		if ($string) {
 			return ucwords(mb_strtolower($string,'UTF-8'));
 		}
-	}
+    }
+    public static function removeSpaces($text)
+    {
+        $re = '/\s+/';
+        $subst = ' ';
+        $result = preg_replace($re, $subst, $text);
+        return $result ? trim($result) : null;
+    }
+
+    public static function getPDFName($title,$affi){
+        $date =  Util::getStringDate(date('Y-m-d'));            
+        return ($title."--".$affi->last_name."_".$affi->first_name."--".$date.".pdf");
+    }
+
+    public static function getNextCode($actual){
+        $year =  date('Y');
+        if($actual == "")
+            return "1/".$year;
+        
+        $data = explode('/', $actual);        
+        if(!isset($data[1]))
+            return "1/".$year;                
+        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+    }
+
 }
