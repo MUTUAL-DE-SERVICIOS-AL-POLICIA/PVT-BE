@@ -24,8 +24,9 @@ Route::group(['middleware' => 'auth'], function () {
                 
 	Route::get('/', 'HomeController@index')->name("main");
         
-        //ROUTES TO CONFIGURE SYSTEM PARAMENTERS
-        Route::get('configure','HomeController@configure');
+        //ROUTES TO E SYSTEM PARAMENTERS
+        Route::get('ret_fun_settings','HomeController@retFunSettings');
+        Route::resource('ret_fun_procedure','RetFunProcedureController');
 
 	Route::resource('affiliate', 'AffiliateController');
 

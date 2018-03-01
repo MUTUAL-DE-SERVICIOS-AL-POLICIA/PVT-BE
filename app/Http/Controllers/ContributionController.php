@@ -90,8 +90,8 @@ class ContributionController extends Controller
     }
     
     public function index()
-    {
-        return 123123;
+    {        
+        return 0;
     }
         
     /**
@@ -363,13 +363,10 @@ class ContributionController extends Controller
     public function storeContributions(Request $request){
              
         foreach ($request->iterator as $key=>$iterator)
-        {
-            
+        {            
             $contribution = Contribution::where('affiliate_id',$request->affiliate_id)->where('month_year',$key)->first();
             if(isset($contribution->id))
-            {
-                //$string.=$total;
-                
+            {                                
                 $contribution->total = $request->total[$key] ?? $contribution->total;
                 $contribution->base_wage = $request->base_wage[$key] ?? $contribution->base_wage;
                 

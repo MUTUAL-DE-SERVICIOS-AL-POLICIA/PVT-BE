@@ -13,7 +13,7 @@
     </div>    
     <div class="row">
         <div class="col-md-6">
-            @include('config.ret_fun_procedure', ['ret_fun_procedure'=>$ret_fun_procedure])
+            @include('setting.ret_fun_procedures', ['ret_fun_procedure'=>$ret_fun_procedure])
         </div>
         
     </div>

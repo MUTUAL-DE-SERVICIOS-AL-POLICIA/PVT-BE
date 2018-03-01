@@ -31,5 +31,12 @@ class Util
 		if ($string) {
 			return ucwords(mb_strtolower($string,'UTF-8'));
 		}
-	}
+    }
+    public static function removeSpaces($text)
+    {
+        $re = '/\s+/';
+        $subst = ' ';
+        $result = preg_replace($re, $subst, $text);
+        return $result ? trim($result) : null;
+    }
 }
