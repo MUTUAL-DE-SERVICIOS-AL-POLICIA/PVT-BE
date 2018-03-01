@@ -14,7 +14,7 @@
             <tbody class="table-striped">
                 <tr class="text-sm">
                     <td class="w-40 text-left px-10 py-3 uppercase">nombres y apellidos</td>
-                    <td class="text-center uppercase font-bold px-5 py-3"> {{$affiliate->first_name}} {{$affiliate->second_name}} {{$affiliate->last_name}} {{$affiliate->mothers_last_name}} {{$affiliate->surname_husband}} </td>
+                    <td class="text-center uppercase font-bold px-5 py-3"> {{ $affiliate->fullName() }} </td>
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">Carnet de identidad</td>

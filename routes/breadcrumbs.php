@@ -8,7 +8,7 @@ Breadcrumbs::register('affiliate', function($breadcrumbs)
 Breadcrumbs::register('show_affiliate', function($breadcrumbs, $affiliate)
 {
 	$breadcrumbs->parent('affiliate');
-	$breadcrumbs->push($affiliate->first_name.' '.$affiliate->second_name.' '.$affiliate->last_name.' '. $affiliate->mothers_last_name, URL::to('affiliate/'.$affiliate->id));
+	$breadcrumbs->push($affiliate->fullName(), URL::to('affiliate/'.$affiliate->id));
 });
 
 Breadcrumbs::register('retirement_fund', function($breadcrumbs)
@@ -24,7 +24,7 @@ Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliat
 {
 	$breadcrumbs->parent('retirement_fund');
 	$breadcrumbs->push("Nuevo Tramite");
-	$breadcrumbs->push($affiliate->first_name.' '.$affiliate->second_name.' '.$affiliate->last_name.' '. $affiliate->mothers_last_name, route('affiliate.show', $affiliate->id));
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
 
 
@@ -37,7 +37,7 @@ Breadcrumbs::register('quota_aid_mortuary', function($breadcrumbs)
 
 
 Breadcrumbs::register('payment_contributions', function($breadcrumbs, $affiliate)
-{	
+{
 	$breadcrumbs->push('Nuevo Aporte');
-	$breadcrumbs->push($affiliate->first_name.' '.$affiliate->second_name.' '.$affiliate->last_name.' '.$affiliate->mothers_last_name, route('affiliate.show', $affiliate->id));
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
