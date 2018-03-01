@@ -18,6 +18,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisorBeneficiary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidLegalGuardian;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisor;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
+use Muserpol\Helpers\Util;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -100,9 +101,9 @@ class QuotaAidMortuaryController extends Controller
         
         $quota_aid  = QuotaAidMortuary::select('id','code')->orderby('id','desc')->first();
         if(!isset($quota_aid->id))
-            $code=$this->getNextCode ("");
+            $code=Util::getNextCode ("");
         else        
-            $code=$this->getNextCode ($quota_aid->code);
+            $code=Util::getNextCode ($quota_aid->code);
         $modality = ProcedureModality::find($request->ret_fun_modality);
         
         
@@ -411,16 +412,6 @@ class QuotaAidMortuaryController extends Controller
         
         //return $data;
         return view('quota_aid.create',$data);        
-    }
-    private function getNextCode($actual){
-        $year =  date('Y');
-        if($actual == "")
-            return "1/".$year;
-        
-        $data = explode('/', $actual);        
-        if(!isset($data[1]))
-            return "1/".$year;                
-        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
 
 //    public function destroy($id)
