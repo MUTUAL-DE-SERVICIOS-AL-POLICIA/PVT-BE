@@ -39,4 +39,9 @@ class Util
         $result = preg_replace($re, $subst, $text);
         return $result ? trim($result) : null;
     }
+
+    public static function getPDFName($title,$affi){
+        $date =  Util::getStringDate(date('Y-m-d'));            
+        return ($title."--".$affi->last_name."_".$affi->first_name."--".$date.".pdf");
+    }
 }
