@@ -32,7 +32,7 @@ class User extends Authenticatable
     }
     public function roles()
     {
-        return $this->belongsToMany(Models\Role::class);
+        return $this->belongsToMany(Models\Role::class, 'role_user');
     }
     public function city()
     {

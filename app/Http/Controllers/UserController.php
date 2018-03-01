@@ -3,7 +3,7 @@
 namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
-use User;
+use Muserpol\User;
 use Auth;
 use Session;
 use Muserpol\Models\Role;
@@ -66,7 +66,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        //registro
         $modules = Module::all();
         $cities = City::all();
         $roles = Role::all();
@@ -75,7 +74,6 @@ class UserController extends Controller
             'cities' => $cities,
             'roles' => $roles
         );
-       // return $roles;
         return view('users.registro')->with($data);
     }
 
@@ -87,8 +85,24 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user=new User;
-        
+        /*return $request->id;
+        if($request->id2 == "val"){
+            echo "id2 <br>";
+        }else{
+            echo "no id2 <br>";
+        }
+        if($request->id3 == "val"){
+            echo "id3 <br>";
+        }else{
+            echo "no id3 <br>";
+        }
+        if($request->id10 == "val"){
+            echo "id10 <br>";
+        }else{
+            echo "no id10 <br>";
+        }
+        return ;*/
+        $user =new User;        
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->phone = $request->phone;
@@ -96,7 +110,11 @@ class UserController extends Controller
         $user->username = $request->username;
         $user->city_id=$request->city;
         $user->password = bcrypt($request->password);
+        $user->remember_token= bcrypt($request->remember_token);      
         $user->save();
+        $user->roles()->attach($request->rol);
+        $user->save();
+        return redirect('   ');
     }
 
     /**
@@ -118,7 +136,8 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //editar
+        $user=User::where('id', $id) ->first();
+        return view('users.edit', ['user'=>$user]);
     }
 
     /**
@@ -129,8 +148,21 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        //
+    { 
+        $user=User::find($id);
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->phone = $request->phone;
+        $user->position = $request->position;
+        $user->username = $request->username;
+        $user->city_id=$request->city;
+        $user->password = bcrypt($request->password);
+        $user->remember_token= bcrypt($request->remember_token);
+        $user->save();
+        $user->roles()->sync($request->rol, false);
+        $user->save;
+        return redirect('users.index');
+        return "update";
     }
 
     /**
@@ -139,6 +171,19 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function inactivo($user)
+    {
+        $user->status = "inactive";
+        $user->save();
+        return redirect('user');
+    }
+
+    public function activo($user)
+    {
+        $user->status = "active";
+        $user->save();
+        return redirect('user');
+    }
     public function destroy($id)
     {
         //
@@ -187,5 +232,11 @@ class UserController extends Controller
        return redirect('/');
 
     }
+
+
+
+   
+ 
+     
 
 }

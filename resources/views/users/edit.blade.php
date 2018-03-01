@@ -14,31 +14,31 @@
             </div>            
         </div>
         <div class="ibox-content">
-        <form class="form-horizontal" action="{{route('registrar')}}" method="POST">
+            <form action="/update/{{$user->id}}" method="POST">
                 <input type="hidden" name="_method" value="POST">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <div class="form-group">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <div class="form-group">
                     <label class="col-lg-2 control-label">Usuario</label>
                     <div class="col-lg-10">
-                        <input type="text" class="form-control" name='username' id="formGroupExampleInput" placeholder="Usuario"> 
+                    <input type="text" class="form-control" name='username' id="formGroupExampleInput" placeholder="Usuario" value="{{$user->username}}"> 
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Nombres</label>
                     <div class="col-lg-10">
-                        <input type="text" class="form-control" name='first_name' id="formGroupExampleInput" placeholder="Nombre"> 
+                    <input type="text" class="form-control" name='first_name' id="formGroupExampleInput" placeholder="Nombre" value="{{$user->first_name}}"> 
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Apellidos</label>
                     <div class="col-lg-10">
-                        <input type="text" class="form-control" name='last_name' id="formGroupExampleInput" placeholder="Apellidos"> 
+                        <input type="text" class="form-control" name='last_name' id="formGroupExampleInput" placeholder="Apellidos" value="{{$user->last_name}}"> 
                     </div>        
                 </div>    
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Celular</label>
                     <div class="col-lg-10">
-                        <input type="text" class="form-control" name='phone' id="formGroupExampleInput" placeholder="Celular"> 
+                        <input type="text" class="form-control" name='phone' id="formGroupExampleInput" placeholder="Celular" value="{{$user->phone}}"> 
                     </div>
                 </div>    
                 <div class="form-group">
@@ -46,7 +46,7 @@
                     <div class="col-lg-10">
                         <select class="form-control m-b" name='city'>
                             @foreach( $cities as $city)
-                        <option value="{{$city->id}}">{{$city->name}}</option>
+                        <option value="city">{{$city->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Cargo</label>
                     <div class="col-lg-10">
-                            <input type="text" class="form-control" name='position' id="formGroupExampleInput" placeholder="Cargo"> 
+                            <input type="text" class="form-control" name='position' id="formGroupExampleInput" placeholder="Cargo" value="position"> 
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@
                                     <h3 class="box-title">{{$module->name}}</h3> 
                                     @foreach($roles as $rol)
                                         @if($rol->module_id==$module->id)                                        
-                                <div class="i-checks"><label> <input type="checkbox" name="rol[]" value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
+                                            <div class="i-checks"><label> <input type="checkbox" name="rol[]" value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>    
                                         @endif    
                                     @endforeach                             
                                 </div>
@@ -86,15 +86,15 @@
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Contraseña</label> 
                     <div class="col-lg-10">       
-                    <input type="password" name="password" placeholder="Password" class="form-control"></div>               
+                    <input type="password" name="password" placeholder="Password" class="form-control" value="password"></div>               
                 </div>
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Repita la Contraseña</label> 
                     <div class="col-lg-10">       
-                    <input type="password" name="remember_token" placeholder="Password" class="form-control"></div>               
+                    <input type="password" name="remember_token" placeholder="Password" class="form-control" value="remember_token"></div>               
                 </div>
                 <div>
-                        <button class="btn btn-primary" type="submit">REGISTRAR</button>
+                        <button class="btn btn-primary" type="submit">GUARDAR</button>
                         
                     </div>
             </form>

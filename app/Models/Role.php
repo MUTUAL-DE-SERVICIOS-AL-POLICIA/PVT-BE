@@ -28,7 +28,7 @@ class Role extends Model
 
     public function users()
     {
-    	return $this->belongToMany(User::class);
+    	return $this->belongToMany(User::class, 'role_user');
     }
     public function wf_steps()
     {

@@ -16,14 +16,11 @@ Route::get('/minor', 'HomeController@minor')->name("minor");
 Auth::routes();
 // User 
 Route::resource('user', 'UserController');
-<<<<<<< HEAD
 Route::get('user/create', 'UserController@create');
 Route::post('registrar', ['as'=>'registrar', 'uses'=>'UserController@store']);
+Route::get('/edit/{id}', 'UserController@edit');
+Route::post('/update/{id}', 'UserController@update');
 
-
-
-=======
->>>>>>> upstream/master
 //afiliates
 Route::group(['middleware' => 'auth'], function () {
                 
