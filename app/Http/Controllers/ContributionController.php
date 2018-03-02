@@ -107,16 +107,6 @@ class ContributionController extends Controller
     {
        
     }
-    private function getNextCode($actual){
-        $year =  date('Y');
-        if($actual == "")
-            return "1/".$year;
-        
-        $data = explode('/', $actual);        
-        if(!isset($data[1]))
-            return "1/".$year;                
-        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
-    }
 
     public function storeDirectContribution(Request $request)
     {
@@ -133,9 +123,9 @@ class ContributionController extends Controller
         // Se guarda voucher fecha, total 1 reg
         $voucher_code  = Voucher::select('id','code')->orderby('id','desc')->first();
         if(!isset($voucher_code->id))
-            $code=$this->getNextCode ("");
+            $code=Util::getNextCode ("");
         else        
-            $code=$this->getNextCode ($voucher_code->code);
+            $code=Util::getNextCode ($voucher_code->code);
         
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;

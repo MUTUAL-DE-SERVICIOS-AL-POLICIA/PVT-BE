@@ -30,7 +30,6 @@ use DateTime;
 use Muserpol\User;
 use Carbon\Carbon;
 use Muserpol\Helpers\Util;
-use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 
 class RetirementFundCertificationController extends Controller
 {
@@ -125,7 +124,9 @@ class RetirementFundCertificationController extends Controller
 
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
     //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','modality','applicant','submitted_documents','header','number'));
-       return \PDF::loadView('ret_fun.print.reception',compact('title', 'institution', 'direction','unit','username','date','modality','applicant','submitted_documents','header','number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
+        $pdftitle="Recepcion";
+        $namepdf=Util::getPDFName($pdftitle,$applicant);
+        return \PDF::loadView('ret_fun.print.reception',compact('title', 'institution', 'direction','unit','username','date','modality','applicant','submitted_documents','header','number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     public function printFile($id){
         $affiliate = Affiliate::find($id);
@@ -138,7 +139,9 @@ class RetirementFundCertificationController extends Controller
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
         $cite = RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
         $subtitle = $cite;
-        return \PDF::loadView('ret_fun.print.file_certification', compact('date','subtitle','username','cite','title','number','retirement_fund','affiliate','affiliate_folders','applicant'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
+        $pdftitle="Certificacion de Archivo";
+        $namepdf=Util::getPDFName($pdftitle,$affiliate);
+        return \PDF::loadView('ret_fun.print.file_certification', compact('date','subtitle','username','cite','title','number','retirement_fund','affiliate','affiliate_folders','applicant'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
         
     }
     public function printLegalReview($id){
@@ -157,7 +160,9 @@ class RetirementFundCertificationController extends Controller
 //        ];
         $cite = RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
         $subtitle = $cite;
-        return \PDF::loadView('ret_fun.print.legal_certification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
+        $pdftitle="Revision Legal";
+        $namepdf=Util::getPDFName($pdftitle,$affiliate);
+        return \PDF::loadView('ret_fun.print.legal_certification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     public function printBeneficiariesQualification($id)
     {
@@ -167,8 +172,10 @@ class RetirementFundCertificationController extends Controller
         $username = Auth::user()->username;//agregar cuando haya roles
         $affiliate = $retirement_fund->affiliate;
         $number = $retirement_fund->code;
+        $pdftitle="Calificacion";
+        $namepdf=Util::getPDFName($pdftitle,$affiliate);
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
-        return \PDF::loadView('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
+        return \PDF::loadView('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
 
     }
     public function printCommitmentLetter($id)
@@ -189,18 +196,10 @@ class RetirementFundCertificationController extends Controller
             $glosa="Recibo una prestación en curso de pago del Sistema Integral de Pensiones.";
             $bene=$affiliate;
         }
+        $pdftitle="Carta de Compromiso";
+        $namepdf=Util::getPDFName($pdftitle,$bene);
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
-        return \PDF::loadView('ret_fun.print.commitment_letter', compact('date','subtitle','username','title','retirement_fund','affiliate','submitted_documents','beneficiary','glosa','bene','city'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('commitment_letter.pdf');
+        return \PDF::loadView('ret_fun.print.commitment_letter', compact('date','subtitle','username','title','retirement_fund','affiliate','submitted_documents','beneficiary','glosa','bene','city'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     
-    private function getNextCode($actual){
-        $year =  date('Y');
-        if($actual == "")
-            return "1/".$year;
-        
-        $data = explode('/', $actual);        
-        if(!isset($data[1]))
-            return "1/".$year;                
-        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
-    }
 }
