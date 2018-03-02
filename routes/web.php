@@ -19,6 +19,9 @@ Route::get('/minor', 'HomeController@minor')->name("minor");
 Auth::routes();
 // User 
 Route::resource('user', 'UserController');
+//Route::get('users/index','UserController@index');
+Route::get('usersGetData', 'UserController@anyData' )->name('user_list');
+
 //afiliates
 Route::group(['middleware' => 'auth'], function () {
                 
