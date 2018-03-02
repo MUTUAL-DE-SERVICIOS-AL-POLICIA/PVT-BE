@@ -22,7 +22,7 @@
         <tbody>
             <tr>
                 <td class="p-5">La suma de:</td>
-                <td class="p-5" colspan="3">.......... {!! $voucher->total !!} ctvs/100.......... Bolivianos</td>
+                <td class="p-5" colspan="3">.......... {!! ucwords(strtolower($total_literal)) !!}.......... Bolivianos</td>
             </tr>
             <tr>
                 <td class="p-5">Por concepto de:</td>
