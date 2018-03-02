@@ -67,7 +67,7 @@ class UserController extends Controller
     public function create()
     {
         $modules = Module::all();
-        $cities = City::all();
+        $cities = City::all()->pluck('name', 'id');;
         $roles = Role::all();
         $data = array(
             'modules'=> $modules,
@@ -136,8 +136,20 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $modules = Module::all();
+        $cities = City::all()->pluck('name', 'id');
+        $roles = Role::all();
         $user=User::where('id', $id) ->first();
-        return view('users.edit', ['user'=>$user]);
+        $data = array(
+            'modules'=> $modules,
+            'cities' => $cities,
+            'roles' => $roles,
+            'user' =>$user
+        );
+
+        return view('users.edit')->with($data);
+        
+        
     }
 
     /**
@@ -147,6 +159,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, $id)
     { 
         $user=User::find($id);
@@ -155,15 +168,15 @@ class UserController extends Controller
         $user->phone = $request->phone;
         $user->position = $request->position;
         $user->username = $request->username;
-        $user->city_id=$request->city;
+        $user->city_id=$request->city_id;
         $user->password = bcrypt($request->password);
         $user->remember_token= bcrypt($request->remember_token);
         $user->save();
         $user->roles()->sync($request->rol, false);
         $user->save;
         return redirect('users.index');
-        return "update";
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -232,11 +245,4 @@ class UserController extends Controller
        return redirect('/');
 
     }
-
-
-
-   
- 
-     
-
 }

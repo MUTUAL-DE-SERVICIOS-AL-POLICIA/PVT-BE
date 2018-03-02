@@ -44,10 +44,13 @@
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Departamento</label>
                     <div class="col-lg-10">
-                        <select class="form-control m-b" name='city'>
+                            {!! Form::select('city_id', $cities, null, ['placeholder' => 'Seleccione el departamento', 'class' => 'form-control']) !!}
+                       {{-- <select class="form-control m-b" name='city'>
                             @foreach( $cities as $city)
-                        <option value="city">{{$city->name}}</option>
-                            @endforeach
+                        <option value="{{$city->name}}">{{$city->name}}</option>
+
+                        
+                            @endforeach--}}
                         </select>
                     </div>
                 </div>    
@@ -73,8 +76,13 @@
                                 <div class="tab-pane" id="tab_{{$module->id}}">
                                     <h3 class="box-title">{{$module->name}}</h3> 
                                     @foreach($roles as $rol)
-                                        @if($rol->module_id==$module->id)                                        
-                                            <div class="i-checks"><label> <input type="checkbox" name="rol[]" value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>    
+                                        @if($rol->module_id==$module->id)
+                                        @if ($user->hasRole($rol->id))
+                                        <div class="i-checks"><label> <input type="checkbox" name="rol[]" checked value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
+                                        @else
+                                        <div class="i-checks"><label> <input type="checkbox" name="rol[]"  value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
+                                        @endif                                      
+                                                
                                         @endif    
                                     @endforeach                             
                                 </div>
@@ -94,9 +102,8 @@
                     <input type="password" name="remember_token" placeholder="Password" class="form-control" value="remember_token"></div>               
                 </div>
                 <div>
-                        <button class="btn btn-primary" type="submit">GUARDAR</button>
-                        
-                    </div>
+                    <button class="btn btn-primary" type="submit">GUARDAR</button>        
+                </div>
             </form>
         </div>            
     </div>        

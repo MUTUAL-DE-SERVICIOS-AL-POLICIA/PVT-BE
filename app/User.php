@@ -75,6 +75,16 @@ class User extends Authenticatable
     {
         return $this->hasMany('Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary');
     }
+    public function hasRole($rol_id)
+    {
+        foreach($this->roles as $rol){
+            if($rol->id == $rol_id){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
 
 }
