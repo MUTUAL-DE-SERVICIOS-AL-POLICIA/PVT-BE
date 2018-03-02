@@ -50,7 +50,7 @@
             <th class="no-border text-center" style=" width:60%">
                 <p class="font-bold">----------------------------------------------------<br>
                     COBRADO POR<br>
-                {!! $username !!}<br/>
+                {!! $name_user_complet !!}<br/>
                 </p>
             </th>
         </tr>
