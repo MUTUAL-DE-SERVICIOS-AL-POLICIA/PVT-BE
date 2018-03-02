@@ -2,19 +2,36 @@
 @extends('layouts.app')
 
 @section('content')
-    <table class="table table-bordered" id="users-table">
-    <thead>
-    <tr>
-    <th>Usuario</th>
-    <th>Nombres y Apellidos</th>
-    <th>Celular</th>
-    <th>Departamento</th>
-    <th>Cargo</th>
-    <th>Estado</th>
-    <th>Editar</th>
-    </tr>
-    </thead>
-    </table>
+
+
+
+<div class="row">
+        <div class="col-md-12 no-padding no-margins">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="pull-left">Usuarios</h3>
+                    <div class="text-right">
+                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped table-bordered table-hover display" id="users-table"  cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                    <th>Usuario</th>
+                                    <th>Nombres y Apellidos</th>
+                                    <th>Celular</th>
+                                    <th>Departamento</th>
+                                    <th>Cargo</th>
+                                    <th>Estado</th>
+                                    <th>Editar</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>       
+</div>
 @endsection
 @section('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
@@ -43,6 +60,13 @@ processing: true,
 serverSide: true,
 ajax: "{!! route('user_list') !!}",
 columns: [
+    {
+       "className":      'details-control',
+       "orderable":      false,
+       "searchable":      false,
+       "data":           null,
+       "defaultContent": ''
+    },
 { data: 'username', name: 'username', orderable: false },
 { data: 'first_name', name: 'first_name' },
 { data: 'phone', name: 'phone', orderable: true },
