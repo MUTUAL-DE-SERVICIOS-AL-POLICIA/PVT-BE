@@ -19,13 +19,17 @@ Route::get('/minor', 'HomeController@minor')->name("minor");
 Auth::routes();
 // User 
 Route::resource('user', 'UserController');
+//Route::get('users/index','UserController@index');
+Route::get('usersGetData', 'UserController@anyData' )->name('user_list');
+
 //afiliates
 Route::group(['middleware' => 'auth'], function () {
                 
 	Route::get('/', 'HomeController@index')->name("main");
         
-        //ROUTES TO CONFIGURE SYSTEM PARAMENTERS
-        Route::get('configure','HomeController@configure');
+        //ROUTES TO E SYSTEM PARAMENTERS
+        Route::get('ret_fun_settings','HomeController@retFunSettings');
+        Route::resource('ret_fun_procedure','RetFunProcedureController');
 
 	Route::resource('affiliate', 'AffiliateController');
 
@@ -55,6 +59,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
 	Route::get('ret_fun/{retirement_fund}/print/beneficiaries_qualification', 'RetirementFundCertificationController@printBeneficiariesQualification')->name('ret_fun_print_beneficiaries_qualification');
 	Route::get('ret_fun/{retirement_fund}/print/commitment_letter', 'RetirementFundCertificationController@printCommitmentLetter')->name('ret_fun_print_commitment_letter');
+	Route::get('ret_fun/{retirement_fund}/print/voucher', 'RetirementFundCertificationController@printVoucher')->name('ret_fun_print_voucher');
 
 
 

@@ -3,6 +3,7 @@
 namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Muserpol\Models\RetirementFund\RetFunProcedure;
 
 class RetFunProcedureController extends Controller
 {
@@ -68,7 +69,17 @@ class RetFunProcedureController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $ret_fun_procedure = RetFunProcedure::where('is_enabled','true')->first();
+        $ret_fun_procedure->is_enabled = false;
+        $ret_fun_procedure->save();
+        
+        $procedure = new RetFunProcedure();
+        $procedure->annual_yield = $request->annual_yield;
+        $procedure->administrative_expenses = $request->administrative_expenses;
+        $procedure->contributions_number = $request->contributions_number;
+        $procedure->is_enabled = true;
+        $procedure->save();
+        return json_encode($procedure);
     }
 
     /**

@@ -1,30 +1,35 @@
 @extends('print_global.print')
 @section('content')
-    <table class="table w-25 " align="right">
-        <tbody>
-            <tr>
-                <td class="p-5 bg-grey-darker">N°:</td>
-                {{--  <td class="text-center p-5" colspan="3">.......... {!! $item->procedure_requirement->number !!} ctvs/100.......... Bolivianos</td>  --}}
-            </tr>
-            <tr>
-                <td class="p-5 bg-grey-darker">Bs.:</td>
-                {{--  <td class="text-center p-5" colspan="3">.......... {!! $item->procedure_requirement->number !!} ..........</td>  --}}
-            </tr>
-        </tbody>
-    </table>
+    <div>    
+        <table class="table-code w-25" align="right">
+            <tbody>
+                <tr>
+                    <td class="p-5 bg-grey-darker">N°:</td>
+                    <td class="text-center p-5" colspan="3">{!! $voucher->code !!}</td>
+                </tr>
+                <tr>
+                    <td class="p-5 bg-grey-darker">Bs.:</td>
+                    <td class="text-center p-5" colspan="3">{!! $voucher->total !!}.-</td>                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br><br><br>
     <div>
         <span>Recibimos de:</span>
-        {{--  @include('ret_fun.print.applicant_info', ['applicant'=>$applicant])  --}}
+        @include('ret_fun.print.applicant_info', ['applicant'=>$bene    ])
     </div>
     <table class="table w-100">
         <tbody>
             <tr>
                 <td class="p-5">La suma de:</td>
-                {{--  <td class="text-center p-5" colspan="3">.......... {!! $item->procedure_requirement->number !!} ctvs/100.......... Bolivianos</td>  --}}
+                <td class="p-5" colspan="3">.......... {!! ucwords(strtolower($total_literal)) !!}.......... Bolivianos</td>
             </tr>
             <tr>
                 <td class="p-5">Por concepto de:</td>
-                {{--  <td class="text-center p-5" colspan="3">.......... {!! $item->procedure_requirement->number !!} ..........</td>  --}}
+                <td class="p-5" colspan="3">
+                    .......... {!! $descripcion->name !!} del ..........<br>
+                    .......... {!! $payment_date !!} ..........
+                </td>
             </tr>
             <tr>
                 <td class="p-5">Forma de Pago:</td>
@@ -45,7 +50,7 @@
             <th class="no-border text-center" style=" width:60%">
                 <p class="font-bold">----------------------------------------------------<br>
                     COBRADO POR<br>
-                {{--  {!! $applicant->last_name." ".$applicant->first_name !!}<br/>  --}}
+                {!! $name_user_complet !!}<br/>
                 </p>
             </th>
         </tr>
