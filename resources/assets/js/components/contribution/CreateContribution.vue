@@ -44,7 +44,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr style="" v-for="(con, index) in contributions" :key="index" id="form">
+                            
+                            <tr style="" v-for="(con, index) in contributions" :key="index" id="form" >
                                 <td>                                    
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control" >
                                 </td>
@@ -99,8 +100,8 @@ export default {
       ufv:0,
       estado: true,
       afi_id:null,
-      show_spinner:false
-      
+      show_spinner:false,
+      count:3
     };
   },
    
@@ -123,33 +124,42 @@ export default {
       CalcularAporte(con, index){
           if(parseFloat(con.sueldo) >0)
           {          
-                
-            this.show_spinner=true
-            axios.post('/get-interest',{con})
-            .then(response => {
-                
-                this.ufv = response.data
-                con.fr = con.sueldo * 0.0477;
-                con.cm = con.sueldo * 0.0109;
-                con.interes = parseFloat(this.ufv);
-                con.subtotal =  con.fr + con.cm + con.interes;
-            
-                this.show_spinner=false;
+            if(this.count > 0){
 
-                this.SumTotal();
-            
-            })
-            .catch(e => {
+                this.show_spinner=true
+    
+                axios.post('/get-interest',{con})
+                .then(response => {
+                    
+                    this.ufv = response.data
+                    con.fr = con.sueldo * 0.0477;
+                    con.cm = con.sueldo * 0.0109;
+                    con.interes = parseFloat(this.ufv);
+                    con.subtotal =  con.fr + con.cm + con.interes;
                 
+                    this.show_spinner=false;
+    
+                    this.SumTotal();
+                    this.count = 3;
+                    if(index +1 < this.contributions.length)
+                    this.$refs.s1[index +1].focus();    
+                })
+                .catch(e => {
+                    
+                    console.log(--this.count);
+                    console.log("40004");
+                    
+                    this.show_spinner=false;
+                    this.CalcularAporte(con, index);
+                })
+            }else{
                 this.show_spinner=false;
-                alert(e)
-            
-            })
-
+                this.count = 3;
+                return;
+            }                
          
+                  
           }
-          if(index +1 < this.contributions.length)
-            this.$refs.s1[index +1].focus();            
           
       },
       

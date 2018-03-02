@@ -32,13 +32,28 @@ class ContributionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getInterest(Request $request)
-    {
+    { 
         $dateStart = '01/'.$request->con['month'].'/'.$request->con['year'];
         $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');      
         $mount = $request->con['sueldo'];
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha='.$dateStart.'&txtFechaFin='.$dateEnd.'&txtMonto='.$mount.'&txtCalcula=2';
-        $foo =file_get_contents($uri);
-        return $foo;      
+        $ch = curl_init($uri);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        $json = '';
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if( ($json = curl_exec($ch) ) === false)
+        {
+            Log::info("Error ".$httpcode ." ".$json);
+            return response('error', 500);
+        }
+        else
+        {
+            Log::info("Success: ".$httpcode. " ".$json );
+            return $json;
+        }
+        
     }
 
     public function getMonthContributions($id)
@@ -51,7 +66,9 @@ class ContributionController extends Controller
             $now = Carbon::now();      
             $arrayDat = explode('-', $lastMonths->month_year);
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-            $diff = $now->diffInMonths($lastMonths); 
+            //dd($lastMonths);
+            $diff = $now->subMonths(1)->diffInMonths($lastMonths); 
+           // dd($diff.' '.$lastMonths);
             $contribution = array();
             if($diff>2)
             {  
@@ -66,12 +83,8 @@ class ContributionController extends Controller
             }  
             else
             {
-                /*for ($i = 0; $i < $diff; $i++)
-                {   $month1 = Carbon::now()->subMonths(1);
-                    $contribution = array('year'=>$month[$i]->format('Y'), 'month'=>$month[$i]->format('m'), 'monthyear'=>$month[$i], 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
-                    $contributions.array_push($contribution);
-                }*/
-                $contributions[]=null;
+              
+                $contributions=[];
                 for ($i = 0; $i < $diff; $i++)
                 { 
                     $month_diff = Carbon::now()->subMonths($i+1);
@@ -81,18 +94,7 @@ class ContributionController extends Controller
                     $contributions[$i]=$contribution;
                 }
             }
-        }
-        else
-        {
-            $month1 = Carbon::now()->subMonths(1);                      
-            $month2 = Carbon::now()->subMonths(2);        
-            $month3 = Carbon::now()->subMonths(3);
-                //dd($month1.' '.$month2.' '.$month3);
-            $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
-            $contribution2 = array('year'=>$month2->format('Y'), 'month'=>$month2->format('m'), 'monthyear'=>$month2->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0, 'affiliate_id'=>$id);
-            $contribution3 = array('year'=>$month3->format('Y'), 'month'=>$month3->format('m'), 'monthyear'=>$month3->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0,  'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
-            $contributions = array($contribution1,$contribution2,$contribution3);
-        }
+        }      
         
          return $contributions;
     }
