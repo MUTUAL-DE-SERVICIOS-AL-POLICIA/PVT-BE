@@ -52,22 +52,17 @@
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
     <script src="https://cdn.datatables.net/fixedheader/3.1.3/js/dataTables.fixedHeader.min.js"></script>
+{{--      <script src="https://datatables.yajrabox.com/eloquent/master-data"></script>  --}}
 
-<script>
+<script>    
 $(function() {
 $('#users-table').DataTable({
 processing: true,
 serverSide: true,
 ajax: "{!! route('user_list') !!}",
+//"https://datatables.yajrabox.com/eloquent/master-data",
 columns: [
-    {
-       "className":      'details-control',
-       "orderable":      false,
-       "searchable":      false,
-       "data":           null,
-       "defaultContent": ''
-    },
-{ data: 'username', name: 'username', orderable: false },
+{ data: 'username', name: 'username', orderable: true },
 { data: 'first_name', name: 'first_name' },
 { data: 'phone', name: 'phone', orderable: true },
 { data: 'city_id', name: 'city_id' },
@@ -77,6 +72,18 @@ columns: [
 ], 
 });
 });
+
+function initTable(tableId, data) {
+        $('#' + tableId).DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: data.details_url,
+            columns: [
+                { data: 'id', name: 'id' },
+                { data: 'title', name: 'title' }
+            ]
+        })
+    }
 </script>
 
 @endsection
