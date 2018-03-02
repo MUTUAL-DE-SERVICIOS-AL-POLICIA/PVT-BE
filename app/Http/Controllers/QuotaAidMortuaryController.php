@@ -101,9 +101,9 @@ class QuotaAidMortuaryController extends Controller
         
         $quota_aid  = QuotaAidMortuary::select('id','code')->orderby('id','desc')->first();
         if(!isset($quota_aid->id))
-            $code=Util::getNextCode ("");
+            $code = Util::getNextCode ("");
         else        
-            $code=Util::getNextCode ($quota_aid->code);
+            $code = Util::getNextCode ($quota_aid->code);
         $modality = ProcedureModality::find($request->ret_fun_modality);
         
         
