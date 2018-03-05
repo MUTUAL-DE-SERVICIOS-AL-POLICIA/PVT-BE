@@ -61,38 +61,17 @@
             </div>
         </div>
             {{--  {!! $dataTable->table() !!}s  --}}
- 
+
 
     </div>
 </div>
 @endsection
-{{--  @section('styles')
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
-@endsection  --}}
-{{--  @section('scripts')
-<script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
-<script src="/vendor/datatables/buttons.server-side.js"></script>
-{{--  {!! $dataTable->scripts() !!}
-@endsection  --}}
 @section('styles')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.3/css/fixedHeader.dataTables.min.css">
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
-
 @section('scripts')
-
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-{{--  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>  --}}
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
-<script src="https://cdn.datatables.net/fixedheader/3.1.3/js/dataTables.fixedHeader.min.js"></script>
-
+<script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
-    
     $(document).ready(function () {
         var datatable_contri = $('#datatables-affiliate-contributions').DataTable({
             responsive: true,
@@ -115,7 +94,7 @@
                 { extend: 'copy'},
                 { extend: 'csv'},
                 { extend: 'excel', title: 'ExampleFile'},
-                { extend: 'pdf', title: 'ExampleFile'},
+                // { extend: 'pdf', title: 'ExampleFile'},
             ],
             columns:[
                 {data: 'month_year', },

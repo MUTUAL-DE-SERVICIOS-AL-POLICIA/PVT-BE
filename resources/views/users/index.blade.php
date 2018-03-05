@@ -34,22 +34,10 @@
 </div>
 @endsection
 @section('styles')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.3/css/fixedHeader.dataTables.min.css">
+    <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
 @section('scripts')
-    <!-- DataTables -->
-    <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-    <!-- Bootstrap JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <!-- App scripts -->
-
-    <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
-    <script src="https://cdn.datatables.net/fixedheader/3.1.3/js/dataTables.fixedHeader.min.js"></script>
-{{--      <script src="https://datatables.yajrabox.com/eloquent/master-data"></script>  --}}
-
+<script src="{{ asset('/js/datatables.js')}}"></script>
 <script>    
 $(function() {
 $('#users-table').DataTable({
