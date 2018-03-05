@@ -57,7 +57,7 @@ class ContributionController extends Controller
     }
 
     public function getMonthContributions($id)
-    {
+    {    $contributions=[];
         $lastMonths = Contribution::where('affiliate_id', $id)
         ->orderBy('month_year','desc')
         ->first();
@@ -94,7 +94,7 @@ class ContributionController extends Controller
                     $contributions[$i]=$contribution;
                 }
             }
-        }      
+        }  
         
          return $contributions;
     }
