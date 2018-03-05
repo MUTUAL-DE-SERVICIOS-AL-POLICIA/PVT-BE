@@ -9,6 +9,7 @@
    
     <link rel="stylesheet" href="{!! asset('css/vendor.css') !!}" />
     <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
+    <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
     @section('styles')
     @show
 </head>
