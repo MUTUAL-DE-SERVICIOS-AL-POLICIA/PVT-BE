@@ -9,7 +9,7 @@
 <body>
     <table class="w-100 m-b-15">
         <tr>
-            <th class="w-20 text-left no-padding no-margins">
+            <th class="w-20 text-left no-padding no-margins align-middle">
                 <div class="text-center">
                     <img src="{{ asset('images/logo.jpg') }}" class="w-100">
                 </div>
@@ -21,9 +21,9 @@
                     {{ $unit ?? 'UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO' }}
                 </span>
             </th>
-            <th class="w-20    aling-bottom no-padding no-margins">
+            <th class="w-20 no-padding no-margins align-top">
                 @if(isset($number))
-                    <table class="table-code aling-top no-padding no-margins">
+                    <table class="table-code no-padding no-margins">
                         <tbody>
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
