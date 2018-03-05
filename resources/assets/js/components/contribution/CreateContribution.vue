@@ -22,11 +22,12 @@
                         
                         <div class="col-md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
-                            <select v-model="tipo" class="form-control">
+                            <select v-model="tipo" name="tipo" v-validate="'required'" :class="{'form-control': true, 'error': errors.has('tipo')}">
                                 <option value="1">Item 0</option>
                                 <option value="2">Proceso diciplinario</option>
                                 <option value="3">Baja medica</option>
                             </select>
+                            <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
                         
                     </div>
@@ -43,9 +44,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr style="" v-for="(con, index) in contributions" :key="index" id="form">
+                            
+                            <tr style="" v-for="(con, index) in contributions" :key="index" id="form" >
                                 <td>                                    
-                                    <input type="text"  v-model="con.monthyear" disabled class="form-control">
+                                    <input type="text"  v-model="con.monthyear" disabled class="form-control" >
                                 </td>
                                 <td>
                                     <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control"  name="aportes[]">
@@ -68,8 +70,10 @@
                                 
                             </tr>
                             <tr>
-                                <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
-                                <td colspan="3"><input type="text" v-model ="total" disabled class="form-control"></td>
+                                <td ><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
+                                <td ><input type="text" v-model ="total" disabled class="form-control"></td>
+                                <td><label>Literal:</label></td>
+                                <!-- <td colspan="3"><input type="text" v-model ="literal" disabled class="form-control"></td> -->
                                 <td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>
                             </tr>                            
                         </tbody>
@@ -87,20 +91,23 @@
 
 export default {
   
-   props: ['contributions1'],
+   props: ['contributions1','afid'],
   data() {   
     return {
       contributions: [],
       total:0,
       tipo:null,
       ufv:0,
-      show_spinner:false
-      
+      estado: true,
+      afi_id:null,
+      show_spinner:false,
+      count:3
     };
   },
    
   mounted() {
-   this.contributions = this.contributions1;    
+   this.contributions = this.contributions1;  
+   this.afi_id = this.afid;  
   },
   created(){
       
@@ -117,33 +124,42 @@ export default {
       CalcularAporte(con, index){
           if(parseFloat(con.sueldo) >0)
           {          
-                
-            this.show_spinner=true
-            axios.post('/get-interest',{con})
-            .then(response => {
-                
-                this.ufv = response.data
-                con.fr = con.sueldo * 0.0477;
-                con.cm = con.sueldo * 0.0109;
-                con.interes = parseFloat(this.ufv);
-                con.subtotal =  con.fr + con.cm + con.interes;
-            
-                this.show_spinner=false;
+            if(this.count > 0){
 
-                this.SumTotal();
-            
-            })
-            .catch(e => {
+                this.show_spinner=true
+    
+                axios.post('/get-interest',{con})
+                .then(response => {
+                    
+                    this.ufv = response.data
+                    con.fr = con.sueldo * 0.0477;
+                    con.cm = con.sueldo * 0.0109;
+                    con.interes = parseFloat(this.ufv);
+                    con.subtotal =  con.fr + con.cm + con.interes;
                 
+                    this.show_spinner=false;
+    
+                    this.SumTotal();
+                    this.count = 3;
+                    if(index +1 < this.contributions.length)
+                    this.$refs.s1[index +1].focus();    
+                })
+                .catch(e => {
+                    
+                    console.log(--this.count);
+                    console.log("40004");
+                    
+                    this.show_spinner=false;
+                    this.CalcularAporte(con, index);
+                })
+            }else{
                 this.show_spinner=false;
-                alert(e)
-            
-            })
-
+                this.count = 3;
+                return;
+            }                
          
+                  
           }
-          if(index +1 < this.contributions.length)
-            this.$refs.s1[index +1].focus();            
           
       },
       
@@ -180,54 +196,60 @@ export default {
 //             })
       },
       Guardar(){
-        
-        //console.log(this.contributions);
-        this.contributions =  this.contributions.filter((item)=> {
-            return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+        //var estado = true;
+        this.$validator.validateAll().then(() => {
+            console.log('form is valid')
+           // alert("fsdfs")
+          this.estado = false;
+        }).catch(() => {
+            console.log('errors exist', this.errors)
         });
-        //console.log(this.contributions);         
-        if(this.contributions.length > 0)
-        {   
-            this.$swal({
-            title: 'Esta usted seguro de guardar?',
-            text: "whatever",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar',
-             cancelButtonText: 'Cancelar'
-            }).then((result) => {
-            if (result.value) {
-                
-                var aportes = this.contributions;
-                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo})
-                .then(response => {
-                console.log(response.data);                
-                })
-                .catch(e => {
-                this.show_spinner = false;
-                alert(e);
-                })
-
-                this.$swal({
-                title: 'Pago realizado',
-                showConfirmButton: false,
-                timer: 1500,
-                type: 'success'
-                })
-            }
-            })
-
-            
-        }
-        else
+        //console.log(this.contributions);
+        console.log(this.tipo);
+        
+        if(this.tipo !== null) 
         {
-                        
-                        
-           
-            //alert("No existen registros");
-        }
+            this.contributions =  this.contributions.filter((item)=> {
+                return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+            });       
+      
+            if(this.contributions.length > 0)
+            {   
+                this.$swal({
+                title: 'Esta usted seguro de guardar?',
+                text: "whatever",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                if (result.value) {
+                    
+                    var aportes = this.contributions;
+                    console.log(aportes);
+                    
+                    axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
+                    .then(response => {
+                    console.log(response.data);                
+                    })
+                    .catch(e => {
+                    this.show_spinner = false;
+                    alert(e);
+                    })
+
+                    this.$swal({
+                    title: 'Pago realizado',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    type: 'success'
+                    })
+                }
+                })            
+            }
+        }      
+        
         
         
     
