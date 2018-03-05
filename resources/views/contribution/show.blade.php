@@ -68,6 +68,14 @@
 @endsection
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+<style>
+    td.highlight {
+        background-color:#e3eaef !important;
+    }
+    .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+        background-color:#e3eaef;
+    }
+</style>
 @endsection
 @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
@@ -131,6 +139,12 @@
                 return ((a < b) ? 1 : ((a > b) ? -1 : 0));
             }
         });
+         $('#datatables-affiliate-contributions tbody')
+        .on( 'mouseenter', 'td', function () {
+            var colIdx = datatable_contri.cell(this).index().column;
+            $( datatable_contri.cells().nodes() ).removeClass( 'highlight' );
+            $( datatable_contri.column( colIdx ).nodes() ).addClass( 'highlight' );
+        } );
         $('[data-toggle="tooltip"]').tooltip();
     })
 </script>
