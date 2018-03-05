@@ -28,7 +28,11 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Aportes</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
+                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>                                        
+                        <a href="{{route('edit_contribution', $affiliate->id)}}">
+                            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="EDITAR" ><i class="fa fa-paste"></i></button>
+                        </a>
+                                        
                     </div>
                 </div>
                 <div class="panel-body">
@@ -41,12 +45,12 @@
                                 <th>Unidad</th>
                                 <th>Ítem</th>
                                 <th>Sueldo</th>
-                                <th>B Antigüedad</th>
-                                <th>B Estudio</th>
-                                <th>B al Cargo</th>
-                                <th>B Frontera</th>
-                                <th>B Oriente</th>
-                                <th>B Seguridad</th>
+                                <th>Antigüedad</th>
+                                <th>Estudio</th>
+                                <th>Al Cargo</th>
+                                <th>Frontera</th>
+                                <th>Oriente</th>
+                                <th>Seguridad</th>
                                 <th>Ganado</th>
                                 <th>Cotizable</th>
                                 <th>F.R.</th>
@@ -68,11 +72,20 @@
 @endsection
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+<style>
+    td.highlight {
+        background-color:#e3eaef !important;
+    }
+    .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+        background-color:#e3eaef;
+    }
+</style>
 @endsection
 @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
     $(document).ready(function () {
+        $('body').addClass("mini-navbar");
         var datatable_contri = $('#datatables-affiliate-contributions').DataTable({
             responsive: true,
             fixedHeader: {
@@ -130,6 +143,12 @@
                 return ((a < b) ? 1 : ((a > b) ? -1 : 0));
             }
         });
+         $('#datatables-affiliate-contributions tbody')
+        .on( 'mouseenter', 'td', function () {
+            var colIdx = datatable_contri.cell(this).index().column;
+            $( datatable_contri.cells().nodes() ).removeClass( 'highlight' );
+            $( datatable_contri.column( colIdx ).nodes() ).addClass( 'highlight' );
+        } );
         $('[data-toggle="tooltip"]').tooltip();
     })
 </script>
