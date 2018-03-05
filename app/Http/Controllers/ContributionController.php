@@ -85,7 +85,7 @@ class ContributionController extends Controller
 
         return $contributions;
     }
-
+    
     public function index()
     {
         return 0;
@@ -383,6 +383,7 @@ class ContributionController extends Controller
             'summary' => $summary,
             'affiliate' => $affiliate,
             'cities' => $cities,
+            'new_contributions' => self::getMonthContributions($affiliate->id),
         ];
 
         return view('contribution.affiliate_contributions_edit', $data);
