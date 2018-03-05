@@ -41,12 +41,12 @@
                                 <th>Unidad</th>
                                 <th>Ítem</th>
                                 <th>Sueldo</th>
-                                <th>B Antigüedad</th>
-                                <th>B Estudio</th>
-                                <th>B al Cargo</th>
-                                <th>B Frontera</th>
-                                <th>B Oriente</th>
-                                <th>B Seguridad</th>
+                                <th>Antigüedad</th>
+                                <th>Estudio</th>
+                                <th>Al Cargo</th>
+                                <th>Frontera</th>
+                                <th>Oriente</th>
+                                <th>Seguridad</th>
                                 <th>Ganado</th>
                                 <th>Cotizable</th>
                                 <th>F.R.</th>
