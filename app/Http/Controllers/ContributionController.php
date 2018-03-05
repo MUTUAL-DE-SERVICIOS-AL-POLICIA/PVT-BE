@@ -33,7 +33,7 @@ class ContributionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getInterest(Request $request)
-    {
+    {        
         $dateStart = '01/'.$request->con['month'].'/'.$request->con['year'];
         $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');      
         $mount = $request->con['sueldo'];

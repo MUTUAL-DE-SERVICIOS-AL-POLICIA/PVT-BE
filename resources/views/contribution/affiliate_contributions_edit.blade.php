@@ -65,9 +65,9 @@
                 $period = $year_start.'-'.($i<10?'0'.$i:$i).'-01';
             @endphp
             @if(isset($contributions[$period]->id))
-            <td>{{$contributions[$period]->total}}</td>
+                <td id="main{{$period}}">{{$contributions[$period]->total}}</td>
             @else
-                <td>0</td>
+                <td id="main{{$period}}">0</td>
             @endif
           @endfor
         <td>

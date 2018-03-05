@@ -37,8 +37,7 @@ class ReimbursementController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {                
-        
+    {                        
         $category = Category::find($request->category);    
         //return $category;
         $reim = new Reimbursement();
