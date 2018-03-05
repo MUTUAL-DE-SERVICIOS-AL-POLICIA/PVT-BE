@@ -28,11 +28,16 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Aportes</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
+                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>                                        
+                        <a href="{{route('edit_contribution', $affiliate->id)}}">
+                            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="EDITAR" ><i class="fa fa-paste"></i></button>
+                        </a>
+                                        
                     </div>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-striped table-bordered table-hover display" id="datatables-affiliate-contributions"  cellspacing="0" width="100%">
+                    <table  class="table table-striped table-bordered table-hover display" id="datatables-affiliate-contributions" cellspacing="0"
+                        width="100%" style="font-size: 10px">
                         <thead>
                             <tr>
                                 <th>Gestión</th>
@@ -54,6 +59,7 @@
                                 <th>Desg.</th>
                             </tr>
                         </thead>
+
                     </table>
                 </div>
             </div>
@@ -92,15 +98,18 @@
 <script>
     
     $(document).ready(function () {
-        
-        alert("hla");
-        
         var datatable_contri = $('#datatables-affiliate-contributions').DataTable({
+            responsive: true,
             fixedHeader: {
                 header: true,
-                footer: false
+                footer: true,
+                headerOffset: $('#navbar-fixed-top').outerHeight()
             },
-            ajax:"/get_affiliate_contributions/{{$affiliate->id}}",
+            order: [],
+             columnDefs: [
+               { type: 'monthYear', targets: 0 }
+            ],
+			ajax:"/get_affiliate_contributions/{{$affiliate->id}}",
             // ajax: "{{ url('affiliate_contributions', $affiliate->id) }}",
             lengthMenu: [[15, 25, 50,100, -1], [15, 25, 50,100, "Todos"]],
             //dom:"<'row'<'col-sm-6'l><'col-sm-6'>><'row'<'col-sm-12't>><'row'<'col-sm-5'i>><'row'<'bottom'p>>",
@@ -113,7 +122,7 @@
                 { extend: 'pdf', title: 'ExampleFile'},
             ],
             columns:[
-                {data: 'month_year'},
+                {data: 'month_year', },
                 {data: 'degree_id'},
                 {data: 'unit_id'},
                 {data: 'item'},
@@ -129,8 +138,22 @@
                 {data: 'retirement_fund'},
                 {data: 'mortuary_quota'},
                 {data: 'total'},
-                {data: 'breakdown_id', "sClass": "text-right", bSortable: false},
+                {data: 'breakdown_id', "sClass": "text-right"},
             ]
+            
+        });
+        jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+            "monthYear-pre": function(s) {
+                var a = s.split('-');
+                // Date uses the American "MM DD YY" format
+                return new Date(a[0] + ' 01 ' + a[1]);
+            },
+            "monthYear-asc": function(a, b) {
+                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+            },
+            "monthYear-desc": function(a, b) {
+                return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+            }
         });
         $('[data-toggle="tooltip"]').tooltip();
     })

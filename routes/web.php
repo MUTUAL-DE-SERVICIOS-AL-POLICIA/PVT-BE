@@ -19,6 +19,9 @@ Route::get('/minor', 'HomeController@minor')->name("minor");
 Auth::routes();
 // User 
 Route::resource('user', 'UserController');
+//Route::get('users/index','UserController@index');
+Route::get('usersGetData', 'UserController@anyData' )->name('user_list');
+
 //afiliates
 Route::group(['middleware' => 'auth'], function () {
                 
@@ -56,6 +59,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
 	Route::get('ret_fun/{retirement_fund}/print/beneficiaries_qualification', 'RetirementFundCertificationController@printBeneficiariesQualification')->name('ret_fun_print_beneficiaries_qualification');
 	Route::get('ret_fun/{retirement_fund}/print/commitment_letter', 'RetirementFundCertificationController@printCommitmentLetter')->name('ret_fun_print_commitment_letter');
+	Route::get('ret_fun/{retirement_fund}/print/voucher', 'RetirementFundCertificationController@printVoucher')->name('ret_fun_print_voucher');
 
 
 
@@ -77,7 +81,7 @@ Route::group(['middleware' => 'auth'], function () {
         
         //Contributions
         Route::resource('contribution','ContributionController');
-        Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions');                
+        Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions')->name('edit_contribution');
         Route::post('store_contributions','ContributionController@storeContributions');
         Route::resource('reimbursement','ReimbursementController');       
 
@@ -93,6 +97,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::post('get-interest','ContributionController@getInterest');
 	Route::post('contribution_save','ContributionController@storeDirectContribution');
+        Route::post('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
+        Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
 
 		
 });

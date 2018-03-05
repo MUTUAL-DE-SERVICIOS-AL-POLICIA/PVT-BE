@@ -79,9 +79,9 @@ class RetirementFundController extends Controller
         
         $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
         if(!isset($ret_fund->id))
-            $code=$this->getNextCode ("");
+            $code = Util::getNextCode ("");
         else        
-            $code=$this->getNextCode ($ret_fund->code);
+            $code = Util::getNextCode ($ret_fund->code);
         $retirement_fund = new RetirementFund();
         $retirement_fund->user_id = Auth::user()->id;
         $retirement_fund->affiliate_id = $request->affiliate_id;
@@ -409,36 +409,7 @@ class RetirementFundController extends Controller
         //return $data;
         return view('ret_fun.create',$data);        
     }
-
-    private function getNextCode($actual){
-        $year =  date('Y');
-        if($actual == "")
-            return "1/".$year;
-        
-        $data = explode('/', $actual);        
-        if(!isset($data[1]))
-            return "1/".$year;                
-        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
-    }
     
-    public function printReception($id){
-        $retirement_fund = RetirementFund::find($id);
-        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
-        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
-        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-       $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – ".strtoupper($retirement_fund->procedure_modality->name);
-       $number = $retirement_fund->code;
-       $username = Auth::user()->username;
-       $date=Util::getStringDate($retirement_fund->reception_date);//'6 de Febrero de 2018 - 10:10:48';       
-       $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
-       $modality = $retirement_fund->procedure_modality->name;
-       $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id',$retirement_fund->id)->get();  
-        //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
-
-       // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
-    //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','modality','applicant','submitted_documents','header','number'));
-       return \PDF::loadView('ret_fun.print.reception',compact('title', 'institution', 'direction','unit','username','date','modality','applicant','submitted_documents','header','number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream('recepcion.pdf');
-    }
     public function storeLegalReview(Request $request,$id){
         //return 0;
         $retirement_fund = RetirementFund::find($id);
