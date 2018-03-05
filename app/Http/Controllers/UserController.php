@@ -35,9 +35,9 @@ class UserController extends Controller
 //DB::statement(DB::raw('set @rownum=0'));
         return Datatables::of($users)
 
-       /*  ->addColumn('details_url', function($u) {
+        ->addColumn('details_url', function($u) {
 return url('usersGetData/'.$u->id);
-        }) */
+        })
             ->addColumn('action', function ($u) {
                 return '<a href="/user/' . $u->id . '/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
             })
