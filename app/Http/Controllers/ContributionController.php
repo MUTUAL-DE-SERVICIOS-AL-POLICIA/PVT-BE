@@ -32,48 +32,31 @@ class ContributionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getInterest(Request $request)
-    { 
-        $dateStart = '01/'.$request->con['month'].'/'.$request->con['year'];
-        $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');      
+    {
+        $dateStart = '01/' . $request->con['month'] . '/' . $request->con['year'];
+        $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
         $mount = $request->con['sueldo'];
-        $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha='.$dateStart.'&txtFechaFin='.$dateEnd.'&txtMonto='.$mount.'&txtCalcula=2';
-        $ch = curl_init($uri);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        $json = '';
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if( ($json = curl_exec($ch) ) === false)
-        {
-            Log::info("Error ".$httpcode ." ".$json);
-            return response('error', 500);
-        }
-        else
-        {
-            Log::info("Success: ".$httpcode. " ".$json );
-            return $json;
-        }
-        
+        $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
+        $foo = file_get_contents($uri);
+        return $foo;
     }
 
     public function getMonthContributions($id)
     {    $contributions=[];
         $lastMonths = Contribution::where('affiliate_id', $id)
-        ->orderBy('month_year','desc')
-        ->first();
-        if($lastMonths)
-        {
-            $now = Carbon::now();      
+            ->orderBy('month_year', 'desc')
+            ->first();
+        if ($lastMonths) {
+            $now = Carbon::now();
             $arrayDat = explode('-', $lastMonths->month_year);
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
             //dd($lastMonths);
             $diff = $now->subMonths(1)->diffInMonths($lastMonths); 
            // dd($diff.' '.$lastMonths);
             $contribution = array();
-            if($diff>2)
-            {  
-                $month1 = Carbon::now()->subMonths(1);                 
-                $month2 = Carbon::now()->subMonths(2);        
+            if ($diff > 2) {
+                $month1 = Carbon::now()->subMonths(1);
+                $month2 = Carbon::now()->subMonths(2);
                 $month3 = Carbon::now()->subMonths(3);
                 //dd($month1.' '.$month2.' '.$month3);
                 $contribution1 = array('year'=>$month1->format('Y'), 'month'=>$month1->format('m'), 'monthyear'=>$month1->format('m-Y'), 'sueldo'=>0, 'fr'=>0,'cm'=>0, 'interes'=>0, 'subtotal'=>0,'affiliate_id'=>$id);
@@ -98,12 +81,12 @@ class ContributionController extends Controller
         
          return $contributions;
     }
-    
+
     public function index()
-    {        
+    {
         return 0;
     }
-        
+
     /**
      * Show the form for creating a new resource.
      *
@@ -111,20 +94,7 @@ class ContributionController extends Controller
      */
     public function create()
     {
-       
-    }
 
-
-
-    private function getNextCode($actual){
-        $year =  date('Y');
-        if($actual == "")
-            return "1/".$year;
-        
-        $data = explode('/', $actual);        
-        if(!isset($data[1]))
-            return "1/".$year;                
-        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
 
     public function storeDirectContribution(Request $request)
@@ -168,8 +138,8 @@ class ContributionController extends Controller
             $contribution->unit_id = $affiliate->unit_id;
             $contribution->breakdown_id = $affiliate->breakdown_id;
             $contribution->category_id = $affiliate->category_id;
-            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);  
-            $contribution->type='Directo';     
+            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month, 1);
+            $contribution->type = 'Directo';
             $contribution->base_wage = $aporte->sueldo;
             $contribution->dignity_pension = 0;
             $contribution->seniority_bonus = 0;
@@ -228,17 +198,60 @@ class ContributionController extends Controller
     public function getAffiliateContributionsDatatables(DataTables $datatables, $affiliate_id)
     {
         $affiliate = Affiliate::find($affiliate_id);
-        $query = $affiliate->contributions()->orderBy('month_year', 'desc')->get();
+        $reimbursements = $affiliate->reimbursements()->selectRaw('
+            affiliate_id,
+            month_year,
+            null,
+            null,
+            null,
+            base_wage,
+            seniority_bonus,
+            study_bonus,
+            position_bonus,
+            border_bonus,
+            east_bonus,
+            public_security_bonus,
+            gain,
+            quotable,
+            retirement_fund,
+            mortuary_quota,
+            total,
+            null');
+        $contributions = $affiliate->contributions()->select([
+            'affiliate_id',
+            'month_year',
+            'degree_id',
+            'unit_id',
+            'item',
+            'base_wage',
+            'seniority_bonus',
+            'study_bonus',
+            'position_bonus',
+            'border_bonus',
+            'east_bonus',
+            'public_security_bonus',
+            'gain',
+            'quotable',
+            'retirement_fund',
+            'mortuary_quota',
+            'total',
+            'breakdown_id'
+            ])
+            ->union($reimbursements)
+            ->orderBy('month_year','desc')
+            ->get()
+            ;
+        $query = $contributions;
 
         return $datatables->of($query)
             ->editColumn('month_year', function ($contribution) {
                 return Carbon::parse($contribution->month_year)->month . "-" . Carbon::parse($contribution->month_year)->year;
             })
             ->editColumn('degree_id', function ($contribution) {
-                return $contribution->degree_id ? $contribution->degree->hierarchy->code . "-" . $contribution->degree->code : '';
+                return $contribution->degree_id ? $contribution->degree->hierarchy->code . "-" . $contribution->degree->code : null;
             })
             ->editColumn('unit_id', function ($contribution) {
-                return $contribution->unit_id ? $contribution->unit->code : '';
+                return $contribution->unit_id ? $contribution->unit->code : null;
             })
             ->editColumn('base_wage', function ($contribution) {
                 return Util::formatMoney($contribution->base_wage);
@@ -316,85 +329,83 @@ class ContributionController extends Controller
         //
     }
 
-    
-    public function getAffiliateContributions(Affiliate $affiliate){        
+
+    public function getAffiliateContributions(Affiliate $affiliate)
+    {        
         
         //codigo para obtener totales para el resument
-        $contributions = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','DESC')->get();
-        $reims = Reimbursement::where('affiliate_id',$affiliate->id)->get();
-        
+        $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
+        $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
+
         $group = [];
         $group_reim = [];
         foreach ($reims as $reim)
             $group_reim[$reim->month_year] = $reim;
-        
+
         $fondoret = 0;
         $quotaaid = 0;
-        foreach ($contributions as $contribution){
-            $group[$contribution->month_year] = $contribution;          
+        foreach ($contributions as $contribution) {
+            $group[$contribution->month_year] = $contribution;
             $fondoret = $contribution->retirement_fund + $fondoret;
             $quotaaid = $contribution->mortuary_quota + $quotaaid;
         }
-                                
+
         $total = $fondoret + $quotaaid;
-        $dateentry = Util::getStringDate($affiliate->date_entry);        
-                                                
-        $categories = Category::get();        
-        $end = explode('-', $affiliate->date_entry);        
+        $dateentry = Util::getStringDate($affiliate->date_entry);
+
+        $categories = Category::get();
+        $end = explode('-', $affiliate->date_entry);
         $newcontributions = [];
         $month_end = $end[1];
-        $year_end = $end[0]; 
-        $month_start = (date('m')-1);
+        $year_end = $end[0];
+        $month_start = (date('m') - 1);
         $year_start = date('Y');
-        
-        
-        
-        $summary= array( 
+
+
+
+        $summary = array(
             'fondoret' => $fondoret,
             'quotaaid' => $quotaaid,
             'total' => $total,
             'dateentry' => $dateentry
         );
         $cities = City::get();
-        $data = [            
+        $data = [
             'contributions' => $group,
-            'reims' =>  $group_reim,
-            'affiliate_id'  =>  $affiliate->id,
-            'categories'    =>  $categories,            
-            'year_start'    =>  $year_start,
-            'year_end'  => $year_end,
-            'summary'   =>  $summary,
+            'reims' => $group_reim,
+            'affiliate_id' => $affiliate->id,
+            'categories' => $categories,
+            'year_start' => $year_start,
+            'year_end' => $year_end,
+            'summary' => $summary,
             'affiliate' => $affiliate,
-            'cities'  =>  $cities,
+            'cities' => $cities,
         ];
-        
-        return view('contribution.affiliate_contributions_edit',$data);        
+
+        return view('contribution.affiliate_contributions_edit', $data);
     }
-    
-    public function storeContributions(Request $request){
-             
-        foreach ($request->iterator as $key=>$iterator)
-        {            
-            $contribution = Contribution::where('affiliate_id',$request->affiliate_id)->where('month_year',$key)->first();
-            if(isset($contribution->id))
-            {                                
+
+    public function storeContributions(Request $request)
+    {
+
+        foreach ($request->iterator as $key => $iterator) {
+            $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
+            if (isset($contribution->id)) {
                 $contribution->total = $request->total[$key] ?? $contribution->total;
                 $contribution->base_wage = $request->base_wage[$key] ?? $contribution->base_wage;
-                
-                if($request->category[$key]!=$contribution->category_id){
+
+                if ($request->category[$key] != $contribution->category_id) {
                     $category = Category::find($request->category[$key]);
                     $contribution->category_id = $category->id;
-                    $contribution->seniority_bonus = $category->percentage*$contribution->base_wage;
+                    $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
                 }
                 $contribution->gain = $request->gain[$key] ?? $contribution->gain;
                 $contribution->save();
-            }
-            else 
-            {
+            } else {
 //                $contribution = new Contribution();
 //                $contribution->user_id = Auth::user()->id;
 //                $contribution->total = $total;
-                
+
                 $affiliate = Affiliate::find($request->affiliate_id);
                 $contribution = new Contribution();
                 $contribution->user_id = Auth::user()->id;
@@ -405,7 +416,7 @@ class ContributionController extends Controller
                 $contribution->base_wage = $request->base_wage[$key] ?? 0;
                 $category = Category::find($request->category[$key]);
                 $contribution->category_id = $category->id;
-                $contribution->seniority_bonus = $category->percentage*$contribution->base_wage;
+                $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
                 //return $category->percentage*$contribution->base_wage;
                 $contribution->study_bonus = 0;
                 $contribution->position_bonus = 0;
@@ -418,17 +429,17 @@ class ContributionController extends Controller
                 $contribution->mortuary_quota = 0;
                 $contribution->total = $request->total[$key] ?? 0;
                 //$contribution->interes = 0;
-                $contribution->type='Planilla';
-                $contribution->save();                        
+                $contribution->type = 'Planilla';
+                $contribution->save();
             }
         }
         return json_encode($contribution);
     }
-        
+
     public function generateContribution(Affiliate $affiliate)
-    {   
-        $contributions = self::getMonthContributions($affiliate->id);           
-        return View('contribution.create',compact('affiliate', 'contributions'));
+    {
+        $contributions = self::getMonthContributions($affiliate->id);
+        return View('contribution.create', compact('affiliate', 'contributions'));
 
     }
 }

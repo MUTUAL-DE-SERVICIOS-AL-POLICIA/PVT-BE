@@ -1,5 +1,5 @@
 <div class="row border-bottom">
-    <nav class="navbar navbar-fixed-top" role="navigation" style="margin-bottom: 0">
+    <nav class="navbar navbar-fixed-top" id="navbar-fixed-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
             <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
             <form role="search" class="navbar-form-custom" action="search_results.html">
