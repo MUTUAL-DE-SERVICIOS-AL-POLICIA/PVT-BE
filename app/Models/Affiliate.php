@@ -68,6 +68,11 @@ class Affiliate extends Model
         return $this->hasMany('Muserpol\Models\Contribution\Contribution'::class);
     }
 
+    public function reimbursements()
+    {
+        return $this->hasMany('Muserpol\Models\Contribution\Reimbursement'::class);
+    }
+
     public function degree()
     {
         return $this->belongsTo(Degree::class);

@@ -32,7 +32,8 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-striped table-bordered table-hover display" id="datatables-affiliate-contributions"  cellspacing="0" width="100%">
+                    <table  class="table table-striped table-bordered table-hover display" id="datatables-affiliate-contributions" cellspacing="0"
+                        width="100%" style="font-size: 10px">
                         <thead>
                             <tr>
                                 <th>Gestión</th>
@@ -54,53 +55,36 @@
                                 <th>Desg.</th>
                             </tr>
                         </thead>
+
                     </table>
                 </div>
             </div>
         </div>
             {{--  {!! $dataTable->table() !!}s  --}}
- 
+
 
     </div>
 </div>
 @endsection
-{{--  @section('styles')
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
-@endsection  --}}
-{{--  @section('scripts')
-<script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
-<script src="/vendor/datatables/buttons.server-side.js"></script>
-{{--  {!! $dataTable->scripts() !!}
-@endsection  --}}
 @section('styles')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.3/css/fixedHeader.dataTables.min.css">
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
-
 @section('scripts')
-
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-{{--  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>  --}}
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
-<script src="https://cdn.datatables.net/fixedheader/3.1.3/js/dataTables.fixedHeader.min.js"></script>
-
+<script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
-    
     $(document).ready(function () {
-        
-        alert("hla");
-        
         var datatable_contri = $('#datatables-affiliate-contributions').DataTable({
+            responsive: true,
             fixedHeader: {
                 header: true,
-                footer: false
+                footer: true,
+                headerOffset: $('#navbar-fixed-top').outerHeight()
             },
-            ajax:"/get_affiliate_contributions/{{$affiliate->id}}",
+            order: [],
+             columnDefs: [
+               { type: 'monthYear', targets: 0 }
+            ],
+			ajax:"/get_affiliate_contributions/{{$affiliate->id}}",
             // ajax: "{{ url('affiliate_contributions', $affiliate->id) }}",
             lengthMenu: [[15, 25, 50,100, -1], [15, 25, 50,100, "Todos"]],
             //dom:"<'row'<'col-sm-6'l><'col-sm-6'>><'row'<'col-sm-12't>><'row'<'col-sm-5'i>><'row'<'bottom'p>>",
@@ -110,10 +94,10 @@
                 { extend: 'copy'},
                 { extend: 'csv'},
                 { extend: 'excel', title: 'ExampleFile'},
-                { extend: 'pdf', title: 'ExampleFile'},
+                // { extend: 'pdf', title: 'ExampleFile'},
             ],
             columns:[
-                {data: 'month_year'},
+                {data: 'month_year', },
                 {data: 'degree_id'},
                 {data: 'unit_id'},
                 {data: 'item'},
@@ -129,8 +113,22 @@
                 {data: 'retirement_fund'},
                 {data: 'mortuary_quota'},
                 {data: 'total'},
-                {data: 'breakdown_id', "sClass": "text-right", bSortable: false},
+                {data: 'breakdown_id', "sClass": "text-right"},
             ]
+            
+        });
+        jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+            "monthYear-pre": function(s) {
+                var a = s.split('-');
+                // Date uses the American "MM DD YY" format
+                return new Date(a[0] + ' 01 ' + a[1]);
+            },
+            "monthYear-asc": function(a, b) {
+                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+            },
+            "monthYear-desc": function(a, b) {
+                return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+            }
         });
         $('[data-toggle="tooltip"]').tooltip();
     })

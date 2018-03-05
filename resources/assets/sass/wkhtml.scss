@@ -343,6 +343,12 @@ table {
 .m-t-50 {
 	margin-top: 50px;
 }
+.no-paddings{
+	padding: 0px;
+}
+.no-margins{
+	margin: 0px;
+}
 .pin-t {
 	top: 0;
 }
@@ -495,6 +501,9 @@ table {
 .leading-none {
 	line-height: 1;
 }
+.leading-tight	{line-height: 1.25;}
+.leading-normal	{line-height: 1.5;}
+.leading-loose {line-height: 2;}
 .list-roman {
 	list-style-type: upper-roman;
 }
