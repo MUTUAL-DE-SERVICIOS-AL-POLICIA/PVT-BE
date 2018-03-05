@@ -201,17 +201,60 @@ class ContributionController extends Controller
     public function getAffiliateContributionsDatatables(DataTables $datatables, $affiliate_id)
     {
         $affiliate = Affiliate::find($affiliate_id);
-        $query = $affiliate->contributions()->orderBy('month_year', 'desc')->get();
+        $reimbursements = $affiliate->reimbursements()->selectRaw('
+            affiliate_id,
+            month_year,
+            null,
+            null,
+            null,
+            base_wage,
+            seniority_bonus,
+            study_bonus,
+            position_bonus,
+            border_bonus,
+            east_bonus,
+            public_security_bonus,
+            gain,
+            quotable,
+            retirement_fund,
+            mortuary_quota,
+            total,
+            null');
+        $contributions = $affiliate->contributions()->select([
+            'affiliate_id',
+            'month_year',
+            'degree_id',
+            'unit_id',
+            'item',
+            'base_wage',
+            'seniority_bonus',
+            'study_bonus',
+            'position_bonus',
+            'border_bonus',
+            'east_bonus',
+            'public_security_bonus',
+            'gain',
+            'quotable',
+            'retirement_fund',
+            'mortuary_quota',
+            'total',
+            'breakdown_id'
+            ])
+            ->union($reimbursements)
+            ->orderBy('month_year','desc')
+            ->get()
+            ;
+        $query = $contributions;
 
         return $datatables->of($query)
             ->editColumn('month_year', function ($contribution) {
                 return Carbon::parse($contribution->month_year)->month . "-" . Carbon::parse($contribution->month_year)->year;
             })
             ->editColumn('degree_id', function ($contribution) {
-                return $contribution->degree_id ? $contribution->degree->hierarchy->code . "-" . $contribution->degree->code : '';
+                return $contribution->degree_id ? $contribution->degree->hierarchy->code . "-" . $contribution->degree->code : null;
             })
             ->editColumn('unit_id', function ($contribution) {
-                return $contribution->unit_id ? $contribution->unit->code : '';
+                return $contribution->unit_id ? $contribution->unit->code : null;
             })
             ->editColumn('base_wage', function ($contribution) {
                 return Util::formatMoney($contribution->base_wage);
