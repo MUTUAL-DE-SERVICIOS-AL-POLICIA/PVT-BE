@@ -293,7 +293,7 @@ class ContributionController extends Controller
                 return Util::formatMoney($contribution->total);
             })
             ->editColumn('breakdown_id', function ($contribution) {
-                return '<span data-toggle="tooltip" data-placement="top" title="' . ($contribution->breakdown->name ?? 'ERROR') . '">' . $contribution->breakdown_id . '</span>';
+                return '<span data-toggle="tooltip" data-placement="top" title="' . ($contribution->breakdown->name ?? '') . '">' . $contribution->breakdown_id . '</span>';
             })
             ->rawColumns(['breakdown_id'])
             ->make(true);

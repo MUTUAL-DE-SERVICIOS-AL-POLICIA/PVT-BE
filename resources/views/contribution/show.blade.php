@@ -73,6 +73,7 @@
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
     $(document).ready(function () {
+        $('body').addClass("mini-navbar");
         var datatable_contri = $('#datatables-affiliate-contributions').DataTable({
             responsive: true,
             fixedHeader: {
