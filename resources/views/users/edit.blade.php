@@ -2,21 +2,19 @@
 
 @section('content')
 
-
-
 <div class="row m-t-lg">
 <div class="col-md-12">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="pull-left">Datos Personales del Usuario</h3>
             <div class="text-right">
-                <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
+                <button data-animation="flip" class="btn btn-primary"><i class="fa" ></i> </button>
             </div>            
         </div>
         <div class="ibox-content">
             <form action="/update/{{$user->id}}" method="POST">
                 <input type="hidden" name="_method" value="POST">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">          
             <div class="form-group">
                     <label class="col-lg-2 control-label">Usuario</label>
                     <div class="col-lg-10">
@@ -44,7 +42,8 @@
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Departamento</label>
                     <div class="col-lg-10">
-                            {!! Form::select('city_id', $cities, null, ['placeholder' => 'Seleccione el departamento', 'class' => 'form-control']) !!}
+                            {!! Form::select('city_id', $cities, $user->city_id, ['class' => 'col-md-2 combobox form-control','required' => 'required']) !!}
+                            
                        {{-- <select class="form-control m-b" name='city'>
                             @foreach( $cities as $city)
                         <option value="{{$city->name}}">{{$city->name}}</option>
@@ -91,16 +90,32 @@
                     </div>
                         </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Contraseña</label> 
-                    <div class="col-lg-10">       
-                    <input type="password" name="password" placeholder="Password" class="form-control" value="password"></div>               
-                </div>
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Repita la Contraseña</label> 
-                    <div class="col-lg-10">       
-                    <input type="password" name="remember_token" placeholder="Password" class="form-control" value="remember_token"></div>               
-                </div>
+                <show-password inline-template>
+                    <div>
+                        <div class="row">
+                                <div class="col-md-6 col-md-offset-3">
+                                    <div class="form-group">
+                                        <div class="togglebutton">
+                                            <label> <input type="checkbox" class="i-checks" v-model="contra" name="contra"> Modificar Contraseña </label>    
+                                      </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div v-if="contra">
+                        <div class="form-group">
+                            <div class="col-lg-10">       
+                            <input type="password" name="password" placeholder="Password" class="form-control" value="password"></div>               
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Repita la Contraseña</label> 
+                            <div class="col-lg-10">       
+                            <input type="password" name="remember_token" placeholder="Password" class="form-control" value="remember_token"></div>               
+                        </div>
+                    </div>
+                    </div>
+                </show-password>
+                
+
                 <div>
                     <button class="btn btn-primary" type="submit">GUARDAR</button>        
                 </div>
@@ -108,7 +123,7 @@
         </div>            
     </div>        
 </div>
-
+</div>
 
  
 

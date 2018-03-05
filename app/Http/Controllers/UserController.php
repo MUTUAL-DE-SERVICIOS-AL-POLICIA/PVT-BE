@@ -115,7 +115,7 @@ return url('usersGetData/'.$u->id);
     public function create()
     {
         $modules = Module::all();
-        $cities = City::all()->pluck('name', 'id');;
+        $cities = City::all();
         $roles = Role::all();
         $data = array(
             'modules'=> $modules,
@@ -195,9 +195,7 @@ return url('usersGetData/'.$u->id);
             'user' =>$user
         );
 
-        return view('users.edit')->with($data);
-        
-        
+        return view('users.edit')->with($data);        
     }
 
     /**
@@ -217,12 +215,17 @@ return url('usersGetData/'.$u->id);
         $user->position = $request->position;
         $user->username = $request->username;
         $user->city_id=$request->city_id;
-        $user->password = bcrypt($request->password);
-        $user->remember_token= bcrypt($request->remember_token);
+        if($request->contra == "true"){
+            $user->password = bcrypt($request->password);
+            $user->remember_token= bcrypt($request->remember_token);
+        }else{
+            $user->password = bcrypt($user->password);
+            $user->remember_token= bcrypt($user->remember_token);
+        }
         $user->save();
         $user->roles()->sync($request->rol, false);
         $user->save;
-        return redirect('users.index');
+        return redirect('user');
     }
     
 

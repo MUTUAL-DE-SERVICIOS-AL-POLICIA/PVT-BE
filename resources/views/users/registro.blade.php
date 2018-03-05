@@ -1,8 +1,6 @@
 @extends('layouts.app')
-
+@section('title', 'Registro')
 @section('content')
-
-
 
 <div class="row m-t-lg">
 <div class="col-md-12">
@@ -93,7 +91,7 @@
                     <div class="col-lg-10">       
                     <input type="password" name="remember_token" placeholder="Password" class="form-control"></div>               
                 </div>
-                <div>
+                <div class="text-right" center>
                         <button class="btn btn-primary" type="submit">REGISTRAR</button>
                         
                     </div>
@@ -102,7 +100,7 @@
     </div>        
 </div>
 
-
+</div>
  
 
                         

@@ -21,7 +21,7 @@ Auth::routes();
 Route::resource('user', 'UserController');
 Route::get('user/create', 'UserController@create');
 Route::post('registrar', ['as'=>'registrar', 'uses'=>'UserController@store']);
-Route::get('/edit/{id}', 'UserController@edit');
+Route::get('/{id}/edit', 'UserController@edit');
 Route::post('/update/{id}', 'UserController@update');
 //Route::get('users/index','UserController@index');
 Route::get('usersGetData', 'UserController@anyData' )->name('user_list');
