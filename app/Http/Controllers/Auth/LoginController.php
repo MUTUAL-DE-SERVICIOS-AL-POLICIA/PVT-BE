@@ -25,7 +25,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/changerol';
+    protected $redirectTo = '/lechuz';
 
     /**
      * Create a new controller instance.
@@ -40,10 +40,10 @@ class LoginController extends Controller
     {
         return 'username';
     }
-    protected function redirectTo()
-    {
-        return redirect('/changerol');
-    }
+    // protected function redirectTo()
+    // {
+    //     return redirect('/changerol');
+    // }
 
    
 }

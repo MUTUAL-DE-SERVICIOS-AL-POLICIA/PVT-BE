@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
 
-	Route::get('changerol', 'UserController@changerol');
+	Route::get('/changerol', 'UserController@changerol')->name('changerol');
 	Route::post('postchangerol', 'UserController@postchangerol');
 
 	//retirement fund
