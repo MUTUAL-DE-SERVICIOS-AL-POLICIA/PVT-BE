@@ -45,27 +45,14 @@ tr.shown td.details-control {
         </div>
     </div>
 </div>
-
-@endsection 
- 
+@endsection
+@section('styles')
+    <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+@endsection
 @section('scripts')
-<!-- DataTables -->
-<script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-<!-- Bootstrap JavaScript -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<!-- App scripts -->
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
-<script src="https://cdn.datatables.net/fixedheader/3.1.3/js/dataTables.fixedHeader.min.js"></script>
-<script src="https://datatables.yajrabox.com/css/datatables.bootstrap.css"></script>
-
-<script>
-    
-     $(function() {
+<script src="{{ asset('/js/datatables.js')}}"></script>
+<script>    
+$(function() {
 $('#users-table').DataTable({
 processing: true,
 serverSide: true,
