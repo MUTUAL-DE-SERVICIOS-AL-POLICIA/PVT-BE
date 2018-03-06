@@ -6,8 +6,7 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>
-                      
+                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>                        
                     </div>
                 </div>
 
@@ -87,7 +86,10 @@
 
 export default {
   
-   props: ['contributions1'],
+   props: [
+       'contributions1',
+       'affiliate_id'
+   ],
   data() {   
     return {
       contributions: [],
@@ -95,6 +97,7 @@ export default {
       tipo:null,
       ufv:0,
       show_spinner:false
+      
       
     };
   },
@@ -155,29 +158,15 @@ export default {
         this.total = total1;
 
       },
-      PrintQuote(){                  
+      PrintQuote(){                                      
           this.contributions =  this.contributions.filter((item)=> {
             return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
         });
-//         var form = getForm("/print_contributions_quote", "_blank",this.contributions, "post");
-//
-//        document.body.appendChild(form);
-//        form.submit();
-//        form.parentNode.removeChild(form);
-  
-        window.open('/print_contributions_quote', '_blank');
-//          var contributions = this.contributions;
-//        axios.post('/print_contributions_quote',{contributions,total:this.total,tipo:this.tipo})
-//             .then(response => {
-//             console.log(response.data);                
-//     
-//   
-//    
-//             })
-//             .catch(e => {
-//             this.show_spinner = false;
-//             alert(e);
-//             })
+        var contributions = this.contributions;
+        var con = JSON.stringify(contributions);
+        var affiliate_id = this.affiliate_id;
+        var total = this.total;      
+        window.open('/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, '_blank');
       },
       Guardar(){
         
