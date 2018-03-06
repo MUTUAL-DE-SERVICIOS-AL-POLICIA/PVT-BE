@@ -32,7 +32,7 @@ class User extends Authenticatable
     }
     public function roles()
     {
-        return $this->belongsToMany(Models\Role::class);
+        return $this->belongsToMany(Models\Role::class, 'role_user');
     }
     public function city()
     {
@@ -75,6 +75,16 @@ class User extends Authenticatable
     {
         return $this->hasMany('Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary');
     }
+    public function hasRole($rol_id)
+    {
+        foreach($this->roles as $rol){
+            if($rol->id == $rol_id){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
 
 }
