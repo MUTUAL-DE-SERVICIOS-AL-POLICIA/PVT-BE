@@ -23,13 +23,18 @@ Route::resource('user', 'UserController');
 Route::get('usersGetData', 'UserController@anyData' )->name('user_list');
 
 //afiliates
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth']], function () {
+
+	Route::get('/changerol', 'UserController@changerol')->name('changerol');
+	Route::post('postchangerol', 'UserController@postchangerol');
                 
+	Route::group(['middleware' => ['session']], function () {
+
 	Route::get('/', 'HomeController@index')->name("main");
         
         //ROUTES TO E SYSTEM PARAMENTERS
-        Route::get('ret_fun_settings','HomeController@retFunSettings');
-        Route::resource('ret_fun_procedure','RetFunProcedureController');
+    Route::get('ret_fun_settings','HomeController@retFunSettings');
+    Route::resource('ret_fun_procedure','RetFunProcedureController');
 
 	Route::resource('affiliate', 'AffiliateController');
 
@@ -42,8 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
 
-	Route::get('/changerol', 'UserController@changerol')->name('changerol');
-	Route::post('postchangerol', 'UserController@postchangerol');
+
 
 	//retirement fund
 	//RetirementFundRequirements
@@ -79,11 +83,11 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('search/{ci}', 'SearcherController@search');
 	Route::get('search_ajax', 'SearcherController@searchAjax');
         
-        //Contributions
-        Route::resource('contribution','ContributionController');
-        Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions');                
-        Route::post('store_contributions','ContributionController@storeContributions');
-        Route::resource('reimbursement','ReimbursementController');       
+    //Contributions
+    Route::resource('contribution','ContributionController');
+    Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions');                
+    Route::post('store_contributions','ContributionController@storeContributions');
+    Route::resource('reimbursement','ReimbursementController');       
 
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
@@ -98,6 +102,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('get-interest','ContributionController@getInterest');
 	Route::post('contribution_save','ContributionController@storeDirectContribution');
 
+	});
+	
 		
 });
 

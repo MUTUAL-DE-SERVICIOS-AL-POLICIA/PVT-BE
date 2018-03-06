@@ -4,6 +4,8 @@ namespace Muserpol\Http\Controllers\Auth;
 
 use Muserpol\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Log;
+use Session;
 
 class LoginController extends Controller
 {
@@ -25,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/lechuz';
+    protected $redirectTo = '/changerol';
 
     /**
      * Create a new controller instance.
@@ -40,10 +42,20 @@ class LoginController extends Controller
     {
         return 'username';
     }
-    // protected function redirectTo()
-    // {
-    //     return redirect('/changerol');
-    // }
+    
+    public function logout () {
+        //logout user
+        auth()->logout();
+        // redirect to homepage
+        Log::info('Cyk');
+        if(Session::has('rol_id'))
+            Session::forget('rol_id');
+        if(Session::has('rol_name'))
+            Session::forget('rol_name');
 
+         Log::info('Olvidando a la session ');
+
+        return redirect('/');
+    }
    
 }
