@@ -64,6 +64,10 @@ Vue.component('quota-aid-step1-requirements', require('./components/quota_aid/St
 Vue.component('quota-aid-step2-applicant', require('./components/quota_aid/Step2Applicant.vue'));
 Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/Step3Beneficiaries.vue'));
 
+//user
+Vue.component('show-password', require('./components/user/ShowPassword.vue'));
+
+
 
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 const app = new Vue({
