@@ -16,7 +16,7 @@
     <br><br><br>
     <div>
         <span>Recibimos de:</span>
-        @include('ret_fun.print.applicant_info', ['applicant'=>$bene    ])
+        @include('print_global.applicant_info', ['applicant'=>$bene    ])
     </div>
     <table class="table w-100">
         <tbody>
