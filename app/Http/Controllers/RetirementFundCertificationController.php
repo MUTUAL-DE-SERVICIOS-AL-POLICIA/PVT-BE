@@ -202,7 +202,6 @@ class RetirementFundCertificationController extends Controller
                 $glosa = "Agregado Policial en el exterior del país.";
             }
         }
-        // return $affiliate->affiliate_state->name;
         $pdftitle = "Carta de Compromiso de Fondo de Retiro";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
