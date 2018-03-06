@@ -1,10 +1,6 @@
 @extends('layouts.app') 
 @section('styles')
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.3/css/fixedHeader.dataTables.min.css">}
-@endsection
- 
+@endsection 
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -94,6 +90,7 @@ function format (d) {
         table.append($('<th>').text('Unidad')).append($('<th>').text('Role'));
         d.roles.forEach(element => {
             var tr = $('<tr>');
+                
             var td = $('<td>');
         switch(element.module_id) {
         case '1':
@@ -133,7 +130,7 @@ function format (d) {
             var td = $('<td>');
                 td.text(element.name);
             tr.append(td);
-            table.append(tr);  
+            table.append(tr);
         });
         return table;
 }
