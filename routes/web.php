@@ -17,8 +17,14 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
 
 Auth::routes();
-// User 
+// Users
 Route::resource('user', 'UserController');
+Route::get('user/create', 'UserController@create');
+Route::post('registrar', ['as'=>'registrar', 'uses'=>'UserController@store']);
+Route::get('/{id}/edit', 'UserController@edit');
+Route::post('/update/{id}', 'UserController@store');
+Route::get('user/inactive/{user}', 'UserController@inactive');
+Route::get('user/active/{user}', 'UserController@active');
 //Route::get('users/index','UserController@index');
 Route::get('usersGetData', 'UserController@anyData' )->name('user_list');
 

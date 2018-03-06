@@ -3,15 +3,14 @@
 
 @section('content')
 
-
-
 <div class="row">
         <div class="col-md-12 no-padding no-margins">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="pull-left">Usuarios</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
+                            <a href="{!! url('user/create') !!}">
+                                <span class="glyphicon glyphicon-plus"></span>Nuevo</a>
                     </div>
                 </div>
                 <div class="panel-body">
