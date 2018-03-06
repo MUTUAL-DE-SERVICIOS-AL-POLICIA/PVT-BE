@@ -115,12 +115,18 @@ return url('usersGetData/'.$u->id);
     public function create()
     {
         $modules = Module::all();
-        $cities = City::all();
+        $cities = City::all()->pluck('name', 'id');
+        $citiesT= City::all();
         $roles = Role::all();
+        $citiesL=array('' =>'');
+        foreach ($citiesT as $city){
+            $citiesL[$city->id]=$city->name;
+        }
         $data = array(
             'modules'=> $modules,
             'cities' => $cities,
-            'roles' => $roles
+            'roles' => $roles,
+            'citiesL' => $citiesL
         );
         return view('users.registro')->with($data);
     }
@@ -131,38 +137,36 @@ return url('usersGetData/'.$u->id);
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        /*return $request->id;
-        if($request->id2 == "val"){
-            echo "id2 <br>";
-        }else{
-            echo "no id2 <br>";
-        }
-        if($request->id3 == "val"){
-            echo "id3 <br>";
-        }else{
-            echo "no id3 <br>";
-        }
-        if($request->id10 == "val"){
-            echo "id10 <br>";
-        }else{
-            echo "no id10 <br>";
-        }
-        return ;*/
-        $user =new User;        
+        if ($id != null) {
+            //editar
+            $user=User::find($id);   
+        }else {
+            //registrar
+            $user = new User;   
+        }       
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->phone = $request->phone;
         $user->position = $request->position;
         $user->username = $request->username;
         $user->city_id=$request->city;
+        if($request->contra == "false"){
+            $user->password = bcrypt($user->password);
+            $user->remember_token= bcrypt($user->remember_token);
+        }else{
         $user->password = bcrypt($request->password);
-        $user->remember_token= bcrypt($request->remember_token);      
+        $user->remember_token= bcrypt($request->remember_token);
+        }      
         $user->save();
-        $user->roles()->attach($request->rol);
-        $user->save();
-        return redirect('   ');
+        if (isset($user)){
+            $user->roles()->sync($request->rol, false);
+        }else{
+            $user->roles()->attach($request->rol);
+        }       
+        $user->save();        
+        return redirect('user');
     }
 
     /**
@@ -173,7 +177,6 @@ return url('usersGetData/'.$u->id);
      */
     public function show($id)
     {
-        //mostrar
     }
 
     /**
@@ -194,8 +197,7 @@ return url('usersGetData/'.$u->id);
             'roles' => $roles,
             'user' =>$user
         );
-
-        return view('users.edit')->with($data);        
+        return view('users.registro')->with($data);        
     }
 
     /**
@@ -208,24 +210,7 @@ return url('usersGetData/'.$u->id);
 
     public function update(Request $request, $id)
     { 
-        $user=User::find($id);
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->phone = $request->phone;
-        $user->position = $request->position;
-        $user->username = $request->username;
-        $user->city_id=$request->city_id;
-        if($request->contra == "true"){
-            $user->password = bcrypt($request->password);
-            $user->remember_token= bcrypt($request->remember_token);
-        }else{
-            $user->password = bcrypt($user->password);
-            $user->remember_token= bcrypt($user->remember_token);
-        }
-        $user->save();
-        $user->roles()->sync($request->rol, false);
-        $user->save;
-        return redirect('user');
+        
     }
     
 
@@ -235,15 +220,17 @@ return url('usersGetData/'.$u->id);
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function inactivo($user)
+    public function inactive($id)
     {
+        $user=User::find($id);
         $user->status = "inactive";
         $user->save();
         return redirect('user');
     }
 
-    public function activo($user)
+    public function active($id)
     {
+        $user=User::find($id);
         $user->status = "active";
         $user->save();
         return redirect('user');
