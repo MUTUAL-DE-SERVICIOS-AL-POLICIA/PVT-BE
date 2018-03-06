@@ -1,10 +1,10 @@
 @extends('layouts.app')
 <style>
-    table 
-{
-    table-layout:fixed;
-    width:100%;
-}
+    /*    table 
+    {
+        table-layout:fixed;
+        width:100%;
+    }*/
 </style>
     
 @section('title', 'Contribuciones')
@@ -20,7 +20,7 @@
         <div class="row">
         <div class="col-md-12">
             <div class="col-md-6">
-    <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
+                <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
                    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$cities])
             </affiliate-show> 
             </div>        
@@ -28,6 +28,13 @@
                 @include('contribution.aditional_info',['summary',$summary]) 
             </div> 
         </div>
+            <div class="col-md-12 wrapper wrapper-content animated fadeInRight">
+
+        
+    <contribution-create :contributions1="{{ json_encode($new_contributions) }}" ></contribution-create>
+
+                
+            </div>
     </div>
     
     <div class="row">
@@ -36,7 +43,7 @@
             <div class="text-center m-t-lg">               
                 <form>
                     <input type="hidden" name ="affiliate_id" id="affiliate_id" value="{{$affiliate_id}}">
-                <table class="table col-md-12">
+                <table class="table col-md-12 table-striped">
     <thead>
       <tr>
         <th>A&ntilde;o</th>  
@@ -65,9 +72,9 @@
                 $period = $year_start.'-'.($i<10?'0'.$i:$i).'-01';
             @endphp
             @if(isset($contributions[$period]->id))
-            <td>{{$contributions[$period]->total}}</td>
+                <td id="main{{$period}}">{{$contributions[$period]->total}}</td>
             @else
-                <td>0</td>
+                <td id="main{{$period}}">0</td>
             @endif
           @endfor
         <td>

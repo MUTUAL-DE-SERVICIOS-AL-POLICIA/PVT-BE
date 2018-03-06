@@ -6,7 +6,7 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" onclick="printJS('print', 'html')"><i class="fa fa-print" ></i> </button>
+                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>
                       
                     </div>
                 </div>
@@ -87,20 +87,23 @@
 
 export default {
   
-   props: ['contributions1'],
-  data() {   
+    props: ['contributions1','afid'],
+    data() {   
     return {
       contributions: [],
       total:0,
       tipo:null,
       ufv:0,
-      show_spinner:false
-      
+      estado: true,
+      afi_id:null,
+      show_spinner:false,
+      count:3
     };
   },
    
   mounted() {
-   this.contributions = this.contributions1;    
+    this.contributions = this.contributions1;  
+    this.afi_id = this.afid;    
   },
   created(){
       
@@ -115,9 +118,10 @@ export default {
       
       },
       CalcularAporte(con, index){
-          if(parseFloat(con.sueldo) >0)
-          {          
-                
+        if(parseFloat(con.sueldo) >0)
+        {          
+        if(this.count > 0)
+        {
             this.show_spinner=true
             axios.post('/get-interest',{con})
             .then(response => {
@@ -131,19 +135,28 @@ export default {
                 this.show_spinner=false;
 
                 this.SumTotal();
-            
+                this.count = 3;
+                if(index +1 < this.contributions.length)
+                this.$refs.s1[index +1].focus();    
             })
             .catch(e => {
                 
+                console.log(--this.count);
+                console.log("40004");
+                
                 this.show_spinner=false;
-                alert(e)
-            
+                this.CalcularAporte(con, index);
             })
-
-         
-          }
-          if(index +1 < this.contributions.length)
-            this.$refs.s1[index +1].focus();            
+        }
+        else
+        {
+            this.show_spinner=false;
+            this.count = 3;
+            return;
+        }                
+        
+                
+        }           
           
       },
       
@@ -155,6 +168,30 @@ export default {
         this.total = total1;
 
       },
+      PrintQuote(){                  
+          this.contributions =  this.contributions.filter((item)=> {
+            return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+        });
+//         var form = getForm("/print_contributions_quote", "_blank",this.contributions, "post");
+//
+//        document.body.appendChild(form);
+//        form.submit();
+//        form.parentNode.removeChild(form);
+  
+        window.open('/print_contributions_quote', '_blank');
+//          var contributions = this.contributions;
+//        axios.post('/print_contributions_quote',{contributions,total:this.total,tipo:this.tipo})
+//             .then(response => {
+//             console.log(response.data);                
+//     
+//   
+//    
+//             })
+//             .catch(e => {
+//             this.show_spinner = false;
+//             alert(e);
+//             })
+      },
       Guardar(){
         
         //console.log(this.contributions);
@@ -162,48 +199,48 @@ export default {
             return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
         });
         //console.log(this.contributions);         
-        if(this.contributions.length > 0)
-        {   
-            this.$swal({
-            title: 'Esta usted seguro de guardar?',
-            text: "whatever",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar',
-             cancelButtonText: 'Cancelar'
-            }).then((result) => {
-            if (result.value) {
-                
-                var aportes = this.contributions;
-                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo})
-                .then(response => {
-                console.log(response.data);                
-                })
-                .catch(e => {
-                this.show_spinner = false;
-                alert(e);
-                })
-
-                this.$swal({
-                title: 'Pago realizado',
-                showConfirmButton: false,
-                timer: 1500,
-                type: 'success'
-                })
-            }
-            })
-
-            
-        }
-        else
+        if(this.tipo !== null) 
         {
-                        
-                        
-           
-            //alert("No existen registros");
-        }
+            this.contributions =  this.contributions.filter((item)=> {
+                return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+            });       
+      
+            if(this.contributions.length > 0)
+            {   
+                this.$swal({
+                title: 'Esta usted seguro de guardar?',
+                text: "whatever",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                if (result.value) {
+                    
+                    var aportes = this.contributions;
+                    console.log(aportes);
+                    
+                    axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
+                    .then(response => {
+                    console.log(response.data);                
+                    })
+                    .catch(e => {
+                    this.show_spinner = false;
+                    alert(e);
+                    })
+
+                    this.$swal({
+                    title: 'Pago realizado',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    type: 'success'
+                    })
+                }
+                })            
+            }
+        }      
         
         
     

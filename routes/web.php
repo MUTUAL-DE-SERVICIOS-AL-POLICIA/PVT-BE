@@ -87,7 +87,7 @@ Route::group(['middleware' => 'auth'], function () {
         
         //Contributions
         Route::resource('contribution','ContributionController');
-        Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions');                
+        Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions')->name('edit_contribution');
         Route::post('store_contributions','ContributionController@storeContributions');
         Route::resource('reimbursement','ReimbursementController');       
 
@@ -103,6 +103,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::post('get-interest','ContributionController@getInterest');
 	Route::post('contribution_save','ContributionController@storeDirectContribution');
+        Route::post('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
+        Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
 
 		
 });
