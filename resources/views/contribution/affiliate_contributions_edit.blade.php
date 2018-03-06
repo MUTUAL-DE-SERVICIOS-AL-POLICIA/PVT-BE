@@ -31,7 +31,7 @@
             <div class="col-md-12 wrapper wrapper-content animated fadeInRight">
 
         
-    <contribution-create :contributions1="{{ json_encode($new_contributions) }}" ></contribution-create>
+    <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" ></contribution-create>
 
                 
             </div>

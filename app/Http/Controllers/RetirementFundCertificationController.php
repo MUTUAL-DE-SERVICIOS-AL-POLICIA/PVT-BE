@@ -226,40 +226,44 @@ class RetirementFundCertificationController extends Controller
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
         return \PDF::loadView('ret_fun.print.voucher_contribution', compact('date', 'username', 'title', 'affiliate', 'submitted_documents', 'beneficiary', 'glosa', 'bene', 'number', 'voucher', 'descripcion', 'payment_date', 'total_literal', 'name_user_complet'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
-
-    public function printDirectContributionQuote(Request $requirent)
+    
+    public function printDirectContributionQuote(Request $request)
     {
-        $id = 1;
-        $affiliate = Affiliate::find($id);
-
-
+        $contributions  = json_decode($request->contributions);     
+        $total = $request->total;
+        $total_literal = Util::convertir($total);
+        $affiliate = Affiliate::find($request->affiliate_id);                                
         $date = Util::getStringDate(date('Y-m-d'));
         $title = "PAGO DE APORTES VOLUNTARIOS APORTE DIRECTO VIUDAS EFECTIVO";
         $username = Auth::user()->username;//agregar cuando haya roles
-        $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
-
-
+        $name_user_complet = Auth::user()->first_name." ".Auth::user()->last_name;        
+        $detail = "Pago de aporte directo";
         $bene = $affiliate;
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $bene);
-
-        return \PDF::loadView(
-            'ret_fun.print.affiliate_contribution',
-            compact(
-                'date',
-                'subtitle',
-                'username',
-                'title',
-                'number',
-                'retirement_fund',
-                'affiliate',
-                'submitted_documents'
-            )
-        )
-            ->setPaper('letter')
-            ->setOption('encoding', 'utf-8')
-            ->setOption('footer-right', 'Pagina [page] de [toPage]')
-            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
-            ->stream("$namepdf");
-    }
+        $util = new Util();
+        
+        return \PDF::loadView('ret_fun.print.affiliate_contribution', 
+                compact(
+                        'date', 
+                        'subtitle', 
+                        'username', 
+                        'title', 
+                        'number', 
+                        'retirement_fund', 
+                        'affiliate', 
+                        'submitted_documents',
+                        'contributions',
+                        'total',
+                        'total_literal',
+                        'detail',
+                        'util',
+                        'name_user_complet'
+                ))
+                ->setPaper('letter')
+                ->setOption('encoding', 'utf-8')
+                ->setOption('footer-right', 'Pagina [page] de [toPage]')
+                ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')                
+                ->stream("$namepdf");
+    }               
 }
