@@ -1,108 +1,141 @@
-@extends('layouts.app')
+@extends('layouts.app') 
 @section('styles')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.3/css/fixedHeader.dataTables.min.css">}
-
-<style>
-
-td.details-control {
-    background: url('../images/details_open.png') no-repeat center center;
-    cursor: pointer;
-    width: 18px;
-}
-tr.shown td.details-control {
-    background: url('../images/details_close.png') no-repeat center center;
-}
-</Style>
 @endsection
+ 
 @section('content')
-<div class="row">
-    <div class="col-md-12 no-padding no-margins">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="pull-left">Usuarios</h3>
-                <div class="text-right">
-                    <button data-animation="flip" class="btn btn-primary"><i class="fa" class="fa-lock" ></i> </button>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-12 no-padding no-margins">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="pull-left">Usuarios</h3>
+                    <div class="text-right">
+                        <button data-animation="flip" class="btn btn-primary"><i class="fa" class="fa-lock" ></i> </button>
+                    </div>
                 </div>
-            </div>
-            <div class="panel-body">
-                <table class="table table-striped table-bordered table-hover display" id="users-table" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Accion</th>
-                            <th>Usuario</th>
-                            <th>Nombres y Apellidos</th>
-                            <th>Celular</th>
-                            <th>Departamento</th>
-                            <th>Cargo</th>
-                            <th>Estado</th>
-                            <th>Editar</th>
-                        </tr>
-                    </thead>
-                </table>
+                <div class="panel-body">
+                    <table class="table table-striped table-bordered table-hover display" id="users-table" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Roles</th>
+                                <th>Usuario</th>
+                                <th>Nombres y Apellidos</th>
+                                <th>Celular</th>
+                                <th>Departamento</th>
+                                <th>Estado</th>
+                                <th>Editar</th>
+                                <th>Cambiar Estado</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 @endsection
+ 
 @section('styles')
-    <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
+ 
 @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
-<script>    
+<script src="http://wwach.test/usersGetData"></script>
+
+<script>
 $(function() {
-$('#users-table').DataTable({
+var user_tables = $('#users-table').DataTable({
 processing: true,
 serverSide: true,
 ajax: "{!! route('user_list') !!}",
 columns: [ 
-{"className":      'details-control cechus',
+{"className":      'details-control',
  "orderable":      false,
  "searchable":      false,
- "data":           null,
- "defaultContent": ''
+ "data":           'button-roles',
+ "name":            'button-roles',
  }, 
 { data: 'username', name: 'username', orderable: true },
 { data: 'first_name', name: 'first_name' },
 { data: 'phone', name: 'phone', orderable: true },
 { data: 'city_id', name: 'city_id' },
-{ data: 'position', name: 'position' },
 { data: 'status', name: 'status' }, 
-{data: 'action', name: 'action', orderable: false, searchable: false}
-]
-});
-}); 
- function initTable(tableId, data) {
-        $('#' + tableId).DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: data.details_url,
-            columns: [
-                { data: 'id', name: 'id' },
-                { data: 'title', name: 'title' }
-            ]
-        })
-    }
+{data: 'action', name: 'action', orderable: false, searchable: false},
+{"className":      'details-control',
+ "name":         'state',
+ "orderable":      false,
+ "searchable":      false,
+ "data":           'state',
+ "defaultContent": ''
+ },]});
 
-    $('#users-table tbody').on('click', 'td.details-control', function () {
+$('#users-table tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
-        var row = table.row(tr);
+        var row = user_tables.row(tr);
         var tableId = 'posts-' + row.data().id;
-
         if (row.child.isShown()) {
             // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');
         } else {
             // Open this row
-            row.child(template(row.data())).show();
-            initTable(tableId, row.data());
+            row.child(format(row.data())).show();
             tr.addClass('shown');
-            tr.next().find('td').addClass('no-padding bg-gray');
         }
     });
- </script>
- 
+}); 
+function format (d) {
+    var table = $('<table>').addClass('table-bordered');
+        table.append($('<th>').text('Unidad')).append($('<th>').text('Role'));
+        d.roles.forEach(element => {
+            var tr = $('<tr>');
+            var td = $('<td>');
+        switch(element.module_id) {
+        case '1':
+                td.text('Tecnología');
+        break;
+        case '2':
+                td.text('Complemento Económico');
+        break;
+        case '3':
+                td.text('Fondo de Retiro');
+        break;
+        case '4':
+                td.text('Cuota Mortuoria');
+        break;
+        case '5':
+                td.text('Auxilio Mortuorio');
+        break;
+        case '6':
+                td.text('Préstamos');
+        break;
+        case '7':
+                td.text('Jurídica');
+        break;
+        case '8':
+                td.text('Beneficios Económicos');
+        break;
+        case '9':
+                td.text('Asuntos Financieros');
+        break;
+        case '10':
+                td.text('Regional');
+        break;
+        default:
+                td.text('');
+        }               
+            tr.append(td);
+            var td = $('<td>');
+                td.text(element.name);
+            tr.append(td);
+            table.append(tr);  
+        });
+        return table;
+}
+</script>
 @endsection

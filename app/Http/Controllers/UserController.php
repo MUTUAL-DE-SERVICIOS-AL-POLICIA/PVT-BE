@@ -31,36 +31,26 @@ class UserController extends Controller
      */
     public function anyData()
     {
-        $users = User::all();
-//DB::statement(DB::raw('set @rownum=0'));
+        $users = User::with('roles')->get();
         return Datatables::of($users)
-
-        ->addColumn('details_url', function($u) {
-return url('usersGetData/'.$u->id);
-        })
             ->addColumn('action', function ($u) {
-                return '<a href="/user/' . $u->id . '/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
+                return '<a href="/user/' . $u->id . '/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>Edit</a>';
             })
             ->editColumn('city_id', function ($u) {
                 return $u->city->name ?? "";
             })
             ->editColumn('first_name', function ($u) {
                 return $u->first_name . ' ' . $u->last_name ?? "";
+            })            
+            ->addColumn('button-roles', function($u) {
+                return '<a class="btn btn-xs btn-primary"><i class="fa fa-user-plus"></i> Ver</a>';
             })
-        // ->setRowId('phone')
-        //     ->setRowClass(function ($u) {
-        //         return $u->id % 2 == 0 ? 'alert-success' : 'alert-warning';
-        //     })
-        //     ->setRowData([
-        //         'phone' => 'test',
-        //     ])
-        // ->setRowAttr([
-        //     'color' => 'red',
-        //     ])
+            ->addColumn('state', function($u) {
+                return '<a class="btn btn-xs btn-primary"><i class="fa fa-arrow-circle-up"></i> Cambiar</a>';
+                })->rawColumns(['state','action','button-roles'])
             ->make(true);
-
     }
-
+ 
     public function Data()
     {
         $users = User::select(['id', 'username', 'first_name', 'last_name', 'position', 'phone', 'status', 'city_id'])->where('id', '>', 1);
