@@ -23,6 +23,7 @@ use Muserpol\Helpers\Util;
 use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
+use Illuminate\Support\Facades\Log;
 
 
 class ContributionController extends Controller
@@ -39,11 +40,28 @@ class ContributionController extends Controller
         $mount = $request->con['sueldo'];
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
         $foo = file_get_contents($uri);
-        return $foo;
+        //return $foo;
+        $ch = curl_init($uri);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        $json = '';
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if( ($json = curl_exec($ch) ) === false)
+        {
+            Log::info("Error ".$httpcode ." ".$json);
+            return response('error', 500);
+        }
+        else
+        {
+            Log::info("Success: ".$httpcode. " ".$json );
+            return $json;
+        }
+        
     }
 
     public function getMonthContributions($id)
-    {
+    {   $contributions=[];
         $lastMonths = Contribution::where('affiliate_id', $id)
             ->orderBy('month_year', 'desc')
             ->first();
@@ -51,7 +69,7 @@ class ContributionController extends Controller
             $now = Carbon::now();
             $arrayDat = explode('-', $lastMonths->month_year);
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-            $diff = $now->diffInMonths($lastMonths);
+            $diff = $now->addMonths(1)->diffInMonths($lastMonths);
             $contribution = array();
             if ($diff > 2) {
                 $month1 = Carbon::now()->subMonths(1);
@@ -62,8 +80,10 @@ class ContributionController extends Controller
                 $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contributions = array($contribution1, $contribution2, $contribution3);
-            } else {
-                $contributions[] = null;
+            } 
+            else 
+            {
+                $contributions=[];
                 for ($i = 0; $i < $diff; $i++) {
                     $month_diff = Carbon::now()->subMonths($i + 1);
                     $month = explode('-', $month_diff);
@@ -72,20 +92,11 @@ class ContributionController extends Controller
                     $contributions[$i] = $contribution;
                 }
             }
-        } else {
-            $month1 = Carbon::now()->subMonths(1);
-            $month2 = Carbon::now()->subMonths(2);
-            $month3 = Carbon::now()->subMonths(3);
-                //dd($month1.' '.$month2.' '.$month3);
-            $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-            $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-            $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-            $contributions = array($contribution1, $contribution2, $contribution3);
-        }
+        }     
 
         return $contributions;
     }
-
+    
     public function index()
     {
         return 0;
@@ -102,17 +113,7 @@ class ContributionController extends Controller
     }
 
     public function storeDirectContribution(Request $request)
-    {
-       /*$validator=Validator::make($request-all(),[]);
-        $validator->after(function($validator){
-            if(false)            
-                $validator->errors()-add('Aporte', 'El aporte no puede ser realizado');
-         });         
-        if($validator->fails())
-        {
-            return $validator->errors();   
-        }*/
-       
+    {      
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
@@ -122,19 +123,19 @@ class ContributionController extends Controller
 
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
-        $voucher->affiliate_id = $request->aportes[0]['affiliate_id'];
+        $voucher->affiliate_id = $request->afid;
         $voucher->voucher_type_id = $request->tipo;
         $voucher->total = $request->total;
         $voucher->payment_date = Carbon::now();
         $voucher->code = $code;
-        $voucher->save();
+        $voucher->save();      
        // return $voucher;
         //return $request->aportes;
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
-            $aporte = (object)$ap;
+            $aporte=(object)$ap;
             //sreturn $aporte->affiliate_id;
-            $affiliate = Affiliate::find($aporte->affiliate_id);
+            $affiliate = Affiliate::find($request->afid);
             $contribution = new Contribution();
             $contribution->user_id = Auth::user()->id;
             $contribution->affiliate_id = $affiliate->id;
@@ -142,8 +143,8 @@ class ContributionController extends Controller
             $contribution->unit_id = $affiliate->unit_id;
             $contribution->breakdown_id = $affiliate->breakdown_id;
             $contribution->category_id = $affiliate->category_id;
-            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month, 1);
-            $contribution->type = 'Directo';
+            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);  
+            $contribution->type='Directo';     
             $contribution->base_wage = $aporte->sueldo;
             $contribution->dignity_pension = 0;
             $contribution->seniority_bonus = 0;
@@ -165,6 +166,7 @@ class ContributionController extends Controller
             $contribution->total = $aporte->subtotal;
             $contribution->ipc = $aporte->interes;
             $contribution->save();
+            //Log::info(json_encode($contribution));
             //return $contribution;
         }
 
@@ -388,6 +390,7 @@ class ContributionController extends Controller
             'summary' => $summary,
             'affiliate' => $affiliate,
             'cities' => $cities,
+            'new_contributions' => self::getMonthContributions($affiliate->id),
         ];
 
         return view('contribution.affiliate_contributions_edit', $data);
