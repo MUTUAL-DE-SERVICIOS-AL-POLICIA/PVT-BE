@@ -20,10 +20,11 @@
                     <div class="row" >
                         
                         <div class="col-md-6" style="margin-bottom:20px">
-                            <select v-model="tipo" name="tipo" v-validate="'required'" :class="{'form-control': true, 'error': errors.has('tipo')}">
-                                <option value="1">Item 0</option>
-                                <option value="2">Proceso diciplinario</option>
-                                <option value="3">Baja medica</option>
+                            <label>Tipo de Aporte:</label>
+                            <select v-model="tipo" class="form-control" v-on:change="changeType">
+                                <option value="1">Comisión</option>
+                                <option value="2">Agregado Policial</option>
+                                <option value="3">Baja Temporal</option>
                             </select>
                             <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
@@ -86,7 +87,11 @@
 
 export default {
   
-    props: ['contributions1','afid'],
+    props: [
+        'contributions1',
+        'afid',
+        'last_quotable',
+    ],
     data() {   
 
     return {
@@ -159,6 +164,26 @@ export default {
         }           
           
       },
+
+      changeType:function(e){
+          var i;
+          if(e.target.value == 3){              
+              for(i=0;i<this.contributions.length && this.last_quotable!=0;i++){
+                this.contributions[i].sueldo = this.last_quotable;                
+                this.CalcularAporte(this.contributions[i],i);
+              }
+          }    
+          else {
+              for(i=0;i<this.contributions.length;i++){
+                this.contributions[i].sueldo = 0;
+                this.contributions[i].fr = 0;
+                this.contributions[i].cm = 0;
+                this.contributions[i].interes = 0;
+                this.contributions[i].subtotal = 0;
+              }
+          }
+      },
+
       SumTotal(){
             let total1 = 0;
             this.contributions.forEach(con => {                            
