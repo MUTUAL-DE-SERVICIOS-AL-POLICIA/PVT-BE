@@ -159,7 +159,6 @@ export default {
         }           
           
       },
-      
       SumTotal(){
             let total1 = 0;
             this.contributions.forEach(con => {                            
