@@ -20,12 +20,12 @@
                     <div class="row" >
                         
                         <div class="col-md-6" style="margin-bottom:20px">
-                            <label>Tipo de Aporte:</label>
-                            <select v-model="tipo" class="form-control">
+                            <select v-model="tipo" name="tipo" v-validate="'required'" :class="{'form-control': true, 'error': errors.has('tipo')}">
                                 <option value="1">Item 0</option>
                                 <option value="2">Proceso diciplinario</option>
                                 <option value="3">Baja medica</option>
                             </select>
+                            <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
                         
                     </div>
@@ -180,11 +180,8 @@ export default {
       },
       Guardar(){
         
-        //console.log(this.contributions);
-        this.contributions =  this.contributions.filter((item)=> {
-            return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
-        });
-        //console.log(this.contributions);         
+        //console.log(this.contributions); 
+        console.log(this.tipo);
         if(this.tipo !== null) 
         {
             this.contributions =  this.contributions.filter((item)=> {
