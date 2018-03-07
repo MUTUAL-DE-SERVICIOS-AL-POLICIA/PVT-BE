@@ -1,7 +1,7 @@
 @extends('print_global.print') 
 @section('content')
 <div>
-    @include('ret_fun.print.applicant_info', ['applicant'=>$applicant])
+    @include('print_global.applicant_info', ['applicant'=>$applicant])
     <div>
         <div class="text-left mx-10 block">
             <span class="capitalize">Señor:</span><br>

@@ -18,20 +18,20 @@
                 <td class="text-center p-5">AJUSTE IPC</td>
                 <td class="text-center p-5">TOTAL APORTE</td>
             </tr>
-        {{--  @foreach($submitted_documents as $i=>$item)
+        @foreach($contributions as $i=>$item)
             <tr>
-                <td class='text-center p-5'>{!! $item->procedure_requirement->number !!}</td>
-                <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
-                <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
-                <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
-                <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
-                <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
+                <td class='text-center p-5'>{!! $item->monthyear !!}</td>
+                <td class='text-right p-5'>{!! $util::formatMoney($item->sueldo) !!} </td>
+                <td class='text-right p-5'>{!! $util::formatMoney($item->fr) !!} </td>
+                <td class='text-right p-5'>{!! $util::formatMoney($item->cm) !!} </td>
+                <td class='text-right p-5'>{!! $util::formatMoney($item->interes) !!} </td>
+                <td class='text-right p-5'>{!! $util::formatMoney($item->subtotal) !!} </td>
             </tr>
-        @endforeach  --}}
+        @endforeach
             <tr>
                 <td colspan="4"></td>
                 <td class="text-right py-4 bg-grey-darker">Total:</td>
-                {{--  <td class='text-justify p-5 bg-grey-darker'>{!! $item->procedure_requirement->procedure_document->name !!} </td>  --}}
+                  <td class='text-right p-5 bg-grey-darker'>{!! $util::formatMoney($total) !!} </td>  
             </tr>
         </tbody>
     </table>
@@ -40,12 +40,12 @@
         <tbody>
             <tr>
                 <td>Son:</td>
-                {{--  <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>  --}}
+                <td class='text-justify p-5'>{!! $total_literal !!} </td>  
             </tr>
             </tr>
             <tr>
                 <td>Glosa:</td>
-                {{--  <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>  --}}
+                 <td class='text-justify p-5'>{!! $detail !!} </td> 
             </tr>
         </tbody>
     </table>
@@ -76,7 +76,7 @@
                 <th class="border text-center" rowspan="5">
                     <p class="font-bold"><br><br><br><br><br>
                         ----------------------------------------------------<br>
-                        COBRADO POR
+                        COBRADO POR: <br> {{$name_user_complet}}
                     </p>
                 </th>
                 
