@@ -30,8 +30,8 @@
         @endforeach
             <tr>
                 <td colspan="4"></td>
-                <td class="text-right py-4 bg-grey-darker">Total:</td>
-                  <td class='text-right p-5 bg-grey-darker'>{!! $util::formatMoney($total) !!} </td>  
+                <td class="text-right py-4 bg-grey-darker text-white font-bold">Total:</td>
+                  <td class='text-right p-5 bg-grey-darker text-white font-bold'>{!! $util::formatMoney($total) !!} </td>  
             </tr>
         </tbody>
     </table>
