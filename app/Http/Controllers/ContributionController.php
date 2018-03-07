@@ -203,9 +203,10 @@ class ContributionController extends Controller
     public function getAffiliateContributionsDatatables(DataTables $datatables, $affiliate_id)
     {
         $affiliate = Affiliate::find($affiliate_id);
-        $reimbursements = $affiliate->reimbursements()->selectRaw('
+        $reimbursements = $affiliate->reimbursements()->selectRaw("
             affiliate_id,
             month_year,
+            concat('RE - ',  extract(year from month_year ))  as month_year_concat,
             null,
             null,
             null,
@@ -221,27 +222,30 @@ class ContributionController extends Controller
             retirement_fund,
             mortuary_quota,
             total,
-            null');
-        $contributions = $affiliate->contributions()->select([
-            'affiliate_id',
-            'month_year',
-            'degree_id',
-            'unit_id',
-            'item',
-            'base_wage',
-            'seniority_bonus',
-            'study_bonus',
-            'position_bonus',
-            'border_bonus',
-            'east_bonus',
-            'public_security_bonus',
-            'gain',
-            'quotable',
-            'retirement_fund',
-            'mortuary_quota',
-            'total',
-            'breakdown_id'
-            ])
+            null,
+            ' RE ' as type");
+        $contributions = $affiliate->contributions()->selectRaw("
+            affiliate_id,
+            month_year,
+            concat(extract(month from month_year), ' - ', extract(year from month_year)) as month_year_concat,
+            degree_id,
+            unit_id,
+            item,
+            base_wage,
+            seniority_bonus,
+            study_bonus,
+            position_bonus,
+            border_bonus,
+            east_bonus,
+            public_security_bonus,
+            gain,
+            quotable,
+            retirement_fund,
+            mortuary_quota,
+            total,
+            breakdown_id,
+            'AP' as type"
+            )
             ->union($reimbursements)
             ->orderBy('month_year','desc')
             ->get()
@@ -249,9 +253,10 @@ class ContributionController extends Controller
         $query = $contributions;
 
         return $datatables->of($query)
-            ->editColumn('month_year', function ($contribution) {
-                return Carbon::parse($contribution->month_year)->month . "-" . Carbon::parse($contribution->month_year)->year;
-            })
+            // ->editColumn('month_year', function ($contribution) {
+                
+            //     return Carbon::parse($contribution->month_year)->month . "-" . Carbon::parse($contribution->month_year)->year;
+            // })
             ->editColumn('degree_id', function ($contribution) {
                 return $contribution->degree_id ? $contribution->degree->hierarchy->code . "-" . $contribution->degree->code : null;
             })

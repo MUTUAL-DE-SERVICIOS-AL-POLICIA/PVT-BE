@@ -8,6 +8,9 @@ use Auth;
 use Session;
 use Muserpol\Models\Role;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\Module;
+use Muserpol\Models\City;
+
 use Yajra\Datatables\Datatables;
 use DB;
 //use Muserpol\Http\Controllers\DataTables;
@@ -31,36 +34,26 @@ class UserController extends Controller
      */
     public function anyData()
     {
-        $users = User::all();
-//DB::statement(DB::raw('set @rownum=0'));
+        $users = User::with('roles')->get();
         return Datatables::of($users)
-
-       /*  ->addColumn('details_url', function($u) {
-return url('usersGetData/'.$u->id);
-        }) */
             ->addColumn('action', function ($u) {
-                return '<a href="/user/' . $u->id . '/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
+                return '<a href="/user/' . $u->id . '/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>Edit</a>';
             })
             ->editColumn('city_id', function ($u) {
                 return $u->city->name ?? "";
             })
             ->editColumn('first_name', function ($u) {
                 return $u->first_name . ' ' . $u->last_name ?? "";
+            })            
+            ->addColumn('button-roles', function($u) {
+                return '<a class="btn btn-xs btn-primary"><i class="fa fa-user-plus"></i> Ver</a>';
             })
-        // ->setRowId('phone')
-        //     ->setRowClass(function ($u) {
-        //         return $u->id % 2 == 0 ? 'alert-success' : 'alert-warning';
-        //     })
-        //     ->setRowData([
-        //         'phone' => 'test',
-        //     ])
-        // ->setRowAttr([
-        //     'color' => 'red',
-        //     ])
+            ->addColumn('state', function($u) {
+                return '<a class="btn btn-xs btn-primary"><i class="fa fa-arrow-circle-up"></i> Cambiar</a>';
+                })->rawColumns(['state','action','button-roles'])
             ->make(true);
-
     }
-
+ 
     public function Data()
     {
         $users = User::select(['id', 'username', 'first_name', 'last_name', 'position', 'phone', 'status', 'city_id'])->where('id', '>', 1);
@@ -111,7 +104,21 @@ return url('usersGetData/'.$u->id);
      */
     public function create()
     {
-        //
+        $modules = Module::all();
+        $cities = City::all()->pluck('name', 'id');
+        $citiesT= City::all();
+        $roles = Role::all();
+        $citiesL=array('' =>'');
+        foreach ($citiesT as $city){
+            $citiesL[$city->id]=$city->name;
+        }
+        $data = array(
+            'modules'=> $modules,
+            'cities' => $cities,
+            'roles' => $roles,
+            'citiesL' => $citiesL
+        );
+        return view('users.registro')->with($data);
     }
 
     /**
@@ -120,9 +127,36 @@ return url('usersGetData/'.$u->id);
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        //
+        if ($id != null) {
+            //editar
+            $user=User::find($id);   
+        }else {
+            //registrar
+            $user = new User;   
+        }       
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->phone = $request->phone;
+        $user->position = $request->position;
+        $user->username = $request->username;
+        $user->city_id=$request->city;
+        if($request->contra == "false"){
+            $user->password = bcrypt($user->password);
+            $user->remember_token= bcrypt($user->remember_token);
+        }else{
+        $user->password = bcrypt($request->password);
+        $user->remember_token= bcrypt($request->remember_token);
+        }      
+        $user->save();
+        if (isset($user)){
+            $user->roles()->sync($request->rol, false);
+        }else{
+            $user->roles()->attach($request->rol);
+        }       
+        $user->save();        
+        return redirect('user');
     }
 
     /**
@@ -133,7 +167,6 @@ return url('usersGetData/'.$u->id);
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -144,7 +177,17 @@ return url('usersGetData/'.$u->id);
      */
     public function edit($id)
     {
-        //
+        $modules = Module::all();
+        $cities = City::all()->pluck('name', 'id');
+        $roles = Role::all();
+        $user=User::where('id', $id) ->first();
+        $data = array(
+            'modules'=> $modules,
+            'cities' => $cities,
+            'roles' => $roles,
+            'user' =>$user
+        );
+        return view('users.registro')->with($data);        
     }
 
     /**
@@ -154,10 +197,12 @@ return url('usersGetData/'.$u->id);
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, $id)
-    {
-        //
+    { 
+        
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -165,6 +210,21 @@ return url('usersGetData/'.$u->id);
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function inactive($id)
+    {
+        $user=User::find($id);
+        $user->status = "inactive";
+        $user->save();
+        return redirect('user');
+    }
+
+    public function active($id)
+    {
+        $user=User::find($id);
+        $user->status = "active";
+        $user->save();
+        return redirect('user');
+    }
     public function destroy($id)
     {
         //
@@ -210,5 +270,4 @@ return url('usersGetData/'.$u->id);
         return redirect('/');
 
     }
-
 }

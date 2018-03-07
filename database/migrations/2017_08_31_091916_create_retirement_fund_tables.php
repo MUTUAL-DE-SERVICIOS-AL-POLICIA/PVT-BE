@@ -285,7 +285,19 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
-
+        Schema::create('contribution_commitments', function (Blueprint $table) { //COMPROMISO DE PAGO DE APORTES
+            $table->bigIncrements('id');
+            $table->bigInteger('affiliate_id')->unsigned();            
+            $table->enum('commitment_type', ['COMISION', 'BAJA TEMPORAL','AGREGADO POLICIAL']); // TIPO DE COMPROMISO
+            $table->string('number');
+            $table->string('destination');
+            $table->date('commision_date'); //fecha de comision
+            $table->date('commitment_date'); //fecha de compromiso
+            $table->enum('state',['ALTA','BAJA']);
+            $table->foreign('affiliate_id')->references('id')->on('affiliates');
+            $table->timestamps();
+            $table->softDeletes();
+        });
         
         Schema::create('ufv_rates', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -337,7 +349,8 @@ class CreateRetirementFundTables extends Migration {
 
         Schema::drop('contribution_types');
         Schema::drop('eco_com_observations');
-        Schema::drop('ufv_rates');     
+        Schema::drop('ufv_rates');
+        Schema::drop('contribution_commitments');
         Schema::drop('affiliate_scanned_documents');
         Schema::drop('affiliate_folders'); 
         Schema::drop('ret_fun_intervals');
