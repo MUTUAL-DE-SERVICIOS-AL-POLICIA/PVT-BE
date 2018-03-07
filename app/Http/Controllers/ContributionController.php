@@ -370,8 +370,7 @@ class ContributionController extends Controller
         $year_end = $end[0];
         $month_start = (date('m') - 1);
         $year_start = date('Y');
-
-
+        $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();        
 
         $summary = array(
             'fondoret' => $fondoret,
@@ -391,6 +390,7 @@ class ContributionController extends Controller
             'affiliate' => $affiliate,
             'cities' => $cities,
             'new_contributions' => self::getMonthContributions($affiliate->id),
+            'last_quotable' =>  $last_contribution->quotable ?? 0,
         ];
 
         return view('contribution.affiliate_contributions_edit', $data);
