@@ -62,21 +62,43 @@ class RetirementFundController extends Controller
         $requirements = ProcedureRequirement::select('id')->get();        
         
         $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled',true)->select('id')->first();
+        $affiliate_id = 1;
+        $error_contributions = "";//false;
+        //$contributions = Contribution()->get();
+        //if($contributions>3)
+        $error_contributions = 'no se puede guardar mas de 3 contribuciones';// true;
         
         
-        $validator = Validator::make($request->all(), [
-            //'applicant_first_name' => 'required|max:5',            
-        ]);                
+        $rules = [
+            'applicant_first_name' => 'required|max:5',
+            'error_contributions'  =>  $error_contributions?'required':'',
+        ];
+        $messages = [
+            'applicant_first_name.max' => 'cantidad de datos exedida',
+            'error_contributions.required'   =>  'no se puede guardar mas de 3 contribuciones',
+        ];
+        
+        $validator = Validator::make($request->all(),$rules,$messages);                
+        
+        
+//        $validator = Validator::make($request->all(), [
+//            'applicant_first_name' => 'required|max:5',            
+//        ]);                
         //custom this validator
         $validator->after(function($validator){
             if(false)                
                 $validator->errors()->add('Modalidad', 'el campo modalidad no puede ser tramitada este mes');            
         });        
+        print_r($validator);
+        return;
+        //array_push($validator->errors(), ['message'=>'mesage cyuston']);
+        
         if($validator->fails()){
             return $validator->errors();            
         }
         
         
+        return 0;
         $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
         if(!isset($ret_fund->id))
             $code = Util::getNextCode ("");

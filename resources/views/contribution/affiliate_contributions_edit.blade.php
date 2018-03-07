@@ -306,6 +306,7 @@ $('body').addClass("mini-navbar");
             success: function(result){
                 console.log('saved');
                 console.log(result);
+                 $('#main'+result.month_year).html(result.total);
             },
             error: function(xhr, status, error) {                
                 console.log(xhr.responseText);                                

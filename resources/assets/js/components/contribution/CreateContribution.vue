@@ -234,8 +234,7 @@ export default {
                     console.log(response.data);                
                     })
                     .catch(e => {
-                    this.show_spinner = false;
-            console.log(e.response);
+                    this.show_spinner = false;            
                     alert(e);
                     })
 
