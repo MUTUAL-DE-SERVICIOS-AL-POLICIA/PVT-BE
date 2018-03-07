@@ -450,6 +450,7 @@ class ContributionController extends Controller
 
     public function generateContribution(Affiliate $affiliate)
     {
+        $this->authorize('create',Contribution::class);
         $contributions = self::getMonthContributions($affiliate->id);
         return View('contribution.create', compact('affiliate', 'contributions'));
 

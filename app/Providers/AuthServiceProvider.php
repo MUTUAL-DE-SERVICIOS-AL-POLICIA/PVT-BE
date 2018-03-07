@@ -5,7 +5,9 @@ namespace Muserpol\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Affiliate;
 use Muserpol\Policies\ContributionPolicy;
+use Muserpol\Policies\AffiliatePolicy;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -14,8 +16,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'Muserpol\Model' => 'Muserpol\Policies\ModelPolicy',
          Contribution::class => ContributionPolicy::class,
+         Affiliate::class => AffiliatePolicy::class,
     ];
 
     /**
