@@ -26,6 +26,7 @@
                                 <option value="2">Agregado Policial</option>
                                 <option value="3">Baja Temporal</option>
                             </select>
+                            <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
                         
                     </div>
@@ -163,6 +164,7 @@ export default {
         }           
           
       },
+
       changeType:function(e){
           var i;
           if(e.target.value == 3){              
@@ -181,6 +183,7 @@ export default {
               }
           }
       },
+
       SumTotal(){
             let total1 = 0;
             this.contributions.forEach(con => {                            
@@ -201,11 +204,8 @@ export default {
       },
       Guardar(){
         
-        //console.log(this.contributions);
-        this.contributions =  this.contributions.filter((item)=> {
-            return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
-        });
-        //console.log(this.contributions);         
+        //console.log(this.contributions); 
+        console.log(this.tipo);
         if(this.tipo !== null) 
         {
             this.contributions =  this.contributions.filter((item)=> {
