@@ -156,8 +156,8 @@ return url('usersGetData/'.$u->id);
             $user->password = bcrypt($user->password);
             $user->remember_token= bcrypt($user->remember_token);
         }else{
-        $user->password = bcrypt($request->password);
-        $user->remember_token= bcrypt($request->remember_token);
+            $user->password = bcrypt($request->password);
+            $user->remember_token= bcrypt($request->remember_token);
         }      
         $user->save();
         if (isset($user)){
@@ -212,7 +212,6 @@ return url('usersGetData/'.$u->id);
     { 
         
     }
-    
 
     /**
      * Remove the specified resource from storage.
