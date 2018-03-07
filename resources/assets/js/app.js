@@ -32,6 +32,9 @@ Vue.use(VueFormWizard);
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
+import VeeValidate from 'vee-validate';
+Vue.use(VeeValidate);
+
 
 
 Vue.component('flash', require('./components/Flash.vue'));
