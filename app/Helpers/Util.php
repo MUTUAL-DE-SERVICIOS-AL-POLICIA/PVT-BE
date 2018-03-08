@@ -2,7 +2,7 @@
 
 namespace Muserpol\Helpers;
 use DateTime;
-
+use Session;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -172,6 +172,26 @@ class Util
             }
         }
         return $output;
+    }
+
+    public static function getRol()
+    {
+        // return "hola ";
+        $roles = Auth::user()->roles;
+
+        $rol = Session::get('rol_id');
+
+        $rol_object =null;
+        foreach ($roles as $r) {
+            # code...
+            if($rol== $r->id)
+            {
+                $rol_object =$r;
+            }
+        }
+
+        return $rol_object;
+
     }
 
 }

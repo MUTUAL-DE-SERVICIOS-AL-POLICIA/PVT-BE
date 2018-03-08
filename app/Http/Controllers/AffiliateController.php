@@ -165,8 +165,11 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Affiliate $affiliate)
-    {
+    { 
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
+
+        $this->authorize('update', $affiliate);
+
         $affiliate->identity_card = $request->identity_card;
         $affiliate->first_name = $request->first_name;
         $affiliate->second_name = $request->second_name;
@@ -189,6 +192,7 @@ class AffiliateController extends Controller
     public function update_affiliate_police(Request $request, Affiliate $affiliate)
     {
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
+        $this->authorize('update', $affiliate);
         $affiliate->affiliate_state_id = $request->affiliate_state_id;
         $affiliate->type = $request->type;
         $affiliate->date_entry = $request->date_entry;
