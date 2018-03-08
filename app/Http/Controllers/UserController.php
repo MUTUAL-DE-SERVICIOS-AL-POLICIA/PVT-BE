@@ -25,7 +25,15 @@ class UserController extends Controller
 //aca------------
     public function index()
     {
-        return view('users.index');
+        // if(Session::has('rol_id'))
+        // {
+
+            return view('users.index');
+        // }
+        // else
+        // {
+        //     return redirect('changerol');
+        // }
     }
     /**
      * Process datatables ajax request.
@@ -147,8 +155,8 @@ class UserController extends Controller
             $user->password = bcrypt($user->password);
             $user->remember_token= bcrypt($user->remember_token);
         }else{
-        $user->password = bcrypt($request->password);
-        $user->remember_token= bcrypt($request->remember_token);
+            $user->password = bcrypt($request->password);
+            $user->remember_token= bcrypt($request->remember_token);
         }      
         $user->save();
         if (isset($user)){
@@ -203,7 +211,6 @@ class UserController extends Controller
     { 
         
     }
-    
 
     /**
      * Remove the specified resource from storage.

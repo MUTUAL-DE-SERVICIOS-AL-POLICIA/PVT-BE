@@ -132,6 +132,7 @@
                         flash('Informacion del Afiliado Actualizada');
                     }).catch((response)=>{
                         this.show_spinner=false;
+                        this.toggle_editing();
                         flash('Error al actualizar el afiliado: '+response.message,'error');
                     })
             }

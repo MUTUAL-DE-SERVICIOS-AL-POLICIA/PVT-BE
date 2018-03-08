@@ -19,7 +19,7 @@ use Auth;
 use Validator;
 use DateTime;
 use Muserpol\Helpers\Util;
-
+use Muserpol\Models\Contribution\ContributionCommitment;
 use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
@@ -125,12 +125,15 @@ class ContributionController extends Controller
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $request->afid;
-       // return $request->afid;
-        $voucher->voucher_type_id = $request->tipo;
+        $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
         $voucher->total = $request->total;
         $voucher->payment_date = Carbon::now();
         $voucher->code = $code;
         $voucher->save();      
+        
+        $affiliate = Affiliate::find($request->afid);
+        $affiliate->affiliate_state_id = $request->tipo;
+        $affiliate->save();
        // return $voucher;
         //return $request->aportes;
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
@@ -162,7 +165,7 @@ class ContributionController extends Controller
             $contribution->subsidy = 0;
             $contribution->gain = $aporte->sueldo;
             $contribution->payable_liquid = 0;
-            $contribution->quotable = 0;
+            $contribution->quotable = $aporte->sueldo;
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
@@ -172,7 +175,7 @@ class ContributionController extends Controller
             //return $contribution;
         }
 
-
+        return json_encode(0);
     }
 
     /**
@@ -381,6 +384,15 @@ class ContributionController extends Controller
             'dateentry' => $dateentry
         );
         $cities = City::get();
+        
+        //get Commitment data
+        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
+        if(!isset($commitment->id))
+        {
+            $commitment = new ContributionCommitment();
+            $commitment->id = 0;
+            $commitment->affiliate_id = $affiliate->id;
+        }
         $data = [
             'contributions' => $group,
             'reims' => $group_reim,
@@ -393,6 +405,7 @@ class ContributionController extends Controller
             'cities' => $cities,
             'new_contributions' => self::getMonthContributions($affiliate->id),
             'last_quotable' =>  $last_contribution->quotable ?? 0,
+            'commitment'    =>  $commitment,
         ];
 
         return view('contribution.affiliate_contributions_edit', $data);
@@ -480,6 +493,7 @@ class ContributionController extends Controller
 
     public function generateContribution(Affiliate $affiliate)
     {
+        $this->authorize('create',Contribution::class);
         $contributions = self::getMonthContributions($affiliate->id);
         return View('contribution.create', compact('affiliate', 'contributions'));
 

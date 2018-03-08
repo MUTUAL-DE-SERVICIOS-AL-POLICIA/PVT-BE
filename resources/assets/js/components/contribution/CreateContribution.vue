@@ -22,9 +22,9 @@
                         <div class="col-md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>
                             <select v-model="tipo" class="form-control" v-on:change="changeType">
-                                <option value="1">Comisión</option>
-                                <option value="2">Agregado Policial</option>
-                                <option value="3">Baja Temporal</option>
+                                <option value="2">Comisión</option>
+                                <option value="10">Agregado Policial</option>
+                                <option value="9">Baja Temporal</option>
                             </select>
                             <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
@@ -167,7 +167,7 @@ export default {
 
       changeType:function(e){
           var i;
-          if(e.target.value == 3){              
+          if(e.target.value == 9){              
               for(i=0;i<this.contributions.length && this.last_quotable!=0;i++){
                 this.contributions[i].sueldo = this.last_quotable;                
                 this.CalcularAporte(this.contributions[i],i);
@@ -234,7 +234,7 @@ export default {
                     console.log(response.data);                
                     })
                     .catch(e => {
-                    this.show_spinner = false;
+                    this.show_spinner = false;            
                     alert(e);
                     })
 

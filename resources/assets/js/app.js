@@ -71,8 +71,9 @@ Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/S
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
 
 
-
+//contributions
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
+Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
 const app = new Vue({
     el: '#app',
     store

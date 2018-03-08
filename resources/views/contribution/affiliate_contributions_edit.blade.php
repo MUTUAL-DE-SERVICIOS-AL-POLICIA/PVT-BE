@@ -27,6 +27,9 @@
             <div class="col-md-6">
                 @include('contribution.aditional_info',['summary',$summary]) 
             </div> 
+            <div class="col-md-6">
+                @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id]) 
+            </div> 
         </div>
             <div class="col-md-12 wrapper wrapper-content animated fadeInRight">
 
@@ -306,6 +309,7 @@ $('body').addClass("mini-navbar");
             success: function(result){
                 /* console.log('saved'); */
                 console.log(result);
+                 $('#main'+result.month_year).html(result.total);
             },
             error: function(xhr, status, error) {                
                 console.log(xhr.responseText);                                
