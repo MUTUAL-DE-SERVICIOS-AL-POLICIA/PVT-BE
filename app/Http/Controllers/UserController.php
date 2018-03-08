@@ -25,7 +25,15 @@ class UserController extends Controller
 //aca------------
     public function index()
     {
-        return view('users.index');
+        // if(Session::has('rol_id'))
+        // {
+
+            return view('users.index');
+        // }
+        // else
+        // {
+        //     return redirect('changerol');
+        // }
     }
     /**
      * Process datatables ajax request.
