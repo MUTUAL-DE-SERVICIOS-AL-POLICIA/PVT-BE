@@ -3,7 +3,11 @@
         <div class="panel-heading">
             <h3 class="pull-left">Información Policial</h3>
             <div class="text-right">
+            @can('update',$affiliate)
                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
+            @else
+                <br>
+            @endcan
             </div>
         </div>
 
@@ -27,6 +31,7 @@
                 </div>
             </div>
         </div>
+        @can('update',$affiliate)
         <div class="panel-body" v-else>
             <div class="sk-folding-cube" v-show="show_spinner">
                 <div class="sk-cube1 sk-cube"></div>
@@ -80,5 +85,6 @@
             </div>
             
         </div>
+        @endcan
     </div>
 </div>

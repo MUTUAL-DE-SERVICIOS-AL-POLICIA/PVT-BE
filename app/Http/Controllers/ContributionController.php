@@ -69,13 +69,13 @@ class ContributionController extends Controller
             $now = Carbon::now();
             $arrayDat = explode('-', $lastMonths->month_year);
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-            $diff = $now->addMonths(1)->diffInMonths($lastMonths);
+            $diff = $now->subMonths(1)->diffInMonths($lastMonths);
+           // return $lastMonths.'-----'.$diff;
             $contribution = array();
             if ($diff > 2) {
                 $month1 = Carbon::now()->subMonths(1);
                 $month2 = Carbon::now()->subMonths(2);
-                $month3 = Carbon::now()->subMonths(3);
-                //dd($month1.' '.$month2.' '.$month3);
+                $month3 = Carbon::now()->subMonths(3);       
                 $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
@@ -83,7 +83,7 @@ class ContributionController extends Controller
             } 
             else 
             {
-                $contributions=[];
+                //$contributions=[];
                 for ($i = 0; $i < $diff; $i++) {
                     $month_diff = Carbon::now()->subMonths($i + 1);
                     $month = explode('-', $month_diff);
@@ -463,6 +463,7 @@ class ContributionController extends Controller
 
     public function generateContribution(Affiliate $affiliate)
     {
+        $this->authorize('create',Contribution::class);
         $contributions = self::getMonthContributions($affiliate->id);
         return View('contribution.create', compact('affiliate', 'contributions'));
 
