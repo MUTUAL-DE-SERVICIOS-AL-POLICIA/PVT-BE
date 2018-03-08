@@ -101,6 +101,7 @@ class AffiliateController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
+        $this->authorize('view',$affiliate);
         $cities = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         $categories = Category::all()->pluck('name', 'id');
@@ -215,5 +216,6 @@ class AffiliateController extends Controller
     public function destroy(Affiliate $affiliate)
     {
         //
+        $this->authorize('delete', $affiliate);
     }
 }

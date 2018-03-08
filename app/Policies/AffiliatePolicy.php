@@ -4,13 +4,18 @@ namespace Muserpol\Policies;
 
 use Muserpol\User;
 use Muserpol\Models\Affiliate;
+use Muserpol\Helpers\Util;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Session;
 use DB;
+use Log;
 class AffiliatePolicy
 {
     use HandlesAuthorization;
-
+    const ClASS_NAME = 'Affiliate';
+    const CREATE = 'create';
+    const READ = 'read';
+    const UPDATE = 'update';
+    const DELETE = 'delete';
     /**
      * Determine whether the user can view the affiliate.
      *
@@ -21,6 +26,9 @@ class AffiliatePolicy
     public function view(User $user, Affiliate $affiliate)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
+        // Log::info(json_encode($permission));
+        return $permission?true:false;
 
     }
 
@@ -32,8 +40,10 @@ class AffiliatePolicy
      */
     public function create(User $user)
     {
-        //
-        return true;
+        
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::CREATE);
+        // Log::info(json_encode($permission));
+        return $permission?true:false;
     }
 
     /**
@@ -45,12 +55,11 @@ class AffiliatePolicy
      */
     public function update(User $user, Affiliate $affiliate)
     {
-        //
-        // Log::info($user->id === $affiliate->user_id);
-        
 
-        return false;
-        // return $user->id === $affiliate->user_id;
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::UPDATE);
+        // Log::info(json_encode($permission));
+        return $permission?true:false;
+      
     }
 
     /**
@@ -63,5 +72,8 @@ class AffiliatePolicy
     public function delete(User $user, Affiliate $affiliate)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);
+        // Log::info(json_encode($permission));
+        return $permission?true:false;
     }
 }

@@ -3,6 +3,8 @@
 namespace Muserpol\Helpers;
 use DateTime;
 use Session;
+use Auth;
+use DB;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -192,6 +194,21 @@ class Util
 
         return $rol_object;
 
+    }
+    public static function CheckPermission($className,$action)
+    {
+        $rol = self::getRol();
+        $permission = DB::table('role_permissions')
+                    ->join('permissions','permissions.id','=','role_permissions.permission_id')
+                    ->join('operations','operations.id','=','permissions.operation_id')
+                    ->join('actions','actions.id','=','permissions.action_id')
+                    ->where('operations.name','=',$className)
+                    ->where('operations.module_id','=',$rol->module_id)
+                    ->where('actions.name','=',$action)
+                    ->where('role_permissions.role_id',$rol->id)
+                    ->select('role_permissions.id')
+                    ->first();
+        return $permission;
     }
 
 }

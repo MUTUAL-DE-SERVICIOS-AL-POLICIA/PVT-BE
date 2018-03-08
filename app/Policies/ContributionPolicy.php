@@ -5,10 +5,16 @@ namespace Muserpol\Policies;
 use Muserpol\User;
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Muserpol\Helpers\Util;
 use Log;
 class ContributionPolicy
 {
     use HandlesAuthorization;
+    const ClASS_NAME = 'Affiliate';
+    const CREATE = 'create';
+    const READ = 'read';
+    const UPDATE = 'update';
+    const DELETE = 'delete';
 
     /**
      * Determine whether the user can view the contribution.
@@ -20,6 +26,9 @@ class ContributionPolicy
     public function view(User $user, Contribution $contribution)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
+        // Log::info(json_encode($permission));
+        return $permission?true:false;
     }
 
     /**
@@ -31,8 +40,9 @@ class ContributionPolicy
     public function create(User $user)
     {
         //
-        Log::info($user);
-        return true;
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::CREATE);
+        // Log::info(json_encode($permission));
+        return $permission?true:false;
 
     }
 
@@ -46,6 +56,9 @@ class ContributionPolicy
     public function update(User $user, Contribution $contribution)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::UPDATE);
+        // Log::info(json_encode($permission));
+        return $permission?true:false;
     }
 
     /**
@@ -58,5 +71,8 @@ class ContributionPolicy
     public function delete(User $user, Contribution $contribution)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);
+        // Log::info(json_encode($permission));
+        return $permission?true:false;
     }
 }
