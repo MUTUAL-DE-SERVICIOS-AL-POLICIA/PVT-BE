@@ -3,14 +3,9 @@
 namespace Muserpol\Policies;
 
 use Muserpol\User;
-use Muserpol\Operation;
-use Muserpol\Action;
-use Muserpol\Permission;
-use Muserpol\RolePermission;
 use Muserpol\Models\Affiliate;
 use Muserpol\Helpers\Util;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Session;
 use DB;
 use Log;
 class AffiliatePolicy
@@ -32,7 +27,7 @@ class AffiliatePolicy
     {
         //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
-        Log::info(json_encode($permission));
+        // Log::info(json_encode($permission));
         return $permission?true:false;
 
     }
