@@ -19,7 +19,7 @@ use Auth;
 use Validator;
 use DateTime;
 use Muserpol\Helpers\Util;
-
+use Muserpol\Models\Contribution\ContributionCommitment;
 use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
@@ -383,6 +383,15 @@ class ContributionController extends Controller
             'dateentry' => $dateentry
         );
         $cities = City::get();
+        
+        //get Commitment data
+        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
+        if(!isset($commitment->id))
+        {
+            $commitment = new ContributionCommitment();
+            $commitment->id = 0;
+            $commitment->affiliate_id = $affiliate->id;
+        }
         $data = [
             'contributions' => $group,
             'reims' => $group_reim,
@@ -395,6 +404,7 @@ class ContributionController extends Controller
             'cities' => $cities,
             'new_contributions' => self::getMonthContributions($affiliate->id),
             'last_quotable' =>  $last_contribution->quotable ?? 0,
+            'commitment'    =>  $commitment,
         ];
 
         return view('contribution.affiliate_contributions_edit', $data);

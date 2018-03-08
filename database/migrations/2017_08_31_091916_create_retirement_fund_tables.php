@@ -288,7 +288,7 @@ class CreateRetirementFundTables extends Migration {
         Schema::create('contribution_commitments', function (Blueprint $table) { //COMPROMISO DE PAGO DE APORTES
             $table->bigIncrements('id');
             $table->bigInteger('affiliate_id')->unsigned();            
-            $table->enum('commitment_type', ['COMISION', 'BAJA TEMPORAL','AGREGADO POLICIAL']); // TIPO DE COMPROMISO
+                $table->enum('commitment_type', ['COMISION', 'BAJA TEMPORAL','AGREGADO POLICIAL']); // TIPO DE COMPROMISO
             $table->string('number');
             $table->string('destination');
             $table->date('commision_date'); //fecha de comision

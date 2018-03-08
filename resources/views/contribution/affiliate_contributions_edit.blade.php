@@ -27,6 +27,9 @@
             <div class="col-md-6">
                 @include('contribution.aditional_info',['summary',$summary]) 
             </div> 
+            <div class="col-md-6">
+                @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id]) 
+            </div> 
         </div>
             <div class="col-md-12 wrapper wrapper-content animated fadeInRight">
 
