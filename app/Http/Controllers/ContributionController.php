@@ -24,6 +24,7 @@ use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
 use Illuminate\Support\Facades\Log;
+use function bar\baz\foo;
 
 
 class ContributionController extends Controller
@@ -70,7 +71,7 @@ class ContributionController extends Controller
             $arrayDat = explode('-', $lastMonths->month_year);
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
             $diff = $now->subMonths(1)->diffInMonths($lastMonths);
-           // return $lastMonths.'-----'.$diff;
+            return $lastMonths.'-----'.$diff;
             $contribution = array();
             if ($diff > 2) {
                 $month1 = Carbon::now()->subMonths(1);
@@ -399,8 +400,37 @@ class ContributionController extends Controller
 
     public function storeContributions(Request $request)
     {
+        //*********START VALIDATOR************//
+        $rules=[];
+        $messages=[];
+        foreach ($request->iterator as $key => $iterator) 
+        {
+          //  dd('$base_wage[$key]');
+        $array_rules = [                       
+            'base_wage.'.$key =>  'numeric|min:2000',
+            'gain.'.$key =>  'numeric|min:1',
+            'total.'.$key =>  'numeric|min:1'
+            ];
+            $rules=array_merge($rules,$array_rules);
+        $array_messages = [
+            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico',
+            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000',
+            'gain.'.$key.'.numeric' => 'El campo debe ser numero',
+            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0', 
+            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico',
+            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0'
+        ];
+        $messages=array_merge($messages, $array_messages);
+        }
+        $validator = Validator::make($request->all(),$rules,$messages);
+       if($validator->fails()){
+           return json_encode($validator->errors());                    
+       }
+         //*********END VALIDATOR************//
 
+         
         foreach ($request->iterator as $key => $iterator) {
+            //return $key.'--'.$total[$key];
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = $request->total[$key] ?? $contribution->total;

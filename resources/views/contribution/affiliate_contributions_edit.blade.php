@@ -304,7 +304,7 @@ $('body').addClass("mini-navbar");
                 }                
             },    
             success: function(result){
-                console.log('saved');
+                /* console.log('saved'); */
                 console.log(result);
             },
             error: function(xhr, status, error) {                

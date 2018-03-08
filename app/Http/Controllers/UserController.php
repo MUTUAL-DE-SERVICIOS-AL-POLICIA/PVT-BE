@@ -25,6 +25,15 @@ class UserController extends Controller
 //aca------------
     public function index()
     {
+        return view('users.index');
+    }
+    /**
+     * Process datatables ajax request.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserDatatable()
+    {
         $users = User::with('roles')->get();
         return Datatables::of($users)
             ->addColumn('action', function ($u) {
@@ -127,6 +136,7 @@ class UserController extends Controller
             //registrar
             $user = new User;   
         }       
+        
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->phone = $request->phone;
