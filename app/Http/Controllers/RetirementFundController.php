@@ -78,6 +78,7 @@ class RetirementFundController extends Controller
         
         
         $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
+        $this->authorize('create', $ret_fund);
         if(!isset($ret_fund->id))
             $code = Util::getNextCode ("");
         else        
@@ -244,6 +245,7 @@ class RetirementFundController extends Controller
     public function show($id)
     {
         $retirement_fund = RetirementFund::find($id);
+        $this->authorize('view', $retirement_fund);
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         
@@ -370,6 +372,7 @@ class RetirementFundController extends Controller
     
     public function generateProcedure(Affiliate $affiliate){  
         
+        $this->authorize('create',RetirementFund::class);
         $user = Auth::User();
         $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
@@ -454,6 +457,7 @@ class RetirementFundController extends Controller
     public function updateInformation(Request $request)
     {
         $retirement_fund = RetirementFund::find($request->id);
+        $this->authorize('update', $retirement_fund);
         $retirement_fund->city_end_id = $request->city_end_id;
         $retirement_fund->city_start_id = $request->city_start_id;
         $retirement_fund->reception_date = $request->reception_date;

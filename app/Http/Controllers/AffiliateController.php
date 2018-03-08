@@ -216,5 +216,6 @@ class AffiliateController extends Controller
     public function destroy(Affiliate $affiliate)
     {
         //
+        $this->authorize('delete', $affiliate);
     }
 }
