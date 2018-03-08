@@ -1,7 +1,5 @@
 <?php
-
 namespace Muserpol\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\ProcedureRequirement;
@@ -26,7 +24,6 @@ use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunIncrement;
 use Session;
 use Muserpol\Helpers\Util;
-
 class RetirementFundController extends Controller
 {
     /**
@@ -39,7 +36,6 @@ class RetirementFundController extends Controller
         return view('ret_fun.index');
        
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -49,7 +45,6 @@ class RetirementFundController extends Controller
     {
         //
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -62,43 +57,21 @@ class RetirementFundController extends Controller
         $requirements = ProcedureRequirement::select('id')->get();        
         
         $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled',true)->select('id')->first();
-        $affiliate_id = 1;
-        $error_contributions = "";//false;
-        //$contributions = Contribution()->get();
-        //if($contributions>3)
-        $error_contributions = 'no se puede guardar mas de 3 contribuciones';// true;
         
         
-        $rules = [
-            'applicant_first_name' => 'required|max:5',
-            'error_contributions'  =>  $error_contributions?'required':'',
-        ];
-        $messages = [
-            'applicant_first_name.max' => 'cantidad de datos exedida',
-            'error_contributions.required'   =>  'no se puede guardar mas de 3 contribuciones',
-        ];
-        
-        $validator = Validator::make($request->all(),$rules,$messages);                
-        
-        
-//        $validator = Validator::make($request->all(), [
-//            'applicant_first_name' => 'required|max:5',            
-//        ]);                
+        $validator = Validator::make($request->all(), [
+            //'applicant_first_name' => 'required|max:5',            
+        ]);                
         //custom this validator
         $validator->after(function($validator){
             if(false)                
                 $validator->errors()->add('Modalidad', 'el campo modalidad no puede ser tramitada este mes');            
         });        
-        print_r($validator);
-        return;
-        //array_push($validator->errors(), ['message'=>'mesage cyuston']);
-        
         if($validator->fails()){
             return $validator->errors();            
         }
         
         
-        return 0;
         $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
         if(!isset($ret_fund->id))
             $code = Util::getNextCode ("");
@@ -255,7 +228,6 @@ class RetirementFundController extends Controller
         return redirect('ret_fun/'.$retirement_fund->id);
         
     }
-
     /**
      * Display the specified resource.
      *
@@ -287,7 +259,6 @@ class RetirementFundController extends Controller
         else 
             $guardian = new RetFunLegalGuardian();                
         
-
         $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
         $procedures_modalities = ProcedureModality::whereIn('id',$procedures_modalities_ids)->get();
         $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
@@ -296,7 +267,6 @@ class RetirementFundController extends Controller
         
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
-
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -314,7 +284,6 @@ class RetirementFundController extends Controller
         
         return view('ret_fun.show',$data);
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -325,7 +294,6 @@ class RetirementFundController extends Controller
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -337,7 +305,6 @@ class RetirementFundController extends Controller
     {
         //
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -361,7 +328,6 @@ class RetirementFundController extends Controller
         $code = $request->code ?? '';
         $modality = strtoupper($request->modality) ?? '';
         
-
         $total = RetirementFund::select('retirement_funds.id')
                                 ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
@@ -472,7 +438,6 @@ class RetirementFundController extends Controller
         }
         return json_encode(0);
     }
-
     public function updateInformation(Request $request)
     {
         $retirement_fund = RetirementFund::find($request->id);
@@ -480,9 +445,7 @@ class RetirementFundController extends Controller
         $retirement_fund->city_start_id = $request->city_start_id;
         $retirement_fund->reception_date = $request->reception_date;
         $retirement_fund->save();
-
         $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality'=>$retirement_fund->procedure_modality,'city_start'=>$retirement_fund->city_start,'city_end'=>$retirement_fund->city_end );
         return $datos;
     }
-
 }
