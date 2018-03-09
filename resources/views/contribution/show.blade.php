@@ -30,7 +30,7 @@
                     <div class="text-right">
                         <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
                         <a href="{{route('edit_contribution', $affiliate->id)}}">
-                            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="EDITAR" ><i class="fa fa-paste"></i></button>
+                            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
                         </a>
                     </div>
                 </div>

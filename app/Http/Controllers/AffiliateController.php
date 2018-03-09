@@ -101,6 +101,7 @@ class AffiliateController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
+        $this->authorize('view',$affiliate);
         $cities = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         $categories = Category::all()->pluck('name', 'id');
@@ -165,8 +166,11 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Affiliate $affiliate)
-    {
+    { 
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
+
+        $this->authorize('update', $affiliate);
+
         $affiliate->identity_card = $request->identity_card;
         $affiliate->first_name = $request->first_name;
         $affiliate->second_name = $request->second_name;
@@ -189,6 +193,7 @@ class AffiliateController extends Controller
     public function update_affiliate_police(Request $request, Affiliate $affiliate)
     {
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
+        $this->authorize('update', $affiliate);
         $affiliate->affiliate_state_id = $request->affiliate_state_id;
         $affiliate->type = $request->type;
         $affiliate->date_entry = $request->date_entry;
@@ -211,5 +216,6 @@ class AffiliateController extends Controller
     public function destroy(Affiliate $affiliate)
     {
         //
+        $this->authorize('delete', $affiliate);
     }
 }

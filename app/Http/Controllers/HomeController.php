@@ -12,6 +12,11 @@ class HomeController extends Controller
      *
      * @return void
      */
+    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
 
     /**
@@ -31,5 +36,9 @@ class HomeController extends Controller
             'ret_fun_procedure' =>  $ret_fun_procedure
         ];
         return view('home.settings',$data);
+    }
+    public function lechuz()
+    {
+        return 'lechuz y Karem ';
     }
 }

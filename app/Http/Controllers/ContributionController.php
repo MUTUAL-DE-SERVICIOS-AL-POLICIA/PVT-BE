@@ -19,7 +19,7 @@ use Auth;
 use Validator;
 use DateTime;
 use Muserpol\Helpers\Util;
-
+use Muserpol\Models\Contribution\ContributionCommitment;
 use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
@@ -69,13 +69,13 @@ class ContributionController extends Controller
             $now = Carbon::now();
             $arrayDat = explode('-', $lastMonths->month_year);
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-            $diff = $now->addMonths(1)->diffInMonths($lastMonths);
+            $diff = $now->subMonths(1)->diffInMonths($lastMonths);
+           // return $lastMonths.'-----'.$diff;
             $contribution = array();
             if ($diff > 2) {
                 $month1 = Carbon::now()->subMonths(1);
                 $month2 = Carbon::now()->subMonths(2);
-                $month3 = Carbon::now()->subMonths(3);
-                //dd($month1.' '.$month2.' '.$month3);
+                $month3 = Carbon::now()->subMonths(3);       
                 $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
@@ -83,7 +83,7 @@ class ContributionController extends Controller
             } 
             else 
             {
-                $contributions=[];
+                //$contributions=[];
                 for ($i = 0; $i < $diff; $i++) {
                     $month_diff = Carbon::now()->subMonths($i + 1);
                     $month = explode('-', $month_diff);
@@ -124,11 +124,15 @@ class ContributionController extends Controller
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $request->afid;
-        $voucher->voucher_type_id = $request->tipo;
+        $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
         $voucher->total = $request->total;
         $voucher->payment_date = Carbon::now();
         $voucher->code = $code;
         $voucher->save();      
+        
+        $affiliate = Affiliate::find($request->afid);
+        $affiliate->affiliate_state_id = $request->tipo;
+        $affiliate->save();
        // return $voucher;
         //return $request->aportes;
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
@@ -160,7 +164,7 @@ class ContributionController extends Controller
             $contribution->subsidy = 0;
             $contribution->gain = $aporte->sueldo;
             $contribution->payable_liquid = 0;
-            $contribution->quotable = 0;
+            $contribution->quotable = $aporte->sueldo;
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
@@ -170,7 +174,7 @@ class ContributionController extends Controller
             //return $contribution;
         }
 
-
+        return json_encode(0);
     }
 
     /**
@@ -370,8 +374,7 @@ class ContributionController extends Controller
         $year_end = $end[0];
         $month_start = (date('m') - 1);
         $year_start = date('Y');
-
-
+        $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();        
 
         $summary = array(
             'fondoret' => $fondoret,
@@ -380,6 +383,15 @@ class ContributionController extends Controller
             'dateentry' => $dateentry
         );
         $cities = City::get();
+        
+        //get Commitment data
+        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
+        if(!isset($commitment->id))
+        {
+            $commitment = new ContributionCommitment();
+            $commitment->id = 0;
+            $commitment->affiliate_id = $affiliate->id;
+        }
         $data = [
             'contributions' => $group,
             'reims' => $group_reim,
@@ -391,6 +403,8 @@ class ContributionController extends Controller
             'affiliate' => $affiliate,
             'cities' => $cities,
             'new_contributions' => self::getMonthContributions($affiliate->id),
+            'last_quotable' =>  $last_contribution->quotable ?? 0,
+            'commitment'    =>  $commitment,
         ];
 
         return view('contribution.affiliate_contributions_edit', $data);
@@ -449,6 +463,7 @@ class ContributionController extends Controller
 
     public function generateContribution(Affiliate $affiliate)
     {
+        $this->authorize('create',Contribution::class);
         $contributions = self::getMonthContributions($affiliate->id);
         return View('contribution.create', compact('affiliate', 'contributions'));
 
