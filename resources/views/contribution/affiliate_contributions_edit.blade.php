@@ -1,13 +1,13 @@
 @extends('layouts.app')
-<style>
-    /*    table 
-    {
-        table-layout:fixed;
-        width:100%;
-    }*/
-</style>
-    
 @section('title', 'Contribuciones')
+@section('styles')
+    <style>
+        table{
+            font-size: 14px;
+        }
+        .table-hover > tbody > tr:hover { background-color: #DBDBDB }
+    </style>
+@endsection
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
