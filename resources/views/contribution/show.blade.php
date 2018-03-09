@@ -47,7 +47,7 @@
                                 <th>Sueldo</th>
                                 <th>Antigüedad</th>
                                 <th>Estudio</th>
-                                <th>Al Cargo</th>
+                                <th>Cargo</th>
                                 <th>Frontera</th>
                                 <th>Oriente</th>
                                 <th>Seguridad</th>
@@ -166,7 +166,7 @@
             $( datatable_contri.column( colIdx ).nodes() ).addClass( 'highlight' );
         } );
         $('[data-toggle="tooltip"]').tooltip();
-        $('.dt-button.buttons-collection.buttons-colvis').on('click', function () {
+        $('.btn.btn-default.buttons-collection.buttons-colvis').on('click', function () {
             $('div.dt-button-background').remove()
         });
     })
