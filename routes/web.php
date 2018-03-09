@@ -28,6 +28,10 @@ Route::get('user/active/{user}', 'UserController@active');
 //Route::get('users/index','UserController@index');
 Route::get('usersGetData', 'UserController@anyData' )->name('user_list');
 
+//permission
+Route::resource('permission', 'PermissionController');
+Route::get('permission/create', 'PermissionController@create');
+
 //afiliates
 Route::group(['middleware' => ['auth']], function () {
 
@@ -115,6 +119,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
         
         //Commitments
-        Route::resource('commitment','ContributionCommitmentController');
+		Route::resource('commitment','ContributionCommitmentController');
+	});
 });
 

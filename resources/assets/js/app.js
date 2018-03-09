@@ -69,7 +69,8 @@ Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/S
 
 //user
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
-
+//permission
+Vue.component('nom-module', require('./components/permission/NomModule.vue'));
 
 //contributions
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
