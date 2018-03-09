@@ -10,7 +10,8 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
-                            <h3 class="box-title">Fondo de Retiro</h3>    
+                            <h3 class="box-title">Fondo de Retiro</h3>
+                            {{$retirement_fund}}    
                             @if($retirement_fund!=null)
                                 <dl class="dl-horizontal">
                                     <dt>Codigo:</dt><dd>{{ $retirement_fund->code }}</dd>
@@ -23,7 +24,7 @@
                                     <dt>Ciudad de Pago:</dt><dd>{{ $retirement_fund->city_end->name ?? 'ERROR' }}</dd>
                                 </dl>
                                     
-                                <center><p><a class="btn btn-primary" href="/ret_fun/{{ $retirement_fund->affiliate_id }}" role="button">Ver</a></p></center>
+                                <center><p><a class="btn btn-primary" href="/ret_fun/{{ $retirement_fund->id }}" role="button">Ver</a></p></center>
                             @else        
                                 <div class="row text-center">
                                     <i class="fa  fa-list-alt fa-3x  fa-border" aria-hidden="true"></i>
@@ -45,7 +46,7 @@
                                     <dt>Total:</dt><dd>{{ $cuota->total }}</dd>
                                     <dt>Ciudad de Pago:</dt><dd>{{ $cuota->city_end->name }}</dd>                                  
                                 </dl>
-                                <center><p><a class="btn btn-primary" href="/quota_aid/{{ $cuota->affiliate_id }}" role="button">Ver</a></p></center>
+                                <center><p><a class="btn btn-primary" href="/quota_aid/{{ $cuota->id }}" role="button">Ver</a></p></center>
                             @else
                                 <div class="row text-center">
                                     <i class="fa  fa-list-alt fa-3x  fa-border" aria-hidden="true"></i>
@@ -67,7 +68,7 @@
                                     <dt>Total:</dt><dd>{{ $auxilio->total }}</dd>
                                     <dt>Ciudad de Pago:</dt><dd>{{ $auxilio->city_end->name }}</dd>
                                </dl>
-                               <center><p><a class="btn btn-primary" href="/quota_aid/{{ $auxilio->affiliate_id }}"role="button">Ver</a></p></center>
+                               <center><p><a class="btn btn-primary" href="/quota_aid/{{ $auxilio->id }}"role="button">Ver</a></p></center>
                             @else   
                                 <div class="row text-center">
                                     <i class="fa  fa-list-alt fa-3x  fa-border" aria-hidden="true"></i>
