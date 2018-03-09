@@ -65,7 +65,7 @@
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
                             @foreach( $modules as $module)
-                                <li><a href="#tab_{{$module->id}}" data-toggle="tab" title="{{$module->name}}">&nbsp;<i class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></i>&nbsp;</a></li>
+                                <li><a href="#tab_{{$module->id}}" data-toggle="tab" title="{{$module->name}}">&nbsp;<i class="{{Muserpol\Helpers\Util::IconModule($module->id)}}" aria-hidden="true"></i>&nbsp;</a></li>
                             @endforeach                            
                         </ul>
                         <div class="tab-content">
@@ -76,12 +76,12 @@
                                         @if($rol->module_id==$module->id)
                                             @if(isset($user))
                                                 @if ($user->hasRole($rol->id))
-                                                    <div class="i-checks"><label> <input type="checkbox" name="rol[]" checked value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
+                                                    <div ><label> <input type="checkbox" class="i-checks" name="rol[]" checked value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
                                                 @else
-                                                    <div class="i-checks"><label> <input type="checkbox" name="rol[]"  value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
+                                                    <div ><label> <input type="checkbox" class="i-checks" name="rol[]"  value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
                                                 @endif 
                                             @else                                        
-                                                <div class="i-checks"><label> <input type="checkbox" name="rol[]" value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
+                                                <div ><label> <input type="checkbox" class="i-checks" name="rol[]" value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
                                             @endif
                                         @endif    
                                     @endforeach                             

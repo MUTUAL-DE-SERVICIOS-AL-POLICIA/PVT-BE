@@ -59,6 +59,7 @@
                             <input type="text" class="form-control" name='position' id="formGroupExampleInput" placeholder="Cargo" value="position"> 
                     </div>
                 </div>
+                asdasd
 
             {{--$modules->find(2)->name--}}
                 <div class="panel panel-primary">
@@ -66,7 +67,7 @@
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
                             @foreach( $modules as $module)
-                                <li><a href="#tab_{{$module->id}}" data-toggle="tab" title="{{$module->name}}">&nbsp;<i class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></i>&nbsp;</a></li>
+                                <li><a href="#tab_{{$module->id}}" data-toggle="tab" title="{{$module->name}}">&nbsp;<i class="{{Util::IconModule($module->id)}}" aria-hidden="true"></i>&nbsp;</a></li>
                             @endforeach                            
                         </ul>
                     
