@@ -147,13 +147,12 @@
                         <tr>
                             <td> 
                                 <div contenteditable="true" class="editcontent">{{$contributions[$period]->total ?? '-'}} </div> 
-                                <input type="hidden" disabled name="total[{{$period}}]" value="{{$contributions[$period]->total??'-'}}">            
+                                <input type="hidden" disabled name="total[{{$period}}]" value="{{$contributions[$period]->total??'-'}}">
                             </td>
                         </tr>            
                         <tr>                
-                            <td>
-                                <div contenteditable="true" class="editcontent">{{$reims[$period]->total ?? '-'}} </div> 
-                                <input type="hidden" disabled name="reims[{{$period}}]" value="{{$reims[$period]->total ?? '-'}}">
+                            <td id="reim{{$period}}">
+                                {{$reims[$period]->total ?? '-'}}
                             </td>
                         </tr>
                     </table>                     
@@ -197,7 +196,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td> <div contenteditable>-</div> </td>
+                                <td id="reim{{$period}}}">-</td>
                             </tr>
                         </table>                     
                     </td>
@@ -317,7 +316,9 @@ $('body').addClass("mini-navbar");
         });
 
     }
-
+function rei(){
+    
+}
 $('.editcontent').blur(function() {        
     $(this).next('input').val($(this).html()); 
     $(this).next('input').removeAttr('disabled');        
@@ -350,6 +351,7 @@ function storeReimbursement(){
         success: function(result){
             console.log('saved reim');
             console.log(result);
+            $("#reim"+result.month_year).html(result.total);
         },
         error: function(xhr, status, error) {                
             console.log(xhr.responseText);                                

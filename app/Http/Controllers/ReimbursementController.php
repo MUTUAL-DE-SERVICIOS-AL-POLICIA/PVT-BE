@@ -63,7 +63,7 @@ class ReimbursementController extends Controller
         $reim->ipc = 0;
         $reim->months = $this->getRebursimentMonths($request->month);         
         $reim->save();        
-        return json_encode($request->all());
+        return $reim;        
     }
     private function getRebursimentMonths($month){
         $month_add = 1;
