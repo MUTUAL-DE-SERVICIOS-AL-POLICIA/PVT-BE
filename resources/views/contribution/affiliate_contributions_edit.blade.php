@@ -361,6 +361,13 @@ function storeReimbursement(){
     $('#reimbursement_modal').modal('hide');
    
 }
+function setPeriodData(period,amount){
+    alert(period+' - '+amount);
+    $('#main'+period).html(amount);
+}
+function alertxd(){
+    alert('adfadsf');
+}
 </script>
 
 @endsection

@@ -135,6 +135,7 @@ class ContributionController extends Controller
         $affiliate->save();
        // return $voucher;
         //return $request->aportes;
+        $result = [];
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;
@@ -168,13 +169,17 @@ class ContributionController extends Controller
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
-            $contribution->ipc = $aporte->interes;
+            $contribution->ipc = $aporte->interes;            
             $contribution->save();
+            array_push($result, [
+                'total'=>$contribution->total,
+                'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
+                    ]);
             //Log::info(json_encode($contribution));
             //return $contribution;
         }
 
-        return json_encode(0);
+        return $result;
     }
 
     /**
