@@ -191,6 +191,7 @@ class ContributionController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
+        $this->authorize('view',new Contribution);
         $cities = City::all();
         $birth_cities = City::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
@@ -353,6 +354,7 @@ class ContributionController extends Controller
     {        
         
         //codigo para obtener totales para el resument
+        $this->authorize('update',new Contribution);
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
 
@@ -416,8 +418,8 @@ class ContributionController extends Controller
     }
 
     public function storeContributions(Request $request)
-    {
-
+    {   
+        $this->authorize('update',new Contribution);
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
