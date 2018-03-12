@@ -47,7 +47,7 @@
             @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
         </div>
         @endcan
-        @can('update',$retirement_fund)
+        @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
         <div class="col-md-6">
             @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])
         </div>

@@ -39,7 +39,7 @@ class AffiliateFolderPolicy
     public function create(User $user)
     {
         //
-        $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::CREATE);
         // Log::info(json_encode($permission));
         return $permission?true:false;
     }
@@ -54,7 +54,7 @@ class AffiliateFolderPolicy
     public function update(User $user, AffiliateFolder $affiliateFolder)
     {
         //
-        $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::UPDATE);
         // Log::info(json_encode($permission));
         return $permission?true:false;
     }
@@ -69,7 +69,7 @@ class AffiliateFolderPolicy
     public function delete(User $user, AffiliateFolder $affiliateFolder)
     {
         //
-        $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);
         // Log::info(json_encode($permission));
         return $permission?true:false;
     }
