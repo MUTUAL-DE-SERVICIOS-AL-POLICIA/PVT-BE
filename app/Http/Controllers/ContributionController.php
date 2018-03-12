@@ -448,15 +448,15 @@ class ContributionController extends Controller
             //return json_encode($request->iterator);
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
-                $contribution->total = $request->total[$key] ?? $contribution->total;
-                $contribution->base_wage = $request->base_wage[$key] ?? $contribution->base_wage;
+                $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
+                $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
 
                 if ($request->category[$key] != $contribution->category_id) {
                     $category = Category::find($request->category[$key]);
                     $contribution->category_id = $category->id;
                     $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
                 }
-                $contribution->gain = $request->gain[$key] ?? $contribution->gain;
+                $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
                 $contribution->save();
             } else {
 //                $contribution = new Contribution();
@@ -470,7 +470,7 @@ class ContributionController extends Controller
                 $contribution->degree_id = $affiliate->degree_id;
                 $contribution->unit_id = $affiliate->unit_id;
                 $contribution->breakdown_id = $affiliate->breakdown_id;
-                $contribution->base_wage = $request->base_wage[$key] ?? 0;
+                $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
                 $category = Category::find($request->category[$key]);
                 $contribution->category_id = $category->id;
                 $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
@@ -481,16 +481,17 @@ class ContributionController extends Controller
                 $contribution->east_bonus = 0;
                 $contribution->quotable = 0;
                 $contribution->month_year = $key;
-                $contribution->gain = $request->gain[$key] ?? 0;
+                $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
                 $contribution->retirement_fund = 0;
                 $contribution->mortuary_quota = 0;
-                $contribution->total = $request->total[$key] ?? 0;
+                $contribution->total = strip_tags($request->total[$key]) ?? 0;
                 //$contribution->interes = 0;
                 $contribution->type = 'Planilla';
                 $contribution->save();
             }
         }
-        return json_encode($contribution);
+        return $contribution;
+        //return json_encode($contribution);
     }
 
     public function generateContribution(Affiliate $affiliate)
