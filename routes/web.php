@@ -43,8 +43,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/', 'HomeController@index')->name("main");
         
         //ROUTES TO E SYSTEM PARAMENTERS
-    Route::get('ret_fun_settings','HomeController@retFunSettings');
-    Route::resource('ret_fun_procedure','RetFunProcedureController');
+        Route::get('ret_fun_settings','HomeController@retFunSettings');
+        Route::resource('ret_fun_procedure','RetFunProcedureController');
 
 	Route::resource('affiliate', 'AffiliateController');
 
@@ -122,4 +122,4 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('commitment','ContributionCommitmentController');
 	});
 });
-
+});
