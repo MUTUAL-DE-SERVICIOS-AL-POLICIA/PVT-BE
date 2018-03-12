@@ -32,7 +32,7 @@
 //                this.update(-1);
 //            },
             create_new(){
-                this.toggle_create();
+                //this.toggle_create();
                 this.toggle_editing();
                 //this.update(0);
                 //this.commitment.affiliate_id = this.affiliate_id;
