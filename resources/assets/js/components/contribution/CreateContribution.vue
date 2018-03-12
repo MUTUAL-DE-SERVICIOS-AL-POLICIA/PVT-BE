@@ -232,17 +232,13 @@ export default {
                 if (result.value) {
                     
                     var aportes = this.contributions;
-                    console.log(aportes);
-                    
+                    //console.log(aportes);                    
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
-                    .then(response => {
-                    console.log(response.data[0]);     
+                    .then(response => {                    
                     var i;
-                    for(i=0;i<response.data.lenght;i++)
-                        //console.log(response.data[i]); 
-                        console.log('adfasdf');
-                        console.log(response.data[i].month_year+'++++ '+response.data[i].total);
+                    for(i=0;i<response.data.length;i++){                        
                         this.setDataToTable(response.data[i].month_year,response.data[i].total);
+                    }
                     })
                     .catch(e => {
                     this.show_spinner = false;            
