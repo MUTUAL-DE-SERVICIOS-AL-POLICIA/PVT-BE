@@ -28,9 +28,6 @@
                 var affiliate_id = this.affiliate_id;
                 window.open('/ret_fun/'+affiliate_id+'/print/voucher','_blank');
             },
-//            disable_commitment(){
-//                this.update(-1);
-//            },
             create_new(){
                 //this.toggle_create();
                 this.toggle_editing();
