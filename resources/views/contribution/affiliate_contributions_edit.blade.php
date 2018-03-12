@@ -284,6 +284,11 @@
 @section('scripts')
 <script>
 $('body').addClass("mini-navbar");
+    @if(Session::has('message'))
+        alert('Hola');
+        
+    @endif
+
     var actual_year = "1700";
     function toggleNestedComp(mode){
         $(mode).closest('tr').next().toggle();

@@ -4,7 +4,7 @@ namespace Muserpol\Http\Controllers;
 
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
-use Muserpol\Models\Affiliate;
+use Muserpol\Models\Affiliate; 
 
 use Muserpol\Models\City;
 use Muserpol\Models\AffiliateState;
@@ -416,9 +416,9 @@ class ContributionController extends Controller
         //*********START VALIDATOR************//
         $rules=[];
         $messages=[];
+        //return json_encode($request->iterator);
         foreach ($request->iterator as $key => $iterator) 
         {
-          //  dd('$base_wage[$key]');
         $array_rules = [                       
             'base_wage.'.$key =>  'numeric|min:2000',
             'gain.'.$key =>  'numeric|min:1',
@@ -437,13 +437,15 @@ class ContributionController extends Controller
         }
         $validator = Validator::make($request->all(),$rules,$messages);
        if($validator->fails()){
-           return json_encode($validator->errors());                    
+        Session::flash('flash', 'This is a message!'); 
+           //return json_encode($validator->errors());                    
        }
          //*********END VALIDATOR************//
 
          
         foreach ($request->iterator as $key => $iterator) {
             //return $key.'--'.$total[$key];
+            //return json_encode($request->iterator);
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = $request->total[$key] ?? $contribution->total;
