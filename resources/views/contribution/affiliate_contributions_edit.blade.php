@@ -3,7 +3,7 @@
 @section('styles')
     <style>
         table{
-            font-size: 14px;
+            font-size: 14px; 
         }
         .table-hover > tbody > tr:hover { background-color: #DBDBDB }
     </style>
@@ -283,11 +283,6 @@
 @section('scripts')
 <script>
 $('body').addClass("mini-navbar");
-    @if(Session::has('message'))
-        alert('Hola');
-        
-    @endif
-
     var actual_year = "1700";
     function toggleNestedComp(mode){
         $(mode).closest('tr').next().toggle();
@@ -309,14 +304,19 @@ $('body').addClass("mini-navbar");
                 if (settings.url.indexOf(document.domain) >= 0) {
                     xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
                 }                
-            },    
-            success: function(result){
-                /* console.log('saved'); */
+            },            
+            success: function(result){                
                 console.log(result);
+                flash('exito');
                  $('#main'+result.month_year).html(result.total);
             },
             error: function(xhr, status, error) {                
-                console.log(xhr.responseText);                                
+                console.log(xhr.responseText);
+                var resp = jQuery.parseJSON(xhr.responseText);
+                $.each(resp, function(index, value)
+                {                    
+                    flash(value,'error',15);
+                });                            
             }
         });
 

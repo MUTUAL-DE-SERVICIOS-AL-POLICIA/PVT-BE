@@ -27,6 +27,7 @@ use Log;
 use Session;
 
 
+
 class ContributionController extends Controller
 {
     /**
@@ -407,8 +408,7 @@ class ContributionController extends Controller
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'commitment'    =>  $commitment,
         ];
-        Log::info("hola mundio");
-        return view('contribution.affiliate_contributions_edit', $data);
+         return view('contribution.affiliate_contributions_edit', $data);
     }
 
     public function storeContributions(Request $request)
@@ -416,30 +416,33 @@ class ContributionController extends Controller
         //*********START VALIDATOR************//
         $rules=[];
         $messages=[];
-        foreach ($request->iterator as $key => $iterator) 
+        if(!empty($request->iterator))
+    { 
+          foreach ($request->iterator as $key => $iterator) 
         {
         $array_rules = [                       
             'base_wage.'.$key =>  'required|numeric|min:2000',
             'gain.'.$key =>  'required|numeric|min:1',
-            'total.'.$key =>  'requiered|numeric|min:1'
+            'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
         $array_messages = [
-            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico',
-            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000',
-            'gain.'.$key.'.numeric' => 'El campo debe ser numero',
-            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0', 
-            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico',
-            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0'
+            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico.',
+            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000.',
+            'gain.'.$key.'.numeric' => 'El campo debe ser numero.',
+            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0.', 
+            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico.',
+            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0.'
         ];
         $messages=array_merge($messages, $array_messages);
-        }        
+        }   
         $validator = Validator::make($request->all(),$rules,$messages);
         if($validator->fails()){
-          //  Session::flash('flash', 'This is a message!'); 
+            Session::flash('flash', 'This is a message!'); 
             return response()->json($validator->errors(), 400);
         }
          //*********END VALIDATOR************//
+
 
         //return ;
          
@@ -472,9 +475,7 @@ class ContributionController extends Controller
                 $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
                 $category = Category::find($request->category[$key]);
                 $contribution->category_id = $category->id;
-             //   return $category->percentage." ".$contribution->base_wage;
                 $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
-                //return $category->percentage*$contribution->base_wage;
                 $contribution->study_bonus = 0;
                 $contribution->position_bonus = 0;
                 $contribution->border_bonus = 0;
@@ -493,8 +494,8 @@ class ContributionController extends Controller
         return $contribution;
         //return json_encode($contribution);
     }
-
-    public function generateContribution(Affiliate $affiliate)
+}
+    public function generateContribution(Affiliate $affiliate) 
     {
         $this->authorize('create',Contribution::class);
         $contributions = self::getMonthContributions($affiliate->id);
