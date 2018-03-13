@@ -40,7 +40,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function anyData()
+    public function getUserDatatable()
     {
         $users = User::with('roles')->get();
         return Datatables::of($users)
@@ -144,6 +144,7 @@ class UserController extends Controller
             //registrar
             $user = new User;   
         }       
+        
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->phone = $request->phone;
