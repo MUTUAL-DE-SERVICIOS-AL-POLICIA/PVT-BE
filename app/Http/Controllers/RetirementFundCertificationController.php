@@ -32,6 +32,7 @@ use Carbon\Carbon;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
+use Muserpol\Models\Contribution\ContributionCommitment;
 
 class RetirementFundCertificationController extends Controller
 {
@@ -186,6 +187,7 @@ class RetirementFundCertificationController extends Controller
     public function printRetFunCommitmentLetter($id)
     {
         $affiliate = Affiliate::find($id);
+        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->first();
         $date = Util::getStringDate(date('Y-m-d'));
         $username = Auth::user()->username;//agregar cuando haya roles
         $city = Auth::user()->city->name;
@@ -208,7 +210,20 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Carta de Compromiso de Fondo de Retiro";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
-        return \PDF::loadView('ret_fun.print.ret_fun_commitment_letter', compact('date', 'username', 'title', 'affiliate', 'glosa', 'city', 'glosa_pago'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        return \PDF::loadView('ret_fun.print.ret_fun_commitment_letter', 
+                compact('date', 
+                        'username', 
+                        'title', 
+                        'affiliate', 
+                        'glosa', 
+                        'city', 
+                        'glosa_pago',
+                        'commitment'))
+                ->setPaper('letter')
+                ->setOption('encoding', 'utf-8')
+                ->setOption('footer-right', 'Pagina [page] de [toPage]')
+                ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+                ->stream("$namepdf");
     }
 
     public function printVoucher($id)
