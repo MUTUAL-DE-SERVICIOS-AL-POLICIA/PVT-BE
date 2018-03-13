@@ -192,7 +192,8 @@ export default {
         this.total = total1;
 
       },
-      PrintQuote(){                                      
+      PrintQuote(){                    
+          $('#main2018-05-01').html('bbr');
           this.contributions =  this.contributions.filter((item)=> {
             return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
         });
@@ -201,6 +202,10 @@ export default {
         var affiliate_id = this.afid;
         var total = this.total;      
         window.open('/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, '_blank');
+      },
+      setDataToTable(period,amount){          
+          console.log(period+' ---- '+amount);
+        $('#main'+period).html(amount);
       },
       Guardar(){
         
@@ -227,11 +232,13 @@ export default {
                 if (result.value) {
                     
                     var aportes = this.contributions;
-                    console.log(aportes);
-                    
+                    //console.log(aportes);                    
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
-                    .then(response => {
-                    console.log(response.data);                
+                    .then(response => {                    
+                    var i;
+                    for(i=0;i<response.data.length;i++){                        
+                        this.setDataToTable(response.data[i].month_year,response.data[i].total);
+                    }
                     })
                     .catch(e => {
                     this.show_spinner = false;            

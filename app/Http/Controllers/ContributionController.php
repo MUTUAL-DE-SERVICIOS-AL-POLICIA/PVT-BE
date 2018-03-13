@@ -137,6 +137,7 @@ class ContributionController extends Controller
         $affiliate->save();
        // return $voucher;
         //return $request->aportes;
+        $result = [];
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;
@@ -170,13 +171,17 @@ class ContributionController extends Controller
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
-            $contribution->ipc = $aporte->interes;
+            $contribution->ipc = $aporte->interes;            
             $contribution->save();
+            array_push($result, [
+                'total'=>$contribution->total,
+                'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
+                    ]);
             //Log::info(json_encode($contribution));
             //return $contribution;
         }
 
-        return json_encode(0);
+        return $result;
     }
 
     /**
@@ -188,6 +193,7 @@ class ContributionController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
+        $this->authorize('view',new Contribution);
         $cities = City::all();
         $birth_cities = City::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
@@ -350,6 +356,7 @@ class ContributionController extends Controller
     {        
         
         //codigo para obtener totales para el resument
+        $this->authorize('update',new Contribution);
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
 
@@ -445,7 +452,8 @@ class ContributionController extends Controller
 
 
         //return ;
-         
+        $this->authorize('update',new Contribution);
+
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {

@@ -10,7 +10,7 @@ use Log;
 class ContributionPolicy
 {
     use HandlesAuthorization;
-    const ClASS_NAME = 'Affiliate';
+    const ClASS_NAME = 'Contribution';
     const CREATE = 'create';
     const READ = 'read';
     const UPDATE = 'update';

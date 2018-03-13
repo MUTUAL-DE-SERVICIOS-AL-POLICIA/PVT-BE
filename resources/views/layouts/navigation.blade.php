@@ -29,10 +29,10 @@
                 <a href="{{ url('/affiliate') }}"><i class="fa fa-user"></i> <span class="nav-label">Afiliados</span></a>
             </li>
             <li class="{{ isActiveRoute('ret_fun.index') }}">
-                <a href="{{ url('/ret_fun') }}"><i class="fa fa-user"></i> <span class="nav-label">Fondos de Retiro</span></a>
+                <a href="{{ url('/ret_fun') }}"><i class="{{Muserpol\Helpers\Util::IconModule(3)}}"></i> <span class="nav-label">Fondos de Retiro</span></a>
             </li>
             <li class="{{ isActiveRoute('quota_aid.index') }}">
-                <a href="{{ url('/quota_aid') }}"><i class="fa fa-user"></i> <span class="nav-label">Cuota y Auxilio Mortuorio</span></a>
+                <a href="{{ url('/quota_aid') }}"><i class="{{Muserpol\Helpers\Util::IconModule(4)}}"></i> <span class="nav-label">Cuota y Auxilio Mortuorio</span></a>
             </li>
         </ul>
 
