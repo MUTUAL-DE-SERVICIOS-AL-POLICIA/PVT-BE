@@ -69,7 +69,29 @@ class ContributionCommitmentController extends Controller
      */
     public function update(Request $request, $id)
     {        
-        
+         //*********START VALIDATOR************//
+        $rules=[];
+        $rules = [           
+            'commitment_memorandum' => 'required',
+            'commitment_date' => 'required|date_format:Y-m-d',
+            'commitment_destination' => 'required',
+            'commitment_type' => 'required'
+            ];
+        $array_messages = [
+            'commitment_memorandum.required' => 'El numero de Memorandum es obligatorio',
+            'commitment_date.required'  =>  'La fecha del memorandum es obligatoria',
+            'commitment_date.date_format' => 'El formato de la fecha es incorrecto',
+            'commitment_destination.required'  =>  'El destino es obligatorio', 
+            'commitment_type' => 'El tipo de aporte es obligatorio'
+        ];
+        $messages=array_merge($messages, $array_messages);
+        $validator = Validator::make($request->all(),$rules,$messages);
+        if($validator->fails()){
+            Session::flash('flash', 'This is a message!'); 
+            return response()->json($validator->errors(), 400);
+        }
+         //*********END VALIDATOR************//
+
         
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);

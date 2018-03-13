@@ -315,7 +315,7 @@ $('body').addClass("mini-navbar");
                 var resp = jQuery.parseJSON(xhr.responseText);
                 $.each(resp, function(index, value)
                 {                    
-                    flash(value,'error',15);
+                    flash(value,'error',10000);
                 });                            
             }
         });

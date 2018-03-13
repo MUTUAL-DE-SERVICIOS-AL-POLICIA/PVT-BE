@@ -36,17 +36,26 @@
                 this.toggle_editing();
                 //this.update(0);
                 //this.commitment.affiliate_id = this.affiliate_id;
-            },
+            },/* 
+            console.log(xhr.responseText);
+                var resp = jQuery.parseJSON(xhr.responseText);
+                $.each(resp, function(index, value)
+                {                    
+                    flash(value,'error',10000);
+                }); */
             update (value) {
                 var id = value;                
-                let uri = `/commitment/`+id;
+                let uri = `/commitment/`+id; 
                 this.show_spinner=true;
                 axios.patch(uri,this.commitment)
                     .then(response=>{                       
                         this.editing = false;
                         this.show_spinner=false;
                         console.log(response.data.state+"----");
+                        
                         if(response.data.state =='ALTA'){
+                            if(!response.data)
+                            flash(response.data,"error",1000);
                         this.commitment.id  =   response.data.id;    
                         this.commitment.commitment_type = response.data.commitment_type;
                         this.commitment.number = response.data.number;
@@ -55,6 +64,7 @@
                         this.commitment.state = response.data.state;
                         this.enable_delete=true;
                         console.log("condatos");
+                        
                         }
                         else{
                             console.log("eliminado");
@@ -72,7 +82,8 @@
                         flash('Informacion actualizada');
                     }).catch((response)=>{
                         this.show_spinner=false;                                                
-                        flash('Error al actualizar el afiliado: '+response.message,'error');
+                        flash('fds','error');
+                        flash('Error al actualizar el afiliadossss: '+response.message,'error');
                     })
             }
         }
