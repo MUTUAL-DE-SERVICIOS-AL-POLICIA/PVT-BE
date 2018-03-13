@@ -21,7 +21,7 @@
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="row">
+        <div class="row">            
         <div class="col-md-12">
             <div class="col-md-6">
                 <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 

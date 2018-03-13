@@ -11,8 +11,7 @@ return [
     | the validator class. Some of these rules have multiple versions such
     | such as the size rules. Feel free to tweak each of these messages.
     |
-    */
-
+    */    
     'accepted'             => ':attribute debe ser aceptado.',
     'active_url'           => ':attribute no es una URL válida.',
     'after'                => ':attribute debe ser una fecha posterior a :date.',
@@ -118,7 +117,7 @@ return [
     | of "email". This simply helps us make messages a little cleaner.
     |
     */
-
+    
     'attributes'           => [
         'name'                  => 'nombre',
         'username'              => 'usuario',

@@ -191,12 +191,12 @@ class RetirementFundCertificationController extends Controller
         $date = Util::getStringDate(date('Y-m-d'));
         $username = Auth::user()->username;//agregar cuando haya roles
         $city = Auth::user()->city->name;
-        $glosa="";
+        $glosa="No corresponde";
         if ($affiliate->affiliate_state->name == "Baja Temporal") {
             $title = "COMPROMISO DE PAGO - APORTE VOLUNTARIO SUSPENDIDOS TEMPORALMENTE DE FUNCIONES POR PROCESOS DISCIPLINARIOS";
             $glosa = 'Suspendido temporalmente de funciones por procesos disciplinarios, figurando en planilla de haberes con ítem "0".';
             $glosa_pago = "de mi última boleta de pago efectivamente percibida";
-        } else {
+        } else {           
             $title = 'COMPROMISO DE PAGO - APORTE VOLUNTARIO COMISIÓN DE SERVICIO ÍTEM "0" O AGREGADOS POLICIALES EN EL EXTERIOR DEL PAÍS';
             $glosa_pago = "de mi total ganado mensual (sin descuentos)";
             if ($affiliate->affiliate_state->name == "Comisión") {
