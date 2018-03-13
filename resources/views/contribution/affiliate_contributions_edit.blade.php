@@ -3,9 +3,13 @@
 @section('styles')
     <style>
         table{
-            font-size: 14px;
+            font-size: 14px; 
         }
         .table-hover > tbody > tr:hover { background-color: #DBDBDB }
+        .disableddiv {
+            pointer-events: none;
+            opacity: 0;
+        }
     </style>
 @endsection
 @section('content')
@@ -31,12 +35,8 @@
                 @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id]) 
             </div> 
         </div>
-            <div class="col-md-12 wrapper wrapper-content animated fadeInRight">
-
-        
-    <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>
-
-                
+            <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight @if($commitment->id == 0) disableddiv @endif">           
+                <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>              
             </div>
     </div>
     
@@ -304,14 +304,19 @@ $('body').addClass("mini-navbar");
                 if (settings.url.indexOf(document.domain) >= 0) {
                     xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
                 }                
-            },    
-            success: function(result){
-                console.log('saved');
+            },            
+            success: function(result){                
                 console.log(result);
+                flash('exito');
                  $('#main'+result.month_year).html(result.total);
             },
             error: function(xhr, status, error) {                
-                console.log(xhr.responseText);                                
+                console.log(xhr.responseText);
+                var resp = jQuery.parseJSON(xhr.responseText);
+                $.each(resp, function(index, value)
+                {                    
+                    flash(value,'error',15);
+                });                            
             }
         });
 
@@ -360,6 +365,13 @@ function storeReimbursement(){
     
     $('#reimbursement_modal').modal('hide');
    
+}
+function setPeriodData(period,amount){
+    alert(period+' - '+amount);
+    $('#main'+period).html(amount);
+}
+function enableDirectContribution(){
+    $(".directContribution").removeClass('disableddiv');
 }
 </script>
 

@@ -5,9 +5,13 @@
         <div class="panel-heading">
             <h3 class="pull-left">Documentos Presentados</h3>
             <div class="text-right">
+              @can('update',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
                 <button type="button" class="btn btn-primary" onclick="editLegalReview()">
                      <i id='icon' class="fa fa-lock"> </i>     
                 </button>
+              @else
+                <br>
+              @endcan
             </div>
         </div>
         

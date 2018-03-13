@@ -210,5 +210,34 @@ class Util
                     ->first();
         return $permission;
     }
+    public static function IconModule($module_id)
+    {
+        $class_icon = 'fa fa-square';
+        switch ($module_id) {
+            case 1:
+                $class_icon = 'glyphicon glyphicon-hdd';
+                break;
+            
+            case 2:
+                $class_icon = 'fa fa-fw fa-puzzle-piece';
+                break;
+            case 3:
+                $class_icon = 'glyphicon glyphicon-piggy-bank';
+                break;
+            case 4:
+                $class_icon = 'fa fa-fw fa-heartbeat';
+                break;
+            case 6:
+                $class_icon = 'fa fa-fw fa-money';
+                break;
+            case 7:
+                $class_icon = 'fa fa-balance-scale';
+                break;
+            case 10:
+                $class_icon = 'fa fa-map';
+                break;
+        }
+        return $class_icon;
+    }
 
 }

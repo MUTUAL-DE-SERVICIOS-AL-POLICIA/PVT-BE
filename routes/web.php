@@ -26,7 +26,7 @@ Route::post('/update/{id}', 'UserController@store');
 Route::get('user/inactive/{user}', 'UserController@inactive');
 Route::get('user/active/{user}', 'UserController@active');
 //Route::get('users/index','UserController@index');
-Route::get('usersGetData', 'UserController@anyData' )->name('user_list');
+Route::get('usersGetData', 'UserController@getUserDatatable' )->name('user_list');
 
 //permission
 Route::resource('permission', 'PermissionController');

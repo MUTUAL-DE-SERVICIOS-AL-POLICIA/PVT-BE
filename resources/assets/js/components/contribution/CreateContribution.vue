@@ -192,7 +192,7 @@ export default {
         this.total = total1;
 
       },
-      PrintQuote(){                                      
+      PrintQuote(){                              
           this.contributions =  this.contributions.filter((item)=> {
             return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
         });
@@ -202,10 +202,13 @@ export default {
         var total = this.total;      
         window.open('/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, '_blank');
       },
-      Guardar(){
-        
-        //console.log(this.contributions); 
-        console.log(this.tipo);
+      setDataToTable(period,amount){                    
+        $('#main'+period).html(amount);
+      },
+      enableDC(){
+          $(".directContribution").removeClass('disableddiv');
+      },
+      Guardar(){                
         if(this.tipo !== null) 
         {
             this.contributions =  this.contributions.filter((item)=> {
@@ -227,11 +230,14 @@ export default {
                 if (result.value) {
                     
                     var aportes = this.contributions;
-                    console.log(aportes);
-                    
+                    //console.log(aportes);                    
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
-                    .then(response => {
-                    console.log(response.data);                
+                    .then(response => {                    
+                    this.enableDC();
+                    var i;
+                    for(i=0;i<response.data.length;i++){                        
+                        this.setDataToTable(response.data[i].month_year,response.data[i].total);
+                    }
                     })
                     .catch(e => {
                     this.show_spinner = false;            

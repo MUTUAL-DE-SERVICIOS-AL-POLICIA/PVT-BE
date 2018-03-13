@@ -1,6 +1,7 @@
 @extends('layouts.app') 
 @section('styles')
-@endsection 
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+@endsection
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -34,15 +35,8 @@
 </div>
 
 @endsection
- 
-@section('styles')
-<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
-@endsection
- 
 @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
-<script src="http://wwach.test/usersGetData"></script>
-
 <script>
 $(function() {
 var user_tables = $('#users-table').DataTable({

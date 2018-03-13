@@ -404,6 +404,7 @@ class RetirementFundController extends Controller
     public function storeLegalReview(Request $request,$id){
         //return 0;
         $retirement_fund = RetirementFund::find($id);
+        $this->authorize('update',new RetFunSubmittedDocument);
         $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         foreach ($submited_documents as $document)
         {
@@ -421,6 +422,8 @@ class RetirementFundController extends Controller
         //return $retirement_fund;
     }
     public function updateBeneficiaries(Request $request){
+        
+        $this->authorize('update',new RetFunBeneficiary);
         $i = 0;
         $ben = 0;
         foreach ($request->all() as $ben){            

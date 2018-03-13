@@ -37,6 +37,7 @@ class AffiliateFolderController extends Controller
     {
         //
         $folder = new AffiliateFolder;
+        $this->authorize('update', $folder);
         $folder->affiliate_id = $request->affiliate_id;
         $folder->procedure_modality_id = $request->procedure_modality_id;
         $folder->code_file = $request->code_file;
