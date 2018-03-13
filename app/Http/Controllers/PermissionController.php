@@ -6,6 +6,8 @@ use Muserpol\Permission;
 use Illuminate\Http\Request;
 use Muserpol\Models\Module;
 use Muserpol\Models\Role;
+use Muserpol\Action;
+use Muserpol\Operation;
 
 class PermissionController extends Controller
 {
@@ -29,14 +31,17 @@ class PermissionController extends Controller
         //
         $modules = Module::all();
         $roles = Role::all();
+        $actions = Action::all();
         $modulesL=array('' =>'');
+        $operations = Operation::all();
         foreach ($modules as $module){
             $modulesL[$module->id]=$module->name;
         }
         $data = array(
             'modules'=> $modules,
             'roles' => $roles,
-            'modulesL' => $modulesL
+            'modulesL' => $modulesL,
+            'actions' => $actions
         );
         return view('permissions.registro')->with($data);
     }
@@ -49,7 +54,14 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //   
+        $permission = new Permission;   
+        $permission->name = $request->name;
+      
+        $permission->roles()->attach($request->rol);
+              
+        $permission->save();        
+        return redirect('user');
     }
 
     /**

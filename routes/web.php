@@ -122,4 +122,5 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('commitment','ContributionCommitmentController');
 	});
 });
-});
+
+
