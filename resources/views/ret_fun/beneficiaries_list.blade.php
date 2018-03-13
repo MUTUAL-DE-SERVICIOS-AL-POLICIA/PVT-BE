@@ -6,7 +6,11 @@
                         <div class="panel-heading">
                             <h3 class="pull-left">Beneficiarios</h3>
                             <div class="text-right">
+                                @can('update',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
                                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
+                                @else
+                                <br>
+                                @endcan
                             </div>
                         </div>
                       <template v-for="(beneficiary, iterator) in beneficiaries">
@@ -35,6 +39,7 @@
                                 </dl>
                             </div>
                         </div>
+                        @can('update',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
                         <div class="panel-body" v-else>
                             <div class="sk-folding-cube" v-show="show_spinner" >
                                 <div class="sk-cube1 sk-cube"></div>
@@ -86,6 +91,7 @@
                                 </dl>
                             </div>
                         </div>
+                        @endcan
                         <hr>
                       </template>
                         <div v-show="editing" class="panel-footer">

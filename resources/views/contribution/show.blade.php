@@ -28,10 +28,14 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Aportes</h3>
                     <div class="text-right">
+                        @can('update',new Muserpol\Models\Contribution\Contribution)
                         <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
                         <a href="{{route('edit_contribution', $affiliate->id)}}">
                             <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
                         </a>
+                        @else
+                        <br>
+                        @endcan
                     </div>
                 </div>
                 <div class="panel-body">
@@ -47,7 +51,7 @@
                                 <th>Sueldo</th>
                                 <th>Antigüedad</th>
                                 <th>Estudio</th>
-                                <th>Al Cargo</th>
+                                <th>Cargo</th>
                                 <th>Frontera</th>
                                 <th>Oriente</th>
                                 <th>Seguridad</th>
@@ -166,7 +170,7 @@
             $( datatable_contri.column( colIdx ).nodes() ).addClass( 'highlight' );
         } );
         $('[data-toggle="tooltip"]').tooltip();
-        $('.dt-button.buttons-collection.buttons-colvis').on('click', function () {
+        $('.btn.btn-default.buttons-collection.buttons-colvis').on('click', function () {
             $('div.dt-button-background').remove()
         });
     })

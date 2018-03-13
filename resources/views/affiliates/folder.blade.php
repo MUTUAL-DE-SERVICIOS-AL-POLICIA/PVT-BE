@@ -3,9 +3,13 @@
         <div class="panel-heading">
             <h3 class="pull-left">Archivos</h3>
             <div class="text-right">
+               @can('create',Muserpol\Models\AffiliateFolder::class) 
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#folderModal">
                      <i class="fa fa-plus"> </i>     
                 </button>
+                @else
+                <br>
+                @endcan
             </div>
         </div>
         

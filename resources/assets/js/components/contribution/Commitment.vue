@@ -25,8 +25,8 @@
                 this.create = !this.create;
             },
             print_commitment(){
-                var affiliate_id = this.affiliate_id;
-                window.open('/ret_fun/'+affiliate_id+'/print/voucher','_blank');
+                var affiliate_id = this.affiliate_id;                
+                window.open('/ret_fun/'+affiliate_id+'/print/ret_fun_commitment_letter','_blank');                
             },
             create_new(){                
                 this.toggle_editing();                

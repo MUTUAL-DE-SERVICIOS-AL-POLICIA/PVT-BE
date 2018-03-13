@@ -1,17 +1,17 @@
 @extends('layouts.app')
-<style>
-    /*    table 
-    {
-        table-layout:fixed;
-        width:100%;
-    }*/
-    .disableddiv {
-        pointer-events: none;
-        opacity: 0;
-    }
-</style>
-    
 @section('title', 'Contribuciones')
+@section('styles')
+    <style>
+        table{
+            font-size: 14px;
+        }
+        .table-hover > tbody > tr:hover { background-color: #DBDBDB }
+        .disableddiv {
+            pointer-events: none;
+            opacity: 0;
+        }
+    </style>
+@endsection
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
@@ -367,10 +367,6 @@ function setPeriodData(period,amount){
 }
 function enableDirectContribution(){
     $(".directContribution").removeClass('disableddiv');
-}
-
-function xd(){
-    flash('qweqwe');
 }
 </script>
 

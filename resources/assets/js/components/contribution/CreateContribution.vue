@@ -205,6 +205,9 @@ export default {
       setDataToTable(period,amount){                    
         $('#main'+period).html(amount);
       },
+      enableDC(){
+          $(".directContribution").removeClass('disableddiv');
+      },
       Guardar(){                
         if(this.tipo !== null) 
         {
@@ -230,6 +233,7 @@ export default {
                     //console.log(aportes);                    
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
                     .then(response => {                    
+                    this.enableDC();
                     var i;
                     for(i=0;i<response.data.length;i++){                        
                         this.setDataToTable(response.data[i].month_year,response.data[i].total);
