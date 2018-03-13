@@ -79,7 +79,7 @@ class ContributionController extends Controller
                 $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contributions = array($contribution1, $contribution2, $contribution3);
+                $contributions = array($contribution3, $contribution2, $contribution1);
             } 
             else 
             {
@@ -349,7 +349,7 @@ class ContributionController extends Controller
     }
 
 
-    public function getAffiliateContributions(Affiliate $affiliate)
+    public function getAffiliateContributions(Affiliate $affiliate = null)
     {        
         
         //codigo para obtener totales para el resument

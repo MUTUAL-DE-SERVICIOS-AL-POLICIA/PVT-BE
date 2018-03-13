@@ -28,11 +28,8 @@
                 var affiliate_id = this.affiliate_id;
                 window.open('/ret_fun/'+affiliate_id+'/print/voucher','_blank');
             },
-            create_new(){
-                //this.toggle_create();
-                this.toggle_editing();
-                //this.update(0);
-                //this.commitment.affiliate_id = this.affiliate_id;
+            create_new(){                
+                this.toggle_editing();                
             },
             update (value) {
                 var id = value;                
@@ -50,6 +47,7 @@
                         this.commitment.destination = response.data.destination;
                         this.commitment.commision_date = response.data.commision_date;
                         this.commitment.state = response.data.state;
+                        enableDirectContribution();
                         this.enable_delete=true;
                         console.log("condatos");
                         }
