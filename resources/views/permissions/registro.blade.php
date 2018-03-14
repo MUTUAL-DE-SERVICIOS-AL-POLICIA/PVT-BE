@@ -9,12 +9,11 @@
             </div>
             <div class="ibox-content">
                 
-                <form class="form-horizontal" action="{{route('registrar')}}" method="POST">
+               
                 <input type="hidden" name="_method" value="POST">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">                   
-               
-          
-                <nom-module :roles="{{ $roles }}" :permissions="{{$permissions}}" :operations="{{$operations}}" :role_permissions="{{$role_permissions}}" inline-template>
+          {{--      <input type="checkbox" class="js-switch" checked /> --}}
+                <nom-module :roles="{{ $roles }}" :permissions="{{$permissions}}" :operations="{{$operations}}" :role_permissions="{{$role_permissions}}" :actions="{{$actions}}" inline-template>
                     <div>
                         <div class="row">
                             <label class="col-lg-2 control-label">Modulos</label>             
@@ -24,7 +23,6 @@
                             </div>
                         </div>
                         <br>
-         
                         <div class="row">
                             <div class="col-md-4">
                                 <ul class="list-group">
@@ -35,38 +33,56 @@
                                     </div>
                                 </ul>
                             </div>
-                            <div class="col-md-8" v-if="role">
+                            <div class="col-md-8" v-if="role && module_id">
+                            {!! Form::open(['action' => 'PermissionController@store']) !!}
+                            <input type="hidden" name="role_id" v-model="role.id">
+                            <input type="hidden" name="module_id" v-model="module_id">
+                                <legend>@{{role.name}}</legend>
                                 <table class="table">
                                     <thead>
                                         <tr>
                                             <th>Permiso</th>    
                                             <th>Crear</th>    
                                             <th>Ver</th>    
-                                            <th>Editar</th>    
+                                            <th>Editar</th>         
                                             <th>Borrar</th>
                                             <th>Imprimir</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="operation in operations_list">
+                                        <tr v-for="operation in getOperationPermissionList">
                                             <td>@{{operation.name}}</td>
-                                            <td>@{{CheckPermissionCreate(operation)}}</td>
-                                            <td>ok</td>
-                                            <td>ok</td>
-                                            <td>ok</td>
-                                            <td>ok</td>
+                                            <td><input type="checkbox" v-model="operation.create" > </td>
+                                            <td><input type="checkbox" v-model="operation.read" ></td>
+                                            <td><input type="checkbox" v-model="operation.update" ></td>
+                                            <td><input type="checkbox" v-model="operation.delete" ></td>
+                                            <td><input type="checkbox" v-model="operation.print" ></td>
                                         </tr>                                        
                                     </tbody>    
-                                    
                                 </table>
+                                <button type="button" class="btn btn-primary"  @click="update" >Guardar</button>
                             </div>
+                            <textarea  name="asd" :value="JSON.stringify(list_to_send)"></textarea>
+                            
+                        
+                            {!!Form::close()!!}
                         </div>
                     </div>   
                 </nom-module>
             
-                </form>
+                
             </div>            
         </div>        
     </div>
-    </div>
+</div>
+
+@endsection
+@section('scripts')
+{{-- <script src="{!! asset('js/switchery.js') !!}" type="text/javascript"></script>
+<script type="text/javascript">
+     $(document).ready(function(){
+        var elem = document.querySelector('.js-switch');
+        var switchery = new Switchery(elem, { color: '#1AB394' });
+     });
+</script> --}}
 @endsection

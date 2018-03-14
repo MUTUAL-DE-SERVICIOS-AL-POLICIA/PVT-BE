@@ -5,7 +5,8 @@ export default {
 			'roles',
       'permissions',
       'operations',
-      'role_permissions'
+      'role_permissions',
+      'actions'
 		],
   data() {
     return {
@@ -13,8 +14,11 @@ export default {
       roles_list: this.roles,
       permissions_list: this.permissions,
       operations_list: this.operations,
+      actions_list: this.actions,
       role_permissions_list: this.role_permissions,
+      opertaion_list_role: null,
       role: null,
+      list_to_send: [],
     }
   },
   computed: {
@@ -45,6 +49,25 @@ export default {
             // if(this.role.id = )
           }
         }
+     },
+     getOperationPermissionList: function()
+     {
+        this.list_to_send =[];
+        if(this.role)
+        {
+          console.log('refrescando this.list_to_send CyA');
+          for (var i = this.operations_list.length - 1; i >= 0; i--) {
+            
+            var obj = {operation_id: this.operations_list[i].id , name: this.operations_list[i].name};
+            for (var j = 0; j < this.actions_list.length; j++) {
+              
+              obj[this.actions_list[j].name] = this.CheckPermission(this.operations_list[i],this.actions_list[j].id); 
+            }
+            this.list_to_send.push(obj);
+          }
+        }
+
+        return this.list_to_send;
      }
 
   },
@@ -52,16 +75,24 @@ export default {
       SelectRol: function(role)
       { 
          this.role = role;
+         // var obj={operation_id: 1 , name: 'cechus y anita'};
+         // console.log(obj);
+         // for (var i = this.actions.length - 1; i >= 0; i--) {
+           
+         //   obj[this.actions[i].name] = this.CheckPermissionCreate(this.roles_list[1]);
+         // }
+         // console.log(obj);
          // console.log(role);
       },
-      CheckPermissionCreate: function(operation)
+      CheckPermission: function(operation,action_id)
       {
+        console.log('CheckPermission');
         var permissions=[];
         var result = false;
         if(this.role)
         {
           for (var i = this.permissions_list.length - 1; i >= 0; i--) {
-            if(this.permissions_list[i].operation_id ==operation.id && this.permissions_list[i].action_id == 1)
+            if(this.permissions_list[i].operation_id ==operation.id && this.permissions_list[i].action_id == action_id)
             {
               permissions.push(this.permissions_list[i]);
             }
@@ -71,19 +102,32 @@ export default {
           // for (var i = permissions.length - 1; i >= 0; i--) {
           //   console.log(permissions[i]);
           // }
-          for (var i = this.role_permissions_list.length - 1; i >= 0; i--) {
-            for (var j = permissions.length - 1; i >= 0; i--) {
-              if(permissions[j].id == this.role_permissions_list[i].id)
+          for (var i = 0; i < this.role_permissions_list.length; i++) {
+            for (var j = 0; j < permissions.length; j++) {
+              if(permissions[j].id == this.role_permissions_list[i].permission_id && this.role.id == this.role_permissions_list[i].role_id)
               {
                 result= true;
               }
             }
-             
           }
 
         }
         return result;
+      },
+      update: function () { 
+
+               var data = {module_id:this.module_id ,role_id: this.role.id, permissions_list: this.list_to_send };
+               axios.post('/permission', data)
+                    .then(function (resp) {
+                        // this.$router.push({path: '/'});
+                        console.log(resp);
+                    })
+                    .catch(function (resp) {
+                        console.log(resp);
+                        alert("Could not create your company");
+                    });
       }
+
 
   }
 };

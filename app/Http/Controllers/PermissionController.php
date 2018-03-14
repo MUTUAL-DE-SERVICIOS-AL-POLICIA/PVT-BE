@@ -62,14 +62,21 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //   
-        $permission = new Permission;   
-        $permission->name = $request->name;
+        // 
+        $p = null;
+        foreach ($request->permissions_list as $permiso) {
+            # code...
+            $p = $permiso;
+        }
+
+        return $p['name'];  
+        // $permission = new Permission;   
+        // $permission->name = $request->name;
       
-        $permission->roles()->attach($request->rol);
+        // $permission->roles()->attach($request->rol);
               
-        $permission->save();        
-        return redirect('user');
+        // $permission->save();        
+        // return redirect('user');
     }
 
     /**
