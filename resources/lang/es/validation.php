@@ -1,5 +1,10 @@
 <?php
-
+    $months = [
+                '2017-01-01'  =>  'enero de 2017',
+                '2017-02-01'  =>  'febrero de 2017',
+                '2017-03-01'  =>  'marzo de 2017',
+                '2017-04-01'  =>  'abril de 2017',            
+            ];
 return [
 
     /*
@@ -11,8 +16,7 @@ return [
     | the validator class. Some of these rules have multiple versions such
     | such as the size rules. Feel free to tweak each of these messages.
     |
-    */
-
+    */    
     'accepted'             => ':attribute debe ser aceptado.',
     'active_url'           => ':attribute no es una URL válida.',
     'after'                => ':attribute debe ser una fecha posterior a :date.',
@@ -118,7 +122,7 @@ return [
     | of "email". This simply helps us make messages a little cleaner.
     |
     */
-
+    
     'attributes'           => [
         'name'                  => 'nombre',
         'username'              => 'usuario',
@@ -133,7 +137,7 @@ return [
         'phone'                 => 'teléfono',
         'mobile'                => 'móvil',
         'age'                   => 'edad',
-        'sex'                   => 'sexo',
+        'sex'                   => 'sexo',        
         'gender'                => 'género',
         'year'                  => 'año',
         'month'                 => 'mes',
@@ -149,6 +153,8 @@ return [
         'time'                  => 'hora',
         'subject'               => 'asunto',
         'message'               => 'mensaje',
+        'base_wage'             => $months,
+        'total'                 => $months,
     ],
 
 ];
