@@ -151,12 +151,16 @@ class UserController extends Controller
         $user->position = $request->position;
         $user->username = $request->username;
         $user->city_id=$request->city;
-        if($request->contra == "false"){
-            $user->password = bcrypt($user->password);
-            $user->remember_token= bcrypt($user->remember_token);
+        if($request->contra == "false"){       
+            if($request->password){
+                $user->password = bcrypt(trim($request->password));
+                $user->remember_token= bcrypt(trim($request->remember_token));
+            }           
         }else{
-            $user->password = bcrypt($request->password);
-            $user->remember_token= bcrypt($request->remember_token);
+            if($request->password){
+                $user->password = bcrypt(trim($request->password));
+                $user->remember_token= bcrypt(trim($request->remember_token));
+            }           
         }      
         $user->save();
         if (isset($user)){

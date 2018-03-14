@@ -10,8 +10,7 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
-                            <h3 class="box-title">Fondo de Retiro</h3>
-                            {{$retirement_fund}}    
+                            <h3 class="box-title">Fondo de Retiro</h3>  
                             @if($retirement_fund!=null)
                                 <dl class="dl-horizontal">
                                     <dt>Codigo:</dt><dd>{{ $retirement_fund->code }}</dd>
