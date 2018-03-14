@@ -360,7 +360,7 @@ class ContributionController extends Controller
     {        
         
         //codigo para obtener totales para el resument
-        //$this->authorize('update',new Contribution);
+        $this->authorize('update',new Contribution);
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
 
@@ -460,7 +460,7 @@ class ContributionController extends Controller
 
 
         //return ;
-        //$this->authorize('update',new Contribution);
+        $this->authorize('update',new Contribution);
 
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
