@@ -6,6 +6,10 @@
             font-size: 14px; 
         }
         .table-hover > tbody > tr:hover { background-color: #DBDBDB }
+        .disableddiv {
+            pointer-events: none;
+            opacity: 0;
+        }
     </style>
 @endsection
 @section('content')
@@ -31,12 +35,8 @@
                 @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id]) 
             </div> 
         </div>
-            <div class="col-md-12 wrapper wrapper-content animated fadeInRight">
-
-        
-    <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>
-
-                
+            <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight @if($commitment->id == 0) disableddiv @endif">           
+                <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>              
             </div>
     </div>
     
@@ -370,8 +370,8 @@ function setPeriodData(period,amount){
     alert(period+' - '+amount);
     $('#main'+period).html(amount);
 }
-function alertxd(){
-    alert('adfadsf');
+function enableDirectContribution(){
+    $(".directContribution").removeClass('disableddiv');
 }
 </script>
 
