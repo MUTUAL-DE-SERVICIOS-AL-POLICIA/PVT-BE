@@ -101,10 +101,7 @@ class ContributionController extends Controller
     }
     
     public function index()
-    {
-        App::setLocale("es");
-        return __('attributes.email');
-        return __('validation.max.numeric',['attribute'=>'bbr']);
+    {        
         return 0;
     }
 
@@ -120,6 +117,11 @@ class ContributionController extends Controller
 
     public function storeDirectContribution(Request $request)
     {      
+        
+        
+        
+        
+        
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
