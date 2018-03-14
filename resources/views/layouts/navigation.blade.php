@@ -15,6 +15,8 @@
                         @if(Session::get('rol_id')=='1')
                             <li class="divider"></li>
                             <li><a href="{{ url('user')}}"><i class="fa fa-users"></i> Usuarios</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{{ url('user')}}"><i class="fa fa-address-book"></i> Roles</a></li>
                         @endif                       
 
                         <li class="divider"></li>

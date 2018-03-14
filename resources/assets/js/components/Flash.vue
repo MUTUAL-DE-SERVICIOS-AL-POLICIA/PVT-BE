@@ -13,11 +13,15 @@
             return {
                 body: this.message,
                 level: 'success',
+<<<<<<< HEAD
                 timeOut: 5000,
                 show: false
+=======
+                show: false,
+>>>>>>> upstream/master
             }
         },
-        created() {
+        created() {                        
             if (this.message) {
                 this.flash();
             }

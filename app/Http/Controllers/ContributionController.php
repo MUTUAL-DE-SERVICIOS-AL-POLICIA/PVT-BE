@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Auth;
 use Validator;
 use DateTime;
+use App;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Contribution\ContributionCommitment;
 use Yajra\Datatables\DataTables;
@@ -81,7 +82,7 @@ class ContributionController extends Controller
                 $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contributions = array($contribution1, $contribution2, $contribution3);
+                $contributions = array($contribution3, $contribution2, $contribution1);
             } 
             else 
             {
@@ -100,7 +101,7 @@ class ContributionController extends Controller
     }
     
     public function index()
-    {
+    {        
         return 0;
     }
 
@@ -116,12 +117,20 @@ class ContributionController extends Controller
 
     public function storeDirectContribution(Request $request)
     {      
+<<<<<<< HEAD
         $rules = [           
             'con.sueldo' => 'required|numeric|min:2000',
             'commision_date' => 'required|date',
             'destination' => 'required', 
             'commitment_type' => 'required' 
             ];
+=======
+        
+        
+        
+        
+        
+>>>>>>> upstream/master
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
@@ -186,8 +195,13 @@ class ContributionController extends Controller
             //Log::info(json_encode($contribution));
             //return $contribution;
         }
-
-        return $result;
+        
+        $data = [
+            'contribution'  =>  $result,
+            'voucher_id'    => $voucher->id,
+            'affiliate_id'  =>  $affiliate->id,
+        ];
+        return $data;
     }
 
     /**
@@ -199,7 +213,7 @@ class ContributionController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
-        $this->authorize('view',new Contribution);
+        //$this->authorize('view',new Contribution);
         $cities = City::all();
         $birth_cities = City::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
@@ -358,11 +372,11 @@ class ContributionController extends Controller
     }
 
 
-    public function getAffiliateContributions(Affiliate $affiliate)
+    public function getAffiliateContributions(Affiliate $affiliate = null)
     {        
         
         //codigo para obtener totales para el resument
-        $this->authorize('update',new Contribution);
+        //$this->authorize('update',new Contribution);
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
 
@@ -397,8 +411,8 @@ class ContributionController extends Controller
             'total' => $total,
             'dateentry' => $dateentry
         );
-        $cities = City::get();
-        
+        $cities = City::all()->pluck('first_shortened', 'id');
+        $birth_cities = City::all()->pluck('name', 'id');
         //get Commitment data
         $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
         if(!isset($commitment->id))
@@ -417,6 +431,7 @@ class ContributionController extends Controller
             'summary' => $summary,
             'affiliate' => $affiliate,
             'cities' => $cities,
+            'birth_cities' => $birth_cities,
             'new_contributions' => self::getMonthContributions($affiliate->id),
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'commitment'    =>  $commitment,
@@ -430,22 +445,26 @@ class ContributionController extends Controller
         $rules=[];
         $messages=[];
         if(!empty($request->iterator))
-    { 
+        { 
           foreach ($request->iterator as $key => $iterator) 
         {
+              $request->merge([$request->base_wage[$key]  => strip_tags($request->base_wage[$key])]);
+              $request->merge([$request->gain[$key]  => strip_tags($request->gain[$key])]);
+              $request->merge([$request->total[$key]  => strip_tags($request->total[$key])]);
+        
         $array_rules = [                       
-            'base_wage.'.$key =>  'required|numeric|min:2000',
+            'base_wage.'.$key =>  'required|numeric|min:2000',            
             'gain.'.$key =>  'required|numeric|min:1',
             'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
         $array_messages = [
-            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico.',
-            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000.',
-            'gain.'.$key.'.numeric' => 'El campo debe ser numero.',
-            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0.', 
-            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico.',
-            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0.'
+//            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico.',
+//            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000.',
+//            'gain.'.$key.'.numeric' => 'El campo debe ser numero.',
+//            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0.', 
+//            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico.',
+//            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0.'
         ];
         $messages=array_merge($messages, $array_messages);
         }   
@@ -457,7 +476,7 @@ class ContributionController extends Controller
 
 
         //return ;
-        $this->authorize('update',new Contribution);
+        //$this->authorize('update',new Contribution);
 
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();

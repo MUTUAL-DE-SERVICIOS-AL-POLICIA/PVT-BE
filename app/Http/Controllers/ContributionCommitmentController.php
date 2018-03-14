@@ -3,6 +3,7 @@
 namespace Muserpol\Http\Controllers;
 
 use Muserpol\Models\Contribution\ContributionCommitment;
+use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 
 use Validator;
@@ -70,6 +71,7 @@ class ContributionCommitmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
+<<<<<<< HEAD
     {        
          //*********START VALIDATOR************//
          $rules = [           
@@ -91,6 +93,9 @@ class ContributionCommitmentController extends Controller
         }
          //*********END VALIDATOR************//
 
+=======
+    {                        
+>>>>>>> upstream/master
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
             $commitment->state = 'BAJA';
@@ -116,7 +121,16 @@ class ContributionCommitmentController extends Controller
         
         //$commitment->state = $request->state;        
         $commitment->save();
-        return $commitment;        
+        ///'COMISION', 'BAJA TEMPORAL','AGREGADO POLICIAL'
+        $affiliate = Affiliate::find($commitment->affiliate_id);
+        if($commitment->commitment_type == 'COMISION')
+            $affiliate->affiliate_state_id = 2;
+        if($commitment->commitment_type == 'BAJA TEMPORAL')
+            $affiliate->affiliate_state_id = 9;
+        if($commitment->commitment_type == 'AGREGADO POLICIAL')
+            $affiliate->affiliate_state_id = 10;
+        $affiliate->save();
+        return $commitment;     
     }
 
     /**
