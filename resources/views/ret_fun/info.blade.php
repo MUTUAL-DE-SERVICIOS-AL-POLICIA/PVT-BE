@@ -2,9 +2,13 @@
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="pull-left">Información del Tramite</h3>
+            @can('update',new Muserpol\Models\RetirementFund\RetirementFund)
             <div class="text-right">
                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
             </div>
+            @else
+            <br>
+            @endcan
         </div>
         <div class="panel-body " v-if="! editing">
             <div class="col-md-6">
