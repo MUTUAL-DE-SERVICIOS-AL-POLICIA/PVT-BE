@@ -296,15 +296,9 @@
                 console.log(xhr.responseText);
                 var resp = jQuery.parseJSON(xhr.responseText);
                 $.each(resp, function(index, value)
-<<<<<<< HEAD
                 {                    
                     flash(value,'error',10000);
                 });                            
-=======
-                {
-                    flash(value,'error',15);
-                });
->>>>>>> upstream/master
             }
         });
     }

@@ -71,7 +71,6 @@ class ContributionCommitmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-<<<<<<< HEAD
     {        
          //*********START VALIDATOR************//
          $rules = [           
@@ -93,9 +92,6 @@ class ContributionCommitmentController extends Controller
         }
          //*********END VALIDATOR************//
 
-=======
-    {                        
->>>>>>> upstream/master
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
             $commitment->state = 'BAJA';
