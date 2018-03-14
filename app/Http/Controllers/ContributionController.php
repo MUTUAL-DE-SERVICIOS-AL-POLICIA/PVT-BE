@@ -117,20 +117,12 @@ class ContributionController extends Controller
 
     public function storeDirectContribution(Request $request)
     {      
-<<<<<<< HEAD
         $rules = [           
             'con.sueldo' => 'required|numeric|min:2000',
             'commision_date' => 'required|date',
             'destination' => 'required', 
             'commitment_type' => 'required' 
             ];
-=======
-        
-        
-        
-        
-        
->>>>>>> upstream/master
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
