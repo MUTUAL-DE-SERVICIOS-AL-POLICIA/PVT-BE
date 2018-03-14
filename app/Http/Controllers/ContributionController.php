@@ -391,8 +391,8 @@ class ContributionController extends Controller
             'total' => $total,
             'dateentry' => $dateentry
         );
-        $cities = City::get();
-        
+        $cities = City::all()->pluck('first_shortened', 'id');
+        $birth_cities = City::all()->pluck('name', 'id');
         //get Commitment data
         $commitment = ContributionCommitment::where('affiliate_id', $affiliate->id)->where('state', 'ALTA')->first();
         if (!isset($commitment->id)) {
@@ -410,6 +410,7 @@ class ContributionController extends Controller
             'summary' => $summary,
             'affiliate' => $affiliate,
             'cities' => $cities,
+            'birth_cities' => $birth_cities,
             'new_contributions' => self::getMonthContributions($affiliate->id),
             'last_quotable' => $last_contribution->quotable ?? 0,
             'commitment' => $commitment,
