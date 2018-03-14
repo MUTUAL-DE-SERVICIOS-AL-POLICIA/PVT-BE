@@ -48,14 +48,11 @@
                 let uri = `/commitment/`+id; 
                 this.show_spinner=true;
                 axios.patch(uri,this.commitment)
-                    .then(response=>{                       
+                    .then(response=>{     
                         this.editing = false;
                         this.show_spinner=false;
                         console.log(response.data.state+"----");
-                        
                         if(response.data.state =='ALTA'){
-                            if(!response.data)
-                            flash(response.data,"error",1000);
                         this.commitment.id  =   response.data.id;    
                         this.commitment.commitment_type = response.data.commitment_type;
                         this.commitment.number = response.data.number;
@@ -64,7 +61,6 @@
                         this.commitment.state = response.data.state;
                         this.enable_delete=true;
                         console.log("condatos");
-                        
                         }
                         else{
                             console.log("eliminado");
@@ -77,13 +73,19 @@
                             this.commitment.commision_date = '';
                             this.commitment.state = '';
                         }
-                        
-                        console.log(response);
+                        console.log(response.data);
                         flash('Informacion actualizada');
-                    }).catch((response)=>{
-                        this.show_spinner=false;                                                
-                        flash('fds','error');
-                        flash('Error al actualizar el afiliadossss: '+response.message,'error');
+                       }).catch((error)=>{
+                           if(error.response.data.number !== undefined)
+                                flash(error.response.data.number[0],'error',10000);
+                           if(error.response.data.commitment_type !== undefined)
+                                flash(error.response.data.commitment_type[0],'error',10000);
+                           if(error.response.data.destination !== undefined)
+                                flash(error.response.data.destination[0],'error',10000);
+                           if(error.response.data.commision_date !== undefined)
+                                flash(error.response.data.commision_date[0],'error',10000);
+                        this.show_spinner=false; 
+                       // flash('Error al actualizar el afiliado: '+response.message,'error');
                     })
             }
         }
