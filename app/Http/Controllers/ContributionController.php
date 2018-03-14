@@ -117,11 +117,26 @@ class ContributionController extends Controller
 
     public function storeDirectContribution(Request $request)
     {      
-        
-        
-        
-        
-        
+        //*********START VALIDATOR************//
+        $rules=[];        
+//        if(!empty($request->aportes))
+//        { 
+            foreach ($request->aportes as $key => $iterator)
+            {
+                $array_rules = [
+                    'sueldo.'.$key =>  'required|numeric|min:2000',
+                    //'gain.'.$key =>  'required|numeric|min:1',
+                    //'total.'.$key =>  'required|numeric|min:1'
+                ];
+                $rules=array_merge($rules,$array_rules);
+            }
+        $validator = Validator::make($request->all(),$rules);
+        if($validator->fails()){            
+            return response()->json($validator->errors(), 406);
+        }
+        return 0;
+         //*********END VALIDATOR************//
+                               
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
