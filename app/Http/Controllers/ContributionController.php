@@ -103,6 +103,7 @@ class ContributionController extends Controller
     public function index()
     {
         App::setLocale("es");
+        return __('attributes.email');
         return __('validation.max.numeric',['attribute'=>'bbr']);
         return 0;
     }
@@ -427,27 +428,27 @@ class ContributionController extends Controller
         $rules=[];
         $messages=[];
         if(!empty($request->iterator))
-    { 
+        { 
           foreach ($request->iterator as $key => $iterator) 
         {
               $request->merge([$request->base_wage[$key]  => strip_tags($request->base_wage[$key])]);
               $request->merge([$request->gain[$key]  => strip_tags($request->gain[$key])]);
               $request->merge([$request->total[$key]  => strip_tags($request->total[$key])]);
-        App::setLocale("es");      
+        
         $array_rules = [                       
-            'base_wage.'.$key =>  'required|numeric|min:2000',
+            'base_wage.'.$key =>  'required|numeric|min:2000',            
             'gain.'.$key =>  'required|numeric|min:1',
             'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
-//        $array_messages = [
+        $array_messages = [
 //            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico.',
 //            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000.',
 //            'gain.'.$key.'.numeric' => 'El campo debe ser numero.',
 //            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0.', 
 //            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico.',
 //            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0.'
-//        ];
+        ];
         $messages=array_merge($messages, $array_messages);
         }   
         $validator = Validator::make($request->all(),$rules,$messages);

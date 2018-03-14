@@ -1,5 +1,10 @@
 <?php
-
+    $months = [
+                '2017-01-01'  =>  'enero de 2017',
+                '2017-02-01'  =>  'febrero de 2017',
+                '2017-03-01'  =>  'marzo de 2017',
+                '2017-04-01'  =>  'abril de 2017',            
+            ];
 return [
 
     /*
@@ -132,7 +137,7 @@ return [
         'phone'                 => 'teléfono',
         'mobile'                => 'móvil',
         'age'                   => 'edad',
-        'sex'                   => 'sexo',
+        'sex'                   => 'sexo',        
         'gender'                => 'género',
         'year'                  => 'año',
         'month'                 => 'mes',
@@ -148,6 +153,8 @@ return [
         'time'                  => 'hora',
         'subject'               => 'asunto',
         'message'               => 'mensaje',
+        'base_wage'             => $months,
+        'total'                 => $months,
     ],
 
 ];

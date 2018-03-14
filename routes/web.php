@@ -30,6 +30,7 @@ Route::get('usersGetData', 'UserController@getUserDatatable' )->name('user_list'
 
 //afiliates
 Route::group(['middleware' => ['auth']], function () {
+        App::setLocale("es");
 
 	Route::get('/changerol', 'UserController@changerol')->name('changerol');
 	Route::post('postchangerol', 'UserController@postchangerol');
