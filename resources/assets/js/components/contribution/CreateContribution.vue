@@ -235,9 +235,10 @@ export default {
                     .then(response => {                    
                     this.enableDC();
                     var i;
-                    for(i=0;i<response.data.length;i++){                        
-                        this.setDataToTable(response.data[i].month_year,response.data[i].total);
+                    for(i=0;i<response.data.contribution.length;i++){                        
+                        this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
                     }
+                    window.open('/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, '_blank');
                     })
                     .catch(e => {
                     this.show_spinner = false;            

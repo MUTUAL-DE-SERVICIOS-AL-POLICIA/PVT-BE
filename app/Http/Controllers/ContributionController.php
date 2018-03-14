@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Auth;
 use Validator;
 use DateTime;
+use App;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Contribution\ContributionCommitment;
 use Yajra\Datatables\DataTables;
@@ -95,7 +96,7 @@ class ContributionController extends Controller
     }
 
     public function index()
-    {
+    {        
         return 0;
     }
     /**
@@ -108,6 +109,11 @@ class ContributionController extends Controller
     }
     public function storeDirectContribution(Request $request)
     {      
+        
+        
+        
+        
+        
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
@@ -171,7 +177,17 @@ class ContributionController extends Controller
             //Log::info(json_encode($contribution));
             //return $contribution;
         }
+<<<<<<< HEAD
         return $result;
+=======
+        
+        $data = [
+            'contribution'  =>  $result,
+            'voucher_id'    => $voucher->id,
+            'affiliate_id'  =>  $affiliate->id,
+        ];
+        return $data;
+>>>>>>> upstream/master
     }
     /**
      * Display the specified resource.
@@ -181,7 +197,11 @@ class ContributionController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
+<<<<<<< HEAD
         $this->authorize('view', new Contribution);
+=======
+        //$this->authorize('view',new Contribution);
+>>>>>>> upstream/master
         $cities = City::all();
         $birth_cities = City::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
@@ -399,6 +419,7 @@ class ContributionController extends Controller
     public function storeContributions(Request $request)
     {        
         //*********START VALIDATOR************//
+<<<<<<< HEAD
         $rules = [];
         $messages = [];
         if (!empty($request->iterator)) {
@@ -424,8 +445,42 @@ class ContributionController extends Controller
                 Session::flash('flash', 'This is a message!');
                 return response()->json($validator->errors(), 400);
             }
+=======
+        $rules=[];
+        $messages=[];
+        if(!empty($request->iterator))
+        { 
+          foreach ($request->iterator as $key => $iterator) 
+        {
+              $request->merge([$request->base_wage[$key]  => strip_tags($request->base_wage[$key])]);
+              $request->merge([$request->gain[$key]  => strip_tags($request->gain[$key])]);
+              $request->merge([$request->total[$key]  => strip_tags($request->total[$key])]);
+        
+        $array_rules = [                       
+            'base_wage.'.$key =>  'required|numeric|min:2000',            
+            'gain.'.$key =>  'required|numeric|min:1',
+            'total.'.$key =>  'required|numeric|min:1'
+            ];
+            $rules=array_merge($rules,$array_rules);
+        $array_messages = [
+//            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico.',
+//            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000.',
+//            'gain.'.$key.'.numeric' => 'El campo debe ser numero.',
+//            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0.', 
+//            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico.',
+//            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0.'
+        ];
+        $messages=array_merge($messages, $array_messages);
+        }   
+        $validator = Validator::make($request->all(),$rules,$messages);
+        if($validator->fails()){
+            Session::flash('flash', 'This is a message!'); 
+            return response()->json($validator->errors(), 400);
+        }
+>>>>>>> upstream/master
          //*********END VALIDATOR************//
         //return ;
+<<<<<<< HEAD
             $this->authorize('update', new Contribution);
             foreach ($request->iterator as $key => $iterator) {
                 $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
@@ -435,6 +490,19 @@ class ContributionController extends Controller
                     if ($request->category[$key] != $contribution->category_id) {
                         $category = Category::find($request->category[$key]);
                         $contribution->category_id = $category->id;
+=======
+        //$this->authorize('update',new Contribution);
+
+        foreach ($request->iterator as $key => $iterator) {
+            $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
+            if (isset($contribution->id)) {
+                $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
+                $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
+
+                if ($request->category[$key] != $contribution->category_id) {
+                    $category = Category::find($request->category[$key]);
+                    $contribution->category_id = $category->id;
+>>>>>>> upstream/master
                     //return $category->percentage." ".$contribution->base_wage;
                         $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
                     }

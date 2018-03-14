@@ -24,10 +24,10 @@
             return {
                 body: this.message,
                 level: 'success',
-                show: false
+                show: false,
             }
         },
-        created() {
+        created() {                        
             if (this.message) {
                 this.flash();
             }
