@@ -6,7 +6,7 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>                        
+                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>
                     </div>
                 </div>
 
@@ -200,7 +200,8 @@ export default {
         var con = JSON.stringify(contributions);
         var affiliate_id = this.afid;
         var total = this.total;      
-        window.open('/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, '_blank');
+        //window.open('/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, '_blank');
+        printJS({printable:'/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, type:'pdf', showModal:true});
       },
       setDataToTable(period,amount){                    
         $('#main'+period).html(amount);
@@ -231,14 +232,15 @@ export default {
                     var aportes = this.contributions;                    
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
                     .then(response => {
-                        console.log('entrando a succes');
-                console.log(response.data);
+                  //      console.log('entrando a succes');
+                //console.log(response.data);
                     this.enableDC();
                     var i;
                     for(i=0;i<response.data.contribution.length;i++){                        
                         this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
                     }
-                    window.open('/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, '_blank');
+                    //window.open('/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, '_blank');
+                    printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
                     })
                     .catch(error => {
                     this.show_spinner = false;            

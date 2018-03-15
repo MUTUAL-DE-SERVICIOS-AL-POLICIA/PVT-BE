@@ -144,7 +144,7 @@ class ContributionController extends Controller
             {                                            
                 $aporte=(object)$ap;
                 $cont = Contribution::where('affiliate_id',$request->afid)->where('month_year',$aporte->year.'-'.$aporte->month.'-01')->first();
-                $has_contribution = true;
+                $has_contribution = false;
                 if(isset($cont->id))
                     $has_contribution = true;
                 
