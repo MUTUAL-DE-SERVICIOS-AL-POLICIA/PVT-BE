@@ -1,17 +1,13 @@
 <?php
-
 namespace Muserpol\Http\Controllers;
-
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate; 
-
 use Muserpol\Models\City;
 use Muserpol\Models\AffiliateState;
 use Muserpol\Models\Category;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
-
 use Muserpol\Models\User;
 use Ixudra\Curl\Facades\Curl;
 use Carbon\Carbon;
@@ -26,9 +22,6 @@ use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
 use Log;
 use Session;
-
-
-
 class ContributionController extends Controller
 {
     /**
@@ -62,7 +55,6 @@ class ContributionController extends Controller
         }
         
     }
-
     public function getMonthContributions($id)
     {   
         $contributions=[];
@@ -104,7 +96,6 @@ class ContributionController extends Controller
     {        
         return 0;
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -112,9 +103,7 @@ class ContributionController extends Controller
      */
     public function create()
     {
-
     }
-
     public function storeDirectContribution(Request $request)
     {      
         $rules = [           
@@ -129,7 +118,6 @@ class ContributionController extends Controller
             $code = Util::getNextCode(""); 
         else
             $code = Util::getNextCode($voucher_code->code);
-
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $request->afid;
@@ -195,11 +183,9 @@ class ContributionController extends Controller
         ];
         return $data;
     }
-
     /**
      * Display the specified resource.
      *use Muserpol\Models\AffiliateState;
-
      * @param  \Muserpol\Contribution  $contribution
      * @return \Illuminate\Http\Response
      */
@@ -223,7 +209,6 @@ class ContributionController extends Controller
         ];
         return view('contribution.show', $data);
     }
-
     public function getAffiliateContributionsDatatables(DataTables $datatables, $affiliate_id)
     {
         $affiliate = Affiliate::find($affiliate_id);
@@ -275,7 +260,6 @@ class ContributionController extends Controller
             ->get()
             ;
         $query = $contributions;
-
         return $datatables->of($query)
             // ->editColumn('month_year', function ($contribution) {
                 
@@ -339,7 +323,6 @@ class ContributionController extends Controller
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -351,7 +334,6 @@ class ContributionController extends Controller
     {
         //
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -362,8 +344,6 @@ class ContributionController extends Controller
     {
         //
     }
- 
-
     public function getAffiliateContributions(Affiliate $affiliate = null)
     {        
         
@@ -371,12 +351,10 @@ class ContributionController extends Controller
         $this->authorize('update',new Contribution);
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
-
         $group = [];
         $group_reim = [];
         foreach ($reims as $reim)
             $group_reim[$reim->month_year] = $reim;
-
         $fondoret = 0;
         $quotaaid = 0;
         foreach ($contributions as $contribution) {
@@ -384,10 +362,8 @@ class ContributionController extends Controller
             $fondoret = $contribution->retirement_fund + $fondoret;
             $quotaaid = $contribution->mortuary_quota + $quotaaid;
         }
-
         $total = $fondoret + $quotaaid;
         $dateentry = Util::getStringDate($affiliate->date_entry);
-
         $categories = Category::get();
         $end = explode('-', $affiliate->date_entry);
         $newcontributions = [];
@@ -396,7 +372,6 @@ class ContributionController extends Controller
         $month_start = (date('m') - 1);
         $year_start = date('Y');
         $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();        
-
         $summary = array(
             'fondoret' => $fondoret,
             'quotaaid' => $quotaaid,
@@ -430,7 +405,6 @@ class ContributionController extends Controller
         ];
          return view('contribution.affiliate_contributions_edit', $data);
     }
-
     public function storeContributions(Request $request)
     {        
         //*********START VALIDATOR************//
@@ -465,17 +439,13 @@ class ContributionController extends Controller
             return response()->json($validator->errors(), 400);
         }
          //*********END VALIDATOR************//
-
-
         //return ;
         $this->authorize('update',new Contribution);
-
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
                 $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
-
                 if ($request->category[$key] != $contribution->category_id) {
                     $category = Category::find($request->category[$key]);
                     $contribution->category_id = $category->id;
@@ -488,7 +458,6 @@ class ContributionController extends Controller
 //                $contribution = new Contribution();
 //                $contribution->user_id = Auth::user()->id;
 //                $contribution->total = $total;
-
                 $affiliate = Affiliate::find($request->affiliate_id);
                 $contribution = new Contribution();
                 $contribution->user_id = Auth::user()->id;
