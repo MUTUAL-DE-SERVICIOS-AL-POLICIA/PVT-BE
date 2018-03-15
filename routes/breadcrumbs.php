@@ -8,7 +8,17 @@ Breadcrumbs::register('affiliate', function($breadcrumbs)
 Breadcrumbs::register('show_affiliate', function($breadcrumbs, $affiliate)
 {
 	$breadcrumbs->parent('affiliate');
-	$breadcrumbs->push($affiliate->fullName(), URL::to('affiliate/'.$affiliate->id));
+	$breadcrumbs->push(ucwords(strtolower($affiliate->fullName())), URL::to('affiliate/'.$affiliate->id));
+});
+Breadcrumbs::register('show_affiliate_contributions', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('show_affiliate', $affiliate);
+	$breadcrumbs->push("Aportes", route('show_contribution', $affiliate->id));
+});
+Breadcrumbs::register('edit_affiliate_contributions', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('show_affiliate_contributions', $affiliate);
+	$breadcrumbs->push("Edición de Aportes", route('edit_contribution', $affiliate->id));
 });
 
 Breadcrumbs::register('retirement_fund', function($breadcrumbs)
