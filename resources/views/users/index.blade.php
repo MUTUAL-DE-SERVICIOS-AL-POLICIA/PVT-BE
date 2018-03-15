@@ -10,7 +10,7 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Usuarios</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary"><i class="fa" class="fa-lock" ></i> </button>
+                        <a href="{{url('user/create')}}" class="btn btn-primary"><i class="fa fa-plus" ></i></a>
                     </div>
                 </div>
                 <div class="panel-body">
