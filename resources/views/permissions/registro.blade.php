@@ -60,9 +60,8 @@
                                         </tr>                                        
                                     </tbody>    
                                 </table>
-                                <button type="button" class="btn btn-primary"  @click="update" >Guardar</button>
+                                <button type="button" class="btn btn-primary"  @click="update" ><i class="fa fa-save"></i></button>
                             </div>
-                            <textarea  name="asd" :value="JSON.stringify(list_to_send)"></textarea>
                             
                         
                             {!!Form::close()!!}

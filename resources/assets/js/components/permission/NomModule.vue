@@ -57,13 +57,16 @@ export default {
         {
           console.log('refrescando this.list_to_send CyA');
           for (var i = this.operations_list.length - 1; i >= 0; i--) {
-            
-            var obj = {operation_id: this.operations_list[i].id , name: this.operations_list[i].name};
-            for (var j = 0; j < this.actions_list.length; j++) {
-              
-              obj[this.actions_list[j].name] = this.CheckPermission(this.operations_list[i],this.actions_list[j].id); 
+          
+            if(this.operations_list[i].module_id == this.module_id)
+            {
+              var obj = {operation_id: this.operations_list[i].id , name: this.operations_list[i].name};
+              for (var j = 0; j < this.actions_list.length; j++) {
+        
+                obj[this.actions_list[j].name] = this.CheckPermission(this.operations_list[i],this.actions_list[j].id); 
+              }
+              this.list_to_send.push(obj);
             }
-            this.list_to_send.push(obj);
           }
         }
 
@@ -116,15 +119,17 @@ export default {
       },
       update: function () { 
 
-               var data = {module_id:this.module_id ,role_id: this.role.id, permissions_list: this.list_to_send };
-               axios.post('/permission', data)
+               var lista = this.list_to_send;
+               var data = {module_id:this.module_id ,role_id: this.role.id, permissions_list: lista };
+               axios.post('/permission', data )
                     .then(function (resp) {
                         // this.$router.push({path: '/'});
                         console.log(resp);
+                        flash('Informacion CYK Actualizada');
                     })
                     .catch(function (resp) {
                         console.log(resp);
-                        alert("Could not create your company");
+                        flash('Error lechuza: '+resp.message,'error');
                     });
       }
 
