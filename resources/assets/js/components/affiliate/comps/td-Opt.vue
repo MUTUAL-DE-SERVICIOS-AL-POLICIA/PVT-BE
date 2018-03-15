@@ -1,16 +1,15 @@
 <template>
   <div class="btn-group btn-group-sm">
-    <button class="btn btn-default" title="Display row"
+    <!-- <button class="btn btn-default" title="Display row"
       :class="{ '-nested-comp-open-btn': isDisplayRowVisible }"
       @click="toggleNestedComp('DisplayRow')">
       <i class="fa fa-list-ul"></i>
+    </button> -->
+    <a :href="'/affiliate/'+ row.id ">
+    <button class="btn btn-default" data-toggle="tooltip"  data-placement="top" title="Ver Afiliado">
+      <i class="fa fa-eye"></i>
     </button>
-    <button class="btn btn-default" title="Friends"
-      :class="{ '-nested-comp-open-btn': isFriendsTableVisible }"
-      @click="toggleNestedComp('FriendsTable')">
-      <i class="fa fa-users"></i> <!-- {{ row.friends.length }} -->
-    </button>
-    <a :href="'/affiliate/'+ row.id ">GO</a>
+    </a>
   </div>
 </template>
 <script>
