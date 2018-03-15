@@ -117,26 +117,44 @@ class ContributionController extends Controller
 
     public function storeDirectContribution(Request $request)
     {      
-        //*********START VALIDATOR************//
+        //*********START VALIDATOR************//        
         $rules=[];        
 //        if(!empty($request->aportes))
 //        { 
+            $has_commitment = false;
+            $commitment = ContributionCommitment::where('affiliate_id',$request->afid)->where('state','ALTA')->first();
+            if(!isset($commitment->id))
+                $commitment = true;                        
+            $biz_rules = [
+                'has_commitment'    =>  $has_commitment?'required':''
+            ];
             foreach ($request->aportes as $key => $iterator)
             {
+                
+                
+                $biz_rules = [
+                    'commitment'    =>  'required'
+                ];
+                
+                
+                //$aporte=(object)$ap;
                 $array_rules = [
-                    'sueldo.'.$key =>  'required|numeric|min:2000',
-                    //'gain.'.$key =>  'required|numeric|min:1',
-                    //'total.'.$key =>  'required|numeric|min:1'
+                    'aportes.'.$key.'.sueldo' =>  'required|numeric|min:2000',
+                    'aportes.'.$key.'.fr' =>  'required|numeric',
+                    'aportes.'.$key.'.cm' =>  'required|numeric',
+                    'aportes.'.$key.'.subtotal' =>  'required|numeric',
+                    'aportes.'.$key.'.interes' =>  'required|numeric',
+                    'aportes.'.$key.'.year' =>  'required|numeric|min:1700',
+                    'aportes.'.$key.'.month' =>  'required|numeric|min:1|max:12',
                 ];
                 $rules=array_merge($rules,$array_rules);
             }
+        
         $validator = Validator::make($request->all(),$rules);
         if($validator->fails()){            
             return response()->json($validator->errors(), 406);
-        }
-        return 0;
-         //*********END VALIDATOR************//
-                               
+        }        
+         //*********END VALIDATOR************//                               
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))

@@ -48,19 +48,19 @@
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control"  name="aportes[]">
+                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.fr" disabled class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.fr" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.cm" disabled class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.cm" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.interes" disabled class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.interes" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control">
                                 </td>
                                 <td>
                                     <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
@@ -226,13 +226,12 @@ export default {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                if (result.value) {
-                    
-                    var aportes = this.contributions;
-                    //console.log(aportes);                    
+                }).then((result) => {    
+                    if (result.value) {                    
+                    var aportes = this.contributions;                    
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
-                    .then(response => {                    
+                    .then(response => {
+                        console.log('entrando a succes');
                     this.enableDC();
                     var i;
                     for(i=0;i<response.data.contribution.length;i++){                        
@@ -240,9 +239,17 @@ export default {
                     }
                     window.open('/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, '_blank');
                     })
-                    .catch(e => {
+                    .catch(error => {
                     this.show_spinner = false;            
-                    alert(e);
+                        //alert(e);
+                        console.log(error.response.data);
+//                        console.log(xhr.responseText);
+//                        var resp = jQuery.parseJSON(xhr.responseText);
+                        var resp = error.response.data;
+                        $.each(resp, function(index, value)
+                        {
+                            flash(value,'error',15);
+                        });
                     })
 
                     this.$swal({
