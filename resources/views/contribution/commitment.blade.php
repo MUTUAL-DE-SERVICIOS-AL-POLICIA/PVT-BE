@@ -38,6 +38,7 @@
                             </div>
                             
                         </div>
+                        @can('update', new Muserpol\Models\Contribution\Contribution))
                         <div class="panel-body" v-else>
                             <div class="sk-folding-cube" v-show="show_spinner" >
                                 <div class="sk-cube1 sk-cube"></div>
@@ -79,6 +80,7 @@
                                 </div>-->
                             </div>                            
                         </div>
+                        @endcan
                         <hr>                      
                     <div v-show="editing" class="panel-footer">
                         <div class="text-center">

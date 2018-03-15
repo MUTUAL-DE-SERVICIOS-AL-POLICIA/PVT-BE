@@ -5,9 +5,13 @@
                     <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
                         <div class="panel-heading">
                             <h3 class="pull-left">Fondo de Retiro</h3>
+                            @can('update',new Muserpol\Models\Contribution\Contribution)
                             <div class="text-right">
                                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
                             </div>
+                            @else
+                            <br>
+                            @endcan
                         </div>                                                
 
                         <div class="panel-body " v-if="! editing " >                            
@@ -19,6 +23,7 @@
                                 </dl>
                             </div>                           
                         </div>
+                        @can('update',new Muserpol\Models\Contribution\Contribution)
                         <div class="panel-body" v-else>
                             <div class="sk-folding-cube" v-show="show_spinner" >
                                 <div class="sk-cube1 sk-cube"></div>
@@ -35,6 +40,7 @@
                                 </dl>
                             </div>                          
                         </div>
+                        @endcan
                         <hr>
                       
                         <div v-show="editing" class="panel-footer">
