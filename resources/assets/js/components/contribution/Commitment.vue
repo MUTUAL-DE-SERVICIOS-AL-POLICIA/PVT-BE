@@ -26,7 +26,6 @@
             },
             print_commitment(){
                 var affiliate_id = this.affiliate_id;                
-                //window.open('/ret_fun/'+affiliate_id+'/print/ret_fun_commitment_letter','_blank'); 
                 printJS({printable:'/ret_fun/'+affiliate_id+'/print/ret_fun_commitment_letter', type:'pdf', showModal:true});
             },
 //            disable_commitment(){

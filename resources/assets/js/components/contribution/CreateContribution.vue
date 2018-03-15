@@ -199,8 +199,7 @@ export default {
         var contributions = this.contributions;
         var con = JSON.stringify(contributions);
         var affiliate_id = this.afid;
-        var total = this.total;      
-        //window.open('/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, '_blank');
+        var total = this.total;        
         printJS({printable:'/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, type:'pdf', showModal:true});
       },
       setDataToTable(period,amount){                    
@@ -239,7 +238,6 @@ export default {
                     for(i=0;i<response.data.contribution.length;i++){                        
                         this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
                     }
-                    //window.open('/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, '_blank');
                     printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
                     })
                     .catch(error => {
