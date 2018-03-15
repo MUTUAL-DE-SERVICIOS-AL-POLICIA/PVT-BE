@@ -12,8 +12,8 @@ require('print-js')
 window.Vue = require('vue');
 
 window.events = new Vue();
-window.flash = function (message, level = 'success') {
-	window.events.$emit('flash', { message, level });
+window.flash = function (message, level = 'success', timeOut = 5000) {
+	window.events.$emit('flash', { message, level, timeOut});
 };
 
 /**

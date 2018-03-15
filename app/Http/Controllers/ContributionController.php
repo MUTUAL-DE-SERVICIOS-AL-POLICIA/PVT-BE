@@ -106,15 +106,16 @@ class ContributionController extends Controller
     }
     public function storeDirectContribution(Request $request)
     {      
-        
-        
-        
-        
-        
+        $rules = [           
+            'con.sueldo' => 'required|numeric|min:2000',
+            'commision_date' => 'required|date',
+            'destination' => 'required', 
+            'commitment_type' => 'required' 
+            ];
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
-            $code = Util::getNextCode("");
+            $code = Util::getNextCode(""); 
         else
             $code = Util::getNextCode($voucher_code->code);
         $voucher = new Voucher();
@@ -435,7 +436,6 @@ class ContributionController extends Controller
         }   
         $validator = Validator::make($request->all(),$rules,$messages);
         if($validator->fails()){
-            Session::flash('flash', 'This is a message!'); 
             return response()->json($validator->errors(), 400);
         }
          //*********END VALIDATOR************//
