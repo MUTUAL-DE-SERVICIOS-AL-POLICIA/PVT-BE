@@ -7,6 +7,7 @@ use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 
 use Validator;
+use App;
 
 class ContributionCommitmentController extends Controller
 {
@@ -17,6 +18,7 @@ class ContributionCommitmentController extends Controller
      */
     public function index()
     {
+        return __('validation.string',['attribute'=>'adsfasfd']);
         //
     }
 
@@ -72,6 +74,7 @@ class ContributionCommitmentController extends Controller
      */
     public function update(Request $request, $id)
     {        
+        App::setLocale("es");
          //*********START VALIDATOR************//
          $rules = [           
             'number' => 'required|numeric',
@@ -79,14 +82,14 @@ class ContributionCommitmentController extends Controller
             'destination' => 'required', 
             'commitment_type' => 'required' 
             ];
-        /*  $messages = [
-            'number.required' => 'El numero de Memorandum es obligatorio',
-            'commision_date.required'  =>  'La fecha del memorandum es obligatoria',
-            'commision_date.date' => 'El formato de la fecha es incorrecto',
-            'destination.required'  =>  'El destino es obligatorio',  
-            'commitment_type.required' => 'El tipo de aporte es obligatorio'
-        ];  */
-        $validator = Validator::make($request->all(),$rules);
+          $messages = [
+            'number.required' => __('validation.memorandum'),
+            // 'commision_date.required'  =>  'La fecha del memorandum es obligatoria',
+            // 'commision_date.date' => 'El formato de la fecha es incorrecto',
+            // 'destination.required'  =>  'El destino es obligatorio',  
+            // 'commitment_type.required' => 'El tipo de aporte es obligatorio'
+        ];  
+        $validator = Validator::make($request->all(),$rules,$messages);
         if($validator->fails()){
             return response()->json($validator->errors(), 406);
         }

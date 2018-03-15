@@ -502,6 +502,7 @@ return [
     'unique'               => ':attribute ya ha sido registrado.',
     'uploaded'             => 'Subir :attribute ha fallado.',
     'url'                  => 'El formato :attribute es inválido.',
+    'memorandum'           => 'El campo del número de memorándum es obligatorio.',
 
     /*
     |--------------------------------------------------------------------------
@@ -567,6 +568,9 @@ return [
         'base_wage'             => $months,
         'total'                 => $months,
         'gain'                  => $months,
+        'commision_date'        => 'fecha de la comisión',
+        'destination'           => 'destino',
+        'commitment_type'       => 'tipo de compromiso',
     ],
 
 ];
