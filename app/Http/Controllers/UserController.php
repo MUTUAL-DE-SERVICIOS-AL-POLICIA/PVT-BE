@@ -135,16 +135,24 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
-        if ($id != null) {
-            //editar
-            $user=User::find($id);   
-        }else {
-            //registrar
-            $user = new User;   
-        }       
-        
+        // if ($id != null) {
+        //     //editar
+        //     $user=User::find($id);   
+        // }else {
+        //     //registrar
+        //     $user = new User;   
+        // }       
+        if($request->has('user_id'))
+        {
+            $user=User::find($request->user_id);  
+            // return $user;
+        }else
+        {
+            $user = new User;
+            // dd($user);
+        }
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->phone = $request->phone;
