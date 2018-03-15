@@ -28,9 +28,7 @@ Route::get('user/active/{user}', 'UserController@active');
 //Route::get('users/index','UserController@index');
 Route::get('usersGetData', 'UserController@getUserDatatable' )->name('user_list');
 
-//permission
-Route::resource('permission', 'PermissionController');
-Route::get('permission/create', 'PermissionController@create');
+
 
 //afiliates
 Route::group(['middleware' => ['auth']], function () {
@@ -42,6 +40,9 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::group(['middleware' => ['session']], function () {
 
 	Route::get('/', 'HomeController@index')->name("main");
+
+	//permission
+	Route::resource('permission', 'PermissionController');
         
         //ROUTES TO E SYSTEM PARAMENTERS
         Route::get('ret_fun_settings','HomeController@retFunSettings');
@@ -55,6 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::patch('/update_beneficiaries/{retirement_fund}','RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
 
 	Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
+
 
 
 
