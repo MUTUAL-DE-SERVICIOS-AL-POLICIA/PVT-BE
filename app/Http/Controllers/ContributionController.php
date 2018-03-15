@@ -106,12 +106,61 @@ class ContributionController extends Controller
     }
     public function storeDirectContribution(Request $request)
     {      
-        $rules = [           
-            'con.sueldo' => 'required|numeric|min:2000',
-            'commision_date' => 'required|date',
-            'destination' => 'required', 
-            'commitment_type' => 'required' 
-            ];
+
+        //*********START VALIDATOR************//        
+        $rules=[];        
+//        if(!empty($request->aportes))
+//        { 
+            $has_commitment = false;
+            $commitment = ContributionCommitment::where('affiliate_id',$request->afid)->where('state','ALTA')->first();
+            if(!isset($commitment->id))
+                $commitment = true;
+            $valid_commitment = false;
+                                   
+            $commision_date = strtotime($commitment->commision_date);
+            $commtiment_date = strtotime($commitment->commitment_date);
+            $datediff = $commtiment_date - $commision_date;
+            $datediff = round($datediff / (60 * 60 * 24));
+
+
+            
+            $biz_rules = [
+                'has_commitment'    =>  $has_commitment?'required':'',
+                'valid_commitment'  =>  $datediff>90?'required':''
+            ];            
+                        
+            foreach ($request->aportes as $key => $ap)
+            {                                            
+                $aporte=(object)$ap;
+                $cont = Contribution::where('affiliate_id',$request->afid)->where('month_year',$aporte->year.'-'.$aporte->month.'-01')->first();
+                $has_contribution = false;
+                if(isset($cont->id))
+                    $has_contribution = true;
+                
+                $biz_rules = [
+                    'has_contribution.'.$key    =>  $has_contribution?'required':'',
+                ];
+                
+                $rules=array_merge($rules,$biz_rules);
+                //$aporte=(object)$ap;
+                $array_rules = [
+                    'aportes.'.$key.'.sueldo' =>  'required|numeric|min:2000',
+                    'aportes.'.$key.'.fr' =>  'required|numeric',
+                    'aportes.'.$key.'.cm' =>  'required|numeric',
+                    'aportes.'.$key.'.subtotal' =>  'required|numeric',
+                    'aportes.'.$key.'.interes' =>  'required|numeric',
+                    'aportes.'.$key.'.year' =>  'required|numeric|min:1700',
+                    'aportes.'.$key.'.month' =>  'required|numeric|min:1|max:12',
+                ];
+                $rules=array_merge($rules,$array_rules);
+            }
+        
+        $rules = array_merge($rules,$biz_rules);
+        $validator = Validator::make($request->all(),$rules);
+        if($validator->fails()){            
+            return response()->json($validator->errors(), 406);
+        }                
+         //*********END VALIDATOR************//                               
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
@@ -145,7 +194,7 @@ class ContributionController extends Controller
             $contribution->unit_id = $affiliate->unit_id;
             $contribution->breakdown_id = $affiliate->breakdown_id;
             $contribution->category_id = $affiliate->category_id;
-            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);  
+            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);
             $contribution->type='Directo';     
             $contribution->base_wage = $aporte->sueldo;
             $contribution->dignity_pension = 0;

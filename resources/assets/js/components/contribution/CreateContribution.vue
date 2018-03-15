@@ -6,7 +6,7 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>                        
+                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>
                     </div>
                 </div>
 
@@ -48,19 +48,19 @@
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control"  name="aportes[]">
+                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.fr" disabled class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.fr" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.cm" disabled class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.cm" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.interes" disabled class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.interes" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control">
                                 </td>
                                 <td>
                                     <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
@@ -199,8 +199,8 @@ export default {
         var contributions = this.contributions;
         var con = JSON.stringify(contributions);
         var affiliate_id = this.afid;
-        var total = this.total;      
-        window.open('/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, '_blank');
+        var total = this.total;        
+        printJS({printable:'/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, type:'pdf', showModal:true});
       },
       setDataToTable(period,amount){                    
         $('#main'+period).html(amount);
@@ -226,23 +226,31 @@ export default {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                if (result.value) {
-                    
-                    var aportes = this.contributions;
-                    //console.log(aportes);                    
+                }).then((result) => {    
+                    if (result.value) {                    
+                    var aportes = this.contributions;                    
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
-                    .then(response => {                    
+                    .then(response => {
+                  //      console.log('entrando a succes');
+                //console.log(response.data);
                     this.enableDC();
                     var i;
                     for(i=0;i<response.data.contribution.length;i++){                        
                         this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
                     }
-                    window.open('/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, '_blank');
+                    printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
                     })
-                    .catch(e => {
+                    .catch(error => {
                     this.show_spinner = false;            
-                    alert(e);
+                        //alert(e);
+                        console.log(error.response.data);
+//                        console.log(xhr.responseText);
+//                        var resp = jQuery.parseJSON(xhr.responseText);
+                        var resp = error.response.data;
+                        $.each(resp, function(index, value)
+                        {
+                            flash(value,'error',15);
+                        });
                     })
 
                     this.$swal({
