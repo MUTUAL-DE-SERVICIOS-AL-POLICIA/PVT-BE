@@ -7,7 +7,6 @@ use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 
 use Validator;
-use App;
 
 class ContributionCommitmentController extends Controller
 {
@@ -73,7 +72,6 @@ class ContributionCommitmentController extends Controller
      */
     public function update(Request $request, $id)
     {        
-        App::setLocale("es");
          //*********START VALIDATOR************//
          $rules = [           
             'number' => 'required|numeric',
