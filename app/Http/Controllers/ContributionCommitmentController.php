@@ -7,7 +7,6 @@ use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 
 use Validator;
-use Muserpol\Models\Contribution\ContributionRate;
 class ContributionCommitmentController extends Controller
 {
     /**
