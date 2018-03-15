@@ -6,6 +6,8 @@ use Muserpol\Models\Contribution\ContributionCommitment;
 use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 
+use Validator;
+
 class ContributionCommitmentController extends Controller
 {
     /**
@@ -69,7 +71,27 @@ class ContributionCommitmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {                        
+    {        
+         //*********START VALIDATOR************//
+         $rules = [           
+            'number' => 'required|numeric',
+            'commision_date' => 'required|date',
+            'destination' => 'required', 
+            'commitment_type' => 'required' 
+            ];
+        /*  $messages = [
+            'number.required' => 'El numero de Memorandum es obligatorio',
+            'commision_date.required'  =>  'La fecha del memorandum es obligatoria',
+            'commision_date.date' => 'El formato de la fecha es incorrecto',
+            'destination.required'  =>  'El destino es obligatorio',  
+            'commitment_type.required' => 'El tipo de aporte es obligatorio'
+        ];  */
+        $validator = Validator::make($request->all(),$rules);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 406);
+        }
+         //*********END VALIDATOR************//
+
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
             $commitment->state = 'BAJA';
