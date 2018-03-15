@@ -61,7 +61,7 @@
                                             <dt>Memorandum:</dt> <dd><input type="text" v-model="commitment.number" class="form-control"></dd>
                                             <dt>Fecha:</dt> <dd><input type="text" v-model="commitment.commision_date" class="form-control"></dd>
                                             <dt>Destino:</dt> <dd><input type="text" v-model="commitment.destination" class="form-control"></dd>
-                                        </dl>
+                                        </dl>   
                                     </div>
                                     <div class="col-md-6"  v-if=" commitment.id != 0">                               
                                         <dl class="dl-">
