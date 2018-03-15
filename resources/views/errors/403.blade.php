@@ -13,7 +13,7 @@
         </div>
         
         <p>No tiene permitido realizar esta accion</p>
-        <button class="btn btn-info" onclick="cyk()"> Reagresar Atras <i class="glyphicon glyphicon-share-alt"></i></button>
+        <button class="btn btn-info" onclick="cyk()"> Regresar Atras <i class="glyphicon glyphicon-share-alt"></i></button>
 
         
         <p class="m-t"> <small>Muserpol &copy; 2018</small> </p>

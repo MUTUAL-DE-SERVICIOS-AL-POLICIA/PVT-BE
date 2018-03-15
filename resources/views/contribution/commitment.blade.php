@@ -21,7 +21,7 @@
                                     <dt>Tipo:</dt> <dd>@{{ commitment.commitment_type }}</dd>
                                     <dt>Memorandum:</dt> <dd>@{{ commitment.number }}</dd>
                                     <dt>Fecha:</dt> <dd>@{{ commitment.commision_date }}</dd>
-                                    <dt>Destino:</dt> <dd>@{{ commitment.destination }}</dd>                                    
+                                    <dt>Destino:</dt> <dd>@{{ commitment.destination }}</dd>                                     
                                 </dl>
                             </div>
                             <div class="col-md-6">
@@ -38,6 +38,7 @@
                             </div>
                             
                         </div>
+                        @can('update', new Muserpol\Models\Contribution\Contribution))
                         <div class="panel-body" v-else>
                             <div class="sk-folding-cube" v-show="show_spinner" >
                                 <div class="sk-cube1 sk-cube"></div>
@@ -59,7 +60,7 @@
                                                     </select>                                                                                
                                                 </dd>
                                             <dt>Memorandum:</dt> <dd><input type="text" v-model="commitment.number" class="form-control"></dd>
-                                            <dt>Fecha:</dt> <dd><input type="text" v-model="commitment.commision_date" class="form-control"></dd>
+                                            <dt>Fecha:</dt> <dd><input type="text" v-model="commitment.commision_date"  class="form-control"></dd>
                                             <dt>Destino:</dt> <dd><input type="text" v-model="commitment.destination" class="form-control"></dd>
                                         </dl>   
                                     </div>
@@ -79,6 +80,7 @@
                                 </div>-->
                             </div>                            
                         </div>
+                        @endcan
                         <hr>                      
                     <div v-show="editing" class="panel-footer">
                         <div class="text-center">

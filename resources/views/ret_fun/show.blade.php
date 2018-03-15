@@ -11,6 +11,7 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     
     <div class="row text-center">
+        
         @if(Muserpol\Helpers\Util::getRol()->id == 10)
         <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button> 
         @endif

@@ -9,59 +9,79 @@
             </div>
             <div class="ibox-content">
                 
-                <form class="form-horizontal" action="{{route('registrar')}}" method="POST">
+               
                 <input type="hidden" name="_method" value="POST">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">                   
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Modulos</label>             
-                <nom-module :roles="{{ $roles }}" inline-template>
+          {{--      <input type="checkbox" class="js-switch" checked /> --}}
+                <nom-module :roles="{{ $roles }}" :permissions="{{$permissions}}" :operations="{{$operations}}" :role_permissions="{{$role_permissions}}" :actions="{{$actions}}" inline-template>
                     <div>
-                        <div class="col-lg-4">        
-                            {!! Form::select('module', $modulesL, '', ['class' => 'col-md-2 combobox form-control','required' => 'required', 'v-model'=> 'module_id', 'ref'=>'idtxt']) !!}           
-                            
-                        </div>
-                        
-                        @{{module_id}}
-                        <div v-if="module_id">
-                            <div class="panel panel-primary">
-                                <div class="panel-body">
-                                    <div class="tabs-left">
-                                        <ul class="nav nav-tabs">
-                                        
-                                           
-                                                <li v-for="role in roles_list">
-                                                   
-                                                <a :href=tab_role(role) v-if="role.module_id == module_id"> @{{role.name}} </a>
-
-                                                    {{--  <a href="#" data-toggle="tab" title="@{{role.name}}">&nbsp;<i class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></i>&nbsp;</a>  --}}
-                                                </li>
-                                                        
-                                        </ul>                                                     
-                                        <div class="tab-content">
-                                            asdasdas
-                                            <div v-for="role in roles_list">
-                                            <div class="tab-pane" :id=tab_role_action(role) v-if="role.id == id_role(role)" >
-                                                    
-                                                <h3 class="box-title">@{{role.name}}</h3> 
-                                                    {{--  @foreach($actions as $action)
-                                                        <div class="i-checks"><label> <input type="checkbox" name="action[]" value="{{$action->id}}"> <i></i> {{$action->name}} </label></div>
-                                                        @endforeach         --}}
-                                                    </div>                                                    
-                                            </div> 
-                                        </div>                        
-                                    </div>
-                                </div>
+                        <div class="row">
+                            <label class="col-lg-2 control-label">Modulos</label>             
+                            <div class="col-lg-4">        
+                                {!! Form::select('module', $modulesL, '', ['class' => 'col-md-2 combobox form-control','required' => 'required', 'v-model'=> 'module_id', 'ref'=>'idtxt']) !!}           
+                                
                             </div>
-                        </div>       
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <ul class="list-group">
+                                    <div v-for="role of roles_module">
+                                        
+                                     {{-- <a href="#" class="list-group-item" v-for="role in roles_module">@{{role.name}}</a> --}}
+                                        <button type="button" class="list-group-item" @click="SelectRol(role)" >@{{role.name}}</button>
+                                    </div>
+                                </ul>
+                            </div>
+                            <div class="col-md-8" v-if="role && module_id">
+                            {!! Form::open(['action' => 'PermissionController@store']) !!}
+                            <input type="hidden" name="role_id" v-model="role.id">
+                            <input type="hidden" name="module_id" v-model="module_id">
+                                <legend>@{{role.name}}</legend>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Permiso</th>    
+                                            <th>Crear</th>    
+                                            <th>Ver</th>    
+                                            <th>Editar</th>         
+                                            <th>Borrar</th>
+                                            <th>Imprimir</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="operation in getOperationPermissionList">
+                                            <td>@{{operation.name}}</td>
+                                            <td><input type="checkbox" v-model="operation.create" > </td>
+                                            <td><input type="checkbox" v-model="operation.read" ></td>
+                                            <td><input type="checkbox" v-model="operation.update" ></td>
+                                            <td><input type="checkbox" v-model="operation.delete" ></td>
+                                            <td><input type="checkbox" v-model="operation.print" ></td>
+                                        </tr>                                        
+                                    </tbody>    
+                                </table>
+                                <button type="button" class="btn btn-primary"  @click="update" ><i class="fa fa-save"></i></button>
+                            </div>
+                            
+                        
+                            {!!Form::close()!!}
+                        </div>
                     </div>   
                 </nom-module>
-              
-                <div class="text-right" center>
-                    <button class="btn btn-primary" type="submit">GUARDAR</button>        
-                </div> 
-                </form>
+            
+                
             </div>            
         </div>        
     </div>
-    </div>
+</div>
+
+@endsection
+@section('scripts')
+{{-- <script src="{!! asset('js/switchery.js') !!}" type="text/javascript"></script>
+<script type="text/javascript">
+     $(document).ready(function(){
+        var elem = document.querySelector('.js-switch');
+        var switchery = new Switchery(elem, { color: '#1AB394' });
+     });
+</script> --}}
 @endsection

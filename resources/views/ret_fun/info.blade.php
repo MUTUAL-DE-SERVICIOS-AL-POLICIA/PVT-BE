@@ -24,6 +24,7 @@
                 </dl>
             </div>
         </div>
+        @can('update',new Muserpol\Models\RetirementFund\RetirementFund)
         <div class="panel-body" v-else>
             {{-- <div class="sk-folding-cube" v-show="show_spinner" >
                 <div class="sk-cube1 sk-cube"></div>
@@ -58,6 +59,7 @@
                 </dl>
             </div>
         </div>
+        @endcan
         <div v-show="editing" class="panel-footer">
             <div class="text-center">
                 <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
