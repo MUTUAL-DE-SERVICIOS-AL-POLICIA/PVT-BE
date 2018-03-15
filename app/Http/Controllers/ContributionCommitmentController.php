@@ -7,7 +7,7 @@ use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 
 use Validator;
-
+use Muserpol\Models\Contribution\ContributionRate;
 class ContributionCommitmentController extends Controller
 {
     /**
@@ -44,10 +44,10 @@ class ContributionCommitmentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Muserpol\ContributionRate  $contributionRate
+     * @param  \Muserpol\ContributionCommitment  $contributtionCommitment
      * @return \Illuminate\Http\Response
      */
-    public function show(ContributionRate $contributionRate)
+    public function show(ContributionCommitment $contributtionCommitment)
     {
         //
     }
@@ -55,10 +55,10 @@ class ContributionCommitmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Muserpol\ContributionRate  $contributionRate
+     * @param  \Muserpol\ContributionCommitment  $contributtionCommitment
      * @return \Illuminate\Http\Response
      */
-    public function edit(ContributionRate $contributionRate)
+    public function edit(ContributionCommitment $contributtionCommitment)
     {
         //
     }
@@ -91,7 +91,7 @@ class ContributionCommitmentController extends Controller
             return response()->json($validator->errors(), 406);
         }
          //*********END VALIDATOR************//
-
+        
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
             $commitment->state = 'BAJA';
@@ -107,9 +107,11 @@ class ContributionCommitmentController extends Controller
             $commitment->commitment_date = date('Y-m-d');            
         }
         else 
-            $commitment = ContributionCommitment::find($id);
+            $commitment = ContributionCommitment::find($request->id);
         
+        //return $request->id;
         $commitment->commitment_type = $request->commitment_type;
+        
         $commitment->number = $request->number;
         $commitment->destination = $request->destination;
         $commitment->commision_date = $request->commision_date;
@@ -132,10 +134,10 @@ class ContributionCommitmentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Muserpol\ContributionRate  $contributionRate
+     * @param  \Muserpol\ContributionCommitment  $contributtionCommitment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ContributionRate $contributionRate)
+    public function destroy(ContributionCommitment $contributtionCommitment)
     {
         //
     }

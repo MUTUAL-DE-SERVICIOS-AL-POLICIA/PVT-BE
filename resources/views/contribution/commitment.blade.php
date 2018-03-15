@@ -38,8 +38,9 @@
                             </div>
                             
                         </div>
-                        @can('update', new Muserpol\Models\Contribution\Contribution))
+                        
                         <div class="panel-body" v-else>
+                        @can('update', new Muserpol\Models\Contribution\Contribution)
                             <div class="sk-folding-cube" v-show="show_spinner" >
                                 <div class="sk-cube1 sk-cube"></div>
                                 <div class="sk-cube2 sk-cube"></div>
@@ -55,8 +56,8 @@
                                                 <dd>
                                                     <select class="form-control m-b" v-model='commitment.commitment_type'>                                            
                                                         <option value="COMISION">Comisión</option>
-                                                        <option value="BAJA TEMPORAL">Agregado Policial</option>
-                                                        <option value="AGREGADO POLICIAL">Baja Temporal</option>
+                                                        <option value="BAJA TEMPORAL">Baja Temporal</option>
+                                                        <option value="AGREGADO POLICIAL">Agregado Policial</option>
                                                     </select>                                                                                
                                                 </dd>
                                             <dt>Memorandum:</dt> <dd><input type="text" v-model="commitment.number" class="form-control"></dd>
@@ -79,8 +80,9 @@
                                     <button data-animation="flip" class="btn btn-primary" @click="create_new"><i class="fa fa-chevron-down"></i>Crear nuevo2</button>
                                 </div>-->
                             </div>                            
-                        </div>
                         @endcan
+                        </div>
+                        
                         <hr>                      
                     <div v-show="editing" class="panel-footer">
                         <div class="text-center">
