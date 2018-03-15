@@ -18,7 +18,6 @@ class ContributionCommitmentController extends Controller
      */
     public function index()
     {
-        return __('validation.string',['attribute'=>'adsfasfd']);
         //
     }
 
