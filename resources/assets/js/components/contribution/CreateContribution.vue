@@ -232,6 +232,7 @@ export default {
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
                     .then(response => {
                         console.log('entrando a succes');
+                console.log(response.data);
                     this.enableDC();
                     var i;
                     for(i=0;i<response.data.contribution.length;i++){                        
