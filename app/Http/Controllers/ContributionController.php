@@ -451,7 +451,9 @@ class ContributionController extends Controller
             'new_contributions' => self::getMonthContributions($affiliate->id),
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'commitment'    =>  $commitment,
+            'today_date'         =>  date('Y-m-d'),
         ];
+        //return  date('Y-m-d');
          return view('contribution.affiliate_contributions_edit', $data);
     }
     public function storeContributions(Request $request)
