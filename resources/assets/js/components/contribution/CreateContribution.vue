@@ -35,8 +35,8 @@
                         <tr>
                             <th class="footable-visible footable-first-column footable-sortable">Mes/Año<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">F.R.P.<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">CM<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">F.R.P. (4.77 %)<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Cuota Mortuoria (1.09 %)<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte<span class="footable-sort-indicator"></span></th>
                             <th>Opciones</th>                                    
@@ -249,7 +249,7 @@ export default {
                         var resp = error.response.data;
                         $.each(resp, function(index, value)
                         {
-                            flash(value,'error',15);
+                            flash(value,'error',5000);
                         });
                     })
 

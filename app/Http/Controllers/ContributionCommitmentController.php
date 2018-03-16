@@ -7,6 +7,8 @@ use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 
 use Validator;
+use Muserpol\Models\Contribution\ContributionRate;
+use Carbon\Carbon;
 class ContributionCommitmentController extends Controller
 {
     /**
@@ -46,7 +48,7 @@ class ContributionCommitmentController extends Controller
      * @param  \Muserpol\ContributionCommitment  $contributtionCommitment
      * @return \Illuminate\Http\Response
      */
-    public function show(ContributionCommitment $contributtionCommitment)
+    public function show(ContributionRate $contributionRate)
     {
         //
     }
@@ -54,10 +56,10 @@ class ContributionCommitmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Muserpol\ContributionCommitment  $contributtionCommitment
+     * @param  \Muserpol\ContributionRate  $contributionRate
      * @return \Illuminate\Http\Response
      */
-    public function edit(ContributionCommitment $contributtionCommitment)
+    public function edit(ContributionRate $contributionRate)
     {
         //
     }
@@ -72,12 +74,17 @@ class ContributionCommitmentController extends Controller
     public function update(Request $request, $id)
     {        
          //*********START VALIDATOR************//
+         $date_commision = $request->commision_date;
+         $limit=Carbon::now()->subDays(90);
+         //$dd=Carbon::parse(now)->addDays(90);
+         //return $limit.' -- '.$date_commision; 
          $rules = [           
             'number' => 'required|numeric',
-            'commision_date' => 'required|date',
+            'commision_date' => 'required|date|date_format:Y-m-d|after:'.$limit,
             'destination' => 'required', 
             'commitment_type' => 'required' 
             ];
+       //     return $rules;
           $messages = [
             'number.required' => __('validation.memorandum'),
             // 'commision_date.required'  =>  'La fecha del memorandum es obligatoria',
@@ -90,7 +97,7 @@ class ContributionCommitmentController extends Controller
             return response()->json($validator->errors(), 406);
         }
          //*********END VALIDATOR************//
-        
+
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
             $commitment->state = 'BAJA';
@@ -106,11 +113,9 @@ class ContributionCommitmentController extends Controller
             $commitment->commitment_date = date('Y-m-d');            
         }
         else 
-            $commitment = ContributionCommitment::find($request->id);
+            $commitment = ContributionCommitment::find($id);
         
-        //return $request->id;
         $commitment->commitment_type = $request->commitment_type;
-        
         $commitment->number = $request->number;
         $commitment->destination = $request->destination;
         $commitment->commision_date = $request->commision_date;
@@ -133,10 +138,10 @@ class ContributionCommitmentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Muserpol\ContributionCommitment  $contributtionCommitment
+     * @param  \Muserpol\ContributionRate  $contributionRate
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ContributionCommitment $contributtionCommitment)
+    public function destroy(ContributionRate $contributionRate)
     {
         //
     }
