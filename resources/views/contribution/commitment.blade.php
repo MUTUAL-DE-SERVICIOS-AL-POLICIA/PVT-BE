@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <contribution-commitment :commitment="{{$commitment}}" :affiliate_id="{{$affiliate_id}}" inline-template> 
+        <contribution-commitment :commitment="{{$commitment}}" :affiliate_id="{{$affiliate_id}}" :today_date="{{json_encode($today_date)}}" inline-template> 
                 <div class="col-lg-12">
                     <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
                         <div class="panel-heading">
@@ -26,6 +26,7 @@
                             </div>
                             <div class="col-md-6">
                                 <dl class="dl-">
+                                    <dt>Fecha de compromiso:</dt> <dd>@{{ commitment.commitment_date }}</dd>
                                     <dt>Estado:</dt> <dd>@{{ commitment.state }}</dd>
                                     <dt>Imprimir:</dt> <dd> 
                                     <button data-animation="flip" class="btn btn-primary" @click="print_commitment"><i class="fa fa-print"></i> </button>
@@ -63,10 +64,11 @@
                                             <dt>Memorandum:</dt> <dd><input type="text" v-model="commitment.number" class="form-control"></dd>
                                             <dt>Fecha (AAAA-MM-DD):</dt> <dd><input type="text" v-model="commitment.commision_date"  class="form-control"></dd>
                                             <dt>Destino:</dt> <dd><input type="text" v-model="commitment.destination" class="form-control"></dd>
+                                            <dt>Fecha de compromiso:</dt> <dd><input type="text" v-model="commitment.commitment_date"  class="form-control"></dd>
                                         </dl>   
                                     </div>
                                     <div class="col-md-6"  v-if=" commitment.id != 0">                               
-                                        <dl class="dl-">
+                                        <dl class="dl-">                                            
                                             <dt>Estado:</dt> <dd>
                                                 <button data-animation="flip" class="btn btn-primary" @click="update(-1)"><i class="fa fa-chevron-down"></i>Dar de baja </button>
                                             </dd>

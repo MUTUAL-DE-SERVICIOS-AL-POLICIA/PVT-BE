@@ -196,8 +196,7 @@ class ContributionController extends Controller
             $contribution->category_id = $affiliate->category_id;
             $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);
             $contribution->type='Directo';     
-            $contribution->base_wage = $aporte->sueldo;
-            $contribution->dignity_pension = 0;
+            $contribution->base_wage = $aporte->sueldo;            
             $contribution->seniority_bonus = 0;
             $contribution->study_bonus = 0;
             $contribution->position_bonus = 0;
@@ -215,7 +214,7 @@ class ContributionController extends Controller
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
-            $contribution->ipc = $aporte->interes;            
+            $contribution->interest = $aporte->interes;            
             $contribution->save();
             array_push($result, [
                 'total'=>$contribution->total,
@@ -451,7 +450,9 @@ class ContributionController extends Controller
             'new_contributions' => self::getMonthContributions($affiliate->id),
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'commitment'    =>  $commitment,
+            'today_date'         =>  date('Y-m-d'),
         ];
+        //return  date('Y-m-d');
          return view('contribution.affiliate_contributions_edit', $data);
     }
     public function storeContributions(Request $request)
@@ -468,9 +469,9 @@ class ContributionController extends Controller
               $request->merge([$request->total[$key]  => strip_tags($request->total[$key])]);
         
         $array_rules = [                       
-            'base_wage.'.$key =>  'required|numeric|min:2000',            
-            'gain.'.$key =>  'required|numeric|min:1',
-            'total.'.$key =>  'required|numeric|min:1'
+            //'base_wage.'.$key =>  'required|numeric|min:2000',            
+            //'gain.'.$key =>  'required|numeric|min:1',
+            //'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
         $array_messages = [

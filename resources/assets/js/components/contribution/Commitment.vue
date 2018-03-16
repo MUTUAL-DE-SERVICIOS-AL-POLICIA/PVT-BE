@@ -3,6 +3,7 @@
 		props:[
 			'commitment',
                         'affiliate_id',
+                        'today_date',
 		],
         data(){
             return{
@@ -12,7 +13,7 @@
                 show_spinner: false,                
                 iterator:-1,
             }
-        },
+        },        
         computed:{            
         },        
         methods:{
@@ -33,6 +34,8 @@
 //            },
             create_new(){
                 //this.toggle_create();
+                //console.log(this.today_date);
+                this.commitment.commitment_date=this.today_date;
                 this.toggle_editing();
                 //this.update(0);
                 //this.commitment.affiliate_id = this.affiliate_id;

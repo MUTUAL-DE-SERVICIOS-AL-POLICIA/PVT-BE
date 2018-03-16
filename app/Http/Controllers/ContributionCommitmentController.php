@@ -86,11 +86,7 @@ class ContributionCommitmentController extends Controller
             ];
        //     return $rules;
           $messages = [
-            'number.required' => __('validation.memorandum'),
-            // 'commision_date.required'  =>  'La fecha del memorandum es obligatoria',
-            // 'commision_date.date' => 'El formato de la fecha es incorrecto',
-            // 'destination.required'  =>  'El destino es obligatorio',  
-            // 'commitment_type.required' => 'El tipo de aporte es obligatorio'
+            'number.required' => __('validation.memorandum'),            
         ];  
         $validator = Validator::make($request->all(),$rules,$messages);
         if($validator->fails()){
@@ -106,22 +102,19 @@ class ContributionCommitmentController extends Controller
             return $commitment;
         }                
         
-        if($request->id==0){
-            
+        if($request->id==0){            
             $commitment = new ContributionCommitment();            
-            $commitment->affiliate_id = $request->affiliate_id;
-            $commitment->commitment_date = date('Y-m-d');            
+            $commitment->affiliate_id = $request->affiliate_id;            
         }
         else 
-            $commitment = ContributionCommitment::find($id);
-        
+            $commitment = ContributionCommitment::find($request->id);                
         $commitment->commitment_type = $request->commitment_type;
+        $commitment->commitment_date = $request->commitment_date;
         $commitment->number = $request->number;
         $commitment->destination = $request->destination;
         $commitment->commision_date = $request->commision_date;
         $commitment->state = "ALTA";
-        
-        //$commitment->state = $request->state;        
+                
         $commitment->save();
         ///'COMISION', 'BAJA TEMPORAL','AGREGADO POLICIAL'
         $affiliate = Affiliate::find($commitment->affiliate_id);
