@@ -470,18 +470,18 @@ class ContributionController extends Controller
         //*********START VALIDATOR************//
         $rules=[];
         $messages=[];
+        $input_data = $request->all();
         if(!empty($request->iterator))
         { 
           foreach ($request->iterator as $key => $iterator) 
-        {
-              $request->merge([$request->base_wage[$key]  => strip_tags($request->base_wage[$key])]);
-              $request->merge([$request->gain[$key]  => strip_tags($request->gain[$key])]);
-              $request->merge([$request->total[$key]  => strip_tags($request->total[$key])]);
-        
+        {              
+              $input_data['base_wage'][$key]= strip_tags($request->base_wage[$key]);
+              $input_data['gain'][$key]= strip_tags($request->gain[$key]);
+              $input_data['total'][$key]= strip_tags($request->total[$key]);
         $array_rules = [                       
-            //'base_wage.'.$key =>  'required|numeric|min:2000',            
-            //'gain.'.$key =>  'required|numeric|min:1',
-            //'total.'.$key =>  'required|numeric|min:1'
+            'base_wage.'.$key =>  'required|numeric|min:2000',            
+            'gain.'.$key =>  'required|numeric|min:1',
+            'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
         $array_messages = [
@@ -494,12 +494,12 @@ class ContributionController extends Controller
         ];
         $messages=array_merge($messages, $array_messages);
         }   
-        $validator = Validator::make($request->all(),$rules,$messages);
+            $validator = Validator::make($input_data,$rules,$messages);
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
         }
          //*********END VALIDATOR************//
-        //return ;
+        return ;
         $this->authorize('update',new Contribution);
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
