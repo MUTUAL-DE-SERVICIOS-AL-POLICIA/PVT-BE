@@ -65,6 +65,7 @@ export default {
         
                 obj[this.actions_list[j].name] = this.CheckPermission(this.operations_list[i],this.actions_list[j].id); 
               }
+              console.log(obj);
               this.list_to_send.push(obj);
             }
           }

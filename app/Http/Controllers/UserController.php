@@ -144,6 +144,7 @@ class UserController extends Controller
         //     //registrar
         //     $user = new User;   
         // }       
+
         if($request->has('user_id'))
         {
             $user=User::find($request->user_id);  
@@ -171,12 +172,9 @@ class UserController extends Controller
             }           
         }      
         $user->save();
-        if (isset($user)){
-            $user->roles()->sync($request->rol, false);
-        }else{
-            $user->roles()->attach($request->rol);
-        }       
-        $user->save();        
+
+        $user->roles()->sync($request->rol);
+        
         return redirect('user');
     }
 
