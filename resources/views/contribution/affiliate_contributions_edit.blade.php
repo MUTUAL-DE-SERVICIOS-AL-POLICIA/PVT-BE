@@ -32,9 +32,9 @@
             </div>
             <div class="col-md-6">
                 @include('contribution.aditional_info',['summary',$summary])
-            </div>
+            </div>            
             <div class="col-md-6">
-                @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id])
+                @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
             </div>
         </div>
         <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight @if($commitment->id == 0) disableddiv @endif">

@@ -103,14 +103,14 @@ class ContributionCommitmentController extends Controller
             
             $commitment = new ContributionCommitment();            
             $commitment->affiliate_id = $request->affiliate_id;
-            $commitment->commitment_date = date('Y-m-d');            
+            //$commitment->commitment_date = date('Y-m-d');      
         }
         else 
             $commitment = ContributionCommitment::find($request->id);
         
         //return $request->id;
         $commitment->commitment_type = $request->commitment_type;
-        
+        $commitment->commitment_date = $request->commitment_date;
         $commitment->number = $request->number;
         $commitment->destination = $request->destination;
         $commitment->commision_date = $request->commision_date;
