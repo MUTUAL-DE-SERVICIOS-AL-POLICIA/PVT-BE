@@ -214,7 +214,7 @@ class ContributionController extends Controller
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
-            $contribution->ipc = $aporte->interes;            
+            $contribution->interest = $aporte->interes;            
             $contribution->save();
             array_push($result, [
                 'total'=>$contribution->total,
