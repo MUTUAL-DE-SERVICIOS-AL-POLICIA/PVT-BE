@@ -1,13 +1,9 @@
 <?php
-
 namespace Muserpol\Http\Controllers;
-
 use Muserpol\Models\Contribution\ContributionCommitment;
 use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
-
 use Validator;
-use Muserpol\Models\Contribution\ContributionRate;
 use Carbon\Carbon;
 class ContributionCommitmentController extends Controller
 {
@@ -20,7 +16,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -30,7 +25,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -41,29 +35,26 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Display the specified resource.
      *
      * @param  \Muserpol\ContributionCommitment  $contributtionCommitment
      * @return \Illuminate\Http\Response
      */
-    public function show(ContributionRate $contributionRate)
+    public function show(ContributionCommitment $contributtionCommitment)
     {
         //
     }
-
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Muserpol\ContributionRate  $contributionRate
+     * @param  \Muserpol\ContributionCommitment  $contributtionCommitment
      * @return \Illuminate\Http\Response
      */
-    public function edit(ContributionRate $contributionRate)
+    public function edit(ContributionCommitment $contributtionCommitment)
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -73,27 +64,25 @@ class ContributionCommitmentController extends Controller
      */
     public function update(Request $request, $id)
     {        
-         //*********START VALIDATOR************//
-         $date_commision = $request->commision_date;
-         $limit=Carbon::now()->subDays(90);
-         //$dd=Carbon::parse(now)->addDays(90);
-         //return $limit.' -- '.$date_commision; 
-         $rules = [           
-            'number' => 'required|numeric',
-            'commision_date' => 'required|date|date_format:Y-m-d|after:'.$limit,
-            'destination' => 'required', 
-            'commitment_type' => 'required' 
-            ];
-       //     return $rules;
-          $messages = [
-            'number.required' => __('validation.memorandum'),            
-        ];  
-        $validator = Validator::make($request->all(),$rules,$messages);
-        if($validator->fails()){
-            return response()->json($validator->errors(), 406);
-        }
-         //*********END VALIDATOR************//
-
+       //*********START VALIDATOR************//
+       $date_commision = $request->commision_date;
+       $limit=Carbon::now()->subDays(91);
+       $rules = [           
+          'number' => 'required|numeric',
+          'commision_date' => 'required|date|date_format:Y-m-d|after:'.$limit,
+          'destination' => 'required', 
+          'commitment_type' => 'required' 
+          ];
+     //     return $rules;
+        $messages = [
+          'number.required' => __('validation.memorandum'),            
+      ];  
+      $validator = Validator::make($request->all(),$rules,$messages);
+      if($validator->fails()){
+          return response()->json($validator->errors(), 406);
+      }
+       //*********END VALIDATOR************//
+        
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
             $commitment->state = 'BAJA';
@@ -127,14 +116,13 @@ class ContributionCommitmentController extends Controller
         $affiliate->save();
         return $commitment;     
     }
-
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Muserpol\ContributionRate  $contributionRate
+     * @param  \Muserpol\ContributionCommitment  $contributtionCommitment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ContributionRate $contributionRate)
+    public function destroy(ContributionCommitment $contributtionCommitment)
     {
         //
     }
