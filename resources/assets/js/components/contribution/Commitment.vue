@@ -46,6 +46,7 @@
                 this.show_spinner=true;
                 axios.patch(uri,this.commitment)
                     .then(response=>{     
+                        console.log(response.data.commitment_type);
                         this.editing = false;
                         this.show_spinner=false;
                         console.log(response.data.state+"----");
