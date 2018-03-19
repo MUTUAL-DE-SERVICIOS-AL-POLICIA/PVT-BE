@@ -68,7 +68,7 @@ class PermissionController extends Controller
         $module_id = $request->module_id;
         $role_id = $request->role_id;
         //verifica la existencia de permisos caso contrario se crea uno cechus y anita XD a perdon era karen
-        $observer=null;
+   
         foreach ($request->permissions_list as $p) {
             # code...
             $permission_request = (Object)$p;

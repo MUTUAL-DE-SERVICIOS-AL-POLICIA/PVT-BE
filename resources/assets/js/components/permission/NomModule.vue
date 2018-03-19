@@ -19,6 +19,7 @@ export default {
       opertaion_list_role: null,
       role: null,
       list_to_send: [],
+      sw: false,
     }
   },
   computed: {
@@ -87,6 +88,29 @@ export default {
          // }
          // console.log(obj);
          // console.log(role);
+      },
+      selectAll: function(){
+        
+        this.sw = !this.sw;
+        for (var i = 0; i < this.list_to_send.length; i++) {
+
+         if(this.sw){
+              this.list_to_send[i].create =true;
+              this.list_to_send[i].read =true;
+              this.list_to_send[i].update =true;
+              this.list_to_send[i].delete =true;
+              this.list_to_send[i].print =true; 
+         }else
+         {
+              this.list_to_send[i].create =false;
+              this.list_to_send[i].read =false;
+              this.list_to_send[i].update =false;
+              this.list_to_send[i].delete =false;
+              this.list_to_send[i].print =false; 
+         }
+
+         
+        }
       },
       CheckPermission: function(operation,action_id)
       {
