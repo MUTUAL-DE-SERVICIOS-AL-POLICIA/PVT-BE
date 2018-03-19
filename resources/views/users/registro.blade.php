@@ -8,7 +8,7 @@
         <div class="panel-heading">
             <h3 class="pull-left">Datos Personales del Usuario</h3>
             <div class="text-right">
-                <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
+               <br>
             </div>            
         </div>
         <div class="ibox-content">
@@ -17,7 +17,9 @@
                     
             <input type="hidden" name="_method" value="POST">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
+            @if(isset($user))
+            <input type="hidden" name="user_id" value="{{$user->id}}">
+            @endif
             <div class="form-group">
                 <label class="col-lg-2 control-label">Usuario</label>
                 <div class="col-lg-10">

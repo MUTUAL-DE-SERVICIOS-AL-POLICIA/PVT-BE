@@ -79,13 +79,23 @@ class ContributionController extends Controller
             else 
             {
                 //$contributions=[];
-                for ($i = 0; $i < $diff; $i++) {
+                for ($i = 0; $i < $diff; $i++) {                                    
                     $month_diff = Carbon::now()->subMonths($i + 1);
                     $month = explode('-', $month_diff);
                     $montyear = $month_diff->format('m-Y');
-                    $contribution = array('year' => $month[0], 'month' => $month[1], 'monthyear' => $montyear, 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0);
+                    $contribution = array(
+                        'year' => $month[0], 
+                        'month' => $month[1], 
+                        'monthyear' => $montyear, 
+                        'sueldo' => 0, 
+                        'fr' => 0, 
+                        'cm' => 0, 
+                        'interes' => 0, 
+                        'subtotal' => 0
+                        );
                     $contributions[$i] = $contribution;
                 }
+                $contributions = array_reverse($contributions);
             }
         }     
         
@@ -196,8 +206,7 @@ class ContributionController extends Controller
             $contribution->category_id = $affiliate->category_id;
             $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);
             $contribution->type='Directo';     
-            $contribution->base_wage = $aporte->sueldo;
-            $contribution->dignity_pension = 0;
+            $contribution->base_wage = $aporte->sueldo;            
             $contribution->seniority_bonus = 0;
             $contribution->study_bonus = 0;
             $contribution->position_bonus = 0;
@@ -215,7 +224,7 @@ class ContributionController extends Controller
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
-            $contribution->ipc = $aporte->interes;            
+            $contribution->interest = $aporte->interes;            
             $contribution->save();
             array_push($result, [
                 'total'=>$contribution->total,
@@ -451,7 +460,9 @@ class ContributionController extends Controller
             'new_contributions' => self::getMonthContributions($affiliate->id),
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'commitment'    =>  $commitment,
+            'today_date'         =>  date('Y-m-d'),
         ];
+        //return  date('Y-m-d');
          return view('contribution.affiliate_contributions_edit', $data);
     }
     public function storeContributions(Request $request)
@@ -459,14 +470,14 @@ class ContributionController extends Controller
         //*********START VALIDATOR************//
         $rules=[];
         $messages=[];
+        $input_data = $request->all();
         if(!empty($request->iterator))
         { 
           foreach ($request->iterator as $key => $iterator) 
-        {
-              $request->merge([$request->base_wage[$key]  => strip_tags($request->base_wage[$key])]);
-              $request->merge([$request->gain[$key]  => strip_tags($request->gain[$key])]);
-              $request->merge([$request->total[$key]  => strip_tags($request->total[$key])]);
-        
+        {              
+              $input_data['base_wage'][$key]= strip_tags($request->base_wage[$key]);
+              $input_data['gain'][$key]= strip_tags($request->gain[$key]);
+              $input_data['total'][$key]= strip_tags($request->total[$key]);
         $array_rules = [                       
             'base_wage.'.$key =>  'required|numeric|min:2000',            
             'gain.'.$key =>  'required|numeric|min:1',
@@ -483,12 +494,12 @@ class ContributionController extends Controller
         ];
         $messages=array_merge($messages, $array_messages);
         }   
-        $validator = Validator::make($request->all(),$rules,$messages);
+            $validator = Validator::make($input_data,$rules,$messages);
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
         }
          //*********END VALIDATOR************//
-        //return ;
+        return ;
         $this->authorize('update',new Contribution);
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();

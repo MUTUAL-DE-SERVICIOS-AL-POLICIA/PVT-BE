@@ -1,12 +1,10 @@
 <?php
-
 namespace Muserpol\Http\Controllers;
-
 use Muserpol\Models\Contribution\ContributionCommitment;
 use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
-
 use Validator;
+use Carbon\Carbon;
 class ContributionCommitmentController extends Controller
 {
     /**
@@ -18,7 +16,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -28,7 +25,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -39,7 +35,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Display the specified resource.
      *
@@ -50,7 +45,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -61,7 +55,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -71,25 +64,24 @@ class ContributionCommitmentController extends Controller
      */
     public function update(Request $request, $id)
     {        
-         //*********START VALIDATOR************//
-         $rules = [           
-            'number' => 'required|numeric',
-            'commision_date' => 'required|date',
-            'destination' => 'required', 
-            'commitment_type' => 'required' 
-            ];
-          $messages = [
-            'number.required' => __('validation.memorandum'),
-            // 'commision_date.required'  =>  'La fecha del memorandum es obligatoria',
-            // 'commision_date.date' => 'El formato de la fecha es incorrecto',
-            // 'destination.required'  =>  'El destino es obligatorio',  
-            // 'commitment_type.required' => 'El tipo de aporte es obligatorio'
-        ];  
-        $validator = Validator::make($request->all(),$rules,$messages);
-        if($validator->fails()){
-            return response()->json($validator->errors(), 406);
-        }
-         //*********END VALIDATOR************//
+       //*********START VALIDATOR************//
+       $date_commision = $request->commision_date;
+       $limit=Carbon::now()->subDays(91);
+       $rules = [           
+          'number' => 'required|numeric',
+          'commision_date' => 'required|date|date_format:Y-m-d|after:'.$limit,
+          'destination' => 'required', 
+          'commitment_type' => 'required' 
+          ];
+     //     return $rules;
+        $messages = [
+          'number.required' => __('validation.memorandum'),            
+      ];  
+      $validator = Validator::make($request->all(),$rules,$messages);
+      if($validator->fails()){
+          return response()->json($validator->errors(), 406);
+      }
+       //*********END VALIDATOR************//
         
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
@@ -99,24 +91,19 @@ class ContributionCommitmentController extends Controller
             return $commitment;
         }                
         
-        if($request->id==0){
-            
+        if($request->id==0){            
             $commitment = new ContributionCommitment();            
-            $commitment->affiliate_id = $request->affiliate_id;
-            $commitment->commitment_date = date('Y-m-d');            
+            $commitment->affiliate_id = $request->affiliate_id;            
         }
         else 
-            $commitment = ContributionCommitment::find($request->id);
-        
-        //return $request->id;
+            $commitment = ContributionCommitment::find($request->id);                
         $commitment->commitment_type = $request->commitment_type;
-        
+        $commitment->commitment_date = $request->commitment_date;
         $commitment->number = $request->number;
         $commitment->destination = $request->destination;
         $commitment->commision_date = $request->commision_date;
         $commitment->state = "ALTA";
-        
-        //$commitment->state = $request->state;        
+                
         $commitment->save();
         ///'COMISION', 'BAJA TEMPORAL','AGREGADO POLICIAL'
         $affiliate = Affiliate::find($commitment->affiliate_id);
@@ -129,7 +116,6 @@ class ContributionCommitmentController extends Controller
         $affiliate->save();
         return $commitment;     
     }
-
     /**
      * Remove the specified resource from storage.
      *

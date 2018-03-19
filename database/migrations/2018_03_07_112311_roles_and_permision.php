@@ -53,6 +53,9 @@ class RolesAndPermision extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('role_permissions');
+        Schema::drop('permissions');
+        Schema::drop('actions');
+        Schema::drop('operations');
     }
 }

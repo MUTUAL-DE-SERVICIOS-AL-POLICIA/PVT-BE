@@ -47,20 +47,18 @@ class ReimbursementController extends Controller
             'reim_amount' =>  'numeric|min:1'
             ];
             //return $rules;
-        $messages = [
+       /*  $messages = [
             'reim_salary.numeric' => 'El campo "Sueldo" debe ser numerico',
             'reim_salary.min'  =>  'El salario minimo es 2000',
             'reim_gain.numeric' => 'El campo "Total Ganado" debe ser numerico',
             'reim_gain.min'  =>  'La cantidad ganada debe ser mayor a 0', 
             'reim_amount.numeric' => 'El valor del Aporte debe ser numerico',
             'reim_amount.min'  =>  'El aporte debe ser mayor a 0'
-        ];
-        $validator = Validator::make($request->all(),$rules,$messages);        
+        ]; */
+        $validator = Validator::make($request->all(),$rules);        
        if($validator->fails()){
            return json_encode($validator->errors()); 
        }
-       else {return 'algo';}
-       
          //*********END VALIDATOR************//
 
         $category = Category::find($request->category);    
