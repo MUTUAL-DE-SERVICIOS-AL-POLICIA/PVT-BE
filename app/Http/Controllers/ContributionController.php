@@ -43,15 +43,16 @@ class ContributionController extends Controller
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         $json = '';
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if( ($json = curl_exec($ch) ) === false)
+        //if( ($json = curl_exec($ch) ) === false)
+        if( $foo === false)
         {
-            Log::info("Error ".$httpcode ." ".$json);
+            Log::info("Error ".$httpcode ." ".$foo);
             return response('error', 500);
         }
         else
         {
-            Log::info("Success: ".$httpcode. " ".$json );
-            return $json;
+            Log::info("Success: ".$httpcode. " ".$foo );
+            return $foo;
         }
         
     }
