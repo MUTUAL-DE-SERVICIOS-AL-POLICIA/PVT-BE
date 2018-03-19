@@ -239,6 +239,12 @@ export default {
                     }
                     printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
                     })
+                    this.$swal({
+                    title: 'Pago realizado',
+                    showConfirmButton: false,
+                    timer: 6000,
+                    type: 'success'
+                    })
                     .catch(error => {
                     this.show_spinner = false;            
                         //alert(e);
@@ -248,36 +254,20 @@ export default {
                         var resp = error.response.data;
                         $.each(resp, function(index, value)
                         {
-                            flash(value,'error',5000);
+                            flash(value,'error',6000);
                         });
-                    })
-
-                    this.$swal({
-                    title: 'Pago realizado',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    type: 'success'
                     })
                 }
                 })            
             }
-        }      
-        
-        
-    
+        } 
     },
-
-
-    
-
   },
   computed: {
       disabledSaved(){
        return this.contributions.some((c)=> c.subtotal > 0 );
       }
   }
-
- 
 }
 </script>
 
