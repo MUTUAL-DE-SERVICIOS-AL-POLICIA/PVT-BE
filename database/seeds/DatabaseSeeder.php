@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ProcedureTablesSeeder::class);
         $this->call(KinshipSeeder::class);
         $this->call(OperationSeeder::class);
+        $this->call(ActionSeed::class);
         // $this->call(SequenceSeeder::class);
         // $this->call(QuotaSeeder::class);
         
