@@ -17,9 +17,7 @@
                     
             <input type="hidden" name="_method" value="POST">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            @if(isset($user))
-            <input type="type" name="user_id" value="{{$user->id}}">
-            @endif
+
             <div class="form-group">
                 <label class="col-lg-2 control-label">Usuario</label>
                 <div class="col-lg-10">
