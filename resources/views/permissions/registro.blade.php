@@ -59,7 +59,7 @@
                                     </tbody>    
                                 </table>
                                 <button type="button" class="btn btn-primary"  @click="update" ><i class="fa fa-save"></i></button>
-                                <button type="button" class="btn btn-info"  @click="selectAll" ><i :class="!sw?'fa fa-check-square-o':'fa fa-square-o'"></i></button>
+                                <button type="button" class="btn btn-info"  @click="selectAll" ><i :class="sw?'fa fa-check-square-o':'fa fa-square-o'"></i></button>
 
                             </div>
 
