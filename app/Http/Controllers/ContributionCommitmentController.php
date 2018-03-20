@@ -68,7 +68,7 @@ class ContributionCommitmentController extends Controller
        $date_commision = $request->commision_date;
        $limit=Carbon::now()->subDays(91);
        $rules = [           
-          'number' => 'required|numeric',
+          'number' => 'required',
           'commision_date' => 'required|date|date_format:Y-m-d|after:'.$limit,
           'destination' => 'required', 
           'commitment_type' => 'required' 
