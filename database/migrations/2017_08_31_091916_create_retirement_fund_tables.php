@@ -18,7 +18,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigIncrements('id');
             $table->bigInteger('module_id')->unsigned()->nullable();
             $table->string('name');
-           $table->foreign('module_id')->references('id')->on('modules');
+            $table->foreign('module_id')->references('id')->on('modules');
             $table->timestamps();
         });
 
@@ -333,6 +333,25 @@ class CreateRetirementFundTables extends Migration {
             $table->bigInteger('contribution_type_id')->unsigned()->nullable();
             $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
         });
+        
+        Schema::create('aid_contributions', function(Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('affiliate_id')->unsigned()->nullable();
+            $table->bigInteger('spouse_id')->unsigned()->nullable();
+            $table->string('month_year');
+            $table->enum('type', ['PLANILLA', 'DIRECTO'])->default('PLANILLA');            
+            $table->string('deceased');            
+            $table->decimal('quotable', 13, 2);
+            $table->decimal('rent', 13, 2);
+            $table->decimal('dignity_rent', 13, 2);
+            $table->decimal('total', 13, 2);
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('affiliate_id')->references('id')->on('users');
+            $table->foreign('spouse_id')->references('id')->on('spouses');
+            $table->timestamps();
+            $table->softDeletes();
+        });
 
     }
 
@@ -372,6 +391,8 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('procedure_documents');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types'); 
+        Schema::drop('aid_contributions');
     }
+    
 
 }
