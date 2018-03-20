@@ -555,4 +555,11 @@ class ContributionController extends Controller
         $contributions = self::getMonthContributions($affiliate->id);
         return View('contribution.create', compact('affiliate', 'contributions'));
     }
+
+    public function selectContributions($affiliate_id)
+    {
+        $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
+        $data =  array('contribuciones' => $contributions );
+        return view('contribution.select',$data);
+    }
 }
