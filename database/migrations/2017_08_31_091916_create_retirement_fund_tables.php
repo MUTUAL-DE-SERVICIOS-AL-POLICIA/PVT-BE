@@ -182,7 +182,7 @@ class CreateRetirementFundTables extends Migration {
             $table->string('second_name')->nullable(); // segundo nombre
             $table->string('surname_husband')->nullable(); //apellido ca  sada
             $table->date('birth_date')->nullable(); //fecha de nacimento
-            $table->enum('gender', ['M', 'F']); // genero
+         c
             $table->enum('type', ['Natural', 'Legal']);
             //datos de tutor legal
             $table->string('name_court')->nullable(); //legal
@@ -352,7 +352,20 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
+         Schema::create('aid_commitment', function(Blueprint $table) //Compromiso de auxilio mortuorio
+    {
+        $table->bigIncrements('id');
+        $table->bigInteger('affiliate_id')->unsigned();
+        $table->bigInteger('user_id')->unsigned();
+        $table->date('date_commitment');
+        $table->enum('contributor',['T','E','C']);
+        $table->string('pension_declaration')->nullable();
+        $table->date('pension_declaration_date');
+        $table->foreing('user_id')->references('id')->on('users');
+        $table->foreing('affiliate_id')->reference('id')->on('affiliates');
+        $table->timestamp();
+        $table->softDeletes();
+    });
     }
 
     /**

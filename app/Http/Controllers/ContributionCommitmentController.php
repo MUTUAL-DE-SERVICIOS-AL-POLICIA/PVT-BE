@@ -75,7 +75,8 @@ class ContributionCommitmentController extends Controller
           ];
      //     return $rules;
         $messages = [
-          'number.required' => __('validation.memorandum'),            
+          'number.required' => __('validation.memorandum'),    
+          'commision_date.after' => __('validation.limit_days'),        
       ];  
       $validator = Validator::make($request->all(),$rules,$messages);
       if($validator->fails()){

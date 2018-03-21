@@ -25,7 +25,7 @@
                                 <option value="2">Comisión</option>
                                 <option value="10">Agregado Policial</option>
                                 <option value="9">Baja Temporal</option>
-                            </select>
+                           </select>
                             <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
                         
