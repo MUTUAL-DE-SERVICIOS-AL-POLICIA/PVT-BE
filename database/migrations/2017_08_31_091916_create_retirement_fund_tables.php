@@ -182,7 +182,6 @@ class CreateRetirementFundTables extends Migration {
             $table->string('second_name')->nullable(); // segundo nombre
             $table->string('surname_husband')->nullable(); //apellido ca  sada
             $table->date('birth_date')->nullable(); //fecha de nacimento
-         c
             $table->enum('type', ['Natural', 'Legal']);
             //datos de tutor legal
             $table->string('name_court')->nullable(); //legal
@@ -378,7 +377,7 @@ class CreateRetirementFundTables extends Migration {
         Schema::table('contributions', function (Blueprint $table) {
             $table->dropColumn('contribution_type_id');
         });
-
+        Schema::drop('aid_commitment');
         Schema::drop('contribution_types');
         Schema::drop('eco_com_observations');
         Schema::drop('ufv_rates');
