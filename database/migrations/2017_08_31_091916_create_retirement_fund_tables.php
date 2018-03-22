@@ -351,20 +351,20 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-         Schema::create('aid_commitment', function(Blueprint $table) //Compromiso de auxilio mortuorio
-    {
-        $table->bigIncrements('id');
-        $table->bigInteger('affiliate_id')->unsigned();
-        $table->bigInteger('user_id')->unsigned();
-        $table->date('date_commitment');
-        $table->enum('contributor',['T','E','C']);
-        $table->string('pension_declaration')->nullable();
-        $table->date('pension_declaration_date');
-        $table->foreing('user_id')->references('id')->on('users');
-        $table->foreing('affiliate_id')->reference('id')->on('affiliates');
-        $table->timestamp();
-        $table->softDeletes();
-    });
+        Schema::create('aid_commitments', function(Blueprint $table) 
+        {
+            $table->bigIncrements('id');
+            $table->bigInteger('affiliate_id')->unsigned()->nullable();
+            $table->bigInteger('user_id')->unsigned();
+            $table->date('date_commitment');
+            $table->enum('contributor',['T','E','C']);
+            $table->string('pension_declaration')->nullable();
+            $table->date('pension_declaration_date');
+            $table->foreign('affiliate_id')->references('id')->on('affiliates');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
