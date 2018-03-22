@@ -68,14 +68,15 @@ class ContributionCommitmentController extends Controller
        $date_commision = $request->commision_date;
        $limit=Carbon::now()->subDays(91);
        $rules = [           
-          'number' => 'required|numeric',
+          'number' => 'required',
           'commision_date' => 'required|date|date_format:Y-m-d|after:'.$limit,
           'destination' => 'required', 
           'commitment_type' => 'required' 
           ];
      //     return $rules;
         $messages = [
-          'number.required' => __('validation.memorandum'),            
+          'number.required' => __('validation.memorandum'),    
+          'commision_date.after' => __('validation.limit_days'),        
       ];  
       $validator = Validator::make($request->all(),$rules,$messages);
       if($validator->fails()){
