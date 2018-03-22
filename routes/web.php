@@ -105,8 +105,8 @@ Route::group(['middleware' => ['auth']], function () {
         
         //AidContributions
         Route::resource('aid_contribution','AidContributionController');
-        //Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
-        //Route::post('store_aid_contributions','AidContributionController@storeAidContributions');        
+        Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
+        Route::post('store_aid_contributions','AidContributionController@storeContributions');        
 
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
