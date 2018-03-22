@@ -24,7 +24,9 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
- 
+        <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
+            <aid-contribution-create :contributions1="{{ json_encode($new_contributions) }}" :affiliate_id="{{ $affiliate_id}}"></aid-contribution-create>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-12">
