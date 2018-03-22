@@ -34,9 +34,7 @@
                                 </ul>
                             </div>
                             <div class="col-md-8" v-if="role && module_id">
-                            {!! Form::open(['action' => 'PermissionController@store']) !!}
-                            <input type="hidden" name="role_id" v-model="role.id">
-                            <input type="hidden" name="module_id" v-model="module_id">
+             
                                 <legend>@{{role.name}}</legend>
                                 <table class="table">
                                     <thead>
@@ -61,10 +59,10 @@
                                     </tbody>    
                                 </table>
                                 <button type="button" class="btn btn-primary"  @click="update" ><i class="fa fa-save"></i></button>
+                                <button type="button" class="btn btn-info"  @click="selectAll" ><i :class="sw?'fa fa-check-square-o':'fa fa-square-o'"></i></button>
+
                             </div>
-                            
-                        
-                            {!!Form::close()!!}
+
                         </div>
                     </div>   
                 </nom-module>

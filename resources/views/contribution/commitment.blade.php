@@ -62,7 +62,7 @@
                                                     </select>                                                                                
                                                 </dd>
                                             <dt>Memorandum:</dt> <dd><input type="text" v-model="commitment.number" class="form-control"></dd>
-                                            <dt>Fecha:</dt> <dd><input type="text" v-model="commitment.commision_date"  class="form-control"></dd>
+                                            <dt>Fecha (AAAA-MM-DD):</dt> <dd><input type="text" v-model="commitment.commision_date"  class="form-control"></dd>
                                             <dt>Destino:</dt> <dd><input type="text" v-model="commitment.destination" class="form-control"></dd>
                                             <dt>Fecha de compromiso:</dt> <dd><input type="text" v-model="commitment.commitment_date"  class="form-control"></dd>
                                         </dl>   
@@ -89,8 +89,10 @@
                     <div v-show="editing" class="panel-footer">
                         <div class="text-center">
                             <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
-                            <button class="btn btn-primary" type="button" @click="update(affiliate_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
-                        </div>
+                            <button class="btn btn-primary" type="button" @click="update(affiliate_id)"><i class="fa fa-check-circle" onClick="window.location.reload()"></i>Guardar</button>
+                            
+                        {{--      <td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>                            
+                          --}}</div>
                     </div>
                 </div>
             </div>

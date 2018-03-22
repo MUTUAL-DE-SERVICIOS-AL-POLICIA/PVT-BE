@@ -25,7 +25,7 @@
                                 <option value="2">Comisión</option>
                                 <option value="10">Agregado Policial</option>
                                 <option value="9">Baja Temporal</option>
-                            </select>
+                           </select>
                             <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
                         
@@ -34,10 +34,10 @@
                         <thead>
                         <tr>
                             <th class="footable-visible footable-first-column footable-sortable">Mes/Año<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">F.R.P.<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">CM<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado Bs.<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">F.R.P. (4.77 %)<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Cuota Mortuoria (1.09 %)<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV Bs.<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte<span class="footable-sort-indicator"></span></th>
                             <th>Opciones</th>                                    
                         </tr>
@@ -219,7 +219,6 @@ export default {
             {   
                 this.$swal({
                 title: 'Esta usted seguro de guardar?',
-                text: "whatever",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -240,6 +239,12 @@ export default {
                     }
                     printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
                     })
+                    this.$swal({
+                    title: 'Pago realizado',
+                    showConfirmButton: false,
+                    timer: 6000,
+                    type: 'success'
+                    })
                     .catch(error => {
                     this.show_spinner = false;            
                         //alert(e);
@@ -249,36 +254,20 @@ export default {
                         var resp = error.response.data;
                         $.each(resp, function(index, value)
                         {
-                            flash(value,'error',15);
+                            flash(value,'error',6000);
                         });
-                    })
-
-                    this.$swal({
-                    title: 'Pago realizado',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    type: 'success'
                     })
                 }
                 })            
             }
-        }      
-        
-        
-    
+        } 
     },
-
-
-    
-
   },
   computed: {
       disabledSaved(){
        return this.contributions.some((c)=> c.subtotal > 0 );
       }
   }
-
- 
 }
 </script>
 

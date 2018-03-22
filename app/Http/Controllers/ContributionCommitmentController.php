@@ -1,12 +1,10 @@
 <?php
-
 namespace Muserpol\Http\Controllers;
-
 use Muserpol\Models\Contribution\ContributionCommitment;
 use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
-
 use Validator;
+use Carbon\Carbon;
 class ContributionCommitmentController extends Controller
 {
     /**
@@ -18,7 +16,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -28,7 +25,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -39,7 +35,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Display the specified resource.
      *
@@ -50,7 +45,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -61,7 +55,6 @@ class ContributionCommitmentController extends Controller
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -71,21 +64,25 @@ class ContributionCommitmentController extends Controller
      */
     public function update(Request $request, $id)
     {        
-         //*********START VALIDATOR************//
-         $rules = [           
-            'number' => 'required|numeric',
-            'commision_date' => 'required|date',
-            'destination' => 'required', 
-            'commitment_type' => 'required' 
-            ];
-          $messages = [
-            'number.required' => __('validation.memorandum'),            
-        ];  
-        $validator = Validator::make($request->all(),$rules,$messages);
-        if($validator->fails()){
-            return response()->json($validator->errors(), 406);
-        }
-         //*********END VALIDATOR************//
+       //*********START VALIDATOR************//
+       $date_commision = $request->commision_date;
+       $limit=Carbon::now()->subDays(91);
+       $rules = [           
+          'number' => 'required',
+          'commision_date' => 'required|date|date_format:Y-m-d|after:'.$limit,
+          'destination' => 'required', 
+          'commitment_type' => 'required' 
+          ];
+     //     return $rules;
+        $messages = [
+          'number.required' => __('validation.memorandum'),    
+          'commision_date.after' => __('validation.limit_days'),        
+      ];  
+      $validator = Validator::make($request->all(),$rules,$messages);
+      if($validator->fails()){
+          return response()->json($validator->errors(), 406);
+      }
+       //*********END VALIDATOR************//
         
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
@@ -120,7 +117,6 @@ class ContributionCommitmentController extends Controller
         $affiliate->save();
         return $commitment;     
     }
-
     /**
      * Remove the specified resource from storage.
      *

@@ -49,7 +49,7 @@
                       "showMethod": "fadeIn",
                       "hideMethod": "fadeOut"
                 };
-                if (this.level == 'success') {toastr.success(this.body, 'Acción realizada con éxito')}
+                if (this.level == 'success') {toastr.success(this.body, 'Éxito')}
                 if (this.level == 'error') {toastr.error(this.body, 'Error')}
                 if (this.level == 'info') {toastr.info(this.body, '!')}
                 if (this.level == 'warning') {toastr.warning(this.body, 'Alerta')}

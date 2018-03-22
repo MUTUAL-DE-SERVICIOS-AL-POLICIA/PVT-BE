@@ -182,7 +182,6 @@ class CreateRetirementFundTables extends Migration {
             $table->string('second_name')->nullable(); // segundo nombre
             $table->string('surname_husband')->nullable(); //apellido ca  sada
             $table->date('birth_date')->nullable(); //fecha de nacimento
-            $table->enum('gender', ['M', 'F']); // genero
             $table->enum('type', ['Natural', 'Legal']);
             //datos de tutor legal
             $table->string('name_court')->nullable(); //legal
@@ -350,7 +349,20 @@ class CreateRetirementFundTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
+        Schema::create('aid_commitments', function(Blueprint $table) 
+        {
+            $table->bigIncrements('id');
+            $table->bigInteger('affiliate_id')->unsigned()->nullable();
+            $table->bigInteger('user_id')->unsigned();
+            $table->date('date_commitment');
+            $table->enum('contributor',['T','E','C']);
+            $table->string('pension_declaration')->nullable();
+            $table->date('pension_declaration_date');
+            $table->foreign('affiliate_id')->references('id')->on('affiliates');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -363,7 +375,7 @@ class CreateRetirementFundTables extends Migration {
         Schema::table('contributions', function (Blueprint $table) {
             $table->dropColumn('contribution_type_id');
         });
-
+        Schema::drop('aid_commitment');
         Schema::drop('contribution_types');
         Schema::drop('eco_com_observations');
         Schema::drop('ufv_rates');

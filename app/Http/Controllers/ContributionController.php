@@ -22,6 +22,8 @@ use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
 use Log;
 use Session;
+use Muserpol\Models\RetirementFund\RetirementFund;
+use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 class ContributionController extends Controller
 {
     /**
@@ -554,5 +556,21 @@ class ContributionController extends Controller
         $this->authorize('create',Contribution::class);
         $contributions = self::getMonthContributions($affiliate->id);
         return View('contribution.create', compact('affiliate', 'contributions'));
+    }
+
+    public function printCertification($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+        $title = "CERTIFICACION DE APORTES";
+        $number = $retirement_fund->code;
+        $date = Util::getStringDate($retirement_fund->reception_date);
+        $applicant = RetFunBeneficiary::find($id);
+      
+        $pdftitle = "Recepcion";
+        $namepdf = Util::getPDFName($pdftitle, $applicant);
+        return \PDF::loadView('contribution.print.certification_contribution', compact('title', 'institution', 'direction', 'unit', 'date', 'modality', 'applicant', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
 }
