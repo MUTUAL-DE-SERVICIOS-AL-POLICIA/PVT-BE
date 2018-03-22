@@ -22,6 +22,7 @@ use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
 use Log;
 use Session;
+use Illuminate\Support\Facades\DB;
 class ContributionController extends Controller
 {
     /**
