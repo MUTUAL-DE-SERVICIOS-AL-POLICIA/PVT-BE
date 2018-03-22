@@ -2,7 +2,6 @@
 namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\AidCommitment;
-use Muserpol\Models\City;
 use Illuminate\Http\Request;
 class AidContributionController extends Controller
 {
@@ -30,7 +29,7 @@ class AidContributionController extends Controller
      * @param  \Muserpol\Contribution  $contribution
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(Affiliate $affiliate)
     {
 
     }
