@@ -11,7 +11,6 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
-{{$contribuciones}}}
     {{--  <contribution-create :contributions1="{{ json_encode($contributions) }}" :afid="{{ $affiliate->id }}" ></contribution-create>  --}}
 <contribution-select :contribuciones ="{{$contribuciones}}" ></contribution-select>
 </div>

@@ -22,6 +22,7 @@ use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
 use Log;
 use Session;
+use DB;
 class ContributionController extends Controller
 {
     /**
@@ -558,7 +559,14 @@ class ContributionController extends Controller
 
     public function selectContributions($affiliate_id)
     {
-        $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
+        // $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
+        $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
+                                                  ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
+                                                  ->where('contributions.affiliate_id',$affiliate_id)
+                                                  ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
+                                                //   ->take(10)
+                                                  ->get();
+        // return $contributions;                                                  
         $data =  array('contribuciones' => $contributions );
         return view('contribution.select',$data);
     }

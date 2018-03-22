@@ -1,54 +1,104 @@
 <template>
   <div class="fluid container">
-    <div class="form-group form-group-lg panel panel-default">
+    <!-- <div class="form-group form-group-lg panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Sortbale control</h3>
       </div>
       <div class="panel-body">
-        <!-- <div class = "checkbox">
+        <div class = "checkbox">
           <label><input type = "checkbox" v-model="editable">Enable drag and drop</label>      
+        </div>
+        <button type="button" class="btn btn-default" @click="orderList">Sort by original order</button>
+      </div>
+    </div> -->
+    <div class="panel panel-info">
+      <div class="panel-body">
+        <!-- <div  class="col-md-6">
+            <draggable class="list-group" element="ul" v-model="contribution_list" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false"> 
+              <transition-group type="transition" :name="'flip-list'">
+                <li class="list-group-item" v-for="contribution in contribution_list" :key="contribution.id"> 
+                  <strong>{{contribution.month_year}}</strong>  Sueldo:{{contribution.base_wage}}  Categoria:{{contribution.category_name}} Total:{{contribution.gain}} 
+                                                        <br> Fondo Retiro:{{contribution.retirement_fund}} Desglose:{{contribution.breakdown_name}}
+                </li> 
+              </transition-group>
+            </draggable>
+        </div>
+        <div  class="col-md-6">
+          <draggable element="span" v-model="list2" :options="dragOptions" :move="onMove"> 
+              <transition-group name="no" class="list-group" tag="ul">
+                <li class="list-group-item" v-for="contribution in list2" :key="contribution.id"> 
+                  <strong>{{contribution.month_year}}</strong>  Sueldo:{{contribution.base_wage}}  Categoria:{{contribution.category_name}} Total:{{contribution.gain}} 
+                                                        <br> Fondo Retiro:{{contribution.retirement_fund}} Desglose:{{contribution.breakdown_name}}
+                </li> 
+              </transition-group>
+          </draggable>
         </div> -->
-        <!-- <button type="button" class="btn btn-default" @click="orderList">Sort by original order</button> -->
+        <div class="col-md-6">
+          <legend>Aportes</legend>
+          <table class="table dragArea">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Sueldo</th>
+              <th>Categoria</th>
+              <th>Desglose</th>
+              <th>Total</th>
+              
+            </tr>
+          </thead>
+          <draggable v-model="list" :element="'tbody'" :options="dragOptions" :move="onMove" >
+            <tr v-for="contribution in list" :key="contribution.id" >
+              <td>{{contribution.month_year}}</td>
+              <td>{{contribution.base_wage}}</td>
+              <td>{{contribution.category_name}}</td>
+              <td>{{contribution.breakdown_name}}</td>
+              <td>{{contribution.total}}</td>
+            </tr>
+          </draggable>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <legend>60 Aportes</legend>
+          <table class="table dragArea">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Sueldo</th>
+              <th>Categoria</th>
+              <th>Desglose</th>
+              <th>Total</th>
+              
+            </tr>
+          </thead>
+          <draggable v-model="list" :element="'tbody'" :options="dragOptions" :move="onMove" >
+           
+            <tr v-for="contribution in list2" :key="contribution.id" class="dragArea">
+              <td class="dragArea">{{contribution.month_year}}</td>
+              <td class="dragArea">{{contribution.base_wage}}</td>
+              <td class="dragArea">{{contribution.category_name}}</td>
+              <td class="dragArea">{{contribution.breakdown_name}}</td>
+              <td class="dragArea">{{contribution.total}}</td>
+            </tr>
+          </draggable>
+          </table>
+        </div>
       </div>
     </div>
 
-    <div  class="col-md-3">
-        <draggable class="list-group" element="ul" v-model="list" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false"> 
-          <transition-group type="transition" :name="'flip-list'">
-            <li class="list-group-item" v-for="element in list" :key="element.order"> 
-              <i :class="element.fixed? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click=" element.fixed=! element.fixed" aria-hidden="true"></i>
-              {{element.name}}
-              <span class="badge">{{element.order}}</span>
-            </li> 
-          </transition-group>
-      </draggable>
-    </div>
+     
+    <br>
 
-     <div  class="col-md-3">
-      <draggable element="span" v-model="list2" :options="dragOptions" :move="onMove"> 
-          <transition-group name="no" class="list-group" tag="ul">
-            <li class="list-group-item" v-for="element in list2" :key="element.order"> 
-              <i :class="element.fixed? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click=" element.fixed=! element.fixed" aria-hidden="true"></i>
-              {{element.name}}
-              <span class="badge">{{element.order}}</span>
-            </li> 
-          </transition-group>
-      </draggable>
-    </div>
-
-
-    <div  class="list-group col-md-3">
+    <!-- <div  class="list-group col-md-3">
       <pre>{{listString}}</pre>
     </div>
      <div  class="list-group col-md-3">
       <pre>{{list2String}}</pre>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
-const message = [ 'vue.draggable', 'draggable', 'component', 'for', 'vue.js 2.0', 'based' , 'on', 'Sortablejs' ]
 
 export default {
   name: 'CechuzyKaren',
@@ -60,9 +110,9 @@ export default {
     ],
   data () {
     return {
-      list: message.map( (name,index) => {return {name, order: index+1, fixed: false}; }),
+      list: this.contribuciones,
       list2:[],
-      contribution_list: this.contibuciones,
+      contribution_list: this.contribuciones,
       editable:true,
       isDragging: false,
       delayedDragging:false
@@ -88,7 +138,7 @@ export default {
       };
     },
     listString(){
-      return JSON.stringify(this.list, null, 2);  
+      return JSON.stringify(this.contribution_list, null, 2);  
     },
     list2String(){
       return JSON.stringify(this.list2, null, 2);  
@@ -132,5 +182,9 @@ export default {
 
 .list-group-item i{
   cursor: pointer;
+}
+.dragArea {
+  min-height: 20px;
+  background: rgb(251, 216, 200);
 }
 </style>
