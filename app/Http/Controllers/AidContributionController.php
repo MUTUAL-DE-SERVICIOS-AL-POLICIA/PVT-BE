@@ -1,14 +1,14 @@
 <?php
 namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Contribution\AidContribution;
-
+use Muserpol\Models\Contribution\AidCommitment;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\City;
 use Auth;
 use Validator;
-use Muserpol\AidCommitment;
+
 class AidContributionController extends Controller
 {
     /**
