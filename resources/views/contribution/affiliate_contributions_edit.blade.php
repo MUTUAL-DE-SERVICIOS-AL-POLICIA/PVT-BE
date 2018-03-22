@@ -37,7 +37,7 @@
                 @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
             </div>
         </div>
-        <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight @if($commitment->id == 0) disableddiv @endif">
+        <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
             <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>
         </div>
     </div>
@@ -364,9 +364,6 @@ function storeReimbursement(){
 function setPeriodData(period,amount){
     alert(period+' - '+amount);
     $('#main'+period).html(amount);
-}
-function enableDirectContribution(){
-    $(".directContribution").removeClass('disableddiv');
 }
 </script>
 @endsection
