@@ -24,6 +24,7 @@ use Log;
 use Session;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
+use Illuminate\Support\Facades\DB;
 class ContributionController extends Controller
 {
     /**
@@ -559,18 +560,30 @@ class ContributionController extends Controller
     }
 
     public function printCertification($id)
-    {
+     {
         $retirement_fund = RetirementFund::find($id);
+        $contributions=DB::table('ret_fun_contribution')
+                        ->join('contributions','ret_fun_contribution.contribution_id','=','contributions.id')
+                        ->select('contributions.month_year','contributions.gain','contributions.base_wage','contributions.seniority_bonus','contributions.total')
+                        ->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = "CERTIFICACION DE APORTES";
         $number = $retirement_fund->code;
+        //$date = Carbon::parse($retirement_fund->reception_date)->format('m');
         $date = Util::getStringDate($retirement_fund->reception_date);
-        $applicant = RetFunBeneficiary::find($id);
-      
-        $pdftitle = "Recepcion";
-        $namepdf = Util::getPDFName($pdftitle, $applicant);
-        return \PDF::loadView('contribution.print.certification_contribution', compact('title', 'institution', 'direction', 'unit', 'date', 'modality', 'applicant', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        $affiliate = $retirement_fund->affiliate;
+        $degree=Degree::find($affiliate->degree_id);
+        $exp=City::find($affiliate->city_identity_card_id);
+        
+        $a=Carbon::now()->format('Y/m/d');        
+        $now = new DateTime();
+        //$date = $date->format('d-m-Y');
+        return $a;       
+        $username = Auth::user()->username;
+        $pdftitle = "Cuentas Individuales";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        return \PDF::loadView('contribution.print.certification_contribution', compact('exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'modality', 'applicant', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
 }
