@@ -2,7 +2,7 @@
 
 namespace Muserpol\Http\Controllers;
 
-use Muserpol\AidCommitment;
+use Muserpol\Models\Contribution\AidContribution;
 use Illuminate\Http\Request;
 
 class AidCommitmentController extends Controller

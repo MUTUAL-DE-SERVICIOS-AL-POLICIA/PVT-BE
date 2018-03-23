@@ -115,7 +115,12 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
 	Route::get('affiliate/{affiliate}/contribution', 'ContributionController@show')->name('show_contribution');
 	Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
-	Route::get('get_commitment_aid/{affiliate}','AidCommitmentController@getAllCommitmentAid')->name('aid_commitment');
+	Route::get('affiliate/{affiliate_id}/aid/contributions','AidContributionController@aidContributions');
+	Route::get('get_aid_contributions/{affiliate}','AidContributionController@getAllContributionsAid')->name('affiliate_aid_contributions');
+	
+	// Route::get('AidContribution', function(){
+	// 	return view('aid_contribution');
+	// });
 	// Route::get('get_affiliate_contributions/{affiliate_id}', function (AffiliateContributionsDataTable $dataTable, $affiliate_id) {
 	// 	return $dataTable->with('affiliate_id', $affiliate_id)
 	// 					 ->render('contribution.show');
