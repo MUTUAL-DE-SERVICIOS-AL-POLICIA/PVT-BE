@@ -1,6 +1,8 @@
 <?php
 namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\AidCommitment;
+use Illuminate\Http\Request;
 class AidContributionController extends Controller
 {
     /**
@@ -10,7 +12,7 @@ class AidContributionController extends Controller
      */            
     public function index()
     {        
-        return 0;
+        return 0; 
     }
     /**
      * Show the form for creating a new resource.
@@ -29,6 +31,31 @@ class AidContributionController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
+
+    }
+    public function getAllCommitmentAid ($id)
+    {
+         $commitment = AidContribution::where('affiliate_id', $id)
+                        ->orderBy('month_year', 'desc')
+                        ->first();
+        $array_date = explode('-',$commitment->month_year);
+        $gestion = $array_date[1];
+        $month = $array_date[0];
+        $type = $commitment->type;
+        $quotable = $commitment->quotable;
+        $rent = $commitment->rent;
+        $dignity_rent = $commitment->dignity_rent;
+        $total = $commitment->total;
+        $data = [
+            'year' =>  $gestion,
+            'month' => $month,
+            'type' => $type,
+            'quotable' => $quotable,
+            'rent' => $rent,
+            'dignity_rent' => $dignity_rent,
+            'total' => $total,
+    ];
+    return ($data);
     }
     
     /**
