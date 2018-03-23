@@ -11,31 +11,120 @@
         <button type="button" class="btn btn-default" @click="orderList">Sort by original order</button>
       </div>
     </div> -->
-    <div class="panel panel-info">
-      <div class="panel-body">
-        <!-- <div  class="col-md-6">
-            <draggable class="list-group" element="ul" v-model="contribution_list" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false"> 
-              <transition-group type="transition" :name="'flip-list'">
-                <li class="list-group-item" v-for="contribution in contribution_list" :key="contribution.id"> 
-                  <strong>{{contribution.month_year}}</strong>  Sueldo:{{contribution.base_wage}}  Categoria:{{contribution.category_name}} Total:{{contribution.gain}} 
-                                                        <br> Fondo Retiro:{{contribution.retirement_fund}} Desglose:{{contribution.breakdown_name}}
-                </li> 
-              </transition-group>
-            </draggable>
+
+  <div class="col-md-12">
+    <div class="col-md-6"> <!-- paneles hdps -->
+      <div class="row"> <!-- Panele antes de disponibilidad-->
+        <div class="panel panel-info">
+            <div class="panel-heading">
+               Aportes 
+            </div>
+            <div class="panel-body">
+              <table class="table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Sueldo</th>
+                  <th>Categoria</th>
+                  <th>Desglose</th>
+                  <th>Total</th>
+                  
+                </tr>
+              </thead>
+              <draggable v-model="list_normal" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
+                <tr v-for="contribution in list_normal" :key="contribution.id" >
+                  <td>{{contribution.month_year}}</td>
+                  <td>{{contribution.base_wage}}</td>
+                  <td>{{contribution.category_name}}</td>
+                  <td>{{contribution.breakdown_name}}</td>
+                  <td>{{contribution.total}}</td>
+                </tr>
+              </draggable>
+              </table>
+
+            </div>
         </div>
-        <div  class="col-md-6">
-          <draggable element="span" v-model="list2" :options="dragOptions" :move="onMove"> 
-              <transition-group name="no" class="list-group" tag="ul">
-                <li class="list-group-item" v-for="contribution in list2" :key="contribution.id"> 
-                  <strong>{{contribution.month_year}}</strong>  Sueldo:{{contribution.base_wage}}  Categoria:{{contribution.category_name}} Total:{{contribution.gain}} 
-                                                        <br> Fondo Retiro:{{contribution.retirement_fund}} Desglose:{{contribution.breakdown_name}}
-                </li> 
-              </transition-group>
-          </draggable>
-        </div> -->
+      </div>
+      <div class="row"> <!-- Panele item 0 -->
+          <div class="panel panel-success">
+              <div class="panel-heading">
+                Aportes Item 0 
+              </div>
+              <div class="panel-body">
+                <table class="table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Sueldo</th>
+                    <th>Categoria</th>
+                    <th>Desglose</th>
+                    <th>Total</th>
+                    
+                  </tr>
+                </thead>
+                <draggable v-model="list_item0" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
+                  <tr v-for="contribution in list_item0" :key="contribution.id" >
+                    <td>{{contribution.month_year}}</td>
+                    <td>{{contribution.base_wage}}</td>
+                    <td>{{contribution.category_name}}</td>
+                    <td>{{contribution.breakdown_name}}</td>
+                    <td>{{contribution.total}}</td>
+                  </tr>
+                </draggable>
+                </table>
+              </div>
+          </div>
+      </div>
+      <div class="row"> <!-- Panel en disponibilidad-->
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                  Aportes en Disponibilidad
+                </div>
+                <div class="panel-body">
+                  <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Sueldo</th>
+                      <th>Categoria</th>
+                      <th>Desglose</th>
+                      <th>Total</th>
+                      
+                    </tr>
+                  </thead>
+                  <draggable v-model="list_disponibilidad" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
+                    <tr v-for="contribution in list_disponibilidad" :key="contribution.id" >
+                      <td>{{contribution.month_year}}</td>
+                      <td>{{contribution.base_wage}}</td>
+                      <td>{{contribution.category_name}}</td>
+                      <td>{{contribution.breakdown_name}}</td>
+                      <td>{{contribution.total}}</td>
+                    </tr>
+                  </draggable>
+                  </table>
+                </div>
+            </div>
+      </div>
+    </div>
+    <div class="col-md-6"> <!--60 aportes -->
+           <div class="panel panel-primary">
+                <div class="panel-heading">
+                  60 Aportes hdps
+                </div>
+                <div class="panel-body">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.</p>
+                </div>
+            </div>
+    </div>
+  </div>
+
+    <!-- <div class="panel panel-info">
+      <div class="panel-body">
+        
+        <div class="dragArea">
         <div class="col-md-6">
           <legend>Aportes</legend>
-          <table class="table dragArea">
+          <table class="table">
           <thead>
             <tr>
               <th>Fecha</th>
@@ -46,7 +135,7 @@
               
             </tr>
           </thead>
-          <draggable v-model="list" :element="'tbody'" :options="dragOptions" :move="onMove" >
+          <draggable v-model="list" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
             <tr v-for="contribution in list" :key="contribution.id" >
               <td>{{contribution.month_year}}</td>
               <td>{{contribution.base_wage}}</td>
@@ -70,9 +159,9 @@
               
             </tr>
           </thead>
-          <draggable v-model="list" :element="'tbody'" :options="dragOptions" :move="onMove" >
-           
-            <tr v-for="contribution in list2" :key="contribution.id" class="dragArea">
+          <div class="list">
+          <draggable v-model="list" :element="'tbody'" :options="dragOptions" :move="onMove" class="dragArea" >
+            <tr v-for="contribution in list2" :key="contribution.id" class="drag">
               <td class="dragArea">{{contribution.month_year}}</td>
               <td class="dragArea">{{contribution.base_wage}}</td>
               <td class="dragArea">{{contribution.category_name}}</td>
@@ -80,20 +169,42 @@
               <td class="dragArea">{{contribution.total}}</td>
             </tr>
           </draggable>
+          </div>
           </table>
         </div>
+
+        </div>
       </div>
-    </div>
+    </div> -->
 
      
-    <br>
+    <!-- <br>
+    <div id="main">
+      <h1>Vue Draggable</h1>           
+      <div class="drag">
+      <div class="list">
+          <h2>List 1 Draggable</h2>
+        <draggable v-model="list" class="dragArea" :options="{group:'people'}">
+          <div class="name" :class="element.class" v-for="element in list">{{element.name}}</div>
+        </draggable>
+      </div>
 
-    <!-- <div  class="list-group col-md-3">
+    <div class="list">
+        <h2>List 2 Draggable</h2>
+        <draggable v-model="list2" class="dragArea" :options="{group:'people'}">
+          <div class="name" v-for="element in list2">{{element.name}}</div>
+        </draggable>
+    </div>
+
+      </div>
+    </div> -->
+
+    <div  class="list-group col-md-3">
       <pre>{{listString}}</pre>
     </div>
      <div  class="list-group col-md-3">
       <pre>{{list2String}}</pre>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -106,13 +217,18 @@ export default {
     draggable,
   },
    props: [
-        'contribuciones',
+        'cnormal',
+        'cdisponibilidad',
+        'citem0'
     ],
   data () {
     return {
-      list: this.contribuciones,
+      list: this.cnormal,
+      list_normal: this.cnormal,
+      list_disponibilidad: this.cdisponibilidad,
+      list_item0: this.citem0,
       list2:[],
-      contribution_list: this.contribuciones,
+      contribution_list: this.cnormal,
       editable:true,
       isDragging: false,
       delayedDragging:false
@@ -138,10 +254,10 @@ export default {
       };
     },
     listString(){
-      return JSON.stringify(this.contribution_list, null, 2);  
+      return JSON.stringify(this.cnormal, null, 2);  
     },
-    list2String(){
-      return JSON.stringify(this.list2, null, 2);  
+    list2String(cNormal){
+      return JSON.stringify(this.list_disponibilidad, null, 2);  
     }
   },
   watch: {
@@ -183,8 +299,35 @@ export default {
 .list-group-item i{
   cursor: pointer;
 }
-.dragArea {
-  min-height: 20px;
-  background: rgb(251, 216, 200);
+.normal {
+  background-color: grey;
 }
+
+.drag {
+  background-color: green;
+  display: flex;
+  flex-direction: row;
+}
+
+.list {
+  flex-grow: 1;
+}
+
+.name {
+  width: 50%;
+  display: inline-block;
+  height: 50px;
+  background: pink;
+  border: 5px green solid;
+  box-sizing: border-box;
+  padding: 5px;
+}
+.name.large {
+  width: 100%;
+}
+
+.dragArea {
+  min-height: 10px;
+}
+
 </style>
