@@ -338,7 +338,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->bigInteger('affiliate_id')->unsigned()->nullable();
             $table->bigInteger('spouse_id')->unsigned()->nullable();
-            $table->string('month_year');
+            $table->date('month_year');
             $table->enum('type', ['PLANILLA', 'DIRECTO'])->default('PLANILLA');            
             $table->string('deceased');            
             $table->decimal('quotable', 13, 2);
