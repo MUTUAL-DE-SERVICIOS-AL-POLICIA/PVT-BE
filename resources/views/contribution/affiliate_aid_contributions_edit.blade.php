@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Contribuciones')
+@section('title', 'Contribuciones de Auxilio Mortuorio')
 @section('styles')
 <style>
     .disableddiv {
@@ -19,27 +19,12 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {{ Breadcrumbs::render('edit_affiliate_contributions', $affiliate) }}
+        
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-md-12">
-            <div class="col-md-6">
-                <affiliate-show :affiliate="{{ $affiliate }}" inline-template>
-                    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                </affiliate-show>
-            </div>
-            <div class="col-md-6">
-                @include('contribution.aditional_info',['summary',$summary])
-            </div>            
-            <div class="col-md-6">
-                @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
-            </div>
-        </div>
-        <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
-            <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>
-        </div>
+ 
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -86,9 +71,9 @@
                                                 @endphp
                                                 @if($valid_period)
                                                     @if(isset($contributions[$period]->id))
-                                                        <td id="main{{$period}}">{{$contributions[$period]->total}}</td>
+                                                        <td id="aid_main{{$period}}">{{$contributions[$period]->total}}</td>
                                                     @else
-                                                        <td id="main{{$period}}">0</td>
+                                                        <td id="aid_main{{$period}}">0</td>
                                                     @endif
                                                 @else
                                                        <td>-</td>
@@ -102,20 +87,14 @@
                                             <td>
                                                 <table class="table table-striped table-bordered size-13">
                                                     <tr>
-                                                        <td>Sueldo</td>
-                                                    </tr>
+                                                        <td>Renta</td>
+                                                    </tr>                                                    
                                                     <tr>
-                                                        <td>Categoria</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Ganado</td>
+                                                        <td>Renta Dignidad</td>
                                                     </tr>
                                                     <tr>
                                                         <td>Aporte</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Reintegro</td>
-                                                    </tr>
+                                                    </tr>                                                    
                                                 </table>
                                             </td>
                                             @for($i=1;$i<13;$i++)
@@ -138,23 +117,15 @@
                                                             </thead>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->base_wage}} </div>
-                                                                    <input type="hidden" disabled name="base_wage[{{$period}}]" value="{{$contributions[$period]->base_wage}}">
+                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->rent}} </div>
+                                                                    <input type="hidden" disabled name="rent[{{$period}}]" value="{{$contributions[$period]->rent}}">
                                                                 </td>
                                                             </tr>
+                                                            
                                                             <tr>
                                                                 <td>
-                                                                    <select class="" name="category[{{$period}}]">
-                                                                        @foreach($categories as $category)
-                                                                            <option value="{{$category->id}}" @if($category->id == $contributions[$period]->category_id) SELECTED @endif >{{$category->percentage}}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->gain}} </div>
-                                                                    <input type="hidden" disabled name="gain[{{$period}}]" value="{{$contributions[$period]->gain}}">
+                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->dignity_rent}} </div>
+                                                                    <input type="hidden" disabled name="dignity_rent[{{$period}}]" value="{{$contributions[$period]->dignity_rent}}">
                                                                 </td>
                                                             </tr>
                                                             <tr>
@@ -162,12 +133,7 @@
                                                                     <div contenteditable="true" class="editcontent">{{$contributions[$period]->total ?? '-'}} </div>
                                                                     <input type="hidden" disabled name="total[{{$period}}]" value="{{$contributions[$period]->total??'-'}}">
                                                                 </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td id="reim{{$period}}">
-                                                                    {{$reims[$period]->total ?? '-'}}
-                                                                </td>
-                                                            </tr>
+                                                            </tr>                                                            
                                                         </table>
                                                     </td>
                                                     @else
@@ -183,22 +149,14 @@
                                                             <tr>
                                                                 <td>
                                                                     <div contenteditable="true" class="editcontent">0</div>
-                                                                    <input type="hidden" disabled name="base_wage[{{$period}}]" value="0">
+                                                                    <input type="hidden" disabled name="rent[{{$period}}]" value="0">
                                                                 </td>
                                                             </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <select class="" name="category[{{$period}}]">
-                                                                        @foreach($categories as $category)
-                                                                            <option value="{{$category->id}}">{{$category->percentage}}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </td>
-                                                            </tr>
+                                                            
                                                             <tr>
                                                                 <td>
                                                                     <div contenteditable="true" class="editcontent">0</div>
-                                                                    <input type="hidden" disabled name="gain[{{$period}}]" value="0">
+                                                                    <input type="hidden" disabled name="dignity_rent[{{$period}}]" value="0">
                                                                 </td>
                                                             </tr>
                                                             <tr>
@@ -206,10 +164,7 @@
                                                                     <div contenteditable="true" class="editcontent">0</div>
                                                                     <input type="hidden" disabled name="total[{{$period}}]" value="0">
                                                                 </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td id="reim{{$period}}}">-</td>
-                                                            </tr>
+                                                            </tr>                                                            
                                                         </table>
                                                     </td>
                                                     @endif
@@ -217,8 +172,7 @@
                                                     <td></td>
                                                 @endif
                                             @endfor
-                                            <td>
-                                                <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" onclick="createReimbursement({{$year_start}})"><i class="fa fa-dollar"></i></button>
+                                            <td>                                                
                                                 <button class="btn btn-default" data-toggle="tooltip" data-placement="left" type="button" title="Guardar" onclick="storeData(this)"><i class="fa fa-save"></i></button>
                                             </td>
                                         </tr>
@@ -228,51 +182,6 @@
                         </div>
                     </div>
             </form>
-        </div>
-    </div>
-</div>
-<div class="modal inmodal" id="reimbursement_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content animated bounceInRight">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                <h4 class="modal-title">Reintegro</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group"><label>Mes</label>
-                    <select class="form-control" name="month" id="month">
-                        <option value="01">Enero</option>
-                        <option value="02">Febrero</option>
-                        <option value="03">Marzo</option>
-                        <option value="04">Abril</option>
-                        <option value="05">Mayo</option>
-                        <option value="06">Junio</option>
-                        <option value="07">Julio</option>
-                        <option value="08">Agosto</option>
-                        <option value="09">Septiembre</option>
-                        <option value="10">Octubre</option>
-                        <option value="11">Noviembre</option>
-                        <option value="12">Diciembre</option>
-                     </select>
-                </div>
-                <div class="form-group">
-                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control">
-                    <select class="form-control" name="reim_category" id="reim_category">
-                        @foreach($categories as $category)
-                            <option value="{{$category->id}}">{{$category->percentage}}</option>
-                        @endforeach
-                    </select>
-                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control">
-                    <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                <!--<button type="submit" class="btn btn-primary">Guardar</button>-->
-                <button class="btn btn-default" type="button" title="Guardar" onclick="storeReimbursement(this)">
-                    Guardar
-                </button>
-            </div>
         </div>
     </div>
 </div>
@@ -294,7 +203,7 @@
         $(button).closest('tr').prev().toggleClass('warning');
         var formdata = $('form').serialize();
         $.ajax({
-            url: "{{asset('store_contributions')}}",
+            url: "{{asset('store_aid_contributions')}}",
             method: "POST",
             data: formdata,
             beforeSend: function (xhr, settings) {
@@ -303,12 +212,12 @@
                 }
             },
             success: function(result){
-                console.log(result);
+                //console.log(result);
                 flash('exito');
-                 $('#main'+result.month_year).html(result.total);
+                $('#aid_main'+result.month_year).html(result.total);
             },
             error: function(xhr, status, error) {
-                console.log(xhr.responseText);
+                //console.log(xhr.responseText);
                 var resp = jQuery.parseJSON(xhr.responseText);
                 $.each(resp, function(index, value)
                 {                    
@@ -317,53 +226,17 @@
             }
         });
     }
-function rei(){
-
-}
 $('.editcontent').blur(function() {
     $(this).next('input').val($(this).html());
     $(this).next('input').removeAttr('disabled');
     $(this).closest('table').find('tr:first').find('td:first').find('input').removeAttr('disabled');
 });
-function createReimbursement(year){
-    //alert(year);
-    this.actual_year = year;
-    $('#reimbursement_modal').modal('show');
-}
-function storeReimbursement(){
-    year = this.actual_year;
-    month = $('#month').val();
-    salary = $('#reim_salary').val();
-    category = $('#reim_category').val();
-    gain = $('#reim_gain').val();
-    total =  $('#reim_amount').val();
-    affiliate_id = $("#affiliate_id").val();
-    $.ajax({
-        url: "{{asset('reimbursement')}}",
-        method: "POST",
-        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,category:category,gain:gain,total:total},
-        beforeSend: function (xhr, settings) {
-            if (settings.url.indexOf(document.domain) >= 0) {
-                xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
-            }
-            //console.log($(button).closest('form').serialize());
-        },
-        success: function(result){
-            console.log('saved reim');
-            console.log(result);
-            $("#reim"+result.month_year).html(result.total);
-        },
-        error: function(xhr, status, error) {
-            console.log(xhr.responseText);
-        }
-    });
-
-    $('#reimbursement_modal').modal('hide');
-
-}
 function setPeriodData(period,amount){
     alert(period+' - '+amount);
     $('#main'+period).html(amount);
 }
+//function enableDirectContribution(){
+//    $(".directContribution").removeClass('disableddiv');
+//}
 </script>
 @endsection
