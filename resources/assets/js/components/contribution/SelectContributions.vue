@@ -107,97 +107,97 @@
 
       </div>
       <div class="row"> <!-- Panel en disponibilidad-->
-            <div class="panel panel-warning">
-                <div class="panel-heading">
-                  Aportes en Disponibilidad
-                </div>
-                <div class="panel-body">
+            <div class="ibox float-e-margins ibox-primary">
+              <div class="ibox-title">
+                  <h5>Aportes en Disponibilidad <small class="m-l-sm"></small></h5>
+                  <div class="ibox-tools">
+                      <a class="collapse-link">
+                          <i class="fa fa-chevron-up"></i>
+                      </a>
+                  </div>
+              </div>
+              <div class="ibox-content">
+                  <div style="width:530px; height:300px; overflow:auto;">
                   <table class="table">
                   <thead>
-                    <tr>
+                  <tr>
                       <th>Fecha</th>
                       <th>Sueldo</th>
                       <th>Categoria</th>
                       <th>Desglose</th>
                       <th>Total</th>
-                    </tr>
+                  </tr>
                   </thead>
                   <draggable v-model="list_disponibilidad" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
-                    <tr v-for="contribution in list_disponibilidad" :key="contribution.id" >
+                  <tr v-for="contribution in list_disponibilidad" :key="contribution.id" >
                       <td>{{contribution.month_year}}</td>
                       <td>{{contribution.base_wage}}</td>
                       <td>{{contribution.category_name}}</td>
                       <td>{{contribution.breakdown_name}}</td>
                       <td>{{contribution.total}}</td>
-                    </tr>
+                  </tr>
                   </draggable>
                   </table>
-                </div>
-            </div>
+
+                  </div> 
+              </div>
+              <div class="ibox-footer">
+                  <span class="pull-right">
+                      Cantidad: {{list_disponibilidad.length}}
+              </span>
+                  <br>
+              </div>
+          </div>
+
+
       </div>
     </div>
     <div class="col-md-6"> <!--60 aportes -->
-           <div class="panel panel-primary">
-                <div class="panel-heading">
-                  60 Aportes hdps
-                  
-                </div>
-                <div class="panel-body">
-             
-                  <table class="table striped">
-                  <thead>
-                    <tr>
-                      <th>Fecha</th>
-                      <th>Sueldo</th>
-                      <th>Categoria</th>
-                      <th>Desglose</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <draggable v-model="list_aportes" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
-                    <tr v-for="contribution in list_aportes" :key="contribution.id" >
-                      <td>{{contribution.month_year}}</td>
-                      <td>{{contribution.base_wage}}</td>
-                      <td>{{contribution.category_name}}</td>
-                      <td>{{contribution.breakdown_name}}</td>
-                      <td>{{contribution.total}}</td>
-                    </tr>
-                  </draggable>
-                  </table>
-          
-                </div>
-            </div>
+        <div class="ibox float-e-margins ibox-primary">
+          <div class="ibox-title">
+              <h5>60 Aportes <small class="m-l-sm"></small></h5>
+              <div class="ibox-tools">
+                  <a class="collapse-link">
+                      <i class="fa fa-chevron-up"></i>
+                  </a>
+              </div>
+          </div>
+          <div class="ibox-content">
+              <div style="width:500px; height:515px; overflow:auto;">
+              <table class="table">
+              <thead>
+              <tr>
+                  <th>Fecha</th>
+                  <th>Sueldo</th>
+                  <th>Categoria</th>
+                  <th>Desglose</th>
+                  <th>Total</th>
+              </tr>
+              </thead>
+              <draggable v-model="list_aportes" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
+              <tr v-for="contribution in list_aportes" :key="contribution.id" >
+                  <td>{{contribution.month_year}}</td>
+                  <td>{{contribution.base_wage}}</td>
+                  <td>{{contribution.category_name}}</td>
+                  <td>{{contribution.breakdown_name}}</td>
+                  <td>{{contribution.total}}</td>
+              </tr>
+              </draggable>
+              </table>
+
+              </div> 
+          </div>
+          <div class="ibox-footer">
+              <span class="pull-right">
+                  Cantidad: {{list_aportes.length-1}}
+          </span>
+              <br>
+          </div>
+      </div>
+      <button class="btn btn-primary" @click="save" ><i class="fa fa-check"></i> Guardar</button>
     </div>
   </div>
 
-     
-    <!-- <br>
-    <div id="main">
-      <h1>Vue Draggable</h1>           
-      <div class="drag">
-      <div class="list">
-          <h2>List 1 Draggable</h2>
-        <draggable v-model="list" class="dragArea" :options="{group:'people'}">
-          <div class="name" :class="element.class" v-for="element in list">{{element.name}}</div>
-        </draggable>
-      </div>
-
-    <div class="list">
-        <h2>List 2 Draggable</h2>
-        <draggable v-model="list2" class="dragArea" :options="{group:'people'}">
-          <div class="name" v-for="element in list2">{{element.name}}</div>
-        </draggable>
-    </div>
-
-      </div>
-    </div> -->
-
-    <!-- <div  class="list-group col-md-3">
-      <pre>{{listString}}</pre>
-    </div>
-     <div  class="list-group col-md-3">
-      <pre>{{list2String}}</pre>
-    </div> -->
   </div>
 </template>
 
@@ -212,7 +212,8 @@ export default {
    props: [
         'cnormal',
         'cdisponibilidad',
-        'citem0'
+        'citem0',
+        'retfunid'
     ],
   data () {
     return {
@@ -258,6 +259,21 @@ export default {
       const relatedElement = relatedContext.element;
       const draggedElement = draggedContext.element;
       return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
+    },
+    save(){
+      console.log('guardando lista '+ this.affiliateid);
+      var data = {'ret_fun_id':this.retfunid,'lista_disponibilidad':this.list_disponibilidad,'list_aportes':this.list_aportes,'lista_item0':this.list_item0};
+      axios.post('/ret_fun/savecontributions', data )
+                  .then(function (resp) {
+                      // this.$router.push({path: '/'});
+                      console.log(resp);
+                         
+                      flash('Informacion CYK Actualizada');
+                  })
+                  .catch(function (resp) {
+                      console.log(resp);
+                      flash('Error lechuza: '+resp.message,'error');
+                  });
     }
   },
   computed: {

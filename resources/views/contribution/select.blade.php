@@ -12,6 +12,6 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
     {{--  <contribution-create :contributions1="{{ json_encode($contributions) }}" :afid="{{ $affiliate->id }}" ></contribution-create>  --}}
-    <contribution-select :cnormal ="{{json_encode($contribucion_normal)}}" :cdisponibilidad="{{json_encode($contribucion_disponibilidad)}}" :citem0="{{json_encode($contribucion_item_0)}}"></contribution-select>
+<contribution-select :cnormal ="{{json_encode($contribucion_normal)}}" :cdisponibilidad="{{json_encode($contribucion_disponibilidad)}}" :citem0="{{json_encode($contribucion_item_0)}}" :retfunid="{{$ret_fun_id}}"></contribution-select>
 </div>
 @endsection

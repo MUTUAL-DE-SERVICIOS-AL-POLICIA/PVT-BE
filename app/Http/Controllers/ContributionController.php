@@ -20,6 +20,7 @@ use Muserpol\Models\Contribution\ContributionCommitment;
 use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
+use Muserpol\Models\RetirementFund\RetirementFund;
 use Log;
 use Session;
 use DB;
@@ -557,12 +558,13 @@ class ContributionController extends Controller
         return View('contribution.create', compact('affiliate', 'contributions'));
     }
 
-    public function selectContributions($affiliate_id)
+    public function selectContributions($ret_fun_id)
     {
         // $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
+        $ret_fun = RetirementFund::find($ret_fun_id);
         $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                   ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
-                                                  ->where('contributions.affiliate_id',$affiliate_id)
+                                                  ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
                                                   ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                 //   ->take(10)
                                                   ->get();
@@ -587,8 +589,13 @@ class ContributionController extends Controller
             }
 
         }                            
-        $data =  array('contribucion_normal' => $contribucion_normal,'contribucion_disponibilidad' => $contribucion_disponibilidad,'contribucion_item_0' => $contribucion_item_0 );
+        $data =  array('contribucion_normal' => $contribucion_normal,'contribucion_disponibilidad' => $contribucion_disponibilidad,'contribucion_item_0' => $contribucion_item_0 ,'ret_fun_id'=>$ret_fun->id);
         // return $data;
         return view('contribution.select',$data);
+    }
+    public function saveContributions(Request $request)
+    {
+        return $request->all();
+        // return redirect('/');     
     }
 }

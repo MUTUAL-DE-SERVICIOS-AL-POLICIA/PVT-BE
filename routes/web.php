@@ -104,7 +104,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('reimbursement','ReimbursementController');    
 		
 		//selectContributions
-		Route::get('affiliate/{affiliate_id}/selectcontributions','ContributionController@selectContributions')->name('select_contributions');
+		Route::get('ret_fun/{ret_fun_id}/selectcontributions','ContributionController@selectContributions')->name('select_contributions');
+		Route::post('ret_fun/savecontributions','ContributionController@saveContributions')->name('save_contributions');
         
         //AidContributions
         Route::resource('aid_contribution','AidContributionController');
