@@ -23,13 +23,8 @@ use Muserpol\Models\Voucher;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Log;
 use Session;
-<<<<<<< HEAD
 use DB;
-=======
-use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
-use Illuminate\Support\Facades\DB;
->>>>>>> upstream/master
 class ContributionController extends Controller
 {
     /**
@@ -564,7 +559,6 @@ class ContributionController extends Controller
         return View('contribution.create', compact('affiliate', 'contributions'));
     }
 
-<<<<<<< HEAD
     public function selectContributions($ret_fun_id)
     {
         // $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
@@ -605,7 +599,6 @@ class ContributionController extends Controller
         return $request->all();
         // return redirect('/');     
     }
-=======
     public function printCertification60($id)
     {
         $retirement_fund = RetirementFund::find($id);
@@ -670,5 +663,4 @@ class ContributionController extends Controller
         return \PDF::loadView('contribution.print.certification_contribution', compact('subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'modality', 'applicant', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
 
->>>>>>> upstream/master
 }
