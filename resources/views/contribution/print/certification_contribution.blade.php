@@ -40,7 +40,7 @@
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->last_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->mothers_last_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->identity_card }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $exp->first_shortened }}</td>
+            <td class="text-center uppercase font-bold px-5 py-3">{{ $exp }}</td>
         </tr>
     </tbody>
 </table>
@@ -73,23 +73,45 @@
     </thead><br>
     <strong>CERTIFICA:</strong><br>
     <?php $num=0; ?>
+
+    
     <tbody> 
         @foreach($contributions as $contribution)
-        <tr class="text-sm">
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->base_wage }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->seniority_bonus }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
-        </tr>
+            @if($contribution->type=='A')
+                @foreach($reimbursements as $reimbursement)
+                    <tr class="text-sm">
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->base_wage }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->seniority_bonus }}</td>                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                    </tr>
+                    @if($contribution->month_year == $reimbursement->month_year)
+                        <tr class="text-sm">
+                            <td class="text-center uppercase font-bold px-5 py-3"></td>
+                            <td class="text-center uppercase font-bold px-5 py-3">R1</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->gain }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->base_wage }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->seniority_bonus }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->total }}</td>
+                        </tr>
+                    @endif        
+                @endforeach
+            @endif
         @endforeach           
     </tbody>
 </table>
+<br>
 <div>
     Es cuanto se certifica los últimos 60 salarios efectivamente percibidos previos al destino a la disponibilidad de las letras, para fines consiguientes.
 </div>
+<br>
+<div align="right">
+    {{ "Lugar y fecha: ". $place->name." ".$dateac }}
+</div>
+Cc: Arch
 
 
 
