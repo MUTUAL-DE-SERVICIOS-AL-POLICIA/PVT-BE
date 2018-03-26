@@ -85,7 +85,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
 	Route::patch('/update_information_rf','RetirementFundController@updateInformation')->name('update_information_rf');
-
+		
 	//QuotaAidMortuory
 	Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
 	Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');

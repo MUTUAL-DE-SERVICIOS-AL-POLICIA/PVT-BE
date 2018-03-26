@@ -3,22 +3,9 @@
 @section('content')
 
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row text-center">
-    </div>
-    {{--
+        <contribution-create :contributions1="{{ json_encode($contributions) }}" :afid="{{ $affiliate->id }}" ></contribution-create>
     <div class="row">
-        <div class="col-md-6">
-            <affiliate-show :affiliate="{{ $affiliate }}" inline-template>
-    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
-            </affiliate-show>
-        </div>
-        <div class="col-md-6">
-            <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
-    @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
-            </affiliate-police>
-        </div>
-    </div> --}}
-    <div class="row">
+
         <div class="col-md-12 no-padding no-margins">
             <div class="panel panel-primary">
                 <div class="panel-heading">
