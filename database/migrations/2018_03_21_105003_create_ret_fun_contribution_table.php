@@ -17,6 +17,7 @@ class CreateRetFunContributionTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('retirement_fund_id')->unsigned();
             $table->bigInteger('contribution_id')->unsigned();
+            $table->enum('type', ['D', 'A', 'O']);
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
             $table->foreign('contribution_id')->references('id')->on('contributions'); 
             $table->timestamps();
@@ -25,9 +26,9 @@ class CreateRetFunContributionTable extends Migration
         Schema::create('ret_fun_reimbursements', function (Blueprint $table) {
             $table->bigIncrements('id');     
             $table->bigInteger('retirement_fund_id')->unsigned();
-            $table->bigInteger('contribution_id')->unsigned();
+            $table->bigInteger('reimbursement_id')->unsigned();
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
-            $table->foreign('contribution_id')->references('id')->on('contributions');
+            $table->foreign('reimbursement_id')->references('id')->on('reimbursements');
             $table->timestamps();
         });
     }
