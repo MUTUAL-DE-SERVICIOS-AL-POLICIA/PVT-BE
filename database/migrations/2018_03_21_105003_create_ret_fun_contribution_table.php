@@ -17,7 +17,6 @@ class CreateRetFunContributionTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('retirement_fund_id')->unsigned();
             $table->bigInteger('contribution_id')->unsigned();
-            $table->enum('type', ['D', 'A', 'O']);
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
             $table->foreign('contribution_id')->references('id')->on('contributions'); 
             $table->timestamps();

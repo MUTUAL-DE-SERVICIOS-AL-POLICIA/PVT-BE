@@ -13,53 +13,56 @@
     </div> -->
 
   <div class="col-md-12">
-    <div class="col-md-6"> <!-- paneles hdps -->
-      <div class="row"> <!-- Panele antes de disponibilidad-->
+     <div class="col-md-6"> <!--60 aportes -->
         <div class="ibox float-e-margins ibox-primary">
-            <div class="ibox-title">
-                <h5>Aportes antes de Disponibilidad <small class="m-l-sm"></small></h5>
-                <div class="ibox-tools">
-                    <a class="collapse-link">
-                        <i class="fa fa-chevron-up"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="ibox-content">
-              <div style="width:530px; height:300px; overflow:auto;">
-                
-                  <table class="table ">
-                  <thead>
-                  <tr>
-                      <th>Fecha</th>
-                      <th>Sueldo</th>
-                      <th>Categoria</th>
-                      <th>Desglose</th>
-                      <th>Total</th>
-                      
-                  </tr>
-                  </thead>
-                  <draggable v-model="list_normal" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
-                  <tr v-for="contribution in list_normal" :key="contribution.id" >
-                      <td>{{contribution.month_year}}</td>
-                      <td>{{contribution.base_wage}}</td>
-                      <td>{{contribution.category_name}}</td>
-                      <td>{{contribution.breakdown_name}}</td>
-                      <td>{{contribution.total}}</td>
-                  </tr>
-                  </draggable>
-                  </table>
+          <div class="ibox-title">
+              <h5>Aportes <small class="m-l-sm"></small></h5>
+              <div class="ibox-tools">
+                  <a class="collapse-link">
+                      <i class="fa fa-chevron-up"></i>
+                  </a>
+              </div>
+          </div>
+          <div class="ibox-content">
+              <div style="width:500px; height:515px; overflow:auto;">
+              <table class="table">
+              <thead>
+              <tr>
+                  <th>Fecha</th>
+                  <th>Sueldo</th>
+                  <th>Categoria</th>
+                  <th>Tipo</th>
+                  <th>Total</th>
+              </tr>
+              </thead>
+              <draggable v-model="list_aportes" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
+              <tr v-for="contribution in list_aportes" :key="contribution.id" >
+                  <td>{{contribution.month_year}}</td>
+                  <td>{{contribution.base_wage}}</td>
+                  <td>{{contribution.category_name}}</td>
+                  <td>
+                      <select class="form-control" v-model="contribution.breakdown_id" >
+                        <option v-for="item in list_types" :value="item.id" > {{item.name}}</option>
+                      </select>
+                  </td>
+                  <td>{{contribution.total}}</td>
+              </tr>
+              </draggable>
+              </table>
 
               </div> 
-            </div>
-            <div class="ibox-footer">
-                <span class="pull-right">
-                  Cantidad: {{list_normal.length}}
-            </span>
-                <br>
-            </div>
-        </div>
-
+          </div>
+          <div class="ibox-footer">
+              <span class="pull-right">
+                  Cantidad: {{list_aportes.length-1}}
+          </span>
+              <br>
+          </div>
       </div>
+      <button class="btn btn-primary" @click="save" ><i class="fa fa-check"></i> Guardar</button>
+    </div>
+    <div class="col-md-6"> <!-- paneles hdps -->
+     
       <div class="row"> <!-- Panele item 0 -->
         <div class="ibox float-e-margins ibox-primary">
           <div class="ibox-title">
@@ -79,7 +82,7 @@
                         <th>Fecha</th>
                         <th>Sueldo</th>
                         <th>Categoria</th>
-                        <th>Desglose</th>
+                        <th>Tipo</th>
                         <th>Total</th>
                         
                         </tr>
@@ -89,7 +92,11 @@
                         <td>{{contribution.month_year}}</td>
                         <td>{{contribution.base_wage}}</td>
                         <td>{{contribution.category_name}}</td>
-                        <td>{{contribution.breakdown_name}}</td>
+                        <td>
+                            <select class="form-control" v-model="contribution.breakdown_id" >
+                                <option v-for="item in list_types" :value="item.id" > {{item.name}}</option>
+                            </select>
+                        </td>
                         <td>{{contribution.total}}</td>
                         </tr>
                     </draggable>
@@ -117,14 +124,14 @@
                   </div>
               </div>
               <div class="ibox-content">
-                  <div style="width:530px; height:300px; overflow:auto;">
+                  <div style=" height:300px; overflow:auto;">
                   <table class="table">
                   <thead>
                   <tr>
                       <th>Fecha</th>
                       <th>Sueldo</th>
                       <th>Categoria</th>
-                      <th>Desglose</th>
+                      <th>Tipo</th>
                       <th>Total</th>
                   </tr>
                   </thead>
@@ -133,7 +140,11 @@
                       <td>{{contribution.month_year}}</td>
                       <td>{{contribution.base_wage}}</td>
                       <td>{{contribution.category_name}}</td>
-                      <td>{{contribution.breakdown_name}}</td>
+                      <td>
+                            <select class="form-control" v-model="contribution.breakdown_id" >
+                                <option v-for="item in list_types" :value="item.id" > {{item.name}}</option>
+                            </select>
+                      </td>
                       <td>{{contribution.total}}</td>
                   </tr>
                   </draggable>
@@ -152,50 +163,7 @@
 
       </div>
     </div>
-    <div class="col-md-6"> <!--60 aportes -->
-        <div class="ibox float-e-margins ibox-primary">
-          <div class="ibox-title">
-              <h5>60 Aportes <small class="m-l-sm"></small></h5>
-              <div class="ibox-tools">
-                  <a class="collapse-link">
-                      <i class="fa fa-chevron-up"></i>
-                  </a>
-              </div>
-          </div>
-          <div class="ibox-content">
-              <div style="width:500px; height:515px; overflow:auto;">
-              <table class="table">
-              <thead>
-              <tr>
-                  <th>Fecha</th>
-                  <th>Sueldo</th>
-                  <th>Categoria</th>
-                  <th>Desglose</th>
-                  <th>Total</th>
-              </tr>
-              </thead>
-              <draggable v-model="list_aportes" :element="'tbody'" :options="dragOptions" :move="onMove"  class="dragArea">
-              <tr v-for="contribution in list_aportes" :key="contribution.id" >
-                  <td>{{contribution.month_year}}</td>
-                  <td>{{contribution.base_wage}}</td>
-                  <td>{{contribution.category_name}}</td>
-                  <td>{{contribution.breakdown_name}}</td>
-                  <td>{{contribution.total}}</td>
-              </tr>
-              </draggable>
-              </table>
-
-              </div> 
-          </div>
-          <div class="ibox-footer">
-              <span class="pull-right">
-                  Cantidad: {{list_aportes.length-1}}
-          </span>
-              <br>
-          </div>
-      </div>
-      <button class="btn btn-primary" @click="save" ><i class="fa fa-check"></i> Guardar</button>
-    </div>
+   
   </div>
 
   </div>
@@ -213,15 +181,16 @@ export default {
         'cnormal',
         'cdisponibilidad',
         'citem0',
-        'retfunid'
+        'retfunid',
+        'types'
     ],
   data () {
     return {
-      list: this.cnormal,
-      list_normal: this.cnormal,
+      
       list_disponibilidad: this.cdisponibilidad,
-      list_item0: this.citem0,
-      list_aportes:[],
+      list_item0: [],
+      list_aportes:this.cnormal,
+      list_types: this.types,
       editable:true,
       isDragging: false,
       delayedDragging:false
@@ -230,14 +199,12 @@ export default {
   created: function () {
     // `this` points to the vm instance
     
-    console.log('Revisando lista_normal: ' + this.list_normal.length)
     console.log('Revisando lista_disponibilidad: ' + this.list_disponibilidad.length)
     console.log('Revisando lista_item0: ' + this.list_item0.length)
     console.log('Revisando lista_aportes: ' + this.list_aportes.length)
-    if(this.list_normal.length == 0)
-    {
-      this.list_normal.push({"id":0,"base_wage":"","total":"","gain":"","retirement_fund":"","breakdown_id":"","breakdown_name":"","category_id":"","category_name":"","month_year":""})
-    }
+    
+    //corregir con estilos hdps
+   
     if(this.list_disponibilidad.length == 0)
     {
       this.list_disponibilidad.push({"id":0,"base_wage":"","total":"","gain":"","retirement_fund":"","breakdown_id":"","breakdown_name":"","category_id":"","category_name":"","month_year":""})
@@ -250,6 +217,50 @@ export default {
     {
       this.list_aportes.push({"id":0,"base_wage":"","total":"","gain":"","retirement_fund":"","breakdown_id":"","breakdown_name":"","category_id":"","category_name":"","month_year":""})
     }
+
+    // this.list_aportes.forEach(aporte => {
+    //     console.log(aporte.breakdown_id);
+    //     aporte.breakdown_id =3;
+    //     console.log(aporte.breakdown_id);
+    // });
+    
+    var disponibilidad = this.types.filter(function (type) {
+        return type.name  == 'Disponibilidad';   
+    })[0];
+    var item0 =  this.types.filter(function (type) {
+        return type.name  == 'Item 0';   
+    })[0];
+    var servicio = this.types.filter(function (type) {
+        return type.name  == 'Servicio';   
+    })[0];
+    console.log(servicio);
+    console.log(servicio.id);    
+
+   for (let i = 0; i < this.list_aportes.length; i++) {
+       switch (this.list_aportes[i].breakdown_id) {
+            case 1:
+                this.list_aportes[i].breakdown_id = disponibilidad.id;
+                this.list_aportes[i].breakdown_name = disponibilidad.name;
+                break
+            case 3:
+                this.list_aportes[i].breakdown_id = item0.id;
+                this.list_aportes[i].breakdown_name = item0.name;
+                console.log('cambiando a items 0');
+                console.log(this.list_aportes[i]);
+                
+               break;
+       
+           default:
+                this.list_aportes[i].breakdown_id = servicio.id;
+                this.list_aportes[i].breakdown_name = servicio.name;
+               break;
+       }       
+   } 
+   for (let i = 0; i < this.list_disponibilidad.length; i++) {
+       this.list_disponibilidad[i].breakdown_id = disponibilidad.id;
+       this.list_disponibilidad[i].breakdown_name = disponibilidad.name;
+   }
+    // console.log(this.list_aportes);
   },
   methods:{
     orderList () {

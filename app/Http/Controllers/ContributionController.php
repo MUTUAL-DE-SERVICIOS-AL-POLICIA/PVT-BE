@@ -568,12 +568,15 @@ class ContributionController extends Controller
                                                   ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
                                                   ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                 //   ->take(10)
+                                                  ->orderBy('contributions.month_year', 'desc')
                                                   ->get();
+        // return $contributions;
         // return $contributions;
         $contribucion_disponibilidad = array();                     
         $contribucion_item_0 = array();                    
-        $contribucion_normal = array();                    
-         
+        $contribucion_normal = array();
+                            
+        //Datos hdps Referenciales 
         foreach ($contributions as $contribution) {
             # code...
             switch ($contribution->breakdown_id) {
@@ -581,16 +584,18 @@ class ContributionController extends Controller
                     # code...
                     array_push($contribucion_disponibilidad,$contribution);
                     break;
-                case 3:
-                    array_push($contribucion_item_0,$contribution);
-                    default:
+
+               default:
                     # code...
                     array_push($contribucion_normal,$contribution);
                     break;
             }
 
-        }                            
-        $data =  array('contribucion_normal' => $contribucion_normal,'contribucion_disponibilidad' => $contribucion_disponibilidad,'contribucion_item_0' => $contribucion_item_0 ,'ret_fun_id'=>$ret_fun->id);
+        }
+
+        $contribution_types = DB::table('contribution_types')->select('id','name')->get();
+        $data =  array('contribucion_normal' => $contribucion_normal,'contribucion_disponibilidad' => $contribucion_disponibilidad,'ret_fun_id'=>$ret_fun->id,'contribution_types'=>$contribution_types);
+
         // return $data;
         return view('contribution.select',$data);
     }
