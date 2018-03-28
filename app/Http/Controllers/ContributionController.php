@@ -563,35 +563,70 @@ class ContributionController extends Controller
     {
         // $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
         $ret_fun = RetirementFund::find($ret_fun_id);
-        $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
-                                                  ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
-                                                  ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                  ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
-                                                //   ->take(10)
-                                                  ->orderBy('contributions.month_year', 'desc')
-                                                  ->get();
-        // return $contributions;
-        // return $contributions;
+        
         $contribucion_disponibilidad = array();                     
         $contribucion_item_0 = array();                    
         $contribucion_normal = array();
-                            
-        //Datos hdps Referenciales 
-        foreach ($contributions as $contribution) {
-            # code...
-            switch ($contribution->breakdown_id) {
-                case 1:
-                    # code...
-                    array_push($contribucion_disponibilidad,$contribution);
-                    break;
-
-               default:
-                    # code...
-                    array_push($contribucion_normal,$contribution);
-                    break;
-            }
+        
+        // $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
+        //                                           ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
+        //                                           ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
+        //                                           ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
+        //                                         //   ->take(10)
+        //                                           ->orderBy('contributions.month_year', 'desc')
+        //                                           ->get();
+        $contributions = null;
+       // return $contributions->count();
+        if(!$contributions){
+          $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
+                                                    ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
+                                                    ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
+                                                    ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
+                                                //   ->take(10)
+                                                    ->orderBy('contributions.month_year', 'desc')
+                                                    ->get();
+           
+                                
+           
 
         }
+        else {
+            # code...
+            // foreach ($contributions as $contribution) {
+            //     # code...
+            //     switch ($contribution->breakdown_id) {
+            //         case 2:
+            //             # code...
+            //             array_push($contribucion_disponibilidad,$contribution);
+            //             break;
+
+            //     default:
+            //             # code...
+            //             array_push($contribucion_normal,$contribution);
+            //             break;
+            //     }
+
+            // }
+        }
+         //Datos hdps Referenciales 
+            foreach ($contributions as $contribution) {
+                # code...
+                switch ($contribution->breakdown_id) {
+                    case 1:
+                        # code...
+                        array_push($contribucion_disponibilidad,$contribution);
+                        break;
+
+                default:
+                        # code...
+                        array_push($contribucion_normal,$contribution);
+                        break;
+                }
+
+            }
+        // return $contributions;
+        // return $contributions;
+       
 
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
         $data =  array('contribucion_normal' => $contribucion_normal,'contribucion_disponibilidad' => $contribucion_disponibilidad,'ret_fun_id'=>$ret_fun->id,'contribution_types'=>$contribution_types);
