@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <contribution-commitment :commitment="{{$commitment}}" :affiliate_id="{{$affiliate_id}}" :today_date="{{json_encode($today_date)}}" inline-template> 
+        <contribution-commitment :commitment="{{$aid_commitment}}" :affiliate_id="{{$affiliate_id}}" :today_date="{{json_encode($today_date)}}" inline-template> 
                 <div class="col-lg-12">
                     <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
                         <div class="panel-heading">
