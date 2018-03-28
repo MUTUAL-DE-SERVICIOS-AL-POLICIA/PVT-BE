@@ -600,8 +600,39 @@ class ContributionController extends Controller
         return view('contribution.select',$data);
     }
     public function saveContributions(Request $request)
-    {
-        return $request->all();
+    {   
+        // return $request->all();
+        $ret_fun = RetirementFund::find($request->ret_fun_id);
+
+        
+        foreach ($request->list_sixty as $obj) {
+            # code...
+            $aporte = (object) $obj;
+            // array_push($sixty_id,$aporte->id);
+            Log::info($aporte->id);
+            $sixty_id[] = $aporte->id;
+        }
+
+        $ret_fun->contributions()->attach($sixty_id);
+
+        foreach ($request->list_aportes as $obj) {
+            # code...
+             $aporte = (object) $obj;
+             $contribution = Contribution::find($aporte->id);
+             $contribution->contribution_type_id = $aporte->breakdown_id;
+             $contribution->save();
+        }
+
+        foreach ($request->list_disponibilidad as $obj) {
+            # code...
+            $aporte = (object) $obj;
+            $contribution = Contribution::find($aporte->id);
+            $contribution->contribution_type_id = $aporte->breakdown_id;
+            $contribution->save();
+            $disp_id[] = $aporte->id;
+        }
+        $ret_fun->contributions()->attach($disp_id);
+        return $disp_id;
         // return redirect('/');     
     }
     public function printCertification60($id)
