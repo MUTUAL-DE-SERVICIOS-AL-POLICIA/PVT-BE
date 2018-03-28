@@ -1,6 +1,5 @@
 @extends('print_global.print')
 @section('content')
-  
 
 <div>
     El suscrito Encargado de  Cuentas Individuales en base a una revisión de la Base de Datos del Sistema Informático de MUSERPOL de aportes realizados, del señor: 
@@ -19,10 +18,10 @@
                 SEGUNDO NOMBRE
             </td>
             <td class="px-15 py text-center">
-                PRIMER APELLIDO
+                APELLIDO PATERNO
             </td>
             <td class="px-15 py text-center">
-                SEGUNDO APELLIDO
+                APELLIDO MATERNO
             </td>
             <td class="px-15 py text-center">
                 C.I.
@@ -32,7 +31,7 @@
             </td>
         </tr>
     </thead>
-    <tbody>
+    <tbody> 
         <tr class="text-sm">
             <td class="text-center uppercase font-bold px-5 py-3">{{ $degree->name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->first_name }}</td>
@@ -43,8 +42,9 @@
             <td class="text-center uppercase font-bold px-5 py-3">{{ $exp }}</td>
         </tr>
     </tbody>
-</table>
-
+</table><br>
+<strong>CERTIFICA:</strong>
+    <?php $num=0; ?>
 <table class="table-info w-100">        
     <thead class="bg-grey-darker">
         <tr class="font-medium text-white text-sm">
@@ -71,13 +71,11 @@
             </td>               
         </tr>
     </thead><br>
-    <strong>CERTIFICA:</strong><br>
-    <?php $num=0; ?>
 
-    
     <tbody> 
         @foreach($contributions as $contribution)
-            @if($contribution->type=='A')
+            @if($contribution->contribution_type_id == '1')
+            
                 @foreach($reimbursements as $reimbursement)
                     <tr class="text-sm">
                         <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>
@@ -90,7 +88,7 @@
                     @if($contribution->month_year == $reimbursement->month_year)
                         <tr class="text-sm">
                             <td class="text-center uppercase font-bold px-5 py-3"></td>
-                            <td class="text-center uppercase font-bold px-5 py-3">R1</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->gain }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->base_wage }}</td>
@@ -112,7 +110,4 @@
     {{ "Lugar y fecha: ". $place->name." ".$dateac }}
 </div>
 Cc: Arch
-
-
-
 @endsection
