@@ -76,6 +76,8 @@ Vue.component('nom-module', require('./components/permission/NomModule.vue'));
 //contributions
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
+//aid-contributions
+Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
 const app = new Vue({
     el: '#app',
     store

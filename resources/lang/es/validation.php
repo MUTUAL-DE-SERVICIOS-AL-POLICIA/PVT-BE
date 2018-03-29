@@ -503,6 +503,7 @@ return [
     'uploaded'             => 'Subir :attribute ha fallado.',
     'url'                  => 'El formato :attribute es inválido.',
     'memorandum'           => 'El campo del número de memorándum es obligatorio.',
+    'limit_days'           => 'La fecha del memorandum ya no es válida para el Compromiso de pago.',
 
     /*
     |--------------------------------------------------------------------------

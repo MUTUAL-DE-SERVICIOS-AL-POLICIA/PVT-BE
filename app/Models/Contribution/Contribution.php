@@ -73,4 +73,8 @@ class Contribution extends Model
     {
         return $this->belongsTo('Muserpol\Models\Breakdown');
     }
+    public function retirement_fund()
+    {
+        return $this->belongsToMany('Muserpol\Models\RetirementFund\RetirementFund', 'ret_fun_contribution');
+    }
 }
