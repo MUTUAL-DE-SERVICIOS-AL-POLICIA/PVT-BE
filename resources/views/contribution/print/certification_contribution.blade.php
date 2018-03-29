@@ -31,6 +31,7 @@
             </td>
         </tr>
     </thead>
+    {{$affiliate->first_name }}
     <tbody> 
         <tr class="text-sm">
             <td class="text-center uppercase font-bold px-5 py-3">{{ $degree->name }}</td>
@@ -71,21 +72,25 @@
             </td>               
         </tr>
     </thead><br>
-
+{{$retirement_fund->id}} pri
     <tbody> 
-        @foreach($contributions as $contribution)
-            @if($contribution->contribution_type_id == '1')
-            
+        @foreach($contributions as $contribution) 
+        {{$contribution->retirement_fund_id}}<br>
+        
+           @if($contibution->gain=='3')
+uno
+           @endif
+                <tr class="text-sm">
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->base_wage }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->seniority_bonus }}</td>                        
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                </tr> 
                 @foreach($reimbursements as $reimbursement)
-                    <tr class="text-sm">
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain }}</td>
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->base_wage }}</td>
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->seniority_bonus }}</td>                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
-                    </tr>
-                    @if($contribution->month_year == $reimbursement->month_year)
+                    @if($contribution->month_year == $reimbursement->month_year)       
                         <tr class="text-sm">
                             <td class="text-center uppercase font-bold px-5 py-3"></td>
                             <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
@@ -96,8 +101,8 @@
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->total }}</td>
                         </tr>
                     @endif        
-                @endforeach
-            @endif
+                @endforeach 
+               
         @endforeach           
     </tbody>
 </table>
@@ -107,7 +112,7 @@
 </div>
 <br>
 <div align="right">
-    {{ "Lugar y fecha: ". $place->name." ".$dateac }}
+    {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
 </div>
 Cc: Arch
 @endsection
