@@ -145,13 +145,33 @@ class CreateRetirementFundTables extends Migration {
             $table->enum('civil_status', ['C', 'S', 'V', 'D'])->nullable(); //estado civil
             $table->string('phone_number')->nullable(); // nomero de telefono
             $table->string('cell_phone_number')->nullable(); // numero de celular
+            $table->decimal('percentage', 13, 2)->nullable();
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade'); // identificador de fondo de retiro
             $table->foreign('city_identity_card_id')->references('id')->on('cities'); //identificación del ci
             $table->foreign('kinship_id')->references('id')->on('kinships');
             $table->timestamps();
             $table->softDeletes();
         });
-      
+
+        Schema::create('discount_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->bigInteger('module_id')->unsigned()->nullable();
+            $table->string('name');
+            $table->string('shortened');
+            $table->foreign('module_id')->references('id')->on('modules');
+            $table->timestamps();
+        });
+        Schema::create('discount_type_retirement_fund', function (Blueprint $table) {
+            $table->increments('id');
+            $table->bigInteger('discount_type_id')->unsigned()->nullable();
+            $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->decimal('amount', 13, 2)->nullable();
+            $table->decimal('percentage', 13, 2)->nullable();
+            $table->foreign('discount_type_id')->references('id')->on('discount_types')->onDelete('cascade');
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
+            $table->timestamps();
+        });
+
       	Schema::create('addresses', function(Blueprint $table) {
             $table->bigIncrements('id'); 
             $table->bigInteger('city_address_id')->unsigned()->nullable(); // identificador de la dirección y ciudad
@@ -361,7 +381,8 @@ class CreateRetirementFundTables extends Migration {
      * @return void
      */
     public function down() {
-
+        
+        Schema::drop('aid_contributions');
         Schema::table('contributions', function (Blueprint $table) {
             $table->dropColumn('contribution_type_id');
         });
@@ -380,6 +401,8 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('ret_fun_advisors');
         Schema::drop('ret_fun_address_beneficiary');
         Schema::drop('addresses');
+        Schema::dropIfExists('discount_type_retirement_fund');
+        Schema::dropIfExists('discount_types');
         Schema::drop('ret_fun_beneficiaries');
         Schema::drop('kinships');
         Schema::drop('ret_fun_observations');
@@ -391,7 +414,6 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('procedure_documents');
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types'); 
-        Schema::drop('aid_contributions');
     }
     
 

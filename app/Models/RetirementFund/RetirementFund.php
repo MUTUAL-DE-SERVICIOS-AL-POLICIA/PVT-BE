@@ -48,5 +48,5 @@ class RetirementFund extends Model
 	{
 		return $this->hasOne('Muserpol\Models\RetirementFund\RetFunApplicant');
     }
-        
+
 }

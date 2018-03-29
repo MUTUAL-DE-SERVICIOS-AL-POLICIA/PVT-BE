@@ -57,6 +57,7 @@ Vue.component('ret-fun-beneficiary-list', require('./components/ret_fun/Benefici
 Vue.component('ret-fun-beneficiary', require('./components/ret_fun/Beneficiary.vue'));
 Vue.component('ret-fun-info', require('./components/ret_fun/Info.vue'));
 Vue.component('ret-fun-beneficiaries-show', require('./components/ret_fun/ShowBeneficiaries.vue'));
+Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualification.vue'));
 
 
 // Quota Aid Mortuaries

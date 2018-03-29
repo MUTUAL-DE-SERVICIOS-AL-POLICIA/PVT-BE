@@ -455,4 +455,30 @@ class RetirementFundController extends Controller
         $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality'=>$retirement_fund->procedure_modality,'city_start'=>$retirement_fund->city_start,'city_end'=>$retirement_fund->city_end );
         return $datos;
     }
+    public function qualification($ret_fun_id)
+    {
+        $retirement_fund = RetirementFund::find($ret_fun_id);
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
+        $affiliate = $retirement_fund->affiliate;
+        $dates_contributions = $affiliate->getDatesContributions();
+        $dates_availability = $affiliate->getDatesAvailability();
+        $dates_item_zero = $affiliate->getDatesItemZero();
+        $cities_pluck = City::all()->pluck('first_shortened', 'id');
+        $cities = City::get();
+        $kinships = Kinship::get();
+        $birth_cities = City::all()->pluck('name', 'id');
+        $data = [
+            'retirement_fund' => $retirement_fund,
+            'affiliate' => $affiliate,
+            'dates_availability' => $dates_availability,
+            'dates_item_zero' => $dates_item_zero,
+            'dates_contributions' => $dates_contributions,
+            'cities_pluck' => $cities_pluck,
+            'birth_cities' => $birth_cities,
+            'beneficiaries' => $beneficiaries,
+            'cities' => $cities,
+            'kinships' => $kinships,
+        ];
+        return view('ret_fun.qualification', $data);
+    }
 }
