@@ -1,25 +1,30 @@
 <script>
 export default {
-  props:[
-      'datesContributions',
-      'datesAvailability',
-      'datesItemZero',
-  ],
-  mounted(){
-    this.datesAvailability.forEach(date => {
-
-      console.log(moment(date.end).diff(moment(date.start), 'months')+1);
-    })
+  props: ["datesContributions", "datesAvailability", "datesItemZero"],
+  mounted() {
+    this.calculate();
   },
-  data(){
-    return{
-      
-    }
+  data() {
+    return {
+      years: 0,
+      months: 0
+    };
   },
-  computed:{
-    totalMonths(index){
-      return moment(this.datesAvailability[index]).add(5, 'days');
+  methods: {
+    calculate(){
+        const datesAvailability=this.datesAvailability.reduce((prev, current)=>{
+            return prev + (moment(current.end).diff(moment(current.start), 'months') + 1);
+        }, 0);
+        const datesContributions=this.datesContributions.reduce((prev, current)=>{
+            return prev + (moment(current.end).diff(moment(current.start), 'months') + 1);
+        }, 0);
+        const datesItemZero=this.datesItemZero.reduce((prev, current)=>{
+            return prev + (moment(current.end).diff(moment(current.start), 'months') + 1);
+        }, 0);
+        const total = datesContributions + datesItemZero - datesAvailability;
+        this.years = parseInt(total/12);
+        this.months = (total%12);
     }
   }
-}
+};
 </script>

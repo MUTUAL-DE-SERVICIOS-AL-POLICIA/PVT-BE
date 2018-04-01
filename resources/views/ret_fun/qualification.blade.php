@@ -26,70 +26,86 @@
                 :dates-availability="{{json_encode($dates_availability)}}"
                 :dates-item-zero="{{json_encode($dates_item_zero)}}"
                 >
-                    <div class="ibox-content" style="">
-
-                        <div class="form-group" id="data_5">
-                            <div class="col-md-4">
-                                <h4>Aportes fondo de retiro Policial Solidario </h4>
-                            </div>
-                            {{--  @forelse ($dates_contributions as $key=>$date)  --}}
-                            <div class="input-daterange input-group col-md-offset-4 col-md-8" v-for="(date, index) in datesContributions" :key="index">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
-                                null, ['class'=>'form-control', 'v-model'=>"date.start"]) !!}
-                                <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
-                                null, ['class'=>'form-control', 'v-model' => 'date.end']) !!}
-                            </div>
-                            {{--  {{--  @empty  --}}
-                            <div class="input-daterange input-group col-md-offset-4 col-md-8">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
-                                null, ['class'=>'form-control']) !!}
-                                <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
-                                null, ['class'=>'form-control']) !!}
-                            </div>
-                            {{--  @endforelse  --}}
+                <div class="ibox-content" style="">
+                    <div class="form-group" id="data_5">
+                        <div class="col-md-4">
+                            <h4>Aportes fondo de retiro Policial Solidario </h4>
                         </div>
-                        <div class="form-group" id="data_5">
-                            <div class="col-md-4">
-                                <h4>Destino en Letras de Disponibilidad</h4>
-                            </div>
-                            {{--  @forelse ($dates_availability as $date)  --}}
-                            <div class="input-daterange input-group col-md-offset-4 col-md-8" v-for="(date, index) in datesAvailability" :key="index">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
-                                null, ['class'=>'form-control','v-model' => 'date.start']) !!}
-                                <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
-                                null, ['class'=>'form-control','v-model' => 'date.end']) !!}
-                                <div>
-                                    <strong>
-                                        @{{ totalMonths(index) }}
-                                    </strong>
-                                </div>
-                            </div>
-                            {{--  @empty
-                            <div class="input-daterange input-group col-md-offset-4 col-md-8">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
-                                null, ['class'=>'form-control']) !!}
-                                <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
-                                null, ['class'=>'form-control']) !!}
-                            </div>
-                            @endforelse  --}}
-                        </div>
-                        
-                        <div class="form-group" id="data_5">
-                            <div class="col-md-4">
-                                <h4>Periodo de Aportes Item 0</h4>
-                            </div>
-                            {{--  @forelse ($dates_item_zero as $date)  --}}
-                            <div class="input-daterange input-group col-md-offset-4 col-md-8" v-for="(date,index) in datesItemZero" :key="index" >
+                        <ret-fun-qualification-group
+                        :dates-availability-child="datesContributions"
+                        @total="calculate"
+                        >
+                    </ret-fun-qualification-group>
+                    {{-- @{{ total }} --}}
+                    {{--  @forelse ($dates_contributions as $key=>$date)  --}}
+                    {{-- <div class="input-daterange input-group col-md-offset-4 col-md-8" v-for="(date, index) in datesContributions" :key="index">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
+                        null, ['class'=>'form-control', 'v-model'=>"date.start"]) !!}
+                        <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
+                        null, ['class'=>'form-control', 'v-model' => 'date.end']) !!}
+                    </div> --}}
+                    {{--  {{--  @empty  --}}
+                    {{-- <div class="input-daterange input-group col-md-offset-4 col-md-8">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
+                        null, ['class'=>'form-control']) !!}
+                        <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
+                        null, ['class'=>'form-control']) !!}
+                    </div> --}}
+                    {{--  @endforelse  --}}
+                </div>
+                <div class="form-group" id="data_5">
+                    <div class="col-md-4">
+                        <h4>Destino en Letras de Disponibilidad</h4>
+                    </div>
+                    <ret-fun-qualification-group 
+                    :dates-availability-child="datesAvailability"
+                    @total="calculate"
+                    >
+                </ret-fun-qualification-group>
+                
+                {{--  @forelse ($dates_availability as $date)  --}}
+                {{-- <div class="input-daterange input-group col-md-offset-4 col-md-8" v-for="(date, index) in datesAvailability" :key="index">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
+                    null, ['class'=>'form-control','v-model' => 'date.start']) !!}
+                    <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
+                    null, ['class'=>'form-control','v-model' => 'date.end']) !!}
+                    <div>
+                        <strong>
+                            @{{ totalMonths(index) }}
+                        </strong>
+                    </div>
+                </div> --}}
+                {{--  @empty
+                    <div class="input-daterange input-group col-md-offset-4 col-md-8">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
+                        null, ['class'=>'form-control']) !!}
+                        <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
+                        null, ['class'=>'form-control']) !!}
+                    </div>
+                    @endforelse  --}}
+                </div>
+                
+                <div class="form-group" id="data_5">
+                    <div class="col-md-4">
+                        <h4>Periodo de Aportes Item 0</h4>
+                    </div>
+                    <ret-fun-qualification-group 
+                    :dates-availability-child="datesItemZero"
+                    @total="calculate"
+                    >
+                    </ret-fun-qualification-group>
+                    {{--  @forelse ($dates_item_zero as $date)  --}}
+                    {{-- <div class="input-daterange input-group col-md-offset-4 col-md-8" v-for="(date,index) in datesItemZero" :key="index" >
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
                                 null, ['class'=>'form-control', 'v-model'=> 'date.start']) !!}
                                 <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
                                 null, ['class'=>'form-control', 'v-model'=> 'date.end']) !!}
-                            </div>
+                            </div> --}}
                             {{--  @empty
                             <div class="input-daterange input-group col-md-offset-4 col-md-8">
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>{!! Form::date('date_availability_start',
@@ -113,10 +129,14 @@
                                     value="03/04/2014">
                             </div>
                         </div>  --}}
+                    {{-- </div> --}}
+                    <div class="panel panel-success">
+                        <strong>Anios</strong> @{{this.years}}
+                        <strong>Meses</strong> @{{this.months}}
                     </div>
                 </ret-fun-qualification>
             </div>
-            <div class="ibox">
+            {{-- <div class="ibox">
                 <div class="ibox-title">
                     <h5>Aportes y periodos considerados</h5>
                     <div class="ibox-tools">
@@ -178,7 +198,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
         {{--
         <div class="col-md-6">
