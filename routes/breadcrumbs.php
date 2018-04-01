@@ -8,7 +8,17 @@ Breadcrumbs::register('affiliate', function($breadcrumbs)
 Breadcrumbs::register('show_affiliate', function($breadcrumbs, $affiliate)
 {
 	$breadcrumbs->parent('affiliate');
-	$breadcrumbs->push($affiliate->fullName(), URL::to('affiliate/'.$affiliate->id));
+	$breadcrumbs->push(ucwords(strtolower($affiliate->fullName())), URL::to('affiliate/'.$affiliate->id));
+});
+Breadcrumbs::register('show_affiliate_contributions', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('show_affiliate', $affiliate);
+	$breadcrumbs->push("Aportes", route('show_contribution', $affiliate->id));
+});
+Breadcrumbs::register('edit_affiliate_contributions', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('show_affiliate_contributions', $affiliate);
+	$breadcrumbs->push("Edición de Aportes", route('edit_contribution', $affiliate->id));
 });
 
 Breadcrumbs::register('retirement_fund', function($breadcrumbs)
@@ -19,6 +29,11 @@ Breadcrumbs::register('show_retirement_fund', function($breadcrumbs, $retirement
 {
 	$breadcrumbs->parent('retirement_fund');
 	$breadcrumbs->push	("Trámite Nro. ".$retirement_fund->code, URL::to('ret_fun/'.$retirement_fund->id));
+});
+Breadcrumbs::register('show_qualification_retirement_fund', function($breadcrumbs, $retirement_fund)
+{
+	$breadcrumbs->parent('show_retirement_fund', $retirement_fund);
+	$breadcrumbs->push	("Calificación", URL::to('ret_fun/'.$retirement_fund->id.'/qualification'));
 });
 Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliate)
 {

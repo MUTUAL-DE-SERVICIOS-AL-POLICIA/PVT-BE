@@ -1,6 +1,7 @@
 @extends('layouts.app') 
 @section('styles')
-@endsection 
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+@endsection
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -9,7 +10,7 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Usuarios</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary"><i class="fa" class="fa-lock" ></i> </button>
+                        <a href="{{url('user/create')}}" class="btn btn-primary"><i class="fa fa-plus" ></i></a>
                     </div>
                 </div>
                 <div class="panel-body">
@@ -34,15 +35,8 @@
 </div>
 
 @endsection
- 
-@section('styles')
-<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
-@endsection
- 
 @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
-<script src="http://wwach.test/usersGetData"></script>
-
 <script>
 $(function() {
 var user_tables = $('#users-table').DataTable({

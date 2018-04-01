@@ -1,11 +1,10 @@
 <template>
   <div>
-    <p><code>query: {{ query }}</code></p>
     <datatable v-bind="$data">
-      <button class="btn btn-default" @click="alertSelectedUids" :disabled="!selection.length">
+      <!-- <button class="btn btn-default" @click="alertSelectedUids" :disabled="!selection.length">
         <i class="fa fa-commenting-o"></i>
         Alert selected uid(s)
-      </button>
+      </button> -->
     </datatable>
   </div>
 </template>

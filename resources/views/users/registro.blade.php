@@ -8,18 +8,18 @@
         <div class="panel-heading">
             <h3 class="pull-left">Datos Personales del Usuario</h3>
             <div class="text-right">
-                <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
+               <br>
             </div>            
         </div>
         <div class="ibox-content">
-            @if(isset($user))
-                <form class="form-horizontal" action="/update/{{$user->id}}" method="POST">
-            @else
-                <form class="form-horizontal" action="{{route('registrar')}}" method="POST">
-            @endif
-        
+            
+            <form class="form-horizontal" action="{{route('registrar')}}" method="POST">
+                    
             <input type="hidden" name="_method" value="POST">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            @if(isset($user))
+            <input type="hidden" name="user_id" value="{{$user->id}}">
+            @endif
             <div class="form-group">
                 <label class="col-lg-2 control-label">Usuario</label>
                 <div class="col-lg-10">
@@ -65,7 +65,7 @@
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
                             @foreach( $modules as $module)
-                                <li><a href="#tab_{{$module->id}}" data-toggle="tab" title="{{$module->name}}">&nbsp;<i class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></i>&nbsp;</a></li>
+                                <li><a href="#tab_{{$module->id}}" data-toggle="tab" title="{{$module->name}}">&nbsp;<i class="{{Muserpol\Helpers\Util::IconModule($module->id)}}" aria-hidden="true"></i>&nbsp;</a></li>
                             @endforeach                            
                         </ul>
                         <div class="tab-content">
@@ -76,12 +76,12 @@
                                         @if($rol->module_id==$module->id)
                                             @if(isset($user))
                                                 @if ($user->hasRole($rol->id))
-                                                    <div class="i-checks"><label> <input type="checkbox" name="rol[]" checked value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
+                                                    <div ><label> <input type="checkbox" class="i-checks" name="rol[]" checked value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
                                                 @else
-                                                    <div class="i-checks"><label> <input type="checkbox" name="rol[]"  value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
+                                                    <div ><label> <input type="checkbox" class="i-checks" name="rol[]"  value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
                                                 @endif 
                                             @else                                        
-                                                <div class="i-checks"><label> <input type="checkbox" name="rol[]" value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
+                                                <div ><label> <input type="checkbox" class="i-checks" name="rol[]" value="{{$rol->id}}"> <i></i> {{$rol->name}} </label></div>
                                             @endif
                                         @endif    
                                     @endforeach                             

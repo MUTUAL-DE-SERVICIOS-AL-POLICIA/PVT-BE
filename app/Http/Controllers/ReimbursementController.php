@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\Category;
 use Auth;
+use Validator;
 
 
 class ReimbursementController extends Controller
@@ -37,28 +38,50 @@ class ReimbursementController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {                        
+    {                  
+        //*********START VALIDATOR************//
+       
+        $rules = [                       
+            'reim_salary' =>  'numeric|min:2000',
+            'reim_gain' =>  'numeric|min:1',
+            'reim_amount' =>  'numeric|min:1'
+            ];
+            //return $rules;
+       /*  $messages = [
+            'reim_salary.numeric' => 'El campo "Sueldo" debe ser numerico',
+            'reim_salary.min'  =>  'El salario minimo es 2000',
+            'reim_gain.numeric' => 'El campo "Total Ganado" debe ser numerico',
+            'reim_gain.min'  =>  'La cantidad ganada debe ser mayor a 0', 
+            'reim_amount.numeric' => 'El valor del Aporte debe ser numerico',
+            'reim_amount.min'  =>  'El aporte debe ser mayor a 0'
+        ]; */
+        $validator = Validator::make($request->all(),$rules);        
+       if($validator->fails()){
+           return json_encode($validator->errors()); 
+       }
+         //*********END VALIDATOR************//
+
         $category = Category::find($request->category);    
-        //return $category;
+         return $request->affiliate_id;
         $reim = new Reimbursement();
         $reim->user_id = Auth::user()->id;
         $reim->affiliate_id = $request->affiliate_id;
         $reim->month_year = $request->year.'-'.$request->month.'-01';
         $reim->type = "Planilla";        
-        $reim->base_wage = $request->salary;
+       $reim->base_wage = $request->salary;
         $reim->seniority_bonus = $category->percentage*$reim->base_wage;
         $reim->study_bonus = 0;
         $reim->position_bonus = 0;
         $reim->border_bonus = 0;
         $reim->east_bonus = 0;
         $reim->public_security_bonus = 0;
-        $reim->gain = $request->gain;
+       $reim->gain = $request->gain;
         $reim->payable_liquid = 0;
         $reim->quotable = 0;
         $reim->retirement_fund = 0;
         $reim->mortuary_quota = 0;
         $reim->mortuary_aid = 0;
-        $reim->total = $request->total;
+       $reim->total = $request->total;
         $reim->subtotal = 0;
         $reim->ipc = 0;
         $reim->months = $this->getRebursimentMonths($request->month);         

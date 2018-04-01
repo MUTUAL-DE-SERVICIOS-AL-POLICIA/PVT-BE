@@ -6,7 +6,7 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>                        
+                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>
                     </div>
                 </div>
 
@@ -25,7 +25,7 @@
                                 <option value="2">Comisión</option>
                                 <option value="10">Agregado Policial</option>
                                 <option value="9">Baja Temporal</option>
-                            </select>
+                           </select>
                             <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
                         
@@ -34,10 +34,10 @@
                         <thead>
                         <tr>
                             <th class="footable-visible footable-first-column footable-sortable">Mes/Año<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">F.R.P.<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">CM<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado Bs.<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">F.R.P. (4.77 %)<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Cuota Mortuoria (1.09 %)<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV Bs.<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte<span class="footable-sort-indicator"></span></th>
                             <th>Opciones</th>                                    
                         </tr>
@@ -48,19 +48,19 @@
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control"  name="aportes[]">
+                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.fr" disabled class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.fr" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.cm" disabled class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.cm" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.interes" disabled class="form-control" name="aportes[]">
+                                    <input type="text" v-model = "con.interes" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control" name="aportes[]">
+                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control">
                                 </td>
                                 <td>
                                     <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
@@ -192,20 +192,23 @@ export default {
         this.total = total1;
 
       },
-      PrintQuote(){                                      
+      PrintQuote(){                              
           this.contributions =  this.contributions.filter((item)=> {
             return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
         });
         var contributions = this.contributions;
         var con = JSON.stringify(contributions);
         var affiliate_id = this.afid;
-        var total = this.total;      
-        window.open('/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, '_blank');
+        var total = this.total;        
+        printJS({printable:'/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, type:'pdf', showModal:true});
       },
-      Guardar(){
-        
-        //console.log(this.contributions); 
-        console.log(this.tipo);
+      setDataToTable(period,amount){                    
+        $('#main'+period).html(amount);
+      },
+      enableDC(){
+          $(".directContribution").removeClass('disableddiv');
+      },
+      Guardar(){                
         if(this.tipo !== null) 
         {
             this.contributions =  this.contributions.filter((item)=> {
@@ -216,54 +219,55 @@ export default {
             {   
                 this.$swal({
                 title: 'Esta usted seguro de guardar?',
-                text: "whatever",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                if (result.value) {
-                    
-                    var aportes = this.contributions;
-                    console.log(aportes);
-                    
+                }).then((result) => {    
+                    if (result.value) {                    
+                    var aportes = this.contributions;                    
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
                     .then(response => {
-                    console.log(response.data);                
+                  //      console.log('entrando a succes');
+                //console.log(response.data);
+                    this.enableDC();
+                    var i;
+                    for(i=0;i<response.data.contribution.length;i++){                        
+                        this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
+                    }
+                    printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
                     })
-                    .catch(e => {
-                    this.show_spinner = false;            
-                    alert(e);
-                    })
-
                     this.$swal({
                     title: 'Pago realizado',
                     showConfirmButton: false,
-                    timer: 1500,
+                    timer: 6000,
                     type: 'success'
+                    })
+                    .catch(error => {
+                    this.show_spinner = false;            
+                        //alert(e);
+                        console.log(error.response.data);
+//                        console.log(xhr.responseText);
+//                        var resp = jQuery.parseJSON(xhr.responseText);
+                        var resp = error.response.data;
+                        $.each(resp, function(index, value)
+                        {
+                            flash(value,'error',6000);
+                        });
                     })
                 }
                 })            
             }
-        }      
-        
-        
-    
+        } 
     },
-
-
-    
-
   },
   computed: {
       disabledSaved(){
        return this.contributions.some((c)=> c.subtotal > 0 );
       }
   }
-
- 
 }
 </script>
 

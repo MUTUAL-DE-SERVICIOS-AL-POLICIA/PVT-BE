@@ -1,11 +1,13 @@
 <template>
   <div>
-    <p><code>query: {{ query }}</code></p>
+    <!-- Comentado para Produccion  -->
+    <!-- <p><code>query: {{ query }}</code></p> -->
     <datatable v-bind="$data">
-      <button class="btn btn-default" @click="alertSelectedUids" :disabled="!selection.length">
+      <!-- Comentado para Produccion -->
+      <!-- <button class="btn btn-default" @click="alertSelectedUids" :disabled="!selection.length">
         <i class="fa fa-commenting-o"></i>
         Alert selected uid(s)
-      </button>
+      </button> -->
     </datatable>
   </div>
 </template>
@@ -36,7 +38,7 @@ export default {
           { title: 'Grado', field: 'degree', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Primer Nombre', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Segundo Nombre', field: 'second_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'Apellido Paterno', field: 'last_name', thComp: 'FilterFil', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Apellido Paterno', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Apellido Materno', field: 'mothers_last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Estado', field: 'affiliate_state', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
            { title: 'Operation', tdComp: 'Opt', visible: 'true' }

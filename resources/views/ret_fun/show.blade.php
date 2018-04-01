@@ -11,9 +11,17 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     
     <div class="row text-center">
-        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>        
+        
+        @if(Muserpol\Helpers\Util::getRol()->id == 10)
+        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button> 
+        @endif
+        
+        @if(Muserpol\Helpers\Util::getRol()->id == 15)
         <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>        
-        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>        
+        @endif
+        
+        @if(Muserpol\Helpers\Util::getRol()->id == 11)
+        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>@endif       
     </div>
     
     <div class="row">
@@ -26,27 +34,33 @@
                 {{-- @include('ret_fun.applicant_info', ['affiliate'=>$retirement_fund->affiliate]) --}}
             {{-- @endif --}}
         </div>
-            
+        @can('update',$retirement_fund)
         <div class="col-md-6">
             <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" inline-template>
                 @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
             </ret-fun-info>
         </div>
+        @endcan
     </div>
     <div class="row">
+        @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
         <div class="col-md-6">
             @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
         </div>
+        @endcan
+        @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
         <div class="col-md-6">
             @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])
         </div>
+        @endcan
     </div>
+    @can('view',new Muserpol\Models\AffiliateFolder)
     <div class="row">
         <div class="col-md-6">
             @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
         </div>
     </div>
-    
+    @endcan
     
     
 </div>

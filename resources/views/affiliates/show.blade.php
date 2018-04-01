@@ -21,12 +21,12 @@
         
         @can('create',Muserpol\Models\Contribution\Contribution::class)
         <a href="{{route('create_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Initar tr&aacute;mite de PAGO DE APORTES"><i class="fa fa-paste"></i> </button>
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de PAGO DE APORTES"><i class="fa fa-paste"></i> </button>
         </a>
         @endcan
         @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-paste"></i> </button>
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"></i> </button>
         </a>
         @endcan
     </div>

@@ -5,6 +5,7 @@ use DateTime;
 use Session;
 use Auth;
 use DB;
+use Carbon\Carbon;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -210,5 +211,101 @@ class Util
                     ->first();
         return $permission;
     }
-
+    public static function IconModule($module_id)
+    {
+        $class_icon = 'fa fa-square';
+        switch ($module_id) {
+            case 1:
+                $class_icon = 'glyphicon glyphicon-hdd';
+                break;
+            
+            case 2:
+                $class_icon = 'fa fa-fw fa-puzzle-piece';
+                break;
+            case 3:
+                $class_icon = 'glyphicon glyphicon-piggy-bank';
+                break;
+            case 4:
+                $class_icon = 'fa fa-fw fa-heartbeat';
+                break;
+            case 6:
+                $class_icon = 'fa fa-fw fa-money';
+                break;
+            case 7:
+                $class_icon = 'fa fa-balance-scale';
+                break;
+            case 10:
+                $class_icon = 'fa fa-map';
+                break;
+        }
+        return $class_icon;
+    }
+    public static function calculateAge($birth_date, $death_date)
+    {
+        $birth_date =  Carbon::parse($birth_date);
+        if ($death_date) {
+            $death_date = Carbon::parse($death_date);
+            $age = $birth_date->diff($death_date)->format('%y años %m meses');
+        }else {
+            $age = $birth_date->diff(Carbon::now())->format('%y años %m meses');
+        }
+        return $age;
+    }
+    public static function calculateAgeYears($birth_date, $death_date)
+    {
+        $birth_date = Carbon::parse($birth_date);
+        if ($death_date) {
+            $death_date = Carbon::parse($death_date);
+            $age = $birth_date->diffInYears($death_date);
+        }else {
+            $age = $birth_date->diffInYears(Carbon::now());
+        }
+        return $age;
+    }
+    public static function getCivilStatus($est, $gender)
+    {
+        switch ($est) {
+            case 'S':
+                return $gender ? ($gender == 'M' ? 'SOLTERO' : 'SOLTERA') : 'SOLTERO(A)' ;
+                break;
+            case 'D':
+                return $gender ? ($gender == 'M' ? 'DIVORCIADO' : 'DIVORCIADA') : 'DIVORCIADO(A)' ;
+                break;
+            case 'C':
+                return $gender ? ($gender == 'M' ? 'CASADO' : 'CASADA') : 'CASADO(A)' ;
+                break;
+            case 'V':
+                return $gender ? ($gender == 'M' ? 'VIUDO' : 'VIUDA') : 'VIUDO(A)' ;
+                break;
+            case 'S':
+                return $gender ? ($gender == 'M' ? 'SOLTERO' : 'SOLTERA') : 'SOLTERO(A)' ;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+    public function extractMonth($date)
+    {
+        if($date){
+            return Carbon::parse($date)->formatLocalized("%B");
+        }
+    }
+    public function extractYear($date)
+    {
+        if($date){
+            return Carbon::parse($date)->formatLocalized("%Y");
+        }
+    }
+    public static function getDateFormat($date, $size)
+    {
+        if ($date) {
+            if ($size == 'short') {
+                // return 05 MAY. 1983 // change %d-> %e for 5 MAY. 1983
+                return Carbon::parse($date)->formatLocalized('%d %b. %Y'); //
+            }elseif ($size == 'large') {
+                return Carbon::parse($date)->formatLocalized('%d %B. %Y'); //
+            }
+        }
+    }
 }

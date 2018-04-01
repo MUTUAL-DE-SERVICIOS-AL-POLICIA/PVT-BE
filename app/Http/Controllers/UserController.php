@@ -40,7 +40,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function anyData()
+    public function getUserDatatable()
     {
         $users = User::with('roles')->get();
         return Datatables::of($users)
@@ -135,35 +135,46 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
-        if ($id != null) {
-            //editar
-            $user=User::find($id);   
-        }else {
-            //registrar
-            $user = new User;   
-        }       
+        // if ($id != null) {
+        //     //editar
+        //     $user=User::find($id);   
+        // }else {
+        //     //registrar
+        //     $user = new User;   
+        // }       
+
+        if($request->has('user_id'))
+        {
+            $user=User::find($request->user_id);  
+            // return $user;
+        }else
+        {
+            $user = new User;
+            // dd($user);
+        }
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->phone = $request->phone;
         $user->position = $request->position;
         $user->username = $request->username;
         $user->city_id=$request->city;
-        if($request->contra == "false"){
-            $user->password = bcrypt($user->password);
-            $user->remember_token= bcrypt($user->remember_token);
+        if($request->contra == "false"){       
+            if($request->password){
+                $user->password = bcrypt(trim($request->password));
+                $user->remember_token= bcrypt(trim($request->remember_token));
+            }           
         }else{
-            $user->password = bcrypt($request->password);
-            $user->remember_token= bcrypt($request->remember_token);
+            if($request->password){
+                $user->password = bcrypt(trim($request->password));
+                $user->remember_token= bcrypt(trim($request->remember_token));
+            }           
         }      
         $user->save();
-        if (isset($user)){
-            $user->roles()->sync($request->rol, false);
-        }else{
-            $user->roles()->attach($request->rol);
-        }       
-        $user->save();        
+
+        $user->roles()->sync($request->rol);
+        
         return redirect('user');
     }
 

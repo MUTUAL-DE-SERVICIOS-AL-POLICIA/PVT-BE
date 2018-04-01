@@ -1,31 +1,30 @@
 <?php
-
 namespace Muserpol\Http\Controllers;
-
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
-use Muserpol\Models\Affiliate;
-
+use Muserpol\Models\Affiliate; 
 use Muserpol\Models\City;
 use Muserpol\Models\AffiliateState;
 use Muserpol\Models\Category;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
-
 use Muserpol\Models\User;
 use Ixudra\Curl\Facades\Curl;
 use Carbon\Carbon;
 use Auth;
 use Validator;
 use DateTime;
+use App;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Contribution\ContributionCommitment;
 use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Voucher;
-use Illuminate\Support\Facades\Log;
-
-
+use Log;
+use Session;
+use Muserpol\Models\RetirementFund\RetirementFund;
+use Muserpol\Models\RetirementFund\RetFunBeneficiary;
+use Illuminate\Support\Facades\DB;
 class ContributionController extends Controller
 {
     /**
@@ -47,21 +46,22 @@ class ContributionController extends Controller
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         $json = '';
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if( ($json = curl_exec($ch) ) === false)
+        //if( ($json = curl_exec($ch) ) === false)
+        if( $foo === false)
         {
-            Log::info("Error ".$httpcode ." ".$json);
+            Log::info("Error ".$httpcode ." ".$foo);
             return response('error', 500);
         }
         else
         {
-            Log::info("Success: ".$httpcode. " ".$json );
-            return $json;
+            Log::info("Success: ".$httpcode. " ".$foo );
+            return $foo;
         }
         
     }
-
     public function getMonthContributions($id)
-    {   $contributions=[];
+    {   
+        $contributions=[];
         $lastMonths = Contribution::where('affiliate_id', $id)
             ->orderBy('month_year', 'desc')
             ->first();
@@ -69,8 +69,7 @@ class ContributionController extends Controller
             $now = Carbon::now();
             $arrayDat = explode('-', $lastMonths->month_year);
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-            $diff = $now->subMonths(1)->diffInMonths($lastMonths);
-           // return $lastMonths.'-----'.$diff;
+            $diff = $now->subMonths(1)->diffInMonths($lastMonths);                
             $contribution = array();
             if ($diff > 2) {
                 $month1 = Carbon::now()->subMonths(1);
@@ -79,29 +78,38 @@ class ContributionController extends Controller
                 $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contributions = array($contribution1, $contribution2, $contribution3);
+                $contributions = array($contribution3, $contribution2, $contribution1);
             } 
             else 
             {
                 //$contributions=[];
-                for ($i = 0; $i < $diff; $i++) {
+                for ($i = 0; $i < $diff; $i++) {                                    
                     $month_diff = Carbon::now()->subMonths($i + 1);
                     $month = explode('-', $month_diff);
                     $montyear = $month_diff->format('m-Y');
-                    $contribution = array('year' => $month[0], 'month' => $month[1], 'monthyear' => $montyear, 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0);
+                    $contribution = array(
+                        'year' => $month[0], 
+                        'month' => $month[1], 
+                        'monthyear' => $montyear, 
+                        'sueldo' => 0, 
+                        'fr' => 0, 
+                        'cm' => 0, 
+                        'interes' => 0, 
+                        'subtotal' => 0
+                        );
                     $contributions[$i] = $contribution;
                 }
+                $contributions = array_reverse($contributions);
             }
         }     
-
+        
         return $contributions;
     }
     
     public function index()
-    {
+    {        
         return 0;
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -109,18 +117,70 @@ class ContributionController extends Controller
      */
     public function create()
     {
-
     }
-
     public function storeDirectContribution(Request $request)
     {      
+
+        //*********START VALIDATOR************//        
+        $rules=[];        
+//        if(!empty($request->aportes))
+//        { 
+            $has_commitment = false;
+            $commitment = ContributionCommitment::where('affiliate_id',$request->afid)->where('state','ALTA')->first();
+            if(!isset($commitment->id))
+                $commitment = true;
+            $valid_commitment = false;
+                                   
+            $commision_date = strtotime($commitment->commision_date);
+            $commtiment_date = strtotime($commitment->commitment_date);
+            $datediff = $commtiment_date - $commision_date;
+            $datediff = round($datediff / (60 * 60 * 24));
+
+
+            
+            $biz_rules = [
+                'has_commitment'    =>  $has_commitment?'required':'',
+                'valid_commitment'  =>  $datediff>90?'required':''
+            ];            
+                        
+            foreach ($request->aportes as $key => $ap)
+            {                                            
+                $aporte=(object)$ap;
+                $cont = Contribution::where('affiliate_id',$request->afid)->where('month_year',$aporte->year.'-'.$aporte->month.'-01')->first();
+                $has_contribution = false;
+                if(isset($cont->id))
+                    $has_contribution = true;
+                
+                $biz_rules = [
+                    'has_contribution.'.$key    =>  $has_contribution?'required':'',
+                ];
+                
+                $rules=array_merge($rules,$biz_rules);
+                //$aporte=(object)$ap;
+                $array_rules = [
+                    'aportes.'.$key.'.sueldo' =>  'required|numeric|min:2000',
+                    'aportes.'.$key.'.fr' =>  'required|numeric',
+                    'aportes.'.$key.'.cm' =>  'required|numeric',
+                    'aportes.'.$key.'.subtotal' =>  'required|numeric',
+                    'aportes.'.$key.'.interes' =>  'required|numeric',
+                    'aportes.'.$key.'.year' =>  'required|numeric|min:1700',
+                    'aportes.'.$key.'.month' =>  'required|numeric|min:1|max:12',
+                ];
+                $rules=array_merge($rules,$array_rules);
+            }
+        
+        $rules = array_merge($rules,$biz_rules);
+        $validator = Validator::make($request->all(),$rules);
+        if($validator->fails()){            
+            return response()->json($validator->errors(), 406);
+        }                
+         //*********END VALIDATOR************//                               
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
-            $code = Util::getNextCode("");
+            $code = Util::getNextCode(""); 
         else
             $code = Util::getNextCode($voucher_code->code);
-
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $request->afid;
@@ -135,6 +195,7 @@ class ContributionController extends Controller
         $affiliate->save();
        // return $voucher;
         //return $request->aportes;
+        $result = [];
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;
@@ -147,10 +208,9 @@ class ContributionController extends Controller
             $contribution->unit_id = $affiliate->unit_id;
             $contribution->breakdown_id = $affiliate->breakdown_id;
             $contribution->category_id = $affiliate->category_id;
-            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);  
+            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);
             $contribution->type='Directo';     
-            $contribution->base_wage = $aporte->sueldo;
-            $contribution->dignity_pension = 0;
+            $contribution->base_wage = $aporte->sueldo;            
             $contribution->seniority_bonus = 0;
             $contribution->study_bonus = 0;
             $contribution->position_bonus = 0;
@@ -168,24 +228,32 @@ class ContributionController extends Controller
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
-            $contribution->ipc = $aporte->interes;
+            $contribution->interest = $aporte->interes;            
             $contribution->save();
+            array_push($result, [
+                'total'=>$contribution->total,
+                'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
+                    ]);
             //Log::info(json_encode($contribution));
             //return $contribution;
         }
-
-        return json_encode(0);
+        
+        $data = [
+            'contribution'  =>  $result,
+            'voucher_id'    => $voucher->id,
+            'affiliate_id'  =>  $affiliate->id,
+        ];
+        return $data;
     }
-
     /**
      * Display the specified resource.
      *use Muserpol\Models\AffiliateState;
-
      * @param  \Muserpol\Contribution  $contribution
      * @return \Illuminate\Http\Response
      */
     public function show(Affiliate $affiliate)
     {
+        $this->authorize('view',new Contribution);
         $cities = City::all();
         $birth_cities = City::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
@@ -203,7 +271,6 @@ class ContributionController extends Controller
         ];
         return view('contribution.show', $data);
     }
-
     public function getAffiliateContributionsDatatables(DataTables $datatables, $affiliate_id)
     {
         $affiliate = Affiliate::find($affiliate_id);
@@ -255,7 +322,6 @@ class ContributionController extends Controller
             ->get()
             ;
         $query = $contributions;
-
         return $datatables->of($query)
             // ->editColumn('month_year', function ($contribution) {
                 
@@ -319,7 +385,6 @@ class ContributionController extends Controller
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -331,7 +396,6 @@ class ContributionController extends Controller
     {
         //
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -342,20 +406,17 @@ class ContributionController extends Controller
     {
         //
     }
-
-
-    public function getAffiliateContributions(Affiliate $affiliate)
+    public function getAffiliateContributions(Affiliate $affiliate = null)
     {        
         
         //codigo para obtener totales para el resument
+        $this->authorize('update',new Contribution);
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
-
         $group = [];
         $group_reim = [];
         foreach ($reims as $reim)
             $group_reim[$reim->month_year] = $reim;
-
         $fondoret = 0;
         $quotaaid = 0;
         foreach ($contributions as $contribution) {
@@ -363,10 +424,8 @@ class ContributionController extends Controller
             $fondoret = $contribution->retirement_fund + $fondoret;
             $quotaaid = $contribution->mortuary_quota + $quotaaid;
         }
-
         $total = $fondoret + $quotaaid;
         $dateentry = Util::getStringDate($affiliate->date_entry);
-
         $categories = Category::get();
         $end = explode('-', $affiliate->date_entry);
         $newcontributions = [];
@@ -375,15 +434,14 @@ class ContributionController extends Controller
         $month_start = (date('m') - 1);
         $year_start = date('Y');
         $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();        
-
         $summary = array(
             'fondoret' => $fondoret,
             'quotaaid' => $quotaaid,
             'total' => $total,
             'dateentry' => $dateentry
         );
-        $cities = City::get();
-        
+        $cities = City::all()->pluck('first_shortened', 'id');
+        $birth_cities = City::all()->pluck('name', 'id');
         //get Commitment data
         $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
         if(!isset($commitment->id))
@@ -402,26 +460,60 @@ class ContributionController extends Controller
             'summary' => $summary,
             'affiliate' => $affiliate,
             'cities' => $cities,
+            'birth_cities' => $birth_cities,
             'new_contributions' => self::getMonthContributions($affiliate->id),
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'commitment'    =>  $commitment,
+            'today_date'         =>  date('Y-m-d'),
         ];
-
-        return view('contribution.affiliate_contributions_edit', $data);
+        //return  date('Y-m-d');
+         return view('contribution.affiliate_contributions_edit', $data);
     }
-
     public function storeContributions(Request $request)
-    {
-
+    {        
+        //*********START VALIDATOR************//
+        $rules=[];
+        $messages=[];
+        $input_data = $request->all();
+        if(!empty($request->iterator))
+        { 
+          foreach ($request->iterator as $key => $iterator) 
+        {              
+              $input_data['base_wage'][$key]= strip_tags($request->base_wage[$key]);
+              $input_data['gain'][$key]= strip_tags($request->gain[$key]);
+              $input_data['total'][$key]= strip_tags($request->total[$key]);
+        $array_rules = [                       
+            'base_wage.'.$key =>  'required|numeric|min:2000',            
+            'gain.'.$key =>  'required|numeric|min:1',
+            'total.'.$key =>  'required|numeric|min:1'
+            ];
+            $rules=array_merge($rules,$array_rules);
+        $array_messages = [
+//            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico.',
+//            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000.',
+//            'gain.'.$key.'.numeric' => 'El campo debe ser numero.',
+//            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0.', 
+//            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico.',
+//            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0.'
+        ];
+        $messages=array_merge($messages, $array_messages);
+        }   
+            $validator = Validator::make($input_data,$rules,$messages);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+         //*********END VALIDATOR************//
+        return ;
+        $this->authorize('update',new Contribution);
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
                 $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
-
                 if ($request->category[$key] != $contribution->category_id) {
                     $category = Category::find($request->category[$key]);
                     $contribution->category_id = $category->id;
+                    //return $category->percentage." ".$contribution->base_wage;
                     $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
                 }
                 $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
@@ -430,7 +522,6 @@ class ContributionController extends Controller
 //                $contribution = new Contribution();
 //                $contribution->user_id = Auth::user()->id;
 //                $contribution->total = $total;
-
                 $affiliate = Affiliate::find($request->affiliate_id);
                 $contribution = new Contribution();
                 $contribution->user_id = Auth::user()->id;
@@ -442,7 +533,6 @@ class ContributionController extends Controller
                 $category = Category::find($request->category[$key]);
                 $contribution->category_id = $category->id;
                 $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
-                //return $category->percentage*$contribution->base_wage;
                 $contribution->study_bonus = 0;
                 $contribution->position_bonus = 0;
                 $contribution->border_bonus = 0;
@@ -461,12 +551,75 @@ class ContributionController extends Controller
         return $contribution;
         //return json_encode($contribution);
     }
-
-    public function generateContribution(Affiliate $affiliate)
+}
+    public function generateContribution(Affiliate $affiliate) 
     {
         $this->authorize('create',Contribution::class);
         $contributions = self::getMonthContributions($affiliate->id);
         return View('contribution.create', compact('affiliate', 'contributions'));
+    }
 
+    public function printCertification60($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $affiliate = $retirement_fund->affiliate;
+        $contributions = Contribution::where('affiliate_id', $affiliate->id)
+                        ->orderBy('month_year')
+                        ->get();
+                    
+        $reimbursements= Reimbursement::where('affiliate_id', $affiliate->id)
+                        ->orderBy('month_year')
+                        ->get();   
+                                 
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+        $title = "CERTIFICACION DE APORTES";
+        $subtitle="Cuenta Individual";
+        $number = $retirement_fund->code;
+        $date = Util::getStringDate($retirement_fund->reception_date);        
+        $degree=Degree::find($affiliate->degree_id);
+        $exp=City::find($affiliate->city_identity_card_id);
+        $exp=($exp==Null)? "-": $exp->first_shortened;
+        $dateac=Carbon::now()->format('d/m/Y');
+        $place=City::find($retirement_fund->city_start_id);        
+        $username = Auth::user()->username;
+        $pdftitle = "Cuentas Individuales";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        return \PDF::loadView('contribution.print.certification_contribution', compact('subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+    }
+    public function printCertificationAvailability($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $contributions=DB::table('ret_fun_contribution')
+                        ->join('contributions','ret_fun_contribution.contribution_id','=','contributions.id')
+                        ->select('contributions.month_year','contributions.gain','contributions.base_wage','contributions.public_segurity_bonus','contributions.total','contributions.retirement_fund','ret_fun_contribution.type')
+                        ->orderBy('contributions.month_year')
+                        ->get();
+        $reimbursements=DB::table('ret_fun_reimbursements')
+                        ->join('reimbursements','ret_fun_reimbursements.reimbursement_id', '=', 'reimbursements.id')
+                        ->select('reimbursements.month_year','reimbursements.gain','reimbursements.base_wage','reimbursements.public_segurity_bonus','reimbursements.total','reimbursements.retirement_fund')
+                        ->orderBy('reimbursements.month_year')
+                        ->get();
+                      
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+        $title = "CERTIFICACION DE APORTES EN DISPONIBILIDAD";
+        $subtitle="Cuenta Individual";
+
+        $number = $retirement_fund->code;
+        $date = Util::getStringDate($retirement_fund->reception_date);
+        $affiliate = $retirement_fund->affiliate;
+        $degree=Degree::find($affiliate->degree_id);
+        $exp=City::find($affiliate->city_identity_card_id);
+        $exp=($exp==Null)? "-": $exp->first_shortened;
+        $dateac=Carbon::now()->format('d/m/Y');
+        $place=City::find($retirement_fund->city_start_id);        
+              
+        $username = Auth::user()->username;
+        $pdftitle = "Cuentas Individuales";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        return \PDF::loadView('contribution.print.certification_contribution', compact('subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'modality', 'applicant', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
 }

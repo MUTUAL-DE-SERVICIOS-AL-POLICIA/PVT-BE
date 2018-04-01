@@ -12,8 +12,8 @@ require('print-js');
 window.Vue = require('vue');
 
 window.events = new Vue();
-window.flash = function (message, level = 'success') {
-	window.events.$emit('flash', { message, level });
+window.flash = function (message, level = 'success', timeOut = 5000) {
+	window.events.$emit('flash', { message, level, timeOut});
 };
 
 /**
@@ -57,6 +57,7 @@ Vue.component('ret-fun-beneficiary-list', require('./components/ret_fun/Benefici
 Vue.component('ret-fun-beneficiary', require('./components/ret_fun/Beneficiary.vue'));
 Vue.component('ret-fun-info', require('./components/ret_fun/Info.vue'));
 Vue.component('ret-fun-beneficiaries-show', require('./components/ret_fun/ShowBeneficiaries.vue'));
+Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualification.vue'));
 
 
 // Quota Aid Mortuaries
@@ -69,11 +70,14 @@ Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/S
 
 //user
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
-
+//permission
+Vue.component('nom-module', require('./components/permission/NomModule.vue'));
 
 //contributions
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
+//aid-contributions
+Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
 const app = new Vue({
 	el: '#app',
 	store

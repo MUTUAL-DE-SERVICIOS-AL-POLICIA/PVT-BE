@@ -1,5 +1,5 @@
 @if (count($breadcrumbs))
-	<h2>{{-- {!! $breadcrumbs[0]->title !!} --}}</h2>
+	<h2>{!! $breadcrumbs[sizeof($breadcrumbs)-1]->title !!}</h2>
     <ol class="breadcrumb">
         @foreach ($breadcrumbs as $breadcrumb)
             @if ($breadcrumb->url && !$loop->last)

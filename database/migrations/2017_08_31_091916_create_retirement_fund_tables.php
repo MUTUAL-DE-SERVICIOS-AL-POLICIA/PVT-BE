@@ -18,7 +18,7 @@ class CreateRetirementFundTables extends Migration {
             $table->bigIncrements('id');
             $table->bigInteger('module_id')->unsigned()->nullable();
             $table->string('name');
-           $table->foreign('module_id')->references('id')->on('modules');
+            $table->foreign('module_id')->references('id')->on('modules');
             $table->timestamps();
         });
 
@@ -145,13 +145,33 @@ class CreateRetirementFundTables extends Migration {
             $table->enum('civil_status', ['C', 'S', 'V', 'D'])->nullable(); //estado civil
             $table->string('phone_number')->nullable(); // nomero de telefono
             $table->string('cell_phone_number')->nullable(); // numero de celular
+            $table->decimal('percentage', 13, 2)->nullable();
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade'); // identificador de fondo de retiro
             $table->foreign('city_identity_card_id')->references('id')->on('cities'); //identificación del ci
             $table->foreign('kinship_id')->references('id')->on('kinships');
             $table->timestamps();
             $table->softDeletes();
         });
-      
+
+        Schema::create('discount_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->bigInteger('module_id')->unsigned()->nullable();
+            $table->string('name');
+            $table->string('shortened');
+            $table->foreign('module_id')->references('id')->on('modules');
+            $table->timestamps();
+        });
+        Schema::create('discount_type_retirement_fund', function (Blueprint $table) {
+            $table->increments('id');
+            $table->bigInteger('discount_type_id')->unsigned()->nullable();
+            $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->decimal('amount', 13, 2)->nullable();
+            $table->decimal('percentage', 13, 2)->nullable();
+            $table->foreign('discount_type_id')->references('id')->on('discount_types')->onDelete('cascade');
+            $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
+            $table->timestamps();
+        });
+
       	Schema::create('addresses', function(Blueprint $table) {
             $table->bigIncrements('id'); 
             $table->bigInteger('city_address_id')->unsigned()->nullable(); // identificador de la dirección y ciudad
@@ -182,7 +202,6 @@ class CreateRetirementFundTables extends Migration {
             $table->string('second_name')->nullable(); // segundo nombre
             $table->string('surname_husband')->nullable(); //apellido ca  sada
             $table->date('birth_date')->nullable(); //fecha de nacimento
-            $table->enum('gender', ['M', 'F']); // genero
             $table->enum('type', ['Natural', 'Legal']);
             //datos de tutor legal
             $table->string('name_court')->nullable(); //legal
@@ -333,7 +352,37 @@ class CreateRetirementFundTables extends Migration {
             $table->bigInteger('contribution_type_id')->unsigned()->nullable();
             $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
         });
-
+        
+        Schema::create('aid_contributions', function(Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('affiliate_id')->unsigned()->nullable();            
+            $table->string('month_year');
+            $table->enum('type', ['PLANILLA', 'DIRECTO'])->default('PLANILLA');            
+            $table->string('deceased')->nullable();
+            $table->decimal('quotable', 13, 2);
+            $table->decimal('rent', 13, 2);
+            $table->decimal('dignity_rent', 13, 2);
+            $table->decimal('total', 13, 2);
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('affiliate_id')->references('id')->on('users');            
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create('aid_commitments', function(Blueprint $table) 
+        {
+            $table->bigIncrements('id');
+            $table->bigInteger('affiliate_id')->unsigned()->nullable();
+            $table->bigInteger('user_id')->unsigned();
+            $table->date('date_commitment');
+            $table->enum('contributor',['T','E','C']);
+            $table->string('pension_declaration')->nullable();
+            $table->date('pension_declaration_date');
+            $table->foreign('affiliate_id')->references('id')->on('affiliates');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -342,11 +391,12 @@ class CreateRetirementFundTables extends Migration {
      * @return void
      */
     public function down() {
-
+        
+        Schema::drop('aid_contributions');
         Schema::table('contributions', function (Blueprint $table) {
             $table->dropColumn('contribution_type_id');
         });
-
+        Schema::drop('aid_commitment');
         Schema::drop('contribution_types');
         Schema::drop('eco_com_observations');
         Schema::drop('ufv_rates');
@@ -361,6 +411,8 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('ret_fun_advisors');
         Schema::drop('ret_fun_address_beneficiary');
         Schema::drop('addresses');
+        Schema::dropIfExists('discount_type_retirement_fund');
+        Schema::dropIfExists('discount_types');
         Schema::drop('ret_fun_beneficiaries');
         Schema::drop('kinships');
         Schema::drop('ret_fun_observations');
@@ -373,5 +425,6 @@ class CreateRetirementFundTables extends Migration {
         Schema::drop('procedure_modalities');
         Schema::drop('procedure_types'); 
     }
+    
 
 }

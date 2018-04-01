@@ -404,6 +404,7 @@ class RetirementFundController extends Controller
     public function storeLegalReview(Request $request,$id){
         //return 0;
         $retirement_fund = RetirementFund::find($id);
+        $this->authorize('update',new RetFunSubmittedDocument);
         $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         foreach ($submited_documents as $document)
         {
@@ -421,6 +422,8 @@ class RetirementFundController extends Controller
         //return $retirement_fund;
     }
     public function updateBeneficiaries(Request $request){
+        
+        $this->authorize('update',new RetFunBeneficiary);
         $i = 0;
         $ben = 0;
         foreach ($request->all() as $ben){            
@@ -451,5 +454,31 @@ class RetirementFundController extends Controller
         $retirement_fund->save();
         $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality'=>$retirement_fund->procedure_modality,'city_start'=>$retirement_fund->city_start,'city_end'=>$retirement_fund->city_end );
         return $datos;
+    }
+    public function qualification($ret_fun_id)
+    {
+        $retirement_fund = RetirementFund::find($ret_fun_id);
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
+        $affiliate = $retirement_fund->affiliate;
+        $dates_contributions = $affiliate->getDatesContributions();
+        $dates_availability = $affiliate->getDatesAvailability();
+        $dates_item_zero = $affiliate->getDatesItemZero();
+        $cities_pluck = City::all()->pluck('first_shortened', 'id');
+        $cities = City::get();
+        $kinships = Kinship::get();
+        $birth_cities = City::all()->pluck('name', 'id');
+        $data = [
+            'retirement_fund' => $retirement_fund,
+            'affiliate' => $affiliate,
+            'dates_availability' => $dates_availability,
+            'dates_item_zero' => $dates_item_zero,
+            'dates_contributions' => $dates_contributions,
+            'cities_pluck' => $cities_pluck,
+            'birth_cities' => $birth_cities,
+            'beneficiaries' => $beneficiaries,
+            'cities' => $cities,
+            'kinships' => $kinships,
+        ];
+        return view('ret_fun.qualification', $data);
     }
 }

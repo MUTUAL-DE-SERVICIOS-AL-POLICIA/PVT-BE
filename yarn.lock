@@ -1627,9 +1627,9 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-cross-env@^5.0.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.1.1.tgz#b6d8ab97f304c0f71dae7277b75fe424c08dfa74"
+cross-env@^5.1.4:
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.1.4.tgz#f61c14291f7cc653bb86457002ea80a04699d022"
   dependencies:
     cross-spawn "^5.1.0"
     is-windows "^1.0.0"
@@ -4135,6 +4135,10 @@ lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.4, lodash@~4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
+lodash@^4.17.5:
+  version "4.17.5"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
+
 logalot@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/logalot/-/logalot-2.1.0.tgz#5f8e8c90d304edf12530951a5554abb8c5e3f552"
@@ -4234,9 +4238,9 @@ md5@^2.2.1:
     crypt "~0.0.1"
     is-buffer "~1.1.1"
 
-mdi@^2.1.19:
-  version "2.1.19"
-  resolved "https://registry.yarnpkg.com/mdi/-/mdi-2.1.19.tgz#492bfc0c4fd0c510ebd55301cc76eb03a7a2f34b"
+mdi@^2.1.99:
+  version "2.1.99"
+  resolved "https://registry.yarnpkg.com/mdi/-/mdi-2.1.99.tgz#5cf54101735d0aefe55f7cc544bc554fe8689319"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -4409,9 +4413,9 @@ mockjs@^1.0.1-beta3:
   dependencies:
     commander "*"
 
-moment@^2.19.3:
-  version "2.19.3"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.3.tgz#bdb99d270d6d7fda78cc0fbace855e27fe7da69f"
+moment@^2.21.0:
+  version "2.21.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -5303,9 +5307,9 @@ prettier@^1.7.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.9.1.tgz#41638a0d47c1efbd1b7d5a742aaa5548eab86d70"
 
-print-js@^1.0.31:
-  version "1.0.31"
-  resolved "https://registry.yarnpkg.com/print-js/-/print-js-1.0.31.tgz#3c927c2d9be5705aa580e2d32c812fdaf99197d1"
+print-js@^1.0.32:
+  version "1.0.32"
+  resolved "https://registry.yarnpkg.com/print-js/-/print-js-1.0.32.tgz#d4eb0af31c3c2368a39c6760c0e465443017e247"
 
 private@^0.1.6, private@^0.1.7, private@~0.1.5:
   version "0.1.8"
@@ -6471,9 +6475,13 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-sweetalert2@7.x, sweetalert2@^7.12.15:
+sweetalert2@7.x:
   version "7.12.15"
   resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-7.12.15.tgz#c76e677f9e17c7d14ce755d60289b391843fcb24"
+
+sweetalert2@^7.15.1:
+  version "7.15.1"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-7.15.1.tgz#edd9bd4d5501b22e18755686a343c7afe3e9adb2"
 
 tapable@^0.2.7:
   version "0.2.8"
@@ -6921,9 +6929,9 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
-vue-form-wizard@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/vue-form-wizard/-/vue-form-wizard-0.8.2.tgz#f5720264de9a810d0abdecde0d5c9faa1151a065"
+vue-form-wizard@^0.8.4:
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/vue-form-wizard/-/vue-form-wizard-0.8.4.tgz#ddf864c9709b7ba2a6323f59e5d6d17536b7800e"
 
 vue-hot-reload-api@^2.2.0:
   version "2.2.4"

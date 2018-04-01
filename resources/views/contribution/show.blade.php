@@ -3,7 +3,7 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {{-- {{ Breadcrumbs::render('show_affiliate', $affiliate) }} --}}
+        {{ Breadcrumbs::render('show_affiliate_contributions', $affiliate) }}
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -28,10 +28,14 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Aportes</h3>
                     <div class="text-right">
+                        @can('update',new Muserpol\Models\Contribution\Contribution)
                         <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
                         <a href="{{route('edit_contribution', $affiliate->id)}}">
                             <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
                         </a>
+                        @else
+                        <br>
+                        @endcan
                     </div>
                 </div>
                 <div class="panel-body">

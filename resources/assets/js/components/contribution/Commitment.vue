@@ -3,6 +3,7 @@
 		props:[
 			'commitment',
                         'affiliate_id',
+                        'today_date',
 		],
         data(){
             return{
@@ -12,7 +13,7 @@
                 show_spinner: false,                
                 iterator:-1,
             }
-        },
+        },        
         computed:{            
         },        
         methods:{
@@ -25,24 +26,27 @@
                 this.create = !this.create;
             },
             print_commitment(){
-                var affiliate_id = this.affiliate_id;
-                window.open('/ret_fun/'+affiliate_id+'/print/voucher','_blank');
+                var affiliate_id = this.affiliate_id;                
+                printJS({printable:'/ret_fun/'+affiliate_id+'/print/ret_fun_commitment_letter', type:'pdf', showModal:true});
             },
 //            disable_commitment(){
 //                this.update(-1);
 //            },
             create_new(){
-                this.toggle_create();
+                //this.toggle_create();
+                //console.log(this.today_date);
+                this.commitment.commitment_date=this.today_date;
                 this.toggle_editing();
                 //this.update(0);
                 //this.commitment.affiliate_id = this.affiliate_id;
-            },
+            },           
             update (value) {
                 var id = value;                
-                let uri = `/commitment/`+id;
+                let uri = `/commitment/`+id; 
                 this.show_spinner=true;
                 axios.patch(uri,this.commitment)
-                    .then(response=>{                       
+                    .then(response=>{     
+                        console.log(response.data.commitment_type);
                         this.editing = false;
                         this.show_spinner=false;
                         console.log(response.data.state+"----");
@@ -67,12 +71,19 @@
                             this.commitment.commision_date = '';
                             this.commitment.state = '';
                         }
-                        
-                        console.log(response);
+                        console.log(response.data);
                         flash('Informacion actualizada');
-                    }).catch((response)=>{
-                        this.show_spinner=false;                                                
-                        flash('Error al actualizar el afiliado: '+response.message,'error');
+                       }).catch((error)=>{
+                           if(error.response.data.number !== undefined)
+                                flash(error.response.data.number[0],'error',10000);
+                           if(error.response.data.commitment_type !== undefined)
+                                flash(error.response.data.commitment_type[0],'error',10000);
+                           if(error.response.data.destination !== undefined)
+                                flash(error.response.data.destination[0],'error',10000);
+                           if(error.response.data.commision_date !== undefined)
+                                flash(error.response.data.commision_date[0],'error',10000);
+                        this.show_spinner=false; 
+                       // flash('Error al actualizar el afiliado: '+response.message,'error');
                     })
             }
         }
