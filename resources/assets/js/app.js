@@ -7,7 +7,7 @@
 
 require('./bootstrap');
 require('./inspinia');
-require('print-js')
+require('print-js');
 
 window.Vue = require('vue');
 
@@ -22,10 +22,10 @@ window.flash = function (message, level = 'success') {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
- /**VUEX */
- import store from './store/index';
+/**VUEX */
+import store from './store/index';
 
- import VueFormWizard from 'vue-form-wizard';
+import VueFormWizard from 'vue-form-wizard';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 Vue.use(VueFormWizard);
 
@@ -75,7 +75,7 @@ Vue.component('show-password', require('./components/user/ShowPassword.vue'));
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
 const app = new Vue({
-    el: '#app',
-    store
+	el: '#app',
+	store
     
 });
