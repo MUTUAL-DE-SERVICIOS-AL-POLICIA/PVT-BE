@@ -34,7 +34,7 @@
                 @include('contribution.aid_aditional_info',['summary',$summary])
             </div>            
             <div class="col-md-6">
-                {{--  @include('contribution.aid_commitment',['aid_commitment'=>$aid_commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])  --}}
+                @include('contribution.aid_commitment',['aid_commitment'=>$aid_commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
             </div>
         </div>
         <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">

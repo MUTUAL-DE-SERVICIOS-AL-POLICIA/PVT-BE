@@ -1,11 +1,11 @@
 <div class="row">
     <div class="col-md-12">
-        <contribution-commitment :commitment="{{$aid_commitment}}" :affiliate_id="{{$affiliate_id}}" :today_date="{{json_encode($today_date)}}" inline-template> 
+        <contribution-aid-commitment :aid_commitment="{{$aid_commitment}}" :affiliate_id="{{$affiliate_id}}" :today_date="{{json_encode($today_date)}}" inline-template> 
                 <div class="col-lg-12">
                     <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
                         <div class="panel-heading">
                             <h3 class="pull-left">Compromiso de pago</h3>
-                            @can('update',new Muserpol\Models\Contribution\Contribution)
+                            @can('update',new Muserpol\Models\Contribution\AidContribution)
                             <div class="text-right">
                                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
                             </div>
@@ -15,21 +15,20 @@
                         </div>
                                                 
                         <div class="panel-body " v-if="! editing" >                            
-                            <div class="col-md-12" v-if="! create && commitment.id != 0">
+                            <div class="col-md-12" v-if="! create && aid_commitment.id != 0">
                             <div class="col-md-6">
                                 <dl class="dl-">                                    
-                                    <dt>Tipo:</dt> <dd>@{{ commitment.commitment_type }}</dd>
-                                    <dt>Memorandum:</dt> <dd>@{{ commitment.number }}</dd>
-                                    <dt>Fecha:</dt> <dd>@{{ commitment.commision_date }}</dd>
-                                    <dt>Destino:</dt> <dd>@{{ commitment.destination }}</dd>                                     
+                                    <dt>Aportante:</dt> <dd>@{{ aid_commitment.contributor }}</dd>
+                                    <dt>Declaración de Pensión:</dt> <dd>@{{ aid_commitment.pension_declaration }}</dd>
+                                    <dt>Fecha de Declaración:</dt> <dd>@{{ aid_commitment.pension_declaration_date }}</dd>                                    
                                 </dl>
                             </div>
                             <div class="col-md-6">
                                 <dl class="dl-">
-                                    <dt>Fecha de compromiso:</dt> <dd>@{{ commitment.commitment_date }}</dd>
-                                    <dt>Estado:</dt> <dd>@{{ commitment.state }}</dd>
+                                    <dt>Fecha de compromiso:</dt> <dd>@{{ aid_commitment.date_commitment }}</dd>
+                                    <dt>Estado:</dt> <dd>@{{ aid_commitment.state }}</dd>
                                     <dt>Imprimir:</dt> <dd> 
-                                    <button data-animation="flip" class="btn btn-primary" @click="print_commitment"><i class="fa fa-print"></i> </button>
+                                    <button data-animation="flip" class="btn btn-primary" @click="print_aid_commitment"><i class="fa fa-print"></i> </button>
                                     </dd>                                    
                                 </dl>
                             </div>
@@ -41,7 +40,7 @@
                         </div>
                         
                         <div class="panel-body" v-else>
-                        @can('update', new Muserpol\Models\Contribution\Contribution)
+                        @can('update', new Muserpol\Models\Contribution\AidContribution)
                             <div class="sk-folding-cube" v-show="show_spinner" >
                                 <div class="sk-cube1 sk-cube"></div>
                                 <div class="sk-cube2 sk-cube"></div>
@@ -55,18 +54,18 @@
                                         <dl class="dl-">                                    
                                             <dt>Aportante:</dt> 
                                                 <dd>
-                                                    <select class="form-control m-b" v-model='commitment.commitment_type'>                                            
-                                                        <option value="TITULAR">Titular</option>
-                                                        <option value="ESPOSA">Esposa</option>
-                                                        <option value="CONYUGE">Cónyuge</option>
+                                                    <select class="form-control m-b" v-model='aid_commitment.contributor'>                                            
+                                                        <option value="T">Titular</option>
+                                                        <option value="E">Esposa</option>
+                                                        <option value="C">Cónyuge</option>
                                                     </select>                                                                                
                                                 </dd>
-                                            <dt>Declaración de Pensión:</dt> <dd><input type="text" v-model="commitment.number" class="form-control"></dd>
-                                            <dt>Fecha de Declaración (AAAA-MM-DD):</dt> <dd><input type="text" v-model="commitment.commision_date"  class="form-control"></dd>
-                                            <dt>Fecha de compromiso:</dt> <dd><input type="text" v-model="commitment.commitment_date"  class="form-control"></dd>
+                                            <dt>Declaración de Pensión:</dt> <dd><input type="text" v-model="aid_commitment.pension_declaration" class="form-control"></dd>
+                                            <dt>Fecha de Declaración (AAAA-MM-DD):</dt> <dd><input type="text" v-model="aid_commitment.pension_declaration_date"  class="form-control"></dd>
+                                            <dt>Fecha de compromiso:</dt> <dd><input type="text" v-model="aid_commitment.date_commitment"  class="form-control"></dd>
                                         </dl>   
                                     </div>
-                                    <div class="col-md-6"  v-if=" commitment.id != 0">                               
+                                    <div class="col-md-6"  v-if=" aid_commitment.id != 0">                               
                                         <dl class="dl-">                                            
                                             <dt>Estado:</dt> <dd>
                                                 <button data-animation="flip" class="btn btn-primary" @click="update(-1)"><i class="fa fa-chevron-down"></i>Dar de baja </button>
@@ -95,6 +94,6 @@
                     </div>
                 </div>
             </div>
-        </contribution-commitment> 
+        </contribution-aid-commitment> 
     </div>
 </div>
