@@ -2,8 +2,12 @@
 
 namespace Muserpol\Http\Controllers;
 
-use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\Contribution\AidCommitment;
+
+use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
+
+use Auth;
 
 class AidCommitmentController extends Controller
 {
@@ -67,9 +71,41 @@ class AidCommitmentController extends Controller
      * @param  \Muserpol\AidCommitment  $aidCommitment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AidCommitment $aidCommitment)
+    public function update(Request $request, $id)
     {
-        //
+        if($id == -1){
+            $aid_commitment = AidCommitment::find($request->id);
+            $aid_commitment->state = 'BAJA';
+            $aid_commitment->save();
+            $aid_commitment->delete();            
+            return $aid_commitment;
+        }                
+       
+        if($request->id==0){            
+            $aid_commitment = new AidCommitment();            
+            $aid_commitment->affiliate_id = $request->affiliate_id;            
+        }
+        
+        else 
+            $aid_commitment = AidCommitment::find($request->id);                
+            $aid_commitment->user_id=Auth::user()->id;
+            $aid_commitment->date_commitment = $request->date_commitment;
+            $aid_commitment->contributor = $request->contributor;
+            $aid_commitment->pension_declaration = $request->pension_declaration;
+            $aid_commitment->pension_declaration_date = $request->pension_declaration_date;
+            $aid_commitment->state = "ALTA";
+            
+        $aid_commitment->save();
+        ///'TITULAR', 'ESPOSA','CONYUGE'
+        $affiliate = Affiliate::find($aid_commitment->affiliate_id);
+        if($aid_commitment->contributor == 'T')
+            $affiliate->affiliate_state_id = 5;
+        if($aid_commitment->contributor == 'E')
+            $affiliate->affiliate_state_id = 4;
+        if($aid_commitment->contributor == 'C')
+            $affiliate->affiliate_state_id = 4;
+        $affiliate->save();
+        return $aid_commitment;
     }
 
     /**

@@ -199,6 +199,7 @@ class AidContributionController extends Controller
         $cities = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         //get Commitment data
+<<<<<<< HEAD
 //        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
 //        if(!isset($commitment->id))
 //        {
@@ -207,6 +208,15 @@ class AidContributionController extends Controller
 //            $commitment->affiliate_id = $affiliate->id;
 //        }
 
+=======
+       $aid_commitment = AidCommitment::where('affiliate_id',$affiliate->id)->first();     
+       if(!isset($aid_commitment->id))
+       {
+           $aid_commitment = new AidCommitment();
+           $aid_commitment->id = 0;
+           $aid_commitment->affiliate_id = $affiliate->id;
+       }
+>>>>>>> upstream/master
         $data = [
             'contributions' => $group,            
             'affiliate_id' => $affiliate->id,            
@@ -216,10 +226,17 @@ class AidContributionController extends Controller
             'affiliate' => $affiliate,
             'cities' => $cities,
             'birth_cities' => $birth_cities,
+<<<<<<< HEAD
             'commitment'    =>  $commitment,
             'today_date' =>  date('Y-m-d'),
             ];
         
+=======
+            //'new_contributions' => self::getMonthContributions($affiliate->id),            
+            'aid_commitment'    =>  $aid_commitment,
+            'today_date'         =>  date('Y-m-d'),
+        ];
+>>>>>>> upstream/master
         //return  date('Y-m-d');
          return view('contribution.affiliate_aid_contributions_edit', $data);
     }
