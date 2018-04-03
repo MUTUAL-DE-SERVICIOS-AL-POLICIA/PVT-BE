@@ -260,8 +260,7 @@ export default {
                     type: 'success'
                     })
                     printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
-                    })
-                    
+                    })                    
                     .catch(error => {
                     this.show_spinner = false;            
                         //alert(e);

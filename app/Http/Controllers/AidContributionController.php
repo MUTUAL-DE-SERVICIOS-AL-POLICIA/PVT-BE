@@ -98,8 +98,8 @@ class AidContributionController extends Controller
     
     public function getAffiliateContributions(Affiliate $affiliate = null)
     {                
-        return $this->getContributionDebt($affiliate->id,7);
-        return ;
+        //return $this->getContributionDebt($affiliate->id,7);
+        //return ;
         //codigo para obtener totales para el resument
         //$this->authorize('update',new Contribution);
         $contributions = AidContribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
@@ -142,7 +142,7 @@ class AidContributionController extends Controller
             'affiliate' => $affiliate,
             'cities' => $cities,
             'birth_cities' => $birth_cities,
-            'new_contributions' => $this->getContributionDebt($affiliate->id,3),
+            'new_contributions' => $this->getContributionDebt($affiliate->id,10),
             //'commitment'    =>  $commitment,
             'today_date'         =>  date('Y-m-d'),
         ];
