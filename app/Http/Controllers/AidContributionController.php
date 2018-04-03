@@ -126,13 +126,13 @@ class AidContributionController extends Controller
         $cities = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         //get Commitment data
-//        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
-//        if(!isset($commitment->id))
-//        {
-//            $commitment = new ContributionCommitment();
-//            $commitment->id = 0;
-//            $commitment->affiliate_id = $affiliate->id;
-//        }
+       $aid_commitment = AidCommitment::where('affiliate_id',$affiliate->id)->first();     
+       if(!isset($aid_commitment->id))
+       {
+           $aid_commitment = new AidCommitment();
+           $aid_commitment->id = 0;
+           $aid_commitment->affiliate_id = $affiliate->id;
+       }
         $data = [
             'contributions' => $group,            
             'affiliate_id' => $affiliate->id,            
@@ -142,8 +142,9 @@ class AidContributionController extends Controller
             'affiliate' => $affiliate,
             'cities' => $cities,
             'birth_cities' => $birth_cities,
-            'new_contributions' => $this->getContributionDebt($affiliate->id,10),
-            //'commitment'    =>  $commitment,
+            'new_contributions' => $this->getContributionDebt($affiliate->id,10),            
+            'aid_commitment'    =>  $aid_commitment,
+
             'today_date'         =>  date('Y-m-d'),
         ];
         //return  date('Y-m-d');

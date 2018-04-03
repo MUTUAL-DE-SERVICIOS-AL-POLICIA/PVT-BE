@@ -1,8 +1,8 @@
 @extends('print_global.print')
 @section('content')
-
+  
 <div>
-    El suscrito Encargado de  Cuentas Individuales en base a una revisión de la Base de Datos del Sistema Informático de MUSERPOL de aportes realizados, del señor: 
+    El suscrito Encargado de  Cuentas Individuales en base a una revisión de la Base de Datos del Sistema Informático de MUSERPOL de aportes realizados, del señor:
 </div><br>
 
 <table class="table-info w-100">
@@ -31,7 +31,7 @@
             </td>
         </tr>
     </thead>
-    <tbody> 
+    <tbody>
         <tr class="text-sm">
             <td class="text-center uppercase font-bold px-5 py-3">{{ $degree->name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->first_name }}</td>
@@ -61,34 +61,33 @@
                 TOTAL GANADO
             </td>
             <td class="px-15 py text-center">
-                SUELDO
+                BONO SEGURIDAD CIUDADANA
             </td>
             <td class="px-15 py text-center">
-                ANTIGUEDAD
+                TOTAL APORTE
             </td>
             <td class="px-15 py text-center">
-                APORTE
+                APORTE FONDO DE RETIRO
             </td>               
         </tr>
     </thead><br>
 
     <tbody> 
         @foreach($contributions as $contribution)
-            @if($contribution->contribution_type_id == '1')
-            
+            @if($contribution->type=='A')
                 @foreach($reimbursements as $reimbursement)
                     <tr class="text-sm">
                         <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>
                         <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                         <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain }}</td>
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->base_wage }}</td>
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->seniority_bonus }}</td>                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->public_security_bonus }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->retirement_fund }}</td>                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                     </tr>
                     @if($contribution->month_year == $reimbursement->month_year)
                         <tr class="text-sm">
                             <td class="text-center uppercase font-bold px-5 py-3"></td>
-                            <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">R1</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->gain }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->base_wage }}</td>
