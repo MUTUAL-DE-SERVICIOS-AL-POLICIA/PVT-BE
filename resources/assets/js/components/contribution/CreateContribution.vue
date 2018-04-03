@@ -28,6 +28,10 @@
                            </select>
                             <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
+                        <div class="col-md-3" >
+                            <label>Repetir sueldo:</label>
+                            <input type="text" class="form-control"  @keyup.enter="repeatSalary" v-model="general_salary" >                            
+                        </div>
                         
                     </div>
                     <table class="table table-striped" data-page-size="15">
@@ -91,6 +95,7 @@ export default {
         'contributions1',
         'afid',
         'last_quotable',
+        'rate',        
     ],
     data() {   
 
@@ -103,7 +108,8 @@ export default {
       afi_id:null,
       show_spinner:false,
       count:3,
-      ufvs: []
+      ufvs: [],
+      general_salary: 0,
     };
   },
    
@@ -123,17 +129,24 @@ export default {
         this.contributions = this.contributions1;       
       
       },
+      repeatSalary(){
+          var i;
+        for(i=0;i<this.contributions.length;i++){
+            this.contributions[i].sueldo = this.general_salary;
+            this.CalcularAporte(this.contributions[i],i);
+        }              
+      },
       CalcularAporte(con, index){
         if(parseFloat(con.sueldo) >0)
         {          
         if(this.count > 0)
         {
             this.show_spinner=true
-            if(this.ufvs[con.sueldo])
+            if(this.ufvs[con.sueldo] && false)
             {                
                 console.log('stored data');
-                con.fr = con.sueldo * 0.0477;
-                con.cm = con.sueldo * 0.0109;
+                con.fr = con.sueldo * this.rate.retirement_fund/100;
+                con.cm = con.sueldo * this.rate.mortuary_quota/100;
                 con.interes = parseFloat(this.ufv);
                 con.subtotal =  (con.fr + con.cm + con.interes).toFixed(2);
             
@@ -148,8 +161,8 @@ export default {
             .then(response => {                
                 this.ufv = response.data
                 this.ufvs[con.sueldo] = this.ufv;
-                con.fr = con.sueldo * 0.0477;
-                con.cm = con.sueldo * 0.0109;
+                con.fr = con.sueldo * this.rate.retirement_fund/100;
+                con.cm = con.sueldo * this.rate.mortuary_quota/100;
                 con.interes = parseFloat(this.ufv);
                 con.subtotal =  (con.fr + con.cm + con.interes).toFixed(2);
             

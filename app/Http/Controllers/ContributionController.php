@@ -24,6 +24,7 @@ use Log;
 use Session;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
+use Muserpol\Models\Contribution\ContributionRate;
 class ContributionController extends Controller
 {
     /**
@@ -449,6 +450,8 @@ class ContributionController extends Controller
             $commitment->id = 0;
             $commitment->affiliate_id = $affiliate->id;
         }
+        //RATES
+        $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();
         $data = [
             'contributions' => $group,
             'reims' => $group_reim,
@@ -464,6 +467,7 @@ class ContributionController extends Controller
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'commitment'    =>  $commitment,
             'today_date'         =>  date('Y-m-d'),
+            'rate'  =>  $rate,
         ];
         //return  date('Y-m-d');
          return view('contribution.affiliate_contributions_edit', $data);
