@@ -5,6 +5,14 @@ use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Carbon\Carbon;
 use Yajra\Datatables\DataTables;
+use Ixudra\Curl\Facades\Curl;
+use Muserpol\Models\User;
+use Validator;
+use Log;
+use Muserpol\Models\Voucher;
+use Muserpol\Helpers\Util;
+use Auth;
+use Muserpol\Models\Contribution\AidCommitment;
 class AidContributionController extends Controller
 {
     /**
@@ -39,12 +47,16 @@ class AidContributionController extends Controller
     {
 
         $affiliate = Affiliate::find($affiliate_id);
+         $list = self::getMonthContributions($affiliate->id);
+         
         $data = [
-            'affiliate'=>$affiliate
+            'affiliate'=>$affiliate, 
+            'list' => $list
         ];
         return view ('contribution.aid_contribution', $data);
     }
     public function getAllContributionsAid (DataTables $datatables, $affiliate_id)
+    //Muestra todos los aportes de auxilio mortuorio del aportante
     {
         $affiliate = Affiliate::find($affiliate_id);
         $aid_contributions = $affiliate->aid_contributions;
@@ -65,18 +77,18 @@ class AidContributionController extends Controller
         $type = $aid_contributions->type;
         $quotable = $aid_contributions->quotable;
         $rent = $aid_contributions->rent;
-        $dignity_rent = $aid_contributions->dignity_rent;
+        $dignityRent = $aid_contributions->dignityRent;
         $total = $aid_contributions->total;
         $data = [
-            
             'affiliate' =>  $affiliate,
             'year' =>  $year,
             'month' => $month,
             'type' => $type,
             'quotable' => $quotable,
             'rent' => $rent,
-            'dignity_rent' => $dignity_rent,
+            'dignityRent' => $dignityRent,
             'total' => $total,
+            //'aid_contribution' => $aid_contribution
         ];
         return view ('contribution.aid_contribution', $data);
     }
@@ -88,6 +100,7 @@ class AidContributionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getMonthContributions($id)
+    //Muestran los meses que faltan pagarse. Maximo 3 por reglamento
     {   
         $contributions=[];
         $lastMonths = AidContribution::where('affiliate_id', $id)
@@ -97,30 +110,30 @@ class AidContributionController extends Controller
             $now = Carbon::now();
             $arrayDat = explode('-', $lastMonths->month_year);
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-            $diff = $now->subMonths(1)->diffInMonths($lastMonths);                
+            $diff = $now->subMonths(1)->diffInMonths($lastMonths);
             $contribution = array();
             if ($diff > 2) {
                 $month1 = Carbon::now()->subMonths(1);
                 $month2 = Carbon::now()->subMonths(2);
-                $month3 = Carbon::now()->subMonths(3);       
-                $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'rent' => 0, 'Auxilio Morutorio' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'rent' => 0, 'Auxilio Morutorio' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'rent' => 0, 'Auxilio Morutorio' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                $month3 = Carbon::now()->subMonths(3);
+                $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'),'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'auxilioMortuorio' => 0, 'dignityRent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'),'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'auxilioMortuorio' => 0, 'dignityRent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'),'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'auxilioMortuorio' => 0, 'dignityRent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contributions = array($contribution3, $contribution2, $contribution1);
             } 
             else 
             {
-                //$contributions=[];
-                for ($i = 0; $i < $diff; $i++) {                                    
+                for ($i = 0; $i < $diff; $i++) {
                     $month_diff = Carbon::now()->subMonths($i + 1);
                     $month = explode('-', $month_diff);
                     $montyear = $month_diff->format('m-Y');
                     $contribution = array(
                         'year' => $month[0], 
                         'month' => $month[1], 
-                        //'monthyear' => $montyear, 
-                        'rent' => 0, 
-                        'Auxilio Mortuorio' => 0,
+                        'monthyear' => $montyear, 
+                        'sueldo' => 0, 
+                        'auxilioMortuorio' => 0,
+                        'dignityRent' => 0,
                         'interes' => 0, 
                         'subtotal' => 0
                         );
@@ -128,11 +141,10 @@ class AidContributionController extends Controller
                 }
                 $contributions = array_reverse($contributions);
             }
-        }     
-        
+        }
         return $contributions;
     }
-   
+
      public function edit(Contribution $contribution)
     {
         //
@@ -194,6 +206,7 @@ class AidContributionController extends Controller
 //            $commitment->id = 0;
 //            $commitment->affiliate_id = $affiliate->id;
 //        }
+
         $data = [
             'contributions' => $group,            
             'affiliate_id' => $affiliate->id,            
@@ -203,10 +216,10 @@ class AidContributionController extends Controller
             'affiliate' => $affiliate,
             'cities' => $cities,
             'birth_cities' => $birth_cities,
-            //'new_contributions' => self::getMonthContributions($affiliate->id),            
-            //'commitment'    =>  $commitment,
-            'today_date'         =>  date('Y-m-d'),
-        ];
+            'commitment'    =>  $commitment,
+            'today_date' =>  date('Y-m-d'),
+            ];
+        
         //return  date('Y-m-d');
          return view('contribution.affiliate_aid_contributions_edit', $data);
     }
@@ -222,44 +235,121 @@ class AidContributionController extends Controller
             foreach ($request->iterator as $key => $iterator) 
             {              
                 $input_data['rent'][$key]= strip_tags($request->rent[$key]);
-                $input_data['dignity_rent'][$key]= strip_tags($request->dignity_rent[$key]);
+                $input_data['dignityRent'][$key]= strip_tags($request->dignityRent[$key]);
                 $input_data['total'][$key]= strip_tags($request->total[$key]);
                 $array_rules = [                       
                     'rent.'.$key =>  'required|numeric',
-                    'dignity_rent.'.$key =>  'required|numeric|min:1',
+                    'dignityRent.'.$key =>  'required|numeric|min:1',
                     'total.'.$key =>  'required|numeric|min:1'
                 ];
-                $rules=array_merge($rules,$array_rules);                
-            }   
+                $rules=array_merge($rules,$array_rules);
+            }
             $validator = Validator::make($input_data,$rules);
             if($validator->fails()){
                 return response()->json($validator->errors(), 400);
             }
          //*********END VALIDATOR************//
-        
+
         //$this->authorize('update',new Contribution);
         foreach ($request->iterator as $key => $iterator) {
             $contribution = AidContribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
                 $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
-                $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
+                $contribution->dignityRent = strip_tags($request->dignityRent[$key]) ?? $contribution->dignityRent;
                 $contribution->save();
-            } else {                
+            } else {
                 $contribution = new AidContribution();
                 $contribution->user_id = Auth::user()->id;
-                $contribution->affiliate_id = $request->affiliate_id;                                                
+                $contribution->affiliate_id = $request->affiliate_id;
                 $contribution->rent = strip_tags($request->rent[$key]) ?? 0;
                 $contribution->month_year = $key;
-                $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;                                
+                $contribution->dignityRent = strip_tags($request->dignityRent[$key]) ?? 0;
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
                 $contribution->quotable = $contribution->rent-$contribution->dinity_rent;
                 $contribution->type = 'PLANILLA';
                 $contribution->save();
             }
         }
-        return $contribution;        
+        return $contribution;
         }
     }
-    
+
+    public function getInterest(Request $request)
+    {
+        //Obtiene el interes a partir del subsiguiente mes que debe pagar. Ej. de enero corre el interes desde marzo
+        $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
+        $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
+        $mount=($request->con['sueldo']-$request->con['dignityRent'])*0.0203;
+        $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
+        $foo = file_get_contents($uri);
+        //return $foo;
+        $ch = curl_init($uri);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        $json = '';
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        //if( ($json = curl_exec($ch) ) === false)
+        //return $foo;
+        if( $foo === false)
+        {
+            Log::info("Error ".$httpcode ." ".$foo);
+            return response('error', 500);
+        }
+        else
+        {
+            Log::info("Success: ".$httpcode. " ".$foo );
+                return $foo;
+        }
+    }
+
+
+    public function storeDirectContribution(Request $request)
+    //Metodo para agregar contribuciones voluntarias o directas
+    {
+        // Se guarda voucher fecha, total 1 reg
+
+        $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
+        if (!isset($voucher_code->id))
+            $code = Util::getNextCode(""); 
+        else
+            $code = Util::getNextCode($voucher_code->code);
+        //return $request->total."<<<<<<";
+        $voucher = new Voucher();
+        $voucher->user_id = Auth::user()->id;
+        $voucher->affiliate_id = $request->afid;
+        $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
+        $voucher->total = $request->total;
+       $voucher->payment_date = Carbon::now();
+        $voucher->code = $code;
+        $voucher->save();
+      $result = [];      
+        foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
+        {            
+            $aporte=(object)$ap;
+            $affiliate = Affiliate::find($request->afid);
+            $aid_contribution = new AidContribution();
+            $aid_contribution->user_id = Auth::user()->id;
+            $aid_contribution->affiliate_id = $affiliate->id;            
+            $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);
+            $aid_contribution->type='DIRECTO';
+            $aid_contribution->quotable = $aporte->auxilioMortuorio;
+            $aid_contribution->dignity_rent = $aporte->dignityRent;
+            $aid_contribution->rent = $aporte->sueldo;
+            $aid_contribution->total = $aporte->subtotal;
+            $aid_contribution->interest = $aporte->interes;
+            $aid_contribution->save();
+            array_push($result, [
+                'total'=>$aid_contribution->total,
+                'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
+                    ]);
+        }
+        $data = [
+            'aidcontribution'  =>  $result,
+            'voucher_id'    => $voucher->id,
+            'affiliate_id'  =>  $affiliate->id,
+        ];
+        return $data;
+    }
 }

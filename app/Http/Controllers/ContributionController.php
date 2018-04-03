@@ -33,9 +33,10 @@ class ContributionController extends Controller
      */
     public function getInterest(Request $request)
     {
-        $dateStart = '01/' . $request->con['month'] . '/' . $request->con['year'];
+        //Obtiene el interes a partir del subsiguiente mes que debe pagar. Ej. de enero corre el interes desde marzo
+        $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
         $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
-        $mount = $request->con['sueldo'];
+        $mount = $request->con['sueldo']*0.0586;
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
         $foo = file_get_contents($uri);
         //return $foo;
@@ -56,10 +57,9 @@ class ContributionController extends Controller
             Log::info("Success: ".$httpcode. " ".$foo );
             return $foo;
         }
-        
     }
     public function getMonthContributions($id)
-    {   
+    {
         $contributions=[];
         $lastMonths = Contribution::where('affiliate_id', $id)
             ->orderBy('month_year', 'desc')

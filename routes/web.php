@@ -128,7 +128,9 @@ Route::group(['middleware' => ['auth']], function () {
 	// Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributions')->name('affiliate_contributions');
 
 	Route::post('get-interest','ContributionController@getInterest');
+	Route::post('get-interest-aid','AidContributionController@getInterest');
 	Route::post('contribution_save','ContributionController@storeDirectContribution');
+	Route::post('aid_contribution_save','AidContributionController@storeDirectContribution');
         Route::post('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
         Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
         

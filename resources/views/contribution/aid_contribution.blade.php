@@ -1,15 +1,13 @@
 @extends('layouts.app') 
 @section('title', 'Auxilio Mortuorio') 
 @section('content')
-
 <div class="wrapper wrapper-content animated fadeInRight">
-        <contribution-create :contributions1="{{ json_encode($contributions) }}" :afid="{{ $affiliate->id }}" ></contribution-create>
+   <aid-contribution-create :aid-contributions="{{ json_encode($list) }}" :afid="{{ $affiliate->id }}" ></aid-contribution-create>
     <div class="row">
-
-        <div class="col-md-12 no-padding no-margins">
+        <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h3 class="pull-left">Aportes</h3>
+                    <h3 class="pull-left">Aportes de Auxilio Mortuorio</h3>
                     <div class="text-right">
                         @can('update',new Muserpol\Models\Contribution\AidCommitment)
                         <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
@@ -92,11 +90,9 @@
                 {data: 'dignity_rent'},
                 {data: 'total'},
             ],
-
-
         });
          $('#datatables-aid-contributions tbody')
-        .on( 'mouseenter', 'td', function () {
+        .on( 'mouseenter', 'td', function () {year
             var colIdx = datatable_contri.cell(this).index().column;
             $( datatable_contri.cells().nodes() ).removeClass( 'highlight' );
             $( datatable_contri.column( colIdx ).nodes() ).addClass( 'highlight' );

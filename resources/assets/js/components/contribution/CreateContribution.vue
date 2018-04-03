@@ -111,34 +111,31 @@ export default {
     this.afi_id = this.afid;    
   },
   created(){
-      
   },
   methods: {
-      RemoveRow(index) {         
+      RemoveRow(index) {
         this.contributions.splice(index,1);
         this.SumTotal();
       },
       Refresh() {
-        this.contributions = this.contributions1;       
-      
+        this.contributions = this.contributions1;
       },
       CalcularAporte(con, index){
         if(parseFloat(con.sueldo) >0)
-        {          
+        {
         if(this.count > 0)
         {
             this.show_spinner=true
             axios.post('/get-interest',{con})
             .then(response => {
-                
-                this.ufv = response.data
                 con.fr = con.sueldo * 0.0477;
                 con.cm = con.sueldo * 0.0109;
-                con.interes = parseFloat(this.ufv);
-                con.subtotal =  con.fr + con.cm + con.interes;
-            
+                this.ufv = response.data.replace(",", ".");
+                if(this.ufv < 0)
+                    this.ufv = 0;
+                con.interes = this.ufv;
+                con.subtotal =  parseFloat(con.fr) + parseFloat(con.cm) + parseFloat(con.interes);
                 this.show_spinner=false;
-
                 this.SumTotal();
                 this.count = 3;
                 if(index +1 < this.contributions.length)
@@ -158,10 +155,8 @@ export default {
             this.show_spinner=false;
             this.count = 3;
             return;
-        }                
-        
-                
-        }           
+        }
+        }
           
       },
 
