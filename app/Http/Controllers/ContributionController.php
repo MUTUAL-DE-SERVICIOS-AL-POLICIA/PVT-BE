@@ -633,7 +633,7 @@ class ContributionController extends Controller
         return $disp_id;
         // return redirect('/');     
     }
-    public function printCertification60($id)
+    public function printCertificationSixty($id)
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;

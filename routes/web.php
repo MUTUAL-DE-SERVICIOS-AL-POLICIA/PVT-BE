@@ -109,7 +109,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('ret_fun/savecontributions','ContributionController@saveContributions')->name('save_contributions');
 
 		//contributions certification
-		Route::get('ret_fun/{retirement_fund}/print/certification', 'ContributionController@printCertification60')->name('ret_fun_print_certification');
+		Route::get('ret_fun/{retirement_fund}/print/certification', 'ContributionController@printCertificationSixty')->name('ret_fun_print_certification');
 		Route::get('ret_fun/{retirement_fund}/print/cer_availability', 'ContributionController@printCertificationAvailability')->name('ret_fun_print_certification_availability');
 
 
