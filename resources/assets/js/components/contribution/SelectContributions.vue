@@ -36,8 +36,8 @@
                 </tr>
                 </thead>
               <tbody>
-                <tr v-for="contribution in list_aportes" :key="contribution.id" :class="getColor(contribution.breakdown_id)+' height:515px; overflow:auto;'" >
-                    <td class="col-xs-1">{{contribution.month_year}}</td>
+                <tr v-for="contribution in list_aportes" :key="contribution.id" :class="getColor(contribution.breakdown_id)" >
+                    <td class="col-xs-1">{{getFormatDate(contribution.month_year)}}</td>
                     <td class="col-xs-3">{{contribution.base_wage}}</td>
                     <td class="col-xs-3">{{contribution.category_name}}</td>
                     <td class="col-xs-2">{{contribution.total}}</td>
@@ -89,7 +89,12 @@ export default {
       con_type: this.contype,
       last_date: this.contributions[0],
       first_date: this.contributions[this.contributions.length-1],
-      
+        item0 : null,
+        disponibilidad: null,
+        servicio: null,
+        bfs:null,
+        nh: null,
+        cas: null,
       order_aportes: true,
 
     }
@@ -98,17 +103,16 @@ export default {
     
     console.log('Revisando lista_aportes: ' + this.list_aportes.length)
     
-    var disponibilidad = this.types.filter(function (type) {
+    this.disponibilidad = this.types.filter(function (type) {
         return type.name  == 'Disponibilidad';   
     })[0];
-    var item0 =  this.types.filter(function (type) {
+    this.item0 =  this.types.filter(function (type) {
         return type.name  == 'Item 0';   
     })[0];
-    var servicio = this.types.filter(function (type) {
+    this.servicio = this.types.filter(function (type) {
         return type.name  == 'Servicio';   
     })[0];
-    console.log(servicio);
-    console.log(servicio.id);    
+    console.log(this.servicio);
  
    if(this.con_type){
         for (let i = 0; i < this.list_aportes.length; i++) {
@@ -116,18 +120,18 @@ export default {
             switch (this.list_aportes[i].breakdown_id) {
 
                     case 1:
-                        this.list_aportes[i].breakdown_id = disponibilidad.id;
-                        this.list_aportes[i].breakdown_name = disponibilidad.name;
+                        this.list_aportes[i].breakdown_id = this.disponibilidad.id;
+                        this.list_aportes[i].breakdown_name = this.disponibilidad.name;
                         break;
 
                     case 3:
-                        this.list_aportes[i].breakdown_id = item0.id;
-                        this.list_aportes[i].breakdown_name = item0.name;              
+                        this.list_aportes[i].breakdown_id = this.item0.id;
+                        this.list_aportes[i].breakdown_name = this.item0.name;              
                     break;
             
                 default:
-                        this.list_aportes[i].breakdown_id = servicio.id;
-                        this.list_aportes[i].breakdown_name = servicio.name;
+                        this.list_aportes[i].breakdown_id = this.servicio.id;
+                        this.list_aportes[i].breakdown_name = this.servicio.name;
                     break;
             }       
         } 
@@ -136,6 +140,31 @@ export default {
     console.log(this.con_type);
     console.log(this.first_date);
     console.log(this.last_date);
+    let fi = this.first_date.month_year;
+    let ff = this.last_date.month_year;
+    let year = null;
+    let month = null;
+    let i= 0;
+    while (new Date(ff).getTime() > new Date(fi).getTime() ) {
+        let ad = ff.split('-');
+        year = ad[0];
+        month = ad[1];
+        console.log(ad);  
+        month--;
+        if(month==0)
+        {
+            year--;
+            month = 12;
+        }
+        ff= year+'-'+month+'-01';
+        console.log(ff);
+        i++;
+    }
+    console.log('cyk '+i);
+    // this.list_aportes.forEach(aporte => {
+    //     let fecha = aporte.month_year.split('-');
+    //     console.log(fecha);
+    // });
 
   },
   methods:{
@@ -196,21 +225,26 @@ export default {
     {
         var color="cya";
         switch (breakdown_id) {
-            case 3:
+            case this.disponibilidad.id:
                 color="cyk";
                 break;
-            case 2:
+            case this.item0.id:
                 color="cyv";
                 break;
         }
         return color;
+    },
+    getFormatDate(fecha)
+    {
+        let str = fecha.split('-');
+        return str[0]+' - '+parseInt(str[1]);
     }
   },
   computed: {
     list2String(cNormal){
       return JSON.stringify(this.list_aportes, null, 2);  
     }
-    
+   
   },
   watch: {
  

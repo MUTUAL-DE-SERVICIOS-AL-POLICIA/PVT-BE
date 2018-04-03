@@ -574,8 +574,9 @@ class ContributionController extends Controller
                                                   ->orderBy('contributions.month_year', 'desc')
                                                   ->get();
         // $contributions = null;
-       // return $contributions->count();
-        if(!$contributions){
+    //    return $contributions->count();
+       
+        if($contributions->count()==0){
           $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                     ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
                                                     ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
@@ -587,7 +588,7 @@ class ContributionController extends Controller
            $con_type=true;
         }
     
-    
+        
         // return $contributions;
         // return $contributions;
        
