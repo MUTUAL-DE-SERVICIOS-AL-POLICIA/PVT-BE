@@ -88,8 +88,7 @@ export default {
   
     props: [
         'contributions1',
-        'afid',
-        'last_quotable',
+        'affiliate_id',        
     ],
     data() {   
 
@@ -107,11 +106,8 @@ export default {
    
   mounted() {
     this.contributions = this.contributions1;  
-    this.afi_id = this.afid;    
-  },
-  created(){
-      
-  },
+    this.afi_id = this.affiliate_id;    
+  },  
   methods: {
       RemoveRow(index) {         
         this.contributions.splice(index,1);
@@ -197,7 +193,7 @@ export default {
         });
         var contributions = this.contributions;
         var con = JSON.stringify(contributions);
-        var affiliate_id = this.afid;
+        var affiliate_id = this.affiliate_id;
         var total = this.total;        
         printJS({printable:'/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, type:'pdf', showModal:true});
       },
@@ -228,7 +224,7 @@ export default {
                 }).then((result) => {    
                     if (result.value) {                    
                     var aportes = this.contributions;                    
-                    axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
+                    axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,affiliate_id:this.affiliate_id})
                     .then(response => {
                   //      console.log('entrando a succes');
                 //console.log(response.data);

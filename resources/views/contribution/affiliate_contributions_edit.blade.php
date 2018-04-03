@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
-            <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>
+            <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}" :rate="{{$rate}}"></contribution-create>
         </div>
     </div>
     <div class="row">
@@ -81,7 +81,7 @@
                                                 @php
                                                     $period = $year_start. '-'.($i<10? '0'.$i:$i). '-01';
                                                     $valid_period = true;
-                                                    if(date('Y')==$year_start && date('m')<=$i)
+                                                    if((date('Y')==$year_start && date('m')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976))
                                                         $valid_period = false;
                                                 @endphp
                                                 @if($valid_period)
@@ -122,7 +122,7 @@
                                                 @php
                                                     $period = $year_start. '-'.($i<10? '0'.$i:$i). '-01';
                                                     $valid_period = true;
-                                                    if(date('Y')==$year_start && date('m')<=$i)
+                                                    if((date('Y')==$year_start && date('m')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976))
                                                         $valid_period = false;
                                                 @endphp
                                                 @if($valid_period)
@@ -303,9 +303,12 @@
                 }
             },
             success: function(result){
-                console.log(result);
-                flash('exito');
-                 $('#main'+result.month_year).html(result.total);
+                //console.log(result);
+                
+                 $.each(result, function(index,value){
+                    $('#main'+value.month_year).html(value.total);                    
+                 });                                  
+                 flash('exito');
             },
             error: function(xhr, status, error) {
                 console.log(xhr.responseText);
