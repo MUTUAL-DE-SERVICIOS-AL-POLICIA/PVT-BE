@@ -17,6 +17,12 @@
         computed:{            
         },        
         methods:{
+            getFormatDate: function(date_tarjet){
+              var d = new Date(date_tarjet);
+              return (d.getDate()+1)+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
+              
+              //return (d.getMonth();
+            },
             toggle_editing:function () {
                 this.editing = !this.editing;
                 //this.ben = this.original_beneficiar   ies;

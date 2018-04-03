@@ -157,7 +157,7 @@ class ContributionController extends Controller
                 $rules=array_merge($rules,$biz_rules);
                 //$aporte=(object)$ap;
                 $array_rules = [
-                    'aportes.'.$key.'.sueldo' =>  'required|numeric|min:2000',
+                    'aportes.'.$key.'.sueldo' =>  'required|numeric|min:0',
                     'aportes.'.$key.'.fr' =>  'required|numeric',
                     'aportes.'.$key.'.cm' =>  'required|numeric',
                     'aportes.'.$key.'.subtotal' =>  'required|numeric',
@@ -482,8 +482,8 @@ class ContributionController extends Controller
               $input_data['gain'][$key]= strip_tags($request->gain[$key]);
               $input_data['total'][$key]= strip_tags($request->total[$key]);
         $array_rules = [                       
-            'base_wage.'.$key =>  'required|numeric|min:2000',            
-            'gain.'.$key =>  'required|numeric|min:1',
+            'base_wage.'.$key =>  'numeric|min:0',
+            'gain.'.$key =>  'numeric|min:1',
             'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
@@ -502,8 +502,9 @@ class ContributionController extends Controller
             return response()->json($validator->errors(), 400);
         }
          //*********END VALIDATOR************//
-        return ;
+        //return ;
         $this->authorize('update',new Contribution);
+        $contributions = [];
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
@@ -529,8 +530,11 @@ class ContributionController extends Controller
                 $contribution->unit_id = $affiliate->unit_id;
                 $contribution->breakdown_id = $affiliate->breakdown_id;
                 $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
+                if($contribution->base_wage == "")
+                    $contribution->base_wage = 0;
                 $category = Category::find($request->category[$key]);
                 $contribution->category_id = $category->id;
+                //$data = $contribution->base_wage * 123;
                 $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
                 $contribution->study_bonus = 0;
                 $contribution->position_bonus = 0;
@@ -539,15 +543,18 @@ class ContributionController extends Controller
                 $contribution->quotable = 0;
                 $contribution->month_year = $key;
                 $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
+                if($contribution->gain == "")
+                    $contribution->gain = 0;
                 $contribution->retirement_fund = 0;
                 $contribution->mortuary_quota = 0;
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
                 //$contribution->interes = 0;
                 $contribution->type = 'Planilla';
                 $contribution->save();
+                array_push($contributions, $contribution);
             }
         }
-        return $contribution;
+        return $contributions;
         //return json_encode($contribution);
     }
 }
