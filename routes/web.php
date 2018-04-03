@@ -68,6 +68,9 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
 	Route::resource('ret_fun', 'RetirementFundController');
 	Route::get('ret_fun/{ret_fun_id}/qualification', 'RetirementFundController@qualification');
+	Route::post('ret_fun/{ret_fun_id}/get_data_qualification', 'RetirementFundController@geDataQualification');
+	Route::get('ret_fun/{ret_fun_id}/qualification/certification', 'RetirementFundController@qualificationCertification');
+	Route::get('get_data_certification/{ret_fun_id}', 'RetirementFundController@getDataQualificationCertification')->name('get_data_certification');
 	Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 
 	//Retirement Fund Certification

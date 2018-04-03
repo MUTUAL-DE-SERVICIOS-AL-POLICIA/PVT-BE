@@ -7,8 +7,9 @@
     @setDate="updateDate"
     >
     </ret-fun-date-interval>
-    <div>Anio {{ years }}</div>
-    <div>Meses {{ months }}</div>
+    <div><strong>Años:</strong> {{ years }}</div>
+    <div><strong>Meses:</strong> {{ months }}</div>
+    <hr>
 </div>
 </template>
 

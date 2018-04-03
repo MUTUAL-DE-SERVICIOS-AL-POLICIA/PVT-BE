@@ -35,6 +35,11 @@ Breadcrumbs::register('show_qualification_retirement_fund', function($breadcrumb
 	$breadcrumbs->parent('show_retirement_fund', $retirement_fund);
 	$breadcrumbs->push	("Calificación", URL::to('ret_fun/'.$retirement_fund->id.'/qualification'));
 });
+Breadcrumbs::register('show_qualification_certification_retirement_fund', function($breadcrumbs, $retirement_fund)
+{
+	$breadcrumbs->parent('show_qualification_retirement_fund', $retirement_fund);
+	$breadcrumbs->push	("Certificación 60 Aportes", URL::to('ret_fun/'.$retirement_fund->id.'/qualification_certification'));
+});
 Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliate)
 {
 	$breadcrumbs->parent('retirement_fund');
