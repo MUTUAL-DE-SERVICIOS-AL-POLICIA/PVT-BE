@@ -5,20 +5,20 @@
                     <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
                         <div class="panel-heading">
                             <h3 class="pull-left">Compromiso de pago</h3>
-                            @can('update',new Muserpol\Models\Contribution\AidContribution)
+                            {{-- @can('update',new Muserpol\Models\Contribution\AidCommitment) --}}
                             <div class="text-right">
                                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
                             </div>
-                            @else
-                            <br>
-                            @endcan
+                            {{-- @else --}}
+                            {{-- <br> --}}
+                            {{-- @endcan --}}
                         </div>
                                                 
                         <div class="panel-body " v-if="! editing" >                            
                             <div class="col-md-12" v-if="! create && aid_commitment.id != 0">
                             <div class="col-md-6">
                                 <dl class="dl-">                                    
-                                    <dt>Aportante:</dt> <dd>@{{ aid_commitment.contributor }}</dd>
+                                    <dt>Aportante:</dt> <dd>@{{ get_contributor() }}</dd>
                                     <dt>Declaración de Pensión:</dt> <dd>@{{ aid_commitment.pension_declaration }}</dd>
                                     <dt>Fecha de Declaración:</dt> <dd>@{{ aid_commitment.pension_declaration_date }}</dd>                                    
                                 </dl>
@@ -40,7 +40,7 @@
                         </div>
                         
                         <div class="panel-body" v-else>
-                        @can('update', new Muserpol\Models\Contribution\AidContribution)
+                        {{-- @can('update', new Muserpol\Models\Contribution\AidContribution) --}}
                             <div class="sk-folding-cube" v-show="show_spinner" >
                                 <div class="sk-cube1 sk-cube"></div>
                                 <div class="sk-cube2 sk-cube"></div>
@@ -80,7 +80,7 @@
                                     <button data-animation="flip" class="btn btn-primary" @click="create_new"><i class="fa fa-chevron-down"></i>Crear nuevo2</button>
                                 </div>-->
                             </div>                            
-                        @endcan
+                        {{-- @endcan --}}
                         </div>
                         
                         <hr>                      

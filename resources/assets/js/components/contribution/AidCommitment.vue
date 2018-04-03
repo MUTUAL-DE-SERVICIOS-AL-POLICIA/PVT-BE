@@ -21,6 +21,19 @@
                 this.editing = !this.editing;
                 //this.ben = this.original_beneficiar   ies;
                 
+            },
+            get_contributor:function(){
+                var contributor_name="";
+                if(this.aid_commitment.contributor=='T'){
+                    contributor_name="Titular";
+                }else{
+                    if(this.aid_commitment.contributor=='E'){
+                        contributor_name="Esposa";
+                    }else{
+                        contributor_name="Cónyuge";
+                    }
+                }
+                return contributor_name;
             },                            
             toggle_create:function(){
                 this.create = !this.create;
