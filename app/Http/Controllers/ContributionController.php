@@ -24,7 +24,6 @@ use Log;
 use Session;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
-use Illuminate\Support\Facades\DB;
 class ContributionController extends Controller
 {
     /**
@@ -559,7 +558,7 @@ class ContributionController extends Controller
         return View('contribution.create', compact('affiliate', 'contributions'));
     }
 
-    public function printCertification60($id)
+    public function printCertification($id)
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
@@ -575,7 +574,6 @@ class ContributionController extends Controller
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = "CERTIFICACION DE APORTES";
-        $subtitle="Cuenta Individual";
         $number = $retirement_fund->code;
         $date = Util::getStringDate($retirement_fund->reception_date);        
         $degree=Degree::find($affiliate->degree_id);
