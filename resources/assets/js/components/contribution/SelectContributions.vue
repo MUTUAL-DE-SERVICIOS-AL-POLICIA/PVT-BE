@@ -112,6 +112,19 @@ export default {
     this.servicio = this.types.filter(function (type) {
         return type.name  == 'Servicio';   
     })[0];
+
+    this.nh = this.types.filter(function (type) {
+        return type.name  == 'No Hay Regristro';   
+    })[0];    
+
+    this.cas = this.types.filter(function (type) {
+        return type.name  == 'Registro Segun CAS';   
+    })[0];
+
+    this.bfs = this.types.filter(function (type) {
+        return type.name  == 'Batallon de Seguridad Fisica';   
+    })[0];
+
     console.log(this.servicio);
  
    if(this.con_type){
@@ -144,12 +157,20 @@ export default {
     let ff = this.last_date.month_year;
     let year = null;
     let month = null;
-    let i= 0;
+    var list = [];
+    let contribution = null;
+
     while (new Date(ff).getTime() > new Date(fi).getTime() ) {
         let ad = ff.split('-');
         year = ad[0];
         month = ad[1];
-        console.log(ad);  
+        // console.log(ad);
+        contribution = this.searchContribution(ff);
+        if(!contribution)
+        {
+            contribution = {"base_wage":"","breakdown_id":0,"breakdown_name":"","category_id":0,"category_name":"","gain":"","id":0,"month_year":ff,"retirement_fund":"","total":""};
+        }     
+        list.push(contribution);
         month--;
         if(month==0)
         {
@@ -157,15 +178,10 @@ export default {
             month = 12;
         }
         ff= year+'-'+month+'-01';
-        console.log(ff);
-        i++;
     }
-    console.log('cyk '+i);
-    // this.list_aportes.forEach(aporte => {
-    //     let fecha = aporte.month_year.split('-');
-    //     console.log(fecha);
-    // });
-
+    console.log('lechuz se comio a la Karen XD ');
+    console.log(list);
+    this.list_aportes = list;
   },
   methods:{
     orderList () {
@@ -192,26 +208,7 @@ export default {
                       flash('Error lechuza: '+resp.message,'error');
                   });
     },
-    selectContributions(){
-        console.log(' fire');
-        this.order_aportes=false;
-        this.orderList();
-        this.list_sixty = [];
-        for (var j = 0; j < this.list_aportes.length; j++) {
-            var obj = this.list_aportes[j];
-            if(j<60) 
-            {
-                obj.contador = j+1;
-                this.list_sixty.push(obj);
-            }else
-            {
-                obj.contador = null;
-            }
-            Vue.set (this.list_aportes, j, obj)
-            
-        }
-  
-    },
+    
     classify(){
         console.log('cechuz y karem');
 
@@ -231,6 +228,22 @@ export default {
             case this.item0.id:
                 color="cyv";
                 break;
+            case this.servicio.id:
+                color="cya";
+                break;
+            case this.bfs.id:
+                color="bsf";
+                break;
+            case this.nh.id:
+                color="nh";
+                break;
+            case this.cas.id:
+                color="cas";
+                break;
+            case 0:
+                color="cym";
+                break;
+            
         }
         return color;
     },
@@ -238,6 +251,27 @@ export default {
     {
         let str = fecha.split('-');
         return str[0]+' - '+parseInt(str[1]);
+    },
+    searchContribution(date)
+    {   
+        // console.log(date);
+        let newDate = date.split('-');
+        if(newDate[1].length==1)
+        {
+            newDate[1] = '0'+newDate[1];
+        }
+        let strDate = newDate[0]+'-'+newDate[1]+'-'+newDate[2];
+        let contribution = null;
+
+        for (let i = 0; i < this.list_aportes.length; i++) {
+            if(new Date(this.list_aportes[i].month_year).getTime() == new Date(strDate).getTime() )
+            {
+                contribution = this.list_aportes[i];
+                i = this.list_aportes.length;
+                // console.log('Encotrado el hdp');
+            } 
+        }
+        return contribution;
     }
   },
   computed: {
@@ -273,7 +307,18 @@ export default {
 }
 .cyv {
     background: #f7f097fd;
-    
+}
+.cym {
+    background: #bbbaadfd;
+}
+.nh {
+    background: #80e9bdfd;
+}
+.cas{
+    background: #e0ad7dfd;
+}
+.bsf{
+    background: #a1a7fffd;
 }
 tr {
 width: 100%;
