@@ -7,7 +7,7 @@
 
 require('./bootstrap');
 require('./inspinia');
-require('print-js')
+require('print-js');
 
 window.Vue = require('vue');
 
@@ -22,10 +22,10 @@ window.flash = function (message, level = 'success', timeOut = 5000) {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
- /**VUEX */
- import store from './store/index';
+/**VUEX */
+import store from './store/index';
 
- import VueFormWizard from 'vue-form-wizard';
+import VueFormWizard from 'vue-form-wizard';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 Vue.use(VueFormWizard);
 
@@ -57,6 +57,9 @@ Vue.component('ret-fun-beneficiary-list', require('./components/ret_fun/Benefici
 Vue.component('ret-fun-beneficiary', require('./components/ret_fun/Beneficiary.vue'));
 Vue.component('ret-fun-info', require('./components/ret_fun/Info.vue'));
 Vue.component('ret-fun-beneficiaries-show', require('./components/ret_fun/ShowBeneficiaries.vue'));
+Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualification.vue'));
+Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterval.vue'));
+Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
 
 
 // Quota Aid Mortuaries
@@ -77,8 +80,9 @@ Vue.component('contribution-create', require('./components/contribution/CreateCo
 Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
+Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
 const app = new Vue({
-    el: '#app',
-    store
+	el: '#app',
+	store
     
 });

@@ -15,13 +15,17 @@
             }
         },        
         computed:{            
-        },        
+        },       
+        filters:{
+            getFormatDate(date_tarjet){
+                return moment(date_tarjet).format("DD/MM/Y");
+            },
+        },
         methods:{
             toggle_editing:function () {
                 this.editing = !this.editing;
                 //this.ben = this.original_beneficiar   ies;
-                
-            },                            
+            },
             toggle_create:function(){
                 this.create = !this.create;
             },
