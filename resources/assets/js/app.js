@@ -80,6 +80,7 @@ Vue.component('contribution-create', require('./components/contribution/CreateCo
 Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
+Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
 const app = new Vue({
 	el: '#app',
 	store

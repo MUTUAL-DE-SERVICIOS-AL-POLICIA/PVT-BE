@@ -378,6 +378,7 @@ class CreateRetirementFundTables extends Migration {
             $table->enum('contributor',['T','E','C']);
             $table->string('pension_declaration')->nullable();
             $table->date('pension_declaration_date');
+            $table->enum('state',['ALTA','BAJA']);
             $table->foreign('affiliate_id')->references('id')->on('affiliates');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
