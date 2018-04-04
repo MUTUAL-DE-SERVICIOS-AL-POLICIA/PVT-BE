@@ -144,7 +144,7 @@ class AidContributionController extends Controller
             'birth_cities' => $birth_cities,
             'new_contributions' => $this->getContributionDebt($affiliate->id,3),            
             'aid_commitment'    =>  $aid_commitment,
-
+            'spouse'    =>  $affiliate->id,
             'today_date'         =>  date('Y-m-d'),
         ];
         //return  date('Y-m-d');

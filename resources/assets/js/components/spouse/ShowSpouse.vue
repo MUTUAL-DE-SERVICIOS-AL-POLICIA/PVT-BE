@@ -2,7 +2,7 @@
 	export default{
 		props:[
             'spouse',
-                    'affiliate_id',
+                    'affiliate_id'
         ],
         data(){
             return{
@@ -94,32 +94,31 @@
                 // console.log(this.form);
             },
             update () {
-                let uri = `/update_affiliate/${this.affiliate.id}`;
+                let uri = `/update_spouse/${this.spouse.id}`;
                 this.show_spinner=true;
                 axios.patch(uri,this.form)
                     .then(response=>{
                         this.editing = false;
                         this.show_spinner=false;
-                        this.form = response.data.affiliate;
+                        this.form = response.data.spouse;
                         this.city_birth = response.data.city_birth;
                         this.city_identity_card = response.data.city_identity_card; 
                         console.log(response);
-                        this.values.identity_card = response.data.affiliate.identity_card;
-                        this.values.first_name =  response.data.affiliate.first_name;
-                        this.values.second_name =  response.data.affiliate.second_name;
-                        this.values.last_name =  response.data.affiliate.last_name;
-                        this.values.mothers_last_name =  response.data.affiliate.mothers_last_name;
+                        this.values.identity_card = response.data.spouse.identity_card;
+                        this.values.resgistration = response.data.spouse.resgistration;
+                        this.values.first_name =  response.data.spouse.first_name;
+                        this.values.second_name =  response.data.spouse.second_name;
+                        this.values.last_name =  response.data.spouse.last_name;
+                        this.values.mothers_last_name =  response.data.spouse.mothers_last_name;
+                        this.values.surname_husband = response.data.spouse.surname_husband;
                         this.values.birth_date =  response.data.affiliate.birth_date;
-                        this.values.phone_number =  response.data.affiliate.phone_number;
-                        this.values.cell_phone_number =  response.data.affiliate.cell_phone_numbe;
-                        this.values.gender = response.data.affiliate.gender;
                         this.values.civil_status = response.data.affiliate.civil_status;
 
-                        flash('Informacion del Afiliado Actualizada');
+                        flash('Informacion de Esposa(o) Actualizada');
                     }).catch((response)=>{
                         this.show_spinner=false;
                         this.toggle_editing();
-                        flash('Error al actualizar el afiliado: '+response.message,'error');
+                        flash('Error al actualizar ala esposa(o): '+response.message,'error');
                     })
             }
         }

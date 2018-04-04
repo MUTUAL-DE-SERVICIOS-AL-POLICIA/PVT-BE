@@ -2,35 +2,33 @@
     <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
         <div class="panel-heading">
             <h3 class="pull-left">Información Esposa</h3>
-            @can('update',$affiliate)
+            {{-- @can('update',$affiliate) --}}
             <div class="text-right">
                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
             </div>
-            @else
+            {{-- @else
             <br>
-            @endcan
+            @endcan --}}
         </div>
         <div class="panel-body " v-if="! editing " >
             <div class="col-md-6">
                 <dl class="dl-">
-                    <dt>Cedula de identidad:</dt> <dd>@{{ form.identity_card }}  @{{ city_identity_card_name }}</dd>
+                    <dt>Cedula de identidad:</dt> <dd>aaa@{{ form.identity_card }}  @{{ city_identity_card_name }}</dd>
                     <dt>Primer Nombre:</dt> <dd>@{{ form.first_name}}</dd>
                     <input type="text" class="form-control" v-model="first_name.value" v-show="first_name.edit ==  true">
                     <dt>Segundo Nombre:</dt> <dd> @{{ form.second_name }}</dd>
                     <dt>Apellido Paterno:</dt> <dd>@{{ form.last_name }}</dd>
                     <dt>Apellido Materno:</dt> <dd>@{{ form.mothers_last_name }}</dd>
-                    <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'">@{{ form.surname_husband }}</dd>
+                    {{-- <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'">@{{ form.surname_husband }}</dd> --}}
                 </dl>
             </div>
             <div class="col-md-6">
                 <dl class="dl-">
-                    <dt>Genero:</dt> <dd>@{{ gender_name }}</dd>
+                    
                     <dt>Estado Civil:</dt> <dd>@{{ civil_status_name }}</dd>
                     <dt>Fecha de Nacimiento:</dt> <dd>@{{ form.birth_date }}</dd>
                     <dt>Edad:</dt> <dd> @{{ age  }} </dd>
                     <dt>Lugar de Nacimiento:</dt> <dd> @{{ city_birth_name}}</dd>
-                    <dt>Telefono:</dt> <dd>@{{ form.phone_number }}</dd>
-                    <dt>Celular:</dt> <dd>@{{ form.cell_phone_number }}</dd>
                 </dl>
             </div>
         </div>
@@ -65,14 +63,14 @@
                     <dt>Segundo Nombre:</dt> <dd><input type="text" v-model="form.second_name" class="form-control"></dd>
                     <dt>Apellido Paterno:</dt> <dd><input type="text" v-model="form.last_name" class="form-control"></dd>
                     <dt>Apellido Materno:</dt> <dd><input type="text" v-model="form.mothers_last_name" class="form-control"></dd>
-                    <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'"><input type="text" class="form-control"></dd>
+                    {{-- <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'"><input type="text" class="form-control"></dd> --}}
                 </dl>
             </div>
             <div class="col-md-6">
                 <dl class="dl-">
-                    <dt>Genero:</dt> <dd>
+                    {{-- <dt>Genero:</dt> <dd>
                         {!! Form::select('gender', ['F'=>'Femenino','M'=>'Masculino'], null, ['placeholder' => 'Seleccione genero', 'class' => 'form-control','v-model' => 'form.gender']) !!}
-                                    </dd>
+                                    </dd> --}}
                     <dt>Estado Civil:</dt> <dd>
                         {!! Form::select('civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'], null, ['placeholder' => 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'form.civil_status']) !!}
                           
@@ -85,8 +83,8 @@
                         </dd>
                     <dt>Edad:</dt> <dd><input v-model="age" type="text" class="form-control" disabled></dd>
                     <dt>Lugar de Nacimiento:</dt> <dd>{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control','v-model'=>'form.city_birth_id']) !!}</dd>
-                    <dt>Telefono:</dt> <dd><input type="text" v-model="form.phone_number" class="form-control"></dd>
-                    <dt>Celular:</dt> <dd><input type="text" v-model="form.cell_phone_number" class="form-control"></dd>
+                    {{-- <dt>Telefono:</dt> <dd><input type="text" v-model="form.phone_number" class="form-control"></dd>
+                    <dt>Celular:</dt> <dd><input type="text" v-model="form.cell_phone_number" class="form-control"></dd> --}}
                 </dl>
             </div>
         </div>

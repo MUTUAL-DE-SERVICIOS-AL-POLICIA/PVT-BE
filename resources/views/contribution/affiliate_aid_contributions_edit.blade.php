@@ -29,9 +29,9 @@
                 <affiliate-show :affiliate="{{ $affiliate }}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
                 </affiliate-show>
-                {{-- <spouse-show :spouse="{{ $spouse }}" inline-template>
+                <spouse-show :spouse="{{ $spouse }}" inline-template>
                     @include('spouses.spouse_personal_information',['spouse'=>$spouse,'affiliate_id'=>$affiliate_id,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                </spouse-show> --}}
+                </spouse-show>
             </div>
             <div class="col-md-6">
                 @include('contribution.aid_aditional_info',['summary',$summary])
