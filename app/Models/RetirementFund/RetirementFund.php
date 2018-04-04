@@ -57,5 +57,6 @@ class RetirementFund extends Model
     public function reimbursement()
     {
         return $this->belongsToMany('Muserpol\Models\Contribution\Reimbursement', 'ret_fun_reimbursements');
-    }      
+    }
+
 }

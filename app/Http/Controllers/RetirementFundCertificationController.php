@@ -19,6 +19,7 @@ use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Muserpol\Models\RetirementFund\RetFunIncrement;
 use Session;
 use Auth;
+use DB;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
@@ -176,13 +177,113 @@ class RetirementFundCertificationController extends Controller
         $date = date('d/m/Y');
         $title = $retirement_fund->procedure_modality->procedure_type->module->name;
         $username = Auth::user()->username;//agregar cuando haya roles
+
         $affiliate = $retirement_fund->affiliate;
+        $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type','S')->with('kinship')->first();
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+
         $number = $retirement_fund->code;
         $pdftitle = "Calificacion";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-        // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
-        return \PDF::loadView('ret_fun.print.beneficiaries_qualification', compact('date', 'subtitle', 'username', 'title', 'number', 'retirement_fund', 'affiliate', 'submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
 
+        $data = [
+            'date' => $date,
+            'username' => $username,
+            'title' => $title,
+            'number' => $number,
+
+            'affiliate' => $affiliate,
+            'applicant' => $applicant,
+            'beneficiaries' => $beneficiaries,
+            'retirement_fund' => $retirement_fund,
+        ];
+        // return view('ret_fun.print.beneficiaries_qualification', $data);
+        return \PDF::loadView('ret_fun.print.beneficiaries_qualification', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+    }
+    public function printDataQualification($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $date = date('d/m/Y');
+        $title = $retirement_fund->procedure_modality->procedure_type->module->name;
+        $username = Auth::user()->username;//agregar cuando haya roles
+        $affiliate = $retirement_fund->affiliate;
+        $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type','S')->with('kinship')->first();
+        
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+        $number = $retirement_fund->code;
+        $pdftitle = "Calificacion";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        $data = [
+            'date' => $date,
+            'username' => $username,
+            'title' => $title,
+            'number' => $number,
+
+            'affiliate' => $affiliate,
+            'applicant' => $applicant,
+            'beneficiaries' => $beneficiaries,
+            'retirement_fund' => $retirement_fund,
+        ];
+        // return view('ret_fun.print.beneficiaries_qualification', $data);
+        return \PDF::loadView('ret_fun.print.qualification_step_data', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+    }
+    public function printDataQualificationAvailability($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $date = date('d/m/Y');
+        // $title = $retirement_fund->procedure_modality->procedure_type->module->name;
+        $title = "devolución de aportes en disponibilidad ";
+        $username = Auth::user()->username;//agregar cuando haya roles
+        $affiliate = $retirement_fund->affiliate;
+        $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type','S')->with('kinship')->first();
+        
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+        $number = $retirement_fund->code;
+        $pdftitle = "Calificacion";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        $data = [
+            'date' => $date,
+            'username' => $username,
+            'title' => $title,
+            'number' => $number,
+
+            'affiliate' => $affiliate,
+            'applicant' => $applicant,
+            'beneficiaries' => $beneficiaries,
+            'retirement_fund' => $retirement_fund,
+        ];
+        // return view('ret_fun.print.beneficiaries_qualification', $data);
+        return \PDF::loadView('ret_fun.print.qualification_data_availability', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+    }
+    public function printDataQualificationRetFunAvailability($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $date = date('d/m/Y');
+        // $title = $retirement_fund->procedure_modality->procedure_type->module->name;
+        $title = "fondo de retiro y disponibilidad ";
+        $username = Auth::user()->username;//agregar cuando haya roles
+        $affiliate = $retirement_fund->affiliate;
+        $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type','S')->with('kinship')->first();
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+        $number = $retirement_fund->code;
+        $pdftitle = "Calificacion";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        $data = [
+            'date' => $date,
+            'username' => $username,
+            'title' => $title,
+            'number' => $number,
+
+            'affiliate' => $affiliate,
+            'applicant' => $applicant,
+            'beneficiaries' => $beneficiaries,
+            'retirement_fund' => $retirement_fund,
+        ];
+        // return view('ret_fun.print.beneficiaries_qualification', $data);
+        return \PDF::loadView('ret_fun.print.qualification_data_ret_fun_availability', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     public function printRetFunCommitmentLetter($id)
     {

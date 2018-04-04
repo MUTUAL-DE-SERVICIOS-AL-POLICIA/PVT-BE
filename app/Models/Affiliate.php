@@ -5,6 +5,9 @@ namespace Muserpol\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\Contribution\ContributionType;
+use Carbon\Carbon;
+use Log;
 
 class Affiliate extends Model
 {
@@ -103,9 +106,68 @@ class Affiliate extends Model
     /**
      * methods
      */
+    public function getDateEntry($size = 'short')
+    {
+        return Util::getDateFormat($this->date_entry, $size);
+    }
+    public function getDateEntryDisponibilidad()
+    {
+        return 'Coming soon ';
+    }
     public function fullName()
     {
         $name = $this->first_name.' '.$this->second_name.' '.$this->last_name.' '.$this->mothers_last_name.' '.$this->applicant_surname_husband;
         return Util::removeSpaces($name);
+    }
+
+    public function calcAge($text = false, $date_death = true)
+    {
+        if ($text) {
+            return $date_death ? Util::calculateAge($this->birth_date, $this->date_death) : Util::calculateAge($this->birth_date, $date_death) ;
+        }
+        return $date_death ? Util::calculateAgeYears($this->birth_date, $this->date_death) : Util::calculateAgeYears($this->birth_date, $date_death);
+    }
+    public function getCivilStatus()
+    {
+        return Util::getCivilStatus($this->civil_status, $this->gender);
+    }
+    public function getDatesContributions()
+    {
+        return $this->getContributionsWithType('Servicio');
+    }
+    public function getDatesAvailability()
+    {
+        return $this->getContributionsWithType('Disponibilidad');
+    }
+    public function getDatesItemZero()
+    {
+        return $this->getContributionsWithType('Item 0');
+    }
+    public function getDatesSecurityBattalion()
+    {
+        return $this->getContributionsWithType('mmmmmmm');
+    }
+    public function getContributionsWithType($name_contribution_type)
+    {
+        $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
+        $dates=[];
+        if (!$contribution_type) return "error";
+        $contributions = $this->contributions()->where('contribution_type_id', '=', $contribution_type->id)->orderBy('month_year', 'asc')->get();
+            if ($length = $contributions->count()) {
+                $start = $contributions[0]->month_year;
+                for ($i=0; $i < $length - 1; $i++) {
+                    if ( $i <= $length -1 ) {
+                        if (Carbon::parse($contributions[$i]->month_year)->addMonth()->toDateString() == Carbon::parse($contributions[$i+1]->month_year)->toDateString()) {
+                        }else{
+                            $dates[] = (object)array('start' => $start, 'end' => $contributions[$i]->month_year);
+                            $start = $contributions[$i+1]->month_year;
+                        }
+                    }
+                }
+                $dates[] = (object) array('start' => $start, 'end' => $contributions[$i]->month_year);
+                // dd($contributions->pluck('month_year'),$dates);
+                // dd($dates);
+            }
+        return $dates;
     }
 }
