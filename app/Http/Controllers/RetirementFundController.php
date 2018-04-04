@@ -552,10 +552,10 @@ class RetirementFundController extends Controller
                 ->editColumn('retirement_fund', function ($contribution) {
                     return Util::formatMoney($contribution->retirement_fund);
                 })
-                ->editColumn('quotable_salary', function ($contribution) {
-                    $quotable_salary = $contribution->seniority_bonus + $contribution->base_wage;
-                    return Util::formatMoney($quotable_salary);
-                })
+                // ->editColumn('quotable_salary', function ($contribution) {
+                //     $quotable_salary = $contribution->seniority_bonus + $contribution->base_wage;
+                //     return Util::formatMoney($quotable_salary);
+                // })
                 ->make(true);
 
         } else {

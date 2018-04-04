@@ -13,11 +13,11 @@
                 <h5>SALARIO PROMEDIO COTIZABLE</h5>
                 <div class="ibox-tools">
                     <a class="collapse-link">
-                                        <i class="fa fa-chevron-up"></i>
-                                    </a>
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                        <i class="fa fa-wrench"></i>
-                                    </a>
+                        <i class="fa fa-wrench"></i>
+                    </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="#">Config option 1</a>
                         </li>
@@ -25,8 +25,8 @@
                         </li>
                     </ul>
                     <a class="close-link">
-                                        <i class="fa fa-times"></i>
-                                    </a>
+                        <i class="fa fa-times"></i>
+                    </a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -42,20 +42,6 @@
                             <th>Aporte FRPS</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{-- @foreach ($contributions as $index => $contribution)
-                        <tr>
-                            <td>{{ $index }}</td>
-                            <td>{{ $contribution->month_year }}</td>
-                            <td>{{ $contribution->base_wage }}</td>
-                            <td>{{ $contribution->seniority_bonus }}</td>
-                            <td></td>
-                            <td>{{ $contribution->total }}</td>
-                            <td>{{ $contribution->retirement_fund }}</td>
-                            <td class="text-warning"> <i class="fa fa-level-down"></i> -20% </td>
-                        </tr>
-                        @endforeach --}}
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -69,13 +55,13 @@
         var datatable_contri = $('#datatables-certification').DataTable({
             responsive: true,
             fixedHeader: {
-                header: true,
-                footer: true,
+            header: true,
+            footer: true,
                 headerOffset: $('#navbar-fixed-top').outerHeight()
             },
             order: [],
             // ajax: "http://wwwachuchus.test/ret_fun/3/qualification/get_data_certification",
-            ajax: "{{ url('get_data_certification', $retirement_fund->id) }}",
+            ajax: "{{ url('get_data_certification', 4) }}",
             lengthMenu: [[15, 25, 50,100, -1], [15, 25, 50,100, "Todos"]],
             //dom:"<'row'<'col-sm-6'l><'col-sm-6'>><'row'<'col-sm-12't>><'row'<'col-sm-5'i>><'row'<'bottom'p>>",
             dom: '< "html5buttons"B>lTfgitp',
@@ -95,5 +81,6 @@
             ],
         });
     });
+
 </script>
 @endsection
