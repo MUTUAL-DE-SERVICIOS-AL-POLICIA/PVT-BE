@@ -13,6 +13,7 @@ use Muserpol\Models\Voucher;
 use Muserpol\Helpers\Util;
 use Auth;
 use Muserpol\Models\Contribution\AidCommitment;
+use Muserpol\Models\Contribution\ContributionRate;
 class AidContributionController extends Controller
 {
     /**
@@ -144,7 +145,7 @@ class AidContributionController extends Controller
         return $contributions;
     }
 
-     public function edit(Contribution $contribution)
+     public function edit(AidContribution $aidcontribution)
     {
         //
     }
@@ -278,6 +279,9 @@ class AidContributionController extends Controller
         //Obtiene el interes a partir del subsiguiente mes que debe pagar. Ej. de enero corre el interes desde marzo
         $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
         $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
+        $contribution_rate = ContributionRate::select('month_year', 'retirement_fund', 'mortuary_quota', 'mortuary_aid');//->orderby('month_year', 'desc')->first();
+        dd ($contribution_rate);
+        //$voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         $mount=($request->con['sueldo']-$request->con['dignity_rent'])*0.0203;
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
         $foo = file_get_contents($uri);
