@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
 </head>
 <body>
+    <div class="page-break">
     <table class="w-100 m-b-15">
         <tr>
             <th class="w-20 text-left no-padding no-margins align-middle">
@@ -79,5 +80,6 @@
     <footer>
         @yield('footer')
     </footer>
+    </div>
 </body>
 </html>

@@ -15,16 +15,16 @@
             }
         },
         computed:{
-            age: function(){
-                var birthday = +new Date(this.beneficiary.birth_date); 
-                if(this.beneficiary.birth_date!=null){
+            // age: function(){
+            //     var birthday = +new Date(this.beneficiary.birth_date); 
+            //     if(this.beneficiary.birth_date!=null){
 
-                    return~~ ((Date.now() - birthday) / (31557600000));
-                }else
-                {
-                    return '';
-                }
-            },
+            //         return~~ ((Date.now() - birthday) / (31557600000));
+            //     }else
+            //     {
+            //         return '';
+            //     }
+            // },
         },        
         methods:{            
             toggle_editing:function () {

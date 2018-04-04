@@ -12,6 +12,7 @@ use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunAddressBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Auth;
+use Log;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
@@ -21,9 +22,11 @@ use Muserpol\Models\RetirementFund\RetFunLegalGuardianBeneficiary;
 use DateTime;
 use Muserpol\User;
 use Carbon\Carbon;
+use Yajra\Datatables\DataTables;
 use Muserpol\Models\RetirementFund\RetFunIncrement;
 use Session;
 use Muserpol\Helpers\Util;
+use Illuminate\Auth\EloquentUserProvider;
 class RetirementFundController extends Controller
 {
     /**
@@ -454,5 +457,123 @@ class RetirementFundController extends Controller
         $retirement_fund->save();
         $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality'=>$retirement_fund->procedure_modality,'city_start'=>$retirement_fund->city_start,'city_end'=>$retirement_fund->city_end );
         return $datos;
+    }
+    public function qualification($ret_fun_id)
+    {
+        $retirement_fund = RetirementFund::find($ret_fun_id);
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
+        $affiliate = $retirement_fund->affiliate;
+        $dates_contributions = $affiliate->getDatesContributions();
+        $dates_availability = $affiliate->getDatesAvailability();
+        $dates_item_zero = $affiliate->getDatesItemZero();
+        $cities_pluck = City::all()->pluck('first_shortened', 'id');
+        $cities = City::get();
+        $kinships = Kinship::get();
+        $birth_cities = City::all()->pluck('name', 'id');
+        $data = [
+            'retirement_fund' => $retirement_fund,
+            'affiliate' => $affiliate,
+            'dates_availability' => $dates_availability,
+            'dates_item_zero' => $dates_item_zero,
+            'dates_contributions' => $dates_contributions,
+            'cities_pluck' => $cities_pluck,
+            'birth_cities' => $birth_cities,
+            'beneficiaries' => $beneficiaries,
+            'cities' => $cities,
+            'kinships' => $kinships,
+        ];
+        return view('ret_fun.qualification', $data);
+    }
+    public function sumTotalContributions($array, $fromView = false)
+    {
+        $total = 0;
+        foreach ($array as $key => $value) {
+            if ($fromView) {
+                // $value = json_encode($value);
+                $diff = Carbon::parse($value['start'])->diffInMonths(Carbon::parse($value['end'])) + 1;
+            }else{
+                $diff = Carbon::parse($value->start)->diffInMonths(Carbon::parse($value->end)) + 1;
+            }
+            if ($diff < 0 ) {
+                dd("error");
+            }
+            $total = $total + $diff;
+        }
+        return $total;
+    }
+    public function geDataQualification(Request $request, $id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $affiliate = $retirement_fund->affiliate;
+
+        $total_contributions_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Servicio'));
+        $total_contributions_fronted = $this::sumTotalContributions($request->datesContributions, true);
+
+        $total_item_zero_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Item 0'));
+        $total_item_zero_fronted = $this::sumTotalContributions($request->datesItemZero, true);
+
+        $total_availability_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Disponibilidad'));
+        $total_availability_fronted = $this::sumTotalContributions($request->datesAvailability, true);
+
+        if(
+            $total_contributions_backed == $total_contributions_fronted &&
+            $total_item_zero_backed == $total_item_zero_fronted &&
+            $total_availability_backed == $total_availability_fronted
+        ){
+            return json_encode(true);
+        }else{
+            return json_encode(false);
+        }
+    }
+    public function getDataQualificationCertification(DataTables $datatables, $retirement_fund_id)
+    {
+        $retirement_fund = RetirementFund::find($retirement_fund_id);
+        $affiliate = $retirement_fund->affiliate;
+        $availability = $affiliate->getContributionsWithType('Disponibilidad');
+        if (sizeOf($availability) > 0) {
+            $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
+            $contributions = $affiliate->contributions()
+                ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
+                ->where("contribution_types.name", '=', 'Servicio')
+                ->where('contributions.month_year', '<=', $start_date_availability)
+                ->orderBy('contributions.month_year', 'desc')
+                ->take(60)
+                ->get();
+            return $datatables->of($contributions)
+                ->editColumn('base_wage', function ($contribution) {
+                    return Util::formatMoney($contribution->base_wage);
+                })
+                ->editColumn('seniority_bonus', function ($contribution) {
+                    return Util::formatMoney($contribution->seniority_bonus);
+                })
+                ->editColumn('total', function ($contribution) {
+                    return Util::formatMoney($contribution->total);
+                })
+                ->editColumn('retirement_fund', function ($contribution) {
+                    return Util::formatMoney($contribution->retirement_fund);
+                })
+                // ->editColumn('quotable_salary', function ($contribution) {
+                //     $quotable_salary = $contribution->seniority_bonus + $contribution->base_wage;
+                //     return Util::formatMoney($quotable_salary);
+                // })
+                ->make(true);
+
+        } else {
+
+        }
+
+    }
+    public function qualificationCertification($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        if($retirement_fund){
+            $affiliate = $retirement_fund->affiliate;
+            $data= [
+                'retirement_fund' => $retirement_fund,
+            ];
+            return view('ret_fun.qualification_certification', $data);
+        }else{
+            // return redirect('ret_fun');
+        }
     }
 }
