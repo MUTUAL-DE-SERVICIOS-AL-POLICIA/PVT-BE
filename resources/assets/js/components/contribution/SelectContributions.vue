@@ -53,12 +53,12 @@
           </div>
           <div class="ibox-footer">
               <span class="pull-right">
-                  Cantidad: {{list_aportes.length-1}}
+                  Cantidad: {{list_aportes.length}}
           </span>
               <br>
           </div>
       </div>
-      <button class="btn btn-primary" @click="classify" ><i class="fa fa-arrow-right"></i> Clasificar</button>
+      <button class="btn btn-primary" @click="save" ><i class="fa fa-arrow-right"></i> Clasificar</button>
    
     </div>
    
@@ -78,7 +78,8 @@ export default {
    props: [
         'contributions',
         'contype',
-        'types'
+        'types',
+        'retfunid'
     ],
   data () {
     return {
@@ -126,29 +127,32 @@ export default {
     })[0];
 
     console.log(this.servicio);
- 
+    let list_hdp= this.list_aportes;
    if(this.con_type){
-        for (let i = 0; i < this.list_aportes.length; i++) {
+        for (let i = 0; i < list_hdp.length; i++) {
        
-            switch (this.list_aportes[i].breakdown_id) {
+            switch (list_hdp[i].breakdown_id) {
 
                     case 1:
-                        this.list_aportes[i].breakdown_id = this.disponibilidad.id;
-                        this.list_aportes[i].breakdown_name = this.disponibilidad.name;
+                        list_hdp[i].breakdown_id = this.disponibilidad.id;
+                        list_hdp[i].breakdown_name = this.disponibilidad.name;
                         break;
 
                     case 3:
-                        this.list_aportes[i].breakdown_id = this.item0.id;
-                        this.list_aportes[i].breakdown_name = this.item0.name;              
+                        list_hdp[i].breakdown_id = this.item0.id;
+                        list_hdp[i].breakdown_name = this.item0.name;              
                     break;
             
                 default:
-                        this.list_aportes[i].breakdown_id = this.servicio.id;
-                        this.list_aportes[i].breakdown_name = this.servicio.name;
+                        list_hdp[i].breakdown_id = this.servicio.id;
+                        list_hdp[i].breakdown_name = this.servicio.name;
                     break;
-            }       
+            }   
+            // console.log(list_hdp[i].breakdown_id);    
+            // console.log(list_hdp[i].breakdown_name);    
         } 
         console.log('con_type cechuz y anita')
+        this.list_aportes = list_hdp;
    }
     console.log(this.con_type);
     console.log(this.first_date);
@@ -177,6 +181,10 @@ export default {
             year--;
             month = 12;
         }
+        if(month.length==1)
+        {
+            month = '0'+month;
+        }
         ff= year+'-'+month+'-01';
     }
     console.log('lechuz se comio a la Karen XD ');
@@ -194,21 +202,27 @@ export default {
       this.order_aportes = !this.order_aportes;
     },
     save(){
-      console.log('guardando lista '+ this.affiliateid);
-      var data = {'ret_fun_id':this.retfunid,'list_disponibilidad':this.list_disponibilidad,'list_aportes':this.list_aportes,'list_sixty':this.list_sixty};
-      axios.post('/ret_fun/savecontributions', data )
-                  .then(function (resp) {
-                      // this.$router.push({path: '/'});
-                      console.log(resp);
-                         
-                      flash('Informacion Clasificada');
-                  })
-                  .catch(function (resp) {
-                      console.log(resp);
-                      flash('Error lechuza: '+resp.message,'error');
-                  });
+        if(this.checkList())
+        {
+            console.log('guardando lista '+ this.affiliateid);
+            var data = {'ret_fun_id':this.retfunid,'list_aportes':this.list_aportes};
+            axios.post('/ret_fun/savecontributions', data )
+                        .then(function (resp) {
+                            // this.$router.push({path: '/'});
+                            console.log(resp);
+                                
+                            flash('Informacion Clasificada');
+                        })
+                        .catch(function (resp) {
+                            console.log(resp);
+                            flash('Error lechuza: '+resp.message,'error');
+                        });
+        }else{
+            flash('verifique que no existan aportes sin clasificar','warning');
+        }
+
+     
     },
-    
     classify(){
         console.log('cechuz y karem');
 
@@ -243,6 +257,9 @@ export default {
             case 0:
                 color="cym";
                 break;
+            default: 
+                console.log(breakdown_id);
+            break;
             
         }
         return color;
@@ -271,7 +288,32 @@ export default {
                 // console.log('Encotrado el hdp');
             } 
         }
+        // if(!contribution) // en caso de buggs XD 
+        // {   
+        //     console.log('no encontro el buscador hdp '+ strDate);
+        //     for (let i = 0; i < this.list_aportes.length; i++) {
+        //         console.log('list: '+this.list_aportes[i].month_year);
+        //         console.log('strDate:'+strDate);
+        //         if(new Date(this.list_aportes[i].month_year).getTime() == new Date(strDate).getTime() )
+        //         {
+        //             contribution = this.list_aportes[i];
+        //             i = this.list_aportes.length;
+        //             // console.log('Encotrado el hdp');
+        //         } 
+        //     }
+        // }
         return contribution;
+    },
+    checkList()
+    {
+        let response= true;
+        for (let i = 0; i < this.list_aportes.length; i++) {
+            if(this.list_aportes[i].breakdown_id ==0) 
+            {   
+                   response=false;
+            }
+        }
+        return response;
     }
   },
   computed: {
@@ -312,10 +354,10 @@ export default {
     background: #bbbaadfd;
 }
 .nh {
-    background: #80e9bdfd;
+    background: #e0ad7dfd;
 }
 .cas{
-    background: #e0ad7dfd;
+    background: #80e9bdfd;
 }
 .bsf{
     background: #a1a7fffd;

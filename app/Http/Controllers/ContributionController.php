@@ -563,24 +563,25 @@ class ContributionController extends Controller
     {
         // $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
         $ret_fun = RetirementFund::find($ret_fun_id);
-
+        // $contribution =DB::table('contributions')->where('affiliate_id',$ret_fun->affiliate_id)->whereNull('deleted_at')->get();
+        // return $contribution;
         $con_type = false;
         $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                   ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
                                                   ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                  ->whereNull('contributions.deleted_at')
+                                                //   ->whereNull('contributions.deleted_at')
                                                   ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                 //   ->take(10)
                                                   ->orderBy('contributions.month_year', 'desc')
                                                   ->get();
-        // $contributions = null;
+        // $contributions = [];
     //    return $contributions->count();
        
-        if($contributions->count()==0){
+        if(sizeof($contributions) == 0){
           $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                     ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
                                                     ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                    ->whereNull('contributions.deleted_at')
+                                                    // ->whereNull('contributions.deleted_at')
                                                     ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                 //   ->take(10)
                                                     ->orderBy('contributions.month_year', 'desc')
@@ -590,11 +591,9 @@ class ContributionController extends Controller
     
         
         // return $contributions;
-        // return $contributions;
        
-
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
-        $data =  array('contributions' => $contributions,'con_type'=>$con_type ,'contribution_types'=> $contribution_types);
+        $data =  array('contributions' => $contributions,'con_type'=>$con_type ,'contribution_types'=> $contribution_types ,'ret_fun'=>$ret_fun);
         // return $data;
         return view('contribution.select',$data);
     }
@@ -602,36 +601,49 @@ class ContributionController extends Controller
     {   
         // return $request->all();
         $ret_fun = RetirementFund::find($request->ret_fun_id);
+        // return $ret_fun;
 
-        
-        foreach ($request->list_sixty as $obj) {
-            # code...
-            $aporte = (object) $obj;
-            // array_push($sixty_id,$aporte->id);
-            Log::info($aporte->id);
-            $sixty_id[] = $aporte->id;
-        }
-
-        $ret_fun->contributions()->attach($sixty_id);
-
+        // $ret_fun->contributions()->attach($sixty_id);
+        Log::info('imprimiendo contribuciones');
+        $i=0;
         foreach ($request->list_aportes as $obj) {
             # code...
              $aporte = (object) $obj;
-             $contribution = Contribution::find($aporte->id);
-             $contribution->contribution_type_id = $aporte->breakdown_id;
-             $contribution->save();
-        }
+             if($aporte->id == 0)
+             {
+                    Log::info('intentando guardar objeto');
+                    Log::info(json_encode($aporte));
+                    $contribution = new Contribution;
+                    $contribution->user_id = Auth::user()->id;
+                    $contribution->affiliate_id = $ret_fun->affiliate_id;
+                    $contribution->type = 'Planilla';
+                    $contribution->base_wage =0;
+                    $contribution->month_year = $aporte->month_year;
+                    $contribution->seniority_bonus = 0;
+                    $contribution->study_bonus = 0;
+                    $contribution->position_bonus = 0;
+                    $contribution->border_bonus = 0;
+                    $contribution->east_bonus = 0;
+                    $contribution->dignity_pension = 0;
+                    $contribution->gain = 0;
+                    $contribution->quotable = 0;
+                    $contribution->retirement_fund = 0;
+                    $contribution->mortuary_quota = 0;
+                    $contribution->total = 0;
+                    $contribution->contribution_type_id = $aporte->breakdown_id;
+                    $contribution->category_id =1;
+                    $contribution->save();
 
-        foreach ($request->list_disponibilidad as $obj) {
-            # code...
-            $aporte = (object) $obj;
-            $contribution = Contribution::find($aporte->id);
-            $contribution->contribution_type_id = $aporte->breakdown_id;
-            $contribution->save();
-            $disp_id[] = $aporte->id;
+             }else{
+                 # code...
+                    $contribution = Contribution::find($aporte->id);
+                    $contribution->contribution_type_id = $aporte->breakdown_id;
+                    $contribution->save();
+             }
+            $i++;
+            Log::info('i: '.$i.' id:'.$contribution->id);
         }
-        $ret_fun->contributions()->attach($disp_id);
-        return $disp_id;
+        return $request->all();
         // return redirect('/');     
     }
     public function printCertificationSixty($id)
