@@ -48,8 +48,7 @@ class AidContributionController extends Controller
 
         $affiliate = Affiliate::find($affiliate_id);
          $list = self::getMonthContributions($affiliate->id);
-         
-        $data = [
+         $data = [
             'affiliate'=>$affiliate, 
             'list' => $list
         ];
@@ -77,7 +76,7 @@ class AidContributionController extends Controller
         $type = $aid_contributions->type;
         $quotable = $aid_contributions->quotable;
         $rent = $aid_contributions->rent;
-        $dignityRent = $aid_contributions->dignityRent;
+        $dignity_rent = $aid_contributions->dignity_rent;
         $total = $aid_contributions->total;
         $data = [
             'affiliate' =>  $affiliate,
@@ -86,7 +85,7 @@ class AidContributionController extends Controller
             'type' => $type,
             'quotable' => $quotable,
             'rent' => $rent,
-            'dignityRent' => $dignityRent,
+            'dignity_rent' => $dignity_rent,
             'total' => $total,
             //'aid_contribution' => $aid_contribution
         ];
@@ -116,9 +115,9 @@ class AidContributionController extends Controller
                 $month1 = Carbon::now()->subMonths(1);
                 $month2 = Carbon::now()->subMonths(2);
                 $month3 = Carbon::now()->subMonths(3);
-                $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'),'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'auxilioMortuorio' => 0, 'dignityRent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'),'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'auxilioMortuorio' => 0, 'dignityRent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'),'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'auxilioMortuorio' => 0, 'dignityRent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'),'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'dignity_rent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'),'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'dignity_rent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'),'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'dignity_rent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contributions = array($contribution3, $contribution2, $contribution1);
             } 
             else 
@@ -132,8 +131,8 @@ class AidContributionController extends Controller
                         'month' => $month[1], 
                         'monthyear' => $montyear, 
                         'sueldo' => 0, 
-                        'auxilioMortuorio' => 0,
-                        'dignityRent' => 0,
+                        'auxilio_mortuorio' => 0,
+                        'dignity_rent' => 0, 
                         'interes' => 0, 
                         'subtotal' => 0
                         );
@@ -279,7 +278,7 @@ class AidContributionController extends Controller
         //Obtiene el interes a partir del subsiguiente mes que debe pagar. Ej. de enero corre el interes desde marzo
         $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
         $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
-        $mount=($request->con['sueldo']-$request->con['dignityRent'])*0.0203;
+        $mount=($request->con['sueldo']-$request->con['dignity_rent'])*0.0203;
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
         $foo = file_get_contents($uri);
         //return $foo;
@@ -325,16 +324,19 @@ class AidContributionController extends Controller
         $voucher->save();
       $result = [];      
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
-        {            
+        {
             $aporte=(object)$ap;
+
+            if($aporte->sueldo>0)
+            {
             $affiliate = Affiliate::find($request->afid);
             $aid_contribution = new AidContribution();
             $aid_contribution->user_id = Auth::user()->id;
             $aid_contribution->affiliate_id = $affiliate->id;            
             $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);
             $aid_contribution->type='DIRECTO';
-            $aid_contribution->quotable = $aporte->auxilioMortuorio;
-            $aid_contribution->dignity_rent = $aporte->dignityRent;
+            $aid_contribution->quotable = $aporte->auxilio_mortuorio;
+            $aid_contribution->dignity_rent = $aporte->dignity_rent;
             $aid_contribution->rent = $aporte->sueldo;
             $aid_contribution->total = $aporte->subtotal;
             $aid_contribution->interest = $aporte->interes;
@@ -343,6 +345,7 @@ class AidContributionController extends Controller
                 'total'=>$aid_contribution->total,
                 'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
                     ]);
+            }
         }
         $data = [
             'aidcontribution'  =>  $result,

@@ -45,10 +45,10 @@
                                     <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.dignityRent" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
+                                    <input type="text"  v-model = "con.dignity_rent" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.auxilioMortuorio" disabled class="form-control">
+                                    <input type="text" v-model = "con.auxilio_mortuorio" disabled class="form-control">
                                 </td>
                                 <td>
                                     <input type="text" v-model = "con.interes" disabled class="form-control">
@@ -112,10 +112,10 @@ export default {
               this.ufv = response.data.replace(",", ".");
                 if(this.ufv < 0)
                     this.ufv = 0;
-              con.auxilioMortuorio = (con.sueldo - con.dignityRent) * 0.0203;
+              con.auxilio_mortuorio = (con.sueldo - con.dignity_rent) * 0.0203;
               con.interes = this.ufv;
               con.subtotal =
-                parseFloat(con.auxilioMortuorio) + parseFloat(con.interes);
+                parseFloat(con.auxilio_mortuorio) + parseFloat(con.interes);
               this.show_spinner = false;
               this.SumTotal();
               this.count = 3;
@@ -148,7 +148,6 @@ export default {
           item.sueldo != 0 &&
           item.auxilioMortuorio != 0 &&
           item.subtotal != 0
-          //&& item.dignityRent != 0
         );
       });
       var contributions = this.contributions;
@@ -176,7 +175,7 @@ export default {
     Guardar() {
       this.aidContributions = this.aidContributions.filter(item => {
         return (
-          item.sueldo != 0 && item.auxilioMortuorio != 0 && item.subtotal != 0
+          item.sueldo != 0 && item.auxilio_mortuorio != 0 && item.subtotal != 0
         );
       });
       if (this.contributions.length > 0) {
