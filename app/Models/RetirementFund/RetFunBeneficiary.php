@@ -35,4 +35,15 @@ class RetFunBeneficiary extends Model
         $name = $this->first_name . ' ' . $this->second_name . ' ' . $this->last_name . ' ' . $this->mothers_last_name . ' ' . $this->applicant_surname_husband;
         return Util::removeSpaces($name);
     }
+    public function calcAge($text = false, $date_death = true)
+    {
+        if ($text) {
+            return $date_death ? Util::calculateAge($this->birth_date, $this->date_death) : Util::calculateAge($this->birth_date, $date_death);
+        }
+        return $date_death ? Util::calculateAgeYears($this->birth_date, $this->date_death) : Util::calculateAgeYears($this->birth_date, $date_death);
+    }
+    public function getCivilStatus()
+    {
+        return Util::getCivilStatus($this->civil_status, $this->gender);
+    }
 }

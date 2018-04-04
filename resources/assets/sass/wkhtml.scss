@@ -18,12 +18,11 @@ $font_0: sans-serif;
 //original selectors
 //html, body
 %extend_1 {
-	padding: 10px;
+	padding: 10px 10px 15px 10px;
 	margin: 0;
 	font-family: $font_0;
-	height: 100%;
+	// height: 100%;
 }
-
 
 html {
 	@extend %extend_1;
@@ -33,9 +32,20 @@ body {
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 	border-radius: 0.75em;
 	border: 1px solid $black;
+	page-break-after: avoid;
 }
 table {
 	width: 100%;
+	margin-bottom: 100px;
+}
+thead {
+	display: table-header-group;
+}
+tfoot {
+	display: table-row-group;
+}
+tr {
+	page-break-inside: avoid;
 }
 .table-info {
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
@@ -155,6 +165,22 @@ table {
 	border-style: solid;
 	border-width: 1px;
 }
+.border-solid	{border-style: solid;}
+.border-dashed	{border-style: dashed;}
+.border-dotted	{border-style: dotted;}
+.border-none	{border-style: none;}
+.border-darker	{border-color: $color_shark_approx}
+
+.border-b-2{
+	border-bottom-width: 2px;
+}
+.border-b-3{
+	border-bottom-width: 5px;
+}
+.border-b-4{
+	border-bottom-width: 4px;
+}
+
 .border-b {
 	border-bottom: 1px solid $white;
 	border-color: $color_shark_approx;
@@ -241,6 +267,12 @@ table {
 }
 .w-60 {
 	width: 60%;
+}
+.w-65 {
+	width: 65%;
+}
+.w-70 {
+	width: 70%;
 }
 .w-75 {
 	width: 75%;

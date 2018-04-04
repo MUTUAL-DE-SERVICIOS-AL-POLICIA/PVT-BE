@@ -25,6 +25,9 @@ use Log;
 use Session;
 use DB;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
+use Muserpol\Models\Contribution\ContributionType;
+use Muserpol\Policies\ReimbursementPolicy;
+use Muserpol\Models\Contribution\ContributionRate;
 class ContributionController extends Controller
 {
     /**
@@ -158,7 +161,7 @@ class ContributionController extends Controller
                 $rules=array_merge($rules,$biz_rules);
                 //$aporte=(object)$ap;
                 $array_rules = [
-                    'aportes.'.$key.'.sueldo' =>  'required|numeric|min:2000',
+                    'aportes.'.$key.'.sueldo' =>  'required|numeric|min:0',
                     'aportes.'.$key.'.fr' =>  'required|numeric',
                     'aportes.'.$key.'.cm' =>  'required|numeric',
                     'aportes.'.$key.'.subtotal' =>  'required|numeric',
@@ -450,6 +453,8 @@ class ContributionController extends Controller
             $commitment->id = 0;
             $commitment->affiliate_id = $affiliate->id;
         }
+        //RATES
+        $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();
         $data = [
             'contributions' => $group,
             'reims' => $group_reim,
@@ -465,6 +470,7 @@ class ContributionController extends Controller
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'commitment'    =>  $commitment,
             'today_date'         =>  date('Y-m-d'),
+            'rate'  =>  $rate,
         ];
         //return  date('Y-m-d');
          return view('contribution.affiliate_contributions_edit', $data);
@@ -483,8 +489,8 @@ class ContributionController extends Controller
               $input_data['gain'][$key]= strip_tags($request->gain[$key]);
               $input_data['total'][$key]= strip_tags($request->total[$key]);
         $array_rules = [                       
-            'base_wage.'.$key =>  'required|numeric|min:2000',            
-            'gain.'.$key =>  'required|numeric|min:1',
+            'base_wage.'.$key =>  'numeric|min:0',
+            'gain.'.$key =>  'numeric|min:1',
             'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
@@ -503,8 +509,9 @@ class ContributionController extends Controller
             return response()->json($validator->errors(), 400);
         }
          //*********END VALIDATOR************//
-        return ;
+        //return ;
         $this->authorize('update',new Contribution);
+        $contributions = [];
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
@@ -530,8 +537,11 @@ class ContributionController extends Controller
                 $contribution->unit_id = $affiliate->unit_id;
                 $contribution->breakdown_id = $affiliate->breakdown_id;
                 $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
+                if($contribution->base_wage == "")
+                    $contribution->base_wage = 0;
                 $category = Category::find($request->category[$key]);
                 $contribution->category_id = $category->id;
+                //$data = $contribution->base_wage * 123;
                 $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
                 $contribution->study_bonus = 0;
                 $contribution->position_bonus = 0;
@@ -540,15 +550,18 @@ class ContributionController extends Controller
                 $contribution->quotable = 0;
                 $contribution->month_year = $key;
                 $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
+                if($contribution->gain == "")
+                    $contribution->gain = 0;
                 $contribution->retirement_fund = 0;
                 $contribution->mortuary_quota = 0;
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
                 //$contribution->interes = 0;
                 $contribution->type = 'Planilla';
                 $contribution->save();
+                array_push($contributions, $contribution);
             }
         }
-        return $contribution;
+        return $contributions;
         //return json_encode($contribution);
     }
 }
@@ -646,67 +659,98 @@ class ContributionController extends Controller
         return $request->all();
         // return redirect('/');     
     }
-    public function printCertificationSixty($id)
+  
+    public function printCertification($id)
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $contributions = Contribution::where('affiliate_id', $affiliate->id)
-                        ->orderBy('month_year')
+        $servicio = ContributionType::where('name','=','Servicio')->first();
+        $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)
+                        ->where('contribution_type_id',$servicio->id)
+                        ->orderBy('month_year','desc')
+                        ->take(60)
                         ->get();
-                    
-        $reimbursements= Reimbursement::where('affiliate_id', $affiliate->id)
+        $contributions = $contributions_sixty->sortBy('month_year')->all();                           
+        $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
-                        ->get();   
-                                 
+                        ->get();                                  
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = "CERTIFICACION DE APORTES";
-        $subtitle="Cuenta Individual";
         $number = $retirement_fund->code;
         $date = Util::getStringDate($retirement_fund->reception_date);        
-        $degree=Degree::find($affiliate->degree_id);
-        $exp=City::find($affiliate->city_identity_card_id);
-        $exp=($exp==Null)? "-": $exp->first_shortened;
-        $dateac=Carbon::now()->format('d/m/Y');
-        $place=City::find($retirement_fund->city_start_id);        
+        $degree = Degree::find($affiliate->degree_id);
+        $exp = City::find($affiliate->city_identity_card_id);
+        $exp = ($exp==Null)? "-": $exp->first_shortened;
+        $dateac = Carbon::now()->format('d/m/Y');
+        $place = City::find($retirement_fund->city_start_id);        
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
-        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);       
         return \PDF::loadView('contribution.print.certification_contribution', compact('subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     public function printCertificationAvailability($id)
     {
         $retirement_fund = RetirementFund::find($id);
-        $contributions=DB::table('ret_fun_contribution')
-                        ->join('contributions','ret_fun_contribution.contribution_id','=','contributions.id')
-                        ->select('contributions.month_year','contributions.gain','contributions.base_wage','contributions.public_segurity_bonus','contributions.total','contributions.retirement_fund','ret_fun_contribution.type')
-                        ->orderBy('contributions.month_year')
+        $affiliate = $retirement_fund->affiliate;
+        $disponibilidad = ContributionType::where('name','=','Disponibilidad')->first();
+        $contributions = Contribution::where('affiliate_id', $affiliate->id)
+                        ->orderBy('month_year')
                         ->get();
-        $reimbursements=DB::table('ret_fun_reimbursements')
-                        ->join('reimbursements','ret_fun_reimbursements.reimbursement_id', '=', 'reimbursements.id')
-                        ->select('reimbursements.month_year','reimbursements.gain','reimbursements.base_wage','reimbursements.public_segurity_bonus','reimbursements.total','reimbursements.retirement_fund')
-                        ->orderBy('reimbursements.month_year')
-                        ->get();
-                      
+        $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
+                        ->orderBy('month_year')
+                        ->get();                          
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = "CERTIFICACION DE APORTES EN DISPONIBILIDAD";
-        $subtitle="Cuenta Individual";
-
+        $subtitle ="Cuenta Individual";
         $number = $retirement_fund->code;
         $date = Util::getStringDate($retirement_fund->reception_date);
-        $affiliate = $retirement_fund->affiliate;
-        $degree=Degree::find($affiliate->degree_id);
-        $exp=City::find($affiliate->city_identity_card_id);
-        $exp=($exp==Null)? "-": $exp->first_shortened;
-        $dateac=Carbon::now()->format('d/m/Y');
-        $place=City::find($retirement_fund->city_start_id);        
-              
+        $degree = Degree::find($affiliate->degree_id);
+        $exp = City::find($affiliate->city_identity_card_id);
+        $exp = ($exp==Null)? "-": $exp->first_shortened;
+        $dateac = Carbon::now()->format('d/m/Y');
+        $place = City::find($retirement_fund->city_start_id);              
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-        return \PDF::loadView('contribution.print.certification_contribution', compact('subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'modality', 'applicant', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        //total de los aportes
+        $aporte=0;
+        foreach($contributions as $contribution){
+            if($contribution->contribution_type_id==$disponibilidad->id){
+                $aporte=$aporte+$contribution->total;
+            }
+        }
+        return \PDF::loadView('contribution.print.certification_availability', compact('disponibilidad','aporte','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
+    public function printCertificationItem0($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $affiliate = $retirement_fund->affiliate;
+        $itemcero = ContributionType::where('name','=','Item 0')->first();
+        $contributions = Contribution::where('affiliate_id', $affiliate->id)
+                        ->orderBy('month_year')
+                        ->get();
+        $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
+                        ->orderBy('month_year')
+                        ->get();
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+        $title = "CERTIFICACION DE CUENTAS INDIVIDUALES ITEM 0";
+        $subtitle = "Cuenta Individual";
+        $number = $retirement_fund->code;
+        $date = Util::getStringDate($retirement_fund->reception_date);
+        $degree = Degree::find($affiliate->degree_id);
+        $exp = City::find($affiliate->city_identity_card_id);
+        $exp = ($exp==Null)? "-": $exp->first_shortened;
+        $dateac = Carbon::now()->format('d/m/Y');
+        $place = City::find($retirement_fund->city_start_id);              
+        $username = Auth::user()->username;
+        $pdftitle = "Cuentas Individuales";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        return \PDF::loadView('contribution.print.certification_item0', compact('itemcero','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+    } 
 }

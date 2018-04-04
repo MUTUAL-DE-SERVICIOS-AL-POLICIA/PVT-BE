@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
+use Muserpol\Models\Spouse;
 
 class QuotaAidCertificationController extends Controller
 {
