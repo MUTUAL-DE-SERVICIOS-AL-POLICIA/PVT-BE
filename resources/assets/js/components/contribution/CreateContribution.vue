@@ -28,6 +28,10 @@
                            </select>
                             <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
                         </div>
+                        <div class="col-md-3" >
+                            <label>Repetir sueldo:</label>
+                            <input type="text" class="form-control"  @keyup.enter="repeatSalary" v-model="general_salary" >                            
+                        </div>
                         
                     </div>
                     <table class="table table-striped" data-page-size="15">
@@ -91,6 +95,7 @@ export default {
         'contributions1',
         'afid',
         'last_quotable',
+        'rate',        
     ],
     data() {   
 
@@ -102,7 +107,9 @@ export default {
       estado: true,
       afi_id:null,
       show_spinner:false,
-      count:3
+      count:3,
+      ufvs: [],
+      general_salary: 0,
     };
   },
    
@@ -120,21 +127,43 @@ export default {
       Refresh() {
         this.contributions = this.contributions1;
       },
+      repeatSalary(){
+          var i;
+        for(i=0;i<this.contributions.length;i++){
+            this.contributions[i].sueldo = this.general_salary;
+            this.CalcularAporte(this.contributions[i],i);
+        }              
+      },
       CalcularAporte(con, index){
         if(parseFloat(con.sueldo) >0)
         {
         if(this.count > 0)
         {
             this.show_spinner=true
+            if(this.ufvs[con.sueldo] && false)
+            {                
+                console.log('stored data');
+                con.fr = con.sueldo * this.rate.retirement_fund/100;
+                con.cm = con.sueldo * this.rate.mortuary_quota/100;
+                con.interes = parseFloat(this.ufv);
+                con.subtotal =  (con.fr + con.cm + con.interes).toFixed(2);
+            
+                this.show_spinner=false;
+
+                this.SumTotal();
+            }
+            else
+            {
+                console.log('requesting data');
             axios.post('/get-interest',{con})
-            .then(response => {
-                con.fr = con.sueldo * 0.0477;
-                con.cm = con.sueldo * 0.0109;
-                this.ufv = response.data.replace(",", ".");
-                if(this.ufv < 0)
-                    this.ufv = 0;
-                con.interes = this.ufv;
-                con.subtotal =  parseFloat(con.fr) + parseFloat(con.cm) + parseFloat(con.interes);
+            .then(response => {                
+                this.ufv = response.data
+                this.ufvs[con.sueldo] = this.ufv;
+                con.fr = con.sueldo * this.rate.retirement_fund/100;
+                con.cm = con.sueldo * this.rate.mortuary_quota/100;
+                con.interes = parseFloat(this.ufv);
+                con.subtotal =  (con.fr + con.cm + con.interes).toFixed(2);
+            
                 this.show_spinner=false;
                 this.SumTotal();
                 this.count = 3;
@@ -148,7 +177,7 @@ export default {
                 
                 this.show_spinner=false;
                 this.CalcularAporte(con, index);
-            })
+            })}
         }
         else
         {
@@ -184,7 +213,7 @@ export default {
             this.contributions.forEach(con => {                            
                 total1 += parseFloat(con.subtotal) ;                
            });
-        this.total = total1;
+        this.total = total1.toFixed(2);
 
       },
       PrintQuote(){                              
@@ -232,14 +261,14 @@ export default {
                     for(i=0;i<response.data.contribution.length;i++){                        
                         this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
                     }
-                    printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
-                    })
                     this.$swal({
                     title: 'Pago realizado',
                     showConfirmButton: false,
                     timer: 6000,
                     type: 'success'
                     })
+                    printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
+                    })                    
                     .catch(error => {
                     this.show_spinner = false;            
                         //alert(e);
@@ -250,7 +279,7 @@ export default {
                         $.each(resp, function(index, value)
                         {
                             flash(value,'error',6000);
-                        });
+                        });                        
                     })
                 }
                 })            

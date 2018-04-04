@@ -173,6 +173,8 @@ class AidContributionController extends Controller
     
     public function getAffiliateContributions(Affiliate $affiliate = null)
     {                
+        //return $this->getContributionDebt($affiliate->id,7);
+        //return ;
         //codigo para obtener totales para el resument
         //$this->authorize('update',new Contribution);
         $contributions = AidContribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
@@ -215,8 +217,9 @@ class AidContributionController extends Controller
             'affiliate' => $affiliate,
             'cities' => $cities,
             'birth_cities' => $birth_cities,
-            //'new_contributions' => self::getMonthContributions($affiliate->id),            
+            'new_contributions' => $this->getContributionDebt($affiliate->id,3),            
             'aid_commitment'    =>  $aid_commitment,
+
             'today_date'         =>  date('Y-m-d'),
         ];
         //return  date('Y-m-d');
@@ -273,6 +276,7 @@ class AidContributionController extends Controller
         return $contribution;
         }
     }
+<<<<<<< HEAD
 
     public function getInterest(Request $request)
     {
@@ -358,4 +362,28 @@ class AidContributionController extends Controller
         ];
         return $data;
     }
+=======
+    
+    private function getContributionDebt($affiliate_id,$number){        
+        $contributions = [];
+        $month = date('m');
+        $year = date('Y');
+        while($number--){
+            $month--;            
+            if($month == 0){
+                $month = 12;
+                $year--;
+            }
+            $year_month = $year.'-'.($month<10?'0'.$month:$month).'-01';
+            $contribution = AidContribution::where('affiliate_id',$affiliate_id)->where('month_year',$year_month)->first();
+            if(!isset($contribution->id))
+                array_push (
+                    $contributions,
+                    array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id)
+                );                       
+        }
+        return $contributions;
+    }
+    
+>>>>>>> upstream/master
 }
