@@ -1,30 +1,30 @@
 <script>
 	export default{
 		props:[
-			'affiliate'
-		],
+            'spouse',
+                    'affiliate_id',
+        ],
         data(){
             return{
                 editing: false,
                 show_spinner: false,
-                form:this.affiliate,
-                city_birth: this.affiliate.city_birth,
-                city_identity_card: this.affiliate.city_identity_card,
+                form:this.spouse,
+                city_birth: this.spouse.city_birth,
+                city_identity_card: this.spouse.city_identity_card,
                 first_name:{
-                    value: this.affiliate.first_name,
+                    value: this.spouse.first_name,
                     edit: false,
                 },
                 values:{
-                    identity_card:this.affiliate.identity_card,
-                    first_name: this.affiliate.first_name,
-                    second_name: this.affiliate.second_name,
-                    last_name: this.affiliate.last_name,
-                    mothers_last_name: this.affiliate.mothers_last_name,
-                    birth_date: this.affiliate.birth_date,
-                    phone_number: this.affiliate.phone_number,
-                    cell_phone_number: this.affiliate.cell_phone_number,
-                    gender: this.affiliate.gender,
-                    civil_status: this.affiliate.civil_status
+                    identity_card:this.spouse.identity_card,
+                    resgistration:this.spouse.resgistration,
+                    first_name: this.spouse.first_name,
+                    second_name: this.spouse.second_name,
+                    last_name: this.spouse.last_name,
+                    mothers_last_name: this.spouse.mothers_last_name,
+                    surname_husband: this.spouse.surname_husband,
+                    civil_status: this.spouse.civil_status,
+                    birth_date: this.spouse.birth_date                    
                 }
             }
         },
@@ -45,19 +45,6 @@
             city_identity_card_name: function(){
                 console.log('reactividad hdp 1');
                 return !!this.city_identity_card?this.city_identity_card.first_shortened:'';
-            },
-            gender_name: function(){
-                    var g = '';
-                    if(this.form.gender=="F")
-                    {
-                        g ='Femenino';
-                    }
-                    if(this.form.gender=="M") 
-                    {
-                       g = 'Masculino';
-                    }
-                    return g;
-                // return !!this.form.gender==='F'?'Femenino':'Masculino'; 
             },
             civil_status_name:function(){
                 var st = '';
@@ -90,17 +77,16 @@
             toggle_editing:function () {
                 this.editing = !this.editing;
                 if(this.editing==false)
-                {
+                {     
                     this.form.identity_card = this.values.identity_card;
+                    this.form.resgistration = this.values.resgistration;
                     this.form.first_name =  this.values.first_name;
                     this.form.second_name =  this.values.second_name;
                     this.form.last_name =  this.values.last_name;
                     this.form.mothers_last_name =  this.values.mothers_last_name;
-                    this.form.birth_date =  this.values.birth_date;
-                    this.form.phone_number =  this.values.phone_number;
-                    this.form.cell_phone_number =  this.values.cell_phone_numbe;
-                    this.form.gender = this.values.gender;
+                    this.form.surname_husband = this.values.surname_husband;
                     this.form.civil_status = this.values.civil_status;
+                    this.form.birth_date =  this.values.birth_date;
                     this.form.city_birth_id = this.city_birth.id;
                     this.form.city_identity_card_id = this.city_identity_card.id;
 
