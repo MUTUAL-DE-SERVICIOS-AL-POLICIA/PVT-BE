@@ -53,6 +53,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::patch('/update_beneficiaries/{retirement_fund}','RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
 
+	//SpouseControler
+	Route::patch('/update_spouse/{spouse}', 'SpouseController@update')->name('update_spouse');
+
 	Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
 
 
@@ -92,7 +95,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
 	Route::patch('/update_information_rf','RetirementFundController@updateInformation')->name('update_information_rf');
-
+		
 	//QuotaAidMortuory
 	Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
 	Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
@@ -108,23 +111,37 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('contribution','ContributionController');
         Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions')->name('edit_contribution');
         Route::post('store_contributions','ContributionController@storeContributions');
+
+		Route::resource('reimbursement','ReimbursementController');    
+		
+		//selectContributions
+		Route::get('ret_fun/{ret_fun_id}/selectcontributions','ContributionController@selectContributions')->name('select_contributions');
+		Route::post('ret_fun/savecontributions','ContributionController@saveContributions')->name('save_contributions');
+
+		//contributions certification
 		//contributions certification 60, disponibilidad, item 0
 		Route::get('ret_fun/{retirement_fund}/print/certification', 'ContributionController@printCertification60')->name('ret_fun_print_certification');
 		Route::get('ret_fun/{retirement_fund}/print/cer_availability', 'ContributionController@printCertificationAvailability')->name('ret_fun_print_certification_availability');
 		Route::get('ret_fun/{retirement_fund}/print/cer_itemcero', 'ContributionController@printCertificationItem0')->name('ret_fun_print_certification_item0');
 
         Route::resource('reimbursement','ReimbursementController');       
+
         
         //AidContributions
         Route::resource('aid_contribution','AidContributionController');
         Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
-        Route::post('store_aid_contributions','AidContributionController@storeContributions');        
+        //Route::post('store_aid_contributions','AidContributionController@storeAidContributions');        
 
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
 	Route::get('affiliate/{affiliate}/contribution', 'ContributionController@show')->name('show_contribution');
 	Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
-	Route::get('get_commitment_aid/{affiliate}','AidCommitmentController@getAllCommitmentAid')->name('aid_commitment');
+	Route::get('affiliate/{affiliate_id}/aid/contributions','AidContributionController@aidContributions');
+	Route::get('get_aid_contributions/{affiliate}','AidContributionController@getAllContributionsAid')->name('affiliate_aid_contributions');
+	
+	// Route::get('AidContribution', function(){
+	// 	return view('aid_contribution');
+	// });
 	// Route::get('get_affiliate_contributions/{affiliate_id}', function (AffiliateContributionsDataTable $dataTable, $affiliate_id) {
 	// 	return $dataTable->with('affiliate_id', $affiliate_id)
 	// 					 ->render('contribution.show');
@@ -132,7 +149,9 @@ Route::group(['middleware' => ['auth']], function () {
 	// Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributions')->name('affiliate_contributions');
 
 	Route::post('get-interest','ContributionController@getInterest');
+	Route::post('get-interest-aid','AidContributionController@getInterest');
 	Route::post('contribution_save','ContributionController@storeDirectContribution');
+	Route::post('aid_contribution_save','AidContributionController@storeDirectContribution');
         Route::post('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
         Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
         

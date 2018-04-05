@@ -22,8 +22,9 @@ window.flash = function (message, level = 'success', timeOut = 5000) {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-/**VUEX */
-import store from './store/index';
+ /**VUEX */
+ import store from './store/index';
+import VueRouter from 'vue-router'; 
 
 import VueFormWizard from 'vue-form-wizard';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
@@ -45,6 +46,7 @@ Vue.component('ret-fun-procedure', require('./components/setting/RetFunProcedure
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
 Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vue'));
 Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
+Vue.component('spouse-show', require('./components/spouse/ShowSpouse.vue'));
 //retirement Fund
 
 Vue.component('ret-fun-index', require('./components/ret_fun/Index.vue'));
@@ -78,6 +80,9 @@ Vue.component('nom-module', require('./components/permission/NomModule.vue'));
 //contributions
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
+
+Vue.component('contribution-select', require('./components/contribution/SelectContributions.vue'));
+
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));

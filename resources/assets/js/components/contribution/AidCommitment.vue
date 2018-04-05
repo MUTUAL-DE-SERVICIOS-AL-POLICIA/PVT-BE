@@ -15,7 +15,12 @@
             }
         },        
         computed:{            
-        },        
+        },       
+        filters:{
+            getFormatDate(date_tarjet){
+                return moment(date_tarjet).format("DD/MM/Y");
+            },
+        },
         methods:{
             toggle_editing:function () {
                 this.editing = !this.editing;

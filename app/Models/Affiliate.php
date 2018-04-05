@@ -103,6 +103,15 @@ class Affiliate extends Model
         return $this->hasMany('Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary');
     }
 
+    public function aid_commitments()
+    {
+        return $this->hasMany('Muserpol\Models\Contribution\AidCommitment');
+    }
+    public function aid_contributions()
+    {
+        return $this->hasMany('Muserpol\Models\Contribution\AidContribution');
+    }
+
     /**
      * methods
      */
