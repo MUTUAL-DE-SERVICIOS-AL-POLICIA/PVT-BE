@@ -108,12 +108,21 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('contribution','ContributionController');
         Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions')->name('edit_contribution');
         Route::post('store_contributions','ContributionController@storeContributions');
+
+		Route::resource('reimbursement','ReimbursementController');    
+		
+		//selectContributions
+		Route::get('ret_fun/{ret_fun_id}/selectcontributions','ContributionController@selectContributions')->name('select_contributions');
+		Route::post('ret_fun/savecontributions','ContributionController@saveContributions')->name('save_contributions');
+
+		//contributions certification
 		//contributions certification 60, disponibilidad, item 0
 		Route::get('ret_fun/{retirement_fund}/print/certification', 'ContributionController@printCertification60')->name('ret_fun_print_certification');
 		Route::get('ret_fun/{retirement_fund}/print/cer_availability', 'ContributionController@printCertificationAvailability')->name('ret_fun_print_certification_availability');
 		Route::get('ret_fun/{retirement_fund}/print/cer_itemcero', 'ContributionController@printCertificationItem0')->name('ret_fun_print_certification_item0');
 
         Route::resource('reimbursement','ReimbursementController');       
+
         
         //AidContributions
         Route::resource('aid_contribution','AidContributionController');
