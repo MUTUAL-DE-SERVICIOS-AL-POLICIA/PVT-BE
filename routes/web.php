@@ -92,7 +92,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
 	Route::patch('/update_information_rf','RetirementFundController@updateInformation')->name('update_information_rf');
-
+		
 	//QuotaAidMortuory
 	Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
 	Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
@@ -126,14 +126,19 @@ Route::group(['middleware' => ['auth']], function () {
         
         //AidContributions
         Route::resource('aid_contribution','AidContributionController');
-        Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
-        Route::post('store_aid_contributions','AidContributionController@storeContributions');        
+        //Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
+        //Route::post('store_aid_contributions','AidContributionController@storeAidContributions');        
 
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
 	Route::get('affiliate/{affiliate}/contribution', 'ContributionController@show')->name('show_contribution');
 	Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
-	Route::get('get_commitment_aid/{affiliate}','AidCommitmentController@getAllCommitmentAid')->name('aid_commitment');
+	Route::get('affiliate/{affiliate_id}/aid/contributions','AidContributionController@aidContributions');
+	Route::get('get_aid_contributions/{affiliate}','AidContributionController@getAllContributionsAid')->name('affiliate_aid_contributions');
+	
+	// Route::get('AidContribution', function(){
+	// 	return view('aid_contribution');
+	// });
 	// Route::get('get_affiliate_contributions/{affiliate_id}', function (AffiliateContributionsDataTable $dataTable, $affiliate_id) {
 	// 	return $dataTable->with('affiliate_id', $affiliate_id)
 	// 					 ->render('contribution.show');
@@ -141,7 +146,9 @@ Route::group(['middleware' => ['auth']], function () {
 	// Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributions')->name('affiliate_contributions');
 
 	Route::post('get-interest','ContributionController@getInterest');
+	Route::post('get-interest-aid','AidContributionController@getInterest');
 	Route::post('contribution_save','ContributionController@storeDirectContribution');
+	Route::post('aid_contribution_save','AidContributionController@storeDirectContribution');
         Route::post('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
         Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
         
