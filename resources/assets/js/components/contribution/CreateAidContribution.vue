@@ -123,7 +123,7 @@ export default {
               console.log(--this.count);
               console.log("40004");
               this.show_spinner = false;
-              this.CalcularAporte(con, index);
+              this.CalcularAporte(con, index); 
             });
         } else {
           this.show_spinner = false;
