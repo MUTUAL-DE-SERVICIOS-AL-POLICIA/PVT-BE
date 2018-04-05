@@ -37,9 +37,12 @@ class ContributionController extends Controller
      */
     public function getInterest(Request $request)
     {
-        $dateStart = '01/' . $request->con['month'] . '/' . $request->con['year'];
+        //Obtiene el interes a partir del subsiguiente mes que debe pagar. Ej. de enero corre el interes desde marzo
+        $contribution_rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')
+                                                ->first();
+        $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
         $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
-        $mount = $request->con['sueldo'];
+       $mount = ($contribution_rate['retirement_fund']+$contribution_rate['mortuary_quota'])/100*$request->con['sueldo'];
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
         $foo = file_get_contents($uri);
         //return $foo;
@@ -60,10 +63,9 @@ class ContributionController extends Controller
             Log::info("Success: ".$httpcode. " ".$foo );
             return $foo;
         }
-        
     }
     public function getMonthContributions($id)
-    {   
+    {
         $contributions=[];
         $lastMonths = Contribution::where('affiliate_id', $id)
             ->orderBy('month_year', 'desc')
@@ -488,7 +490,7 @@ class ContributionController extends Controller
               $input_data['base_wage'][$key]= strip_tags($request->base_wage[$key]);
               $input_data['gain'][$key]= strip_tags($request->gain[$key]);
               $input_data['total'][$key]= strip_tags($request->total[$key]);
-        $array_rules = [                       
+        $array_rules = [
             'base_wage.'.$key =>  'numeric|min:0',
             'gain.'.$key =>  'numeric|min:1',
             'total.'.$key =>  'required|numeric|min:1'
@@ -673,7 +675,7 @@ class ContributionController extends Controller
         $contributions = $contributions_sixty->sortBy('month_year')->all();                           
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
-                        ->get();                                  
+                        ->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
