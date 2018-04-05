@@ -9,6 +9,17 @@ class AidContribution extends Model
 {
 
     use SoftDeletes; 
+
+    protected $fillable = [
+        'user_id',
+        'affiliate_id',
+        'month_year',
+        'type',
+        'quotable',
+        'rent',
+        'dignity_rent',
+        'total'
+    ];
     
     public function affiliate()
     {

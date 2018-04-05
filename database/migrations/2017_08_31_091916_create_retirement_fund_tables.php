@@ -356,13 +356,13 @@ class CreateRetirementFundTables extends Migration {
         Schema::create('aid_contributions', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned()->nullable();
-            $table->bigInteger('affiliate_id')->unsigned()->nullable();            
+            $table->bigInteger('affiliate_id')->unsigned()->nullable();
             $table->string('month_year');
-            $table->enum('type', ['PLANILLA', 'DIRECTO'])->default('PLANILLA');            
-            $table->string('deceased')->nullable();
+            $table->enum('type', ['PLANILLA', 'DIRECTO'])->default('PLANILLA');
             $table->decimal('quotable', 13, 2);
             $table->decimal('rent', 13, 2);
             $table->decimal('dignity_rent', 13, 2);
+            $table->decimal('interest', 13, 2);
             $table->decimal('total', 13, 2);
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('affiliate_id')->references('id')->on('users');            
