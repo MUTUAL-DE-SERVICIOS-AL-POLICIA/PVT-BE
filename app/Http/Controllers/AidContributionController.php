@@ -48,7 +48,7 @@ class AidContributionController extends Controller
     {
 
         $affiliate = Affiliate::find($affiliate_id);
-         $list = self::getMonthContributions($affiliate->id);
+         $list = $this->getContributionDebt($affiliate->id,3);
          $data = [
             'affiliate'=>$affiliate, 
             'list' => $list
@@ -99,7 +99,7 @@ class AidContributionController extends Controller
      * @param  \Muserpol\AidContribution  $aid_contribution
      * @return \Illuminate\Http\Response
      */
-    public function getMonthContributions($id)
+    /* public function getMonthContributions($id)
     //Muestran los meses que faltan pagarse. Maximo 3 por reglamento
     {   
         $contributions=[];
@@ -143,7 +143,7 @@ class AidContributionController extends Controller
             }
         }
         return $contributions;
-    }
+    } */
 
      public function edit(AidContribution $aidcontribution)
     {
@@ -173,10 +173,6 @@ class AidContributionController extends Controller
     
     public function getAffiliateContributions(Affiliate $affiliate = null)
     {                
-        //return $this->getContributionDebt($affiliate->id,7);
-        //return ;
-        //codigo para obtener totales para el resument
-        //$this->authorize('update',new Contribution);
         $contributions = AidContribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         $group = [];        
         $aid = 0;        
@@ -208,7 +204,7 @@ class AidContributionController extends Controller
            $aid_commitment->id = 0;
            $aid_commitment->affiliate_id = $affiliate->id;
        }
-        $data = [
+            $data = [
             'contributions' => $group,            
             'affiliate_id' => $affiliate->id,            
             'year_start' => $year_start,
@@ -219,7 +215,6 @@ class AidContributionController extends Controller
             'birth_cities' => $birth_cities,
             'new_contributions' => $this->getContributionDebt($affiliate->id,3),            
             'aid_commitment'    =>  $aid_commitment,
-
             'today_date'         =>  date('Y-m-d'),
         ];
         //return  date('Y-m-d');
@@ -276,20 +271,16 @@ class AidContributionController extends Controller
         return $contribution;
         }
     }
-<<<<<<< HEAD
 
     public function getInterest(Request $request)
     {
         //Obtiene el interes a partir del subsiguiente mes que debe pagar. Ej. de enero corre el interes desde marzo
         $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
         $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
-        $contribution_rate = ContributionRate::select('month_year', 'retirement_fund', 'mortuary_quota', 'mortuary_aid');//->orderby('month_year', 'desc')->first();
-        dd ($contribution_rate);
-        //$voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
-        $mount=($request->con['sueldo']-$request->con['dignity_rent'])*0.0203;
-        $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
+        $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')
+                                ->first();
+        $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' .($request->con['sueldo']-$request->con['dignity_rent'])/100*$rate['mortuary_aid']. '&txtCalcula=2';
         $foo = file_get_contents($uri);
-        //return $foo;
         $ch = curl_init($uri);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
@@ -306,6 +297,8 @@ class AidContributionController extends Controller
         else
         {
             Log::info("Success: ".$httpcode. " ".$foo );
+            $foo = [$foo,
+                    $rate];
                 return $foo;
         }
     }
@@ -362,7 +355,6 @@ class AidContributionController extends Controller
         ];
         return $data;
     }
-=======
     
     private function getContributionDebt($affiliate_id,$number){        
         $contributions = [];
@@ -379,11 +371,9 @@ class AidContributionController extends Controller
             if(!isset($contribution->id))
                 array_push (
                     $contributions,
-                    array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id)
-                );                       
+                    array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'interes' => 0,'dignity_rent' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id)
+                );
         }
         return $contributions;
     }
-    
->>>>>>> upstream/master
 }

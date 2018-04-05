@@ -78,8 +78,8 @@
 export default {
   props: ["aidContributions", "afid"],
   mounted() {
-    this.contributions = this.aidContributions;
-   },
+    this.contributions = this.aidContributions;    
+  },
   data() {
     return {
       contributions: [],
@@ -90,17 +90,8 @@ export default {
       afi_id: null,
       show_spinner: false,
       count: 3
-    };
+    }
   },
-<<<<<<< HEAD
-
-=======
-   
-  mounted() {
-    this.contributions = this.contributions1;  
-    this.afi_id = this.affiliate_id;    
-  },  
->>>>>>> upstream/master
   methods: {
     RemoveRow(index) {
       this.contributions.splice(index, 1);
@@ -110,19 +101,18 @@ export default {
       this.contributions = this.contributions1;
     },
     CalcularAporte(con, index) {
-      if (parseFloat(con.sueldo) > 0) {
+     if (parseFloat(con.sueldo) > 0) {
         if (this.count > 0) {
-          this.show_spinner = true;
+         this.show_spinner = true;
           axios
             .post("/get-interest-aid", { con })
             .then(response => {
-              this.ufv = response.data.replace(",", ".");
+             this.ufv = parseFloat(response.data[0].replace(",", "."));
                 if(this.ufv < 0)
                     this.ufv = 0;
-              con.auxilio_mortuorio = (con.sueldo - con.dignity_rent) * 0.0203;
-              con.interes = this.ufv;
-              con.subtotal =
-                parseFloat(con.auxilio_mortuorio) + parseFloat(con.interes);
+              con.auxilio_mortuorio = (con.sueldo - con.dignity_rent) * response.data[1].mortuary_aid/100;
+              con.interes = parseFloat(this.ufv);
+              con.subtotal = parseFloat(con.auxilio_mortuorio) + parseFloat(con.interes).toFixed(2);
               this.show_spinner = false;
               this.SumTotal();
               this.count = 3;
@@ -240,86 +230,8 @@ export default {
             });
           }
         });
-<<<<<<< HEAD
       }
     } 
-=======
-        var contributions = this.contributions;
-        var con = JSON.stringify(contributions);
-        var affiliate_id = this.affiliate_id;
-        var total = this.total;        
-        printJS({printable:'/print_contributions_quote?contributions='+con+'&affiliate_id='+affiliate_id+'&total='+total, type:'pdf', showModal:true});
-      },
-      setDataToTable(period,amount){                    
-        $('#main'+period).html(amount);
-      },
-      enableDC(){
-          $(".directContribution").removeClass('disableddiv');
-      },
-      Guardar(){                
-        if(this.tipo !== null) 
-        {
-            this.contributions =  this.contributions.filter((item)=> {
-                return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
-            });       
-      
-            if(this.contributions.length > 0)
-            {   
-                this.$swal({
-                title: 'Esta usted seguro de guardar?',
-                text: "whatever",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar'
-                }).then((result) => {    
-                    if (result.value) {                    
-                    var aportes = this.contributions;                    
-                    axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,affiliate_id:this.affiliate_id})
-                    .then(response => {
-                  //      console.log('entrando a succes');
-                //console.log(response.data);
-                    this.enableDC();
-                    var i;
-                    for(i=0;i<response.data.contribution.length;i++){                        
-                        this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
-                    }
-                    printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
-                    })
-                    .catch(error => {
-                    this.show_spinner = false;            
-                        //alert(e);
-                        console.log(error.response.data);
-//                        console.log(xhr.responseText);
-//                        var resp = jQuery.parseJSON(xhr.responseText);
-                        var resp = error.response.data;
-                        $.each(resp, function(index, value)
-                        {
-                            flash(value,'error',15);
-                        });
-                    })
-
-                    this.$swal({
-                    title: 'Pago realizado',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    type: 'success'
-                    })
-                }
-                })            
-            }
-        }      
-        
-        
-    
-    },
-
-
-    
-
->>>>>>> upstream/master
   },
   computed: {
     disabledSaved() {
