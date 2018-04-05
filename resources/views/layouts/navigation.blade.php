@@ -16,7 +16,6 @@
                             <li class="divider"></li>
                             <li><a href="{{ url('user')}}"><i class="fa fa-users"></i> Usuarios</a></li>
                             <li class="divider"></li>
-                            <li><a href="{{ url('user')}}"><i class="fa fa-address-book"></i> Roles</a></li>
                             <li><a href="{{ url('permission/create')}}"><i class="fa fa-sitemap"></i> Permisos</a></li>
                         @endif                       
 

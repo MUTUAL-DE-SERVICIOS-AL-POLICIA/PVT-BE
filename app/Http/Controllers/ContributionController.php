@@ -577,8 +577,10 @@ class ContributionController extends Controller
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
         $servicio = ContributionType::where('name','=','Servicio')->first();
+        $item_cero = ContributionType::where('name','=','Item 0')->first();
         $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)
                         ->where('contribution_type_id',$servicio->id)
+                        ->where('contribution_type_id',$item_cero->id)
                         ->orderBy('month_year','desc')
                         ->take(60)
                         ->get();
