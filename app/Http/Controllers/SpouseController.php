@@ -71,9 +71,9 @@ class SpouseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $spouse = Spouse::where('id', '=', $spouse->id)->first();
+        $spouse = Spouse::where('id', '=', $id)->first();
 
-        $this->authorize('update', $spouse);
+        // $this->authorize('update', $spouse);
 
         $spouse->identity_card = $request->identity_card;
         $spouse->registration = $request->registration;

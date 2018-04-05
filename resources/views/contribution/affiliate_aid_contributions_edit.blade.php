@@ -30,7 +30,7 @@
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
                 </affiliate-show>
                 <spouse-show :spouse="{{ $spouse }}" inline-template>
-                    @include('spouses.spouse_personal_information',['spouse'=>$spouse,'affiliate_id'=>$affiliate_id,'cities'=>$cities,'birth_cities'=>$birth_cities])
+                    @include('spouses.spouse_personal_information',['spouse'=>$spouse,'cities'=>$cities,'birth_cities'=>$birth_cities])
                 </spouse-show>
             </div>
             <div class="col-md-6">

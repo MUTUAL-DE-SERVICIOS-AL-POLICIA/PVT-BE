@@ -1,8 +1,7 @@
 <script>
 	export default{
 		props:[
-            'spouse',
-                    'affiliate_id'
+            'spouse'
         ],
         data(){
             return{
@@ -111,8 +110,8 @@
                         this.values.last_name =  response.data.spouse.last_name;
                         this.values.mothers_last_name =  response.data.spouse.mothers_last_name;
                         this.values.surname_husband = response.data.spouse.surname_husband;
-                        this.values.birth_date =  response.data.affiliate.birth_date;
-                        this.values.civil_status = response.data.affiliate.civil_status;
+                        this.values.birth_date =  response.data.spouse.birth_date;
+                        this.values.civil_status = response.data.spouse.civil_status;
 
                         flash('Informacion de Esposa(o) Actualizada');
                     }).catch((response)=>{

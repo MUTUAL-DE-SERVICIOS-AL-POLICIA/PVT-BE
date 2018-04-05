@@ -13,12 +13,14 @@
         <div class="panel-body " v-if="! editing " >
             <div class="col-md-6">
                 <dl class="dl-">
-                    <dt>Cedula de identidad:</dt> <dd>aaa@{{ form.identity_card }}  @{{ city_identity_card_name }}</dd>
+                    <dt>Cedula de identidad:</dt> <dd>@{{ form.identity_card }}  @{{ city_identity_card_name }}</dd>
+                    <dt>Registro:</dt> <dd>@{{ form.registration}}</dd>
                     <dt>Primer Nombre:</dt> <dd>@{{ form.first_name}}</dd>
                     <input type="text" class="form-control" v-model="first_name.value" v-show="first_name.edit ==  true">
                     <dt>Segundo Nombre:</dt> <dd> @{{ form.second_name }}</dd>
                     <dt>Apellido Paterno:</dt> <dd>@{{ form.last_name }}</dd>
                     <dt>Apellido Materno:</dt> <dd>@{{ form.mothers_last_name }}</dd>
+                    <dt>Apellido Casada(o):</dt> <dd>@{{ form.surname_husband }}</dd>
                     {{-- <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'">@{{ form.surname_husband }}</dd> --}}
                 </dl>
             </div>
@@ -28,11 +30,11 @@
                     <dt>Estado Civil:</dt> <dd>@{{ civil_status_name }}</dd>
                     <dt>Fecha de Nacimiento:</dt> <dd>@{{ form.birth_date }}</dd>
                     <dt>Edad:</dt> <dd> @{{ age  }} </dd>
-                    <dt>Lugar de Nacimiento:</dt> <dd> @{{ city_birth_name}}</dd>
+                    <dt>Lugar de Nacimiento:</dt> <dd> @{{ city_birth_name }}</dd>
                 </dl>
             </div>
         </div>
-        @can('update',$affiliate)
+        {{-- @can('update',$spouse) --}}
         <div class="panel-body" v-else>
             <div class="sk-folding-cube" v-show="show_spinner" >
                 <div class="sk-cube1 sk-cube"></div>
@@ -59,10 +61,12 @@
                     <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">
                         {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control','v-model' => 'form.city_identity_card_id']) !!}
                     </dd>
+                    <dt><label>Registro:</label></dt> <dd><input type="text" v-model="form.registration" class="form-control"></dd>
                     <dt><label>Primer Nombre:</label></dt> <dd><input type="text" v-model="form.first_name" class="form-control"></dd>
                     <dt>Segundo Nombre:</dt> <dd><input type="text" v-model="form.second_name" class="form-control"></dd>
                     <dt>Apellido Paterno:</dt> <dd><input type="text" v-model="form.last_name" class="form-control"></dd>
                     <dt>Apellido Materno:</dt> <dd><input type="text" v-model="form.mothers_last_name" class="form-control"></dd>
+                    <dt>Apellido Casada(o):</dt> <dd><input type="text" v-model="form.surname_husband" class="form-control"></dd>
                     {{-- <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'"><input type="text" class="form-control"></dd> --}}
                 </dl>
             </div>
@@ -94,6 +98,6 @@
                 <button class="btn btn-primary" type="button" @click="update"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
             </div>
         </div>
-        @endcan
+        {{-- @endcan --}}
     </div>
 </div>
