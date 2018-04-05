@@ -75,7 +75,7 @@ class AidCommitmentController extends Controller
     {
         if($id == -1){
             $aid_commitment = AidCommitment::find($request->id);
-            $this->authorize('update', $aid_commitment);
+           // $this->authorize('update', $aid_commitment); 
             $aid_commitment->state = 'BAJA';
             $aid_commitment->save();
             $aid_commitment->delete();            
@@ -84,13 +84,13 @@ class AidCommitmentController extends Controller
        
         if($request->id==0){            
             $aid_commitment = new AidCommitment(); 
-            $this->authorize('update', $aid_commitment);           
+           // $this->authorize('update', $aid_commitment);           
             $aid_commitment->affiliate_id = $request->affiliate_id;            
         }
         
         else 
             $aid_commitment = AidCommitment::find($request->id); 
-            $this->authorize('update', $aid_commitment);               
+           // $this->authorize('update', $aid_commitment);               
             $aid_commitment->user_id=Auth::user()->id;
             $aid_commitment->date_commitment = $request->date_commitment;
             $aid_commitment->contributor = $request->contributor;
@@ -101,7 +101,7 @@ class AidCommitmentController extends Controller
         $aid_commitment->save();
         ///'TITULAR', 'ESPOSA','CONYUGE'
         $affiliate = Affiliate::find($aid_commitment->affiliate_id);
-        $this->authorize('update', $affiliate);
+       // $this->authorize('update', $affiliate);
         if($aid_commitment->contributor == 'T')
             $affiliate->affiliate_state_id = 5;
         if($aid_commitment->contributor == 'E')
