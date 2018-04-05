@@ -99,51 +99,6 @@ class AidContributionController extends Controller
      * @param  \Muserpol\AidContribution  $aid_contribution
      * @return \Illuminate\Http\Response
      */
-    /* public function getMonthContributions($id)
-    //Muestran los meses que faltan pagarse. Maximo 3 por reglamento
-    {   
-        $contributions=[];
-        $lastMonths = AidContribution::where('affiliate_id', $id)
-            ->orderBy('month_year', 'desc')
-            ->first();
-        if ($lastMonths) {
-            $now = Carbon::now();
-            $arrayDat = explode('-', $lastMonths->month_year);
-            $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-            $diff = $now->subMonths(1)->diffInMonths($lastMonths);
-            $contribution = array();
-            if ($diff > 2) {
-                $month1 = Carbon::now()->subMonths(1);
-                $month2 = Carbon::now()->subMonths(2);
-                $month3 = Carbon::now()->subMonths(3);
-                $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'),'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'dignity_rent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'),'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'dignity_rent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'),'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'dignity_rent' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contributions = array($contribution3, $contribution2, $contribution1);
-            } 
-            else 
-            {
-                for ($i = 0; $i < $diff; $i++) {
-                    $month_diff = Carbon::now()->subMonths($i + 1);
-                    $month = explode('-', $month_diff);
-                    $montyear = $month_diff->format('m-Y');
-                    $contribution = array(
-                        'year' => $month[0], 
-                        'month' => $month[1], 
-                        'monthyear' => $montyear, 
-                        'sueldo' => 0, 
-                        'auxilio_mortuorio' => 0,
-                        'dignity_rent' => 0, 
-                        'interes' => 0, 
-                        'subtotal' => 0
-                        );
-                    $contributions[$i] = $contribution;
-                }
-                $contributions = array_reverse($contributions);
-            }
-        }
-        return $contributions;
-    } */
 
      public function edit(AidContribution $aidcontribution)
     {
