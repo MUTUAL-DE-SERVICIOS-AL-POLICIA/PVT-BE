@@ -171,7 +171,6 @@ export default {
       $(".directContribution").removeClass("disableddiv");
     },
     Guardar() {
-      //return (this.aid_contributions);
       this.contributions = this.aidContributions.filter(item => {
         return (
           item.sueldo != 0 && item.auxilio_mortuorio != 0 && item.subtotal != 0
@@ -197,8 +196,7 @@ export default {
               })
               .then(response => {
               this.enableDC();
-              console.log(response.data.aid_contribution.length);
-               /* for (var i = 0; i < response.data.aid_contribution.length; i++) {
+              /* for (var i = 0; i < response.data.aid_contribution.length; i++) {
                   this.setDataToTable(
                     response.data.aidcontribution[i].month_year,
                     response.data.aidcontribution[i].total
