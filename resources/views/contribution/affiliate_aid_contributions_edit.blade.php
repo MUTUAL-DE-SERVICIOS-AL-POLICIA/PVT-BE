@@ -28,10 +28,12 @@
             <div class="col-md-6">
                 <affiliate-show :affiliate="{{ $affiliate }}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                </affiliate-show>
-                <spouse-show :spouse="{{ $spouse }}" inline-template>
-                    @include('spouses.spouse_personal_information',['spouse'=>$spouse,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                </spouse-show>
+                </affiliate-show> 
+                @if(isset($spouse->id))
+                    <spouse-show :spouse="{{ $spouse }}" inline-template>
+                        @include('spouses.spouse_personal_information',['spouse'=>$spouse,'cities'=>$cities,'birth_cities'=>$birth_cities])
+                    </spouse-show>
+                @endif
             </div>
             <div class="col-md-6">
                 @include('contribution.aid_aditional_info',['summary',$summary])
@@ -229,10 +231,11 @@
                     xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
                 }
             },
-            success: function(result){
-                //console.log(result);
-                flash('exito');
-                $('#aid_main'+result.month_year).html(result.total);
+            success: function(result){                               
+                $.each(result, function(index,value){
+                    $('#aid_main'+value.month_year).html(value.total);                    
+                 });                                  
+                 flash('exito');                 
             },
             error: function(xhr, status, error) {
                 //console.log(xhr.responseText);
