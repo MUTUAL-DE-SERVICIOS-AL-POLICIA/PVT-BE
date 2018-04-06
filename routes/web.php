@@ -53,6 +53,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::patch('/update_beneficiaries/{retirement_fund}','RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
 
+	//SpouseControler
+	Route::patch('/update_spouse/{spouse}', 'SpouseController@update')->name('update_spouse');
+
 	Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
 
 
@@ -126,7 +129,7 @@ Route::group(['middleware' => ['auth']], function () {
         
         //AidContributions
         Route::resource('aid_contribution','AidContributionController');
-        //Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
+        Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
         //Route::post('store_aid_contributions','AidContributionController@storeAidContributions');        
 
 	Route::resource('contribution', 'ContributionController');

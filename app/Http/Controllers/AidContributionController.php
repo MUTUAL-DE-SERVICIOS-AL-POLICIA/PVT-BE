@@ -1,5 +1,6 @@
 <?php
 namespace Muserpol\Http\Controllers;
+
 use Muserpol\Models\Contribution\AidContribution;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
@@ -11,6 +12,8 @@ use Validator;
 use Log;
 use Muserpol\Models\Voucher;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\City;
+use Muserpol\Models\Spouse;
 use Auth;
 use Muserpol\Models\Contribution\AidCommitment;
 use Muserpol\Models\Contribution\ContributionRate;
@@ -20,9 +23,9 @@ class AidContributionController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     */            
+     */
     public function index()
-    {        
+    {
         return 0;
     }
     /**
@@ -33,7 +36,7 @@ class AidContributionController extends Controller
     public function create()
     {
     }
-    
+
     /**
      * Display the specified resource.
      *use Muserpol\Models\AffiliateState;
@@ -44,6 +47,25 @@ class AidContributionController extends Controller
     {
 
     }
+    public function getAllCommitmentAid($id)
+    {
+        $commitment = AidContribution::where('affiliate_id', $id)
+            ->orderBy('month_year', 'desc')
+            ->first();
+        $array_date = explode('-', $commitment->month_year);
+        $gestion = $array_date[1];
+        $month = $array_date[0];
+        $type = $commitment->type;
+        $quotable = $commitment->quotable;
+        $rent = $commitment->rent;
+        $dignity_rent = $commitment->dignity_rent;
+        $total = $commitment->total;
+        $data = [
+            'year' => $gestion,
+        ];
+        return view ('contribution.aid_contribution', $data);
+    }
+        
     public function aidContributions($affiliate_id)
     {
 
@@ -88,11 +110,11 @@ class AidContributionController extends Controller
             'rent' => $rent,
             'dignity_rent' => $dignity_rent,
             'total' => $total,
-            //'aid_contribution' => $aid_contribution
         ];
-        return view ('contribution.aid_contribution', $data);
+        return ($data);
     }
     
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -125,26 +147,26 @@ class AidContributionController extends Controller
     {
         //
     }
-    
+
     public function getAffiliateContributions(Affiliate $affiliate = null)
     {                
         $contributions = AidContribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
-        $group = [];        
-        $aid = 0;        
+        $group = [];
+        $aid = 0;
         foreach ($contributions as $contribution) {
             $group[$contribution->month_year] = $contribution;
             $aid = $contribution->total + $aid;
         }
         $total = $aid;
-        $dateentry = Util::getStringDate($affiliate->date_derelict);     
+        $dateentry = Util::getStringDate($affiliate->date_derelict);
         $dateentry = "2017-01-01";
         $end = explode('-', $dateentry);
         $newcontributions = [];
         $month_end = $end[1];
         $year_end = $end[0];
         $month_start = (date('m') - 1);
-        $year_start = date('Y');        
-        $summary = array(            
+        $year_start = date('Y');
+        $summary = array(
             'aid' => $aid,
             'total' => $total,
             'dateentry' => $dateentry
@@ -152,35 +174,36 @@ class AidContributionController extends Controller
         $cities = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         //get Commitment data
-       $aid_commitment = AidCommitment::where('affiliate_id',$affiliate->id)->first();     
-       if(!isset($aid_commitment->id))
-       {
-           $aid_commitment = new AidCommitment();
-           $aid_commitment->id = 0;
-           $aid_commitment->affiliate_id = $affiliate->id;
-       }
-            $data = [
-            'contributions' => $group,            
-            'affiliate_id' => $affiliate->id,            
+        $aid_commitment = AidCommitment::where('affiliate_id', $affiliate->id)->first();
+        if (!isset($aid_commitment->id)) {
+            $aid_commitment = new AidCommitment();
+            $aid_commitment->id = 0;
+            $aid_commitment->affiliate_id = $affiliate->id;
+        }
+        $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
+        $data = [
+            'contributions' => $group,
+            'affiliate_id' => $affiliate->id,
             'year_start' => $year_start,
             'year_end' => $year_end,
             'summary' => $summary,
             'affiliate' => $affiliate,
             'cities' => $cities,
             'birth_cities' => $birth_cities,
-            'new_contributions' => $this->getContributionDebt($affiliate->id,3),            
-            'aid_commitment'    =>  $aid_commitment,
-            'today_date'         =>  date('Y-m-d'),
+            'new_contributions' => $this->getContributionDebt($affiliate->id, 3),
+            'aid_commitment' => $aid_commitment,
+            'spouse' => $spouse,
+            'today_date' => date('Y-m-d'),
         ];
         //return  date('Y-m-d');
-         return view('contribution.affiliate_aid_contributions_edit', $data);
+        return view('contribution.affiliate_aid_contributions_edit', $data);
     }
-    
+
     public function storeContributions(Request $request)
     {                
         //*********START VALIDATOR************//
-        $rules=[];
-        $messages=[];
+        $rules = [];
+        $messages = [];
         $input_data = $request->all();
         if(!empty($request->iterator))
         { 
@@ -314,9 +337,9 @@ class AidContributionController extends Controller
         $contributions = [];
         $month = date('m');
         $year = date('Y');
-        while($number--){
-            $month--;            
-            if($month == 0){
+        while ($number--) {
+            $month--;
+            if ($month == 0) {
                 $month = 12;
                 $year--;
             }
