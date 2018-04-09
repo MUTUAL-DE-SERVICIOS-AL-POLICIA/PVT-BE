@@ -669,11 +669,17 @@ class ContributionController extends Controller
         $servicio = ContributionType::where('name','=','Servicio')->first();
         $item_cero = ContributionType::where('name','=','Item 0')->first();
         $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)
-                        ->where('contribution_type_id',$servicio->id)
-                        ->where('contribution_type_id',$item_cero->id)
+                        ->where(function ($query) use ($servicio,$item_cero){
+                            $query->where('contribution_type_id',$servicio->id)
+                            ->orWhere('contribution_type_id',$item_cero->id);
+                        })
                         ->orderBy('month_year','desc')
                         ->take(60)
                         ->get();
+
+
+                        
+                   //return $contributions_sixty;                    
         $contributions = $contributions_sixty->sortBy('month_year')->all();                           
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')

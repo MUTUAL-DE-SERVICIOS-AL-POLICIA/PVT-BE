@@ -24,8 +24,7 @@
                 EXP.
             </td>
         </tr>
-    </thead>
-    
+    </thead>  
     <tbody> 
         <tr class="text-sm">
             <td class="text-center uppercase font-bold px-5 py-3">{{ $degree->name }}</td>
@@ -37,4 +36,4 @@
             <td class="text-center uppercase font-bold px-5 py-3">{{ $exp }}</td>
         </tr>
     </tbody>
-</table><br>
+</table>
