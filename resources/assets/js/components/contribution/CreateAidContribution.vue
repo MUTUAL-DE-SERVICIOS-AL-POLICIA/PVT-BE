@@ -10,7 +10,7 @@
                     </div>
                 </div>
 
-                <div class="panel-body" id ="print">  
+                <div class="panel-body" id ="print">
                     <div class="sk-folding-cube" v-show="show_spinner">
                         <div class="sk-cube1 sk-cube"></div>
                         <div class="sk-cube2 sk-cube"></div>
@@ -79,6 +79,7 @@ export default {
   props: ["aidContributions", "afid"],
   mounted() {
     this.contributions = this.aidContributions;    
+    this.afi_id = this.afid;
   },
   data() {
     return {
@@ -98,7 +99,7 @@ export default {
       this.SumTotal();
     },
     Refresh() {
-      this.contributions = this.contributions1;
+      this.contributions = this.aidContributions;
     },
     CalcularAporte(con, index) {
      if (parseFloat(con.sueldo) > 0) {
@@ -112,7 +113,7 @@ export default {
                     this.ufv = 0;
               con.auxilio_mortuorio = (con.sueldo - con.dignity_rent) * response.data[1].mortuary_aid/100;
               con.interes = parseFloat(this.ufv);
-              con.subtotal = parseFloat(con.auxilio_mortuorio) + parseFloat(con.interes).toFixed(2);
+              con.subtotal = (parseFloat(con.auxilio_mortuorio) + parseFloat(con.interes)).toFixed(2);
               this.show_spinner = false;
               this.SumTotal();
               this.count = 3;
@@ -143,7 +144,7 @@ export default {
       this.contributions = this.contributions.filter(item => {
         return (
           item.sueldo != 0 &&
-          item.auxilioMortuorio != 0 &&
+          item.auxilio_mortuorio != 0 &&
           item.subtotal != 0
         );
       });
@@ -170,12 +171,12 @@ export default {
       $(".directContribution").removeClass("disableddiv");
     },
     Guardar() {
-      this.aidContributions = this.aidContributions.filter(item => {
+      this.contributions = this.aidContributions.filter(item => {
         return (
           item.sueldo != 0 && item.auxilio_mortuorio != 0 && item.subtotal != 0
         );
       });
-      if (this.contributions.length > 0) {
+       if (this.contributions.length > 0) {
         this.$swal({
           title: "Esta usted seguro de guardar?",
           type: "warning",
@@ -191,18 +192,22 @@ export default {
               .post("/aid_contribution_save", {
                 aportes,
                 total: this.total,
-                tipo: this.tipo,
                 afid: this.afid
               })
               .then(response => {
-                console.log(response);
-                this.enableDC();
-                for (var i = 0; i < response.data.aidcontribution.length; i++) {
+              this.enableDC();
+              /* for (var i = 0; i < response.data.aid_contribution.length; i++) {
                   this.setDataToTable(
                     response.data.aidcontribution[i].month_year,
                     response.data.aidcontribution[i].total
                   );
-                }
+              } */
+              this.$swal({
+              title: "Pago realizado",
+              showConfirmButton: false,
+              timer: 6000,
+              type: "success"
+              })
                 printJS({
                   printable:
                     "/ret_fun/" +
@@ -212,17 +217,9 @@ export default {
                   type: "pdf",
                   showModal: true
                 });
-              });
-            this.$swal({
-              title: "Pago realizado",
-              showConfirmButton: false,
-              timer: 6000,
-              type: "success"
             }).catch(error => {
               this.show_spinner = false;
               console.log(error.response.data);
-              //                        console.log(xhr.responseText);
-              //                        var resp = jQuery.parseJSON(xhr.responseText);
               var resp = error.response.data;
               $.each(resp, function(index, value) {
                 flash(value, "error", 6000);
@@ -231,7 +228,7 @@ export default {
           }
         });
       }
-    } 
+    }
   },
   computed: {
     disabledSaved() {
