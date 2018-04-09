@@ -606,8 +606,13 @@ class ContributionController extends Controller
         // return $contributions;
        
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
-        $data =  array('contributions' => $contributions,'con_type'=>$con_type ,'contribution_types'=> $contribution_types ,'ret_fun'=>$ret_fun);
-        // return $data;
+        $data =   array('contributions' => $contributions,
+                        'con_type'=>$con_type ,
+                        'contribution_types'=> $contribution_types,
+                        'url_certification'=> url('ret_fun/'.$ret_fun->id.'/print/certification'),
+                        'url_certification_availability'=> url('ret_fun/'.$ret_fun->id.'/print/cer_availability'),
+                        'url_certification_itemcero'=> url('ret_fun/'.$ret_fun->id.'/print/cer_itemcero'),
+                        'ret_fun'=>$ret_fun);
         return view('contribution.select',$data);
     }
     public function saveContributions(Request $request)
