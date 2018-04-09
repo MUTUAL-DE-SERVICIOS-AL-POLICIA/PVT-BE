@@ -28,9 +28,9 @@
                                 <th>GESTIÓN</th>
                                 <th>MES</th>
                                 <th>TIPO</th>
-                                <th>TOTAL GANADO</th>
-                                <th>TOTAL COTIZABLE</th>
-                                <th>TOTAL PENSION DIGNIDAD</th>
+                                <th>RENTA</th>
+                                <th>RENTA DIGNIDAD</th>
+                                <th>COTIZABLE</th>
                                 <th>APORTE AUXILIO MORTUORIO</th>
                             </tr>
                         </thead>
@@ -85,15 +85,15 @@
                 {data: 'year'},
                 {data: 'month'},
                 {data: 'type'},
-                {data: 'quotable'},
                 {data: 'rent'},
                 {data: 'dignity_rent'},
+                {data: 'quotable'},
                 {data: 'total'},
             ],
         });
          $('#datatables-aid-contributions tbody')
-        .on( 'mouseenter', 'td', function () {year
-            var colIdx = datatable_contri.cell(this).index().column;
+        .on( 'mouseenter', 'td', function () {
+            var colIdx = datatable_contri.cell(this).index();
             $( datatable_contri.cells().nodes() ).removeClass( 'highlight' );
             $( datatable_contri.column( colIdx ).nodes() ).addClass( 'highlight' );
         } );
