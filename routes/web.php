@@ -12,7 +12,6 @@
  */
 
 use Muserpol\DataTables\AffiliateContributionsDataTable;
-//use Muserpol\DataTables\AffiliateAidContributionsDataTable;
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
 

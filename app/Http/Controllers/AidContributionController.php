@@ -191,7 +191,9 @@ class AidContributionController extends Controller
             $aid = $contribution->total + $aid;
         }
         $total = $aid;
-        $dateentry = Util::getStringDate($affiliate->date_derelict);
+        //$dateentry = Util::getStringDate($affiliate->date_derelict);
+        $dateentry = $affiliate->date_derelict;
+        if($dateentry == NULL || $dateentry == "")
         $dateentry = "2017-01-01";
         $end = explode('-', $dateentry);
         $newcontributions = [];
