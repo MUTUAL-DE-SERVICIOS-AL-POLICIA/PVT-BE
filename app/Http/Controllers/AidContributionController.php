@@ -286,13 +286,12 @@ class AidContributionController extends Controller
     //Metodo para agregar contribuciones voluntarias o directas
     {
         // Se guarda voucher fecha, total 1 reg
-
+        
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
             $code = Util::getNextCode(""); 
         else
             $code = Util::getNextCode($voucher_code->code);
-        //return $request->total."<<<<<<";
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $request->afid;
@@ -327,7 +326,7 @@ class AidContributionController extends Controller
             }
         }
         $data = [
-            'aidcontribution'  =>  $result,
+            'aid_contribution'  =>  $result,
             'voucher_id'    => $voucher->id,
             'affiliate_id'  =>  $affiliate->id,
         ];
