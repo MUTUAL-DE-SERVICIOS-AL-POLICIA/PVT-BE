@@ -46,6 +46,9 @@
             {{--  <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>  --}}
         </div> 
     </div>
+    <div class = "col-md-12">
+        <aid-contribution-create :aid-contributions="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate->id }}" ></aid-contribution-create>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <form>

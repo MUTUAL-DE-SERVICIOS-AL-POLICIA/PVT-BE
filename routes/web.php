@@ -131,7 +131,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');        
         Route::post('store_aid_contributions','AidContributionController@storeContributions');        
         Route::get('affiliate/{affiliate}/aid_contribution', 'AidContributionController@show')->name('show_aid_contribution');
-        Route::get('get_affiliate_aid_contributions/{affiliate}', 'AidContributionController@getAffiliateAidContributionsDatatables')->name('affiliate_aid_contributions');
+        //Route::get('get_affiliate_aid_contributions/{affiliate}', 'AidContributionController@getAffiliateAidContributionsDatatables')->name('affiliate_aid_contributions');
        
         
         //Contributions
@@ -140,7 +140,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('affiliate/{affiliate}/contribution', 'ContributionController@show')->name('show_contribution');
 	Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
 	Route::get('affiliate/{affiliate_id}/aid/contributions','AidContributionController@aidContributions');
-	//Route::get('get_aid_contributions/{affiliate}','AidContributionController@getAllContributionsAid')->name('affiliate_aid_contributions');
+	Route::get('get_aid_contributions/{affiliate}','AidContributionController@getAllContributionsAid')->name('affiliate_aid_contributions');
 	
 	// Route::get('AidContribution', function(){
 	// 	return view('aid_contribution');

@@ -91,6 +91,7 @@
                         }
                         console.log(response.data);
                         flash('Informacion actualizada');
+                        window.location.reload(true);
                        }).catch((error)=>{
                            if(error.response.data.date_commitment !== undefined)
                                 flash(error.response.data.date_commitment[0],'error',10000);

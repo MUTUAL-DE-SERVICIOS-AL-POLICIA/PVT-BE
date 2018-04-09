@@ -52,34 +52,7 @@ class AidContributionController extends Controller
         ];
         return view('contribution.aid_show',$data);               
     }
-    
-    public function getAffiliateAidContributionsDatatables(DataTables $datatables, $affiliate_id){
-        $affiliate = Affiliate::where('id',$affiliate_id)->first();
-        $contributions = AidContribution::where('affiliate_id',$affiliate_id)->get();
-        
-        return $datatables->of($contributions)
-                 ->editColumn('month_year', function ($contribution) {
-                     return Carbon::parse($contribution->month_year)->month . "-" . Carbon::parse($contribution->month_year)->year;
-                    return $contribution->month_year;
-                })
-                ->editColumn('rent', function($contribution){
-                    return $contribution->rent;
-                })               
-                ->editColumn('dignity_rent', function ($contribution){
-                    return $contribution->dignity_rent;
-                })
-                ->editColumn('quotable', function($contribution){
-                    return $contribution->quotable;
-                })
-                ->editColumn('interest', function($contribution){
-                    return $contribution->interest;
-                })
-                ->editColumn('total',function($contribution){
-                    return $contribution->total;
-                })
-            ->make(true);
-        
-    }
+
     public function getAllCommitmentAid($id)
     {
         $commitment = AidContribution::where('affiliate_id', $id)
@@ -396,6 +369,7 @@ class AidContributionController extends Controller
                     array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'interes' => 0,'dignity_rent' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id)
                 );
         }
+        $contributions = array_reverse($contributions);       
         return $contributions;
     }
 }
