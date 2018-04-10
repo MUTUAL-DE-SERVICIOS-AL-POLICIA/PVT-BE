@@ -26,6 +26,10 @@ accepts@~1.3.4:
     mime-types "~2.1.16"
     negotiator "0.6.1"
 
+accounting@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/accounting/-/accounting-0.4.1.tgz#87dd4103eff7f4460f1e186f5c677ed6cf566883"
+
 acorn-dynamic-import@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/acorn-dynamic-import/-/acorn-dynamic-import-2.0.2.tgz#c752bd210bef679501b6c6cb7fc84f8f47158cc4"
@@ -6991,6 +6995,13 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-currency-filter@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/vue-currency-filter/-/vue-currency-filter-2.1.1.tgz#2a6525c593749cd98713271176fbe7c46991b6a6"
+  dependencies:
+    accounting "0.4.1"
+    vue "^2.5.13"
+
 vue-form-wizard@^0.8.4:
   version "0.8.4"
   resolved "https://registry.yarnpkg.com/vue-form-wizard/-/vue-form-wizard-0.8.4.tgz#ddf864c9709b7ba2a6323f59e5d6d17536b7800e"
@@ -7051,17 +7062,14 @@ vue2-datatable-component@^2.1.20:
   dependencies:
     lodash "^4.17.4"
     replace-with "^1.0.0"
-
-vue@^2.1.10:
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.9.tgz#b2380cd040915dca69881dafd121d760952e65f7"
-
+vue@^2.5.13:
+  version "2.5.16"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.16.tgz#07edb75e8412aaeed871ebafa99f4672584a0085"
 vuedraggable@^2.16.0:
   version "2.16.0"
   resolved "https://registry.yarnpkg.com/vuedraggable/-/vuedraggable-2.16.0.tgz#52127081a2adb3de5fabd214d404ff3eee63575a"
   dependencies:
     sortablejs "^1.7.0"
-
 vuex@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.0.1.tgz#e761352ebe0af537d4bb755a9b9dc4be3df7efd2"
