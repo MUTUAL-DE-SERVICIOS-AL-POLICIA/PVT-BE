@@ -13,7 +13,7 @@
         <div class="panel-body " v-if="! editing " >
             <div class="col-md-6">
                 <dl class="dl-">
-                    <dt>Cedula de identidad:</dt> <dd>@{{ form.identity_card }}  @{{ city_identity_card_name }}</dd>
+                    <dt>Cedula de identidad:</dt> <dd>@{{ form.identity_card }}  @{{ get_city_first_shortened() }}</dd>
                     <dt>Registro:</dt> <dd>@{{ form.registration}}</dd>
                     <dt>Primer Nombre:</dt> <dd>@{{ form.first_name}}</dd>
                     <input type="text" class="form-control" v-model="first_name.value" v-show="first_name.edit ==  true">
@@ -30,7 +30,7 @@
                     <dt>Estado Civil:</dt> <dd>@{{ civil_status_name }}</dd>
                     <dt>Fecha de Nacimiento:</dt> <dd>@{{ form.birth_date }}</dd>
                     <dt>Edad:</dt> <dd> @{{ age  }} </dd>
-                    <dt>Lugar de Nacimiento:</dt> <dd> @{{ city_birth_name }}</dd>
+                    <dt>Lugar de Nacimiento:</dt> <dd> @{{ city_birth_name }} @{{ get_city_birth_name()}}</dd>
                 </dl>
             </div>
         </div>

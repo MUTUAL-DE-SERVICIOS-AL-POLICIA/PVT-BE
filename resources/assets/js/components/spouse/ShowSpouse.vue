@@ -1,22 +1,22 @@
 <script>
 	export default{
 		props:[
-            'spouse'
+            'spouse', 'cities'
         ],
         data(){
             return{
                 editing: false,
                 show_spinner: false,
                 form:this.spouse,
-                city_birth: this.spouse.city_birth,
-                city_identity_card: this.spouse.city_identity_card,
+                city_birth: this.spouse.city_birth_id,
+                city_identity_card: this.spouse.city_identity_card_id,
                 first_name:{
                     value: this.spouse.first_name,
                     edit: false,
                 },
                 values:{
                     identity_card:this.spouse.identity_card,
-                    resgistration:this.spouse.resgistration,
+                        resgistration:this.spouse.resgistration,
                     first_name: this.spouse.first_name,
                     second_name: this.spouse.second_name,
                     last_name: this.spouse.last_name,
@@ -26,6 +26,14 @@
                     birth_date: this.spouse.birth_date                    
                 }
             }
+        },
+        created:function(){
+            console.log("---------");
+            console.log(this.spouse);
+            console.log(this.city_birth);
+            console.log("+++++++++++");
+            console.log(this.cities);
+
         },
         computed:{
             age: function(){
@@ -71,6 +79,30 @@
 
         },
         methods:{
+            get_city_birth_name:function(){
+                var name='';
+                console.log(this.city_birth);
+                let city_birth_id =this.city_birth;
+                this.cities.forEach(function(city) {
+                    console.log(city);
+                    if(city.id==city_birth_id){
+                        name = city.name;
+                    }
+                });
+                return name;
+            },
+            get_city_first_shortened:function(){
+                var name='';
+                console.log(this.city_identity_card);
+                let city_identity_card =this.city_identity_card;
+                this.cities.forEach(function(city) {
+                    console.log(city);
+                    if(city.id==city_identity_card){
+                        name = city.first_shortened;
+                    }
+                });
+                return name;
+            },
             edit_first_name: function(){
             },
             toggle_editing:function () {

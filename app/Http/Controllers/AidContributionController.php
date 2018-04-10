@@ -172,6 +172,7 @@ class AidContributionController extends Controller
             'dateentry' => $dateentry
         );
         $cities = City::all()->pluck('first_shortened', 'id');
+        $cities_objets = City::all();
         $birth_cities = City::all()->pluck('name', 'id');
         //get Commitment data
         $aid_commitment = AidCommitment::where('affiliate_id', $affiliate->id)->first();
@@ -189,6 +190,7 @@ class AidContributionController extends Controller
             'summary' => $summary,
             'affiliate' => $affiliate,
             'cities' => $cities,
+            'cities_objets' => $cities_objets,
             'birth_cities' => $birth_cities,
             'new_contributions' => $this->getContributionDebt($affiliate->id, 3),
             'aid_commitment' => $aid_commitment,
