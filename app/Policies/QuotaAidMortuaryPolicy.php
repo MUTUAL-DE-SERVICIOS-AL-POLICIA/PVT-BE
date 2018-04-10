@@ -25,7 +25,8 @@ class QuotaAidMortuaryPolicy
     public function view(User $user, QuotaAidMortuary $quotaAidMortuary)
     {
         //
-        
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
+        return $permission?true:false;
     }
 
     /**
@@ -37,6 +38,8 @@ class QuotaAidMortuaryPolicy
     public function create(User $user)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::CREATE);
+        return $permission?true:false;
     }
 
     /**
@@ -49,6 +52,8 @@ class QuotaAidMortuaryPolicy
     public function update(User $user, QuotaAidMortuary $quotaAidMortuary)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::UPDATE);
+        return $permission?true:false;
     }
 
     /**
@@ -61,5 +66,7 @@ class QuotaAidMortuaryPolicy
     public function delete(User $user, QuotaAidMortuary $quotaAidMortuary)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);
+        return $permission?true:false;
     }
 }
