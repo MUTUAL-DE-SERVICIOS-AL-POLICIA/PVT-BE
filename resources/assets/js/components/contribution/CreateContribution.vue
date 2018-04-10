@@ -118,16 +118,14 @@ export default {
     this.afi_id = this.afid;    
   },
   created(){
-      
   },
   methods: {
-      RemoveRow(index) {         
+      RemoveRow(index) {
         this.contributions.splice(index,1);
         this.SumTotal();
       },
       Refresh() {
-        this.contributions = this.contributions1;       
-      
+        this.contributions = this.contributions1;
       },
       repeatSalary(){
           var i;
@@ -138,7 +136,7 @@ export default {
       },
       CalcularAporte(con, index){
         if(parseFloat(con.sueldo) >0)
-        {          
+        {
         if(this.count > 0)
         {
             this.show_spinner=true
@@ -159,15 +157,14 @@ export default {
                 console.log('requesting data');
             axios.post('/get-interest',{con})
             .then(response => {                
-                this.ufv = response.data
+                this.ufv = response.data.replace(',','.');
+                con.interes = parseFloat(this.ufv);
                 this.ufvs[con.sueldo] = this.ufv;
                 con.fr = con.sueldo * this.rate.retirement_fund/100;
                 con.cm = con.sueldo * this.rate.mortuary_quota/100;
-                con.interes = parseFloat(this.ufv);
                 con.subtotal =  (con.fr + con.cm + con.interes).toFixed(2);
             
                 this.show_spinner=false;
-
                 this.SumTotal();
                 this.count = 3;
                 if(index +1 < this.contributions.length)
@@ -187,10 +184,8 @@ export default {
             this.show_spinner=false;
             this.count = 3;
             return;
-        }                
-        
-                
-        }           
+        }
+        }
           
       },
 
