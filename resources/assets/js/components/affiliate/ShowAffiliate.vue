@@ -8,8 +8,8 @@
                 editing: false,
                 show_spinner: false,
                 form:this.affiliate,
-                city_birth: null,
-                city_identity_card: null,
+                city_birth: !!this.affiliate.city_birth?this.affiliate.city_birth:null,
+                city_identity_card: !!this.affiliate.city_identity_card?this.affiliate.city_identity_card:null,
                 first_name:{
                     value: this.affiliate.first_name,
                     edit: false,
@@ -29,15 +29,18 @@
             }
         },
         created:function(){
+            if(!this.city_birth){
+                // console.log('no tiene');
             let city_id =this.affiliate.city_birth_id;
             this.city_birth=this.cities.filter(function(city) {
                 return city.id==city_id;
             })[0];
-            
             city_id =this.affiliate.city_identity_card_id;
             this.city_identity_card=this.cities.filter(function(city) {
                 return city.id==city_id;
             })[0];
+            }
+            
         },
         computed:{
             age: function(){
