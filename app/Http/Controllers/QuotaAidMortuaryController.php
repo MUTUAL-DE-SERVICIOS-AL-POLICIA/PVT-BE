@@ -100,7 +100,7 @@ class QuotaAidMortuaryController extends Controller
         
         
         $quota_aid  = QuotaAidMortuary::select('id','code')->orderby('id','desc')->first();
-        $this->authorize('view', $quota_aid);
+       // $this->authorize('view', $quota_aid);
         if(!isset($quota_aid->id))
             $code = Util::getNextCode ("");
         else        

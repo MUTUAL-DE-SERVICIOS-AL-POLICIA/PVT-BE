@@ -602,14 +602,18 @@ class ContributionController extends Controller
                                                     ->orderBy('contributions.month_year', 'desc')
                                                     ->get();
            $con_type=true;
-        }
-    
+        }  
         
         // return $contributions;
        
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
-        $data =  array('contributions' => $contributions,'con_type'=>$con_type ,'contribution_types'=> $contribution_types ,'ret_fun'=>$ret_fun);
-        // return $data;
+        $data =   array('contributions' => $contributions,
+                        'con_type'=>$con_type ,
+                        'contribution_types'=> $contribution_types,
+                        'url_certification'=> url('ret_fun/'.$ret_fun->id.'/print/certification'),
+                        'url_certification_availability'=> url('ret_fun/'.$ret_fun->id.'/print/cer_availability'),
+                        'url_certification_itemcero'=> url('ret_fun/'.$ret_fun->id.'/print/cer_itemcero'),
+                        'ret_fun'=>$ret_fun);
         return view('contribution.select',$data);
     }
     public function saveContributions(Request $request)
@@ -685,14 +689,15 @@ class ContributionController extends Controller
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = "CERTIFICACION DE APORTES";
+        $subtitle ="Cuenta Individual";
         $number = $retirement_fund->code;
         $date = Util::getStringDate($retirement_fund->reception_date);        
         $degree = Degree::find($affiliate->degree_id);
         $exp = City::find($affiliate->city_identity_card_id);
         $exp = ($exp==Null)? "-": $exp->first_shortened;
         $dateac = Carbon::now()->format('d/m/Y');
-        $place = City::find($retirement_fund->city_start_id);
-        $num=0;        
+        $place = City::find($retirement_fund->city_start_id); 
+        $num=0;       
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);       
@@ -720,8 +725,8 @@ class ContributionController extends Controller
         $exp = City::find($affiliate->city_identity_card_id);
         $exp = ($exp==Null)? "-": $exp->first_shortened;
         $dateac = Carbon::now()->format('d/m/Y');
-        $place = City::find($retirement_fund->city_start_id);
-        $num=0;              
+        $place = City::find($retirement_fund->city_start_id); 
+        $num=0;             
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
@@ -756,7 +761,7 @@ class ContributionController extends Controller
         $exp = City::find($affiliate->city_identity_card_id);
         $exp = ($exp==Null)? "-": $exp->first_shortened;
         $dateac = Carbon::now()->format('d/m/Y');
-        $place = City::find($retirement_fund->city_start_id);             
+        $place = City::find($retirement_fund->city_start_id);              
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
