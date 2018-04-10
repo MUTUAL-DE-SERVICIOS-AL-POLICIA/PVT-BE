@@ -99,7 +99,7 @@ class AidCommitmentController extends Controller
             $aid_commitment->state = "ALTA";
             
         $aid_commitment->save();
-        ///'TITULAR', 'ESPOSA','CONYUGE'
+        ///'TITULAR', 'ESPOSA','CONYUGE'    
         $affiliate = Affiliate::find($aid_commitment->affiliate_id);
        // $this->authorize('update', $affiliate);
         if($aid_commitment->contributor == 'T')
@@ -108,6 +108,9 @@ class AidCommitmentController extends Controller
             $affiliate->affiliate_state_id = 4;
         if($aid_commitment->contributor == 'C')
             $affiliate->affiliate_state_id = 4;
+        if($affiliate->date_derelict == NULL)
+            $affiliate->date_derelict = $aid_commitment->pension_declaration_date;
+        
         $affiliate->save();
         return $aid_commitment;
     }

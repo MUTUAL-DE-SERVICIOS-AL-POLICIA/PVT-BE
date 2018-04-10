@@ -17,6 +17,7 @@ use Muserpol\Models\Spouse;
 use Auth;
 use Muserpol\Models\Contribution\AidCommitment;
 use Muserpol\Models\Contribution\ContributionRate;
+
 class AidContributionController extends Controller
 {
     /**
@@ -45,8 +46,13 @@ class AidContributionController extends Controller
      */
     public function show(Affiliate $affiliate)
     {
-
+        ///       $this->authorize('view',new Contribution);        
+        $data = [
+            'affiliate' => $affiliate,            
+        ];
+        return view('contribution.aid_show',$data);               
     }
+
     public function getAllCommitmentAid($id)
     {
         $commitment = AidContribution::where('affiliate_id', $id)
@@ -158,7 +164,9 @@ class AidContributionController extends Controller
             $aid = $contribution->total + $aid;
         }
         $total = $aid;
-        $dateentry = Util::getStringDate($affiliate->date_derelict);
+        //$dateentry = Util::getStringDate($affiliate->date_derelict);
+        $dateentry = $affiliate->date_derelict;
+        if($dateentry == NULL || $dateentry == "")
         $dateentry = "2017-01-01";
         $end = explode('-', $dateentry);
         $newcontributions = [];
@@ -180,7 +188,7 @@ class AidContributionController extends Controller
             $aid_commitment->id = 0;
             $aid_commitment->affiliate_id = $affiliate->id;
         }
-        $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
+        $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();               
         $data = [
             'contributions' => $group,
             'affiliate_id' => $affiliate->id,
@@ -202,6 +210,7 @@ class AidContributionController extends Controller
     public function storeContributions(Request $request)
     {                
         //*********START VALIDATOR************//
+        
         $rules = [];
         $messages = [];
         $input_data = $request->all();
@@ -210,11 +219,11 @@ class AidContributionController extends Controller
             foreach ($request->iterator as $key => $iterator) 
             {              
                 $input_data['rent'][$key]= strip_tags($request->rent[$key]);
-                $input_data['dignityRent'][$key]= strip_tags($request->dignityRent[$key]);
+                $input_data['dignity_rent'][$key]= strip_tags($request->dignity_rent[$key]);
                 $input_data['total'][$key]= strip_tags($request->total[$key]);
                 $array_rules = [                       
-                    'rent.'.$key =>  'required|numeric',
-                    'dignityRent.'.$key =>  'required|numeric|min:1',
+                    'rent.'.$key =>  'numeric',
+                    'dignity_rent.'.$key =>  'numeric|min:1',
                     'total.'.$key =>  'required|numeric|min:1'
                 ];
                 $rules=array_merge($rules,$array_rules);
@@ -224,29 +233,38 @@ class AidContributionController extends Controller
                 return response()->json($validator->errors(), 400);
             }
          //*********END VALIDATOR************//
-
+        $contributions = [];
         //$this->authorize('update',new Contribution);
         foreach ($request->iterator as $key => $iterator) {
             $contribution = AidContribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
                 $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
-                $contribution->dignityRent = strip_tags($request->dignityRent[$key]) ?? $contribution->dignityRent;
+                if($contribution->rent == "")
+                    $contribution->rent = 0;
+                $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
+                if($contribution->dignity_rent == "")
+                    $contribution->dignity_rent = 0;
                 $contribution->save();
             } else {
                 $contribution = new AidContribution();
                 $contribution->user_id = Auth::user()->id;
                 $contribution->affiliate_id = $request->affiliate_id;
                 $contribution->rent = strip_tags($request->rent[$key]) ?? 0;
+                if($contribution->rent == "")
+                    $contribution->rent = 0;
                 $contribution->month_year = $key;
-                $contribution->dignityRent = strip_tags($request->dignityRent[$key]) ?? 0;
+                $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;
+                if($contribution->dignity_rent == "")
+                    $contribution->dignity_rent = 0;
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
                 $contribution->quotable = $contribution->rent-$contribution->dinity_rent;
                 $contribution->type = 'PLANILLA';
                 $contribution->save();
-            }
+            }            
+            array_push($contributions, $contribution);
         }
-        return $contribution;
+        return $contributions;
         }
     }
 
@@ -351,6 +369,7 @@ class AidContributionController extends Controller
                     array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'interes' => 0,'dignity_rent' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id)
                 );
         }
+        $contributions = array_reverse($contributions);       
         return $contributions;
     }
 }
