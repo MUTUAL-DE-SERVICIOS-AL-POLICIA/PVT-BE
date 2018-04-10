@@ -14,6 +14,8 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+yarn.lock
+package-lock.json
 .env
 /nbproject/private/
 /nbproject/project.properties

@@ -22,8 +22,9 @@ export default {
       total: 0,
 
       advancePayment: 0,
+      retentionLoanPayment: 0,
+      retentionGuarantor: 0,
       // perecentageAdvancePayment: 0,
-
       totalAverageSalaryQuotable: 0,
       totalQuotes:0,
     };
@@ -88,7 +89,24 @@ export default {
       }).catch(error => {
         this.showEconomicDataTotal = false
       });
-    }
+    },
+    saveTotal(){
+      let uri =`/ret_fun/${this.retirementFundId}/save_total`;
+      axios.patch(uri,
+        {
+          advancePayment: this.advancePayment,
+          retentionLoanPayment: this.retentionLoanPayment,
+          retentionGuarantor: this.retentionGuarantor,
+        }
+      ).then(response =>{
+          flash("Calculo Total guardado correctamente.");
+          // this.showEconomicData = true
+          // TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+      }).catch(error =>{
+          flash("Error al guardar los Datos", "error");
+          // this.showEconomicData = false;
+      });
+    },
   },
   computed: {
     totalAverageSalaryQuotableAnimated: function() {
@@ -101,11 +119,17 @@ export default {
       return this.subTotal;
     },
     totalAnimated(){
-      return this.subTotal - this.advancePayment;
+      return this.subTotal - this.advancePayment -this.retentionLoanPayment -this.retentionGuarantor;
     },
     percentageAdvancePayment(){
       return (100 * this.advancePayment)/this.subTotal;
-    }
+    },
+    percentageRetentionLoanPayment(){
+      return (100 * this.retentionLoanPayment)/this.subTotal;
+    },
+    percentageRetentionGuarantor(){
+      return (100 * this.retentionGuarantor)/this.subTotal;
+    },
   },
 };
 </script>
