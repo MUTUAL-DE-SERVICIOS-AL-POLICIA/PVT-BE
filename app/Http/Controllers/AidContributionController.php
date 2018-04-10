@@ -154,8 +154,11 @@ class AidContributionController extends Controller
         //
     }
 
-    public function getAffiliateContributions(Affiliate $affiliate = null)
+    public function getAffiliateContributions(Affiliate $affiliate)
     {                
+        $affiliate_id = $affiliate->id;
+        $affiliate = Affiliate::find($affiliate_id);
+        // dd($affiliate);
         $contributions = AidContribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         $group = [];
         $aid = 0;
