@@ -39,7 +39,7 @@ class ContributionController extends Controller
     {
         //Obtiene el interes a partir del subsiguiente mes que debe pagar. Ej. de enero corre el interes desde marzo
         $contribution_rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')
-                                                ->first();
+                                                ->first();        
         $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
         $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
        $mount = ($contribution_rate['retirement_fund']+$contribution_rate['mortuary_quota'])/100*$request->con['sueldo'];
@@ -320,7 +320,7 @@ class ContributionController extends Controller
             mortuary_quota,
             total,
             breakdown_id,
-            'AP' as type"
+            type"
             )
             ->union($reimbursements)
             ->orderBy('month_year','desc')

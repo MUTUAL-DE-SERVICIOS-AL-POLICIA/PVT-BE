@@ -84,6 +84,10 @@
     .table-hover tbody tr:hover th {
         background-color: #e3eaef;
     }
+    .yellow-row {
+        background-color:#ffe6b3 !important;
+        
+    }
 </style>
 @endsection
  
@@ -94,6 +98,10 @@
         $('body').addClass("mini-navbar");
         var datatable_contri = $('#datatables-affiliate-contributions').DataTable({
             responsive: true,
+            createdRow: function(row, data,dataIndex){                
+                if(data['type'] == 'Directo')                
+                    $(row).addClass('yellow-row');
+            },
             fixedHeader: {
                 header: true,
                 footer: true,
