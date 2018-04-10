@@ -6,7 +6,6 @@
 </div><br>
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
 <strong>CERTIFICA:</strong>
-    <?php $num=0; $sum;?>
 <table class="table-info w-100">        
     <thead class="bg-grey-darker">
         <tr class="font-medium text-white text-sm">
