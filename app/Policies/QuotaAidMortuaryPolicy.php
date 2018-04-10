@@ -3,26 +3,26 @@
 namespace Muserpol\Policies;
 
 use Muserpol\User;
-use Muserpol\Models\Spouse;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Muserpol\Helpers\Util;
-class SpousePolicy
+class QuotaAidMortuaryPolicy
 {
     use HandlesAuthorization;
-    const ClASS_NAME = 'Spouse';
+    const ClASS_NAME = 'QuotaAidMortuary';
     const CREATE = 'create';
     const READ = 'read';
     const UPDATE = 'update';
     const DELETE = 'delete';
 
     /**
-     * Determine whether the user can view the spouse.
+     * Determine whether the user can view the quotaAidMortuary.
      *
      * @param  \Muserpol\User  $user
-     * @param  \Muserpol\Spouse  $spouse
+     * @param  \Muserpol\QuotaAidMortuary  $quotaAidMortuary
      * @return mixed
      */
-    public function view(User $user, Spouse $spouse)
+    public function view(User $user, QuotaAidMortuary $quotaAidMortuary)
     {
         //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
@@ -30,7 +30,7 @@ class SpousePolicy
     }
 
     /**
-     * Determine whether the user can create spouses.
+     * Determine whether the user can create quotaAidMortuaries.
      *
      * @param  \Muserpol\User  $user
      * @return mixed
@@ -43,13 +43,13 @@ class SpousePolicy
     }
 
     /**
-     * Determine whether the user can update the spouse.
+     * Determine whether the user can update the quotaAidMortuary.
      *
      * @param  \Muserpol\User  $user
-     * @param  \Muserpol\Spouse  $spouse
+     * @param  \Muserpol\QuotaAidMortuary  $quotaAidMortuary
      * @return mixed
      */
-    public function update(User $user, Spouse $spouse)
+    public function update(User $user, QuotaAidMortuary $quotaAidMortuary)
     {
         //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::UPDATE);
@@ -57,13 +57,13 @@ class SpousePolicy
     }
 
     /**
-     * Determine whether the user can delete the spouse.
+     * Determine whether the user can delete the quotaAidMortuary.
      *
      * @param  \Muserpol\User  $user
-     * @param  \Muserpol\Spouse  $spouse
+     * @param  \Muserpol\QuotaAidMortuary  $quotaAidMortuary
      * @return mixed
      */
-    public function delete(User $user, Spouse $spouse)
+    public function delete(User $user, QuotaAidMortuary $quotaAidMortuary)
     {
         //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);

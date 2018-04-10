@@ -12,7 +12,6 @@
  */
 
 use Muserpol\DataTables\AffiliateContributionsDataTable;
-
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
 
@@ -130,9 +129,13 @@ Route::group(['middleware' => ['auth']], function () {
         
         //AidContributions
         Route::resource('aid_contribution','AidContributionController');
-        Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
-        //Route::post('store_aid_contributions','AidContributionController@storeAidContributions');        
-
+        Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');        
+        Route::post('store_aid_contributions','AidContributionController@storeContributions');        
+        Route::get('affiliate/{affiliate}/aid_contribution', 'AidContributionController@show')->name('show_aid_contribution');
+        //Route::get('get_affiliate_aid_contributions/{affiliate}', 'AidContributionController@getAffiliateAidContributionsDatatables')->name('affiliate_aid_contributions');
+       
+        
+        //Contributions
 	Route::resource('contribution', 'ContributionController');
 	Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
 	Route::get('affiliate/{affiliate}/contribution', 'ContributionController@show')->name('show_contribution');

@@ -26,7 +26,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-6">
-                <affiliate-show :affiliate="{{ $affiliate }}" inline-template>
+                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{ $cities_objects }}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
                 </affiliate-show>
             </div>
@@ -40,7 +40,7 @@
         <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
             <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}" :rate="{{$rate}}"></contribution-create>
         </div>
-    </div>
+    </div>    
     <div class="row">
         <div class="col-md-12">
             <form>
