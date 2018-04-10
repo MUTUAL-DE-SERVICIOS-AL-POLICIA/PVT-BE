@@ -26,12 +26,14 @@
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-6">
-                <affiliate-show :affiliate="{{ $affiliate }}" inline-template>
+                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{ $cities_objects }}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                </affiliate-show>
-            <spouse-show :spouse="{{ $spouse }}" :cities="{{ $cities_objets }}" inline-template>
-                    @include('spouses.spouse_personal_information',['spouse'=>$spouse,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                </spouse-show>
+                </affiliate-show> 
+                @if(isset($spouse->id))
+                    <spouse-show :spouse="{{ $spouse }}" :cities="{{ $cities_objects }}" inline-template>
+                        @include('spouses.spouse_personal_information',['spouse'=>$spouse,'cities'=>$cities,'birth_cities'=>$birth_cities])
+                    </spouse-show>
+                @endif
             </div>
             <div class="col-md-6">
                 @include('contribution.aid_aditional_info',['summary',$summary])
@@ -43,6 +45,9 @@
         <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
             {{--  <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>  --}}
         </div> 
+    </div>
+    <div class = "col-md-12">
+        <aid-contribution-create :aid-contributions="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate->id }}" ></aid-contribution-create>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -229,10 +234,11 @@
                     xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
                 }
             },
-            success: function(result){
-                //console.log(result);
-                flash('exito');
-                $('#aid_main'+result.month_year).html(result.total);
+            success: function(result){                               
+                $.each(result, function(index,value){
+                    $('#aid_main'+value.month_year).html(value.total);                    
+                 });                                  
+                 flash('exito');                 
             },
             error: function(xhr, status, error) {
                 //console.log(xhr.responseText);

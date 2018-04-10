@@ -163,7 +163,7 @@ export default {
                 con.fr = con.sueldo * this.rate.retirement_fund/100;
                 con.cm = con.sueldo * this.rate.mortuary_quota/100;
                 con.subtotal =  (con.fr + con.cm + con.interes).toFixed(2);
-            
+
                 this.show_spinner=false;
                 this.SumTotal();
                 this.count = 3;

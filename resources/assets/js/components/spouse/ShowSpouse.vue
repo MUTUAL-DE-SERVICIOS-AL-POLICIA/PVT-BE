@@ -8,8 +8,8 @@
                 editing: false,
                 show_spinner: false,
                 form:this.spouse,
-                city_birth: this.spouse.city_birth_id,
-                city_identity_card: this.spouse.city_identity_card_id,
+                city_birth: null,
+                city_identity_card: null,
                 first_name:{
                     value: this.spouse.first_name,
                     edit: false,
@@ -28,12 +28,15 @@
             }
         },
         created:function(){
-            console.log("---------");
-            console.log(this.spouse);
-            console.log(this.city_birth);
-            console.log("+++++++++++");
-            console.log(this.cities);
-
+            let city_id =this.spouse.city_birth_id;
+            this.city_birth=this.cities.filter(function(city) {
+                return city.id==city_id;
+            })[0];
+            
+            city_id =this.spouse.city_identity_card_id;
+            this.city_identity_card=this.cities.filter(function(city) {
+                return city.id==city_id;
+            })[0];
         },
         computed:{
             age: function(){
@@ -79,10 +82,10 @@
 
         },
         methods:{
-            get_city_birth_name:function(){
+            get_city_birth_name:function(city_birth){
                 var name='';
                 console.log(this.city_birth);
-                let city_birth_id =this.city_birth;
+                let city_birth_id =city_birth;
                 this.cities.forEach(function(city) {
                     console.log(city);
                     if(city.id==city_birth_id){
