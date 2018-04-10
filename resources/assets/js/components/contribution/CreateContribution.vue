@@ -158,6 +158,7 @@ export default {
             axios.post('/get-interest',{con})
             .then(response => {                
                 this.ufv = response.data.replace(',','.');
+                console.log(response.data);
                 con.interes = parseFloat(this.ufv);
                 this.ufvs[con.sueldo] = this.ufv;
                 con.fr = (con.sueldo * this.rate.retirement_fund/100);
