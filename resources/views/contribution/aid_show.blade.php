@@ -14,6 +14,16 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Aportes de Auxilio Mortuorio</h3>
                     <div class="text-right">
+                        @can('update',new Muserpol\Models\Contribution\Contribution)
+                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
+                        <a href="{{route('edit_aid_contribution', $affiliate->id)}}">
+                            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
+                        </a>
+                        @else
+                        <br>
+                        @endcan
+                    </div>
+                    <div class="text-right">
                         @can('update',new Muserpol\Models\Contribution\AidCommitment)
                         <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
                         <a href="{{route('edit_contribution', $affiliate->id)}}">
