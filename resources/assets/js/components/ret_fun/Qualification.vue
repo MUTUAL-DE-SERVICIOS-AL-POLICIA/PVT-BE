@@ -99,7 +99,7 @@ export default {
           retentionGuarantor: this.retentionGuarantor,
         }
       ).then(response =>{
-          flash("Calculo Total guaradado correctamente.");
+          flash("Calculo Total guardado correctamente.");
           // this.showEconomicData = true
           // TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
       }).catch(error =>{
