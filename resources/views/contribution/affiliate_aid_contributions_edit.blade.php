@@ -26,11 +26,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-6">
-                <affiliate-show :affiliate="{{ $affiliate }}" inline-template>
+                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{ $cities_objects }}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
                 </affiliate-show> 
                 @if(isset($spouse->id))
-                    <spouse-show :spouse="{{ $spouse }}" inline-template>
+                    <spouse-show :spouse="{{ $spouse }}" :cities="{{ $cities_objects }}" inline-template>
                         @include('spouses.spouse_personal_information',['spouse'=>$spouse,'cities'=>$cities,'birth_cities'=>$birth_cities])
                     </spouse-show>
                 @endif

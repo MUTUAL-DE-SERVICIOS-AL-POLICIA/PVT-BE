@@ -4834,6 +4834,7 @@ mdi@^2.1.99:
   resolved "https://registry.yarnpkg.com/mdi/-/mdi-2.2.43.tgz#c5e419a6e5f48c82c7109328f52530fd187a0ec0"
 
 mdn-data@^1.0.0:
+
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-1.1.1.tgz#79586c90321787e5a2e51eb6823bb448949bc1ab"
 
