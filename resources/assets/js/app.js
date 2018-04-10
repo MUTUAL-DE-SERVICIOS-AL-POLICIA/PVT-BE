@@ -35,6 +35,17 @@ Vue.use(VueSweetalert2);
 import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate);
 
+import VueCurrencyFilter from 'vue-currency-filter';
+Vue.use(VueCurrencyFilter,
+{
+	symbol: 'Bs',
+	thousandsSeparator: '.',
+	fractionCount: 2,
+	fractionSeparator: ',',
+	symbolPosition: 'front',
+	symbolSpacing: true
+});
+
 
 
 Vue.component('flash', require('./components/Flash.vue'));

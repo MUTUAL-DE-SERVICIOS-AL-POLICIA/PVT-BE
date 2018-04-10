@@ -6,6 +6,8 @@ use Session;
 use Auth;
 use DB;
 use Carbon\Carbon;
+use Log;
+use Muserpol\Models\RetirementFund\RetFunProcedure;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -297,8 +299,9 @@ class Util
             return Carbon::parse($date)->formatLocalized("%Y");
         }
     }
-    public static function getDateFormat($date, $size)
+    public static function getDateFormat($date, $size='short')
     {
+        setlocale(LC_TIME, 'es_ES.utf8');
         if ($date) {
             if ($size == 'short') {
                 // return 05 MAY. 1983 // change %d-> %e for 5 MAY. 1983
@@ -307,5 +310,14 @@ class Util
                 return Carbon::parse($date)->formatLocalized('%d %B. %Y'); //
             }
         }
+    }
+    public static function getRetFunCurrentProcedure()
+    {
+        $procedure_active = RetFunProcedure::where('is_enabled', 'true')->first();
+        if (!$procedure_active) {
+            Log::info("No existe ret fun procedure activo");
+            abort(500);
+        }
+        return $procedure_active;
     }
 }

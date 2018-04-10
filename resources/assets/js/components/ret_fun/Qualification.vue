@@ -15,7 +15,17 @@ export default {
       yearsItemZero: 0,
       monthsItemZero: 0,
 
-      showEconomicData:false
+      showEconomicData:false,
+      showEconomicDataTotal:false,
+
+      subTotal: 0,
+      total: 0,
+
+      advancePayment: 0,
+      // perecentageAdvancePayment: 0,
+
+      totalAverageSalaryQuotable: 0,
+      totalQuotes:0,
     };
   },
   methods: {
@@ -29,7 +39,7 @@ export default {
       let date = this.calculateDiff(dates);
       return{
         years: parseInt(date/12),
-        months: (date%12)
+        months: (date%12),
       }
     },
     calculate(){
@@ -59,15 +69,43 @@ export default {
           datesContributions: this.datesContributions
         }
       ).then(response =>{
-        if (response.data) {
-          flash("Verificacion Correcta")
-          this.showEconomicData = true;
-        }else{
-          flash("Los Datos no Coinciden", "error")
+          flash("Verificacion Correcta");
+          this.showEconomicData = true
+          TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+      }).catch(error =>{
+          flash("Los Datos no Coinciden", "error");
           this.showEconomicData = false;
-        }
-      }).catch(error => alert(error))
+      });
+    },
+    saveAverageQuotable(){
+      let uri=`/ret_fun/${this.retirementFundId}/save_average_quotable`;
+      axios.get(uri).then(response => {
+        flash("Salario Promedio Cotizable Actualizado")
+        this.showEconomicDataTotal = true;
+        // this.sub_total = response.data.sub_total;
+        // this.total = response.data.total;
+        TweenLite.to(this.$data, 0.5, { total: response.data.total,subTotal: response.data.sub_total });
+      }).catch(error => {
+        this.showEconomicDataTotal = false
+      });
     }
-  }
+  },
+  computed: {
+    totalAverageSalaryQuotableAnimated: function() {
+      return this.totalAverageSalaryQuotable;
+    },
+    totalQuotesAnimated: function() {
+      return this.totalQuotes;
+    },
+    subTotalAnimated(){
+      return this.subTotal;
+    },
+    totalAnimated(){
+      return this.subTotal - this.advancePayment;
+    },
+    percentageAdvancePayment(){
+      return (100 * this.advancePayment)/this.subTotal;
+    }
+  },
 };
 </script>
