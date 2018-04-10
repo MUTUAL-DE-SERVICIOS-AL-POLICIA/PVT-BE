@@ -1,7 +1,8 @@
 <script>
 	export default{
 		props:[
-            'spouse', 'cities'
+            'spouse',
+                    'cities'
         ],
         data(){
             return{

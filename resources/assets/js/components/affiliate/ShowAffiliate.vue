@@ -1,7 +1,8 @@
 <script>
 	export default{
 		props:[
-			'affiliate','cities'
+            'affiliate',
+                        'cities'
 		],
         data(){
             return{
