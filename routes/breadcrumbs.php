@@ -52,6 +52,11 @@ Breadcrumbs::register('quota_aid_mortuary', function($breadcrumbs)
 {
 	$breadcrumbs->push('Cuota y Auxilio Mortuorio', URL::to('quota_aid'));
 });
+Breadcrumbs::register('classify_contributions', function($breadcrumbs,$retirement_fund)
+{	
+	$breadcrumbs->parent('show_retirement_fund',$retirement_fund);
+	$breadcrumbs->push('Clasificacion de Aportes');
+});
 
 //	PAGO DE CONTRIBUCIONES
 
@@ -61,3 +66,4 @@ Breadcrumbs::register('payment_contributions', function($breadcrumbs, $affiliate
 	$breadcrumbs->push('Nuevo Aporte');
 	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
+

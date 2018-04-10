@@ -125,7 +125,6 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/print/cer_itemcero', 'ContributionController@printCertificationItem0')->name('ret_fun_print_certification_item0');
 
         Route::resource('reimbursement','ReimbursementController');       
-
         
         //AidContributions
         Route::resource('aid_contribution','AidContributionController');
