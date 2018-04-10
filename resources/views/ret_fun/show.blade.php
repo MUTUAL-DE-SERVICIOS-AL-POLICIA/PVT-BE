@@ -34,7 +34,7 @@
     <div class="row">
         <div class="col-md-6">
             {{-- @if($retirement_fund->modality_id==1) --}}
-            <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
+            <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template> 
                    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities])
             </affiliate-show>             
             {{-- @else --}}
