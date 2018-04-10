@@ -24,6 +24,10 @@ export default {
       advancePayment: 0,
       retentionLoanPayment: 0,
       retentionGuarantor: 0,
+
+
+      beneficiaries: [],
+
       // perecentageAdvancePayment: 0,
       totalAverageSalaryQuotable: 0,
       totalQuotes:0,
@@ -101,6 +105,7 @@ export default {
       ).then(response =>{
           flash("Calculo Total guardado correctamente.");
           // this.showEconomicData = true
+          this.beneficiaries = response.data.beneficiaries;
           // TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
       }).catch(error =>{
           flash("Error al guardar los Datos", "error");
