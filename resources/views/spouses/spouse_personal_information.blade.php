@@ -30,7 +30,7 @@
                     <dt>Estado Civil:</dt> <dd>@{{ civil_status_name }}</dd>
                     <dt>Fecha de Nacimiento:</dt> <dd>@{{ form.birth_date }}</dd>
                     <dt>Edad:</dt> <dd> @{{ age  }} </dd>
-                    <dt>Lugar de Nacimiento:</dt> <dd> @{{ form.city_birth_id }}</dd>
+                    <dt>Lugar de Nacimiento:</dt> <dd> @{{ city_birth_name}}</dd>
                 </dl>
             </div>
         </div>
