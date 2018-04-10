@@ -29,6 +29,8 @@
             }
         },
         created:function(){
+            console.log(this.affiliate);
+            console.log(this.cities);
             if(!this.city_birth){
                 // console.log('no tiene');
             let city_id =this.affiliate.city_birth_id;

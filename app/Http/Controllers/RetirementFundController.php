@@ -79,12 +79,12 @@ class RetirementFundController extends Controller
         
         
         $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
-        $this->authorize('create', $ret_fund);
         if(!isset($ret_fund->id))
-            $code = Util::getNextCode ("");
+        $code = Util::getNextCode ("");
         else        
-            $code = Util::getNextCode ($ret_fund->code);
+        $code = Util::getNextCode ($ret_fund->code);
         $retirement_fund = new RetirementFund();
+        $this->authorize('create', $retirement_fund);
         $retirement_fund->user_id = Auth::user()->id;
         $retirement_fund->affiliate_id = $request->affiliate_id;
         $retirement_fund->procedure_modality_id = $request->ret_fun_modality;
