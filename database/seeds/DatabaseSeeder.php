@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(QuotaSeeder::class);
         $this->call(GroupContributionTypesSeeder::class);
         $this->call(TypeContribbutionSeeder::class);
+        $this->call(DiscountTypesTableSeeder::class);
         
         $this->command->info('Todo ok finalizado! DAVID y NADIA'); 
     }

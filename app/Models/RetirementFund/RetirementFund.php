@@ -47,5 +47,9 @@ class RetirementFund extends Model
     public function ret_fun_applicant()
 	{
 		return $this->hasOne('Muserpol\Models\RetirementFund\RetFunApplicant');
-    }    
+    }
+    public function discount_types()
+    {
+        return $this->belongsToMany('Muserpol\Models\DiscountType');
+    }
 }

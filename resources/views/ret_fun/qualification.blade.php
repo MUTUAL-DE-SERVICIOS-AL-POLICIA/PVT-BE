@@ -161,32 +161,65 @@
                                     <td>% de Anticipo Fondo de Retiro</td>
                                     <td>@{{ percentageAdvancePayment }}</td>
                                 </tr>
-                                {{-- <tr>
+                                <tr>
                                     <td>Retencion para pago de prestamo</td>
-                                    <td>@{{ advancePayment | currency }}</td>
+                                    <td><input type="text" v-model="retentionLoanPayment"></td>
                                 </tr>
                                 <tr>
                                     <td>% de Retencion para pago de prestamo</td>
-                                    <td>@{{ percentageAdvancePayment }}</td>
+                                    <td>@{{ percentageRetentionLoanPayment }}</td>
                                 </tr>
                                 <tr>
                                     <td>Retencion para garantes</td>
-                                    <td>@{{ subTotal | currency }}</td>
+                                    <td><input type="text" v-model="retentionGuarantor"></td>
                                 </tr>
                                 <tr>
                                     <td>% de Retencion para garantes</td>
-                                    <td>@{{ subTotalAnimated | currency }}</td>
-                                </tr> --}}
+                                    <td>@{{ percentageRetentionGuarantor }}</td>
+                                </tr>
                                 <tr class="success">
                                     <td>Total fondo de retiro</td>
-                                    <td>@{{ totalAnimated | currency }}</td>
+                                    <td><strong>@{{ totalAnimated | currency }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
 
                         {{-- {!! Form::open(array('route' => ['save_average_quotable', $retirement_fund->id],'method'=>'PATCH')) !!} --}}
-                        <button class="btn btn-primary" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar</button>
+                        <button class="btn btn-primary" type="submit" @click="saveTotal"><i class="fa fa-save"></i> Guardar</button>
                         {{-- {!! Form::close() !!} --}}
+                    </div>
+                </div>
+                <div class="ibox" v-if="true" :class="showEconomicDataTotal ? 'fadeInRight' :''">
+                {{-- <div class="ibox" v-if="showEconomicDataTotal" :class="showEconomicDataTotal ? 'fadeInRight' :''"> --}}
+                    <div class="ibox-title">
+                        <h5>Calculo de las cuotas partes para los derechohabientes</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            <a class="close-link"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                    <th>% DE ASIGNACION</th>
+                                    <th>MONTO</th>
+                                    <th>PARENTESCO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($beneficiaries as $beneficiary)
+                                    <tr>
+                                        <td>{{ $beneficiary->fullName() }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ $beneficiary->kinship->name ?? 'error' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <button class="btn btn-primary" type="submit" @click="saveTotal"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
                     </div>
                 </div>
             </div>
