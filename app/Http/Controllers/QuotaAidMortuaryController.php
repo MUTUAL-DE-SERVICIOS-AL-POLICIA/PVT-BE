@@ -41,7 +41,7 @@ class QuotaAidMortuaryController extends Controller
         $first_name = strtoupper($request->first_name) ?? '';
         $code = $request->code ?? '';
         $modality = strtoupper($request->modality) ?? '';
-        
+         
 
         $total = QuotaAidMortuary::select('quota_aid_mortuaries.id')
                                 ->leftJoin('affiliates','quota_aid_mortuaries.id','=','affiliates.id')
@@ -100,6 +100,7 @@ class QuotaAidMortuaryController extends Controller
         
         
         $quota_aid  = QuotaAidMortuary::select('id','code')->orderby('id','desc')->first();
+        $this->authorize('view', $quota_aid);
         if(!isset($quota_aid->id))
             $code = Util::getNextCode ("");
         else        
@@ -378,6 +379,7 @@ class QuotaAidMortuaryController extends Controller
     
     public function generateProcedure(Affiliate $affiliate){  
         
+        //$this->authorize('create',QuotaAidMortuary::class);
         $affiliate = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
@@ -399,7 +401,7 @@ class QuotaAidMortuaryController extends Controller
         $kinships = Kinship::get();
         
         $cities = City::get();
-        
+         
         $data = [
             'requirements' => $procedure_requirements,
             'modalities'    => $modalities,

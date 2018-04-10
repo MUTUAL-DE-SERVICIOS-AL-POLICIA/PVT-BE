@@ -675,11 +675,7 @@ class ContributionController extends Controller
                         })
                         ->orderBy('month_year','desc')
                         ->take(60)
-                        ->get();
-
-
-                        
-                   //return $contributions_sixty;                    
+                        ->get();                                          
         $contributions = $contributions_sixty->sortBy('month_year')->all();                           
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
