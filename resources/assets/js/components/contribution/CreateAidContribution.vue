@@ -111,8 +111,8 @@ export default {
              this.ufv = parseFloat(response.data[0].replace(",", "."));
                 if(this.ufv < 0)
                     this.ufv = 0;
-              con.auxilio_mortuorio = (con.sueldo - con.dignity_rent) * response.data[1].mortuary_aid/100;
-              con.interes = parseFloat(this.ufv);
+              con.auxilio_mortuorio = ((con.sueldo - con.dignity_rent) * response.data[1].mortuary_aid/100).toFixed(2);
+              con.interes = parseFloat(this.ufv).toFixed(2);
               con.subtotal = (parseFloat(con.auxilio_mortuorio) + parseFloat(con.interes)).toFixed(2);
               this.show_spinner = false;
               this.SumTotal();
@@ -210,7 +210,7 @@ export default {
               })
                 printJS({
                   printable:
-                    "/ret_fun/" +
+                    "/quota_aid/" +
                     response.data.affiliate_id +
                     "/print/voucher/" +
                     response.data.voucher_id,

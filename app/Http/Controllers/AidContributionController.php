@@ -87,7 +87,8 @@ class AidContributionController extends Controller
     //Muestra todos los aportes de auxilio mortuorio del aportante
     {
         $affiliate = Affiliate::find($affiliate_id);
-        $aid_contributions = $affiliate->aid_contributions;
+        //$aid_contributions = $affiliate->aid_contributions;
+        $aid_contributions = AidContribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','DESC')->get();
         return $datatables->of($aid_contributions)
                         ->addIndexColumn()
                         ->addColumn('year', function($aid_contribution)
@@ -250,6 +251,7 @@ class AidContributionController extends Controller
                 $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
                 if($contribution->dignity_rent == "")
                     $contribution->dignity_rent = 0;
+                $contribution->interest = 0;
                 $contribution->save();
             } else {
                 $contribution = new AidContribution();
@@ -265,6 +267,7 @@ class AidContributionController extends Controller
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
                 $contribution->quotable = $contribution->rent-$contribution->dinity_rent;
                 $contribution->type = 'PLANILLA';
+                $contribution->interest = 0;
                 $contribution->save();
             }            
             array_push($contributions, $contribution);
