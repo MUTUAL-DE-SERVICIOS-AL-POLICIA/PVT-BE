@@ -221,8 +221,7 @@ export default {
                   type: "pdf",
                   showModal: true
                 });
-            }).catch(error => {
-              console.log('get into error trace');
+            }).catch(error => {              
               this.show_spinner = false;
               console.log(error.response.data);
               var resp = error.response.data;
