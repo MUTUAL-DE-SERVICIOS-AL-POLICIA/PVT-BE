@@ -16,9 +16,9 @@ class DatabaseSeeder extends Seeder
         $this->call(OperationSeeder::class);
         $this->call(ActionSeed::class);
         $this->call(SequenceSeeder::class);
-        $this->call(QuotaSeeder::class);
+        //$this->call(QuotaSeeder::class);
         $this->call(GroupContributionTypesSeeder::class);
-        $this->call(TypeContribbutionSeeder::class);
+        $this->call(TypeContributionSeeder::class);
         $this->call(DiscountTypesTableSeeder::class);
         
         $this->command->info('Todo ok finalizado! DAVID y NADIA'); 

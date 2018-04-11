@@ -752,27 +752,48 @@ class RetirementFundController extends Controller
             $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
 
             //create function search spouse
-            $spouse = $beneficiaries->filter(function ($item)
+            $text_spouse = 'Conyugue';
+
+            $spouse = $beneficiaries->filter(function ($item) use ($text_spouse)
             {
-                return $item->kinship->name == 'Conyuguse';
+                return $item->kinship->name == $text_spouse;
             });
-            Log::info($spouse);
             if (sizeOf($spouse)>0) {
+                $has_spouse = true;
                 $total_spouse = $total / 2;
+                $total_spouse_percentage = 100/2;
+
                 $total_derechohabientes = $total_spouse / sizeOf($beneficiaries);
+                $total_derechohabientes_percentage = $total_spouse_percentage / sizeOf($beneficiaries);
+
                 $total_spouse = $total_spouse + $total_derechohabientes;
-                Log::info('has spouse');
+                $total_spouse_percentage = $total_spouse_percentage + $total_derechohabientes_percentage;
             }else{
+                $has_spouse = false;
                 $total_derechohabientes = $total / sizeOf($beneficiaries);
-                Log::info('has not spouse');
+                $total_derechohabientes_percentage = 100 / sizeOf($beneficiaries);
             }
-            Log::info("total=>".$total." --- total_spouse=>".($total_spouse ?? null)." --- total_derechohabientes=>".$total_derechohabientes. " ***** Cantidad Derechohabientes: ". sizeOf($beneficiaries). " ---- ".($total_derechohabientes* sizeOf($beneficiaries)));
+            foreach ($beneficiaries as $beneficiary) {
+                if ($beneficiary->kinship->name == $text_spouse) {
+                    $beneficiary->temp_percentage = $total_spouse_percentage;
+                    $beneficiary->temp_amount = $total_spouse;
+                } else {
+                    $beneficiary->temp_percentage = $total_derechohabientes_percentage;
+                    $beneficiary->temp_amount = $total_derechohabientes;
+                }
+            }
             
+            Log::info($beneficiaries);
+
+            Log::info("total=>".$total." --- total_spouse=>".($total_spouse ?? null)." --- total_derechohabientes=>".$total_derechohabientes. " ***** Cantidad Derechohabientes: ". sizeOf($beneficiaries). " ---- ".($total_derechohabientes* sizeOf($beneficiaries)));
+
 
 
             $data = [
-                'retirement_fun' => $retirement_fund,
-                'sub_total' => $sub_total,
+                'has_spouse' => $has_spouse,
+                'beneficiaries' => $beneficiaries,
+                'total_spouse' => $total_spouse ?? null,
+                'total_derechohabientes' => $total_derechohabientes,
 
                 'total' => $total,
                     // 'total_average_salary_quotable' => $total_quotes,

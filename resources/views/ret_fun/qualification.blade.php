@@ -209,14 +209,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($beneficiaries as $beneficiary)
-                                    <tr>
-                                        <td>{{ $beneficiary->fullName() }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>{{ $beneficiary->kinship->name ?? 'error' }}</td>
-                                    </tr>
-                                @endforeach
+                                <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
+                                    <td>@{{ beneficiary.first_name }}</td>
+                                    <td>@{{ beneficiary.temp_percentage }}</td>
+                                    <td>@{{ beneficiary.temp_amount  }}</td>
+                                    <td>@{{ beneficiary.kinship_id }}</td>
+                                </tr>
                             </tbody>
                         </table>
                         <button class="btn btn-primary" type="submit" @click="saveTotal"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
