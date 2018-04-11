@@ -30,7 +30,7 @@ export default {
       pageSizeOptions: [5, 10, 15, 20],
       columns: (() => {
         const cols = [
-           { title: 'Apellido', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Apellido', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Nombre', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Modalidad', field: 'modality', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Flujo', field: 'workflow', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
