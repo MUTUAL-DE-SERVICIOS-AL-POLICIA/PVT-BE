@@ -365,7 +365,7 @@ class CreateRetirementFundTables extends Migration {
             $table->decimal('interest', 13, 2);
             $table->decimal('total', 13, 2);
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('affiliate_id')->references('id')->on('users');            
+            $table->foreign('affiliate_id')->references('id')->on('affiliates');            
             $table->timestamps();
             $table->softDeletes();
         });

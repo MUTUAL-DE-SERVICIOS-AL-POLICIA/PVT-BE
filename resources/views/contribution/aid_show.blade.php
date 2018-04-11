@@ -93,7 +93,7 @@
                 footer: true,
                 headerOffset: $('#navbar-fixed-top').outerHeight()
             },
-            order: [],
+            
 			ajax:"/get_aid_contributions/{{$affiliate->id}}",
             // ajax: "{{ url('affiliate_aid_contributions', $affiliate->id) }}",
             lengthMenu: [[15, 25, 50,100, -1], [15, 25, 50,100, "Todos"]],
