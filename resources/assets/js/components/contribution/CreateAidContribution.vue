@@ -154,7 +154,7 @@ export default {
       var total = this.total;
       printJS({
         printable:
-          "/print_contributions_quote?contributions=" +
+          "/print_contributions_quote_aid?contributions=" +
           con +
           "&affiliate_id=" +
           affiliate_id +

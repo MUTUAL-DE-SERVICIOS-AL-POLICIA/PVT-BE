@@ -157,8 +157,9 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('contribution_save','ContributionController@storeDirectContribution');
 	Route::post('aid_contribution_save','AidContributionController@storeDirectContribution');
         Route::post('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
-        Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
-        
+		
+		Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
+        Route::get('print_contributions_quote_aid','QuotaAidCertificationController@printDirectContributionQuoteAid');
         //Commitments
 		Route::resource('commitment','ContributionCommitmentController');
 		Route::resource('aid_commitment','AidCommitmentController');
