@@ -66,7 +66,7 @@ export default {
         
                 obj[this.actions_list[j].name] = this.CheckPermission(this.operations_list[i],this.actions_list[j].id); 
               }
-              console.log(obj);
+              // console.log(obj);
               this.list_to_send.push(obj);
             }
           }
@@ -114,7 +114,7 @@ export default {
       },
       CheckPermission: function(operation,action_id)
       {
-        console.log('CheckPermission');
+        // console.log('CheckPermission');
         var permissions=[];
         var result = false;
         if(this.role)
@@ -125,8 +125,8 @@ export default {
               permissions.push(this.permissions_list[i]);
             }
           }
-          console.log("cechus y karen size: "+permissions.length)
-          console.log(permissions);
+          // console.log("cechus y karen size: "+permissions.length)
+          // console.log(permissions);
           // for (var i = permissions.length - 1; i >= 0; i--) {
           //   console.log(permissions[i]);
           // }
