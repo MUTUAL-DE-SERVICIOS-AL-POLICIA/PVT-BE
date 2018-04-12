@@ -208,11 +208,21 @@
                                     <th>PARENTESCO</th>
                                 </tr>
                             </thead>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th>@{{ totalPercentage }}</th>
+                                    <th>@{{ totalAmount | currency }}</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
                             <tbody>
                                 <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
                                     <td>@{{ beneficiary.full_name }}</td>
-                                    <td>@{{ beneficiary.temp_percentage  }}</td>
-                                    <td>@{{ beneficiary.temp_amount  }}</td>
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
+                                    {{-- <td>@{{ beneficiary.temp_percentage  }}</td> --}}
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
+                                    {{-- <td>@{{ beneficiary.temp_amount | currency }}</td> --}}
                                     <td>@{{ beneficiary.kinship.name }}</td>
                                 </tr>
                             </tbody>

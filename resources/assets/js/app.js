@@ -41,7 +41,7 @@ Vue.use(VueCurrencyFilter,
 {
 	symbol: 'Bs',
 	thousandsSeparator: '.',
-	fractionCount: 4,
+	fractionCount: 2,
 	fractionSeparator: ',',
 	symbolPosition: 'front',
 	symbolSpacing: true
