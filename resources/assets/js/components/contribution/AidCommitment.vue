@@ -102,6 +102,13 @@
                            if(error.response.data.pension_declaration_date !== undefined)
                                 flash(error.response.data.pension_declaration_date[0],'error',10000);
                         this.show_spinner=false; 
+                        //console.log(error.response.data);
+                        var resp = error.response.data;///jQuery.parseJSON(error.response.data);
+                        $.each(resp, function(index, value)
+                        {                    
+                            flash(value,'error',10000);
+                        }); 
+                        console.log('it gets into error message');
                        // flash('Error al actualizar el afiliado: '+response.message,'error');
                     })
             }
