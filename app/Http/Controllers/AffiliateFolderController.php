@@ -36,7 +36,12 @@ class AffiliateFolderController extends Controller
     public function store(Request $request)
     {
         //
-        $folder = new AffiliateFolder;
+        if($id != null){
+            $folder=AffiliateFolder::find($request->affiliatefolder_id);
+        }else{
+            $folder = new AffiliateFolder;
+        }
+              
         $this->authorize('update', $folder);
         $folder->affiliate_id = $request->affiliate_id;
         $folder->procedure_modality_id = $request->procedure_modality_id;
@@ -44,7 +49,7 @@ class AffiliateFolderController extends Controller
         $folder->folder_number = $request->folder_number;
         $folder->save();
         return back()->withInput();
-    }
+    } 
 
     /**
      * Display the specified resource.
