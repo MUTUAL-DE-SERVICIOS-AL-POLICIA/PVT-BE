@@ -734,22 +734,40 @@ class RetirementFundController extends Controller
             $retirement_fund->total=$total;
 
             //mejorar
+            $discount_type = DiscountType::where('shortened','anticipo')->first();
             if ($advance_payment > 0) {
-                $discount_type = DiscountType::where('shortened','anticipo')->first();
-                $retirement_fund->discount_types()->save($discount_type, ['amount'=> $advance_payment]);
+                if ($retirement_fund->discount_types->contains($discount_type->id)) {
+                    $retirement_fund->discount_types()->updateExistingPivot ($discount_type->id, ['amount' => $advance_payment]);
+                }else{
+                    $retirement_fund->discount_types()->save($discount_type, ['amount'=> $advance_payment]);
+                }
+            }else{
+                $retirement_fund->discount_types()->detach($discount_type->id);
             }
+            $discount_type = DiscountType::where('shortened','prestamo')->first();
             if ($retention_loan_payment > 0) {
-                $discount_type = DiscountType::where('shortened','prestamo')->first();
-                $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_loan_payment]);
+                if ($retirement_fund->discount_types->contains($discount_type->id)) {
+                    $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_loan_payment]);
+                } else {
+                    $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_loan_payment]);
+                }
+            } else {
+                $retirement_fund->discount_types()->detach($discount_type->id);
             }
             if ($retention_guarantor > 0) {
                 $discount_type = DiscountType::where('shortened','garantes')->first();
-                $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_guarantor]);
+                if ($retirement_fund->discount_types->contains($discount_type->id)) {
+                    $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_guarantor]);
+                } else {
+                    $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_guarantor]);
+                }
+            } else {
+                $retirement_fund->discount_types()->detach($discount_type->id);
             }
             // fin mejorar
             $retirement_fund->save();
 
-            $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
+            $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
 
             //create function search spouse
             $text_spouse = 'Conyugue';
@@ -764,16 +782,19 @@ class RetirementFundController extends Controller
                 $total_spouse_percentage = 100/2;
 
                 $total_derechohabientes = $total_spouse / sizeOf($beneficiaries);
-                $total_derechohabientes_percentage = $total_spouse_percentage / sizeOf($beneficiaries);
+                // $total_derechohabientes_percentage = $total_spouse_percentage / sizeOf($beneficiaries);
+                $total_derechohabientes_percentage = (100 * $total_derechohabientes) / $total_spouse;
 
                 $total_spouse = $total_spouse + $total_derechohabientes;
                 $total_spouse_percentage = $total_spouse_percentage + $total_derechohabientes_percentage;
             }else{
                 $has_spouse = false;
                 $total_derechohabientes = $total / sizeOf($beneficiaries);
-                $total_derechohabientes_percentage = 100 / sizeOf($beneficiaries);
+                // $total_derechohabientes_percentage = 100 / sizeOf($beneficiaries);
+                $total_derechohabientes_percentage = (100 * $total_derechohabientes) / $total;
             }
             foreach ($beneficiaries as $beneficiary) {
+                $beneficiary->full_name = $beneficiary->fullName();
                 if ($beneficiary->kinship->name == $text_spouse) {
                     $beneficiary->temp_percentage = $total_spouse_percentage;
                     $beneficiary->temp_amount = $total_spouse;
