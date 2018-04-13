@@ -877,7 +877,7 @@ class RetirementFundController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
         foreach ($request->beneficiaries as $beneficiary) {
             $new_beneficiary = $retirement_fund->ret_fun_beneficiaries()->where('id',$beneficiary['id'])->first();
             if (!$new_beneficiary) {
@@ -888,8 +888,19 @@ class RetirementFundController extends Controller
         }
         $availability = $affiliate->getContributionsWithType('Disponibilidad');
         $has_availability = sizeOf($availability) > 0;
+        $total = $retirement_fund->total_ret_fun;
+        if ($has_availability) {
+            $subtotal_availability = ($retirement_fund->subtotal_availability );
+            $total_availability = $subtotal_availability + ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield/100);
+            $total = $total + $total_availability;
+            Log::info("has availability ".$total);
+        }
         $data = [
             'has_availability' => $has_availability,
+            'subtotal_availability' => $subtotal_availability ?? 0,
+            'total_availability' => $total_availability ?? 0,
+            'total' => $total ?? 0,
+            'beneficiaries' => $beneficiaries,
         ];
         return $data;
     }

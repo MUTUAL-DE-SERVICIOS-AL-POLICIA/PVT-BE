@@ -253,15 +253,62 @@
                                 </tr>
                                 <tr>
                                     <td>Con rendimiento del X% Anual</td>
-                                    <td>@{{ subTotalAvailabilityWithYield }}</td>
+                                    <td>@{{ totalAvailability }}</td>
                                 </tr>
                                 <tr>
                                     <td>Devolucion de aportes en disponibilidad</td>
                                     <td>@{{ totalAvailability }}</td>
                                 </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr class="success">
+                                    <td>Total fondo de Retiro + devolucion</td>
+                                    <td>@{{ total }}</td>
+                                </tr>
                             </tbody>
                         </table>
                         {{-- <button class="btn btn-primary" type="submit" @click="saveTotalAvailatility"><i class="fa fa-save"></i> Guardar</button> --}}
+                    </div>
+                </div>
+                <div class="ibox" v-if="true" :class="true ? 'fadeInRight' :''">
+                    <div class="ibox-title">
+                        <h5>Calculo de las cuotas partes para los derechohabientes</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            <a class="close-link"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                    <th>% DE ASIGNACION</th>
+                                    <th>MONTO</th>
+                                    <th>PARENTESCO</th>
+                                </tr>
+                            </thead>
+                            {{-- <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th>@{{ totalPercentage }}</th>
+                                    <th>@{{ totalAmount | currency }}</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot> --}}
+                            <tbody>
+                                <tr v-for="(beneficiary, index) in beneficiariesAvailability" :key="index">
+                                    <td>@{{ beneficiary.first_name }}</td>
+                                    <td><input type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalAvailability(index)"></td>
+                                    {{-- <td>@{{ beneficiary.temp_percentage }}</td> --}}
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount_availability"></td>
+                                    {{-- <td>@{{ beneficiary.temp_amount | currency }}</td> --}}
+                                    <td>@{{ beneficiary.kinship.name }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {{-- <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>            {!! Form::close() !!} --}}
                     </div>
                 </div>
             </div>

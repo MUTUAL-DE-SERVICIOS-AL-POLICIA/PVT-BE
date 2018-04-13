@@ -27,7 +27,12 @@ export default {
 
       hasAvailability: false,
 
+      subTotalAvailability:0,
+      totalAvailability:0,
+      total:0,
+
       beneficiaries: [],
+      beneficiariesAvailability: [],
 
       // perecentageAdvancePayment: 0,
       totalAverageSalaryQuotable: 0,
@@ -126,6 +131,10 @@ export default {
       ).then(response =>{
           flash("Porcentages actualizados a los derechohabientes.");
           this.hasAvailability = response.data.has_availability;
+          this.subTotalAvailability = response.data.subtotal_availability;
+          this.totalAvailability = response.data.total_availability;
+          this.total = response.data.total;
+          this.beneficiariesAvailability = response.data.beneficiaries;
       }).catch(error =>{
           flash("Error al guardar los porcentages", "error");
       });
@@ -142,6 +151,9 @@ export default {
       }).catch(error =>{
           flash("Error al guardar total disponibilidad", "error");
       });
+    },
+    requalificationTotalAvailability(index){
+      this.beneficiariesAvailability[index].temp_amount_availability = (this.totalAvailability * this.beneficiariesAvailability[index].percentage)/100;
     },
   },
   computed: {
