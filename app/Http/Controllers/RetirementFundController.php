@@ -96,8 +96,8 @@ class RetirementFundController extends Controller
         $retirement_fund->workflow_id = 4;
         $retirement_fund->wf_state_current_id = 1;
         //$retirement_fund->type = "Pago"; default value
-        $retirement_fund->subtotal = 0;
-        $retirement_fund->total = 0;
+        $retirement_fund->subtotal_ret_fun = 0;
+        $retirement_fund->total_ret_fun = 0;
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
                 
@@ -803,8 +803,8 @@ class RetirementFundController extends Controller
 
         $total = $sub_total - $advance_payment - $retention_loan_payment - $retention_guarantor;
 
-        $retirement_fund->subtotal=$sub_total;
-        $retirement_fund->total=$total;
+        $retirement_fund->subtotal_ret_fun = $sub_total;
+        $retirement_fund->total_ret_fun = $total;
 
         $advance_payment = $request->advancePayment ?? 0;
         $retention_loan_payment = $request->retentionLoanPayment ?? 0;
@@ -845,8 +845,8 @@ class RetirementFundController extends Controller
 
         $total = $sub_total - $advance_payment - $retention_loan_payment - $retention_guarantor;
 
-        $retirement_fund->subtotal = $sub_total;
-        $retirement_fund->total = $total;
+        $retirement_fund->subtotal_ret_fun = $sub_total;
+        $retirement_fund->total_ret_fun = $total;
 
         $retirement_fund->save();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();

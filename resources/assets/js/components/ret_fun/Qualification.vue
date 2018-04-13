@@ -137,6 +137,19 @@ export default {
           flash("Error al guardar los porcentages", "error");
       });
     },
+    saveTotalAvailability(){
+      let uri =`/ret_fun/${this.retirementFundId}/save_total_availability`;
+      axios.get(uri,
+        {
+          beneficiaries: this.beneficiaries,
+        }
+      ).then(response =>{
+          flash("Total disponibilidad Actualizado.");
+          this.total = response.data.total;
+      }).catch(error =>{
+          flash("Error al guardar total disponibilidad", "error");
+      });
+    },
   },
   computed: {
     totalAverageSalaryQuotableAnimated: function() {

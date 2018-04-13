@@ -80,8 +80,12 @@ class CreateRetirementFundTables extends Migration {
             $table->date('reception_date')->nullable(); //fecha de recepcion
             $table->enum('type', ['Pago', 'Anticipo'])->default('Pago'); //tipo
             $table->decimal('average_quotable', 13, 2)->nullable();
-            $table->decimal('subtotal', 13, 2); // sub total
-            $table->decimal('total', 13, 2); // total
+            // $table->decimal('subtotal', 13, 2); // sub total
+            $table->decimal('subtotal_ret_fun', 13, 2)->nullable(); // sub total
+            $table->decimal('total_ret_fun', 13, 2)->nullable(); // sub total
+            $table->decimal('subtotal_availability', 13, 2)->nullable(); // sub total
+            $table->decimal('total_availability', 13, 2)->nullable(); // sub total
+            $table->decimal('total', 13, 2)->nullable(); // total
             $table->foreign('affiliate_id')->references('id')->on('affiliates')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
