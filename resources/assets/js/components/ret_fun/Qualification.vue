@@ -119,6 +119,24 @@ export default {
     requalificationTotal(index){
       this.beneficiaries[index].temp_amount = (this.total * this.beneficiaries[index].temp_percentage)/100;
     },
+    savePercentages(){
+
+      let uri =`/ret_fun/${this.retirementFundId}/save_percentages`;
+      axios.patch(uri,
+        {
+          beneficiaries: this.beneficiaries,
+        }
+      ).then(response =>{
+          flash("Porcentages actualizados a los derechohabientes.");
+          console.log(response.data);
+          this.beneficiaries = response.data.beneficiaries;
+          this.total = response.data.total;
+          this.subTotal = response.data.sub_total;
+          console.log(`${this.total} ${this.subTotal} `);
+      }).catch(error =>{
+          flash("Error al guardar los porcentages", "error");
+      });
+    },
   },
   computed: {
     totalAverageSalaryQuotableAnimated: function() {
