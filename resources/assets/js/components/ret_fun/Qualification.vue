@@ -18,13 +18,14 @@ export default {
       showEconomicData:false,
       showEconomicDataTotal:false,
 
-      subTotal: 0,
-      total: 0,
+      subTotalRetFun: 0,
+      totalRetFun: 0,
 
       advancePayment: 0,
       retentionLoanPayment: 0,
       retentionGuarantor: 0,
 
+      hasAvailability: false,
 
       beneficiaries: [],
 
@@ -87,15 +88,15 @@ export default {
       axios.get(uri).then(response => {
         flash("Salario Promedio Cotizable Actualizado")
         this.showEconomicDataTotal = true;
-        // this.sub_total = response.data.sub_total;
+        // this.sub_total_ret_fun = response.data.sub_total_ret_fun;
         // this.total = response.data.total;
-        TweenLite.to(this.$data, 0.5, { total: response.data.total,subTotal: response.data.sub_total });
+        TweenLite.to(this.$data, 0.5, { totalRetFun: response.data.total_ret_fun,subTotalRetFun: response.data.sub_total_ret_fun });
       }).catch(error => {
         this.showEconomicDataTotal = false
       });
     },
-    saveTotal(){
-      let uri =`/ret_fun/${this.retirementFundId}/save_total`;
+    saveTotalRetFun(){
+      let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun`;
       axios.patch(uri,
         {
           advancePayment: this.advancePayment,
@@ -104,20 +105,16 @@ export default {
         }
       ).then(response =>{
           flash("Calculo Total guardado correctamente.");
-          // this.showEconomicData = true
           this.beneficiaries = response.data.beneficiaries;
-          console.log(response.data);
-          this.total = response.data.total;
-          this.subTotal = response.data.sub_total;
-          console.log(`${this.total} ${this.subTotal} `);
-          // TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+          this.totalRetFun = response.data.total_ret_fun;
+          this.subTotalRetFun = response.data.sub_total_ret_fun;
       }).catch(error =>{
           flash("Error al guardar los Datos", "error");
-          // this.showEconomicData = false;
+
       });
     },
     requalificationTotal(index){
-      this.beneficiaries[index].temp_amount = (this.total * this.beneficiaries[index].temp_percentage)/100;
+      this.beneficiaries[index].temp_amount = (this.totalRetFun * this.beneficiaries[index].temp_percentage)/100;
     },
     savePercentages(){
 
@@ -128,11 +125,7 @@ export default {
         }
       ).then(response =>{
           flash("Porcentages actualizados a los derechohabientes.");
-          console.log(response.data);
-          this.beneficiaries = response.data.beneficiaries;
-          this.total = response.data.total;
-          this.subTotal = response.data.sub_total;
-          console.log(`${this.total} ${this.subTotal} `);
+          this.hasAvailability = response.data.has_availability;
       }).catch(error =>{
           flash("Error al guardar los porcentages", "error");
       });
@@ -145,7 +138,7 @@ export default {
         }
       ).then(response =>{
           flash("Total disponibilidad Actualizado.");
-          this.total = response.data.total;
+          this.totalRetFun = response.data.total_ret_fun;
       }).catch(error =>{
           flash("Error al guardar total disponibilidad", "error");
       });
@@ -158,20 +151,20 @@ export default {
     totalQuotesAnimated: function() {
       return this.totalQuotes;
     },
-    subTotalAnimated(){
-      return this.subTotal;
+    subTotalRetFunAnimated(){
+      return this.subTotalRetFun;
     },
     totalAnimated(){
-      return this.subTotal - this.advancePayment -this.retentionLoanPayment -this.retentionGuarantor;
+      return this.subTotalRetFun - this.advancePayment -this.retentionLoanPayment -this.retentionGuarantor;
     },
     percentageAdvancePayment(){
-      return (100 * this.advancePayment)/this.subTotal;
+      return (100 * this.advancePayment)/this.subTotalRetFun;
     },
     percentageRetentionLoanPayment(){
-      return (100 * this.retentionLoanPayment)/this.subTotal;
+      return (100 * this.retentionLoanPayment)/this.subTotalRetFun;
     },
     percentageRetentionGuarantor(){
-      return (100 * this.retentionGuarantor)/this.subTotal;
+      return (100 * this.retentionGuarantor)/this.subTotalRetFun;
     },
     totalPercentage(){
       const sum = this.beneficiaries.reduce((accumulator, current) => {
