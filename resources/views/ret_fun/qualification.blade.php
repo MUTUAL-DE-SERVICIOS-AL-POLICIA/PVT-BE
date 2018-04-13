@@ -159,7 +159,7 @@
                                 </tr>
                                 <tr>
                                     <td>% de Anticipo Fondo de Retiro</td>
-                                    <td>@{{ percentageAdvancePayment }}</td>
+                                    <td>@{{ percentageAdvancePayment | percentage }}</td>
                                 </tr>
                                 <tr>
                                     <td>Retencion para pago de prestamo</td>
@@ -167,7 +167,7 @@
                                 </tr>
                                 <tr>
                                     <td>% de Retencion para pago de prestamo</td>
-                                    <td>@{{ percentageRetentionLoanPayment }}</td>
+                                    <td>@{{ percentageRetentionLoanPayment | percentage }}</td>
                                 </tr>
                                 <tr>
                                     <td>Retencion para garantes</td>
@@ -175,7 +175,7 @@
                                 </tr>
                                 <tr>
                                     <td>% de Retencion para garantes</td>
-                                    <td>@{{ percentageRetentionGuarantor }}</td>
+                                    <td>@{{ percentageRetentionGuarantor | percentage }}</td>
                                 </tr>
                                 <tr class="success">
                                     <td>Total fondo de retiro</td>
@@ -208,16 +208,69 @@
                                     <th>PARENTESCO</th>
                                 </tr>
                             </thead>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th>@{{ totalPercentage }}</th>
+                                    <th>@{{ totalAmount | currency }}</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
                             <tbody>
                                 <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
-                                    <td>@{{ beneficiary.first_name }}</td>
-                                    <td>@{{ beneficiary.temp_percentage }}</td>
-                                    <td>@{{ beneficiary.temp_amount  }}</td>
-                                    <td>@{{ beneficiary.kinship_id }}</td>
+                                    <td>@{{ beneficiary.full_name }}</td>
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
+                                    {{-- <td>@{{ beneficiary.temp_percentage  }}</td> --}}
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
+                                    {{-- <td>@{{ beneficiary.temp_amount | currency }}</td> --}}
+                                    <td>@{{ beneficiary.kinship.name }}</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <button class="btn btn-primary" type="submit" @click="saveTotal"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
+                        <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
+                    </div>
+                </div>
+                <div class="ibox" v-if="true" :class="showHasAvailability ? 'fadeInRight' :''">
+                {{--<div class="ibox" v-if="showEconomicDataTotal" :class="showEconomicDataTotal ? 'fadeInRight' :''"> --}}
+                    <div class="ibox-title">
+                        <h5>Calculo de las cuotas partes para los derechohabientes</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            <a class="close-link"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                    <th>% DE ASIGNACION</th>
+                                    <th>MONTO</th>
+                                    <th>PARENTESCO</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th>@{{ totalPercentage }}</th>
+                                    <th>@{{ totalAmount | currency }}</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
+                                    <td>@{{ beneficiary.full_name }}</td>
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
+                                    {{--
+                                    <td>@{{ beneficiary.temp_percentage }}</td> --}}
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
+                                    {{--
+                                    <td>@{{ beneficiary.temp_amount | currency }}</td> --}}
+                                    <td>@{{ beneficiary.kinship.name }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
                     </div>
                 </div>
             </div>

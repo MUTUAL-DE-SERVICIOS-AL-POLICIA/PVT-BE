@@ -165,7 +165,7 @@ export default {
       });
     },
     setDataToTable(period, amount) {
-      $("#main" + period).html(amount);
+      $("#aid_main" + period).html(amount);
     },
     enableDC() {
       $(".directContribution").removeClass("disableddiv");
@@ -196,6 +196,10 @@ export default {
               })
               .then(response => {
               this.enableDC();
+              var i;
+                for(i=0;i<response.data.aid_contribution.length;i++){                        
+                    this.setDataToTable(response.data.aid_contribution[i].month_year,response.data.aid_contribution[i].total);
+                }
               /* for (var i = 0; i < response.data.aid_contribution.length; i++) {
                   this.setDataToTable(
                     response.data.aidcontribution[i].month_year,
@@ -217,7 +221,7 @@ export default {
                   type: "pdf",
                   showModal: true
                 });
-            }).catch(error => {
+            }).catch(error => {              
               this.show_spinner = false;
               console.log(error.response.data);
               var resp = error.response.data;
