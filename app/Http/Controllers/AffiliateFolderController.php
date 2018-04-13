@@ -4,6 +4,7 @@ namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Muserpol\Models\AffiliateFolder;
+use Muserpol\Models\Module;
 
 class AffiliateFolderController extends Controller
 {
@@ -36,11 +37,11 @@ class AffiliateFolderController extends Controller
     public function store(Request $request)
     {
         //
-        if($id != null){
-            $folder=AffiliateFolder::find($request->affiliatefolder_id);
-        }else{
+       
             $folder = new AffiliateFolder;
-        }
+       
+           // $folder=AffiliateFolder::find($request->affiliatefolder_id);
+        
               
         $this->authorize('update', $folder);
         $folder->affiliate_id = $request->affiliate_id;
