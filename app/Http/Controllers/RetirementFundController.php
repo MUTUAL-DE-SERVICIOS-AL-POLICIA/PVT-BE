@@ -902,4 +902,24 @@ class RetirementFundController extends Controller
         ];
         return $data;
     }
+    public function savePercentages(Request $request, $id )
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $affiliate = $retirement_fund->affiliate;
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+        foreach ($request->beneficiaries as $beneficiary) {
+            $new_beneficiary = $retirement_fund->ret_fun_beneficiaries()->where('id',$beneficiary['id'])->first();
+            if (!$new_beneficiary) {
+                return response("error al buscar al beneficiario", 500);
+            }
+            $new_beneficiary->percentage = $beneficiary['temp_percentage'];
+            $new_beneficiary->save();
+        }
+        $availability = $affiliate->getContributionsWithType('Disponibilidad');
+        $has_availability = sizeOf($availability) > 0;
+        $data = [
+            'has_availability' => $has_availability,
+        ];
+        return $data;
+    }
 }
