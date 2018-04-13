@@ -151,7 +151,7 @@
                             <tbody>
                                 <tr>
                                     <td>Sub Total fondo de retiro</td>
-                                    <td>@{{ subTotal | currency }}</td>
+                                    <td>@{{ subTotalRetFun | currency }}</td>
                                 </tr>
                                 <tr>
                                     <td>Anticipo Fondo de Retiro</td>
@@ -185,7 +185,7 @@
                         </table>
 
                         {{-- {!! Form::open(array('route' => ['save_average_quotable', $retirement_fund->id],'method'=>'PATCH')) !!} --}}
-                        <button class="btn btn-primary" type="submit" @click="saveTotal"><i class="fa fa-save"></i> Guardar</button>
+                        <button class="btn btn-primary" type="submit" @click="saveTotalRetFun"><i class="fa fa-save"></i> Guardar</button>
                         {{-- {!! Form::close() !!} --}}
                     </div>
                 </div>
@@ -230,10 +230,9 @@
                         <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
                     </div>
                 </div>
-                <div class="ibox" v-if="true" :class="showHasAvailability ? 'fadeInRight' :''">
-                {{--<div class="ibox" v-if="showEconomicDataTotal" :class="showEconomicDataTotal ? 'fadeInRight' :''"> --}}
+                <div class="ibox" v-if="hasAvailability" :class="hasAvailability ? 'fadeInRight' :''">
                     <div class="ibox-title">
-                        <h5>Calculo de las cuotas partes para los derechohabientes</h5>
+                        <h5>Devolucion de aportes en disponibilidad</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             <a class="close-link"><i class="fa fa-times"></i></a>
@@ -243,34 +242,26 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
-                                    <th>% DE ASIGNACION</th>
-                                    <th>MONTO</th>
-                                    <th>PARENTESCO</th>
+                                    <th>Foobar</th>
+                                    <th>baz</th>
                                 </tr>
                             </thead>
-                            <tfoot>
-                                <tr>
-                                    <th></th>
-                                    <th>@{{ totalPercentage }}</th>
-                                    <th>@{{ totalAmount | currency }}</th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
                             <tbody>
-                                <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
-                                    <td>@{{ beneficiary.full_name }}</td>
-                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
-                                    {{--
-                                    <td>@{{ beneficiary.temp_percentage }}</td> --}}
-                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
-                                    {{--
-                                    <td>@{{ beneficiary.temp_amount | currency }}</td> --}}
-                                    <td>@{{ beneficiary.kinship.name }}</td>
+                                <tr>
+                                    <td>Total aportes en disponibilidad</td>
+                                    <td>@{{ subTotalAvailability }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Con rendimiento del X% Anual</td>
+                                    <td>@{{ subTotalAvailabilityWithYield }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Devolucion de aportes en disponibilidad</td>
+                                    <td>@{{ totalAvailability }}</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
+                        {{-- <button class="btn btn-primary" type="submit" @click="saveTotalAvailatility"><i class="fa fa-save"></i> Guardar</button> --}}
                     </div>
                 </div>
             </div>
