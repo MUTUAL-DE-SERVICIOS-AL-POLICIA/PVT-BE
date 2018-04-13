@@ -69,10 +69,10 @@ class SpouseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $spouse = Spouse::where('id', '=', $id)->first();
-
+        $spouse = Spouse::where('id', '=', $request->id)->first();
+       
         // $this->authorize('update', $spouse);
 
         $spouse->identity_card = $request->identity_card;

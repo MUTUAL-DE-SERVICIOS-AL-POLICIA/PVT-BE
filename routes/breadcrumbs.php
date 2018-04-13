@@ -35,10 +35,10 @@ Breadcrumbs::register('show_qualification_retirement_fund', function($breadcrumb
 	$breadcrumbs->parent('show_retirement_fund', $retirement_fund);
 	$breadcrumbs->push	("Calificación", URL::to('ret_fun/'.$retirement_fund->id.'/qualification'));
 });
-Breadcrumbs::register('show_qualification_certification_retirement_fund', function($breadcrumbs, $retirement_fund)
+Breadcrumbs::register('show_qualification_certification_retirement_fund', function($breadcrumbs, $retirement_fund, $number_contributions)
 {
 	$breadcrumbs->parent('show_qualification_retirement_fund', $retirement_fund);
-	$breadcrumbs->push	("Certificación 60 Aportes", URL::to('ret_fun/'.$retirement_fund->id.'/qualification_certification'));
+	$breadcrumbs->push	("Certificación ".$number_contributions." Aportes", URL::to('ret_fun/'.$retirement_fund->id.'/qualification_certification'));
 });
 Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliate)
 {
@@ -52,6 +52,11 @@ Breadcrumbs::register('quota_aid_mortuary', function($breadcrumbs)
 {
 	$breadcrumbs->push('Cuota y Auxilio Mortuorio', URL::to('quota_aid'));
 });
+Breadcrumbs::register('classify_contributions', function($breadcrumbs,$retirement_fund)
+{	
+	$breadcrumbs->parent('show_retirement_fund',$retirement_fund);
+	$breadcrumbs->push('Clasificacion de Aportes');
+});
 
 //	PAGO DE CONTRIBUCIONES
 
@@ -61,3 +66,4 @@ Breadcrumbs::register('payment_contributions', function($breadcrumbs, $affiliate
 	$breadcrumbs->push('Nuevo Aporte');
 	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
+

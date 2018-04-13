@@ -46,7 +46,7 @@
                             </ret-fun-qualification-group>
                         </div>
                         <div class="panel panel-success">
-                            <strong>Anios</strong> @{{this.years}}
+                            <strong>Años</strong> @{{this.years}}
                             <strong>Meses</strong> @{{this.months}}
                         </div>
                         <table class="table table-bordered">
@@ -84,7 +84,7 @@
                                     <td>@{{ monthsAvailability }}</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Total de Calificacion para Calificacion</strong></td>
+                                    <td><strong>Total de cotizaciones para Calificacion</strong></td>
                                     <td><strong>@{{ years }}</strong></td>
                                     <td><strong>@{{ months }}</strong></td>
                                 </tr>
@@ -116,16 +116,125 @@
                                 </tr>
                                 <tr>
                                     <td>Salario Promedio Cotizable</td>
+                                    <td>@{{ totalAverageSalaryQuotableAnimated | currency }}</td>
+                                    {{-- <td>@{{ totalAverageSalaryQuotable | currency }}</td> --}}
                                 </tr>
                                 <tr>
                                     <td>Densidad Total de Cotizaciones</td>
+                                    <td>@{{ totalQuotesAnimated }}</td>
+                                    {{-- <td>@{{ totalQuotes }}</td> --}}
                                 </tr>
                             </tbody>
                         </table>
+                        {{-- {!! Form::open(array('route' => ['save_average_quotable', $retirement_fund->id],'method'=>'PATCH')) !!} --}}
+                        <button class="btn btn-primary" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar</button>
+                        {{-- {!! Form::close() !!} --}}
+                    </div>
+                </div>
+                <div class="ibox" v-if="true" :class="showEconomicDataTotal ? 'fadeInRight' :''">
+                {{-- <div class="ibox" v-if="showEconomicDataTotal" :class="showEconomicDataTotal ? 'fadeInRight' :''"> --}}
+                    <div class="ibox-title">
+                        <h5>Datos Economicos Total</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            <a class="close-link"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>foo</th>
+                                    <th>bar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Sub Total fondo de retiro</td>
+                                    <td>@{{ subTotal | currency }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Anticipo Fondo de Retiro</td>
+                                    <td><input type="text" v-model="advancePayment"></td>
+                                </tr>
+                                <tr>
+                                    <td>% de Anticipo Fondo de Retiro</td>
+                                    <td>@{{ percentageAdvancePayment | percentage }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Retencion para pago de prestamo</td>
+                                    <td><input type="text" v-model="retentionLoanPayment"></td>
+                                </tr>
+                                <tr>
+                                    <td>% de Retencion para pago de prestamo</td>
+                                    <td>@{{ percentageRetentionLoanPayment | percentage }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Retencion para garantes</td>
+                                    <td><input type="text" v-model="retentionGuarantor"></td>
+                                </tr>
+                                <tr>
+                                    <td>% de Retencion para garantes</td>
+                                    <td>@{{ percentageRetentionGuarantor | percentage }}</td>
+                                </tr>
+                                <tr class="success">
+                                    <td>Total fondo de retiro</td>
+                                    <td><strong>@{{ totalAnimated | currency }}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        {{-- {!! Form::open(array('route' => ['save_average_quotable', $retirement_fund->id],'method'=>'PATCH')) !!} --}}
+                        <button class="btn btn-primary" type="submit" @click="saveTotal"><i class="fa fa-save"></i> Guardar</button>
+                        {{-- {!! Form::close() !!} --}}
+                    </div>
+                </div>
+                <div class="ibox" v-if="true" :class="showEconomicDataTotal ? 'fadeInRight' :''">
+                {{-- <div class="ibox" v-if="showEconomicDataTotal" :class="showEconomicDataTotal ? 'fadeInRight' :''"> --}}
+                    <div class="ibox-title">
+                        <h5>Calculo de las cuotas partes para los derechohabientes</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            <a class="close-link"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                    <th>% DE ASIGNACION</th>
+                                    <th>MONTO</th>
+                                    <th>PARENTESCO</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th>@{{ totalPercentage }}</th>
+                                    <th>@{{ totalAmount | currency }}</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
+                                    <td>@{{ beneficiary.full_name }}</td>
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
+                                    {{-- <td>@{{ beneficiary.temp_percentage  }}</td> --}}
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
+                                    {{-- <td>@{{ beneficiary.temp_amount | currency }}</td> --}}
+                                    <td>@{{ beneficiary.kinship.name }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="btn btn-primary" type="submit" @click="saveTotal"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
                     </div>
                 </div>
             </div>
         </ret-fun-qualification>
     </div>
 </div>
+@endsection
+@section('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
 @endsection

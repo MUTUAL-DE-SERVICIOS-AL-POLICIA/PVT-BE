@@ -72,6 +72,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('ret_fun/{ret_fun_id}/qualification', 'RetirementFundController@qualification');
 	Route::post('ret_fun/{ret_fun_id}/get_data_qualification', 'RetirementFundController@geDataQualification');
 	Route::get('ret_fun/{ret_fun_id}/qualification/certification', 'RetirementFundController@qualificationCertification');
+	Route::get('ret_fun/{ret_fun_id}/save_average_quotable', 'RetirementFundController@saveAverageQuotable')->name('save_average_quotable');
+	Route::patch('ret_fun/{ret_fun_id}/save_total', 'RetirementFundController@saveTotal')->name('save_total');
 	Route::get('get_data_certification/{ret_fun_id}', 'RetirementFundController@getDataQualificationCertification')->name('get_data_certification');
 	Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 
@@ -119,12 +121,11 @@ Route::group(['middleware' => ['auth']], function () {
 
 		//contributions certification
 		//contributions certification 60, disponibilidad, item 0
-		Route::get('ret_fun/{retirement_fund}/print/certification', 'ContributionController@printCertification60')->name('ret_fun_print_certification');
+		Route::get('ret_fun/{retirement_fund}/print/certification', 'ContributionController@printCertification')->name('ret_fun_print_certification');
 		Route::get('ret_fun/{retirement_fund}/print/cer_availability', 'ContributionController@printCertificationAvailability')->name('ret_fun_print_certification_availability');
 		Route::get('ret_fun/{retirement_fund}/print/cer_itemcero', 'ContributionController@printCertificationItem0')->name('ret_fun_print_certification_item0');
 
         Route::resource('reimbursement','ReimbursementController');       
-
         
         //AidContributions
         Route::resource('aid_contribution','AidContributionController');

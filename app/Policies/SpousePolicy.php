@@ -5,10 +5,15 @@ namespace Muserpol\Policies;
 use Muserpol\User;
 use Muserpol\Models\Spouse;
 use Illuminate\Auth\Access\HandlesAuthorization;
-
+use Muserpol\Helpers\Util;
 class SpousePolicy
 {
     use HandlesAuthorization;
+    const ClASS_NAME = 'Spouse';
+    const CREATE = 'create';
+    const READ = 'read';
+    const UPDATE = 'update';
+    const DELETE = 'delete';
 
     /**
      * Determine whether the user can view the spouse.
@@ -20,6 +25,8 @@ class SpousePolicy
     public function view(User $user, Spouse $spouse)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
+        return $permission?true:false;
     }
 
     /**
@@ -31,6 +38,8 @@ class SpousePolicy
     public function create(User $user)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::CREATE);
+        return $permission?true:false;
     }
 
     /**
@@ -43,6 +52,8 @@ class SpousePolicy
     public function update(User $user, Spouse $spouse)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::UPDATE);
+        return $permission?true:false;
     }
 
     /**
@@ -55,5 +66,7 @@ class SpousePolicy
     public function delete(User $user, Spouse $spouse)
     {
         //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);
+        return $permission?true:false;
     }
 }

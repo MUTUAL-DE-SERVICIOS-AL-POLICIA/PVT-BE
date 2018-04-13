@@ -1,12 +1,13 @@
 @extends('print_global.print')
 @section('content')
-
 <div>
     El suscrito Encargado de  Cuentas Individuales en base a una revisión de la Base de Datos del Sistema Informático de MUSERPOL de aportes realizados, del señor: 
-</div><br>
+</div>
+<div>
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
-<strong>CERTIFICA:</strong>
-    <?php $num=0; ?>
+</div>
+
+<strong>CERTIFICA:</strong>  
 <table class="table-info w-100">        
     <thead class="bg-grey-darker">
         <tr class="font-medium text-white text-sm">

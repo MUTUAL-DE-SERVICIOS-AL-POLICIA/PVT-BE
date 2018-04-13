@@ -11,6 +11,11 @@ class Spouse extends Model
     {
         return $this->belongsTo(City::class, 'city_identity_card_id', 'id');
     }
+    
+    public function city_birth()
+    {
+        return $this->belongsTo(City::class, 'city_birth_id', 'id');
+    }
 
     /**
      * Methods
@@ -21,7 +26,4 @@ class Spouse extends Model
         return Util::removeSpaces($name);
     }
     
-    public function city_birth(){
-        return $this->belongsTo(City::class,'city_birth_id','id');
-    }
 }

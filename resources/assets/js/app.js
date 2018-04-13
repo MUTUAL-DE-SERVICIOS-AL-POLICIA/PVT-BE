@@ -24,7 +24,6 @@ window.flash = function (message, level = 'success', timeOut = 5000) {
 
  /**VUEX */
  import store from './store/index';
-import VueRouter from 'vue-router'; 
 
 import VueFormWizard from 'vue-form-wizard';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
@@ -36,6 +35,21 @@ Vue.use(VueSweetalert2);
 import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate);
 
+import VueCurrencyFilter from 'vue-currency-filter';
+
+Vue.use(VueCurrencyFilter,
+{
+	symbol: 'Bs',
+	thousandsSeparator: '.',
+	fractionCount: 2,
+	fractionSeparator: ',',
+	symbolPosition: 'front',
+	symbolSpacing: true
+});
+
+Vue.filter('percentage', function (value) {
+	return `${value.toFixed(4)} %`;
+});
 
 
 Vue.component('flash', require('./components/Flash.vue'));
@@ -80,8 +94,7 @@ Vue.component('nom-module', require('./components/permission/NomModule.vue'));
 //contributions
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
-
-Vue.component('contribution-select', require('./components/contribution/SelectContributions.vue')); 
+Vue.component('contribution-select', require('./components/contribution/SelectContributions.vue'));
 
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));

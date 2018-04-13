@@ -79,6 +79,7 @@ class CreateRetirementFundTables extends Migration {
             $table->string('code')->unique(); //codigo
             $table->date('reception_date')->nullable(); //fecha de recepcion
             $table->enum('type', ['Pago', 'Anticipo'])->default('Pago'); //tipo
+            $table->decimal('average_quotable', 13, 2)->nullable();
             $table->decimal('subtotal', 13, 2); // sub total
             $table->decimal('total', 13, 2); // total
             $table->foreign('affiliate_id')->references('id')->on('affiliates')->onDelete('cascade');
@@ -165,8 +166,8 @@ class CreateRetirementFundTables extends Migration {
             $table->increments('id');
             $table->bigInteger('discount_type_id')->unsigned()->nullable();
             $table->bigInteger('retirement_fund_id')->unsigned();
+            $table->unique(['discount_type_id', 'retirement_fund_id']);
             $table->decimal('amount', 13, 2)->nullable();
-            $table->decimal('percentage', 13, 2)->nullable();
             $table->foreign('discount_type_id')->references('id')->on('discount_types')->onDelete('cascade');
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
             $table->timestamps();
@@ -339,10 +340,17 @@ class CreateRetirementFundTables extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('contribution_types', function (Blueprint $table) { //Tipos de Aportes
+        Schema::create('group_type_contributions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->timestamps();
+        });
+        Schema::create('contribution_types', function (Blueprint $table) { //Tipos de Aportes
+            $table->bigIncrements('id');
+            $table->bigInteger('group_type_contribution_id')->nullable();
+            $table->string('name');
             $table->string('shortened');
+            $table->foreign('group_type_contribution_id')->references('id')->on('group_type_contributions');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -393,12 +401,13 @@ class CreateRetirementFundTables extends Migration {
      */
     public function down() {
         
+        Schema::drop('aid_commitments');
         Schema::drop('aid_contributions');
         Schema::table('contributions', function (Blueprint $table) {
             $table->dropColumn('contribution_type_id');
         });
-        Schema::drop('aid_commitment');
         Schema::drop('contribution_types');
+        Schema::drop('group_type_contributions');
         Schema::drop('eco_com_observations');
         Schema::drop('ufv_rates');
         Schema::drop('contribution_commitments');

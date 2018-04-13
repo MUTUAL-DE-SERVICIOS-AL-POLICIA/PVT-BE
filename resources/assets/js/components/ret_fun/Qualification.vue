@@ -15,7 +15,22 @@ export default {
       yearsItemZero: 0,
       monthsItemZero: 0,
 
-      showEconomicData:false
+      showEconomicData:false,
+      showEconomicDataTotal:false,
+
+      subTotal: 0,
+      total: 0,
+
+      advancePayment: 0,
+      retentionLoanPayment: 0,
+      retentionGuarantor: 0,
+
+
+      beneficiaries: [],
+
+      // perecentageAdvancePayment: 0,
+      totalAverageSalaryQuotable: 0,
+      totalQuotes:0,
     };
   },
   methods: {
@@ -29,7 +44,7 @@ export default {
       let date = this.calculateDiff(dates);
       return{
         years: parseInt(date/12),
-        months: (date%12)
+        months: (date%12),
       }
     },
     calculate(){
@@ -59,15 +74,86 @@ export default {
           datesContributions: this.datesContributions
         }
       ).then(response =>{
-        if (response.data) {
-          flash("Verificacion Correcta")
-          this.showEconomicData = true;
-        }else{
-          flash("Los Datos no Coinciden", "error")
+          flash("Verificacion Correcta");
+          this.showEconomicData = true
+          TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+      }).catch(error =>{
+          flash("Los Datos no Coinciden", "error");
           this.showEconomicData = false;
+      });
+    },
+    saveAverageQuotable(){
+      let uri=`/ret_fun/${this.retirementFundId}/save_average_quotable`;
+      axios.get(uri).then(response => {
+        flash("Salario Promedio Cotizable Actualizado")
+        this.showEconomicDataTotal = true;
+        // this.sub_total = response.data.sub_total;
+        // this.total = response.data.total;
+        TweenLite.to(this.$data, 0.5, { total: response.data.total,subTotal: response.data.sub_total });
+      }).catch(error => {
+        this.showEconomicDataTotal = false
+      });
+    },
+    saveTotal(){
+      let uri =`/ret_fun/${this.retirementFundId}/save_total`;
+      axios.patch(uri,
+        {
+          advancePayment: this.advancePayment,
+          retentionLoanPayment: this.retentionLoanPayment,
+          retentionGuarantor: this.retentionGuarantor,
         }
-      }).catch(error => alert(error))
-    }
-  }
+      ).then(response =>{
+          flash("Calculo Total guardado correctamente.");
+          // this.showEconomicData = true
+          this.beneficiaries = response.data.beneficiaries;
+          console.log(response.data);
+          this.total = response.data.total;
+          this.subTotal = response.data.sub_total;
+          console.log(`${this.total} ${this.subTotal} `);
+          // TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+      }).catch(error =>{
+          flash("Error al guardar los Datos", "error");
+          // this.showEconomicData = false;
+      });
+    },
+    requalificationTotal(index){
+      this.beneficiaries[index].temp_amount = (this.total * this.beneficiaries[index].temp_percentage)/100;
+    },
+  },
+  computed: {
+    totalAverageSalaryQuotableAnimated: function() {
+      return this.totalAverageSalaryQuotable;
+    },
+    totalQuotesAnimated: function() {
+      return this.totalQuotes;
+    },
+    subTotalAnimated(){
+      return this.subTotal;
+    },
+    totalAnimated(){
+      return this.subTotal - this.advancePayment -this.retentionLoanPayment -this.retentionGuarantor;
+    },
+    percentageAdvancePayment(){
+      return (100 * this.advancePayment)/this.subTotal;
+    },
+    percentageRetentionLoanPayment(){
+      return (100 * this.retentionLoanPayment)/this.subTotal;
+    },
+    percentageRetentionGuarantor(){
+      return (100 * this.retentionGuarantor)/this.subTotal;
+    },
+    totalPercentage(){
+      const sum = this.beneficiaries.reduce((accumulator, current) => {
+        return accumulator + parseFloat(current.temp_percentage);
+       }, 0.0);
+       return sum;
+    },
+    totalAmount(){
+      const sum = this.beneficiaries.reduce((accumulator, current) => {
+        return accumulator + parseFloat(current.temp_amount);
+       }, 0.0);
+       return sum;
+    },
+  },
 };
 </script>
