@@ -106,11 +106,18 @@ export default {
           flash("Calculo Total guardado correctamente.");
           // this.showEconomicData = true
           this.beneficiaries = response.data.beneficiaries;
+          console.log(response.data);
+          this.total = response.data.total;
+          this.subTotal = response.data.sub_total;
+          console.log(`${this.total} ${this.subTotal} `);
           // TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
       }).catch(error =>{
           flash("Error al guardar los Datos", "error");
           // this.showEconomicData = false;
       });
+    },
+    requalificationTotal(index){
+      this.beneficiaries[index].temp_amount = (this.total * this.beneficiaries[index].temp_percentage)/100;
     },
   },
   computed: {
@@ -134,6 +141,18 @@ export default {
     },
     percentageRetentionGuarantor(){
       return (100 * this.retentionGuarantor)/this.subTotal;
+    },
+    totalPercentage(){
+      const sum = this.beneficiaries.reduce((accumulator, current) => {
+        return accumulator + parseFloat(current.temp_percentage);
+       }, 0.0);
+       return sum;
+    },
+    totalAmount(){
+      const sum = this.beneficiaries.reduce((accumulator, current) => {
+        return accumulator + parseFloat(current.temp_amount);
+       }, 0.0);
+       return sum;
     },
   },
 };

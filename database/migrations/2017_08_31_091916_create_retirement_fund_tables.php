@@ -166,7 +166,7 @@ class CreateRetirementFundTables extends Migration {
             $table->increments('id');
             $table->bigInteger('discount_type_id')->unsigned()->nullable();
             $table->bigInteger('retirement_fund_id')->unsigned();
-            $table->unique('discount_type_id', 'retirement_fund_id');
+            $table->unique(['discount_type_id', 'retirement_fund_id']);
             $table->decimal('amount', 13, 2)->nullable();
             $table->foreign('discount_type_id')->references('id')->on('discount_types')->onDelete('cascade');
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
@@ -373,7 +373,7 @@ class CreateRetirementFundTables extends Migration {
             $table->decimal('interest', 13, 2);
             $table->decimal('total', 13, 2);
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('affiliate_id')->references('id')->on('users');            
+            $table->foreign('affiliate_id')->references('id')->on('affiliates');            
             $table->timestamps();
             $table->softDeletes();
         });

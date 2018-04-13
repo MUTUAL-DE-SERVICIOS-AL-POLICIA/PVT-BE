@@ -1,16 +1,17 @@
 <template>
   <div class="btn-group btn-group-sm">
-    <button class="btn btn-default" title="Display row"
+    <!-- Descomentar en caso de mostrar XD-->
+    <!-- <button class="btn btn-default" title="Display row"
       :class="{ '-nested-comp-open-btn': isDisplayRowVisible }"
       @click="toggleNestedComp('DisplayRow')">
       <i class="fa fa-list-ul"></i>
-    </button>
-    <button class="btn btn-default" title="Friends"
+    </button> -->
+    <!-- <button class="btn btn-default" title="Friends"
       :class="{ '-nested-comp-open-btn': isFriendsTableVisible }"
       @click="toggleNestedComp('FriendsTable')">
-      <i class="fa fa-users"></i> <!-- {{ row.friends.length }} -->
-    </button>
-    <a :href="'/ret_fun/'+ row.id ">GO</a>
+      <i class="fa fa-users"></i>
+    </button> --> 
+    <a :href="'/ret_fun/'+ row.id" class="btn btn-default"><i class="fa fa-eye"></i></a>
   </div>
 </template>
 <script>
