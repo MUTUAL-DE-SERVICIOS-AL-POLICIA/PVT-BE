@@ -157,8 +157,7 @@ export default {
                 console.log('requesting data');
             axios.post('/get-interest',{con})
             .then(response => {                
-                this.ufv = response.data.replace(',','.');
-                console.log(response.data);
+                this.ufv = response.data.replace(',','.');                
                 con.interes = parseFloat(this.ufv);
                 this.ufvs[con.sueldo] = this.ufv;
                 var newfr,newcm;
