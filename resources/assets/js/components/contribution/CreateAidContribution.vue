@@ -223,6 +223,7 @@ export default {
                 });
             }).catch(error => {              
               this.show_spinner = false;
+              console.log(error);
               console.log(error.response.data);
               var resp = error.response.data;
               $.each(resp, function(index, value) {

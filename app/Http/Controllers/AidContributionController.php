@@ -302,26 +302,55 @@ class AidContributionController extends Controller
         }
     }
 
-
     public function storeDirectContribution(Request $request)
     //Metodo para agregar contribuciones voluntarias o directas
     {
-        // Se guarda voucher fecha, total 1 reg
+        // Se guarda voucher fecha, total 1 reg        
+        //*********START VALIDATOR************//        
+        $rules=[];                
+            $has_commitment = false;
+            $commitment = AidCommitment::where('affiliate_id',$request->afid)->where('state','ALTA')->first();
+            if(!isset($commitment->id)){
+                $hgas_commitment = true;            
+            }
+            
+            $biz_rules = [
+                'has_commitment'    =>  $has_commitment?'required':'',                
+            ];            
+                        
+            foreach ($request->aportes as $key => $ap)
+            {                                            
+                $aporte=(object)$ap;
+                $cont = AidContribution::select('id','')->where('affiliate_id',$request->afid)->where('month_year',$aporte->year.'-'.$aporte->month.'-01')->first();
+                $has_contribution = false;
+                if(isset($cont->id))
+                    $has_contribution = true;
+                
+                $biz_rules = [
+                    'has_contribution.'.$key    =>  $has_contribution?'required':'',
+                ];
+                
+                $rules=array_merge($rules,$biz_rules);
+                //$aporte=(object)$ap;
+                $array_rules = [
+                    'aportes.'.$key.'.sueldo' =>  'required|numeric|min:0',
+                    'aportes.'.$key.'.dignity_rent' =>  'numeric|min:0',                    
+                    'aportes.'.$key.'.subtotal' =>  'required|numeric|min:0',
+                    'aportes.'.$key.'.interes' =>  'required|numeric',
+                    'aportes.'.$key.'.year' =>  'required|numeric|min:1700',
+                    'aportes.'.$key.'.month' =>  'required|numeric|min:1|max:12',
+                ];
+                $rules=array_merge($rules,$array_rules);
+            }
         
-        $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
-        if (!isset($voucher_code->id))
-            $code = Util::getNextCode(""); 
-        else
-            $code = Util::getNextCode($voucher_code->code);
-        $voucher = new Voucher();
-        $voucher->user_id = Auth::user()->id;
-        $voucher->affiliate_id = $request->afid;
-        $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
-        $voucher->total = $request->total;
-       $voucher->payment_date = Carbon::now();
-        $voucher->code = $code;
-        $voucher->save();
-      $result = [];      
+        $rules = array_merge($rules,$biz_rules);
+        $validator = Validator::make($request->all(),$rules);
+        if($validator->fails()){            
+            return response()->json($validator->errors(), 406);
+        }                
+         //*********END VALIDATOR************//         
+        return "without errors";
+        $result = [];      
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;
@@ -335,7 +364,7 @@ class AidContributionController extends Controller
             $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);
             $aid_contribution->type='DIRECTO';
             $aid_contribution->quotable = $aporte->auxilio_mortuorio;
-            $aid_contribution->dignity_rent = $aporte->dignity_rent;
+            $aid_contribution->dignity_rent = $aporte->sueldo-$aporte->dignity_rent;
             $aid_contribution->rent = $aporte->sueldo;
             $aid_contribution->total = $aporte->subtotal;
             $aid_contribution->interest = $aporte->interes;
@@ -346,6 +375,21 @@ class AidContributionController extends Controller
                     ]);
             }
         }
+        
+        $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
+        if (!isset($voucher_code->id))
+            $code = Util::getNextCode(""); 
+        else
+            $code = Util::getNextCode($voucher_code->code);
+        $voucher = new Voucher();
+        $voucher->user_id = Auth::user()->id;
+        $voucher->affiliate_id = $request->afid;
+        $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
+        $voucher->total = $request->total;
+        $voucher->payment_date = Carbon::now();
+        $voucher->code = $code;
+        $voucher->save();
+                
         $data = [
             'aid_contribution'  =>  $result,
             'voucher_id'    => $voucher->id,
