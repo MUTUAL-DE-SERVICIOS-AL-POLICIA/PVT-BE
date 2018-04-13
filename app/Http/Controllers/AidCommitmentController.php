@@ -96,8 +96,7 @@ class AidCommitmentController extends Controller
               return response()->json($validator->errors(), 406);
           }
            //*********END VALIDATOR************//
-      
-        return ;
+              
         if($id == -1){
             $aid_commitment = AidCommitment::find($request->id);
            // $this->authorize('update', $aid_commitment); 
