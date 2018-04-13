@@ -216,7 +216,7 @@ export default {
                   printable:
                     "/quota_aid/" +
                     response.data.affiliate_id +
-                    "/print/voucher/" +
+                    "/print/quota_aid_voucher/" +
                     response.data.voucher_id,
                   type: "pdf",
                   showModal: true

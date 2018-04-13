@@ -90,7 +90,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 	//Quota Aid Certification
 	Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
-	
+	Route::get('quota_aid/{affiliate}/print/quota_aid_voucher/{voucher}', 'QuotaAidCertificationController@printVoucherQuoteAid')->name('quota_aid_print_voucher');
 
 	Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->name('create_ret_fun');
 	Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');

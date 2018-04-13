@@ -53,7 +53,7 @@ class QuotaAidCertificationController extends Controller
         $total_literal = Util::convertir($total);
         $affiliate = Affiliate::find($request->affiliate_id);                                
         $date = Util::getStringDate(date('Y-m-d'));
-        $title = "PAGO DE APORTES VOLUNTARIOS APORTE DIRECTO VIUDAS EFECTIV";
+        $title = "REVISAR";
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name." ".Auth::user()->last_name;        
         $detail = "Pago de aporte directo";
@@ -85,4 +85,42 @@ class QuotaAidCertificationController extends Controller
                 ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')                
                 ->stream("$namepdf");
     }  
+
+    public function printVoucherQuoteAid($affiliate_id,$voucher_id)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        $voucher = Voucher::find($voucher_id);
+        $total_literal = Util::convertir($voucher->total);
+        $payment_date = Util::getStringDate($voucher->payment_date);
+        $date = Util::getStringDate(date('Y-m-d'));
+        $title = "PAGO DE APORTES VOLUNTARIOS APORTE DIRECTO";
+        $username = Auth::user()->username;//agregar cuando haya roles
+        $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
+        $number = $voucher->code;
+        $descripcion = VoucherType::where('id', $voucher->voucher_type_id)->first();
+        $bene = $affiliate;
+        $pdftitle = "Comprobante";
+        $namepdf = Util::getPDFName($pdftitle, $bene);
+        // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
+        return \PDF::loadView('quota_aid.print.voucher_aid_contribution', 
+                compact('date', 
+                        'username', 
+                        'title', 
+                        'affiliate', 
+                        'submitted_documents', 
+                        'beneficiary', 
+                        'glosa', 
+                        'bene', 
+                        'number', 
+                        'voucher', 
+                        'descripcion', 
+                        'payment_date', 
+                        'total_literal', 
+                        'name_user_complet'))
+                ->setPaper('letter')
+                ->setOption('encoding', 'utf-8')
+                ->setOption('footer-right', 'Pagina [page] de [toPage]')
+                ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+                ->stream("$namepdf");
+    }
 }
