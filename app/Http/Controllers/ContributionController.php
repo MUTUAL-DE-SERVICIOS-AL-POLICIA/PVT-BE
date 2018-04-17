@@ -493,8 +493,10 @@ class ContributionController extends Controller
         { 
           foreach ($request->iterator as $key => $iterator) 
         {              
-              $input_data['base_wage'][$key]= strip_tags($request->base_wage[$key]);
-              $input_data['gain'][$key]= strip_tags($request->gain[$key]);
+              if(isset($request->base_wage[$key]))
+                $input_data['base_wage'][$key]= strip_tags($request->base_wage[$key]);
+              if(isset($request->gain[$key]))
+                $input_data['gain'][$key]= strip_tags($request->gain[$key]);
               $input_data['total'][$key]= strip_tags($request->total[$key]);
         $array_rules = [
             'base_wage.'.$key =>  'numeric|min:0',
@@ -524,18 +526,23 @@ class ContributionController extends Controller
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
-                $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
-                if($contribution->base_wage == "")
+                
+                if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
                    $contribution->base_wage = 0;
+                else
+                    $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
+                
                 if ($request->category[$key] != $contribution->category_id) {
                     $category = Category::find($request->category[$key]);
                     $contribution->category_id = $category->id;
                     //return $category->percentage." ".$contribution->base_wage;
                     $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
                 }
-                $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
-                if($contribution->gain == "")
+                
+                if(!isset($request->gain[$key]) || $contribution->gain == "")
                     $contribution->gain = 0;
+                else
+                    $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
                 $contribution->save();
                 array_push($contributions, $contribution);
             } else {
@@ -549,9 +556,11 @@ class ContributionController extends Controller
                 $contribution->degree_id = $affiliate->degree_id;
                 $contribution->unit_id = $affiliate->unit_id;
                 $contribution->breakdown_id = $affiliate->breakdown_id;
-                $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
-                if($contribution->base_wage == "")
+                
+                if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
                     $contribution->base_wage = 0;
+                else
+                    $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
                 $category = Category::find($request->category[$key]);
                 $contribution->category_id = $category->id;
                 //$data = $contribution->base_wage * 123;
@@ -562,9 +571,11 @@ class ContributionController extends Controller
                 $contribution->east_bonus = 0;
                 $contribution->quotable = 0;
                 $contribution->month_year = $key;
-                $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
-                if($contribution->gain == "")
+                
+                if(!isset($request->gain[$key]) || $contribution->gain == "")
                     $contribution->gain = 0;
+                else
+                    $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
                 $contribution->retirement_fund = 0;
                 $contribution->mortuary_quota = 0;
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;

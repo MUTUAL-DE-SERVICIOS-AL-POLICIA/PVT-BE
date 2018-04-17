@@ -134,7 +134,7 @@
                                                             <thead style="display: none">
                                                                 <tr>
                                                                     <td>
-                                                                        <input type="hidden" disabled name="iterator[{{$period}}]" value="{{$contributions[$period]->id}}">
+                                                                        <input type="hidden" disabled  id="iterator[{{$period}}]" name="iterator[{{$period}}]" value="{{$contributions[$period]->id}}">
                                                                     </td>
                                                                 </tr>
                                                             </thead>
@@ -165,7 +165,7 @@
                                                             <thead style="display: none">
                                                                 <tr>
                                                                     <td>
-                                                                        <input type="hidden" disabled name="iterator[{{$period}}]" value="0">
+                                                                        <input type="hidden" disabled id="iterator[{{$period}}]" name="iterator[{{$period}}]" value="0">
                                                                     </td>
                                                                 </tr>
                                                             </thead>
@@ -237,6 +237,7 @@
             success: function(result){                               
                 $.each(result, function(index,value){
                     $('#aid_main'+value.month_year).html(value.total);                    
+                    $('#iterator['+value.month_year+']').prop('disabled',true);
                  });                                  
                  flash('exito');                 
             },

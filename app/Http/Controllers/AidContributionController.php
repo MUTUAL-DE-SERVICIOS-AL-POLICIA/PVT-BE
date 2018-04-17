@@ -223,9 +223,12 @@ class AidContributionController extends Controller
         if(!empty($request->iterator))
         { 
             foreach ($request->iterator as $key => $iterator) 
-            {              
-                $input_data['rent'][$key]= strip_tags($request->rent[$key]);
+            {   
+                if(isset($input_data['rent'][$key]))
+                    $input_data['rent'][$key]= strip_tags($request->rent[$key]);
+                if(isset($input_data['dignity_rent'][$key]))
                 $input_data['dignity_rent'][$key]= strip_tags($request->dignity_rent[$key]);
+                
                 $input_data['total'][$key]= strip_tags($request->total[$key]);
                 $array_rules = [                       
                     'rent.'.$key =>  'numeric',
@@ -245,25 +248,33 @@ class AidContributionController extends Controller
             $contribution = AidContribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
-                $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
-                if($contribution->rent == "")
+               
+                if(!isset($request->rent[$key]) || $contribution->rent == "")
                     $contribution->rent = 0;
-                $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
-                if($contribution->dignity_rent == "")
+                else
+                     $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
+                                
+                if(!isset($request->dignity_rent[$key]) || $contribution->dignity_rent == "")
                     $contribution->dignity_rent = 0;
+                else 
+                    $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
                 $contribution->interest = 0;
                 $contribution->save();
             } else {
                 $contribution = new AidContribution();
                 $contribution->user_id = Auth::user()->id;
                 $contribution->affiliate_id = $request->affiliate_id;
-                $contribution->rent = strip_tags($request->rent[$key]) ?? 0;
-                if($contribution->rent == "")
+                
+                if(!isset($request->rent[$key]) || $contribution->rent == "")
                     $contribution->rent = 0;
+                else 
+                    $contribution->rent = strip_tags($request->rent[$key]) ?? 0;
                 $contribution->month_year = $key;
-                $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;
-                if($contribution->dignity_rent == "")
+                
+                if(!(isset($request->dignity_rent[$key])) || $contribution->dignity_rent == "")
                     $contribution->dignity_rent = 0;
+                else
+                    $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
                 $contribution->quotable = $contribution->rent-$contribution->dinity_rent;
                 $contribution->type = 'PLANILLA';
