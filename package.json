@@ -25,6 +25,7 @@
   "dependencies": {
     "axios": "^0.16.2",
     "dotenv": "^5.0.1",
+    "inputmask": "^3.3.11",
     "laravel-mix-purgecss": "^1.0.5",
     "mdi": "^2.1.99",
     "mockjs": "^1.0.1-beta3",
