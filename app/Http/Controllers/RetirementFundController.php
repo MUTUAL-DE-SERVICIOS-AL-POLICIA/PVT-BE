@@ -469,6 +469,9 @@ class RetirementFundController extends Controller
         $dates_contributions = $affiliate->getDatesContributions();
         $dates_availability = $affiliate->getDatesAvailability();
         $dates_item_zero = $affiliate->getDatesItemZero();
+        $dates_security_battalion = $affiliate->getDatesSecurityBattalion();
+        $dates_no_records = $affiliate->getDatesNoRecords();
+        $dates_cas = $affiliate->getDatesCas();
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $cities = City::get();
         $kinships = Kinship::get();
@@ -479,6 +482,9 @@ class RetirementFundController extends Controller
             'dates_availability' => $dates_availability,
             'dates_item_zero' => $dates_item_zero,
             'dates_contributions' => $dates_contributions,
+            'dates_security_battalion' => $dates_security_battalion,
+            'dates_no_records' => $dates_no_records,
+            'dates_cas' => $dates_cas,
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'beneficiaries' => $beneficiaries,
@@ -490,17 +496,19 @@ class RetirementFundController extends Controller
     public function sumTotalContributions($array, $fromView = false)
     {
         $total = 0;
-        foreach ($array as $key => $value) {
-            if ($fromView) {
-                // $value = json_encode($value);
-                $diff = Carbon::parse($value['start'])->diffInMonths(Carbon::parse($value['end'])) + 1;
-            }else{
-                $diff = Carbon::parse($value->start)->diffInMonths(Carbon::parse($value->end)) + 1;
+        if (sizeof($array) > 0) {
+            foreach ($array as $key => $value) {
+                if ($fromView) {
+                    // $value = json_encode($value);
+                    $diff = Carbon::parse($value['start'])->diffInMonths(Carbon::parse($value['end'])) + 1;
+                }else{
+                    $diff = Carbon::parse($value->start)->diffInMonths(Carbon::parse($value->end)) + 1;
+                }
+                if ($diff < 0 ) {
+                    dd("error");
+                }
+                $total = $total + $diff;
             }
-            if ($diff < 0 ) {
-                dd("error");
-            }
-            $total = $total + $diff;
         }
         return $total;
     }
@@ -519,13 +527,31 @@ class RetirementFundController extends Controller
         $total_availability_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Disponibilidad'));
         $total_availability_fronted = $this::sumTotalContributions($request->datesAvailability, true);
 
+        $total_security_battalion_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Batallon de Seguridad Fisica'));
+        $total_security_battalion_fronted = $this::sumTotalContributions($request->datesSecurityBattalion, true);
 
-        $total_quotes = ($total_contributions_backed ?? 0) + ($total_item_zero_backed ?? 0) - ($total_availability_backed ?? 0);
+        $total_cas_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Registro Segun CAS'));
+        $total_cas_fronted = $this::sumTotalContributions($request->datesCas, true);
+
+        $total_no_records_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('No Hay Registro'));
+        $total_no_records_fronted = $this::sumTotalContributions($request->datesNoRecords, true);
+
+
+        $total_quotes = ($total_contributions_backed ?? 0)
+                        + ($total_item_zero_backed ?? 0)
+                        - ($total_availability_backed ?? 0)
+                        - ($total_security_battalion_backed ?? 0)
+                        - ($total_cas_backed ?? 0)
+                        - ($total_no_records_backed ?? 0)
+                        ;
 
         if(
             $total_contributions_backed == $total_contributions_fronted &&
             $total_item_zero_backed == $total_item_zero_fronted &&
-            $total_availability_backed == $total_availability_fronted
+            $total_availability_backed == $total_availability_fronted &&
+            $total_security_battalion_backed == $total_security_battalion_fronted &&
+            $total_cas_backed == $total_cas_fronted &&
+            $total_no_records_backed == $total_no_records_fronted
         ){
 
             $availability = $affiliate->getContributionsWithType('Disponibilidad');
@@ -684,8 +710,15 @@ class RetirementFundController extends Controller
         $total_contributions_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Servicio'));
         $total_item_zero_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Item 0'));
         $total_availability_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Disponibilidad'));
-
-        $total_quotes = ($total_contributions_backed ?? 0) + ($total_item_zero_backed ?? 0) - ($total_availability_backed ?? 0);
+        $total_security_battalion_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Batallon de Seguridad Fisica'));
+        $total_cas_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Registro Segun CAS'));
+        $total_no_records_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('No Hay Registro'));
+        $total_quotes = ($total_contributions_backed ?? 0)
+            + ($total_item_zero_backed ?? 0)
+            - ($total_availability_backed ?? 0)
+            - ($total_security_battalion_backed ?? 0)
+            - ($total_cas_backed ?? 0)
+            - ($total_no_records_backed ?? 0);
 
         if (sizeOf($availability) > 0) {
             $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
@@ -739,9 +772,16 @@ class RetirementFundController extends Controller
         $total_contributions_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Servicio'));
         $total_item_zero_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Item 0'));
         $total_availability_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Disponibilidad'));
+        $total_security_battalion_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Batallon de Seguridad Fisica'));
+        $total_cas_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Registro Segun CAS'));
+        $total_no_records_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('No Hay Registro'));
 
-        $total_quotes = ($total_contributions_backed ?? 0) + ($total_item_zero_backed ?? 0) - ($total_availability_backed ?? 0);
-
+        $total_quotes = ($total_contributions_backed ?? 0)
+            + ($total_item_zero_backed ?? 0)
+            - ($total_availability_backed ?? 0)
+            - ($total_security_battalion_backed ?? 0)
+            - ($total_cas_backed ?? 0)
+            - ($total_no_records_backed ?? 0);
         if (sizeOf($availability) > 0) {
             $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
             $contributions = $affiliate->contributions()
@@ -824,7 +864,7 @@ class RetirementFundController extends Controller
         $retirement_fund->save();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
         //create function search spouse
-        $text_spouse = 'Conyugue';
+        $text_spouse = 'Conyuguef';
         $spouse = $beneficiaries->filter(function ($item) use ($text_spouse)
         {
             return $item->kinship->name == $text_spouse;
@@ -833,19 +873,24 @@ class RetirementFundController extends Controller
             $has_spouse = true;
             $total_spouse = $total_ret_fun / 2;
             $total_spouse_percentage = 100/2;
-            $total_derechohabientes = $total_spouse / sizeOf($beneficiaries);
             $total_derechohabientes_percentage = round($total_spouse_percentage / sizeOf($beneficiaries), 2);
-            // $total_derechohabientes_percentage = (100 * $total_derechohabientes) / $total_spouse;
-            $total_spouse = $total_spouse + $total_derechohabientes;
             $total_spouse_percentage = round($total_spouse_percentage + $total_derechohabientes_percentage, 2);
-            $total_derechohabientes = ($total_ret_fun * $total_derechohabientes_percentage) / 100;
-            $total_spouse = ($total_ret_fun * $total_spouse_percentage) / 100;
+            // $total_derechohabientes = $total_spouse / sizeOf($beneficiaries);
+            // $total_derechohabientes_percentage = round($total_spouse_percentage / sizeOf($beneficiaries), 2);
+            // // $total_derechohabientes_percentage = (100 * $total_derechohabientes) / $total_spouse;
+            // $total_spouse = $total_spouse + $total_derechohabientes;
+            // $total_spouse_percentage = round($total_spouse_percentage + $total_derechohabientes_percentage, 2);
+            // $total_spouse = ($total_ret_fun * $total_spouse_percentage) / 100;
+            // $total_derechohabientes = ($total_ret_fun * $total_derechohabientes_percentage) / 100;
+            $total_spouse = $total_ret_fun / 2;
+            $total_derechohabientes = round(($total_spouse/sizeOf($beneficiaries)),2);
+            $total_spouse = round(($total_spouse + $total_derechohabientes), 2);
         }else{
             $has_spouse = false;
-            $total_derechohabientes = $total_ret_fun / sizeOf($beneficiaries);
+            $total_derechohabientes = round($total_ret_fun / sizeOf($beneficiaries), 2);
             $total_derechohabientes_percentage = round(100 / sizeOf($beneficiaries), 2);
             // $total_derechohabientes_percentage = (100 * $total_derechohabientes) / $total;
-            $total_derechohabientes = ($total_ret_fun * $total_derechohabientes_percentage) / 100;
+            // $total_derechohabientes = ($total_ret_fun * $total_derechohabientes_percentage) / 100;
         }
         $one_spouse = 1;
         foreach ($beneficiaries as $beneficiary) {

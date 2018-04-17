@@ -154,7 +154,15 @@ class Affiliate extends Model
     }
     public function getDatesSecurityBattalion()
     {
-        return $this->getContributionsWithType('mmmmmmm');
+        return $this->getContributionsWithType('Batallon de Seguridad Fisica');
+    }
+    public function getDatesNoRecords()
+    {
+        return $this->getContributionsWithType('No Hay Registro');
+    }
+    public function getDatesCas()
+    {
+        return $this->getContributionsWithType('Registro Segun CAS');
     }
     public function getContributionsWithType($name_contribution_type)
     {

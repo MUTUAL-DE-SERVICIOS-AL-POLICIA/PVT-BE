@@ -21,6 +21,7 @@ try {
 
 window.axios = require('axios');
 window.moment = require('moment');
+window.Inputmask = require('inputmask');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
