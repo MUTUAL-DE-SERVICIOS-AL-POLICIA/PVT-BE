@@ -15,20 +15,26 @@
     </div>
     <br><br><br>
     <div>
-        <span>Recibimos de:</span>
-        @include('print_global.applicant_info', ['applicant'=>$bene    ])
+        <span><strong>Recibimos de:</strong>
+                {{ $bene->first_name }}
+                {{ $bene->second_name }}
+                {{ $bene->last_name }}
+                {{ $bene->mothers_last_name }}
+                {{ $bene->surname_husband }}
+        </span>
+        @include('print_global.applicant_info', ['applicant'=>$bene])
     </div>
     <table class="table w-100">
-        <tbody>
+        <tbody>                                                                                                                                                                                                                                                                                                                                                                         
             <tr>
                 <td class="p-5">La suma de:</td>
                 <td class="p-5" colspan="3"> {!! ucwords(strtolower($total_literal)) !!} Bolivianos</td>
-            </tr>
+            </tr>                                                                                                                                                                                                                                                           
             <tr>
                 <td class="p-5">Por concepto de:</td>
                 <td class="p-5" colspan="3">
                      {!! $descripcion->name !!} del <br>
-                     {!! $payment_date !!} 
+                     {!! $payment_date !!}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
                 </td>
             </tr>
             <tr>

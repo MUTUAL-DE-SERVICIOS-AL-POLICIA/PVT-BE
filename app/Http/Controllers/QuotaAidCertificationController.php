@@ -93,12 +93,20 @@ class QuotaAidCertificationController extends Controller
         $total_literal = Util::convertir($voucher->total);
         $payment_date = Util::getStringDate($voucher->payment_date);
         $date = Util::getStringDate(date('Y-m-d'));
-        $title = "PAGO DE APORTES VOLUNTARIOS APORTE DIRECTO";
+        // $title = "PAGO DE APORTES VOLUNTARIOS APORTE";
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
         $number = $voucher->code;
         $descripcion = VoucherType::where('id', $voucher->voucher_type_id)->first();
-        $bene = $affiliate;
+        if ($affiliate->affiliate_state->name == "Fallecido") {
+            $title = "PAGO DE APORTE DIRECTO DE LAS (OS) VIUDAS (OS) DEL  SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
+            $spouses = Spouse::where('affiliate_id', $affiliate->id)->first();
+            $bene = $spouses;
+        } else {
+            $title = "PAGO DE APORTE DIRECTO DEL SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
+            $bene = $affiliate;
+        }
+        // $bene = $affiliate;
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $bene);
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
