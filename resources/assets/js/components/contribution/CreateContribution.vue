@@ -74,7 +74,7 @@
                             <tr>
                                 <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
                                 <td colspan="3"><input type="text" v-model ="total" disabled class="form-control"></td>
-                                <td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>
+                                <!--<td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>-->
                             </tr>                            
                         </tbody>
                     </table>

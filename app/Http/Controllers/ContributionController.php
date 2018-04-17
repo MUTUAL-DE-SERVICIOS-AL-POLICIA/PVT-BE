@@ -525,6 +525,8 @@ class ContributionController extends Controller
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
                 $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
+                if($contribution->base_wage == "")
+                   $contribution->base_wage = 0;
                 if ($request->category[$key] != $contribution->category_id) {
                     $category = Category::find($request->category[$key]);
                     $contribution->category_id = $category->id;
@@ -532,7 +534,10 @@ class ContributionController extends Controller
                     $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
                 }
                 $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
+                if($contribution->gain == "")
+                    $contribution->gain = 0;
                 $contribution->save();
+                array_push($contributions, $contribution);
             } else {
 //                $contribution = new Contribution();
 //                $contribution->user_id = Auth::user()->id;
