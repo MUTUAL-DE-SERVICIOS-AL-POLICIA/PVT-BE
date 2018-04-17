@@ -40,9 +40,9 @@ import VueCurrencyFilter from 'vue-currency-filter';
 Vue.use(VueCurrencyFilter,
 {
 	symbol: 'Bs',
-	thousandsSeparator: '.',
+	thousandsSeparator: ',',
 	fractionCount: 2,
-	fractionSeparator: ',',
+	fractionSeparator: '.',
 	symbolPosition: 'front',
 	symbolSpacing: true
 });
