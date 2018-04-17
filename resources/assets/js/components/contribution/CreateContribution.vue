@@ -30,9 +30,8 @@
                         </div>
                         <div class="col-md-3" >
                             <label>Repetir sueldo:</label>
-                            <input type="text" class="form-control"  @keyup.enter="repeatSalary" v-model="general_salary" >                            
+                            <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_salary" >                            
                         </div>
-                        
                     </div>
                     <table class="table table-striped" data-page-size="15">
                         <thead>
@@ -52,19 +51,19 @@
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
+                                    <input type="text" v-model = "con.sueldo" data-money="true" @keyup.enter="CalcularAporte(con, index)"  ref="s1"  class="form-control" >
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.fr" disabled class="form-control">
+                                    <input type="text"  v-model = "con.fr" data-money='true' disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.cm" disabled class="form-control">
+                                    <input type="text" v-model = "con.cm" data-money="true" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.interes" disabled class="form-control">
+                                    <input type="text" v-model = "con.interes" disabled data-money="true" class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control">
+                                    <input type="text"  v-model = "con.subtotal" data-money="true" disabled class="form-control">
                                 </td>
                                 <td>
                                     <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
@@ -73,7 +72,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
-                                <td colspan="3"><input type="text" v-model ="total" disabled class="form-control"></td>
+                                <td colspan="3"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>
                                 <!--<td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>-->
                             </tr>                            
                         </tbody>
@@ -88,14 +87,20 @@
 </div> 
 </template>
 <script>
-
+import {
+        dateInputMask,
+        moneyInputMask,
+        parseMoney,
+        moneyInputMaskAll
+    }
+    from "../../helper.js";
 export default {
-  
+    
     props: [
         'contributions1',
         'afid',
         'last_quotable',
-        'rate',        
+        'rate',
     ],
     data() {   
 
@@ -116,10 +121,14 @@ export default {
   mounted() {
     this.contributions = this.contributions1;  
     this.afi_id = this.afid;    
+    //alert('making time');    
+    window.addEventListener("load", function(event) {
+        moneyInputMaskAll();
+    });        
   },
-  created(){
+  created(){    
   },
-  methods: {
+  methods: {      
       RemoveRow(index) {
         this.contributions.splice(index,1);
         this.SumTotal();
@@ -134,27 +143,26 @@ export default {
             this.CalcularAporte(this.contributions[i],i);
         }              
       },
-      CalcularAporte(con, index){
+      CalcularAporte(con, index){        
+        con.sueldo = parseMoney(con.sueldo);        
         if(parseFloat(con.sueldo) >0)
-        {
+        {            
         if(this.count > 0)
         {
             this.show_spinner=true
             if(this.ufvs[con.sueldo] && false)
-            {                
-                console.log('stored data');
+            {                           
                 con.fr = con.sueldo * this.rate.retirement_fund/100;
                 con.cm = con.sueldo * this.rate.mortuary_quota/100;
                 con.interes = parseFloat(this.ufv);
-                con.subtotal =  (con.fr + con.cm + con.interes).toFixed(2);
+                con.subtotal =  (con.fr + con.cm + con.interes).toFixed(2);                
             
                 this.show_spinner=false;
 
                 this.SumTotal();
             }
             else
-            {
-                console.log('requesting data');
+            {                
             axios.post('/get-interest',{con})
             .then(response => {                
                 this.ufv = response.data.replace(',','.');                
@@ -165,8 +173,7 @@ export default {
                 con.fr = newfr.toFixed(2);
                 newcm = (con.sueldo * this.rate.mortuary_quota/100);
                 con.cm = newcm.toFixed(2);
-                con.subtotal =  (newfr + newcm + con.interes).toFixed(2);
-
+                con.subtotal =  (newfr + newcm + con.interes).toFixed(2);                
                 this.show_spinner=false;
                 this.SumTotal();
                 this.count = 3;
@@ -256,9 +263,7 @@ export default {
                     if (result.value) {                    
                     var aportes = this.contributions;                    
                     axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
-                    .then(response => {
-                  //      console.log('entrando a succes');
-                //console.log(response.data);
+                    .then(response => {                  
                     this.enableDC();
                     var i;
                     for(i=0;i<response.data.contribution.length;i++){                        
@@ -274,7 +279,7 @@ export default {
                     })                    
                     .catch(error => {
                     this.show_spinner = false;            
-                        //alert(e);
+                        //alert(e); 
                         console.log(error.response.data);
 //                        console.log(xhr.responseText);
 //                        var resp = jQuery.parseJSON(xhr.responseText);
