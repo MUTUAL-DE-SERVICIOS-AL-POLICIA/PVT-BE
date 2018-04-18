@@ -255,15 +255,19 @@
                         <option value="12">Diciembre</option>
                      </select>
                 </div>
-                <div class="form-group">
-                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control">
+                <div class="form-group">                                        
+                    <label>Sueldo</label>                
+                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
+                    <label>Categor&iacute;a</label> 
                     <select class="form-control" name="reim_category" id="reim_category">
                         @foreach($categories as $category)
                             <option value="{{$category->id}}">{{$category->percentage}}</option>
                         @endforeach
                     </select>
-                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control">
-                    <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control">
+                    <label>Total Ganado</label>
+                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control numberformat">
+                    <label>Aporte</label>
+                    <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat">
                 </div>
             </div>
             <div class="modal-footer">

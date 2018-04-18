@@ -62,7 +62,7 @@ class ReimbursementController extends Controller
          //*********END VALIDATOR************//
 
         $category = Category::find($request->category);    
-         return $request->affiliate_id;
+         //return $request->affiliate_id;
         $reim = new Reimbursement();
         $reim->user_id = Auth::user()->id;
         $reim->affiliate_id = $request->affiliate_id;
@@ -75,30 +75,16 @@ class ReimbursementController extends Controller
         $reim->border_bonus = 0;
         $reim->east_bonus = 0;
         $reim->public_security_bonus = 0;
-       $reim->gain = $request->gain;
+        $reim->gain = $request->gain;
         $reim->payable_liquid = 0;
         $reim->quotable = 0;
         $reim->retirement_fund = 0;
-        $reim->mortuary_quota = 0;
-        $reim->mortuary_aid = 0;
-       $reim->total = $request->total;
-        $reim->subtotal = 0;
-        $reim->ipc = 0;
-        $reim->months = $this->getRebursimentMonths($request->month);         
+        $reim->mortuary_quota = 0;        
+        $reim->total = $request->total;
+        $reim->subtotal = 0;        
         $reim->save();        
         return $reim;        
     }
-    private function getRebursimentMonths($month){
-        $month_add = 1;
-        $result  = "";
-        while($month>$month_add){
-            $result .= $month_add.",";
-            $month_add++;
-        }
-        $result .= $month_add;
-        return $result;
-    }
-
     /**
      * Display the specified resource.
      *
