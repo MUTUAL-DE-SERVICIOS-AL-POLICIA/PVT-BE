@@ -174,7 +174,7 @@ export default {
                 newcm = (con.sueldo * this.rate.mortuary_quota/100);
                 con.cm = newcm.toFixed(2);
                 con.subtotal =  (newfr + newcm + con.interes).toFixed(2);                
-                this.show_spinner=false;
+                this.show_spinner=false;                                          
                 this.SumTotal();
                 this.count = 3;
                 if(index +1 < this.contributions.length)

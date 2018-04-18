@@ -94,9 +94,9 @@
                                                 @endphp
                                                 @if($valid_period)
                                                     @if(isset($contributions[$period]->id))
-                                                        <td id="aid_main{{$period}}">{{$contributions[$period]->total}}</td>
+                                                    <td class="numberformat" id="aid_main{{$period}}">{{$contributions[$period]->total}}</td>
                                                     @else
-                                                        <td id="aid_main{{$period}}">0</td>
+                                                        <td class="numberformat" id="aid_main{{$period}}">0</td>
                                                     @endif
                                                 @else
                                                        <td>-</td>
@@ -140,20 +140,20 @@
                                                             </thead>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->rent}} </div>
-                                                                    <input type="hidden" disabled name="rent[{{$period}}]" value="{{$contributions[$period]->rent}}">
+                                                                    <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->rent}} </div>
+                                                                    <input data-money="true" type="hidden" disabled name="rent[{{$period}}]" value="{{$contributions[$period]->rent}}">
                                                                 </td>
                                                             </tr>
                                                             
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->dignity_rent}} </div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->dignity_rent}} </div>
                                                                     <input type="hidden" disabled name="dignity_rent[{{$period}}]" value="{{$contributions[$period]->dignity_rent}}">
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->total ?? '-'}} </div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->total ?? '-'}} </div>
                                                                     <input type="hidden" disabled name="total[{{$period}}]" value="{{$contributions[$period]->total??'-'}}">
                                                                 </td>
                                                             </tr>                                                            
@@ -171,20 +171,20 @@
                                                             </thead>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">0</div>
+                                                                    <div contenteditable="true" class="editcontent numberformat" data-money="true">0</div>
                                                                     <input type="hidden" disabled name="rent[{{$period}}]" value="0">
                                                                 </td>
                                                             </tr>
                                                             
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">0</div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">0</div>
                                                                     <input type="hidden" disabled name="dignity_rent[{{$period}}]" value="0">
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">0</div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">0</div>
                                                                     <input type="hidden" disabled name="total[{{$period}}]" value="0">
                                                                 </td>
                                                             </tr>                                                            
@@ -213,7 +213,22 @@
 
 @section('scripts')
 <script>
+           
+    $('.numberformat').each(function(i, obj) {            
+            Inputmask(moneyInputMask()).mask(obj);        
+    });    
+    function moneyInputMask() {    
+        return {
+            alias: "numeric",
+            groupSeparator: ",",
+            autoGroup: true,
+            digits: 2,
+            digitsOptional: false,        
+            placeholder: "0"
+        };
+    }
     $('body').addClass("mini-navbar");
+    //$('.money').mask("#,##0.00", {reverse: true});
     var actual_year = "1700";
     function toggleNestedComp(mode){
         $(mode).closest('tr').next().toggle();
