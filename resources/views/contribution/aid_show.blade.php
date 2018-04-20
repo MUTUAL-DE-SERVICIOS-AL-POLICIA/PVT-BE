@@ -17,7 +17,7 @@
                         @can('update',new Muserpol\Models\Contribution\Contribution)
                         <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
                         <a href="{{route('edit_aid_contribution', $affiliate->id)}}">
-                            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
+                            <button class="btn btn-info btn-sm" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
                         </a>
                         @else
                         <br>
@@ -27,7 +27,7 @@
                         @can('update',new Muserpol\Models\Contribution\AidCommitment)
                         <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
                         <a href="{{route('edit_contribution', $affiliate->id)}}">
-                            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
+                            <button class="btn btn-info btn-sm" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
                         </a>
                         @else
                         <br>
@@ -117,7 +117,7 @@
         });
          $('#datatables-aid-contributions tbody')
         .on( 'mouseenter', 'td', function () {
-            var colIdx = datatable_contri.cell(this).index();
+            var colIdx = datatable_contri.cell(this).index().column;
             $( datatable_contri.cells().nodes() ).removeClass( 'highlight' );
             $( datatable_contri.column( colIdx ).nodes() ).addClass( 'highlight' );
         } );

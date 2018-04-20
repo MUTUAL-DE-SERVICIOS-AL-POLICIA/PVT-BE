@@ -1,6 +1,7 @@
 export function moneyInputMaskAll() {
+    
     document.querySelectorAll('input').forEach(element => {
-        if (element.getAttribute('data-money') == "true") {
+        if (element.getAttribute('data-money') == "true") {                        
             Inputmask(moneyInputMask()).mask(element);
         }
     });

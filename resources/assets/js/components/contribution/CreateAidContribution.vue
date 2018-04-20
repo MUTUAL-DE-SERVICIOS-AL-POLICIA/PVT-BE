@@ -37,24 +37,24 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr style="" v-for="(con, index) in aidContributions" :key="index" id="form">
+                            <tr style="" v-for="(con, index) in contributions" :key="index" id="form">
                                 <td>
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.sueldo" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
+                                    <input type="text" v-model = "con.sueldo" data-money='true' @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.dignity_rent" @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
+                                    <input type="text"  v-model = "con.dignity_rent" data-money='true' @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.auxilio_mortuorio" disabled class="form-control">
+                                    <input type="text" v-model = "con.auxilio_mortuorio" disabled data-money='true' class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" v-model = "con.interes" disabled class="form-control">
+                                    <input type="text" v-model = "con.interes" disabled data-money='true' class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text"  v-model = "con.subtotal" disabled class="form-control">
+                                    <input type="text"  v-model = "con.subtotal" disabled data-money='true' class="form-control">
                                 </td>
                                 <td>
                                     <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
@@ -62,7 +62,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes de Auxilio Mortuorio:</label></td>
-                                <td colspan="3"><input type="text" v-model ="total" disabled class="form-control"></td>
+                                <td colspan="3"><input type="text" data-money='true' v-model ="total" disabled class="form-control"></td>
                                 <td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>
                             </tr>
                         </tbody>
@@ -75,11 +75,21 @@
 </div>
 </template>
 <script>
+import {
+    dateInputMask,
+    moneyInputMask,
+    parseMoney,
+    moneyInputMaskAll
+}
+from "../../helper.js";
 export default {
   props: ["aidContributions", "afid"],
   mounted() {
     this.contributions = this.aidContributions;    
     this.afi_id = this.afid;
+    window.addEventListener("load", function(event) {
+        moneyInputMaskAll();
+    });  
   },
   data() {
     return {
@@ -102,6 +112,7 @@ export default {
       this.contributions = this.aidContributions;
     },
     CalcularAporte(con, index) {
+     con.sueldo = parseMoney(con.sueldo);        
      if (parseFloat(con.sueldo) > 0) {
         if (this.count > 0) {
          this.show_spinner = true;
@@ -114,8 +125,9 @@ export default {
               con.auxilio_mortuorio = ((con.sueldo - con.dignity_rent) * response.data[1].mortuary_aid/100).toFixed(2);
               con.interes = parseFloat(this.ufv).toFixed(2);
               con.subtotal = (parseFloat(con.auxilio_mortuorio) + parseFloat(con.interes)).toFixed(2);
-              this.show_spinner = false;
-              this.SumTotal();
+              console.log(con.subtotal);
+              this.show_spinner = false;              
+              this.SumTotal();                                            
               this.count = 3;
               if (index + 1 < this.contributions.length)
                 this.$refs.s1[index + 1].focus();
@@ -134,10 +146,10 @@ export default {
       }
     },
     SumTotal() {
-      let total1 = 0;
-      this.contributions.forEach(con => {
+      let total1 = 0;      
+      this.contributions.forEach(con => {          
         total1 += parseFloat(con.subtotal);
-      });
+      });      
       this.total = total1;
     },
     PrintQuote() {
@@ -223,6 +235,7 @@ export default {
                 });
             }).catch(error => {              
               this.show_spinner = false;
+              console.log(error);
               console.log(error.response.data);
               var resp = error.response.data;
               $.each(resp, function(index, value) {

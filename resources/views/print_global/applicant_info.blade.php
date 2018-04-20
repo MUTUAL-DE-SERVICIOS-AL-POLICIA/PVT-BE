@@ -33,7 +33,7 @@
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->last_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->mothers_last_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->surname_husband }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->kinship->name ?? 'ERROR' }}</td>
+            <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->kinship->name ?? '' }}</td>
         </tr>
     </tbody>
 
