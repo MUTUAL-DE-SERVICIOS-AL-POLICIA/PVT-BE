@@ -1,8 +1,10 @@
 <script>
+import { dateInputMask, moneyInputMask, parseMoney, moneyInputMaskAll }  from "../../helper.js";
 export default {
-  props: ["datesContributions", "datesAvailability", "datesItemZero","retirementFundId"],
+  props: ["datesContributions", "datesAvailability", "datesItemZero","datesSecurityBattalion","datesNoRecords","datesCas","retirementFundId"],
   mounted() {
     this.calculate();
+    moneyInputMaskAll();
   },
   data() {
     return {
@@ -14,19 +16,31 @@ export default {
       monthsAvailability: 0,
       yearsItemZero: 0,
       monthsItemZero: 0,
+      yearsSecurityBattalion:0,
+      monthsSecurityBattalion:0,
+      yearsNoRecords:0,
+      monthsNoRecords:0,
+      yearsCas:0,
+      monthsCas:0,
 
       showEconomicData:false,
       showEconomicDataTotal:false,
 
-      subTotal: 0,
-      total: 0,
+      subTotalRetFun: 0,
+      totalRetFun: 0,
 
       advancePayment: 0,
       retentionLoanPayment: 0,
       retentionGuarantor: 0,
 
+      hasAvailability: false,
+
+      subTotalAvailability:0,
+      totalAvailability:0,
+      total:0,
 
       beneficiaries: [],
+      beneficiariesAvailability: [],
 
       // perecentageAdvancePayment: 0,
       totalAverageSalaryQuotable: 0,
@@ -57,11 +71,23 @@ export default {
         let totalItemZero = this.calculateDiffWithYearMonth(this.datesItemZero);
         this.yearsItemZero = totalItemZero.years;
         this.monthsItemZero = totalItemZero.months;
+        let totalSecurityBattalion = this.calculateDiffWithYearMonth(this.datesSecurityBattalion);
+        this.yearsSecurityBattalion = totalSecurityBattalion.years;
+        this.monthsSecurityBattalion = totalSecurityBattalion.months;
+        let totalCas = this.calculateDiffWithYearMonth(this.datesCas);
+        this.yearsCas = totalCas.years;
+        this.monthsCas = totalCas.months;
+        let totalNoRecords = this.calculateDiffWithYearMonth(this.datesNoRecords);
+        this.yearsNoRecords = totalNoRecords.years;
+        this.monthsNoRecords = totalNoRecords.months;
 
         const datesAvailability = this.calculateDiff(this.datesAvailability);
         const datesContributions = this.calculateDiff(this.datesContributions);
         const datesItemZero = this.calculateDiff(this.datesItemZero);
-        const total = datesContributions + datesItemZero - datesAvailability;
+        const datesSecurityBattalion = this.calculateDiff(this.datesSecurityBattalion);
+        const datesCas = this.calculateDiff(this.datesCas);
+        const datesNoRecords = this.calculateDiff(this.datesNoRecords);
+        const total = datesContributions + datesItemZero - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
         this.years = parseInt(total/12);
         this.months = (total%12);
     },
@@ -71,7 +97,10 @@ export default {
         {
           datesAvailability: this.datesAvailability,
           datesItemZero: this.datesItemZero,
-          datesContributions: this.datesContributions
+          datesContributions: this.datesContributions,
+          datesSecurityBattalion: this.datesSecurityBattalion,
+          datesCas: this.datesCas,
+          datesNoRecords: this.datesNoRecords,
         }
       ).then(response =>{
           flash("Verificacion Correcta");
@@ -87,37 +116,33 @@ export default {
       axios.get(uri).then(response => {
         flash("Salario Promedio Cotizable Actualizado")
         this.showEconomicDataTotal = true;
-        // this.sub_total = response.data.sub_total;
+        // this.sub_total_ret_fun = response.data.sub_total_ret_fun;
         // this.total = response.data.total;
-        TweenLite.to(this.$data, 0.5, { total: response.data.total,subTotal: response.data.sub_total });
+        TweenLite.to(this.$data, 0.5, { totalRetFun: response.data.total_ret_fun,subTotalRetFun: response.data.sub_total_ret_fun });
       }).catch(error => {
         this.showEconomicDataTotal = false
       });
     },
-    saveTotal(){
-      let uri =`/ret_fun/${this.retirementFundId}/save_total`;
+    saveTotalRetFun(){
+      let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun`;
       axios.patch(uri,
         {
-          advancePayment: this.advancePayment,
-          retentionLoanPayment: this.retentionLoanPayment,
-          retentionGuarantor: this.retentionGuarantor,
+          advancePayment: parseMoney(this.advancePayment),
+          retentionLoanPayment: parseMoney(this.retentionLoanPayment),
+          retentionGuarantor: parseMoney(this.retentionGuarantor),
         }
       ).then(response =>{
           flash("Calculo Total guardado correctamente.");
-          // this.showEconomicData = true
           this.beneficiaries = response.data.beneficiaries;
-          console.log(response.data);
-          this.total = response.data.total;
-          this.subTotal = response.data.sub_total;
-          console.log(`${this.total} ${this.subTotal} `);
-          // TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+          this.totalRetFun = response.data.total_ret_fun;
+          this.subTotalRetFun = response.data.sub_total_ret_fun;
       }).catch(error =>{
           flash("Error al guardar los Datos", "error");
-          // this.showEconomicData = false;
+
       });
     },
     requalificationTotal(index){
-      this.beneficiaries[index].temp_amount = (this.total * this.beneficiaries[index].temp_percentage)/100;
+      this.beneficiaries[index].temp_amount = (this.totalRetFun * this.beneficiaries[index].temp_percentage)/100;
     },
     savePercentages(){
 
@@ -128,14 +153,30 @@ export default {
         }
       ).then(response =>{
           flash("Porcentages actualizados a los derechohabientes.");
-          console.log(response.data);
-          this.beneficiaries = response.data.beneficiaries;
+          this.hasAvailability = response.data.has_availability;
+          this.subTotalAvailability = response.data.subtotal_availability;
+          this.totalAvailability = response.data.total_availability;
           this.total = response.data.total;
-          this.subTotal = response.data.sub_total;
-          console.log(`${this.total} ${this.subTotal} `);
+          this.beneficiariesAvailability = response.data.beneficiaries;
       }).catch(error =>{
           flash("Error al guardar los porcentages", "error");
       });
+    },
+    saveTotalAvailability(){
+      let uri =`/ret_fun/${this.retirementFundId}/save_total_availability`;
+      axios.get(uri,
+        {
+          beneficiaries: this.beneficiaries,
+        }
+      ).then(response =>{
+          flash("Total disponibilidad Actualizado.");
+          this.totalRetFun = response.data.total_ret_fun;
+      }).catch(error =>{
+          flash("Error al guardar total disponibilidad", "error");
+      });
+    },
+    requalificationTotalAvailability(index){
+      this.beneficiariesAvailability[index].temp_amount_availability = (this.totalAvailability * this.beneficiariesAvailability[index].percentage)/100;
     },
   },
   computed: {
@@ -145,20 +186,20 @@ export default {
     totalQuotesAnimated: function() {
       return this.totalQuotes;
     },
-    subTotalAnimated(){
-      return this.subTotal;
+    subTotalRetFunAnimated(){
+      return this.subTotalRetFun;
     },
     totalAnimated(){
-      return this.subTotal - this.advancePayment -this.retentionLoanPayment -this.retentionGuarantor;
+      return this.subTotalRetFun - parseMoney(this.advancePayment) -parseMoney(this.retentionLoanPayment) -parseMoney(this.retentionGuarantor);
     },
     percentageAdvancePayment(){
-      return (100 * this.advancePayment)/this.subTotal;
+      return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.advancePayment))/this.subTotalRetFun : 0;
     },
     percentageRetentionLoanPayment(){
-      return (100 * this.retentionLoanPayment)/this.subTotal;
+      return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.retentionLoanPayment))/this.subTotalRetFun : 0;
     },
     percentageRetentionGuarantor(){
-      return (100 * this.retentionGuarantor)/this.subTotal;
+      return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.retentionGuarantor))/this.subTotalRetFun : 0;
     },
     totalPercentage(){
       const sum = this.beneficiaries.reduce((accumulator, current) => {

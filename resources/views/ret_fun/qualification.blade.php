@@ -8,8 +8,14 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <ret-fun-qualification inline-template :dates-contributions="{{json_encode($dates_contributions)}}" :dates-availability="{{json_encode($dates_availability)}}"
-            :dates-item-zero="{{json_encode($dates_item_zero)}}" :retirement-fund-id="{{$retirement_fund->id}}">
+        <ret-fun-qualification inline-template
+            :dates-contributions="{{json_encode($dates_contributions)}}"
+            :dates-availability="{{json_encode($dates_availability)}}"
+            :dates-item-zero="{{json_encode($dates_item_zero)}}"
+            :dates-security-battalion="{{json_encode($dates_security_battalion)}}"
+            :dates-no-records="{{json_encode($dates_no_records)}}"
+            :dates-cas="{{json_encode($dates_cas)}}"
+            :retirement-fund-id="{{$retirement_fund->id}}">
             <div class="col-lg-12">
                 <div class="ibox">
                     <div class="ibox-title">
@@ -28,21 +34,42 @@
                             <div class="col-md-4">
                                 <h4>Aportes fondo de retiro Policial Solidario </h4>
                             </div>
-                            <ret-fun-qualification-group :dates-availability-child="datesContributions" @total="calculate">
+                            <ret-fun-qualification-group :dates-child="datesContributions" @total="calculate">
                             </ret-fun-qualification-group>
                         </div>
                         <div class="form-group" id="data_5">
                             <div class="col-md-4">
                                 <h4>Destino en Letras de Disponibilidad</h4>
                             </div>
-                            <ret-fun-qualification-group :dates-availability-child="datesAvailability" @total="calculate">
+                            <ret-fun-qualification-group :dates-child="datesAvailability" @total="calculate">
                             </ret-fun-qualification-group>
                         </div>
                         <div class="form-group" id="data_5">
                             <div class="col-md-4">
                                 <h4>Periodo de Aportes Item 0</h4>
                             </div>
-                            <ret-fun-qualification-group :dates-availability-child="datesItemZero" @total="calculate">
+                            <ret-fun-qualification-group :dates-child="datesItemZero" @total="calculate">
+                            </ret-fun-qualification-group>
+                        </div>
+                        <div class="form-group" id="data_5">
+                            <div class="col-md-4">
+                                <h4>Periodo de Aportes Batallon de Seguridad Fisica</h4>
+                            </div>
+                            <ret-fun-qualification-group :dates-child ="datesSecurityBattalion" @total="calculate">
+                            </ret-fun-qualification-group>
+                        </div>
+                        <div class="form-group" id="data_5">
+                            <div class="col-md-4">
+                                <h4>Periodo de Aportes segun CAS</h4>
+                            </div>
+                            <ret-fun-qualification-group :dates-child="datesCas" @total="calculate">
+                            </ret-fun-qualification-group>
+                        </div>
+                        <div class="form-group" id="data_5">
+                            <div class="col-md-4">
+                                <h4>No hay registro</h4>
+                            </div>
+                            <ret-fun-qualification-group :dates-child="datesNoRecords" @total="calculate">
                             </ret-fun-qualification-group>
                         </div>
                         <div class="panel panel-success">
@@ -64,24 +91,36 @@
                                     <td>@{{ monthsContributions }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Cantidad de Aportes de Item "0"</td>
-                                    <td>@{{ yearsItemZero }}</td>
-                                    <td>@{{ monthsItemZero }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Aportes anteriores a mayo de 1976</td>
-                                    <td>@{{ yearsItemZero }}</td>
-                                    <td>@{{ monthsItemZero }}</td>
-                                </tr>
-                                <tr>
                                     <td>Periodos en Disponibilidad</td>
                                     <td>@{{ yearsAvailability }}</td>
                                     <td>@{{ monthsAvailability }}</td>
                                 </tr>
                                 <tr>
+                                    <td>Cantidad de Aportes de Item "0"</td>
+                                    <td>@{{ yearsItemZero }}</td>
+                                    <td>@{{ monthsItemZero }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Cantidad de Aportes Batallon de Seguirdad Fisica</td>
+                                    <td>@{{ yearsSecurityBattalion }}</td>
+                                    <td>@{{ monthsSecurityBattalion }}</td>
+                                </tr>
+                                <tr>
                                     <td>CAS</td>
-                                    <td>@{{ yearsAvailability }}</td>
-                                    <td>@{{ monthsAvailability }}</td>
+                                    <td>@{{ yearsCas }}</td>
+                                    <td>@{{ monthsCas }}</td>
+                                </tr>
+                                <tr>
+                                    <td>No hay registros</td>
+                                    <td>@{{ yearsNoRecords }}</td>
+                                    <td>@{{ monthsNoRecords }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Aportes anteriores a mayo de 1976</td>
+                                    {{-- <td>@{{ yearsItemZero }}</td>
+                                    <td>@{{ monthsItemZero }}</td> --}}
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Total de cotizaciones para Calificacion</strong></td>
@@ -151,11 +190,11 @@
                             <tbody>
                                 <tr>
                                     <td>Sub Total fondo de retiro</td>
-                                    <td>@{{ subTotal | currency }}</td>
+                                    <td>@{{ subTotalRetFun | currency }}</td>
                                 </tr>
                                 <tr>
                                     <td>Anticipo Fondo de Retiro</td>
-                                    <td><input type="text" v-model="advancePayment"></td>
+                                    <td><input type="text" v-model="advancePayment" data-money='true'></td>
                                 </tr>
                                 <tr>
                                     <td>% de Anticipo Fondo de Retiro</td>
@@ -163,7 +202,7 @@
                                 </tr>
                                 <tr>
                                     <td>Retencion para pago de prestamo</td>
-                                    <td><input type="text" v-model="retentionLoanPayment"></td>
+                                    <td><input type="text" v-model="retentionLoanPayment" data-money='true'></td>
                                 </tr>
                                 <tr>
                                     <td>% de Retencion para pago de prestamo</td>
@@ -171,7 +210,7 @@
                                 </tr>
                                 <tr>
                                     <td>Retencion para garantes</td>
-                                    <td><input type="text" v-model="retentionGuarantor"></td>
+                                    <td><input type="text" v-model="retentionGuarantor" data-money='true' ></td>
                                 </tr>
                                 <tr>
                                     <td>% de Retencion para garantes</td>
@@ -185,7 +224,7 @@
                         </table>
 
                         {{-- {!! Form::open(array('route' => ['save_average_quotable', $retirement_fund->id],'method'=>'PATCH')) !!} --}}
-                        <button class="btn btn-primary" type="submit" @click="saveTotal"><i class="fa fa-save"></i> Guardar</button>
+                        <button class="btn btn-primary" type="submit" @click="saveTotalRetFun"><i class="fa fa-save"></i> Guardar</button>
                         {{-- {!! Form::close() !!} --}}
                     </div>
                 </div>
@@ -230,8 +269,48 @@
                         <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
                     </div>
                 </div>
-                <div class="ibox" v-if="true" :class="showHasAvailability ? 'fadeInRight' :''">
-                {{--<div class="ibox" v-if="showEconomicDataTotal" :class="showEconomicDataTotal ? 'fadeInRight' :''"> --}}
+                <div class="ibox" v-if="hasAvailability" :class="hasAvailability ? 'fadeInRight' :''">
+                    <div class="ibox-title">
+                        <h5>Devolucion de aportes en disponibilidad</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            <a class="close-link"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Foobar</th>
+                                    <th>baz</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total aportes en disponibilidad</td>
+                                    <td>@{{ subTotalAvailability }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Con rendimiento del X% Anual</td>
+                                    <td>@{{ totalAvailability }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Devolucion de aportes en disponibilidad</td>
+                                    <td>@{{ totalAvailability }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr class="success">
+                                    <td>Total fondo de Retiro + devolucion</td>
+                                    <td>@{{ total }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {{-- <button class="btn btn-primary" type="submit" @click="saveTotalAvailatility"><i class="fa fa-save"></i> Guardar</button> --}}
+                    </div>
+                </div>
+                <div class="ibox" v-if="true" :class="true ? 'fadeInRight' :''">
                     <div class="ibox-title">
                         <h5>Calculo de las cuotas partes para los derechohabientes</h5>
                         <div class="ibox-tools">
@@ -249,28 +328,26 @@
                                     <th>PARENTESCO</th>
                                 </tr>
                             </thead>
-                            <tfoot>
+                            {{-- <tfoot>
                                 <tr>
                                     <th></th>
                                     <th>@{{ totalPercentage }}</th>
                                     <th>@{{ totalAmount | currency }}</th>
                                     <th></th>
                                 </tr>
-                            </tfoot>
+                            </tfoot> --}}
                             <tbody>
-                                <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
-                                    <td>@{{ beneficiary.full_name }}</td>
-                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
-                                    {{--
-                                    <td>@{{ beneficiary.temp_percentage }}</td> --}}
-                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
-                                    {{--
-                                    <td>@{{ beneficiary.temp_amount | currency }}</td> --}}
+                                <tr v-for="(beneficiary, index) in beneficiariesAvailability" :key="index">
+                                    <td>@{{ beneficiary.first_name }}</td>
+                                    <td><input type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalAvailability(index)"></td>
+                                    {{-- <td>@{{ beneficiary.temp_percentage }}</td> --}}
+                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount_availability"></td>
+                                    {{-- <td>@{{ beneficiary.temp_amount | currency }}</td> --}}
                                     <td>@{{ beneficiary.kinship.name }}</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>            {{-- {!! Form::close() !!} --}}
+                        {{-- <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>            {!! Form::close() !!} --}}
                     </div>
                 </div>
             </div>

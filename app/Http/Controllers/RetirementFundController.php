@@ -96,8 +96,8 @@ class RetirementFundController extends Controller
         $retirement_fund->workflow_id = 4;
         $retirement_fund->wf_state_current_id = 1;
         //$retirement_fund->type = "Pago"; default value
-        $retirement_fund->subtotal = 0;
-        $retirement_fund->total = 0;
+        $retirement_fund->subtotal_ret_fun = 0;
+        $retirement_fund->total_ret_fun = 0;
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
                 
@@ -469,6 +469,9 @@ class RetirementFundController extends Controller
         $dates_contributions = $affiliate->getDatesContributions();
         $dates_availability = $affiliate->getDatesAvailability();
         $dates_item_zero = $affiliate->getDatesItemZero();
+        $dates_security_battalion = $affiliate->getDatesSecurityBattalion();
+        $dates_no_records = $affiliate->getDatesNoRecords();
+        $dates_cas = $affiliate->getDatesCas();
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $cities = City::get();
         $kinships = Kinship::get();
@@ -479,6 +482,9 @@ class RetirementFundController extends Controller
             'dates_availability' => $dates_availability,
             'dates_item_zero' => $dates_item_zero,
             'dates_contributions' => $dates_contributions,
+            'dates_security_battalion' => $dates_security_battalion,
+            'dates_no_records' => $dates_no_records,
+            'dates_cas' => $dates_cas,
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'beneficiaries' => $beneficiaries,
@@ -490,17 +496,19 @@ class RetirementFundController extends Controller
     public function sumTotalContributions($array, $fromView = false)
     {
         $total = 0;
-        foreach ($array as $key => $value) {
-            if ($fromView) {
-                // $value = json_encode($value);
-                $diff = Carbon::parse($value['start'])->diffInMonths(Carbon::parse($value['end'])) + 1;
-            }else{
-                $diff = Carbon::parse($value->start)->diffInMonths(Carbon::parse($value->end)) + 1;
+        if (sizeof($array) > 0) {
+            foreach ($array as $key => $value) {
+                if ($fromView) {
+                    // $value = json_encode($value);
+                    $diff = Carbon::parse($value['start'])->diffInMonths(Carbon::parse($value['end'])) + 1;
+                }else{
+                    $diff = Carbon::parse($value->start)->diffInMonths(Carbon::parse($value->end)) + 1;
+                }
+                if ($diff < 0 ) {
+                    dd("error");
+                }
+                $total = $total + $diff;
             }
-            if ($diff < 0 ) {
-                dd("error");
-            }
-            $total = $total + $diff;
         }
         return $total;
     }
@@ -519,13 +527,31 @@ class RetirementFundController extends Controller
         $total_availability_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Disponibilidad'));
         $total_availability_fronted = $this::sumTotalContributions($request->datesAvailability, true);
 
+        $total_security_battalion_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Batallon de Seguridad Fisica'));
+        $total_security_battalion_fronted = $this::sumTotalContributions($request->datesSecurityBattalion, true);
 
-        $total_quotes = ($total_contributions_backed ?? 0) + ($total_item_zero_backed ?? 0) - ($total_availability_backed ?? 0);
+        $total_cas_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Registro Segun CAS'));
+        $total_cas_fronted = $this::sumTotalContributions($request->datesCas, true);
+
+        $total_no_records_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('No Hay Registro'));
+        $total_no_records_fronted = $this::sumTotalContributions($request->datesNoRecords, true);
+
+
+        $total_quotes = ($total_contributions_backed ?? 0)
+                        + ($total_item_zero_backed ?? 0)
+                        - ($total_availability_backed ?? 0)
+                        - ($total_security_battalion_backed ?? 0)
+                        - ($total_cas_backed ?? 0)
+                        - ($total_no_records_backed ?? 0)
+                        ;
 
         if(
             $total_contributions_backed == $total_contributions_fronted &&
             $total_item_zero_backed == $total_item_zero_fronted &&
-            $total_availability_backed == $total_availability_fronted
+            $total_availability_backed == $total_availability_fronted &&
+            $total_security_battalion_backed == $total_security_battalion_fronted &&
+            $total_cas_backed == $total_cas_fronted &&
+            $total_no_records_backed == $total_no_records_fronted
         ){
 
             $availability = $affiliate->getContributionsWithType('Disponibilidad');
@@ -545,9 +571,7 @@ class RetirementFundController extends Controller
                 $total_retirement_fund = $contributions->sum('retirement_fund');
                 $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
                 $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
-                
             }else{
-
                 //si no tiene periodos en disponibilidad
                 $last_date_contribution = Carbon::parse(end($contributions)->end)->toDateString();
                 $contributions = $affiliate->contributions()
@@ -562,7 +586,6 @@ class RetirementFundController extends Controller
                 $total_retirement_fund = $contributions->sum('retirement_fund');
                 $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
                 $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
-                Log::info($total_average_salary_quotable. " ". $sub_total_average_salary_quotable);
             }
             $data = [
                 'total_base_wage' => $total_base_wage,
@@ -570,12 +593,8 @@ class RetirementFundController extends Controller
                 'total_retirement_fund' => $total_retirement_fund,
                 'total_average_salary_quotable' => $total_average_salary_quotable,
                 'total_quotes' => $total_quotes,
-                    // 'total_average_salary_quotable' => $total_quotes,
-                    // 'total_quotes' => $total_average_salary_quotable,
             ];
             return $data;
-
-
         }else{
             return response("error",500);
         }
@@ -691,8 +710,15 @@ class RetirementFundController extends Controller
         $total_contributions_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Servicio'));
         $total_item_zero_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Item 0'));
         $total_availability_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Disponibilidad'));
-
-        $total_quotes = ($total_contributions_backed ?? 0) + ($total_item_zero_backed ?? 0) - ($total_availability_backed ?? 0);
+        $total_security_battalion_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Batallon de Seguridad Fisica'));
+        $total_cas_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Registro Segun CAS'));
+        $total_no_records_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('No Hay Registro'));
+        $total_quotes = ($total_contributions_backed ?? 0)
+            + ($total_item_zero_backed ?? 0)
+            - ($total_availability_backed ?? 0)
+            - ($total_security_battalion_backed ?? 0)
+            - ($total_cas_backed ?? 0)
+            - ($total_no_records_backed ?? 0);
 
         if (sizeOf($availability) > 0) {
             $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
@@ -703,17 +729,6 @@ class RetirementFundController extends Controller
                 ->orderBy('contributions.month_year', 'desc')
                 ->take($number_contributions)
                 ->get();
-            $total_base_wage = $contributions->sum('base_wage');
-            $total_seniority_bonus = $contributions->sum('seniority_bonus');
-            $total_retirement_fund = $contributions->sum('retirement_fund');
-            $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
-            $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
-            $retirement_fund->average_quotable = $total_average_salary_quotable;
-            $retirement_fund->save();
-
-            $sub_total = ($total_quotes/12) * $total_average_salary_quotable;
-            $total = ($total_quotes/12) * $total_average_salary_quotable;
-
         }else{
             //si no tiene periodos en disponibilidad
             $last_date_contribution = Carbon::parse(end($contributions)->end)->toDateString();
@@ -724,32 +739,28 @@ class RetirementFundController extends Controller
                 ->orderBy('contributions.month_year', 'desc')
                 ->take($number_contributions)
                 ->get();
-            Log::info($contributions);
-            $total_base_wage = $contributions->sum('base_wage');
-            $total_seniority_bonus = $contributions->sum('seniority_bonus');
-            $total_retirement_fund = $contributions->sum('retirement_fund');
-            $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
-            $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
-            $retirement_fund->average_quotable = $total_average_salary_quotable;
-            $retirement_fund->save();
-
-            $sub_total = ($total_quotes / 12) * $total_average_salary_quotable;
-            $total = ($total_quotes / 12) * $total_average_salary_quotable;
         }
+        $total_base_wage = $contributions->sum('base_wage');
+        $total_seniority_bonus = $contributions->sum('seniority_bonus');
+        $total_retirement_fund = $contributions->sum('retirement_fund');
+        $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
+        $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
+        $retirement_fund->average_quotable = $total_average_salary_quotable;
+        $retirement_fund->save();
+
+        $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
+        $total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
         $data = [
             'total_base_wage' => $total_base_wage,
             'total_seniority_bonus' => $total_seniority_bonus,
             'total_retirement_fund' => $total_retirement_fund,
             'total_average_salary_quotable' => $total_average_salary_quotable,
-            'sub_total' => $sub_total,
-
-            'total' => $total,
-                    // 'total_average_salary_quotable' => $total_quotes,
-                    // 'total_quotes' => $total_average_salary_quotable,
+            'sub_total_ret_fun' => $sub_total_ret_fun,
+            'total_ret_fun' => $total_ret_fun,
         ];
         return $data;
     }
-    public function saveTotal(Request $request, $id)
+    public function saveTotalRetFun(Request $request, $id)
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
@@ -761,9 +772,16 @@ class RetirementFundController extends Controller
         $total_contributions_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Servicio'));
         $total_item_zero_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Item 0'));
         $total_availability_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Disponibilidad'));
+        $total_security_battalion_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Batallon de Seguridad Fisica'));
+        $total_cas_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('Registro Segun CAS'));
+        $total_no_records_backed = $this::sumTotalContributions($affiliate->getContributionsWithType('No Hay Registro'));
 
-        $total_quotes = ($total_contributions_backed ?? 0) + ($total_item_zero_backed ?? 0) - ($total_availability_backed ?? 0);
-
+        $total_quotes = ($total_contributions_backed ?? 0)
+            + ($total_item_zero_backed ?? 0)
+            - ($total_availability_backed ?? 0)
+            - ($total_security_battalion_backed ?? 0)
+            - ($total_cas_backed ?? 0)
+            - ($total_no_records_backed ?? 0);
         if (sizeOf($availability) > 0) {
             $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
             $contributions = $affiliate->contributions()
@@ -773,13 +791,8 @@ class RetirementFundController extends Controller
                 ->orderBy('contributions.month_year', 'desc')
                 ->take($number_contributions)
                 ->get();
-            $total_base_wage = $contributions->sum('base_wage');
-            $total_seniority_bonus = $contributions->sum('seniority_bonus');
-            $total_retirement_fund = $contributions->sum('retirement_fund');
-            $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
-            $total_average_salary_quotable = $sub_total_average_salary_quotable / $number_contributions;
         }else{
-             //si no tiene periodos en disponibilidad
+            //si no tiene periodos en disponibilidad
             $last_date_contribution = Carbon::parse(end($contributions)->end)->toDateString();
             $contributions = $affiliate->contributions()
                 ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
@@ -788,23 +801,23 @@ class RetirementFundController extends Controller
                 ->orderBy('contributions.month_year', 'desc')
                 ->take($number_contributions)
                 ->get();
-            Log::info($contributions);
-            $total_base_wage = $contributions->sum('base_wage');
-            $total_seniority_bonus = $contributions->sum('seniority_bonus');
-            $total_retirement_fund = $contributions->sum('retirement_fund');
-            $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
-            $total_average_salary_quotable = $sub_total_average_salary_quotable / $number_contributions;
         }
-        $sub_total = ($total_quotes / 12) * $total_average_salary_quotable;
+        
+        $total_base_wage = $contributions->sum('base_wage');
+        $total_seniority_bonus = $contributions->sum('seniority_bonus');
+        $total_retirement_fund = $contributions->sum('retirement_fund');
+        $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
+        $total_average_salary_quotable = $sub_total_average_salary_quotable / $number_contributions;
+        $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
 
         $advance_payment = $request->advancePayment ?? 0;
         $retention_loan_payment = $request->retentionLoanPayment ?? 0;
         $retention_guarantor = $request->retentionGuarantor ?? 0;
 
-        $total = $sub_total - $advance_payment - $retention_loan_payment - $retention_guarantor;
+        $total_ret_fun = $sub_total_ret_fun - $advance_payment - $retention_loan_payment - $retention_guarantor;
 
-        $retirement_fund->subtotal=$sub_total;
-        $retirement_fund->total=$total;
+        $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
+        $retirement_fund->total_ret_fun = $total_ret_fun;
 
         $advance_payment = $request->advancePayment ?? 0;
         $retention_loan_payment = $request->retentionLoanPayment ?? 0;
@@ -831,8 +844,8 @@ class RetirementFundController extends Controller
         } else {
             $retirement_fund->discount_types()->detach($discount_type->id);
         }
+        $discount_type = DiscountType::where('shortened','garantes')->first();
         if ($retention_guarantor > 0) {
-            $discount_type = DiscountType::where('shortened','garantes')->first();
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
                 $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_guarantor]);
             } else {
@@ -843,36 +856,41 @@ class RetirementFundController extends Controller
         }
         // fin mejorar
 
-        $total = $sub_total - $advance_payment - $retention_loan_payment - $retention_guarantor;
+        $total_ret_fun = $sub_total_ret_fun - $advance_payment - $retention_loan_payment - $retention_guarantor;
 
-        $retirement_fund->subtotal = $sub_total;
-        $retirement_fund->total = $total;
+        $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
+        $retirement_fund->total_ret_fun = $total_ret_fun;
 
         $retirement_fund->save();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
         //create function search spouse
-        $text_spouse = 'Conyugue';
+        $text_spouse = 'Conyuguef';
         $spouse = $beneficiaries->filter(function ($item) use ($text_spouse)
         {
             return $item->kinship->name == $text_spouse;
         });
         if (sizeOf($spouse)>0) {
             $has_spouse = true;
-            $total_spouse = $total / 2;
+            $total_spouse = $total_ret_fun / 2;
             $total_spouse_percentage = 100/2;
-            $total_derechohabientes = $total_spouse / sizeOf($beneficiaries);
             $total_derechohabientes_percentage = round($total_spouse_percentage / sizeOf($beneficiaries), 2);
-            // $total_derechohabientes_percentage = (100 * $total_derechohabientes) / $total_spouse;
-            $total_spouse = $total_spouse + $total_derechohabientes;
             $total_spouse_percentage = round($total_spouse_percentage + $total_derechohabientes_percentage, 2);
-            $total_derechohabientes = ($total * $total_derechohabientes_percentage) / 100;
-            $total_spouse = ($total * $total_spouse_percentage) / 100;
+            // $total_derechohabientes = $total_spouse / sizeOf($beneficiaries);
+            // $total_derechohabientes_percentage = round($total_spouse_percentage / sizeOf($beneficiaries), 2);
+            // // $total_derechohabientes_percentage = (100 * $total_derechohabientes) / $total_spouse;
+            // $total_spouse = $total_spouse + $total_derechohabientes;
+            // $total_spouse_percentage = round($total_spouse_percentage + $total_derechohabientes_percentage, 2);
+            // $total_spouse = ($total_ret_fun * $total_spouse_percentage) / 100;
+            // $total_derechohabientes = ($total_ret_fun * $total_derechohabientes_percentage) / 100;
+            $total_spouse = $total_ret_fun / 2;
+            $total_derechohabientes = round(($total_spouse/sizeOf($beneficiaries)),2);
+            $total_spouse = round(($total_spouse + $total_derechohabientes), 2);
         }else{
             $has_spouse = false;
-            $total_derechohabientes = $total / sizeOf($beneficiaries);
+            $total_derechohabientes = round($total_ret_fun / sizeOf($beneficiaries), 2);
             $total_derechohabientes_percentage = round(100 / sizeOf($beneficiaries), 2);
             // $total_derechohabientes_percentage = (100 * $total_derechohabientes) / $total;
-            $total_derechohabientes = ($total * $total_derechohabientes_percentage) / 100;
+            // $total_derechohabientes = ($total_ret_fun * $total_derechohabientes_percentage) / 100;
         }
         $one_spouse = 1;
         foreach ($beneficiaries as $beneficiary) {
@@ -890,11 +908,9 @@ class RetirementFundController extends Controller
                 $beneficiary->temp_amount = $total_derechohabientes;
             }
         }
-        Log::info($beneficiaries);
-        Log::info("total=>".$total." --- total_spouse=>".($total_spouse ?? null)." --- total_derechohabientes=>".$total_derechohabientes. " ***** Cantidad Derechohabientes: ". sizeOf($beneficiaries). " ---- ".($total_derechohabientes* sizeOf($beneficiaries)));
         $data = [
-            'total' => $total,
-            'sub_total'  => $sub_total,
+            'total_ret_fun' => $total_ret_fun,
+            'sub_total_ret_fun'  => $sub_total_ret_fun,
             'has_spouse' => $has_spouse,
             'beneficiaries' => $beneficiaries,
             'total_spouse' => $total_spouse ?? null,
@@ -906,7 +922,7 @@ class RetirementFundController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
         foreach ($request->beneficiaries as $beneficiary) {
             $new_beneficiary = $retirement_fund->ret_fun_beneficiaries()->where('id',$beneficiary['id'])->first();
             if (!$new_beneficiary) {
@@ -917,8 +933,19 @@ class RetirementFundController extends Controller
         }
         $availability = $affiliate->getContributionsWithType('Disponibilidad');
         $has_availability = sizeOf($availability) > 0;
+        $total = $retirement_fund->total_ret_fun;
+        if ($has_availability) {
+            $subtotal_availability = ($retirement_fund->subtotal_availability );
+            $total_availability = $subtotal_availability + ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield/100);
+            $total = $total + $total_availability;
+            Log::info("has availability ".$total);
+        }
         $data = [
             'has_availability' => $has_availability,
+            'subtotal_availability' => $subtotal_availability ?? 0,
+            'total_availability' => $total_availability ?? 0,
+            'total' => $total ?? 0,
+            'beneficiaries' => $beneficiaries,
         ];
         return $data;
     }
