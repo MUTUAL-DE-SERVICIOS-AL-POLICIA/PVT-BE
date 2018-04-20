@@ -36,13 +36,8 @@ class AffiliateFolderController extends Controller
      */
     public function store(Request $request)
     {
-        //
-       
-            $folder = new AffiliateFolder;
-       
-           // $folder=AffiliateFolder::find($request->affiliatefolder_id);
-        
-              
+        $folder = new AffiliateFolder;
+        // $folder=AffiliateFolder::find($request->affiliatefolder_id);
         $this->authorize('update', $folder);
         $folder->affiliate_id = $request->affiliate_id;
         $folder->procedure_modality_id = $request->procedure_modality_id;
@@ -50,7 +45,7 @@ class AffiliateFolderController extends Controller
         $folder->folder_number = $request->folder_number;
         $folder->save();
         return back()->withInput();
-    } 
+    }
 
     /**
      * Display the specified resource.
@@ -92,10 +87,22 @@ class AffiliateFolderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
+        $folder=AffiliateFolder::find($request->code_file);
+        
+        $folder->delete();
+        //return redirect('affiliates.folder');
+        return back()->withInput();
     }
-    
-    
+    public function editFolder(Request $request){
+        $folder=AffiliateFolder::find($request->folder_id);
+        $folder->affiliate_id = $request->affiliate_id;
+        $folder->procedure_modality_id = $request->procedure_modality_id;
+        $folder->code_file = $request->code_file;
+        $folder->folder_number = $request->folder_number;
+        $folder->save();
+        return back()->withInput();
+    }
 }

@@ -45,8 +45,8 @@
             </affiliate-police>
         </div>
         <div class="col-md-6">
-            @include('affiliates.information_of_the_procedure')                     
-        </div>    
+            @include('affiliates.information_of_the_procedure')
+        </div>
     </div>
 
 </div>

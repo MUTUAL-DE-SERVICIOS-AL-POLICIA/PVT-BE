@@ -104,9 +104,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::resource('quota_aid', 'QuotaAidMortuaryController');
 
 	Route::resource('affiliate_folder', 'AffiliateFolderController');
-	Route::get('folder/create', 'AffiliateFolderController@create');
-	Route::post('registrar', ['as'=>'registrar', 'affi'=>'AffiliateFolderController@store']);
-	Route::post('/update/{id}', 'AffiliateFolderController@store');
+	Route::post('editFolder', 'AffiliateFolderController@editFolder')->name('editFolder');
+	Route::post('deleteFolder', 'AffiliateFolderController@destroy')->name('deleteFolder');
         //searcherController
 	Route::get('search/{ci}', 'SearcherController@search');
 	Route::get('search_ajax', 'SearcherController@searchAjax');
