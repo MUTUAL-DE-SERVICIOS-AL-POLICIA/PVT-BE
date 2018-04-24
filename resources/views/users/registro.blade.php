@@ -9,7 +9,7 @@
             <h3 class="pull-left">Datos Personales del Usuario</h3>
             <div class="text-right">
                <br>
-            </div>            
+            </div>
         </div>
         <div class="ibox-content">
             
