@@ -186,8 +186,8 @@ export default {
   created: function () {
     
     console.log('Revisando lista_aportes: ' + this.list_aportes.length)
-    console.log(this.urlcertification);
-
+    // console.log(this.urlcertification);
+    console.log(this.types);
     this.disponibilidad = this.types.filter(function (type) {
         return type.name  == 'Disponibilidad';   
     })[0];
@@ -197,9 +197,8 @@ export default {
     this.servicio = this.types.filter(function (type) {
         return type.name  == 'Servicio';   
     })[0];
-
     this.nh = this.types.filter(function (type) {
-        return type.name  == 'No Hay Regristro';   
+        return type.name  == 'No Hay Registro';   
     })[0];    
 
     this.cas = this.types.filter(function (type) {
@@ -213,7 +212,7 @@ export default {
     if(!this.con_type){
         this.show_certification =true;
     }
-    console.log(this.servicio);
+    console.log(this.nh);
     let list_hdp= this.list_aportes;
     if(this.con_type){
         for (let i = 0; i < list_hdp.length; i++) {
@@ -275,7 +274,7 @@ export default {
         ff= year+'-'+month+'-01';
     }
     console.log('lechuz se comio a la Karen XD ');
-    console.log(list);
+    // console.log(list);
     this.list_aportes = list;
   },
   methods:{
