@@ -300,7 +300,6 @@
                                                 </tr>
                                                 <tr class="success">
                                                     <td>@{{ arrayDiscounts[arrayDiscounts.length-1].name }}</td>
-                                                    {{-- <td>@{{ total }}</td> --}}
                                                     <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount }}</td>
                                                 </tr>
                                             </tbody>
@@ -383,6 +382,37 @@
                                             </table>
                                             <button class="btn btn-primary" type="submit" @click="saveTotalRetFunAvailability"><i class="fa fa-save"></i> Guardar</button>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div class="ibox" class="fadeInRight" v-if="arrayDiscounts.length">
+                                    <div class="ibox-title">
+                                        <h5>Total Fondo de retiro con descuentos</h5>
+                                        <div class="ibox-tools">
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            <a class="close-link"><i class="fa fa-times"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Foobar</th>
+                                                    <th>baz</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(discount, index) in arrayDiscounts">
+                                                    <td>@{{ discount.full_name }}</td>
+                                                    <td>@{{ discount.amount }}</td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td>@{{ arrayDiscounts[arrayDiscounts.length-1].name }}</td>
+                                                    <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>

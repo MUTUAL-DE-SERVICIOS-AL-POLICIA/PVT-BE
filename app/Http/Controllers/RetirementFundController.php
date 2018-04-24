@@ -776,6 +776,30 @@ class RetirementFundController extends Controller
 
         $array_discounts = array();
 
+        $array = DiscountType::all()->pluck('id');
+        $results = array(array());
+        foreach ($array as $element) {
+            foreach ($results as $combination) {
+                array_push($results, array_merge(array($element), $combination));
+            }
+        }
+        foreach ($results as $value) {
+            $sw = true;
+            foreach ($value as $id) {
+                if (!$retirement_fund->discount_types()->find($id)) {
+                    $sw = false;
+                }
+            }
+            if ($sw) {
+                $temp_total_discount = 0;
+                foreach ($value as $id) {
+                    $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
+                }
+                $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
+                array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+            }
+        }
+
 
         if ($has_availability) {
             $subtotal_availability = ($retirement_fund->subtotal_availability );
@@ -790,7 +814,7 @@ class RetirementFundController extends Controller
             if (sizeOf($spouse) > 0) {
                 $total_spouse = $total_availability / 2;
                 $total_derechohabientes = round(($total_spouse / sizeOf($beneficiaries)), 2);
-                $total_spouse = round(($total_spouse + $total_derechohabientes), 2);
+                $total_spouse = round(($total_spouse + ($total_spouse / sizeOf($beneficiaries))), 2);
             } else {
                 $total_derechohabientes = round($total_availability / sizeOf($beneficiaries), 2);
             }
@@ -809,43 +833,24 @@ class RetirementFundController extends Controller
                 }
             }
 
-            $discount_type = DiscountType::where('shortened', 'anticipo')->first();
-            $advance_payment_amount =$retirement_fund->discount_types()->find($discount_type->id) ? $retirement_fund->discount_types()->find($discount_type->id)->pivot->amount : 0;
-            $discount_type = DiscountType::where('shortened', 'prestamo')->first();
-            $retention_loan_payment_amount =$retirement_fund->discount_types()->find($discount_type->id) ? $retirement_fund->discount_types()->find($discount_type->id)->pivot->amount : 0;
-            $discount_type = DiscountType::where('shortened', 'garantes')->first();
-            $retention_guarantor_amount =$retirement_fund->discount_types()->find($discount_type->id) ? $retirement_fund->discount_types()->find($discount_type->id)->pivot->amount : 0;
+            // $discount_type = DiscountType::where('shortened', 'anticipo')->first();
+            // $advance_payment_amount =$retirement_fund->discount_types()->find($discount_type->id) ? $retirement_fund->discount_types()->find($discount_type->id)->pivot->amount : 0;
+            // $discount_type = DiscountType::where('shortened', 'prestamo')->first();
+            // $retention_loan_payment_amount =$retirement_fund->discount_types()->find($discount_type->id) ? $retirement_fund->discount_types()->find($discount_type->id)->pivot->amount : 0;
+            // $discount_type = DiscountType::where('shortened', 'garantes')->first();
+            // $retention_guarantor_amount =$retirement_fund->discount_types()->find($discount_type->id) ? $retirement_fund->discount_types()->find($discount_type->id)->pivot->amount : 0;
 
-            $array = DiscountType::all()->pluck('id');
-            $results = array(array());
-            foreach ($array as $element){
-                foreach ($results as $combination){
-                    array_push($results, array_merge(array($element), $combination));
-                }
-            }
-            foreach ($results as $value) {
-                $sw = true;
-                foreach ($value as $id) {
-                    if (! $retirement_fund->discount_types()->find($id)) {
-                        $sw = false;
-                    }
-                }
-                if ($sw) {
-                    $temp_total_discount = 0;
-                    foreach ($value as $id) {
-                        $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
-                    }
-                    $name = join(' - ',DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
-                    array_push($array_discounts, array('name'=>$name, 'amount'=> $temp_total_discount));
-                }
-            }
-            Log::info($array_discounts);
             /* added availability */
             $array_discounts_availability = [];
             foreach($array_discounts as $value) {
                 array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + Disponibilidad '.($value['name'] ? ' - '.$value['name'] : '' )), 'amount' => ($retirement_fund->subtotal_ret_fun + $total_availability - $value['amount'])));
             }
 
+        }else{
+            $array_discounts_availability = [];
+            foreach ($array_discounts as $value) {
+                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
+            }
         }
         $data = [
             'has_availability' => $has_availability,
@@ -862,6 +867,14 @@ class RetirementFundController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
+
+        /**added function calculate sub_total_availability */
+        $subtotal_availability = ($retirement_fund->subtotal_availability);
+        $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield / 100);
+        $total_availability = $subtotal_availability + $total_annual_yield;
+        $retirement_fund->total_availability =  $total_availability;
+        $retirement_fund->save();
+        /**added function calculate sub_total_availability */
 
         foreach ($request->beneficiaries as $beneficiary) {
             $new_beneficiary = $retirement_fund->ret_fun_beneficiaries()->where('id', $beneficiary['id'])->first();

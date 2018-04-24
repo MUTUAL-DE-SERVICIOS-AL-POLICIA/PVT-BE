@@ -171,7 +171,6 @@ export default {
 
       }).catch(error =>{
         console.log(error);
-        
           flash("Error al guardar los porcentages", "error");
       });
     },
