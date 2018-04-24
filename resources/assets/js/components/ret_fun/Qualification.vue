@@ -25,6 +25,8 @@ export default {
 
       showEconomicData:false,
       showEconomicDataTotal:false,
+      showPercentagesRetFun:false,
+      showPercentagesRetFunAvailability:false,
 
       subTotalRetFun: 0,
       totalRetFun: 0,
@@ -35,12 +37,16 @@ export default {
 
       hasAvailability: false,
 
+      arrayDiscounts: [],
+
       subTotalAvailability:0,
+      totalAnnualYield:0,
       totalAvailability:0,
       total:0,
 
       beneficiaries: [],
       beneficiariesAvailability: [],
+      beneficiariesRetFunAvailability: [],
 
       // perecentageAdvancePayment: 0,
       totalAverageSalaryQuotable: 0,
@@ -116,12 +122,12 @@ export default {
       axios.get(uri).then(response => {
         flash("Salario Promedio Cotizable Actualizado")
         this.showEconomicDataTotal = true;
-        // this.sub_total_ret_fun = response.data.sub_total_ret_fun;
-        // this.total = response.data.total;
         TweenLite.to(this.$data, 0.5, { totalRetFun: response.data.total_ret_fun,subTotalRetFun: response.data.sub_total_ret_fun });
+        moneyInputMaskAll();
       }).catch(error => {
         this.showEconomicDataTotal = false
       });
+      
     },
     saveTotalRetFun(){
       let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun`;
@@ -136,16 +142,16 @@ export default {
           this.beneficiaries = response.data.beneficiaries;
           this.totalRetFun = response.data.total_ret_fun;
           this.subTotalRetFun = response.data.sub_total_ret_fun;
+          this.showPercentagesRetFun = true;
       }).catch(error =>{
           flash("Error al guardar los Datos", "error");
-
+          this.showPercentagesRetFun = false;
       });
     },
     requalificationTotal(index){
       this.beneficiaries[index].temp_amount = (this.totalRetFun * this.beneficiaries[index].temp_percentage)/100;
     },
     savePercentages(){
-
       let uri =`/ret_fun/${this.retirementFundId}/save_percentages`;
       axios.patch(uri,
         {
@@ -155,28 +161,52 @@ export default {
           flash("Porcentages actualizados a los derechohabientes.");
           this.hasAvailability = response.data.has_availability;
           this.subTotalAvailability = response.data.subtotal_availability;
+          this.totalAnnualYield = response.data.total_annual_yield;
           this.totalAvailability = response.data.total_availability;
           this.total = response.data.total;
           this.beneficiariesAvailability = response.data.beneficiaries;
+
+          this.arrayDiscounts = response.data.array_discounts;
+          console.log(response.data.array_discounts);
+
       }).catch(error =>{
+        console.log(error);
+        
           flash("Error al guardar los porcentages", "error");
       });
     },
-    saveTotalAvailability(){
-      let uri =`/ret_fun/${this.retirementFundId}/save_total_availability`;
-      axios.get(uri,
+    savePercentagesAvailability(){
+      let uri =`/ret_fun/${this.retirementFundId}/save_percentages_availability`;
+      axios.patch(uri,
         {
-          beneficiaries: this.beneficiaries,
+          beneficiaries: this.beneficiariesAvailability,
         }
       ).then(response =>{
-          flash("Total disponibilidad Actualizado.");
-          this.totalRetFun = response.data.total_ret_fun;
+          flash("Montos de Disponibilidad Actualizados.");
+          this.beneficiariesRetFunAvailability = response.data.beneficiaries;
+          this.showPercentagesRetFunAvailability = true;
       }).catch(error =>{
-          flash("Error al guardar total disponibilidad", "error");
+          flash("Error al guardar Montos de Disponibilidad", "error");
+          this.showPercentagesRetFunAvailability = false;
+      });
+    },
+    saveTotalRetFunAvailability(){
+      let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun_availability`;
+      axios.patch(uri,
+        {
+          beneficiaries: this.beneficiariesRetFunAvailability,
+        }
+      ).then(response =>{
+          flash("Montos de Fondo de Retiro + Disponibilidad Actualizados.");
+      }).catch(error =>{
+          flash("Error al guardar Montos de Fondo de Retiro + Disponibilidad", "error");
       });
     },
     requalificationTotalAvailability(index){
       this.beneficiariesAvailability[index].temp_amount_availability = (this.totalAvailability * this.beneficiariesAvailability[index].percentage)/100;
+    },
+    requalificationTotalRetFunAvailability(index){
+      this.beneficiariesRetFunAvailability[index].temp_amount_total = (this.total * this.beneficiariesAvailability[index].percentage)/100;
     },
   },
   computed: {
@@ -201,15 +231,39 @@ export default {
     percentageRetentionGuarantor(){
       return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.retentionGuarantor))/this.subTotalRetFun : 0;
     },
-    totalPercentage(){
+    totalPercentageRetFun(){
       const sum = this.beneficiaries.reduce((accumulator, current) => {
         return accumulator + parseFloat(current.temp_percentage);
        }, 0.0);
        return sum;
     },
-    totalAmount(){
+    totalAmountRetFun(){
       const sum = this.beneficiaries.reduce((accumulator, current) => {
         return accumulator + parseFloat(current.temp_amount);
+       }, 0.0);
+       return sum;
+    },
+    totalPercentageAvailability(){
+      const sum = this.beneficiariesAvailability.reduce((accumulator, current) => {
+        return accumulator + parseFloat(current.percentage);
+       }, 0.0);
+       return sum;
+    },
+    totalAmountAvailability(){
+      const sum = this.beneficiariesAvailability.reduce((accumulator, current) => {
+        return accumulator + parseFloat(current.temp_amount_availability);
+       }, 0.0);
+       return sum;
+    },
+    totalPercentageRetFunAvailability(){
+      const sum = this.beneficiariesRetFunAvailability.reduce((accumulator, current) => {
+        return accumulator + parseFloat(current.percentage);
+       }, 0.0);
+       return sum;
+    },
+    totalAmountRetFunAvailability(){
+      const sum = this.beneficiariesRetFunAvailability.reduce((accumulator, current) => {
+        return accumulator + parseFloat(current.temp_amount_total);
        }, 0.0);
        return sum;
     },
