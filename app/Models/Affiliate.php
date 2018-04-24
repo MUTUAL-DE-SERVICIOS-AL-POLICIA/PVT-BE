@@ -194,4 +194,65 @@ class Affiliate extends Model
         
         // return $contribution_type;
     }
+    public function getTotalQuotes()
+    {
+        $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Servicio'));
+        $total_item_zero_backed = Util::sumTotalContributions($this->getContributionsWithType('Item 0'));
+        $total_availability_backed = Util::sumTotalContributions($this->getContributionsWithType('Disponibilidad'));
+        $total_security_battalion_backed = Util::sumTotalContributions($this->getContributionsWithType('Batallon de Seguridad Fisica'));
+        $total_cas_backed = Util::sumTotalContributions($this->getContributionsWithType('Registro Segun CAS'));
+        $total_no_records_backed = Util::sumTotalContributions($this->getContributionsWithType('No Hay Registro'));
+        $total_quotes = ($total_contributions_backed ?? 0)
+            + ($total_item_zero_backed ?? 0)
+            - ($total_availability_backed ?? 0)
+            - ($total_security_battalion_backed ?? 0)
+            - ($total_cas_backed ?? 0)
+            - ($total_no_records_backed ?? 0);
+        return $total_quotes;
+    }
+    public function getTotalAverageSalaryQuotable()
+    {
+        $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+        $availability = $this->getContributionsWithType('Disponibilidad');
+        $contributions = $this->getContributionsWithType('Servicio');
+
+        if (sizeOf($availability) > 0) {
+            /* has availability */
+            $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
+            $contributions = $this->contributions()
+                ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
+                ->where("contribution_types.name", '=', 'Servicio')
+                ->where('contributions.month_year', '<=', $start_date_availability)
+                ->orderBy('contributions.month_year', 'desc')
+                ->take($number_contributions)
+                ->get();
+            $total_base_wage = $contributions->sum('base_wage');
+            $total_seniority_bonus = $contributions->sum('seniority_bonus');
+            $total_retirement_fund = $contributions->sum('retirement_fund');
+            $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
+            $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
+        } else {
+                //si no tiene periodos en disponibilidad
+            $last_date_contribution = Carbon::parse(end($contributions)->end)->toDateString();
+            $contributions = $this->contributions()
+                ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
+                ->where("contribution_types.name", '=', 'Servicio')
+                ->where('contributions.month_year', '<=', $last_date_contribution)
+                ->orderBy('contributions.month_year', 'desc')
+                ->take($number_contributions)
+                ->get();
+            $total_base_wage = $contributions->sum('base_wage');
+            $total_seniority_bonus = $contributions->sum('seniority_bonus');
+            $total_retirement_fund = $contributions->sum('retirement_fund');
+            $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
+            $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
+        }
+        $data = [
+            'total_base_wage' => $total_base_wage,
+            'total_seniority_bonus' => $total_seniority_bonus,
+            'total_retirement_fund' => $total_retirement_fund,
+            'total_average_salary_quotable' => $total_average_salary_quotable,
+        ];
+        return $data;
+    }
 }

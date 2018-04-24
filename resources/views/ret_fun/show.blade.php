@@ -28,7 +28,9 @@
             <i class="fa fa-list-alt"></i>
             </button>
         </a>
-        
+        <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
+            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar"></i></button>
+        </a>
     </div>
     
     <div class="row">

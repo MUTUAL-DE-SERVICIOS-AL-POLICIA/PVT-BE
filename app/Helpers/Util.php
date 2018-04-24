@@ -320,4 +320,23 @@ class Util
         }
         return $procedure_active;
     }
+    public static function sumTotalContributions($array, $fromView = false)
+    {
+        $total = 0;
+        if (sizeof($array) > 0) {
+            foreach ($array as $key => $value) {
+                if ($fromView) {
+                    // $value = json_encode($value);
+                    $diff = Carbon::parse($value['start'])->diffInMonths(Carbon::parse($value['end'])) + 1;
+                } else {
+                    $diff = Carbon::parse($value->start)->diffInMonths(Carbon::parse($value->end)) + 1;
+                }
+                if ($diff < 0) {
+                    dd("error");
+                }
+                $total = $total + $diff;
+            }
+        }
+        return $total;
+    }
 }
