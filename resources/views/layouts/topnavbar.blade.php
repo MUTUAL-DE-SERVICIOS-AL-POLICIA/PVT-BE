@@ -10,11 +10,11 @@
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li>
-                <a href="#">
-                    <i class="fa fa-sign-out"></i>
+                <a href="{{route('changerol')}}">
+                    <button type="button" class="btn btn-info btn-xs" data-toggle="tooltip" data-placement="bottom" title="Cambiar de Rol"><i class="fa fa-exchange"></i>
+                    </button>
                 </a>
             </li>
         </ul>
-
     </nav>
 </div>

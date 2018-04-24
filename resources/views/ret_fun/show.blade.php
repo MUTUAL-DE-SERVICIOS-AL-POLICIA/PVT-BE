@@ -89,7 +89,6 @@
             modal.find('.modal-body #cod_folder').val(cod_folder)
             modal.find('.modal-body #num_folder').val(num_folder)
             console.log($('#mod_id').val(moda_id))
-        //modal.find('.modal_body #modid option[value='+ mod_id +']').prop('selected', true)
         });
         $('#eliminar').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
@@ -97,7 +96,6 @@
             var cod_folder = button.data('elim')
             console.log(cod_folder)
             console.log($('#cod_file_eli').val(cod_folder))
-        //modal.find('.modal_body #modid option[value='+ mod_id +']').prop('selected', true)
         });
     });
 </script>
