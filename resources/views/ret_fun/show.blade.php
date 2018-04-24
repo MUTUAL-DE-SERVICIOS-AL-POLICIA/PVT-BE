@@ -17,7 +17,7 @@
         @endif
         
         @if(Muserpol\Helpers\Util::getRol()->id == 15)
-        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>        
+        <button class="btn btn-prfolder_idimary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>        
         @endif
         
         @if(Muserpol\Helpers\Util::getRol()->id == 11)
@@ -70,7 +70,35 @@
         </div>
     </div>
     @endcan
-    
-    
 </div>
+@endsection
+@section('jss')
+<script>
+    $( document ).ready(function() {
+    console.log( "ready!" );
+        $('#folderDialog').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var id=button.data('id')
+            var cod_folder = button.data('codfile')
+            var num_folder = button.data('folnum')
+            var moda_id =button.data('modid');
+            console.log(cod_folder)
+            console.log(num_folder)
+            console.log(id)
+            console.log('modalidad'+moda_id)
+            var modal = $(this)
+            $('#id_folder').val(id)
+            modal.find('.modal-body #cod_folder').val(cod_folder)
+            modal.find('.modal-body #num_folder').val(num_folder)
+            console.log($('#mod_id').val(moda_id))
+        });
+        $('#eliminar').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            console.log('metodo 2')
+            var cod_folder = button.data('elim')
+            console.log(cod_folder)
+            console.log($('#cod_file_eli').val(cod_folder))
+        });
+    });
+</script>
 @endsection

@@ -106,7 +106,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::resource('quota_aid', 'QuotaAidMortuaryController');
 
 	Route::resource('affiliate_folder', 'AffiliateFolderController');
-
+	Route::post('editFolder', 'AffiliateFolderController@editFolder')->name('editFolder');
+	Route::post('deleteFolder', 'AffiliateFolderController@destroy')->name('deleteFolder');
         //searcherController
 	Route::get('search/{ci}', 'SearcherController@search');
 	Route::get('search_ajax', 'SearcherController@searchAjax');
@@ -128,6 +129,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/print/cer_availability', 'ContributionController@printCertificationAvailability')->name('ret_fun_print_certification_availability');
 		Route::get('ret_fun/{retirement_fund}/print/cer_itemcero', 'ContributionController@printCertificationItem0')->name('ret_fun_print_certification_item0');
 
+		
         Route::resource('reimbursement','ReimbursementController');       
         
         //AidContributions

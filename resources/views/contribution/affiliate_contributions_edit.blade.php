@@ -86,9 +86,9 @@
                                                 @endphp
                                                 @if($valid_period)
                                                     @if(isset($contributions[$period]->id))
-                                                        <td id="main{{$period}}">{{$contributions[$period]->total}}</td>
+                                                        <td class="numberformat" id="main{{$period}}">{{$contributions[$period]->total}}</td>
                                                     @else
-                                                        <td id="main{{$period}}">0</td>
+                                                        <td class="numberformat" id="main{{$period}}">0</td>
                                                     @endif
                                                 @else
                                                        <td>-</td>
@@ -138,7 +138,7 @@
                                                             </thead>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->base_wage}} </div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->base_wage}} </div>
                                                                     <input type="hidden" disabled name="base_wage[{{$period}}]" value="{{$contributions[$period]->base_wage}}">
                                                                 </td>
                                                             </tr>
@@ -153,13 +153,13 @@
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->gain}} </div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->gain}} </div>
                                                                     <input type="hidden" disabled name="gain[{{$period}}]" value="{{$contributions[$period]->gain}}">
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">{{$contributions[$period]->total ?? '-'}} </div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->total ?? '-'}} </div>
                                                                     <input type="hidden" disabled name="total[{{$period}}]" value="{{$contributions[$period]->total??'-'}}">
                                                                 </td>
                                                             </tr>
@@ -182,7 +182,7 @@
                                                             </thead>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">0</div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">0</div>
                                                                     <input type="hidden" disabled name="base_wage[{{$period}}]" value="0">
                                                                 </td>
                                                             </tr>
@@ -197,13 +197,13 @@
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">0</div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">0</div>
                                                                     <input type="hidden" disabled name="gain[{{$period}}]" value="0">
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <div contenteditable="true" class="editcontent">0</div>
+                                                                    <div contenteditable="true" class="editcontent numberformat">0</div>
                                                                     <input type="hidden" disabled name="total[{{$period}}]" value="0">
                                                                 </td>
                                                             </tr>
@@ -255,15 +255,19 @@
                         <option value="12">Diciembre</option>
                      </select>
                 </div>
-                <div class="form-group">
-                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control">
+                <div class="form-group">                                        
+                    <label>Sueldo</label>                
+                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
+                    <label>Categor&iacute;a</label> 
                     <select class="form-control" name="reim_category" id="reim_category">
                         @foreach($categories as $category)
                             <option value="{{$category->id}}">{{$category->percentage}}</option>
                         @endforeach
                     </select>
-                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control">
-                    <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control">
+                    <label>Total Ganado</label>
+                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control numberformat">
+                    <label>Aporte</label>
+                    <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat">
                 </div>
             </div>
             <div class="modal-footer">
@@ -281,6 +285,20 @@
 
 @section('scripts')
 <script>
+    $('.numberformat').each(function(i, obj) {
+            Inputmask(moneyInputMask()).mask(obj);        
+    });    
+    function moneyInputMask() {    
+        return {
+            alias: "numeric",
+            groupSeparator: ",",
+            autoGroup: true,
+            digits: 2,
+            digitsOptional: false,        
+            placeholder: "0"
+        };
+    }
+    
     $('body').addClass("mini-navbar");
     var actual_year = "1700";
     function toggleNestedComp(mode){

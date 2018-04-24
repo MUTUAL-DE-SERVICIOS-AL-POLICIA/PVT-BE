@@ -23,8 +23,7 @@
         },
         methods:{
             toggle_editing:function () {
-                this.editing = !this.editing;
-                //this.ben = this.original_beneficiar   ies;
+                this.editing = !this.editing;                
             },
             toggle_create:function(){
                 this.create = !this.create;
@@ -33,27 +32,18 @@
                 var affiliate_id = this.affiliate_id;                
                 printJS({printable:'/ret_fun/'+affiliate_id+'/print/ret_fun_commitment_letter', type:'pdf', showModal:true});
             },
-//            disable_commitment(){
-//                this.update(-1);
-//            },
-            create_new(){
-                //this.toggle_create();
-                //console.log(this.today_date);
+            create_new(){                
                 this.commitment.commitment_date=this.today_date;
-                this.toggle_editing();
-                //this.update(0);
-                //this.commitment.affiliate_id = this.affiliate_id;
+                this.toggle_editing();                
             },           
             update (value) {
                 var id = value;                
                 let uri = `/commitment/`+id; 
                 this.show_spinner=true;
                 axios.patch(uri,this.commitment)
-                    .then(response=>{     
-                        console.log(response.data.commitment_type);
+                    .then(response=>{                             
                         this.editing = false;
-                        this.show_spinner=false;
-                        console.log(response.data.state+"----");
+                        this.show_spinner=false;                        
                         if(response.data.state =='ALTA'){
                         this.commitment.id  =   response.data.id;    
                         this.commitment.commitment_type = response.data.commitment_type;
@@ -61,11 +51,9 @@
                         this.commitment.destination = response.data.destination;
                         this.commitment.commision_date = response.data.commision_date;
                         this.commitment.state = response.data.state;
-                        this.enable_delete=true;
-                        console.log("condatos");
+                        this.enable_delete=true;                        
                         }
-                        else{
-                            console.log("eliminado");
+                        else{                            
                             this.create = true;
                             this.enable_delete=false;
                             this.commitment.id = 0;
@@ -74,8 +62,7 @@
                             this.commitment.destination = "";
                             this.commitment.commision_date = '';
                             this.commitment.state = '';
-                        }
-                        console.log(response.data);
+                        }                        
                         flash('Informacion actualizada');
                        }).catch((error)=>{
                            if(error.response.data.number !== undefined)

@@ -55,13 +55,12 @@
                                             <dt>Aportante:</dt> 
                                                 <dd>
                                                     <select class="form-control m-b" v-model='aid_commitment.contributor'>                                            
-                                                        <option value="T">Titular</option>
-                                                        <option value="E">Esposa</option>
+                                                        <option value="T">Titular</option>                                                        
                                                         <option value="C">Cónyuge</option>
                                                     </select>                                                                                
                                                 </dd>
                                             <dt>Declaración de Pensión:</dt> <dd><input type="text" v-model="aid_commitment.pension_declaration" class="form-control"></dd>
-                                            <dt>Fecha de Declaración (AAAA-MM-DD):</dt> <dd><input type="date" v-model="aid_commitment.pension_declaration_date"  class="form-control"></dd>
+                                            <dt>Fecha de Declaración:</dt> <dd><input type="date" v-model="aid_commitment.pension_declaration_date"  class="form-control"></dd>
                                             <dt>Fecha de compromiso:</dt> <dd><input type="date" v-model="aid_commitment.date_commitment"  class="form-control"></dd>
                                         </dl>   
                                     </div>

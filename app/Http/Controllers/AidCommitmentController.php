@@ -6,8 +6,9 @@ use Muserpol\Models\Contribution\AidCommitment;
 
 use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
-
+use Validator;
 use Auth;
+use Muserpol\Models\Spouse;
 
 class AidCommitmentController extends Controller
 {
@@ -73,6 +74,29 @@ class AidCommitmentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //*********START VALIDATOR************//        
+        $has_spouse = false;
+        $spouse = Spouse::select('id')->where('affiliate_id',$request->affiliate_id)->first();
+        if($request->contributor!="T" && !isset($spouse->id))
+            $has_spouse = true;
+        $biz_rules = [
+                'has_spouse'    =>  $has_spouse?'required':'',
+            ];                            
+        $rules = [           
+            'contributor' => 'required', 
+            'pension_declaration' => 'required',
+            'pension_declaration_date' => 'required|date|date_format:Y-m-d',
+            'date_commitment' => 'required'
+       ];        
+        $rules = array_merge($rules,$biz_rules);
+         $messages = [              
+          ];  
+          $validator = Validator::make($request->all(),$rules,$messages);
+          if($validator->fails()){
+              return response()->json($validator->errors(), 406);
+          }
+           //*********END VALIDATOR************//
+              
         if($id == -1){
             $aid_commitment = AidCommitment::find($request->id);
            // $this->authorize('update', $aid_commitment); 
