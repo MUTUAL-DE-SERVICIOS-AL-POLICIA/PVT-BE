@@ -45,7 +45,7 @@ class Affiliate extends Model
         'nua',
         'item'
     ];
-
+    public const DISPOBIBILIDAD='Disponibilidad';
     public function spouse()
     {
         return $this->hasMany('Muserpol\Models\Spouse');
@@ -186,6 +186,13 @@ class Affiliate extends Model
                 // dd($dates);
             }
         return $dates;
+    }
+    public function getDisponibilityContributions($name_contribution_type)
+    {
+        return $name_contribution_type;
+        // $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
+        
+        // return $contribution_type;
     }
     public function getTotalQuotes()
     {
