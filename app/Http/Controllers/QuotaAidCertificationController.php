@@ -3,7 +3,6 @@
 namespace Muserpol\Http\Controllers;
 use Muserpol\QuotaAidCertification;
 use Illuminate\Http\Request;
-
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\City;
 use Session;
@@ -17,6 +16,7 @@ use Muserpol\Helpers\Util;
 use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
 use Muserpol\Models\Spouse;
+use Muserpol\Models\Contribution\AidContribution;
 
 class QuotaAidCertificationController extends Controller
 {
@@ -86,10 +86,11 @@ class QuotaAidCertificationController extends Controller
                 ->stream("$namepdf");
     }  
 
-    public function printVoucherQuoteAid($affiliate_id,$voucher_id)
+    public function printVoucherQuoteAid(Request $request, $affiliate_id,$voucher_id)
     {
         $affiliate = Affiliate::find($affiliate_id);
         $voucher = Voucher::find($voucher_id);
+        $aid_contributions=[];
         $total_literal = Util::convertir($voucher->total);
         $payment_date = Util::getStringDate($voucher->payment_date);
         $date = Util::getStringDate(date('Y-m-d'));
@@ -101,24 +102,24 @@ class QuotaAidCertificationController extends Controller
         if ($affiliate->affiliate_state->name == "Fallecido") {
             $title = "PAGO DE APORTE DIRECTO DE LAS (OS) VIUDAS (OS) DEL  SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
             $spouses = Spouse::where('affiliate_id', $affiliate->id)->first();
-            $bene = $spouses;
+            $beneficiary = $spouses;
+            $aid_contributions  = json_decode($request->aid_contributions);
         } else {
             $title = "PAGO DE APORTE DIRECTO DEL SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
-            $bene = $affiliate;
+            $beneficiary = $affiliate;
+            $aid_contributions  = json_decode($request->aid_contributions);
         }
-        // $bene = $affiliate;
         $pdftitle = "Comprobante";
-        $namepdf = Util::getPDFName($pdftitle, $bene);
+        $namepdf = Util::getPDFName($pdftitle, $beneficiary);
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
         return \PDF::loadView('quota_aid.print.voucher_aid_contribution', 
                 compact('date', 
                         'username', 
                         'title', 
-                        'affiliate', 
-                        'submitted_documents', 
+                        'affiliate',
                         'beneficiary', 
-                        'glosa', 
-                        'bene', 
+                        'glosa',
+                        'aid_contributions', 
                         'number', 
                         'voucher', 
                         'descripcion', 
