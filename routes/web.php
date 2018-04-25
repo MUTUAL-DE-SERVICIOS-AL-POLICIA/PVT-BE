@@ -69,12 +69,14 @@ Route::group(['middleware' => ['auth']], function () {
 	// Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
 	Route::resource('ret_fun', 'RetirementFundController');
-	Route::get('ret_fun/{ret_fun_id}/qualification', 'RetirementFundController@qualification');
+	Route::get('ret_fun/{ret_fun_id}/qualification', 'RetirementFundController@qualification')->name('ret_fun_qualification');
 	Route::post('ret_fun/{ret_fun_id}/get_data_qualification', 'RetirementFundController@geDataQualification');
 	Route::get('ret_fun/{ret_fun_id}/qualification/certification', 'RetirementFundController@qualificationCertification');
 	Route::get('ret_fun/{ret_fun_id}/save_average_quotable', 'RetirementFundController@saveAverageQuotable')->name('save_average_quotable');
 	Route::patch('ret_fun/{ret_fun_id}/save_total_ret_fun', 'RetirementFundController@saveTotalRetFun')->name('save_total_ret_fun');
 	Route::patch('ret_fun/{ret_fun_id}/save_percentages', 'RetirementFundController@savePercentages')->name('save_percentages');
+	Route::patch('ret_fun/{ret_fun_id}/save_percentages_availability', 'RetirementFundController@savePercentagesAvailability')->name('save_percentages_availability');
+	Route::patch('ret_fun/{ret_fun_id}/save_total_ret_fun_availability', 'RetirementFundController@saveTotalRetFunAvailability')->name('save_total_ret_fun_availability');
 	Route::get('get_data_certification/{ret_fun_id}', 'RetirementFundController@getDataQualificationCertification')->name('get_data_certification');
 	Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 
@@ -104,7 +106,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::resource('quota_aid', 'QuotaAidMortuaryController');
 
 	Route::resource('affiliate_folder', 'AffiliateFolderController');
-
+	Route::post('editFolder', 'AffiliateFolderController@editFolder')->name('editFolder');
+	Route::post('deleteFolder', 'AffiliateFolderController@destroy')->name('deleteFolder');
         //searcherController
 	Route::get('search/{ci}', 'SearcherController@search');
 	Route::get('search_ajax', 'SearcherController@searchAjax');
@@ -126,6 +129,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/print/cer_availability', 'ContributionController@printCertificationAvailability')->name('ret_fun_print_certification_availability');
 		Route::get('ret_fun/{retirement_fund}/print/cer_itemcero', 'ContributionController@printCertificationItem0')->name('ret_fun_print_certification_item0');
 
+		
         Route::resource('reimbursement','ReimbursementController');       
         
         //AidContributions
