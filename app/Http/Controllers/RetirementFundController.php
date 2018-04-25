@@ -466,6 +466,7 @@ class RetirementFundController extends Controller
         $retirement_fund = RetirementFund::find($ret_fun_id);
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
         $affiliate = $retirement_fund->affiliate;
+        $dates_global = $affiliate->getDatesGlobal();
         $dates_contributions = $affiliate->getDatesContributions();
         $dates_availability = $affiliate->getDatesAvailability();
         $dates_item_zero = $affiliate->getDatesItemZero();
@@ -479,6 +480,7 @@ class RetirementFundController extends Controller
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
+            'dates_global' => $dates_global,
             'dates_availability' => $dates_availability,
             'dates_item_zero' => $dates_item_zero,
             'dates_contributions' => $dates_contributions,

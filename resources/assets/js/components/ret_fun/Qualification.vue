@@ -1,7 +1,7 @@
 <script>
 import { dateInputMask, moneyInputMask, parseMoney, moneyInputMaskAll }  from "../../helper.js";
 export default {
-  props: ["datesContributions", "datesAvailability", "datesItemZero","datesSecurityBattalion","datesNoRecords","datesCas","retirementFundId"],
+  props: ["datesGlobal","datesContributions", "datesAvailability", "datesItemZero","datesSecurityBattalion","datesNoRecords","datesCas","retirementFundId"],
   mounted() {
     this.calculate();
     moneyInputMaskAll();
@@ -12,6 +12,8 @@ export default {
       months: 0,
       yearsContributions: 0,
       monthsContributions: 0,
+      yearsGlobal: 0,
+      monthsGlobal: 0,
       yearsAvailability: 0,
       monthsAvailability: 0,
       yearsItemZero: 0,
@@ -68,6 +70,9 @@ export default {
       }
     },
     calculate(){
+        let global = this.calculateDiffWithYearMonth(this.datesGlobal);
+        this.yearsGlobal = global.years;
+        this.monthsGlobal = global.months;
         let totalContributions = this.calculateDiffWithYearMonth(this.datesContributions);
         this.yearsContributions = totalContributions.years;
         this.monthsContributions = totalContributions.months;
@@ -87,13 +92,15 @@ export default {
         this.yearsNoRecords = totalNoRecords.years;
         this.monthsNoRecords = totalNoRecords.months;
 
-        const datesAvailability = this.calculateDiff(this.datesAvailability);
+        const datesGlobal = this.calculateDiff(this.datesGlobal);
         const datesContributions = this.calculateDiff(this.datesContributions);
+        const datesAvailability = this.calculateDiff(this.datesAvailability);
         const datesItemZero = this.calculateDiff(this.datesItemZero);
         const datesSecurityBattalion = this.calculateDiff(this.datesSecurityBattalion);
         const datesCas = this.calculateDiff(this.datesCas);
         const datesNoRecords = this.calculateDiff(this.datesNoRecords);
-        const total = datesContributions + datesItemZero - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
+        // const total = datesContributions + datesItemZero - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
+        const total = datesGlobal - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
         this.years = parseInt(total/12);
         this.months = (total%12);
     },
