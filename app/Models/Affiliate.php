@@ -13,6 +13,8 @@ class Affiliate extends Model
 {
     use SoftDeletes;
 
+    const DISPONIBILIDAD = 'Disponibilidad';
+    
     protected $fillable = [
         'user_id',
         'affiliate_state_id',
@@ -45,7 +47,6 @@ class Affiliate extends Model
         'nua',
         'item'
     ];
-    public const DISPOBIBILIDAD='Disponibilidad';
     public function spouse()
     {
         return $this->hasMany('Muserpol\Models\Spouse');
@@ -197,12 +198,19 @@ class Affiliate extends Model
             }
         return $dates;
     }
-    public function getDisponibilityContributions($name_contribution_type)
-    {
-        return $name_contribution_type;
-        // $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
-        
-        // return $contribution_type;
+    public function getTotalContributionsAmount($name_contribution_type)
+    {      
+        $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
+        if(!$contribution_type)
+        {
+            return 'no existe el tipo de contribucion '.$name_contribution_type;
+        }
+        $contributions = $this->contributions()->where('contribution_type_id', '=', $contribution_type->id)->get();
+        $total=0;
+        foreach($contributions as $contribution){
+            $total += $contribution->total;
+        }
+        return $total;
     }
     public function getTotalQuotes()
     {
