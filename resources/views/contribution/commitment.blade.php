@@ -5,7 +5,8 @@
                     <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
                         <div class="panel-heading">
                             <h3 class="pull-left">Compromiso de pago</h3>
-                            @can('update',new Muserpol\Models\Contribution\Contribution)
+                            {{--@can('update',new Muserpol\Models\Contribution\Contribution)--}}
+                            @can('update',new Muserpol\Models\Contribution\ContributionCommitment)
                             <div class="text-right">
                                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
                             </div>
