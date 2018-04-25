@@ -11,8 +11,7 @@
         <ul class="nav navbar-top-links navbar-right">
             <li>
                 <a href="{{route('changerol')}}">
-                    <button type="button" class="btn btn-info btn-xs" data-toggle="tooltip" data-placement="bottom" title="Cambiar de Rol"><i class="fa fa-exchange"></i>
-                    </button>
+                    <i class="fa fa-exchange fa-lg" data-toggle="tooltip" data-placement="bottom" title="Cambiar de Rol"></i>
                 </a>
             </li>
         </ul>
