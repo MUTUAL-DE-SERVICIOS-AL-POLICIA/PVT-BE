@@ -135,18 +135,18 @@ class ContributionController extends Controller
 //        if(!empty($request->aportes))
 //        { 
             $has_commitment = false;
+            $datediff = 0;
             $commitment = ContributionCommitment::where('affiliate_id',$request->afid)->where('state','ALTA')->first();
             if(!isset($commitment->id))
-                $commitment = true;
-            $valid_commitment = false;
-                                   
-            $commision_date = strtotime($commitment->commision_date);
-            $commtiment_date = strtotime($commitment->commitment_date);
-            $datediff = $commtiment_date - $commision_date;
-            $datediff = round($datediff / (60 * 60 * 24));
-
-
-            
+                $has_commitment = true;
+            else
+            {
+                $commision_date = strtotime($commitment->commision_date) ;
+                $commtiment_date = strtotime($commitment->commitment_date);
+                $datediff = $commtiment_date - $commision_date;
+                $datediff = round($datediff / (60 * 60 * 24));
+            }
+           
             $biz_rules = [
                 'has_commitment'    =>  $has_commitment?'required':'',
                 'valid_commitment'  =>  $datediff>90?'required':''
