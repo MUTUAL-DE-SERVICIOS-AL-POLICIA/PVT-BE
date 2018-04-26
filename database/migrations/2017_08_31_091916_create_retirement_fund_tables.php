@@ -246,7 +246,7 @@ class CreateRetirementFundTables extends Migration {
             $table->string('phone_number')->nullable();// numero de telefono fijo
             $table->string('cell_phone_number')->nullable(); //numero de celuluar
           	$table->string('number_authority')->nullable(); //numero de poder
-            $table->string('notary_of_public_faith')->nullable(); //notaria de fe publica Nro....CECHUS ANITA
+            $table->string('notary_of_public_faith')->nullable(); //notaria de fe publica Nro...
             $table->string('notary')->nullable(); //notario
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds')->onDelete('cascade');
             $table->foreign('city_identity_card_id')->references('id')->on('cities');

@@ -9,6 +9,7 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <ret-fun-qualification inline-template
+            :dates-global="{{json_encode($dates_global)}}"
             :dates-contributions="{{json_encode($dates_contributions)}}"
             :dates-availability="{{json_encode($dates_availability)}}"
             :dates-item-zero="{{json_encode($dates_item_zero)}}"
@@ -30,9 +31,16 @@
                         </div>
                     </div>
                     <div class="ibox-content" style="">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <h4>Peridod de aportes considerados para el calculo del fondo de retiro retiro Policial Solidario </h4>
+                            </div>
+                            <ret-fun-qualification-group :dates-child="datesGlobal" @total="calculate">
+                            </ret-fun-qualification-group>
+                        </div>
                         <div class="form-group" v-if="datesContributions.length > 0">
                             <div class="col-md-4">
-                                <h4>Aportes fondo de retiro Policial Solidario </h4>
+                                <h4>Aportes en servicio</h4>
                             </div>
                             <ret-fun-qualification-group :dates-child="datesContributions" @total="calculate">
                             </ret-fun-qualification-group>
@@ -72,9 +80,9 @@
                             <ret-fun-qualification-group :dates-child="datesNoRecords" @total="calculate">
                             </ret-fun-qualification-group>
                         </div>
-                        <div class="panel panel-success">
-                            <strong>Años</strong> @{{this.years}}
-                            <strong>Meses</strong> @{{this.months}}
+                        <div class="col-md-3 alert alert-success">
+                            Años: <strong>@{{years}}</strong>  <br>
+                            Meses: <strong>@{{months}}</strong>
                         </div>
                         <table class="table table-bordered">
                             <thead>
@@ -85,8 +93,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-if="datesContributions.length > 0">
+                                <tr v-if="datesGlobal.length">
                                     <td>Años de servicio segun certificacion del comando general de la policia</td>
+                                    <td>@{{ yearsGlobal }}</td>
+                                    <td>@{{ monthsGlobal }}</td>
+                                </tr>
+                                <tr v-if="datesContributions.length > 0">
+                                    <td>servicio</td>
                                     <td>@{{ yearsContributions }}</td>
                                     <td>@{{ monthsContributions }}</td>
                                 </tr>
@@ -105,7 +118,7 @@
                                     <td>@{{ yearsSecurityBattalion }}</td>
                                     <td>@{{ monthsSecurityBattalion }}</td>
                                 </tr>
-                                <tr v-if="datesNoRecords.cas > 0">
+                                <tr v-if="datesCas.length > 0">
                                     <td>CAS</td>
                                     <td>@{{ yearsCas }}</td>
                                     <td>@{{ monthsCas }}</td>
@@ -122,7 +135,7 @@
                                     <td></td>
                                     <td></td>
                                 </tr>
-                                <tr>
+                                <tr class="success">
                                     <td><strong>Total de cotizaciones para Calificacion</strong></td>
                                     <td><strong>@{{ years }}</strong></td>
                                     <td><strong>@{{ months }}</strong></td>
@@ -281,7 +294,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Total aportes en disponibilidad</td>
-                                                    <td>@{{ subTotalAvailability }}</td>
+                                                    <td>@{{ subTotalAvailability | currency }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Con rendimiento del X% Anual</td>

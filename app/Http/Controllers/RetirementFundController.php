@@ -468,6 +468,7 @@ class RetirementFundController extends Controller
         $retirement_fund = RetirementFund::find($ret_fun_id);
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
         $affiliate = $retirement_fund->affiliate;
+        $dates_global = $affiliate->getDatesGlobal();
         $dates_contributions = $affiliate->getDatesContributions();
         $dates_availability = $affiliate->getDatesAvailability();
         $dates_item_zero = $affiliate->getDatesItemZero();
@@ -481,6 +482,7 @@ class RetirementFundController extends Controller
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
+            'dates_global' => $dates_global,
             'dates_availability' => $dates_availability,
             'dates_item_zero' => $dates_item_zero,
             'dates_contributions' => $dates_contributions,
@@ -805,7 +807,7 @@ class RetirementFundController extends Controller
 
         if ($has_availability) {
             $subtotal_availability = ($retirement_fund->subtotal_availability );
-            $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield/100);
+            $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield)/100;
             $total_availability = $subtotal_availability + $total_annual_yield;
             $total = $total + $total_availability;
 
@@ -854,6 +856,7 @@ class RetirementFundController extends Controller
                 array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
             }
         }
+        Log::info("total disponibilidad: ".json_encode($retirement_fund));
         $data = [
             'has_availability' => $has_availability,
             'subtotal_availability' => $subtotal_availability ?? 0,
@@ -872,7 +875,7 @@ class RetirementFundController extends Controller
 
         /**added function calculate sub_total_availability */
         $subtotal_availability = ($retirement_fund->subtotal_availability);
-        $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield / 100);
+        $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield) / 100;
         $total_availability = $subtotal_availability + $total_annual_yield;
         $retirement_fund->total_availability =  $total_availability;
         $retirement_fund->save();

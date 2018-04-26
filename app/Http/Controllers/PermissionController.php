@@ -67,7 +67,7 @@ class PermissionController extends Controller
         // return $request->all();
         $module_id = $request->module_id;
         $role_id = $request->role_id;
-        //verifica la existencia de permisos caso contrario se crea uno cechus y anita XD a perdon era karen
+        //verifica la existencia de permisos caso contrario se crea uno
    
         foreach ($request->permissions_list as $p) {
             # code...
@@ -207,7 +207,7 @@ class PermissionController extends Controller
         }
 
         // $obj = (Object) array('nom' => 1,'XD2'=>'asd' );
-        return 'cechuz ==>> Karen XD';  
+        return '==>>';  
         // $permission = new Permission;   
         // $permission->name = $request->name;
       
