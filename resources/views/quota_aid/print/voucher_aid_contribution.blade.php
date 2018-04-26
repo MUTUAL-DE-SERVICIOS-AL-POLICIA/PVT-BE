@@ -31,13 +31,13 @@
             <tbody>
                 <tr class="font-medium text-white text-sm font-bold bg-grey-darker">
                     <td class="text-center p-5 w-25">MES/AÑO</td>
-                    <td class="text-center p-5 w-30">RENTA</td>
-                    <td class="text-center p-5 w-20">AJUSTE</td>
-                    <td class="text-center p-5 w-25">SUBTOTAL APORTE</td>
+                    <td class="text-center p-5 w-30">RENTA (BS)</td>
+                    <td class="text-center p-5 w-20">AJUSTE (BS)</td>
+                    <td class="text-center p-5 w-25">SUBTOTAL APORTE (BS)</td>
                 </tr>
                     @foreach($aid_contributions as $aid_contribution)
                         <tr>
-                            <td class='text-center p-5'>{{ $aid_contribution->month_year }}</td>
+                            <td class='text-center p-5'>{{ getStringDate($aid_contribution->month_year) }}</td>
                             <td class='text-right p-5'>{{ $aid_contribution->rent }} </td>
                             <td class='text-right p-5'>{{ $aid_contribution->interest }} </td>    
                             <td class='text-right p-5'>{{ $aid_contribution->total }} </td>
