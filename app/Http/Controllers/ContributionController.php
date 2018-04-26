@@ -600,24 +600,27 @@ class ContributionController extends Controller
     {
         // $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
         $ret_fun = RetirementFund::find($ret_fun_id);
+        $affiliate = Affiliate::find($ret_fun->affiliate_id);
         // $contribution =DB::table('contributions')->where('affiliate_id',$ret_fun->affiliate_id)->whereNull('deleted_at')->get();
         // return $contribution;
         $con_type = false;
         $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                   ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
                                                   ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                //   ->whereNull('contributions.deleted_at')
+                                                  ->where('contributions.month_year','>',$affiliate->date_entry)
+                                                  //   ->whereNull('contributions.deleted_at')
                                                   ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
-                                                //   ->take(10)
+                                                  //   ->take(10)
                                                   ->orderBy('contributions.month_year', 'desc')
                                                   ->get();
-        // $contributions = [];
-    //    return $contributions->count();
-       
+                                                  // $contributions = [];
+                                                  //    return $contributions->count();
+                                                  
         if(sizeof($contributions) == 0){
           $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                     ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
                                                     ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
+                                                    ->where('contributions.month_year','>',$affiliate->date_entry)
                                                     // ->whereNull('contributions.deleted_at')
                                                     ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                 //   ->take(10)

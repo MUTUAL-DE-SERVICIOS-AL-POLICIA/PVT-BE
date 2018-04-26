@@ -26,12 +26,10 @@
         <div class="col-md-12 no-padding no-margins">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h3 class="pull-left">Aportes</h3>
+                    <h3 class="pull-left">Aportes </h3>
                     <div class="text-right">
                         @can('update',new Muserpol\Models\Contribution\Contribution)
-                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
-                        <a href="{{route('edit_contribution', $affiliate->id)}}">
-                            <button class="btn btn-info btn-sm" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
+                        <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i>
                         </a>
                         @else
                         <br>
