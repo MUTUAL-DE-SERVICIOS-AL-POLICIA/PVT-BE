@@ -98,6 +98,8 @@ class RetirementFundController extends Controller
         //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal_ret_fun = 0;
         $retirement_fund->total_ret_fun = 0;
+        $retirement_fund->total = 0;
+        $retirement_fund->subtotal = 0;
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
                 
@@ -145,13 +147,13 @@ class RetirementFundController extends Controller
             $advisor->first_name = $request->applicant_first_name;
             $advisor->second_name = $request->applicant_second_name;
             $advisor->surname_husband = $request->applicant_surname_husband;        
-            $advisor->gender = "M";                    
-            $advisor->phone_number = $request->applicant_phone_number;
-            $advisor->cell_phone_number = $request->applicant_cell_phone_number;        
+            //$advisor->gender = "M";                    
+            $advisor->phone_number = trim(implode(",", $request->applicant_phone_number));
+            $advisor->cell_phone_number = trim(implode(",", $request->applicant_phone_number));
             $advisor->name_court = $request->advisor_name_court;            
             $advisor->resolution_number = $request->advisor_resolution_number;
             $advisor->resolution_date = $request->advisor_resolution_date;
-            $advisor->type = "Natural";
+            $advisor->type = "Natural";            
             $advisor->save();
             
             $advisor_beneficiary = new RetFunAdvisorBeneficiary();
@@ -172,8 +174,8 @@ class RetirementFundController extends Controller
             $legal_guardian->second_name = $request->applicant_second_name;
             $legal_guardian->surname_husband = $request->applicant_surname_husband;        
             //$legal_guardian->gender = "M";                    
-            $legal_guardian->phone_number = $request->applicant_phone_number;
-            $legal_guardian->cell_phone_number = $request->applicant_cell_phone_number;        
+            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));            
+            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_phone_number));
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;            
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
@@ -466,6 +468,7 @@ class RetirementFundController extends Controller
         $retirement_fund = RetirementFund::find($ret_fun_id);
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
         $affiliate = $retirement_fund->affiliate;
+        $dates_global = $affiliate->getDatesGlobal();
         $dates_contributions = $affiliate->getDatesContributions();
         $dates_availability = $affiliate->getDatesAvailability();
         $dates_item_zero = $affiliate->getDatesItemZero();
@@ -479,6 +482,7 @@ class RetirementFundController extends Controller
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
+            'dates_global' => $dates_global,
             'dates_availability' => $dates_availability,
             'dates_item_zero' => $dates_item_zero,
             'dates_contributions' => $dates_contributions,
@@ -803,7 +807,7 @@ class RetirementFundController extends Controller
 
         if ($has_availability) {
             $subtotal_availability = ($retirement_fund->subtotal_availability );
-            $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield/100);
+            $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield)/100;
             $total_availability = $subtotal_availability + $total_annual_yield;
             $total = $total + $total_availability;
 
@@ -852,6 +856,7 @@ class RetirementFundController extends Controller
                 array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
             }
         }
+        Log::info("total disponibilidad: ".json_encode($retirement_fund));
         $data = [
             'has_availability' => $has_availability,
             'subtotal_availability' => $subtotal_availability ?? 0,
@@ -870,7 +875,7 @@ class RetirementFundController extends Controller
 
         /**added function calculate sub_total_availability */
         $subtotal_availability = ($retirement_fund->subtotal_availability);
-        $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield / 100);
+        $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield) / 100;
         $total_availability = $subtotal_availability + $total_annual_yield;
         $retirement_fund->total_availability =  $total_availability;
         $retirement_fund->save();
