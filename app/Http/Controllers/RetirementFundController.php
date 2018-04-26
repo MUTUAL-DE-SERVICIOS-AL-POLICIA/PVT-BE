@@ -59,8 +59,8 @@ class RetirementFundController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $requirements = ProcedureRequirement::select('id')->get();        
+
+        $requirements = ProcedureRequirement::select('id')->get();
         
         $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled',true)->select('id')->first();
         
@@ -97,9 +97,7 @@ class RetirementFundController extends Controller
         $retirement_fund->wf_state_current_id = 1;
         //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal_ret_fun = 0;
-        $retirement_fund->total_ret_fun = 0;
-        $retirement_fund->total = 0;
-        $retirement_fund->subtotal = 0;
+        $retirement_fund->total_ret_fun = 0;       
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
                 
