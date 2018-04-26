@@ -13,8 +13,7 @@
         {{-- <a href="{{route('create_quota_aid', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Initar tr&aacute;mite de CUOTA Y AUXILIO MORTUORIO"><i class="fa fa-paste"></i> </button>
         </a> --}}
-        
-        @can('create',Muserpol\Models\Contribution\Contribution::class)
+        @can('create', new Muserpol\Models\RetirementFund\RetirementFund)
         <a href="{{route('create_ret_fun', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO"><i class="fa fa-paste"></i> </button>
         </a>
@@ -23,10 +22,10 @@
         <a href="{{route('show_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"></i> </button>
         </a>
-        @endcan
         <a href="{{route('show_aid_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"></i> </button>
         </a>
+        @endcan
     </div>
     <div class="row">
         <div class="col-md-6">
