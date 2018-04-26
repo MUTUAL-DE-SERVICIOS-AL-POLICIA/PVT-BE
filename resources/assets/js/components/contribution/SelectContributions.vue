@@ -11,8 +11,7 @@
         </div>
     </div> -->
 
-  <div class="col-md-12 col-lg-12 col-sm-12">
-     <div class="col-md-12"> <!--60 aportes -->
+  <div class="col-md-12 col-lg-11 col-sm-12">
         <div class="ibox float-e-margins ibox-primary">
           <!-- <div class="ibox-title"> -->
               <!-- <h5>Aportes <small class="m-l-sm"></small></h5> <i :class="order_aportes?'fa fa-sort-amount-desc':'fa fa-sort-amount-asc'" @click="orderList"></i> -->
@@ -32,7 +31,6 @@
                             <a :href="this.urlcertification" class="btn btn-sm btn-primary " v-if="count(servicio.id)>0" ><i class="fa fa-file-pdf-o"></i> 60 Aportes </a>
                             <a :href="this.ulrzero" class="btn btn-sm btn-primary " v-if="count(item0.id)>0" ><i class="fa fa-file-pdf-o"></i> Item 0 </a>
                             <a :href="this.urlavailable" class="btn btn-sm btn-primary " v-if="count(disponibilidad.id)>0"><i class="fa fa-file-pdf-o"></i> Disponibilidad </a>
-                            <button class="btn btn-default" @click="selectRow" > select row </button>
                         </div>  
                     </div>
                     <div class="col-md-5">
@@ -67,43 +65,57 @@
                     </div>
                     
                 </div>
-                
-              <table class="table " id="contribution_table">
-                <thead>
-                <tr> 
-                    <th class="col-xs-1">Fecha </th>
-                    <th class="col-xs-3">Sueldo</th>
-                    <th class="col-xs-3">Categoria</th>
-                    <th class="col-xs-2">Total</th>
-                    <th class="col-xs-3">Tipo</th>
-                </tr>
-                </thead>
-              <tbody id="contenedor">
-                <tr v-for="contribution in list_aportes" :key="contribution.id" :class="getColor(contribution.breakdown_id)" >
-                    <td class="col-xs-1">{{getFormatDate(contribution.month_year)}}</td>
-                    <td class="col-xs-3">{{contribution.base_wage}}</td>
-                    <td class="col-xs-3">{{contribution.category_name}}</td>
-                    <td class="col-xs-2">{{ contribution.total }}</td>
-                    <td class="col-xs-3">
-                        <select class="form-control" v-model="contribution.breakdown_id" >
-                        <option v-for="item in list_types" :value="item.id" :key="item.id"> {{item.name}}</option>
-                        </select>
-                    </td>
-                </tr>
-              </tbody>
-              </table>
+                <div class="row">
+                    <div class="col-md-1">  
+                            <label style="font-size:80%;" > {{ getFormatDate(list_aportes[0].month_year) }}</label>                           
+                            <div style="border-style: solid; border-width: 1px; ">
+                                <div v-for="(contribution,index) in list_aportes" :key="contribution.id" >
+                                        <div :style="getStyle(contribution.breakdown_id)" @click="selectRow(index)" data-toggle="tooltip" data-placement="left" :title="getFormatDate(contribution.month_year)"></div> 
+                                </div>
+                            </div>
+                            <label style="font-size:80%;"> {{ getFormatDate(list_aportes[list_aportes.length-1].month_year) }}</label>                           
+
+                    </div>
+                    <div class="col-md-11">
+                        <table class="table " id="contribution_table">
+                            <thead>
+                            <tr> 
+                                <th class="col-md-1">Fecha </th>
+                                <th class="col-md-3">Sueldo</th>
+                                <th class="col-md-3">Categoria</th>
+                                <th class="col-md-2">Total</th>
+                                <th class="col-md-3">Tipo</th>
+                            </tr>
+                            </thead>
+                        <tbody id="contenedor">
+                            <tr v-for="contribution in list_aportes" :key="contribution.id" :class="getColor(contribution.breakdown_id)" >
+                                <td class="col-md-1">{{getFormatDate(contribution.month_year)}}</td>
+                                <td class="col-md-3">{{contribution.base_wage}}</td>
+                                <td class="col-md-3">{{contribution.category_name}}</td>
+                                <td class="col-md-2">{{ contribution.total }}</td>
+                                <td class="col-md-3">
+                                    <select class="form-control" v-model="contribution.breakdown_id" >
+                                    <option v-for="item in list_types" :value="item.id" :key="item.id"> {{item.name}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+
+                </div>
 
           </div>
           <div class="ibox-footer">
-              <span class="pull-right">
-                  Cantidad: {{list_aportes.length}}
-          </span>
+                <button class="btn btn-primary btn-sm" @click="save" ><i class="fa fa-arrow-right"></i> Clasificar</button>
+                
+                <span class="pull-right">
+                <strong>  Cantidad: {{list_aportes.length}} </strong>
+                </span>
               <br>
           </div>
       </div>
-      <button class="btn btn-primary" @click="save" ><i class="fa fa-arrow-right"></i> Clasificar</button>
-   
-    </div>
+     
    
   </div>
     <!-- adicionando modal -->
@@ -182,7 +194,7 @@ export default {
         order_aportes: true,
         show_certification: false,
         modal: { first_date: null, last_date: null,contribution_type_id: null},
-        position_top: 0
+        row_higth: 0
     }
   },
   created: function () {
@@ -276,6 +288,7 @@ export default {
     }
     // console.log(list);
     this.list_aportes = list;
+    this.row_higth = 385/this.list_aportes.length;
   },
   methods:{
     orderList () {
@@ -287,17 +300,10 @@ export default {
       }
       this.order_aportes = !this.order_aportes;
     },
-    selectRow(){
-        console.log('select row event');
-        // var rowpos = $('#contribution_table tr:last').position(); 
-        // var sizecell = rowpos.top / this.list_aportes.length ;
-        // rowpos.top =800;
-        // var rowpos = {top: this.position_top, left: 0}
-        // console.log(sizecell);
-        // this.position_top += 51;
-        this.position_top = 15*51;
-        $('#contenedor').scrollTop(this.position_top);
-
+    selectRow(index){
+        console.log('select row index: '+index);
+        // this.position_top = index*51;
+        $('#contenedor').scrollTop(index*51);
     },
     save(){
         if(this.checkList())
@@ -329,6 +335,39 @@ export default {
             if(aporte.breakdown_id==3)
                 this.list_item0.push(aporte);
         });
+    },
+    getStyle(breakdown_id){
+        let style = 'display: block;width: 100%; height:'+this.row_higth+'px;';
+         var color="cya";
+        switch (breakdown_id) {
+            case this.disponibilidad.id:
+                color="#aeda8a";
+                break;
+            case this.item0.id:
+                color="#f7f097fd";
+                break;
+            case this.servicio.id:
+                color="#ffffff";
+                break;
+            case this.bfs.id:
+                color="#a1a7fffd";
+                break;
+            case this.nh.id:
+                color="#e0ad7dfd";
+                break;
+            case this.cas.id:
+                color="#80e9bdfd";
+                break;
+            case 0:
+                color="#bbbaadfd";
+                break;
+            default: 
+                console.log(breakdown_id);
+            break;
+            
+        }
+        console.log(style);
+        return style+'background:'+color+';';
     },
     getColor(breakdown_id)
     {
@@ -365,7 +404,7 @@ export default {
     getFormatDate(fecha)
     {
         let str = fecha.split('-');
-        return str[0]+' - '+parseInt(str[1]);
+        return str[1]+' - '+parseInt(str[0]);
     },
     searchContribution(date)
     {   
@@ -550,21 +589,21 @@ display: inline-table;
 }
 
 table{
- height:300px; 
+ height:350px; 
 }
 thead{
   width: 100%;
 }
 tbody{
   overflow-y: scroll;
-  height: 300px;
-  width: 95%;
+  height: 350px;
+  width: 97%;
   position: absolute;
 }
 .square {
   display: block;
   width: 15px;
-  height: 15px;
-  background: #a1a7fffd;
+  height: 1px;
+  background: #124405fd;
 }
 </style>|
