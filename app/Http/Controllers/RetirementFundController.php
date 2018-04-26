@@ -98,6 +98,8 @@ class RetirementFundController extends Controller
         //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal_ret_fun = 0;
         $retirement_fund->total_ret_fun = 0;
+        $retirement_fund->total = 0;
+        $retirement_fund->subtotal = 0;
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
                 
@@ -145,13 +147,13 @@ class RetirementFundController extends Controller
             $advisor->first_name = $request->applicant_first_name;
             $advisor->second_name = $request->applicant_second_name;
             $advisor->surname_husband = $request->applicant_surname_husband;        
-            $advisor->gender = "M";                    
-            $advisor->phone_number = $request->applicant_phone_number;
-            $advisor->cell_phone_number = $request->applicant_cell_phone_number;        
+            //$advisor->gender = "M";                    
+            $advisor->phone_number = trim(implode(",", $request->applicant_phone_number));
+            $advisor->cell_phone_number = trim(implode(",", $request->applicant_phone_number));
             $advisor->name_court = $request->advisor_name_court;            
             $advisor->resolution_number = $request->advisor_resolution_number;
             $advisor->resolution_date = $request->advisor_resolution_date;
-            $advisor->type = "Natural";
+            $advisor->type = "Natural";            
             $advisor->save();
             
             $advisor_beneficiary = new RetFunAdvisorBeneficiary();
@@ -172,8 +174,8 @@ class RetirementFundController extends Controller
             $legal_guardian->second_name = $request->applicant_second_name;
             $legal_guardian->surname_husband = $request->applicant_surname_husband;        
             //$legal_guardian->gender = "M";                    
-            $legal_guardian->phone_number = $request->applicant_phone_number;
-            $legal_guardian->cell_phone_number = $request->applicant_cell_phone_number;        
+            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));            
+            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_phone_number));
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;            
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
