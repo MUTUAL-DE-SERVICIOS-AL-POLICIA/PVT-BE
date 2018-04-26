@@ -1,7 +1,6 @@
 export function moneyInputMaskAll() {
-    
     document.querySelectorAll('input').forEach(element => {
-        if (element.getAttribute('data-money') == "true") {                        
+        if (element.getAttribute('data-money') == "true") {
             Inputmask(moneyInputMask()).mask(element);
         }
     });
@@ -30,4 +29,18 @@ export function parseMoney(value) {
     let result = value.replace(/(Bs|\s+)/ig, ``);
     result = result.replace(/,/g, ``);
     return result;
+}
+
+export function cellPhoneInputMaskAll() {
+    document.querySelectorAll('input').forEach(element => {
+        if (element.getAttribute('data-cell-phone') == "true") {
+            Inputmask(cellPhoneInputMask()).mask(element);
+        }
+    });
+}
+export function cellPhoneInputMask() {
+    return {
+        alias: "phone",
+        inputFormat: "(999)-99999",
+    }
 }
