@@ -1,5 +1,6 @@
 <script>
 import {mapGetters} from 'vuex';
+import { cellPhoneInputMaskAll, phoneInputMaskAll }  from "../../helper.js";
 export default {
   props:[
     'modality',
@@ -17,8 +18,9 @@ export default {
       applicant_mothers_last_name: '',
       applicant_surname_husband: '',
       applicant_identity_card: '',
-      applicant_city_identity_card: '',
-      applicant_kinship: '',
+      applicant_city_identity_card_id: '',
+      applicant_kinship_id: '',
+      applicant_birth_date: '',
       applicant_phone_number: '',
       applicant_cell_phone_number: '',
       advisor_resolution_number: '',
@@ -47,10 +49,12 @@ export default {
       applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
     }
   },
-  created(){
+  mounted(){
     //this or define initial value  => [{ value:null }]
     this.addPhoneNumber();
     this.addCellPhoneNumber();
+    cellPhoneInputMaskAll();
+    phoneInputMaskAll();
   },
   computed:{
     ...mapGetters({
@@ -60,6 +64,7 @@ export default {
   methods: {
     addPhoneNumber(){
       this.applicant_phone_numbers.push({value:null});
+      phoneInputMaskAll();
     },
     deletePhoneNumber(index){
       this.applicant_phone_numbers.splice(index,1);
@@ -68,6 +73,7 @@ export default {
     },
     addCellPhoneNumber(){
       this.applicant_cell_phone_numbers.push({value:null});
+      cellPhoneInputMaskAll();
     },
     deleteCellPhoneNumber(index){
       this.applicant_cell_phone_numbers.splice(index,1);
@@ -114,9 +120,10 @@ export default {
       this.applicant_surname_husband = data.surname_husband;
       this.applicant_surname_husband = data.surname_husband,
       this.applicant_identity_card = data.identity_card;
-      this.applicant_city_identity_card = data.city_identity_card_id;
+      this.applicant_city_identity_card_id = data.city_identity_card_id;
       this.applicant_gender = data.gender;
-      this.applicant_kinship = data.kinship_id;
+      this.applicant_kinship_id = data.kinship_id;
+      this.applicant_birth_date = data.birth_date;
       this.applicant_phone_numbers = data.phone_number;
       this.applicant_cell_phone_numbers = data.cell_phone_number;
     },
@@ -168,9 +175,10 @@ export default {
       this.applicant_surname_husband = '';
       this.applicant_surname_husband = '';
       this.applicant_identity_card = '';
-      this.applicant_city_identity_card = '';
+      this.applicant_city_identity_card_id = '';
       this.applicant_gender = '';
-      this.applicant_kinship = '';
+      this.applicant_kinship_id = '';
+      this.applicant_birth_date = '';
       this.applicant_cell_phone_numbers = [{value:null}]
       this.applicant_phone_numbers = [{value:null}];
     },
@@ -182,11 +190,12 @@ export default {
         this.applicant_surname_husband = this.affiliate.surname_husband;
         this.applicant_surname_husband = this.affiliate.surname_husband,
         this.applicant_identity_card = this.affiliate.identity_card;
-        this.applicant_city_identity_card = this.affiliate.city_identity_card_id;
+        this.applicant_city_identity_card_id = this.affiliate.city_identity_card_id;
         this.applicant_gender = this.affiliate.gender;
+        this.applicant_birth_date = this.affiliate.birth_date;
+        this.applicant_kinship_id = 1;
         this.applicant_phone_numbers = !! this.affiliate.phone_number ? this.parsePhone(this.affiliate.phone_number.split(',')) : [{value:null}];
         this.applicant_cell_phone_numbers = !! this.affiliate.cell_phone_number ? this.parsePhone(this.affiliate.cell_phone_number.split(',')) : [{value:null}];
-        this.applicant_kinship = 1;
     },
     parsePhone(phones){
       return phones.map(phone => {
@@ -202,9 +211,10 @@ export default {
         this.applicant_mothers_last_name = this.spouse.mothers_last_name;
         this.applicant_surname_husband = this.spouse.surname_husband,
         this.applicant_identity_card = this.spouse.identity_card;
-        this.applicant_city_identity_card = this.spouse.city_identity_card_id;
+        this.applicant_city_identity_card_id = this.spouse.city_identity_card_id;
         this.applicant_gender = this.setSpouseGender();
-        this.applicant_kinship = 2;
+        this.applicant_birth_date = this.spouse.birth_date;
+        this.applicant_kinship_id = 2;
     },
     setSpouseGender(){
       return this.affiliate.gender == 'M' ? 'F' : 'M';

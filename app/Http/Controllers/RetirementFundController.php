@@ -130,6 +130,7 @@ class RetirementFundController extends Controller
         $beneficiary->first_name = $request->applicant_first_name;
         $beneficiary->second_name = $request->applicant_second_name;
         $beneficiary->surname_husband = $request->applicant_surname_husband;        
+        $beneficiary->birth_date = $request->applicant_birth_date;        
         $beneficiary->gender = "M";        
         $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_phone_number));        
@@ -370,7 +371,7 @@ class RetirementFundController extends Controller
         
         $this->authorize('create',RetirementFund::class);
         $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);

@@ -57,11 +57,18 @@
                     <div class="col-md-5">
                         <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedicion</label>
                             <div class="col-sm-8">
-                                <select class="form-control m-b" name="applicant_city_identity_card" v-model="applicant_city_identity_card">
+                                <select class="form-control m-b" name="applicant_city_identity_card" v-model="applicant_city_identity_card_id">
                                     <option v-for="city in cities" :value="city.id">
                                         @{{ city.name }}
                                     </option>
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group"><label class="col-sm-4 control-label">Fechad de Nacimiento</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control" v-model="applicant_birth_date">
                             </div>
                         </div>
                     </div>
@@ -80,7 +87,7 @@
                     <div class="col-md-4">
                         <div class="form-group"><label class="col-sm-6 control-label">Parentesco</label>
                             <div class="col-sm-6">
-                                <select class="form-control m-b" name="applicant_kinship" v-model="applicant_kinship">
+                                <select class="form-control m-b" name="applicant_kinship" v-model="applicant_kinship_id">
                                     <option v-for="kinship in kinships" :value="kinship.id">
                                         @{{ kinship.name }}
                                     </option>
@@ -92,7 +99,7 @@
                         <div class="form-group"><label class="col-sm-3 control-label">Telefono del Solicitante</label>
                             <div v-for="(phone,index) in applicant_phone_numbers">
                                 <div class="col-sm-6">
-                                    <input type="text" name="applicant_phone_number[]" v-model="phone.value" :key="index" class="form-control">
+                                    <input type="text" name="applicant_phone_number[]" v-model="phone.value" :key="index" class="form-control" data-phone="true">
                                 </div>
                                 <div class="col-sm-1 no-padding">
                                     <button class="btn btn-danger" v-show="applicant_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-times"></i></button>
@@ -101,11 +108,13 @@
                             <button class="btn btn-success" type="button" @click="addPhoneNumber"><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
+                    <input type="text" data-phone="true" id="hola">
+
                     <div class="col-md-4">
                         <div class="form-group"><label class="col-sm-3 control-label">Celular del Solicitante</label>
                             <div v-for="(cell_phone,index) in applicant_cell_phone_numbers">
                                 <div class="col-sm-6 no-padding">
-                                    <input type="text" name="applicant_cell_phone_number[]" v-model="cell_phone.value" :key="index" class="form-control">
+                                    <input type="text" name="applicant_cell_phone_number[]" v-model="cell_phone.value" :key="index" class="form-control" data-cell-phone="true">
                                 </div>
                                 <div class="col-sm-1 no-padding">
                                     <button class="btn btn-danger" v-show="applicant_cell_phone_numbers.length > 1" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-times"></i></button>
@@ -121,7 +130,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group"><label class="col-sm-4 control-label">Nombre de Juzgado</label>
-                                <div class="col-sm-8"><input type="text" name="advisor_name_court" v-model="applicant_city_identity_card" class="form-control"></div>
+                                <div class="col-sm-8"><input type="text" name="advisor_name_court" v-model="applicant_city_identity_card_id" class="form-control"></div>
                             </div>
                         </div>
                         <div class="col-md-4">

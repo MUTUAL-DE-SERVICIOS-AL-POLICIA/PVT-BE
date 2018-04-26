@@ -34,13 +34,22 @@ export function parseMoney(value) {
 export function cellPhoneInputMaskAll() {
     document.querySelectorAll('input').forEach(element => {
         if (element.getAttribute('data-cell-phone') == "true") {
+            console.log(`found cell phone ${element}`);
             Inputmask(cellPhoneInputMask()).mask(element);
         }
     });
 }
 export function cellPhoneInputMask() {
-    return {
-        alias: "phone",
-        inputFormat: "(999)-99999",
-    }
+    return "(999)-99999";
+}
+export function phoneInputMaskAll() {
+    document.querySelectorAll('input').forEach(element => {
+        if (element.getAttribute('data-phone') == "true") {
+            console.log(`found phone ${element}`);
+            Inputmask(phoneInputMask()).mask(element);
+        }
+    });
+}
+export function phoneInputMask() {
+    return "(9) 999-999";
 }

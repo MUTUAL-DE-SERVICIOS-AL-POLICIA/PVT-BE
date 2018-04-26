@@ -35,6 +35,11 @@ Vue.use(VueSweetalert2);
 import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate);
 
+import vSelect from 'vue-select'
+Vue.component('v-select', vSelect)
+
+Vue.component('v-select', vSelect)
+
 import VueCurrencyFilter from 'vue-currency-filter';
 
 Vue.use(VueCurrencyFilter,
