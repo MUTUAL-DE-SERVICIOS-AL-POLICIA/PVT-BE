@@ -33,11 +33,10 @@
             <div class="col-md-6">
                 @include('contribution.aditional_info',['summary',$summary])
             </div>
-            @can('view',new Muserpol\Models\Contribution\ContributionCommitment)            
+                       
             <div class="col-md-6">
                 @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
             </div>
-            @endcan
         </div>
         <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
             <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}" :rate="{{$rate}}"></contribution-create>
