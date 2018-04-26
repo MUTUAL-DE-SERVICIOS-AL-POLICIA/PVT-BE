@@ -32,6 +32,7 @@
                             <a :href="this.urlcertification" class="btn btn-sm btn-primary " v-if="count(servicio.id)>0" ><i class="fa fa-file-pdf-o"></i> 60 Aportes </a>
                             <a :href="this.ulrzero" class="btn btn-sm btn-primary " v-if="count(item0.id)>0" ><i class="fa fa-file-pdf-o"></i> Item 0 </a>
                             <a :href="this.urlavailable" class="btn btn-sm btn-primary " v-if="count(disponibilidad.id)>0"><i class="fa fa-file-pdf-o"></i> Disponibilidad </a>
+                            <button class="btn btn-default" @click="selectRow" > select row </button>
                         </div>  
                     </div>
                     <div class="col-md-5">
@@ -67,7 +68,7 @@
                     
                 </div>
                 
-              <table class="table ">
+              <table class="table " id="contribution_table">
                 <thead>
                 <tr> 
                     <th class="col-xs-1">Fecha </th>
@@ -77,12 +78,12 @@
                     <th class="col-xs-3">Tipo</th>
                 </tr>
                 </thead>
-              <tbody>
+              <tbody id="contenedor">
                 <tr v-for="contribution in list_aportes" :key="contribution.id" :class="getColor(contribution.breakdown_id)" >
                     <td class="col-xs-1">{{getFormatDate(contribution.month_year)}}</td>
                     <td class="col-xs-3">{{contribution.base_wage}}</td>
                     <td class="col-xs-3">{{contribution.category_name}}</td>
-                    <td class="col-xs-2">{{contribution.total}}</td>
+                    <td class="col-xs-2">{{ contribution.total }}</td>
                     <td class="col-xs-3">
                         <select class="form-control" v-model="contribution.breakdown_id" >
                         <option v-for="item in list_types" :value="item.id" :key="item.id"> {{item.name}}</option>
@@ -146,7 +147,7 @@
     </div>
   </div>
   
-</template>
+</template>table
  
 <script>
 import draggable from 'vuedraggable'
@@ -181,6 +182,7 @@ export default {
         order_aportes: true,
         show_certification: false,
         modal: { first_date: null, last_date: null,contribution_type_id: null},
+        position_top: 0
     }
   },
   created: function () {
@@ -286,6 +288,18 @@ export default {
           this.list_aportes = this.list_aportes.sort((one,two) =>{return new Date(two.month_year)- new Date(one.month_year); })
       }
       this.order_aportes = !this.order_aportes;
+    },
+    selectRow(){
+        console.log('select row event');
+        // var rowpos = $('#contribution_table tr:last').position(); 
+        // var sizecell = rowpos.top / this.list_aportes.length ;
+        // rowpos.top =800;
+        // var rowpos = {top: this.position_top, left: 0}
+        // console.log(sizecell);
+        // this.position_top += 51;
+        this.position_top = 15*51;
+        $('#contenedor').scrollTop(this.position_top);
+
     },
     save(){
         if(this.checkList())
@@ -556,4 +570,4 @@ tbody{
   height: 15px;
   background: #a1a7fffd;
 }
-</style>
+</style>|
