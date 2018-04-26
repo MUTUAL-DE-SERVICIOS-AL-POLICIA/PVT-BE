@@ -600,24 +600,27 @@ class ContributionController extends Controller
     {
         // $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
         $ret_fun = RetirementFund::find($ret_fun_id);
+        $affiliate = Affiliate::find($ret_fun->affiliate_id);
         // $contribution =DB::table('contributions')->where('affiliate_id',$ret_fun->affiliate_id)->whereNull('deleted_at')->get();
         // return $contribution;
         $con_type = false;
         $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                   ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
                                                   ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                //   ->whereNull('contributions.deleted_at')
+                                                  ->where('contributions.month_year','>',$affiliate->date_entry)
+                                                  //   ->whereNull('contributions.deleted_at')
                                                   ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
-                                                //   ->take(10)
+                                                  //   ->take(10)
                                                   ->orderBy('contributions.month_year', 'desc')
                                                   ->get();
-        // $contributions = [];
-    //    return $contributions->count();
-       
+                                                  // $contributions = [];
+                                                  //    return $contributions->count();
+                                                  
         if(sizeof($contributions) == 0){
           $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                     ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
                                                     ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
+                                                    ->where('contributions.month_year','>',$affiliate->date_entry)
                                                     // ->whereNull('contributions.deleted_at')
                                                     ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                 //   ->take(10)
@@ -642,18 +645,19 @@ class ContributionController extends Controller
     {   
         // return $request->all();
         $ret_fun = RetirementFund::find($request->ret_fun_id);
+        $affiliate = Affiliate::find($ret_fun->affiliate_id);
         // return $ret_fun;
 
         // $ret_fun->contributions()->attach($sixty_id);
-        Log::info('imprimiendo contribuciones');
+        // Log::info('imprimiendo contribuciones');
         $i=0;
         foreach ($request->list_aportes as $obj) {
             # code...
              $aporte = (object) $obj;
              if($aporte->id == 0)
              {
-                    Log::info('intentando guardar objeto');
-                    Log::info(json_encode($aporte));
+                    // Log::info('intentando guardar objeto');
+                    // Log::info(json_encode($aporte));
                     $contribution = new Contribution;
                     $contribution->user_id = Auth::user()->id;
                     $contribution->affiliate_id = $ret_fun->affiliate_id;
@@ -684,6 +688,11 @@ class ContributionController extends Controller
             $i++;
             Log::info('i: '.$i.' id:'.$contribution->id);
         }
+        $total = $affiliate->getTotalContributionsAmount(Affiliate::DISPONIBILIDAD);
+        // return $total;
+        $ret_fun->total_availability =number_format((float)$total, 2, '.', ''); 
+        $ret_fun->save();
+        return  $ret_fun;
         return $request->all();
         // return redirect('/');     
     }
@@ -752,13 +761,10 @@ class ContributionController extends Controller
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        
         //total de los aportes
-        $aporte=0;
-        foreach($contributions as $contribution){
-            if($contribution->contribution_type_id==$disponibilidad->id){
-                $aporte=$aporte+$contribution->total;
-            }
-        }
+        $aporte=$retirement_fund->subtotal_availability;
+       
         return \PDF::loadView('contribution.print.certification_availability', compact('num','disponibilidad','aporte','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     public function printCertificationItem0($id)
