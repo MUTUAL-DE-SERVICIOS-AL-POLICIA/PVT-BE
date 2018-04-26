@@ -183,11 +183,13 @@ export default {
       $(".directContribution").removeClass("disableddiv");
     },
     Guardar() {
-      this.contributions = this.aidContributions.filter(item => {
+        console.log(this.contributions);
+      this.contributions = this.contributions.filter(item => {
         return (
           item.sueldo != 0 && item.auxilio_mortuorio != 0 && item.subtotal != 0
         );
       });
+      console.log(this.contributions);
        if (this.contributions.length > 0) {
         this.$swal({
           title: "Esta usted seguro de guardar?",
@@ -200,6 +202,7 @@ export default {
         }).then(result => {
           if (result.value) {
             var aportes = this.contributions;
+            console.log(aportes);
             axios
               .post("/aid_contribution_save", {
                 aportes,

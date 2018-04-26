@@ -165,6 +165,16 @@ class Affiliate extends Model
     {
         return $this->getContributionsWithType('Registro Segun CAS');
     }
+    public function getDatesGlobal()
+    {
+        $date = $this->date_entry;
+        if ($date < '1976-05-01') {
+            $dates[] = (object)array('start' => '1976-05-01', 'end' => $this->getLastDateContribution());
+        }else{
+            $dates[] = (object)array('start' => $date, 'end' => $this->getLastDateContribution());
+        }
+        return $dates;
+    }
     public function getContributionsWithType($name_contribution_type)
     {
         $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
@@ -204,14 +214,20 @@ class Affiliate extends Model
     }
     public function getTotalQuotes()
     {
+        $total_global_backed = Util::sumTotalContributions($this->getDatesGlobal());
         $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Servicio'));
         $total_item_zero_backed = Util::sumTotalContributions($this->getContributionsWithType('Item 0'));
         $total_availability_backed = Util::sumTotalContributions($this->getContributionsWithType('Disponibilidad'));
         $total_security_battalion_backed = Util::sumTotalContributions($this->getContributionsWithType('Batallon de Seguridad Fisica'));
         $total_cas_backed = Util::sumTotalContributions($this->getContributionsWithType('Registro Segun CAS'));
         $total_no_records_backed = Util::sumTotalContributions($this->getContributionsWithType('No Hay Registro'));
-        $total_quotes = ($total_contributions_backed ?? 0)
-            + ($total_item_zero_backed ?? 0)
+        // $total_quotes = ($total_contributions_backed ?? 0)
+        //     + ($total_item_zero_backed ?? 0)
+        //     - ($total_availability_backed ?? 0)
+        //     - ($total_security_battalion_backed ?? 0)
+        //     - ($total_cas_backed ?? 0)
+        //     - ($total_no_records_backed ?? 0);
+        $total_quotes = ($total_global_backed ?? 0)
             - ($total_availability_backed ?? 0)
             - ($total_security_battalion_backed ?? 0)
             - ($total_cas_backed ?? 0)
@@ -262,5 +278,14 @@ class Affiliate extends Model
             'total_average_salary_quotable' => $total_average_salary_quotable,
         ];
         return $data;
+    }
+    public function getLastDateContribution()
+    {
+        $date = $this->contributions()->max('month_year');
+        if ($date) {
+            return $date;
+        }
+        Log::info('contributions not found');
+        return 'error';
     }
 }

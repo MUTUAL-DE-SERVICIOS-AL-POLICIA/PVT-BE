@@ -208,7 +208,7 @@ class ProcedureTablesSeeder extends Seeder {
         ]);
 
         DB::table('ret_fun_procedures')->insert([
-            ['annual_yield' => '1', 'administrative_expenses' => '1', 'contributions_number' => '10'],
+            ['annual_yield' => '5.00', 'administrative_expenses' => '10.00', 'contributions_number' => '60'],
         ]);
 
     }

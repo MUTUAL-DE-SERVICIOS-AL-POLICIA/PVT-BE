@@ -6,9 +6,6 @@ export default {
       'rf_city_end',
       'rf_procedure_modality'
   ],
-  mounted(){
-      console.log("cechuz y karem ");
-  },
   data(){
       return{
           editing: false,
@@ -56,9 +53,6 @@ export default {
             this.city_start = response.data.city_start;
             this.form = response.data.retirement_fund;
             this.values.reception_date = response.data.retirement_fund.reception_date;
-            console.log('Lechuza y Karem');
-            // console.log(response.data);
-
             flash('Informacion Policial Actualizada');
           }).catch((response)=>{
             flash('Error al actualizar Informacion Policial: '+response.message,'error');

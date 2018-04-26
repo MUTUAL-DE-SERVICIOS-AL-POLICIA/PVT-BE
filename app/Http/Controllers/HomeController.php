@@ -39,6 +39,6 @@ class HomeController extends Controller
     }
     public function lechuz()
     {
-        return 'lechuz y Karem ';
+        return ' ';
     }
 }

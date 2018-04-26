@@ -18,14 +18,15 @@ class SequenceSeeder extends Seeder
             ['module_id' => '3', 'name' => 'Regional Cochabamba', 'action' => 'Recepcionado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],
             ['module_id' => '3', 'name' => 'Regional Oruro', 'action' => 'Recepcionado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],
             ['module_id' => '3', 'name' => 'Regional Potosí', 'action' => 'Recepcionado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],
-            ['module_id' => '3', 'name' => 'Regional Sucre', 'action' => 'Recepcionado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'], 
-            ['module_id' => '3', 'name' => 'Regional Taríja', 'action' => 'Recepcionado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],       
+            ['module_id' => '3', 'name' => 'Regional Sucre', 'action' => 'Recepcionado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],
+            ['module_id' => '3', 'name' => 'Regional Taríja', 'action' => 'Recepcionado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],
+            ['module_id' => '3', 'name' => 'Área de Tesorería ', 'action' => 'Pagado', 'created_at' => '1958/07/21', 'updated_at' => '1958/07/21'],
         ]);
         
         DB::table('wf_states')->insert([
             ['module_id' => '3', 'role_id' => '10', 'name' => 'Área de Recepción Fondo de Retiro', 'first_shortened' => 'Recepción'],
-        	['module_id' => '3', 'role_id' => '15', 'name' => 'Área de Archivo Fondo de Retiro', 'first_shortened' => 'Archivo'],
-        	['module_id' => '3', 'role_id' => '14', 'name' => 'Área de Legal Fondo de Retiro', 'first_shortened' => 'Legal'],
+            ['module_id' => '3', 'role_id' => '15', 'name' => 'Área de Archivo Fondo de Retiro', 'first_shortened' => 'Archivo'],
+            ['module_id' => '3', 'role_id' => '14', 'name' => 'Área de Legal Fondo de Retiro', 'first_shortened' => 'Legal'],
             ['module_id' => '3', 'role_id' => '12', 'name' => 'Área de Cuentas Individuales Fondo de Retiro', 'first_shortened' => 'Cuentas Individuales'],
             ['module_id' => '3', 'role_id' => '13', 'name' => 'Área de Calificación Fondo de Retiro', 'first_shortened' => 'Calificación'],
             ['module_id' => '3', 'role_id' => '28', 'name' => 'Área de Jefatura Fondo de Retiro', 'first_shortened' => 'Jefatura'],
