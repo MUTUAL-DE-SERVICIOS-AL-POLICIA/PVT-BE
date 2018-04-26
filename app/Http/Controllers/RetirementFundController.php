@@ -59,8 +59,57 @@ class RetirementFundController extends Controller
      */
     public function store(Request $request)
     {
+        //*********START VALIDATOR************//        
+        $rules=[];       
+        $biz_rules = [];
+                               
+        
+        $rules = [
+            'ret_fun_modality' =>  'required',
+        ];                           
+                
+        
+        $requirements = ProcedureRequirement::where('procedure_modality_id',$request->ret_fun_modality)->select('id','number')->orderBy('number','asc')->get();
+        $array_requirements = [];
+        foreach($requirements as $requirement){
+            $array_requirements[$requirement->number] = 0;
+        }
+        
+        foreach($requirements as $requirement){
+            if($request->input('document'.$requirement->id) == 'checked'){
+                $array_requirements[$requirement->number]++;
+            }
+        }
+        //return $array_requirements;
+        foreach($array_requirements as $key=>$requirement){
+            
+            if($requirement == 0)
+            {
+                $biz_rules = [
+                    'no_document'.$key   =>  'required'
+                ];         
+            }
+            if($requirement > 1)
+            {
+                $biz_rules = [
+                    'double_document'.$key  =>  'required'
+                ];         
 
-        $requirements = ProcedureRequirement::select('id')->get();
+            }
+            $rules = array_merge($rules,$biz_rules);
+        }
+        
+        $rules = array_merge($rules,$biz_rules);
+        $validator = Validator::make($request->all(),$rules);
+        if($validator->fails()){            
+            return response()->json($validator->errors(), 406);
+        }                
+        
+                
+         //*********END VALIDATOR************//  
+        
+        
+        $requirements = ProcedureRequirement::select('id')->get();        
         
         $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled',true)->select('id')->first();
         
@@ -97,7 +146,7 @@ class RetirementFundController extends Controller
         $retirement_fund->wf_state_current_id = 1;
         //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal_ret_fun = 0;
-        $retirement_fund->total_ret_fun = 0;       
+        $retirement_fund->total_ret_fun = 0;        
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
                 
