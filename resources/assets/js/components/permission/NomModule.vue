@@ -80,7 +80,7 @@ export default {
       SelectRol: function(role)
       { 
          this.role = role;
-         // var obj={operation_id: 1 , name: 'cechus y anita'};
+         // var obj={operation_id: 1 , name: 'a'};
          // console.log(obj);
          // for (var i = this.actions.length - 1; i >= 0; i--) {
            
@@ -125,7 +125,7 @@ export default {
               permissions.push(this.permissions_list[i]);
             }
           }
-          // console.log("cechus y karen size: "+permissions.length)
+          // console.log("size: "+permissions.length)
           // console.log(permissions);
           // for (var i = permissions.length - 1; i >= 0; i--) {
           //   console.log(permissions[i]);
@@ -150,11 +150,11 @@ export default {
                     .then(function (resp) {
                         // this.$router.push({path: '/'});
                         console.log(resp);
-                        flash('Informacion CYK Actualizada');
+                        flash('Informacion Actualizada');
                     })
                     .catch(function (resp) {
                         console.log(resp);
-                        flash('Error lechuza: '+resp.message,'error');
+                        flash('Error: '+resp.message,'error');
                     });
       }
 

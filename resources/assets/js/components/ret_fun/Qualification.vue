@@ -174,7 +174,7 @@ export default {
           this.beneficiariesAvailability = response.data.beneficiaries;
 
           this.arrayDiscounts = response.data.array_discounts;
-          console.log(response.data.array_discounts);
+          console.log(response.data.has_availability);
 
       }).catch(error =>{
         console.log(error);

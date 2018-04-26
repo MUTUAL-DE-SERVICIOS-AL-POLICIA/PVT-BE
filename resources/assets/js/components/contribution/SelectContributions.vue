@@ -237,7 +237,6 @@ export default {
             // console.log(list_hdp[i].breakdown_id);    
             // console.log(list_hdp[i].breakdown_name);    
         } 
-        console.log('con_type cechuz y anita')
         this.list_aportes = list_hdp;
     }
     console.log(this.con_type);
@@ -273,7 +272,6 @@ export default {
         }
         ff= year+'-'+month+'-01';
     }
-    console.log('lechuz se comio a la Karen XD ');
     // console.log(list);
     this.list_aportes = list;
   },
@@ -301,7 +299,7 @@ export default {
                         })
                         .catch(function (resp) {
                             console.log(resp);
-                            flash('Error lechuza: '+resp.message,'error');
+                            flash('Error: '+resp.message,'error');
                         });
         }else{
             flash('verifique que no existan aportes sin clasificar','warning');
@@ -310,7 +308,7 @@ export default {
      
     },
     classify(){
-        console.log('cechuz y karem');
+        
 
         this.list_aportes.forEach(aporte => {
             // console.log(aporte);
@@ -440,7 +438,6 @@ export default {
                     Vue.set(this.list_aportes,i,aporte);
                 }
             }
-            console.log('lechuz y kraken: se aplico los cambios ');
         }
     },
     isValid()

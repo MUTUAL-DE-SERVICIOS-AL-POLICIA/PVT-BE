@@ -294,7 +294,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Total aportes en disponibilidad</td>
-                                                    <td>@{{ subTotalAvailability }}</td>
+                                                    <td>@{{ subTotalAvailability | currency }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Con rendimiento del X% Anual</td>
