@@ -67,13 +67,13 @@
                 </div>
                 <div class="row">
                     <div class="col-md-1">  
-                            <label style="font-size:80%;" > {{ getFormatDate(list_aportes[0].month_year) }}</label>                           
+                            <label style="font-size:80%;" v-if="list_aportes.length>0" > {{ getFormatDate(list_aportes[0].month_year) }}</label>                           
                             <div style="border-style: solid; border-width: 1px; ">
                                 <div v-for="(contribution,index) in list_aportes" :key="contribution.id" >
                                         <div :style="getStyle(contribution.breakdown_id)" @click="selectRow(index)" data-toggle="tooltip" data-placement="left" :title="getFormatDate(contribution.month_year)"></div> 
                                 </div>
                             </div>
-                            <label style="font-size:80%;"> {{ getFormatDate(list_aportes[list_aportes.length-1].month_year) }}</label>                           
+                            <label style="font-size:80%;" v-if="list_aportes.length>0"> {{ getFormatDate(list_aportes[list_aportes.length-1].month_year) }}</label>                           
 
                     </div>
                     <div class="col-md-11">
@@ -87,19 +87,19 @@
                                 <th class="col-md-3">Tipo</th>
                             </tr>
                             </thead>
-                        <tbody id="contenedor">
-                            <tr v-for="contribution in list_aportes" :key="contribution.id" :class="getColor(contribution.breakdown_id)" >
-                                <td class="col-md-1">{{getFormatDate(contribution.month_year)}}</td>
-                                <td class="col-md-3">{{contribution.base_wage}}</td>
-                                <td class="col-md-3">{{contribution.category_name}}</td>
-                                <td class="col-md-2">{{ contribution.total }}</td>
-                                <td class="col-md-3">
-                                    <select class="form-control" v-model="contribution.breakdown_id" >
-                                    <option v-for="item in list_types" :value="item.id" :key="item.id"> {{item.name}}</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
+                            <tbody id="contenedor">
+                                <tr v-for="contribution in list_aportes" :key="contribution.id" :class="getColor(contribution.breakdown_id)" >
+                                    <td class="col-md-1">{{getFormatDate(contribution.month_year)}}</td>
+                                    <td class="col-md-3">{{contribution.base_wage}}</td>
+                                    <td class="col-md-3">{{contribution.category_name}}</td>
+                                    <td class="col-md-2">{{ contribution.total }}</td>
+                                    <td class="col-md-3">
+                                        <select class="form-control" v-model="contribution.breakdown_id" >
+                                        <option v-for="item in list_types" :value="item.id" :key="item.id"> {{item.name}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
 
@@ -123,15 +123,21 @@
         <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
                 
+               
+                <div class="modal-header">
+                    <h4 class="modal-title">Seleccion por rango de Fechas</h4>
+                    <!-- <div class="alert alert-info">
+                           Fecha Inicio: <strong> {{ getFormatDate(first_date.month_year) }} </strong> &nbsp;  Fecha Fin:<strong> {{ getFormatDate(last_date.month_year) }} </strong>
+                    </div> -->
+                    <small class="font-bold">De &nbsp; <strong> {{ getFormatDate(first_date.month_year) }} </strong> &nbsp;  hasta &nbsp; <strong> {{ getFormatDate(last_date.month_year) }} </strong></small>
+                </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <legend>Seleccion por Rango de Fechas</legend>
-                    </div>
+                   
                     <div class="row">
                         <div class="col-md-4"> <label>Tipo de contribucion</label></div>
                         <div class="form-group col-md-8" >
                             <select class="form-control" v-model="modal.contribution_type_id" >
-                            <option v-for="item in list_types" :value="item.id" :key="item.id"> {{item.name}}</option>
+                                <option v-for="item in list_types" :value="item.id" :key="item.id"> {{item.name}}</option>
                             </select>
                         </div>
                     </div>
@@ -149,10 +155,18 @@
                             <input class="form-control" type="date" v-model="modal.last_date">
                         </div>
                     </div>
+                
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-white" data-dismiss="modal">cancelar</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" @click="applyRangeDate"  >aceptar</button>
+                    <div class="col-md-5">
+                        <!-- <div class="alert alert-info">
+                            Rango de 1-1900 hasta 2-2016
+                        </div> -->
+                    </div>
+                    <div class="col-md-7">
+                        <button type="button" class="btn btn-white btn-sm" data-dismiss="modal"><i class="fa fa-close"></i> cancelar</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" @click="applyRangeDate"  > <i class="fa fa-check"></i> aceptar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -288,7 +302,7 @@ export default {
     }
     // console.log(list);
     this.list_aportes = list;
-    this.row_higth = 385/this.list_aportes.length;
+    this.row_higth = 386/this.list_aportes.length;
   },
   methods:{
     orderList () {
@@ -589,14 +603,14 @@ display: inline-table;
 }
 
 table{
- height:350px; 
+ height:400px; 
 }
 thead{
   width: 100%;
 }
 tbody{
   overflow-y: scroll;
-  height: 350px;
+  height: 400px;
   width: 97%;
   position: absolute;
 }
