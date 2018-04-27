@@ -65,6 +65,7 @@ class ContributionCommitmentController extends Controller
     public function update(Request $request, $id)
     {        
        //*********START VALIDATOR************//
+
        $date_commision = $request->commision_date;
        $limit=Carbon::now()->subDays(91);
        $rules = [           
@@ -86,7 +87,7 @@ class ContributionCommitmentController extends Controller
         
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
-           // $this->authorize('update', $commitment);
+            $this->authorize('update', $commitment);
             $commitment->state = 'BAJA';
             $commitment->save();
             $commitment->delete();            
@@ -95,12 +96,12 @@ class ContributionCommitmentController extends Controller
         
         if($request->id==0){            
             $commitment = new ContributionCommitment();  
-            //$this->authorize('update', $commitment);          
+            $this->authorize('update', $commitment);          
             $commitment->affiliate_id = $request->affiliate_id;            
         }
         else 
             $commitment = ContributionCommitment::find($request->id);
-           // $this->authorize('update', $commitment);                
+            $this->authorize('update', $commitment);                
         $commitment->commitment_type = $request->commitment_type;
         $commitment->commitment_date = $request->commitment_date;
         $commitment->number = $request->number;
@@ -111,7 +112,6 @@ class ContributionCommitmentController extends Controller
         $commitment->save();
         ///'COMISION', 'BAJA TEMPORAL','AGREGADO POLICIAL'
         $affiliate = Affiliate::find($commitment->affiliate_id);
-        //$this->authorize('update', $affiliate);
         if($commitment->commitment_type == 'COMISION')
             $affiliate->affiliate_state_id = 2;
         if($commitment->commitment_type == 'BAJA TEMPORAL')
