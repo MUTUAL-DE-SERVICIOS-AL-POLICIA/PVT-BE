@@ -13,6 +13,8 @@ import { mapState, mapMutations } from 'vuex';
                 ciudad:null,
                 options:['hola','nbns','sda','a','s','sd'],
                 name:null,
+                email:null,
+
                 editing: false,
                 requirementList: [],
                 modality: null,

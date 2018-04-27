@@ -47,6 +47,11 @@ export default {
       show_advisor_form: false,
       show_apoderado_form: false,
       applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
+
+
+      error:{
+        applicant_identity_card: false,
+      }
     }
   },
   mounted(){
@@ -58,8 +63,11 @@ export default {
   },
   computed:{
     ...mapGetters({
-            retfun: 'getData'
-        }),
+        retfun: 'getData'
+    }),
+    applicantIsMale(){
+      return this.applicant_gender == 'M';
+    }
   },
   methods: {
     addPhoneNumber(){
@@ -220,6 +228,6 @@ export default {
       return this.affiliate.gender == 'M' ? 'F' : 'M';
     }
 
-  }
+  },
 }
 </script>

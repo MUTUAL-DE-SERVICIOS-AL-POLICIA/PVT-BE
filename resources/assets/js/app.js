@@ -35,6 +35,10 @@ Vue.use(VueSweetalert2);
 import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate);
 
+
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+
 import vSelect from 'vue-select'
 Vue.component('v-select', vSelect)
 

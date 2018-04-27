@@ -41,16 +41,19 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group"><label class="col-sm-6 control-label">Apellido de Casada</label>
-                            <div class="col-sm-6"><input type="text" name="applicant_surname_husband" v-model="applicant_surname_husband" class="form-control"></div>
+                            <div class="col-sm-6"><input type="text" :disabled="applicantIsMale" name="applicant_surname_husband" v-model="applicant_surname_husband" class="form-control"></div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group"><label class="col-sm-6 control-label">Carnet de Identidad</label>
+                        <div class="form-group" :class="{'has-error': error.applicant_identity_card }">
+                            <label class="col-sm-6 control-label">Carnet de Identidad</label>
                             <div class="col-sm-6">
                                 <input type="text" name="applicant_identity_card" v-model="applicant_identity_card" class="form-control">
                                 <button @click="searchApplicant" type="button" role="button"><i class="fa fa-search"></i></button>
+                                <i v-show="error.applicant_identity_card" class="fa fa-warning text-danger"></i>
+                                <span v-show="error.applicant_identity_card" class="text-danger">@{{ errors.applicant_identity_card }}</span>
                             </div>
                         </div>
                     </div>

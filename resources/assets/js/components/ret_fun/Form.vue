@@ -2,8 +2,13 @@
 export default {
     data(){
         return{
+            pass:false,
             loadingWizard: false,
             count:0,
+            name:null,
+            email:null,
+            phone:null,
+            url:null,
         }
     },
     methods: {
@@ -14,16 +19,60 @@ export default {
             this.loadingWizard = value;
         },
         validateFirstStep() {
-            // this.$validator.validateAll().then((result) => {
-            //     if (!result) {
 
-            //     alert('Form Submitted!');
-            //     return;
-            //     }
+            if (!this.$refs.uno.$children[0].city_end_id) {
+                return false;
+            }
+            if (!this.$refs.uno.$children[0].modality) {
+                return false;
+            }
+            var someRequirement = this.$refs.uno.$children[0].requirementList.some((val)=>{
+                return val.status;
+            })
+            if (!someRequirement) {
+                return false;
+            }
+            return true;
+            // var deferred = $.Deferred();
 
-            //     alert('Correct them errors!');
-            // });
-            return this.$validator.validate('city_end_id');
+            // const val = this.$validator;
+            // setTimeout(function(){
+            //     val.validateAll((res)=>{
+            //         this.pass=res;
+            //     })
+            //     console.log("long func completed");
+            //     deferred.resolve("hello");
+            // }, 1000);
+            // return deferred.promise().then((h)=>{return this.pass});
+
+        },
+        validateSecondStep() {
+
+            if (!this.$refs.dos.$children[0].city_end_id) {
+                return false;
+            }
+            if (!this.$refs.uno.$children[0].modality) {
+                return false;
+            }
+            var someRequirement = this.$refs.uno.$children[0].requirementList.some((val)=>{
+                return val.status;
+            })
+            if (!someRequirement) {
+                return false;
+            }
+            return true;
+            // var deferred = $.Deferred();
+
+            // const val = this.$validator;
+            // setTimeout(function(){
+            //     val.validateAll((res)=>{
+            //         this.pass=res;
+            //     })
+            //     console.log("long func completed");
+            //     deferred.resolve("hello");
+            // }, 1000);
+            // return deferred.promise().then((h)=>{return this.pass});
+
         },
         sendApplicant() {
         let applicant = {
@@ -43,6 +92,35 @@ export default {
         this.$store.commit("setApplicant", applicant);
         return true;
         }
-    }
+    },
+    computed: {
+      checkboxErrors () {
+        const errors = []
+        if (!this.$v.checkbox.$dirty) return errors
+        !this.$v.checkbox.required && errors.push('You must agree to continue!')
+        return errors
+      },
+      selectErrors () {
+        const errors = []
+        if (!this.$v.select.$dirty) return errors
+        !this.$v.select.required && errors.push('Item is required')
+        return errors
+      },
+      nameErrors () {
+        const errors = []
+        if (!this.$v.name.$dirty) return errors
+        !this.$v.name.maxLength && errors.push('Name must be at most 10 characters long')
+        !this.$v.name.required && errors.push('Name is required.')
+        return errors
+      },
+      emailErrors () {
+        const errors = []
+        if (!this.$v.email.$dirty) return errors
+        !this.$v.email.email && errors.push('Must be valid e-mail')
+        !this.$v.email.required && errors.push('E-mail is required')
+        return errors
+      }
+    },
+
 };
 </script>

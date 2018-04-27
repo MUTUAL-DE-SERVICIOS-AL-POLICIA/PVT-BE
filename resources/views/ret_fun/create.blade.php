@@ -51,11 +51,21 @@
                             </tab-content>
                         </div>
                     </div>
+                    <div class="panel" :class="loadingWizard ? 'sk-loading' : ''">
+                        <div class="panel-body">
+                            <div class="sk-folding-cube" v-show="loadingWizard">
+                                <div class="sk-cube1 sk-cube"></div>
+                                <div class="sk-cube2 sk-cube"></div>
+                                <div class="sk-cube4 sk-cube"></div>
+                                <div class="sk-cube3 sk-cube"></div>
+                            </div>
                         <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="sendApplicant">
                             <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
                                     @include('ret_fun.step2_applicant')
                             </ret-fun-step2-applicant>
                         </tab-content>
+                        </div>
+                    </div>
                         <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
                             <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
                                 @include('ret_fun.step3_beneficiaries')
