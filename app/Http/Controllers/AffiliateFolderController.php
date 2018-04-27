@@ -38,7 +38,7 @@ class AffiliateFolderController extends Controller
     {
         $folder = new AffiliateFolder;
         // $folder=AffiliateFolder::find($request->affiliatefolder_id);
-        $this->authorize('update', $folder);
+        $this->authorize('create', $folder);
         $folder->affiliate_id = $request->affiliate_id;
         $folder->procedure_modality_id = $request->procedure_modality_id;
         $folder->code_file = $request->code_file;
@@ -91,13 +91,13 @@ class AffiliateFolderController extends Controller
     {
         //
         $folder=AffiliateFolder::find($request->code_file);
-        
+        $this->authorize('delete', $folder);
         $folder->delete();
-        //return redirect('affiliates.folder');
         return back()->withInput();
     }
     public function editFolder(Request $request){
         $folder=AffiliateFolder::find($request->folder_id);
+        $this->authorize('update', $folder);
         $folder->affiliate_id = $request->affiliate_id;
         $folder->procedure_modality_id = $request->procedure_modality_id;
         $folder->code_file = $request->code_file;

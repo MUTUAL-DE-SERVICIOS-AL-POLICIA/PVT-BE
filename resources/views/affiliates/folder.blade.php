@@ -29,8 +29,12 @@
                             <td> {{ $folder->procedure_modality->name }} </td>
                             <td> {{ $folder->code_file }} </td>
                             <td> {{ $folder->folder_number }} </td>
-                            <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog" data-modid="{{ $folder->procedure_modality_id }}" data-id="{{$folder->id}}" data-codfile="{{ $folder->code_file }}" data-folnum="{{ $folder->folder_number }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
-                            <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $folder->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button></td>
+                            @can('update', new Muserpol\Models\Affiliatefolder)
+                                <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog" data-modid="{{ $folder->procedure_modality_id }}" data-id="{{$folder->id}}" data-codfile="{{ $folder->code_file }}" data-folnum="{{ $folder->folder_number }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
+                            @endcan
+                            @can('delete', new Muserpol\Models\Affiliatefolder)
+                                <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $folder->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button></td>
+                            @endcan
                         </tr>
                         @endforeach
                         </tbody>

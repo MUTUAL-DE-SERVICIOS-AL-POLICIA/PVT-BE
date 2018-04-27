@@ -86,6 +86,9 @@ use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
 use Muserpol\Policies\RetFunSubmittedDocumentPolicy;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Policies\RetirementFundPolicy;
+
+use Muserpol\Models\Contribution\ContributionCommitment;
+use Muserpol\Policies\ContributionCommitmentPolicy;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -138,6 +141,7 @@ class AuthServiceProvider extends ServiceProvider
          RetFunProcedure::class => RetFunProcedurePolicy::class,
          RetFunSubmittedDocument::class => RetFunSubmittedDocumentPolicy::class,
          RetirementFund::class => RetirementFundPolicy::class,
+         ContributionCommitment::class => ContributionCommitmentPolicy::class,
     ];
 
     /**
