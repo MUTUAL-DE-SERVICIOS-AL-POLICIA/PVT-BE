@@ -6,7 +6,7 @@
         {{ Breadcrumbs::render('create_retirement_fund', $affiliate) }}
     </div>
 </div>
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content animated fadeInRight">    
     <div class="row">
         <div class="col-md-12">
             {{--  <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
@@ -17,6 +17,10 @@
         </div>
         <div class="col-md-12">
             <div class="ibox-content">
+                @if ($errors->any())                
+                    {{ implode('', $errors->all('<div>-:message</div><br>')) }}
+<!--                    <flash message="werwer"></flash>-->
+                @endif
                 {!! Form::open(['url' => 'ret_fun', 'method' => 'POST', 'id'=>'ret-fun-form']) !!}
                 <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
                 <ret-fun-form inline-template>
@@ -41,6 +45,6 @@
                 {!! Form::close() !!}
             </div>
         </div>
-    </div>
+    </div>            
 </div>
-@endsection
+@endsection   
