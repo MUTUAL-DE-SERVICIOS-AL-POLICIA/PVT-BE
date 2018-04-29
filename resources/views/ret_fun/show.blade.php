@@ -22,7 +22,8 @@
         
         @if(Muserpol\Helpers\Util::getRol()->id == 11)
         <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
-        @endif       
+        @endif
+        @can('view', new Muserpol\Models\Contribution\Contribution)   
     <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
             <button class="btn btn-primary dim"  data-toggle="tooltip" data-placement="top" title=" Clasificar Aportes " >
             <i class="fa fa-list-alt"></i>
@@ -31,6 +32,7 @@
         <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
             <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar"></i></button>
         </a>
+        @endcan
     </div>
     
     <div class="row">

@@ -56,6 +56,8 @@ class OperationSeeder extends Seeder
             ['module_id' => '3', 'name' => 'RetFunProcedure', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'RetFunSubmittedDocument', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'RetirementFund', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
+            ['module_id' => '3', 'name' => 'ContributionCommitment', 'created_at' => '2018/04/26', 'updated_at' =>'2018/04/26'],
+            ['module_id' => '3', 'name' => 'AidCommitment', 'created_at' => '2018/04/26', 'updated_at' =>'2018/04/26'],
         ]);
     }
 }
