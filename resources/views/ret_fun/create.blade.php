@@ -18,8 +18,8 @@
         <div class="col-md-12">
             <div class="ibox-content">
                 @if ($errors->any())                
-                    {{ implode('', $errors->all('<div>-:message</div><br>')) }}
-<!--                    <flash message="werwer"></flash>-->
+                    {{implode('', $errors->all('<div>-:message</div><br>')) }}
+                    <flash message="werwer"></flash>
                 @endif
                 {!! Form::open(['url' => 'ret_fun', 'method' => 'POST', 'id'=>'ret-fun-form']) !!}
                 <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
