@@ -75,10 +75,10 @@ class CreateRetirementFundTables extends Migration {
             $table->bigInteger('city_start_id')->unsigned()->nullable(); //ciudad donde se inicia el tramite.
             $table->bigInteger('city_end_id')->unsigned()->nullable(); //ciudad donde se entrega el pago.
             $table->bigInteger('workflow_id')->unsigned(); // identificador de flujo
-            $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado         
+            $table->bigInteger('wf_state_current_id')->unsigned(); //identificador de flujo de estado
             $table->string('code')->unique(); //codigo
             $table->date('reception_date')->nullable(); //fecha de recepcion
-            $table->enum('type', ['Pago', 'Anticipo'])->default('Pago'); //tipo
+            $table->enum('type', ['Pago', 'Anticipo'])->default('Pago')->nullable(); //tipo
             $table->decimal('average_quotable', 13, 2)->nullable();
             // $table->decimal('subtotal', 13, 2); // sub total
             $table->decimal('subtotal_ret_fun', 13, 2)->nullable(); // sub total
