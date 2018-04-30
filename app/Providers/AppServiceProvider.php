@@ -3,6 +3,10 @@
 namespace Muserpol\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Muserpol\Observers\AffiliateObserver;
+use Muserpol\Models\Affiliate;
+use Muserpol\Observers\RetirementFundObserver;
+use Muserpol\Models\RetirementFund\RetirementFund;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,6 +18,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        Affiliate::observe(AffiliateObserver::class);
+        RetirementFund::observe(RetirementFundObserver::class);
     }
 
     /**

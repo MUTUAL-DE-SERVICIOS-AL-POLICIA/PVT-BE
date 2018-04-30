@@ -18,7 +18,7 @@ class Records extends Migration
                 $table->bigIncrements('id');
                 $table->bigInteger('user_id')->unsigned();
                 $table->bigInteger('affiliate_id')->unsigned();
-                $table->bigInteger('message')->unsigned();
+                $table->string('message')->unsigned();
                 $table->foreign('user_id')->references('id')->on('users');
                 $table->foreign('affiliate_id')->references('id')->on('affiliates');
                 $table->timestamps();
@@ -27,7 +27,7 @@ class Records extends Migration
                 $table->bigIncrements('id');
                 $table->bigInteger('user_id')->unsigned();
                 $table->bigInteger('ret_fun_id')->unsigned();
-                $table->bigInteger('message')->unsigned();
+                $table->string('message')->unsigned();
                 $table->foreign('user_id')->references('id')->on('users');
                 $table->foreign('ret_fun_id')->references('id')->on('retirement_funds');
                 $table->timestamps();
@@ -36,7 +36,7 @@ class Records extends Migration
                 $table->bigIncrements('id');
                 $table->bigInteger('user_id')->unsigned();
                 $table->bigInteger('wf_state_id')->unsigned();
-                $table->bigInteger('message')->unsigned();
+                $table->string('message')->unsigned();
                 $table->foreign('user_id')->references('id')->on('users');
                 $table->foreign('wf_state_id')->references('id')->on('wf_states');
                 $table->timestamps();
