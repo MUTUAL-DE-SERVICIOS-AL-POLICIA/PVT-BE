@@ -23,7 +23,6 @@ export default {
     keyword: ''
   }),
   mounted () {
-    console.log(jQuery(this.$el).tooltip()) ;
     jQuery(this.$el).on('shown.bs.dropdown', e => this.$refs.input.focus());
   },
   watch: {
