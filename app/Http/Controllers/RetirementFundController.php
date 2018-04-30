@@ -66,7 +66,7 @@ class RetirementFundController extends Controller
         $last_name = $request->beneficiary_last_name;
         $mothers_last_name = $request->beneficiary_mothers_last_name;
         $surname_husband = $request->surname_husband;
-        $identity_card = (($request->beneficiary_identity_card));
+        $identity_card = $request->beneficiary_identity_card;
         $city_id = $request-> beneficiary_city_identity_card;
         $birth_date = $request->beneficiary_birth_date;
         $kinship = $request->beneficiary_kinship;
