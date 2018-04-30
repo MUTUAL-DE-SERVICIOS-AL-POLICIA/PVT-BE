@@ -47,19 +47,25 @@ export default {
 
         },
         validateSecondStep() {
+            if (!this.$refs.dos.$children[0].applicant_type) {
+                console.log("aqui");
+                
+                return false;
+            }
+            if (!this.$refs.dos.$children[0].applicant_identity_card) {
+                console.log("aqui 1");
+                return false;
+            }
+            if (!this.$refs.dos.$children[0].applicant_first_name) {
+                console.log("aqui 2");
+                return false;
+            }
+            if (!this.$refs.dos.$children[0].applicant_kinship_id) {
+                console.log("aqui 3");
+                return false;
+            }
 
-            if (!this.$refs.dos.$children[0].city_end_id) {
-                return false;
-            }
-            if (!this.$refs.uno.$children[0].modality) {
-                return false;
-            }
-            var someRequirement = this.$refs.uno.$children[0].requirementList.some((val)=>{
-                return val.status;
-            })
-            if (!someRequirement) {
-                return false;
-            }
+            this.sendApplicant();
             return true;
             // var deferred = $.Deferred();
 
