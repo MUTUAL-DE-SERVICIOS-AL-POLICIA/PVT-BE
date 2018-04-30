@@ -147,8 +147,8 @@ class RetirementFundController extends Controller
         
             $biz_rules = [
                 'beneficiary_first_name.'.$i =>  'required',
-                'beneficiary_identity_card.'.$i  =>  'required',
-                'beneficiary_kinship.'.$i    =>  'required',
+                //'beneficiary_identity_card.'.$i  =>  'required',
+                //'beneficiary_kinship.'.$i    =>  'required',
                 'beneficiary_has_lastname.'.$i   =>  $beneficiary_has_lastname?'required':'',
             ];
             $rules = array_merge($rules,$biz_rules);
