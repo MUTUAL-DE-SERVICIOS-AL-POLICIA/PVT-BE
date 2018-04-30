@@ -147,8 +147,8 @@ class RetirementFundController extends Controller
         
             $biz_rules = [
                 'beneficiary_first_name.'.$i =>  'required',
-                'beneficiary_identity_card.'.$i  =>  'required',
-                'beneficiary_kinship.'.$i    =>  'required',
+                //'beneficiary_identity_card.'.$i  =>  'required',
+                //'beneficiary_kinship.'.$i    =>  'required',
                 'beneficiary_has_lastname.'.$i   =>  $beneficiary_has_lastname?'required':'',
             ];
             $rules = array_merge($rules,$biz_rules);
@@ -222,14 +222,14 @@ class RetirementFundController extends Controller
                 
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_fund->id;
-        $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;
+        $beneficiary->city_identity_card_id = strtoupper(trim($request->applicant_city_identity_card));
         $beneficiary->kinship_id = $request->applicant_kinship;
         $beneficiary->identity_card = $request->applicant_identity_card;
-        $beneficiary->last_name = $request->applicant_last_name;
-        $beneficiary->mothers_last_name = $request->applicant_mothers_last_name;
-        $beneficiary->first_name = $request->applicant_first_name;
-        $beneficiary->second_name = $request->applicant_second_name;
-        $beneficiary->surname_husband = $request->applicant_surname_husband;        
+        $beneficiary->last_name = strtoupper(trim($request->applicant_last_name));
+        $beneficiary->mothers_last_name = strtoupper(trim($request->applicant_mothers_last_name));
+        $beneficiary->first_name = strtoupper(trim($request->applicant_first_name));
+        $beneficiary->second_name = strtoupper(trim($request->applicant_second_name));
+        $beneficiary->surname_husband = strtoupper(trim($request->applicant_surname_husband));        
         $beneficiary->birth_date = $request->applicant_birth_date;        
         $beneficiary->gender = "M";        
         $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
@@ -243,11 +243,11 @@ class RetirementFundController extends Controller
             $advisor->city_identity_card_id = $request->applicant_city_identity_card;
             $advisor->kinship_id = null;
             $advisor->identity_card = $request->applicant_identity_card;
-            $advisor->last_name = $request->applicant_last_name;
-            $advisor->mothers_last_name = $request->applicant_mothers_last_name;
-            $advisor->first_name = $request->applicant_first_name;
-            $advisor->second_name = $request->applicant_second_name;
-            $advisor->surname_husband = $request->applicant_surname_husband;        
+            $advisor->last_name = strtoupper(trim($request->applicant_last_name));
+            $advisor->mothers_last_name = strtoupper(trim($request->applicant_mothers_last_name));
+            $advisor->first_name = strtoupper(trim($request->applicant_first_name));
+            $advisor->second_name = strtoupper(trim($request->applicant_second_name));
+            $advisor->surname_husband = strtoupper(trim($request->applicant_surname_husband));
             //$advisor->gender = "M";                    
             $advisor->phone_number = trim(implode(",", $request->applicant_phone_number));
             $advisor->cell_phone_number = trim(implode(",", $request->applicant_phone_number));
@@ -268,12 +268,12 @@ class RetirementFundController extends Controller
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
             $legal_guardian->city_identity_card_id = $request->legal_guardian_identity_card;            
-            $legal_guardian->identity_card = $request->legal_guardian_identity_card  ;
-            $legal_guardian->last_name = $request->legal_guardian_last_name;
-            $legal_guardian->mothers_last_name = $request->legal_guardian_mothers_last_name;
-            $legal_guardian->first_name = $request->legal_guardian_first_name;
-            $legal_guardian->second_name = $request->legal_guardian_second_name;
-            $legal_guardian->surname_husband = $request->legal_guardian_surname_husband;        
+            $legal_guardian->identity_card = strtoupper(trim($request->legal_guardian_identity_card));
+            $legal_guardian->last_name = strtoupper(trim($request->legal_guardian_last_name));
+            $legal_guardian->mothers_last_name = strtoupper(trim($request->legal_guardian_mothers_last_name));
+            $legal_guardian->first_name = strtoupper(trim($request->legal_guardian_first_name));
+            $legal_guardian->second_name = strtoupper(trim($request->legal_guardian_second_name));
+            $legal_guardian->surname_husband = strtoupper(trim($request->legal_guardian_surname_husband));
             //$legal_guardian->gender = "M";                    
             $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));            
             $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_phone_number));
@@ -308,13 +308,13 @@ class RetirementFundController extends Controller
                 $beneficiary = new RetFunBeneficiary();
                 $beneficiary->retirement_fund_id = $retirement_fund->id;
                 $beneficiary->city_identity_card_id = $city_id[$i];
-                $beneficiary->kinship_id = $kinship[$i];
+                $beneficiary->kinship_id = $kinship[$i]??null;
                 $beneficiary->identity_card = $identity_card[$i];
-                $beneficiary->last_name = $last_name[$i];
-                $beneficiary->mothers_last_name = $mothers_last_name[$i];
-                $beneficiary->first_name = $first_name[$i];
-                $beneficiary->second_name = $second_name[$i];
-                $beneficiary->surname_husband = $surname_husband[$i];                
+                $beneficiary->last_name = strtoupper(trim($last_name[$i]));
+                $beneficiary->mothers_last_name = strtoupper(trim($mothers_last_name[$i]));
+                $beneficiary->first_name = strtoupper(trim($first_name[$i]));
+                $beneficiary->second_name = strtoupper(trim($second_name[$i]));
+                $beneficiary->surname_husband = strtoupper(trim($surname_husband[$i]));
                 $beneficiary->birth_date = $birth_date[$i];
                 $beneficiary->gender = "M";
                 //$beneficiary->civil_status = $request->
@@ -443,7 +443,7 @@ class RetirementFundController extends Controller
         
                                 
         $ret_funds = RetirementFund::select('retirement_funds.id','affiliates.first_name as first_name','affiliates.last_name as last_name','procedure_modalities.name as modality','workflows.name as workflow','retirement_funds.code','retirement_funds.reception_date','retirement_funds.total')
-                                ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
+                                ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
                                 ->where('affiliates.first_name','LIKE',$first_name.'%')
