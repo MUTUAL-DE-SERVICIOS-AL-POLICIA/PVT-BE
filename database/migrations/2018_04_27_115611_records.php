@@ -38,7 +38,7 @@ class Records extends Migration
                 $table->bigInteger('wf_state_id')->unsigned();
                 $table->bigInteger('message')->unsigned();
                 $table->foreign('user_id')->references('id')->on('users');
-                $table->foreign('wf_states_id')->references('id')->on('wf_states');
+                $table->foreign('wf_state_id')->references('id')->on('wf_states');
                 $table->timestamps();
         });
         
