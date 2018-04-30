@@ -23,9 +23,20 @@ class RetirementFundObserver
         $old = RetirementFund::find($rf->id);
         
         $message = 'El usuario '.Auth::user()->username.' modifico ';
-        if($rf->city_start_id != $old->city_end_id)
+        if($rf->city_start_id != $old->city_start_id)
         {
-            $message = $message . ' ciudad de recepcion  de '.$old->city_start->name.' a '.$rf->city_start->name;
+            $message = $message . ' ciudad de recepcion  de '.$old->city_start->name.' a '.$rf->city_start->name.', ';
+
+        }
+        
+        if($rf->city_end_id != $old->city_end_id)
+        {
+            $message = $message . ' ciudad de recepcion  de '.$old->city_end->name.' a '.$rf->city_end->name.', ';
+            
+        }
+        if($rf->reception_date != $old->reception_date)
+        {
+            $message = $message . ' fecha de recepcion '.$old->reception_date.' a '.$rf->reception_date.', ';
 
         }
 
