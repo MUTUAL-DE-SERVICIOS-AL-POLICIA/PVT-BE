@@ -41,34 +41,33 @@ class AffiliateController extends Controller
         $first_name = strtoupper($request->first_name) ?? '';
         $second_name = strtoupper($request->second_name) ?? '';
         $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
-        $identity_card = strtoupper($request->identity_card) ?? '';        
+        $identity_card = strtoupper($request->identity_card) ?? '';
         //$total=Affiliate::where('identity_card','LIKE',$identity_card.'%')->where('last_name','LIKE',$last_name.'%')->count();        
         //$total=6669783;
         //$affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->where('last_name','LIKE',$last_name.'%')->get();                
 
         $total = Affiliate::select('affiliates.id')//,'identity_card','registration','degrees.name as degree','first_name','second_name','last_name','mothers_last_name','civil_status')->
-                                ->leftJoin('degrees','affiliates.id','=','degrees.id')
-                                ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-                                ->where('affiliates.second_name','LIKE',$second_name.'%')
-                                ->where('affiliates.last_name','LIKE',$last_name.'%')
-                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')                                
-                                ->where('affiliates.identity_card','LIKE',$identity_card.'%')
+                                ->leftJoin('degrees', 'affiliates.id', '=', 'degrees.id')
+                                ->leftJoin('affiliate_states', 'affiliates.affiliate_state_id', '=', 'affiliate_states.id')
+                                ->whereRaw("coalesce(affiliates.first_name, '') LIKE '$first_name%'")
+                                ->whereRaw("coalesce(affiliates.second_name, '') LIKE '$second_name%'")
+                                ->whereRaw("coalesce(affiliates.last_name, '') LIKE '$last_name%'")
+                                ->whereRaw("coalesce(affiliates.mothers_last_name, '') LIKE '$mothers_last_name%'")
+                                ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
                                 ->count();
-        
+
         $affiliates = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->skip($offset)
                                 ->take($limit)
                                 ->orderBy($sort,$order)
-                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-                                ->where('affiliates.second_name','LIKE',$second_name.'%')
-                                ->where('affiliates.last_name','LIKE',$last_name.'%')
-                                ->where('affiliates.mothers_last_name','LIKE',$mothers_last_name.'%')
-                                ->where('affiliates.identity_card','LIKE',$identity_card.'%')
+                                ->whereRaw("coalesce(affiliates.first_name, '') LIKE '$first_name%'")
+                                ->whereRaw("coalesce(affiliates.second_name, '') LIKE '$second_name%'")
+                                ->whereRaw("coalesce(affiliates.last_name, '') LIKE '$last_name%'")
+                                ->whereRaw("coalesce(affiliates.mothers_last_name, '') LIKE '$mothers_last_name%'")
+                                ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
                                 ->get();
-        
         return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
     }
 
