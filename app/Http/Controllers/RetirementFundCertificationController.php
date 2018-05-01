@@ -123,6 +123,15 @@ class RetirementFundCertificationController extends Controller
         $number = $retirement_fund->code;
         $username = Auth::user()->username;//agregar cuando haya roles
         $date = Util::getStringDate($retirement_fund->reception_date);
+        $date = Util::getDateEdit(date('Y-m-d'));
+        setlocale(LC_ALL, "es_ES.UTF-8");
+        $date = strftime("%e de %B de %Y", strtotime(Carbon::createFromFormat('d/m/Y', $date)));
+        $type = "user";
+        $user = Auth::user();
+        $user_role = Util::getRol()->name;
+        $current_date = Carbon::now();
+        $anio = Util::getYear($request->from);
+        $hour = Carbon::parse($current_date)->toTimeString();                           
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
         $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id', $retirement_fund->id)->get();  
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
