@@ -32,7 +32,7 @@ class RetFunBeneficiary extends Model
       */
     public function fullName()
     {
-        $name = $this->first_name . ' ' . $this->second_name . ' ' . $this->last_name . ' ' . $this->mothers_last_name . ' ' . $this->applicant_surname_husband;
+        $name = $this->first_name . ' ' . $this->second_name . ' ' . $this->last_name . ' ' . $this->mothers_last_name . ' ' . $this->surname_husband;
         return Util::removeSpaces($name);
     }
     public function calcAge($text = false, $date_death = true)
