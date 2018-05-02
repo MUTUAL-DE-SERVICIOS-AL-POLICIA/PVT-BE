@@ -48,21 +48,29 @@ export default {
         },
         validateSecondStep() {
             if (!this.$refs.dos.$children[0].applicant_type) {
-                console.log("aqui");
-                
                 return false;
             }
             if (!this.$refs.dos.$children[0].applicant_identity_card) {
-                console.log("aqui 1");
                 return false;
             }
             if (!this.$refs.dos.$children[0].applicant_first_name) {
-                console.log("aqui 2");
                 return false;
             }
             if (!this.$refs.dos.$children[0].applicant_kinship_id) {
-                console.log("aqui 3");
                 return false;
+            }
+            if (!this.$refs.dos.$children[0].applicant_city_identity_card_id) {
+                return false;
+            }
+
+            if (this.$refs.dos.$children[0].applicant_type == 3) {
+                // 3 id de Apoderado
+                if (!this.$refs.dos.$children[0].legal_guardian_first_name) {
+                    return false;
+                }
+                if (!this.$refs.dos.$children[0].legal_guardian_identity_card) {
+                    return false;
+                }
             }
 
             this.sendApplicant();

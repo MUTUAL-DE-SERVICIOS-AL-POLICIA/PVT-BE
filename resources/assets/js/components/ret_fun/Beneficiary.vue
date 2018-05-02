@@ -102,7 +102,6 @@
             <div class="col-md-4">
                 <div class="form-group"><label class="col-sm-6 control-label">Carnet de Identidad</label>
                     <div class="col-sm-6"><input type="text" v-model.trim="beneficiary.identity_card" ref="identity_card" disabled  class="form-control">
-                        <button @click="searchBeneficiary" type="button" role="button"><i class="fa fa-search"></i></button>
                     </div>
                 </div>
             </div>

@@ -23,6 +23,7 @@ export default {
       applicant_birth_date: '',
       applicant_phone_number: '',
       applicant_cell_phone_number: '',
+      advisor_name_court: '',
       advisor_resolution_number: '',
       advisor_resolution_date: '',
       applicant_gender: '',
@@ -58,8 +59,6 @@ export default {
     //this or define initial value  => [{ value:null }]
     this.addPhoneNumber();
     this.addCellPhoneNumber();
-    cellPhoneInputMaskAll();
-    phoneInputMaskAll();
   },
   computed:{
     ...mapGetters({
@@ -72,7 +71,10 @@ export default {
   methods: {
     addPhoneNumber(){
       this.applicant_phone_numbers.push({value:null});
-      phoneInputMaskAll();
+      setTimeout(() => {
+        phoneInputMaskAll();
+      }, 500);
+
     },
     deletePhoneNumber(index){
       this.applicant_phone_numbers.splice(index,1);
@@ -81,7 +83,9 @@ export default {
     },
     addCellPhoneNumber(){
       this.applicant_cell_phone_numbers.push({value:null});
-      cellPhoneInputMaskAll();
+      setTimeout(() => {
+        cellPhoneInputMaskAll();
+      }, 500);
     },
     deleteCellPhoneNumber(index){
       this.applicant_cell_phone_numbers.splice(index,1);
@@ -146,7 +150,8 @@ export default {
     },
     change_applicant: function() {
       // let modality_id_ = 
-
+      cellPhoneInputMaskAll();
+    phoneInputMaskAll();
       let modality_id=this.retfun.modality_id;
       if(this.applicant_type  == '2'){
         this.show_advisor_form = !this.show_advisor_form;

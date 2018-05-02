@@ -22,7 +22,7 @@
                 <td colspan="3" class="text-center py-4">DOCUMENTOS RECEPCIONADOS</td>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="text-sm">
             <tr class="bg-grey-lightest font-bold">
                 <td class="text-center p-5">N°</td>
                 <td class="text-center p-5">REQUISITOS</td>
@@ -34,11 +34,11 @@
                 <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
                 @if (true)
                 <td class="text-center">
-                    <i class="mdi mdi-close-box-outline"></i>
+                    <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
                 </td>
                 @else
                 <td class="text-center">
-                    <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
+                    <i class="mdi mdi-close-box-outline"></i>
                 </td>
                 @endif
             </tr>
@@ -52,8 +52,8 @@
     <table class="m-t-35">
         <tr>
             <th class="no-border text-center" style=" width:60%">
-                <p class="font-bold">----------------------------------------------------<br> {!! $applicant->fullName() !!}<br/> C.I. {!! $applicant->identity_card
-                    !!} {!! $applicant->city_identity_card->first_shortened!!}
+                <p class="font-bold">----------------------------------------------------<br> {!! strtoupper($applicant->fullName()) !!}<br/> C.I. {!! $applicant->identity_card
+                    !!} {!! strtoupper($applicant->city_identity_card->first_shortened)!!}
                 </p>
             </th>
         </tr>

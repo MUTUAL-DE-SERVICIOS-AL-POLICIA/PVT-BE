@@ -21,7 +21,7 @@ $font_0: sans-serif;
 	padding: 10px 10px 15px 10px;
 	margin: 0;
 	font-family: $font_0;
-	// height: 100%;
+	height: 100%;
 }
 
 html {
@@ -32,11 +32,11 @@ body {
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 	border-radius: 0.75em;
 	border: 1px solid $black;
-	page-break-after: avoid;
+	// page-break-after: avoid;
 }
 table {
 	width: 100%;
-	margin-bottom: 100px;
+	// margin-bottom: 100px;
 }
 thead {
 	display: table-header-group;

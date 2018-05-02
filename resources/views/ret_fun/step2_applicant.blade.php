@@ -111,8 +111,6 @@
                             <button class="btn btn-success" type="button" @click="addPhoneNumber"><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
-                    <input type="text" data-phone="true" id="hola">
-
                     <div class="col-md-4">
                         <div class="form-group"><label class="col-sm-3 control-label">Celular del Solicitante</label>
                             <div v-for="(cell_phone,index) in applicant_cell_phone_numbers">
@@ -133,7 +131,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group"><label class="col-sm-4 control-label">Nombre de Juzgado</label>
-                                <div class="col-sm-8"><input type="text" name="advisor_name_court" v-model.trim="applicant_city_identity_card_id" class="form-control"></div>
+                                <div class="col-sm-8"><input type="text" name="advisor_name_court" v-model.trim="advisor_name_court" class="form-control"></div>
                             </div>
                         </div>
                         <div class="col-md-4">

@@ -128,13 +128,13 @@ class RetirementFundController extends Controller
             'has_lastname'  =>  $has_lastname?'required':'',
             'legal_guardian_first_name' => $account_type==3 ? 'required' : '',
             'legal_has_lastname' => $legal_has_lastname ? 'required' : '',
-            'legal_guardian_identity_card'  =>  $account_type==3 ? 'required' : '',
-            'legal_guardian_number_authority'   => $account_type==3 ? 'required' : '',
-            'legal_guardian_notary_of_public_faith' => $account_type==3 ? 'required' : '',
-            'legal_guardian_notary'  => $account_type==3 ? 'required' : '',
-            'advisor_name_court'    =>  $account_type==2 ? 'required' : '',
-            'advisor_resolution_number'    =>  $account_type==2 ? 'required' : '',
-            'advisor_resolution_date'   => $account_type==2 ? 'required' : '',
+            //'legal_guardian_identity_card'  =>  $account_type==3 ? 'required' : '',
+            //'legal_guardian_number_authority'   => $account_type==3 ? 'required' : '',
+            //'legal_guardian_notary_of_public_faith' => $account_type==3 ? 'required' : '',
+            //'legal_guardian_notary'  => $account_type==3 ? 'required' : '',
+            //'advisor_name_court'    =>  $account_type==2 ? 'required' : '',
+            //'advisor_resolution_number'    =>  $account_type==2 ? 'required' : '',
+            //'advisor_resolution_date'   => $account_type==2 ? 'required' : '',
         ];         
         
         $rules = array_merge($rules,$biz_rules);
