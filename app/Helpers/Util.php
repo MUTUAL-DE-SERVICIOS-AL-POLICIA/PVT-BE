@@ -339,4 +339,18 @@ class Util
         }
         return $total;
     }
+    public static function getGenderLabel($gender)
+    {
+        $label= 'genero no valido';
+        switch($gender)
+        {
+            case 'F':
+                $label = 'Femenino';
+                break;
+            case 'M':
+                $label = 'Masculino';
+                break;
+        }
+        return $label;
+    }
 }
