@@ -34,7 +34,6 @@ export function parseMoney(value) {
 export function cellPhoneInputMaskAll() {
     document.querySelectorAll('input').forEach(element => {
         if (element.getAttribute('data-cell-phone') == "true") {
-            console.log(`found cell phone ${element}`);
             Inputmask(cellPhoneInputMask()).mask(element);
         }
     });
@@ -45,7 +44,6 @@ export function cellPhoneInputMask() {
 export function phoneInputMaskAll() {
     document.querySelectorAll('input').forEach(element => {
         if (element.getAttribute('data-phone') == "true") {
-            console.log(`found phone ${element}`);
             Inputmask(phoneInputMask()).mask(element);
         }
     });
