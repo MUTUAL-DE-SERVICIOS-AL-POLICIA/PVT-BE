@@ -53,11 +53,11 @@ class Util
     public static function getNextCode($actual){
         $year =  date('Y');
         if($actual == "")
-            return "1/".$year;
+            return "675/".$year;
         
         $data = explode('/', $actual);        
         if(!isset($data[1]))
-            return "1/".$year;                
+            return "675/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
 
