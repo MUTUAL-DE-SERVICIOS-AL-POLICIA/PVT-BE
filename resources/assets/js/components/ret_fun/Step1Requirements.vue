@@ -21,12 +21,12 @@ import { mapState, mapMutations } from 'vuex';
                 show_spinner: false,
                 modality_id: 3,
                 actual_target: 1,
-                city_end_id:null,
+                city_end_id:this.user.city_id,
                 my_index: 1
             }
         },
         mounted(){
-            // this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
+            this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
         },
         methods:{
             onChooseModality(event){

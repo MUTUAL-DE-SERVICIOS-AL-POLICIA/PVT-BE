@@ -10,7 +10,7 @@
                 <div class="hr-line-dashed"></div>
                 <div class="form-group"><label class="col-sm-4 control-label">Tipo de Solicitante</label>
                     <div class="col-sm-4">
-                        <select class="form-control m-b" name="accountType" @change="change_applicant()" v-model.trim="applicant_type">
+                        <select class="form-control m-b" autofocus name="accountType" @change="change_applicant()" v-model.trim="applicant_type">
                             <option v-for="(type,index) in applicant_types"   :value="index+1">@{{type}} </option>
                         </select>
                     </div>

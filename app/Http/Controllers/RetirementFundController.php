@@ -233,7 +233,7 @@ class RetirementFundController extends Controller
         $beneficiary->birth_date = $request->applicant_birth_date;        
         $beneficiary->gender = "M";        
         $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
-        $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_phone_number));        
+        $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));        
         $beneficiary->type = "S";
         $beneficiary->save();
         if($account_type == '2')
@@ -250,7 +250,7 @@ class RetirementFundController extends Controller
             $advisor->surname_husband = strtoupper(trim($request->applicant_surname_husband));
             //$advisor->gender = "M";                    
             $advisor->phone_number = trim(implode(",", $request->applicant_phone_number));
-            $advisor->cell_phone_number = trim(implode(",", $request->applicant_phone_number));
+            $advisor->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
             $advisor->name_court = $request->advisor_name_court;            
             $advisor->resolution_number = $request->advisor_resolution_number;
             $advisor->resolution_date = $request->advisor_resolution_date;
@@ -276,7 +276,7 @@ class RetirementFundController extends Controller
             $legal_guardian->surname_husband = strtoupper(trim($request->legal_guardian_surname_husband));
             //$legal_guardian->gender = "M";                    
             $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));            
-            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_phone_number));
+            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;            
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
@@ -435,10 +435,10 @@ class RetirementFundController extends Controller
                                 ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
-                                ->where('retirement_funds.code','LIKE',$code.'%')
+                                ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 //->where('procedure_modalities.name','LIKE',$modality.'%')
-                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-                                ->where('affiliates.last_name','LIKE',$last_name.'%')                                
+                                ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
+                                ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
                                 ->count();
         
                                 
@@ -446,10 +446,10 @@ class RetirementFundController extends Controller
                                 ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
-                                ->where('affiliates.first_name','LIKE',$first_name.'%')
+                                ->whereRaw("coalesce(affiliates.first_name, '') LIKE '$first_name%'")
                                 //->where('procedure_modalities.name','LIKE',$modality.'%')
-                                ->where('affiliates.last_name','LIKE',$last_name.'%')
-                                ->where('retirement_funds.code','LIKE',$code.'%')
+                                ->whereRaw("coalesce(affiliates.last_name, '') LIKE '$last_name%'")
+                                ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 ->skip($offset)
                                 ->take($limit)
                                 ->orderBy($sort,$order)
