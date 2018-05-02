@@ -16,7 +16,7 @@
         <p>Distinguido Director:</p>
         <p>Para tal efecto, adjunto folder con los requisitos exigidos de acuerdo al siguiente detalle:</p>
     </div>
-    <table class="table-info w-100">
+    <table class="table-info w-100 no-padding no-margins">
         <thead class="bg-grey-darker">
             <tr class="font-medium text-white text-sm font-bold">
                 <td colspan="3" class="text-center py-4">DOCUMENTOS RECEPCIONADOS</td>
@@ -49,7 +49,7 @@
         u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a
         la anulación del trámite y podrá efectuar las acciones correspondientes conforme el Parágrafo II, artículo 44 del
         Reglamento de Fondo de Retiro Policial Solidario.</p>
-    <table class="m-t-35">
+    <table class="m-t-35 no-padding no-margins ">
         <tr>
             <th class="no-border text-center" style=" width:60%">
                 <p class="font-bold">----------------------------------------------------<br> {!! $applicant->fullName() !!}<br/> C.I. {!! $applicant->identity_card
