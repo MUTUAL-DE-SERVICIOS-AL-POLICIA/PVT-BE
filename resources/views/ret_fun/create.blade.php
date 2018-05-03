@@ -36,7 +36,7 @@
                         @on-loading="setLoading"
                         >
                     <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
-                        <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}"
+                        <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
                                 inline-template>
                             @include('ret_fun.step1_requirements')
                         </ret-fun-step1-requirements>

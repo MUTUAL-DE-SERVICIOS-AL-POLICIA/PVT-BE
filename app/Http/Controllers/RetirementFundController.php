@@ -31,6 +31,7 @@ use Muserpol\Models\RetirementFund\RetFunProcedure;
 use Illuminate\Contracts\Database\ModelIdentifier;
 use Illuminate\Support\Facades\Redirect;
 use Muserpol\Models\DiscountType;
+use Muserpol\Models\ProcedureType;
 class RetirementFundController extends Controller
 {
     /**
@@ -486,7 +487,8 @@ class RetirementFundController extends Controller
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
-                 
+        # 3 id of ret_fun
+        $procedure_types = ProcedureType::where('module_id', 3)->get();
         $procedure_requirements = ProcedureRequirement::
                                     select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
                                     ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
@@ -497,7 +499,7 @@ class RetirementFundController extends Controller
         $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
         if(!isset($spouse->id))
             $spouse = new Spouse();
-        $modalities = ProcedureModality::where('procedure_type_id','2')->select('id','name')->get();
+        $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();
         
         $kinships = Kinship::get();
         
@@ -508,6 +510,7 @@ class RetirementFundController extends Controller
         $data = [
             'user' => $user,
             'requirements' => $procedure_requirements,
+            'procedure_types'    => $procedure_types,
             'modalities'    => $modalities,
             'affiliate'  => $affiliate,
             'kinships'  =>  $kinships,
