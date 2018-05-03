@@ -90,11 +90,13 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('ret_fun/{retirement_fund}/print/data_qualification_ret_fun_availability', 'RetirementFundCertificationController@printDataQualificationRetFunAvailability')->name('ret_fun_print_data_qualification_ret_fun_availability');
 	Route::get('ret_fun/{affiliate}/print/ret_fun_commitment_letter', 'RetirementFundCertificationController@printRetFunCommitmentLetter')->name('print_ret_fun_commitment_letter');
 	Route::get('ret_fun/{affiliate}/print/voucher/{voucher}', 'RetirementFundCertificationController@printVoucher')->name('ret_fun_print_voucher');
-
+	Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
+        
 	//Quota Aid Certification
 	Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
+	Route::get('quota_aid/{affiliate}/print/quota_aid_voucher/{voucher}', 'QuotaAidCertificationController@printVoucherQuoteAid')->name('quota_aid_print_voucher');
+	Route::get('print_contributions_quote_aid','QuotaAidCertificationController@printDirectContributionQuoteAid');
 	
-
 	Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->name('create_ret_fun');
 	Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
@@ -162,8 +164,9 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('contribution_save','ContributionController@storeDirectContribution');
 	Route::post('aid_contribution_save','AidContributionController@storeDirectContribution');
         Route::post('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
-        Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
-        
+		
+		Route::get('print_contributions_quote','RetirementFundCertificationController@printDirectContributionQuote');
+        Route::get('print_contributions_quote_aid','QuotaAidCertificationController@printDirectContributionQuoteAid');
         //Commitments
 		Route::resource('commitment','ContributionCommitmentController');
 		Route::resource('aid_commitment','AidCommitmentController');

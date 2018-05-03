@@ -366,6 +366,7 @@ class AidContributionController extends Controller
          //*********END VALIDATOR************//         
         return 0;
         $result = [];      
+        $stored_contributions = [];
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;
@@ -376,7 +377,7 @@ class AidContributionController extends Controller
             $aid_contribution = new AidContribution();
             $aid_contribution->user_id = Auth::user()->id;
             $aid_contribution->affiliate_id = $affiliate->id;            
-            $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);
+            $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
             $aid_contribution->type='DIRECTO';
             $aid_contribution->quotable = $aporte->auxilio_mortuorio;
             $aid_contribution->dignity_rent = $aporte->sueldo-$aporte->dignity_rent;
@@ -388,6 +389,7 @@ class AidContributionController extends Controller
                 'total'=>$aid_contribution->total,
                 'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
                     ]);
+            array_push($stored_contributions,$aid_contribution);
             }
         }
         
@@ -407,6 +409,7 @@ class AidContributionController extends Controller
                 
         $data = [
             'aid_contribution'  =>  $result,
+            'aid_contributions' => $stored_contributions,
             'voucher_id'    => $voucher->id,
             'affiliate_id'  =>  $affiliate->id,
         ];
