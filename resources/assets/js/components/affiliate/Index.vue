@@ -34,12 +34,13 @@ export default {
       columns: (() => {
         const cols = [
           { title: 'C.I.', field: 'identity_card', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'Matrícula', field: 'registration', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          // { title: 'Matrícula', field: 'registration', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Grado', field: 'degree', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Primer Nombre', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Segundo Nombre', field: 'second_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Apellido Paterno', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Apellido Materno', field: 'mothers_last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Apellido de Casada', field: 'surname_husband', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Estado', field: 'affiliate_state', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
            { title: 'Operation', tdComp: 'Opt', visible: 'true' }
         ]

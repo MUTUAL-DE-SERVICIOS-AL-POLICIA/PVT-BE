@@ -30,8 +30,11 @@ export default {
       pageSizeOptions: [5, 10, 15, 20],
       columns: (() => {
         const cols = [
-          { title: 'Apellido', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'Nombre', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Apellido Paterno', field: 'last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Apellido Materno', field: 'mothers_last_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Apellido de Casada', field: 'surname_husband', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Primer Nombre', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Segundo Nombre', field: 'second_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Modalidad', field: 'modality', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Flujo', field: 'workflow', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Código', field: 'code', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
