@@ -22,16 +22,16 @@
                     </ul>
                 </div>
                 <div class="logo-element">
-                    IN+
+                    M
                 </div>
             </li>
-            <li class="{{ isActiveRoute('affiliate.index') }}">
+            <li class="{{ isActiveRoute('affiliate.index') }}" data-toggle="tooltip" data-placement="right" title="Afiliados">
                 <a href="{{ url('/affiliate') }}"><i class="fa fa-user"></i> <span class="nav-label">Afiliados</span></a>
             </li>
-            <li class="{{ isActiveRoute('ret_fun.index') }}">
-                <a href="{{ url('/ret_fun') }}"><i class="{{Muserpol\Helpers\Util::IconModule(3)}}"></i> <span class="nav-label">Fondos de Retiro</span></a>
+            <li class="{{ isActiveRoute('ret_fun.index') }}" data-toggle="tooltip" data-placement="right" title="Fondo de Retiro">
+                <a href="{{ url('/ret_fun') }}"><i class="{{Muserpol\Helpers\Util::IconModule(3)}}"></i> <span class="nav-label">Fondo de Retiro</span></a>
             </li>
-            <li class="{{ isActiveRoute('quota_aid.index') }}">
+            <li class="{{ isActiveRoute('quota_aid.index') }}" data-toggle="tooltip" data-placement="right" title="Cuota y Auxilio Mortuorio">
                 <a href="{{ url('/quota_aid') }}"><i class="{{Muserpol\Helpers\Util::IconModule(4)}}"></i> <span class="nav-label">Cuota y Auxilio Mortuorio</span></a>
             </li>
         </ul>
