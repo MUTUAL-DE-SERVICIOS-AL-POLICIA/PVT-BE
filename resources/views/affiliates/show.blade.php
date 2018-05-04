@@ -18,10 +18,11 @@
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO"><i class="fa fa-paste"></i> </button>
         </a>
         @endcan
-        <button type="button" class="btn btn-info btn-sm  dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top"  title="Historial del afiliado">
+        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
             <i class="fa fa-hourglass-3"></i>
         </button>
-        @include("affiliates.affiliate_record")
+        
+        @include('affiliates.affiliate_record', ['affiliate_records'=>$affiliate_records])
         @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"></i> </button>
@@ -48,14 +49,18 @@
     </div>
 
 </div>
-{{$affiliate_record}}
 @endsection
 
 @section('styles')
-<link rel="stylesheet" href="{{resource_path('assets/css/plugins/dataTables/datatables.min.css')}}">
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+{{--<link rel="stylesheet" href="{{resource_path('assets/inspinia/css/plugins/dataTables/datatables.min.css')}}">--}}
 <style>
     td.highlight {
         background-color: #e3eaef !important;
+    }
+    td{
+        padding: 5px 10px;
+        text-align: left;
     }
     .table-hover tbody tr:hover td,
     .table-hover tbody tr:hover th {

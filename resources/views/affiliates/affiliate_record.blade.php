@@ -8,7 +8,6 @@
                 <h4 class="modal-title">Historial del Afiliado</h4>
             </div>
             <div class="modal-body">
-                
                 <table id="example" class="display" style="width:100%">
                     <thead>
                         <tr>
@@ -17,17 +16,19 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($affiliate_records as $affiliate_record)
                         <tr>
-                            <td>Tiger Nixon</td>
-                            <td>System Architect</td>
+                            <td>{{ $affiliate_record->message}}</td>
+                            <td>{{$affiliate_record->created_at}}</td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
+

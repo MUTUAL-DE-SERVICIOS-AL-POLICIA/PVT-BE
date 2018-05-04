@@ -14,7 +14,7 @@ use Log;
 use Yajra\Datatables\Datatables;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
-use Muserpol\Models\AffiliateRecordPvt;
+use Muserpol\Models\AffiliateRecord;
 
 class AffiliateController extends Controller
 {
@@ -123,6 +123,7 @@ class AffiliateController extends Controller
         $degrees = Degree::all()->pluck('name', 'id');
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
+        $affiliate_records = AffiliateRecord::where('affiliate_id', $affiliate->id)->get();
         // $quota_mortuaries = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get();
         $quota_mortuaries = [];
         $cuota = null;
@@ -155,7 +156,8 @@ class AffiliateController extends Controller
             'pension_entities' =>$pension_entities,
             'affiliate_states'=>$affiliate_states, 
             'cuota'=>$cuota, 
-            'auxilio'=>$auxilio
+            'auxilio'=>$auxilio,
+            'affiliate_records'=>$affiliate_records
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
@@ -232,16 +234,5 @@ class AffiliateController extends Controller
     {
         //
         $this->authorize('delete', $affiliate);
-    }
-    
-    public function AffiliateRecord(Affiliate $affiliate)
-    {
-       
-        $affiliate_record=AffiliateRecordPvt::where('affiliate_id', $affiliate->id)->get();
-        $data = array(
-            'affiliate_record'=>$affiliate_record
-        );
-        //return $affiliate_record;
-        return view('affiliates.show')->with($data);
     }
 }

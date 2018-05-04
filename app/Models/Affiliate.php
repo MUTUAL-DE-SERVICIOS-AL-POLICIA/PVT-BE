@@ -114,7 +114,7 @@ class Affiliate extends Model
     }
     public function affiliate_records_pvt()
     {
-        return $this->hasMany('Muserpol\Models\AffiliateRecordPvt');
+        return $this->hasMany('Muserpol\Models\AffiliateRecord');
     }
 
     /**
