@@ -1,66 +1,67 @@
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
         <div class="ibox-title">
-            <h5>Datos del Solicitante <small>something... @{{modality}}</small></h5>
+            <h5>Datos del Solicitante <small> @{{modality}}</small></h5>
             <div class="ibox-tools">
             </div>
         </div>
         <div class="ibox-content">
+            
             <form method="get" class="form-horizontal">
-                <div class="hr-line-dashed"></div>
-                <div class="form-group"><label class="col-sm-4 control-label">Tipo de Solicitante</label>
-                    <div class="col-sm-4">
-                        <select class="form-control m-b" autofocus name="accountType" @change="change_applicant()" v-model.trim="applicant_type">
-                            <option v-for="(type,index) in applicant_types"   :value="index+1">@{{type}} </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="hr-line-dashed"></div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group"><label class="col-sm-4 control-label">Primer Nombre</label>
-                            <div class="col-sm-8"><input type="text" name="applicant_first_name" v-model.trim="applicant_first_name" class="form-control"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group"><label class="col-sm-4 control-label">Segundo Nombre</label>
-                            <div class="col-sm-8"><input type="text" name="applicant_second_name" v-model.trim="applicant_second_name" class="form-control"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group"><label class="col-sm-6 control-label">Apellido Paterno</label>
-                            <div class="col-sm-6"><input type="text" name="applicant_last_name" v-model.trim="applicant_last_name" class="form-control"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group"><label class="col-sm-6 control-label">Apellido Materno</label>
-                            <div class="col-sm-6"><input type="text" name="applicant_mothers_last_name" v-model.trim="applicant_mothers_last_name" class="form-control"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group"><label class="col-sm-6 control-label">Apellido de Casada</label>
-                            <div class="col-sm-6"><input type="text" :disabled="applicantIsMale" name="applicant_surname_husband" v-model.trim="applicant_surname_husband" class="form-control"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group" :class="{'has-error': error.applicant_identity_card }">
-                            <label class="col-sm-6 control-label">Carnet de Identidad</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="applicant_identity_card" v-model.trim="applicant_identity_card" class="form-control">
-                                <button @click="searchApplicant" type="button" role="button"><i class="fa fa-search"></i></button>
-                                <i v-show="error.applicant_identity_card" class="fa fa-warning text-danger"></i>
-                                <span v-show="error.applicant_identity_card" class="text-danger">@{{ errors.applicant_identity_card }}</span>
+                <div class="col-md-12">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Tipo de Solicitante</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control" autofocus name="accountType" @change="change_applicant()" v-model.trim="applicant_type">
+                                    <option v-for="(type,index) in applicant_types"   :value="index+1">@{{type}} </option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedicion</label>
-                            <div class="col-sm-8">
-                                <select class="form-control m-b" name="applicant_city_identity_card" v-model.trim="applicant_city_identity_card_id">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Parentesco</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control" name="applicant_kinship" v-model.trim="applicant_kinship_id">
+                                    <option v-for="kinship in kinships" :value="kinship.id">
+                                        @{{ kinship.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div> 
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" :class="{'has-error': error.applicant_identity_card }">
+                                <div class="col-md-4">
+                                    <label class="control-label">Carnet de Identidad</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="text" name="applicant_identity_card" v-model.trim="applicant_identity_card" class="form-control">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button" @click="searchApplicant" type="button" role="button"><i class="fa fa-search"></i></button>
+                                        </span>
+                                    </div><!-- /input-group -->
+                                    <i v-show="error.applicant_identity_card" class="fa fa-warning text-danger"></i>
+                                    <span v-show="error.applicant_identity_card" class="text-danger">@{{ errors.applicant_identity_card }}</span>
+                                    
+                                </div>
+                        
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Ciudad de Expedicion</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control" name="applicant_city_identity_card" v-model.trim="applicant_city_identity_card_id">
                                     <option v-for="city in cities" :value="city.id">
                                         @{{ city.name }}
                                     </option>
@@ -68,16 +69,78 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group"><label class="col-sm-4 control-label">Fechad de Nacimiento</label>
-                            <div class="col-sm-8">
-                                <input type="date" class="form-control" v-model.trim="applicant_birth_date">
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Primer Nombre</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" name="applicant_first_name" v-model.trim="applicant_first_name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Segundo Nombre</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" name="applicant_second_name" v-model.trim="applicant_second_name" class="form-control">
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group"><label class="col-sm-4 control-label">Genero</label>
-                            <div class="col-sm-8">
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Apellido Paterno</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" name="applicant_last_name" v-model.trim="applicant_last_name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Apellido Materno</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" name="applicant_mothers_last_name" v-model.trim="applicant_mothers_last_name" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Apellido de Casada</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" :disabled="applicantIsMale" name="applicant_surname_husband" v-model.trim="applicant_surname_husband" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-md-8">
+                                   
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Fechad de Nacimiento</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="date" class="form-control" v-model.trim="applicant_birth_date">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Genero</label>
+                            </div>
+                            <div class="col-md-8">
                                 <select class="form-control m-b" name="applicant_gender" v-model.trim="applicant_gender">
                                     <option value="M">Masculino</option>
                                     <option value="F">Femenino</option>
@@ -85,45 +148,81 @@
                             </div>
                         </div>
                     </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Telefono del Solicitante</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <button class="btn btn-success" type="button" @click="addPhoneNumber"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div v-for="(phone,index) in applicant_phone_numbers">
+                                            <div class="input-group">
+                                                <input type="text" name="applicant_phone_number[]" v-model.trim="phone.value" :key="index" class="form-control" data-phone="true">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-danger" v-show="applicant_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
+                                                </span>
+                                            </div><!-- /input-group -->   
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                    <label class="control-label">Celular del Solicitante</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <button class="btn btn-success" type="button" @click="addCellPhoneNumber"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div v-for="(cell_phone,index) in applicant_cell_phone_numbers">
+                                            <div class="input-group">
+                                                <input type="text" name="applicant_cell_phone_number[]" v-model.trim="cell_phone.value" :key="index" class="form-control" data-cell-phone="true">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-danger" v-show="applicant_cell_phone_numbers.length > 1" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
+                                                </span>
+                                            </div><!-- /input-group -->
+                                        </div>
+                                    </div>
+                                </div>    
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-md-8">
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-md-8">
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
                 </div>
+                
                 <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group"><label class="col-sm-6 control-label">Parentesco</label>
-                            <div class="col-sm-6">
-                                <select class="form-control m-b" name="applicant_kinship" v-model.trim="applicant_kinship_id">
-                                    <option v-for="kinship in kinships" :value="kinship.id">
-                                        @{{ kinship.name }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group"><label class="col-sm-3 control-label">Telefono del Solicitante</label>
-                            <div v-for="(phone,index) in applicant_phone_numbers">
-                                <div class="col-sm-6">
-                                    <input type="text" name="applicant_phone_number[]" v-model.trim="phone.value" :key="index" class="form-control" data-phone="true">
-                                </div>
-                                <div class="col-sm-1 no-padding">
-                                    <button class="btn btn-danger" v-show="applicant_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                            <button class="btn btn-success" type="button" @click="addPhoneNumber"><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group"><label class="col-sm-3 control-label">Celular del Solicitante</label>
-                            <div v-for="(cell_phone,index) in applicant_cell_phone_numbers">
-                                <div class="col-sm-6 no-padding">
-                                    <input type="text" name="applicant_cell_phone_number[]" v-model.trim="cell_phone.value" :key="index" class="form-control" data-cell-phone="true">
-                                </div>
-                                <div class="col-sm-1 no-padding">
-                                    <button class="btn btn-danger" v-show="applicant_cell_phone_numbers.length > 1" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                            <button class="btn btn-success" type="button" @click="addCellPhoneNumber"><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
+                    
+                    
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="row" v-if=" show_advisor_form ">
@@ -220,7 +319,7 @@
     </div>
     <div class="ibox float-e-margins">
         <div class="ibox-title">
-            <h5>Direccion del Solicitante (@{{ applicant_type }}) <small class="m-l-sm">something //// </small></h5>
+            <h5>Direccion del Solicitante (@{{ applicant_type }}) <small class="m-l-sm">  </small></h5>
             <div class="ibox-tools">
             </div>
         </div>
