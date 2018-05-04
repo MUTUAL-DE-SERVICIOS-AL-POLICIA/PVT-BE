@@ -166,7 +166,7 @@ export default {
       var total = this.total;
       printJS({
         printable:
-          "/print_contributions_quote?contributions=" +
+          "/print_contributions_quote_aid?contributions=" +
           con +
           "&affiliate_id=" +
           affiliate_id +
@@ -182,8 +182,7 @@ export default {
     enableDC() {
       $(".directContribution").removeClass("disableddiv");
     },
-    Guardar() {
-        console.log(this.contributions);
+    Guardar() {        
       this.contributions = this.contributions.filter(item => {
         return (
           item.sueldo != 0 && item.auxilio_mortuorio != 0 && item.subtotal != 0
@@ -210,39 +209,39 @@ export default {
                 afid: this.afid
               })
               .then(response => {
-              this.enableDC();
+                
+              //this.enableDC();
               var i;
                 for(i=0;i<response.data.aid_contribution.length;i++){                        
                     this.setDataToTable(response.data.aid_contribution[i].month_year,response.data.aid_contribution[i].total);
                 }
-              /* for (var i = 0; i < response.data.aid_contribution.length; i++) {
-                  this.setDataToTable(
-                    response.data.aidcontribution[i].month_year,
-                    response.data.aidcontribution[i].total
-                  );
-              } */
               this.$swal({
               title: "Pago realizado",
               showConfirmButton: false,
               timer: 6000,
               type: "success"
-              })
-                printJS({
+              });
+              var json_aid_contribution = JSON.stringify(response.data.aid_contributions);
+              console.log("-------------------------");
+              console.log(json_aid_contribution);
+              printJS({
                   printable:
                     "/quota_aid/" +
                     response.data.affiliate_id +
-                    "/print/voucher/" +
-                    response.data.voucher_id,
+                    "/print/quota_aid_voucher/" +
+                    response.data.voucher_id + "?aid_contributions="+json_aid_contribution,
                   type: "pdf",
                   showModal: true
                 });
             }).catch(error => {              
+              console.log('with error message');
+              
               this.show_spinner = false;
               console.log(error);
               console.log(error.response.data);
               var resp = error.response.data;
-              $.each(resp, function(index, value) {
-                flash(value, "error", 6000);
+               $.each(resp, function(index, value) {
+                 flash(value, "error", 6000);
               });
             });
           }

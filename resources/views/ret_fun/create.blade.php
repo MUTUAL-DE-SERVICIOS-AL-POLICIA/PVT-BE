@@ -35,51 +35,21 @@
                         @on-complete="onFinish"
                         @on-loading="setLoading"
                         >
-                        <div class="panel" :class="loadingWizard ? 'sk-loading' : ''">
-                            <div class="panel-body">
-                                <div class="sk-folding-cube" v-show="loadingWizard">
-                                    <div class="sk-cube1 sk-cube"></div>
-                                    <div class="sk-cube2 sk-cube"></div>
-                                    <div class="sk-cube4 sk-cube"></div>
-                                    <div class="sk-cube3 sk-cube"></div>
-                                </div>
-                                <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
-                                    <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}"
-                                            inline-template>
-                                        @include('ret_fun.step1_requirements')
-                                    </ret-fun-step1-requirements>
-                                </tab-content>
-                            </div>
-                        </div>
+                    <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
+                        <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
+                                inline-template>
+                            @include('ret_fun.step1_requirements')
+                        </ret-fun-step1-requirements>
+                    </tab-content>
                     <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
-                    <div class="panel" :class="loadingWizard ? 'sk-loading' : ''">
-                        <div class="panel-body">
-                            <div class="sk-folding-cube" v-show="loadingWizard">
-                                <div class="sk-cube1 sk-cube"></div>
-                                <div class="sk-cube2 sk-cube"></div>
-                                <div class="sk-cube4 sk-cube"></div>
-                                <div class="sk-cube3 sk-cube"></div>
-                            </div>
-                                <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
-                                    @include('ret_fun.step2_applicant')
-                                </ret-fun-step2-applicant>
-                            </div>
-                        </div>
+                        <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
+                            @include('ret_fun.step2_applicant')
+                        </ret-fun-step2-applicant>
                     </tab-content>
                     <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
-                        <div class="panel" :class="loadingWizard ? 'sk-loading' : ''">
-                        <div class="panel-body">
-                            <div class="sk-folding-cube" v-show="loadingWizard">
-                                <div class="sk-cube1 sk-cube"></div>
-                                <div class="sk-cube2 sk-cube"></div>
-                                <div class="sk-cube4 sk-cube"></div>
-                                <div class="sk-cube3 sk-cube"></div>
-                            </div>
-                                <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
-                                    @include('ret_fun.step3_beneficiaries')
-                                </ret-fun-step3-beneficiaries>
-                            </div>
-                        </div>
+                        <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
+                            @include('ret_fun.step3_beneficiaries')
+                        </ret-fun-step3-beneficiaries>
                     </tab-content>
                     </form-wizard>
                 </ret-fun-form>

@@ -572,6 +572,11 @@ return [
         'commision_date'        => 'fecha de la comisión',
         'destination'           => 'destino',
         'commitment_type'       => 'tipo de compromiso',
+        'ret_fun_modality'      => 'modalidad de fondo de retiro',
+        'accountType'           => 'tipo de cuenta',
+        'applicant_first_name'  => 'nombre del solicitante',
+        'applicant_identity_card'  => 'C.I. del solicitante',
+        'has_lastname'          => 'apellido',
     ],
 
 ];

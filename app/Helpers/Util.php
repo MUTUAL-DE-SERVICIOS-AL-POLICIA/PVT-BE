@@ -46,8 +46,8 @@ class Util
     }
 
     public static function getPDFName($title,$affi){
-        $date =  Util::getStringDate(date('Y-m-d'));            
-        return ($title."--".$affi->last_name."_".$affi->first_name."--".$date.".pdf");
+        $date =  Util::getStringDate(date('Y-m-d'));
+        return ($title." - ".$affi->fullName()." - ".$date.".pdf");
     }
 
     public static function getNextCode($actual){
@@ -338,5 +338,19 @@ class Util
             }
         }
         return $total;
+    }
+    public static function getGenderLabel($gender)
+    {
+        $label= 'genero no valido';
+        switch($gender)
+        {
+            case 'F':
+                $label = 'Femenino';
+                break;
+            case 'M':
+                $label = 'Masculino';
+                break;
+        }
+        return $label;
     }
 }
