@@ -218,7 +218,8 @@ class ContributionController extends Controller
             $contribution->unit_id = $affiliate->unit_id;
             $contribution->breakdown_id = $affiliate->breakdown_id;
             $contribution->category_id = $affiliate->category_id;
-            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
+            // $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
+            $contribution->month_year = $aporte->year.'-'.$aporte->month.'-01';
             $contribution->type='Directo';     
             $contribution->base_wage = $aporte->sueldo;            
             $contribution->seniority_bonus = 0;

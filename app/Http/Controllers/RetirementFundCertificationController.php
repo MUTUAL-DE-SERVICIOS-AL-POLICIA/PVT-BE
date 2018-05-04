@@ -20,7 +20,6 @@ use Muserpol\Models\RetirementFund\RetFunIncrement;
 use Session;
 use Auth;
 use DB;
-use Log;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
@@ -121,25 +120,19 @@ class RetirementFundCertificationController extends Controller
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $modality = $retirement_fund->procedure_modality->name;
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . mb_strtoupper($modality);
+        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . strtoupper($modality);
         $number = $retirement_fund->code;
         $username = Auth::user()->username;//agregar cuando haya roles
         $date = Util::getStringDate($retirement_fund->reception_date);
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
-        $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id', $retirement_fund->id)->get();
+        $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id', $retirement_fund->id)->get();  
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
 
-       // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
+       // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
     //    return view('ret_fun.print.reception',compact('title','institution', 'direction', 'unit','username','date','modality','applicant','submitted_documents','header','number'));
-        $pdftitle = "RECEPCIÓN - ". $title;
+        $pdftitle = "Recepcion";
         $namepdf = Util::getPDFName($pdftitle, $applicant);
-        $pages = [];
-        for ($i = 1; $i <= 2; $i++) {
-            $pages[] = \View::make('ret_fun.print.reception', compact('title', 'institution', 'direction', 'unit', 'username', 'date', 'modality', 'applicant', 'submitted_documents', 'header', 'number'))->render();
-        }
-        $pdf = \App::make('snappy.pdf.wrapper');
-        $pdf->loadHTML($pages);
-        return $pdf->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->inline($namepdf);
+        return \PDF::loadView('ret_fun.print.reception', compact('title', 'institution', 'direction', 'unit', 'username', 'date', 'modality', 'applicant', 'submitted_documents', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     public function printFile($id)
     {
@@ -339,7 +332,7 @@ class RetirementFundCertificationController extends Controller
             ->stream("$namepdf");
     }
 
-    public function printVoucher( Request $request, $affiliate_id, $voucher_id)
+    public function printVoucher(Request $request, $affiliate_id, $voucher_id)
     {
         $affiliate = Affiliate::find($affiliate_id);
         $voucher = Voucher::find($voucher_id);
@@ -347,15 +340,17 @@ class RetirementFundCertificationController extends Controller
         $total_literal = Util::convertir($voucher->total);
         $payment_date = Util::getStringDate($voucher->payment_date);
         $date = Util::getStringDate(date('Y-m-d'));
-        $title = "PAGO DE APORTES VOLUNTARIOS APORTE DIRECTO VIUDAS EFECTIVO";
+        $title = "RECIBO";
+        $subtitle = "FONDO DE RETIRO Y CUOTA MORTUORIA";
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
         $number = $voucher->code;
         $descripcion = VoucherType::where('id', $voucher->voucher_type_id)->first();
         $beneficiary = $affiliate;
-        $contributions=json_decode($request->contributions);
+        $contributions = json_decode($request->contributions);
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);
+        $util = new Util();
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
         return \PDF::loadView(
             'ret_fun.print.voucher_contribution',
@@ -363,12 +358,14 @@ class RetirementFundCertificationController extends Controller
                 'date',
                 'username',
                 'title',
+                'subtitle',
                 'affiliate',
                 'submitted_documents',
                 'beneficiary',
                 'contributions',
                 'number',
                 'voucher',
+                'util',
                 'descripcion',
                 'payment_date',
                 'total_literal',

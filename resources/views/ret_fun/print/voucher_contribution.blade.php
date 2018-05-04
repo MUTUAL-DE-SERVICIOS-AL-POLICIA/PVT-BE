@@ -15,9 +15,15 @@
     </div>
     <br><br><br>
     <div>
-        <span>Recibimos de:</span>
-        @include('print_global.applicant_info', ['applicant'=>$beneficiary    ])
+        <span><strong>Recibimos de:</strong>
+            {{ $beneficiary->first_name }}
+            {{ $beneficiary->second_name }}
+            {{ $beneficiary->last_name }}
+            {{ $beneficiary->mothers_last_name }}
+            {{ $beneficiary->surname_husband }}
+        </span>
     </div>
+    <br><br><br>
     <div>
         <span>Por concepto de pago de los siguientes meses:</span>
             <table class="table-code w-100">
@@ -30,17 +36,19 @@
                         <td class="text-center p-5 w-15">AJUSTE</td>
                         <td class="text-center p-5 w-25">SUBTOTAL APORTE</td>
                     </tr>
-                        @foreach($aid_contributions as $aid_contribution)
+                        @foreach($contributions as $contribution)
                             <tr>
-                                <td class='text-center p-5'>{{ $contribution->month_year }}</td>
-                                <td class='text-right p-5'>{{ $contribution->base_wage }} </td>
-                                <td class='text-right p-5'>{{ $contribution->fr }} </td>
+                                {{-- <td class='text-center p-5'>{!! date("F/Y", strtotime($contribution->month_year)) !!}</td> --}}
+                                <td class='text-center p-5'>{!! $util::getStringDate($contribution->month_year) !!}</td>
+                                <td class='text-right p-5'>{{ $util::formatMoney($contribution->base_wage) }} </td>
+                                <td class='text-right p-5'>{{ $contribution->retirement_fund }} </td>
+                                <td class='text-right p-5'>{{ $contribution->mortuary_quota }} </td>
                                 <td class='text-right p-5'>{{ $contribution->interest }} </td>    
                                 <td class='text-right p-5'>{{ $contribution->total }} </td>
                             </tr>
                         @endforeach
                         <tr>
-                        <td colspan="2"></td>
+                        <td colspan="4"></td>
                             <td class="p-5 bg-grey-darker">Total</td>
                             <td class="text-center p-5">{!! $voucher->total !!}</td>
                         </tr>
@@ -52,13 +60,6 @@
             <tr>
                 <td class="p-5">La suma de:</td>
                 <td class="p-5" colspan="3"> {!! ucwords(strtolower($total_literal)) !!} Bolivianos</td>
-            </tr>
-            <tr>
-                <td class="p-5">Por concepto de:</td>
-                <td class="p-5" colspan="3">
-                     {!! $descripcion->name !!} del <br>
-                     {!! $payment_date !!} 
-                </td>
             </tr>
             <tr>
                 <td class="p-5">Forma de Pago:</td>
