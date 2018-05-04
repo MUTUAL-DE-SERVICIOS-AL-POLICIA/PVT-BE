@@ -51,17 +51,46 @@ import { mapState, mapMutations } from 'vuex';
                 this.requirementList = this.requirements.filter((r) => {
                     if (r.modality_id == this.modality) {
                         r['status'] = false;
+                        r['background'] = '';
                         return r;
                     }
                 });
+                Array.prototype.groupBy = function(prop) {
+                    return this.reduce(function(groups, item) {
+                        const val = item[prop]
+                        groups[val] = groups[val] || []
+                        groups[val].push(item)
+                        return groups
+                    }, {})
+                }
+
+                this.requirementList =  this.requirementList.groupBy('number')
                 // this.requirementList = this.requirementList.reduce(function(r, v) {
                 //     r[v.number] = r[v.number] || [];
                 //     r[v.number].push(v);
                 //     return r;
                 // }, Object.create(null));
+                // console.log(this.requirementList);
             },
-            checked(index){
-                this.requirementList[index].status =  ! this.requirementList[index].status;
+            checked(index, i){
+                for(var k = 0; k < this.requirementList[index].length; k++ ){
+                    if (k != i ) {
+                    this.requirementList[index][k].status = false;
+                    this.requirementList[index][k].background = 'bg-warning-yellow';
+
+                    }
+                }
+                this.requirementList[index][i].status =  ! this.requirementList[index][i].status;
+                this.requirementList[index][i].background = this.requirementList[index][i].background == 'bg-success-green' ? '' : 'bg-success-green';
+                // this.requirementList[index][i].status = true;
+                if (this.requirementList[index].every(r => !r.status )) {
+                    for(var k = 0; k < this.requirementList[index].length; k++ ){
+                        if (!this.requirementList[index][k].status) {
+                            this.requirementList[index][k].background = '';
+                        }
+                    }
+                }
+            
             },
             onChooseCity(event){
                 const options = event.target.options;
@@ -71,7 +100,7 @@ import { mapState, mapMutations } from 'vuex';
             },
             groupNumbers(number){
                 // return (parseInt(number) % 2) == 0;
-                console.log(`number: ${number}, index: ${this.my_index}, bool: ${number == this.my_index}`);
+                // console.log(`number: ${number}, index: ${this.my_index}, bool: ${number == this.my_index}`);
                 if (parseInt(number) == parseInt(this.my_index)) {
                     this.my_index++;
                     return true;

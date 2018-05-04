@@ -48,38 +48,45 @@
     </div>
 
     <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="vote-item" v-for="(requirement, index) in requirementList" :key="index">
-            <div class="row" @click="checked(index)" style="cursor:pointer" :class="requirement.status ? 'bg-success-green' : ''">
-            {{-- <div class="row" @click="checked(i)" v-for="(rq, i) in requirement" style="cursor:pointer" :key="i"> --}}
+        <div v-for="(requirement, index) in requirementList" :key="index">
+
+        
+        <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement" :class="rq.background"  style="cursor:pointer" :key="i" >
+            {{-- <div class="row" @click="checked(index)" style="cursor:pointer" :class="requirement.status ? 'bg-success-green' : ''"> --}}
+            <div class="row" >
                 <div class="col-md-10">
                     <div class="vote-actions">
-                        {{--  <h1 v-show="groupNumbers(requirement.number) === true">  --}}
+                         {{-- <h1 v-show="groupNumbers(rq.number) === true">  --}}
                         <h1>
-                            @{{requirement.number}}
-                            {{-- @{{rq.number}} --}}
+                            {{-- @{{requirement.number}} --}}
+                            @{{rq.number}}
                         </h1>
                     </div>
-                    <span class="vote-title">@{{requirement.document}}</span>
-                    {{-- <span class="vote-title">@{{rq.document}}</span> --}}
+                    {{-- <span class="vote-title">@{{requirement.document}}</span> --}}
+                    <span class="vote-title">@{{rq.document}}</span>
                     <div class="vote-info">
                         <div class="col-md-2 no-margins no-padding">
                             <i class="fa fa-comments-o"></i> Comentario:
                         </div>
                         <div class="col-md-6 no-margins no-padding">
-                            <input type="text" :name="'comment'+requirement.id" class="form-control">
-                            {{-- <input type="text" :name="'comment'+rq.id" class="form-control"> --}}
+                            {{-- <input type="text" :name="'comment'+requirement.id" class="form-control"> --}}
+                            <input type="text" :name="'comment'+rq.id" class="form-control">
                         </div>
                         <br>
                     </div>
                 </div>
                 <div class="col-md-2 ">
-                    <div class="vote-icon">
-                        <input type="checkbox" v-model="requirement.status" value="checked" :name="'document'+requirement.id" class="largerCheckbox" >
-                        {{-- <input type="radio" v-model="rq.status" :value="rq.status" :name="'document'+rq.number" class="largerCheckbox" > --}}
+                    <div class="vote-icon" >
+                        {{-- <input type="checkbox" v-model="requirement.status" value="checked" :name="'document'+requirement.id" class="largerCheckbox" > --}}
+                        <span style="color:#3c3c3c"><i class="fa " :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i></span>
+                        <div style="opacity:0">
+                            <input type="checkbox" v-model="rq.status" value="checked" :name="'document'+rq.id" class="largerCheckbox" >
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     
     {{--  <div class="panel panel-success" v-for="(requirement, index) in requirementList" :key="index">
