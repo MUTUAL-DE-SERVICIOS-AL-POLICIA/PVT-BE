@@ -320,51 +320,54 @@ class AidContributionController extends Controller
 
     public function storeDirectContribution(Request $request)    
     {        
-        //*********START VALIDATOR************//        
+        //*********START VALIDATOR************//                
         $rules=[];                
-            $has_commitment = false;
-            return $request->afid;
+        $biz_rules = [];
+            $has_commitment = false;            
             $commitment = AidCommitment::where('affiliate_id',$request->afid)->where('state','ALTA')->first();
-            if(!isset($commitment->id)){
-                $hgas_commitment = true;            
-            }
             
-            $biz_rules = [
-                'has_commitment'    =>  $has_commitment?'required':'',                
-            ];            
-                        
-            foreach ($request->aportes as $key => $ap)
-            {                                            
+            if(!isset($commitment->id)){                
+                $has_commitment = true;                                    
+                $biz_rules = [
+                    'has_commitment'    =>  $has_commitment?'required':'',                
+                ];            
+                $validator = Validator::make($request->all(),$biz_rules);
+                if($validator->fails()){            
+                    return response()->json($validator->errors(), 406);
+                }
+            }            
+            $key = 0;           
+            foreach ($request->aportes as $ap)
+            {                            
                 $aporte=(object)$ap;
-                $cont = AidContribution::select('id','')->where('affiliate_id',$request->afid)->where('month_year',$aporte->year.'-'.$aporte->month.'-01')->first();
+                $cont = AidContribution::where('affiliate_id',$request->afid)->where('month_year',$aporte->year.'-'.$aporte->month.'-01')->first();                
                 $has_contribution = false;
-                if(isset($cont->id))
-                    $has_contribution = true;
-                
+                if(isset($cont->id)){
+                    $has_contribution = true;                    
+                }                                
                 $biz_rules = [
                     'has_contribution.'.$key    =>  $has_contribution?'required':'',
                 ];
                 
                 $rules=array_merge($rules,$biz_rules);
-                //$aporte=(object)$ap;
+                
                 $array_rules = [
                     'aportes.'.$key.'.sueldo' =>  'required|numeric|min:0',
-                    'aportes.'.$key.'.dignity_rent' =>  'numeric|min:0',                    
+                    'aportes.'.$key.'.dignity_rent' =>  'min:0',                    
                     'aportes.'.$key.'.subtotal' =>  'required|numeric|min:0',
                     'aportes.'.$key.'.interes' =>  'required|numeric',
                     'aportes.'.$key.'.year' =>  'required|numeric|min:1700',
                     'aportes.'.$key.'.month' =>  'required|numeric|min:1|max:12',
                 ];
+                $key++;
                 $rules=array_merge($rules,$array_rules);
-            }
-        
+            }            
         $rules = array_merge($rules,$biz_rules);
         $validator = Validator::make($request->all(),$rules);
         if($validator->fails()){            
             return response()->json($validator->errors(), 406);
-        }         
-         //*********END VALIDATOR************//         
-        return 0;
+        }
+         //*********END VALIDATOR************//                 
         $result = [];      
         $stored_contributions = [];
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
@@ -380,7 +383,10 @@ class AidContributionController extends Controller
             $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
             $aid_contribution->type='DIRECTO';
             $aid_contribution->quotable = $aporte->auxilio_mortuorio;
-            $aid_contribution->dignity_rent = $aporte->sueldo-$aporte->dignity_rent;
+            if(is_numeric($aporte->dignity_rent))            
+                $aid_contribution->dignity_rent = $aporte->sueldo-$aporte->dignity_rent;
+            else
+                $aid_contribution->dignity_rent = $aporte->sueldo;
             $aid_contribution->rent = $aporte->sueldo;
             $aid_contribution->total = $aporte->subtotal;
             $aid_contribution->interest = $aporte->interes;
