@@ -6,15 +6,11 @@ import { mapState, mapMutations } from 'vuex';
 			'modalities',
             'requirements',
             'user',
-            'cities'
+            'cities',
+            'procedureTypes'
 		],
         data(){
             return{
-                ciudad:null,
-                options:['hola','nbns','sda','a','s','sd'],
-                name:null,
-                email:null,
-
                 editing: false,
                 requirementList: [],
                 modality: null,
@@ -22,23 +18,34 @@ import { mapState, mapMutations } from 'vuex';
                 modality_id: 3,
                 actual_target: 1,
                 city_end_id:this.user.city_id,
-                my_index: 1
+                procedure_type_id:2,
+                my_index: 1,
+                modalitiesFilter: []
             }
         },
         mounted(){
             this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
+            this.onChooseProcedureType();
         },
         methods:{
+            onChooseProcedureType(){
+                this.modalitiesFilter = this.modalities.filter((m) => {
+                    return m.procedure_type_id == this.procedure_type_id;
+                })
+                this.modality = null;
+            },
             onChooseModality(event){
                 const options = event.target.options;
                 const selectedOption = options[options.selectedIndex];
-                const selectedText = selectedOption.textContent;
-                var object={
-                    name:selectedText,
-                    id: this.modality
+                if (selectedOption) {
+                    const selectedText = selectedOption.textContent;
+                    var object={
+                        name:selectedText,
+                        id: this.modality
+                    }
+                    this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
                 }
                 this.getRequirements();
-              this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
             },
             getRequirements(){
                 this.requirementList = this.requirements.filter((r) => {
@@ -47,6 +54,11 @@ import { mapState, mapMutations } from 'vuex';
                         return r;
                     }
                 });
+                // this.requirementList = this.requirementList.reduce(function(r, v) {
+                //     r[v.number] = r[v.number] || [];
+                //     r[v.number].push(v);
+                //     return r;
+                // }, Object.create(null));
             },
             checked(index){
                 this.requirementList[index].status =  ! this.requirementList[index].status;
@@ -74,14 +86,16 @@ import { mapState, mapMutations } from 'vuex';
         },
         // computed:{
         //     requirementsList(){
-        //         var list = [];
-        //         for(var i=0;i<this.requirements.length;i++){
-        //             if(this.modality == this.requirements[i].modality_id)
-        //                 list.push(this.requirements[i]);
+        //         if (this.modality) {
+        //             var list = [];
+        //             for(var i=0;i<this.requirements.length;i++){
+        //                 if(this.modality == this.requirements[i].modality_id)
+        //                     list.push(this.requirements[i]);
+        //             }
+        //             return list;
         //         }
-        //         return list;
+        //         return [];
         //     },
-            
         // },
 	}
 </script>

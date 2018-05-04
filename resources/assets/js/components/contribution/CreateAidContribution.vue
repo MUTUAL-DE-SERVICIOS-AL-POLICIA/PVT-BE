@@ -182,8 +182,7 @@ export default {
     enableDC() {
       $(".directContribution").removeClass("disableddiv");
     },
-    Guardar() {
-        console.log(this.contributions);
+    Guardar() {        
       this.contributions = this.contributions.filter(item => {
         return (
           item.sueldo != 0 && item.auxilio_mortuorio != 0 && item.subtotal != 0
@@ -211,7 +210,7 @@ export default {
               })
               .then(response => {
                 
-              this.enableDC();
+              //this.enableDC();
               var i;
                 for(i=0;i<response.data.aid_contribution.length;i++){                        
                     this.setDataToTable(response.data.aid_contribution[i].month_year,response.data.aid_contribution[i].total);
@@ -235,12 +234,14 @@ export default {
                   showModal: true
                 });
             }).catch(error => {              
+              console.log('with error message');
+              
               this.show_spinner = false;
               console.log(error);
               console.log(error.response.data);
               var resp = error.response.data;
-              $.each(resp, function(index, value) {
-                flash(value, "error", 6000);
+               $.each(resp, function(index, value) {
+                 flash(value, "error", 6000);
               });
             });
           }
