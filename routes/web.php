@@ -56,7 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::patch('/update_spouse/{spouse}', 'SpouseController@update')->name('update_spouse');
 
 	Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
-
+	Route::get('/affiliate_record/{affiliate}', 'AffiliateController@AffiliateRecord')->name('affiliate_record');
 
 
 

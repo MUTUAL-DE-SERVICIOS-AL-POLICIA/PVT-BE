@@ -14,6 +14,7 @@ use Log;
 use Yajra\Datatables\Datatables;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\AffiliateRecordPvt;
 
 class AffiliateController extends Controller
 {
@@ -216,5 +217,16 @@ class AffiliateController extends Controller
     {
         //
         $this->authorize('delete', $affiliate);
+    }
+    
+    public function AffiliateRecord(Affiliate $affiliate)
+    {
+       
+        $affiliate_record=AffiliateRecordPvt::where('affiliate_id', $affiliate->id)->get();
+        $data = array(
+            'affiliate_record'=>$affiliate_record
+        );
+        //return $affiliate_record;
+        return view('affiliates.show')->with($data);
     }
 }
