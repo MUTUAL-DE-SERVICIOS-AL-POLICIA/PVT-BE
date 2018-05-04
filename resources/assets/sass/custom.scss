@@ -496,3 +496,14 @@ input.largerCheckbox {
 .bg-warning-yellow{
 	background: rgba(255, 238, 186, .4)
 }
+
+#disabled-button-wrapper {
+  display: inline-block;
+}
+
+#disabled-button-wrapper  .btn[disabled] {
+  pointer-events: none;
+}
+#disabled-button-wrapper.disabled {
+  cursor: not-allowed;
+}
