@@ -60,8 +60,6 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 
-
-
 	//retirement fund
 	//RetirementFundRequirements
 	//Route::resource('ret_fun', 'RetirementFundRequirementController@retFun');

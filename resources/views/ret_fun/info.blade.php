@@ -21,6 +21,8 @@
                     <dd>@{{ form.reception_date}}</dd>
                     <dt>Regional:</dt>
                     <dd>@{{  city_end_name}} </dd>
+                    <dt>Estado:</dt>
+                    <dd>@{{ getState(form.ret_fun_state_id) }} </dd>
                 </dl>
             </div>
         </div>
@@ -56,6 +58,12 @@
                     <dd><input type="text" v-model="form.reception_date" class="form-control"> </dd>
                     <dt>Regional:</dt>
                     <dd>{!! Form::select('city_end_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_end_id']) !!} </dd>
+                    <dt>Estado: </dt>
+                    <dd> 
+                        <select class="form-control" v-model="form.ret_fun_state_id" ref="modality" name="ret_fun_state_id">
+                            <option v-for="(state, index) in states" :value="state.id" :key="index">@{{state.name}}</option>
+                        </select>
+                    </dd>
                 </dl>
             </div>
         </div>

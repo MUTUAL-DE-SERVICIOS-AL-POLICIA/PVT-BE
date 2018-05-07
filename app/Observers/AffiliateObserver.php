@@ -138,7 +138,7 @@ class AffiliateObserver
             $message = $message . ' numero de item '.$old->item.' a '.$affiliate->item.', ';
         }
         
-        $message = $message . ' '.Carbon::now();
+        $message = $message . ' ';
 
         Log::info('updating');
         $affiliate_record = new AffiliateRecord;
