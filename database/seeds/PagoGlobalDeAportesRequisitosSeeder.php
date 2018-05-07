@@ -19,6 +19,7 @@ class PagoGlobalDeAportesRequisitosSeeder extends Seeder
             ['name' => 'Certificado de haberes otorgado por el Comando general de la Policía Boliviana (original).'],
             ['name' => 'Fotocopia simple de la cédula de identidad del titular.'],
             ['name' => 'Certificado de años de servicio desglosado, otorgado por el Comando General de la Policía Boliviana, hasta la fecha de fallecimiento (original).'],
+            ['name' => 'Resolución y memorándum de baja definitiva emitida por el Comando General de la Policía Boliviana (original).'],
         ]);
 
         DB::table('procedure_requirements')->insert([

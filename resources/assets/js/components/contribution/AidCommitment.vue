@@ -49,11 +49,11 @@
                 this.toggle_editing();                
             },           
             update (value) {
-                var id = value;                
-                let uri = `/aid_commitment/`+id; 
+                var id = value;
+                let uri = `/aid_commitment/`+id;
                 this.show_spinner=true;
                 axios.patch(uri,this.aid_commitment)
-                    .then(response=>{                             
+                    .then(response=>{                     
                         this.editing = false;
                         this.show_spinner=false;                        
                         if(response.data.state =='ALTA'){
