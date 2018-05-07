@@ -13,7 +13,7 @@
     @section('styles')
     @show
 </head>
-<body class="md-skin fixed-nav no-skin-config">
+<body class="md-skin fixed-nav no-skin-config mini-navbar">
 
   <!-- Wrapper-->
     <div id="wrapper">

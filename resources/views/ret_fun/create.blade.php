@@ -9,13 +9,6 @@
 <div class="wrapper wrapper-content animated fadeInRight">    
     <div class="row">
         <div class="col-md-12">
-            {{--  <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
-    @include('affiliates.simple_info', ['affiliate'=>$affiliate])
-            </affiliate-police>  --}}
-            <hr>
-            <ret-fun-create-info></ret-fun-create-info>
-        </div>
-        <div class="col-md-12">
             <div class="ibox-content">
                 @if ($errors->any())                
                     {{implode('', $errors->all('<div>-:message</div><br>')) }}
@@ -35,6 +28,7 @@
                         @on-complete="onFinish"
                         @on-loading="setLoading"
                         >
+                    <ret-fun-create-info></ret-fun-create-info> 
                     <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
                         <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
                                 inline-template>
