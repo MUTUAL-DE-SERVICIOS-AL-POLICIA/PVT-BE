@@ -24,6 +24,10 @@
                 </a>
             @endif
         @endcan
+        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
+            <i class="fa fa-history"></i>
+        </button>
+        @include('affiliates.affiliate_record', ['affiliate_records'=>$affiliate_records])
         @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"></i> </button>
@@ -37,7 +41,7 @@
         <div class="col-md-6">
             <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
                    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
-            </affiliate-show> 
+            </affiliate-show>
         </div>
         <div class="col-md-6">
             <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
@@ -51,4 +55,18 @@
 
 </div>
 
+@endsection
+
+@section('styles')
+<link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
+
+@endsection
+@section('scripts')
+<script src="{{ asset('/js/datatable.js')}}"></script>
+<script>
+$(document).ready(function() {
+    console.log( "del show... " );
+    $('#example').DataTable();
+} );
+</script>
 @endsection
