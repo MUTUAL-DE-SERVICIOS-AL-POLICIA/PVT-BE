@@ -109,6 +109,8 @@ class ProcedureTablesSeeder extends Seeder {
             ['procedure_modality_id' => '5', 'procedure_document_id' => '3', 'number' => '3'],
             ['procedure_modality_id' => '5', 'procedure_document_id' => '4', 'number' => '4'],
             ['procedure_modality_id' => '5', 'procedure_document_id' => '19', 'number' => '5'], 
+            ['procedure_modality_id' => '5', 'procedure_document_id' => '42', 'number' => '5'],//revisar
+            ['procedure_modality_id' => '5', 'procedure_document_id' => '19', 'number' => '5'],
             ['procedure_modality_id' => '5', 'procedure_document_id' => '20', 'number' => '5'],
             ['procedure_modality_id' => '5', 'procedure_document_id' => '7', 'number' => '6'],
             ['procedure_modality_id' => '5', 'procedure_document_id' => '21', 'number' => '6'],
