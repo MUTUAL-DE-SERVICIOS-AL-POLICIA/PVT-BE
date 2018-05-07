@@ -58,5 +58,6 @@ class Kernel extends HttpKernel
         'guest' => \Muserpol\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'session' => \Muserpol\Http\Middleware\SessionMiddleware::class,
+        'affiliate_has_ret_fun' => \Muserpol\Http\Middleware\AffiliateHasRetFun::class,
     ];
 }

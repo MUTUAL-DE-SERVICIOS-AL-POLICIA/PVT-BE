@@ -1,7 +1,7 @@
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
         <div class="ibox-title">
-            <h5>Datos de los Derechohabinetes <small>something...</small></h5>
+            <h5>Datos de los Derechohabinetes <small></small></h5>
             <div class="ibox-tools">
             </div>
         </div>

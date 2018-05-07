@@ -1,7 +1,7 @@
  <div class="col-lg-12">
     <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
         <div class="panel-heading">
-            <h3 class="pull-left">Información Personal</h3>
+            <h3 data-toggle="tooltip" data-placement="top" title="Ver Información del Affiliado - {{ $affiliate->fullName('capitalize') }}" class="pull-left"><a href="{{route('affiliate.show', $affiliate->id)}}" style="color: #fff" >Información Personal</a></h3>
             @can('update',$affiliate)
             <div class="text-right">
                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>

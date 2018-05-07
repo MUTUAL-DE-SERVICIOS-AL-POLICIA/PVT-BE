@@ -30,10 +30,9 @@ class RetFunBeneficiary extends Model
     /**
      * Methods
       */
-    public function fullName()
+    public function fullName($style = "uppercase")
     {
-        $name = $this->first_name . ' ' . $this->second_name . ' ' . $this->last_name . ' ' . $this->mothers_last_name . ' ' . $this->surname_husband;
-        return Util::removeSpaces($name);
+        return Util::fullName($this, $style);
     }
     public function calcAge($text = false, $date_death = true)
     {
