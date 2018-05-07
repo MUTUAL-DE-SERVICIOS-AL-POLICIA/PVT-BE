@@ -1,12 +1,14 @@
-
-<div class="modal inmodal" id="ModalRecord" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal inmodal fade" id="ModalRecord" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+{{--<div class="modal inmodal" id="ModalRecord" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-    <div class="modal-content animated bounceInRight">
+    <div class="modal-content animated bounceInRight">--}}
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <i class="fa fa-folder modal-icon"></i>
-                <h4 class="modal-title">Historial del Afiliado</h4>
+                <h4 class="modal-title"> <i class="fa fa-folder"></i> Historial del Afiliado</h4>
             </div>
+            
             <div class="modal-body">
                 <table id="example" class="display" style="width:100%">
                     <thead>
@@ -18,8 +20,8 @@
                     <tbody>
                         @foreach($affiliate_records as $affiliate_record)
                         <tr>
-                            <td>{{ $affiliate_record->message}}</td>
-                            <td>{{$affiliate_record->created_at}}</td>
+                        <td>{{$affiliate_record->message}}</td>
+                            <td class="size-date">{{$affiliate_record->created_at}}</td>
                         </tr>
                         @endforeach
                     </tbody>

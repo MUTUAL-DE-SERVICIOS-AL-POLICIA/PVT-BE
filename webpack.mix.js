@@ -16,9 +16,11 @@ if (app == "test") {
 } else {
   mix
     .js("resources/assets/js/app.js", "public/js")
+    .js("resources/assets/js/datatable.js", "public/js")
     .sass("resources/assets/sass/wkhtml.scss", "public/css")
     .sass("resources/assets/sass/materialicons.scss", "public/css")
     .sass("resources/assets/sass/app.scss", "public/css")
+    .sass("resources/assets/sass/datatable.scss", "public/css")
     // .purgeCss({
     //   enabled: true,
 

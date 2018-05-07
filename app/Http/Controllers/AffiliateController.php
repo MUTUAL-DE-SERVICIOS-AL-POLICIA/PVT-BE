@@ -125,6 +125,11 @@ class AffiliateController extends Controller
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
         $affiliate_records = AffiliateRecord::where('affiliate_id', $affiliate->id)->get();
         // $quota_mortuaries = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get();
+        /*$records_message=[];
+        foreach($affiliate_records as $key=>$affiliate_record){
+            $records_message[$key]=substr($affiliate_record->message,0,-20);
+        }*/
+        //return $records_message;
         $quota_mortuaries = [];
         $cuota = null;
         $auxilio = null;
@@ -155,9 +160,10 @@ class AffiliateController extends Controller
             'degrees'=>$degrees,
             'pension_entities' =>$pension_entities,
             'affiliate_states'=>$affiliate_states, 
-            'cuota'=>$cuota, 
+            'cuota'=>$cuota,
             'auxilio'=>$auxilio,
-            'affiliate_records'=>$affiliate_records
+            'affiliate_records'=>$affiliate_records,
+            //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));

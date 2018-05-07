@@ -41,7 +41,7 @@ class RetirementFundObserver
 
         }
 
-        $message = $message . ' '.Carbon::now();
+        $message = $message . ' ';
 
         $retfun = new RetFunRecord;
         $retfun->user_id = Auth::user()->id;
