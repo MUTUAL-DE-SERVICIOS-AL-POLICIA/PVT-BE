@@ -61,8 +61,8 @@
 <link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
 
 @endsection
-@section('scripts')
-<script src="{{ asset('/js/datatable.js')}}"></script>
+@section('jss')
+<script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
 $(document).ready(function() {
     console.log( "del show... " );
