@@ -70,6 +70,9 @@
         <div class="col-md-6">
             @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
         </div>
+        <div class="col-md-6">
+            @include('ret_fun.observation');
+        </div>
     </div>
     @endcan
 </div>
