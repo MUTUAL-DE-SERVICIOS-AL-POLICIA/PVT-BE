@@ -13,8 +13,6 @@
         {{-- <a href="{{route('create_quota_aid', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Initar tr&aacute;mite de CUOTA Y AUXILIO MORTUORIO"><i class="fa fa-paste"></i> </button>
         </a> --}}
-        lñlñ
-        {{asset('assets/inspinia/css/plugins/dataTables/datatables.min.css')}}
         @can('create', new Muserpol\Models\RetirementFund\RetirementFund)
         <a href="{{route('create_ret_fun', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO"><i class="fa fa-paste"></i> </button>
@@ -23,7 +21,6 @@
         <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
             <i class="fa fa-history"></i>
         </button>
-        
         @include('affiliates.affiliate_record', ['affiliate_records'=>$affiliate_records])
         @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
@@ -52,38 +49,14 @@
 
 </div>
 
-
 @endsection
 
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
-{{-- <link rel="stylesheet" href="{{asset('resources/assets/inspinia/css/plugins/dataTables/datatables.min.css')}}"> --}}
-{{-- <style>
-    td.highlight {
-        background-colresource_pathor: #e3eaef !important;
-    }
-    th, td {
-        width: 25%;
-        text-align: left;
-        vertical-align: top;
-        border-collapse: collapse;
-    }
-    .size-date{
-        width: 5%;
-    }
 
-    .table-hover tbody tr:hover td,
-    .table-hover tbody tr:hover th {
-        background-color: #e3eaef;
-    }
-    .yellow-row {
-        background-color:#ffe6b3 !important;
-        
-    }
-</style> --}}
 @endsection
 @section('scripts')
-<script src="{{ asset('/js/datatables.js')}}"></script>
+<script src="{{ asset('/js/datatable.js')}}"></script>
 <script>
 $(document).ready(function() {
     console.log( "del show... " );

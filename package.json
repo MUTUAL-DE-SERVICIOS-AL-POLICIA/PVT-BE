@@ -24,6 +24,9 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "datatables.net": "^1.10.16",
+    "datatables.net-bs": "^1.10.16",
+    "datatables.net-dt": "^1.10.16",
     "dotenv": "^5.0.1",
     "inputmask": "^3.3.11",
     "laravel-mix-purgecss": "^1.0.5",
