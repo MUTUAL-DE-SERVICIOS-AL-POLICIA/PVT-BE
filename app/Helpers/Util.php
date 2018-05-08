@@ -12,11 +12,15 @@ class Util
 {
     //cambia el formato de la fecha a cadena
     //input $string=YYYY/mm/dd
-    public static function getStringDate($string = "1800/01/01"){        
+    public static function getStringDate($string = "1800/01/01", $month_year=false){        
         setlocale(LC_TIME, 'es_ES.utf8');        
         $date = DateTime::createFromFormat("Y-m-d", $string);
-        if($date)
+        if($date){
+            if($month_year)
+            return strftime("%B / %Y",$date->getTimestamp());
+            else
             return strftime("%d de %B de %Y",$date->getTimestamp());
+        }
         else 
             return "sin fecha";
     }
@@ -24,7 +28,7 @@ class Util
     public static function formatMoney($value)
     {
         if ($value) {
-            $value = number_format($value, 2, ',', '.');
+            $value = number_format($value, 2, '.', ',');
             return $value;
         }
         return null;
