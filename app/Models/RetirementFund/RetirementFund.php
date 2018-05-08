@@ -51,5 +51,8 @@ class RetirementFund extends Model
     public function discount_types()
     {
         return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot('amount');
+    }    
+    public function ret_fun_state(){
+        return $this->belongsTo('Muserpol\Models\RetirementFund\RetFunState','ret_fun_state_id');
     }
 }

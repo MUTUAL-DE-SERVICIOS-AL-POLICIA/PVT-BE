@@ -32,6 +32,7 @@ use Illuminate\Contracts\Database\ModelIdentifier;
 use Illuminate\Support\Facades\Redirect;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureType;
+use Muserpol\Models\RetirementFund\RetFunState;
 class RetirementFundController extends Controller
 {
     /**
@@ -63,6 +64,7 @@ class RetirementFundController extends Controller
     {
         
         $first_name = $request->beneficiary_first_name;
+        //return $first_name;
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
         $mothers_last_name = $request->beneficiary_mothers_last_name;
@@ -76,6 +78,18 @@ class RetirementFundController extends Controller
         $rules=[];       
         $biz_rules = [];
                                
+        $has_ret_fun = false;
+        $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate_id)->first();
+        if(isset($ret_fun)){
+            $has_ret_fun = true;
+            $biz_rules = [
+                'ret_fun_double'  =>  $has_ret_fun?'required':'',
+            ];    
+            $validator = Validator::make($request->all(),$biz_rules);
+            if($validator->fails()){            
+                return Redirect::back()->withErrors($validator);            
+            }
+        }        
         
         $rules = [
             'ret_fun_modality' =>  'required',
@@ -341,6 +355,7 @@ class RetirementFundController extends Controller
     public function show($id)
     {
         $retirement_fund = RetirementFund::find($id);
+                
         $this->authorize('view', $retirement_fund);
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
@@ -371,6 +386,10 @@ class RetirementFundController extends Controller
         
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
+
+        $states = RetFunState::get();     
+        
+        //return $retirement_fund->ret_fun_state->name;
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -383,7 +402,8 @@ class RetirementFundController extends Controller
             'cities'    =>  $cities,
             'kinships'   =>  $kinships,
             'cities_pluck' => $cities_pluck,
-            'birth_cities' => $birth_cities
+            'birth_cities' => $birth_cities,
+            'states'    =>  $states,
         ];
         
         return view('ret_fun.show',$data);
@@ -432,6 +452,7 @@ class RetirementFundController extends Controller
         $surname_husband = strtoupper($request->surname_husband) ?? '';
         $first_name = strtoupper($request->first_name) ?? '';
         $second_name = strtoupper($request->second_name) ?? '';
+        $state = $request->state ?? '';
 
         $code = $request->code ?? '';
         $modality = strtoupper($request->modality) ?? '';
@@ -439,7 +460,8 @@ class RetirementFundController extends Controller
         $total = RetirementFund::select('retirement_funds.id')
                                 ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
-                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
+                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
+                                ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 //->where('procedure_modalities.name','LIKE',$modality.'%')
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
@@ -447,6 +469,7 @@ class RetirementFundController extends Controller
                                 ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
+                                ->whereRaw("coalesce(ret_fun_states.name,'') iLIKE '$state%'")
                                 ->count();
         $ret_funds = RetirementFund::select(
             'retirement_funds.id',
@@ -456,13 +479,16 @@ class RetirementFundController extends Controller
             'affiliates.mothers_last_name as mothers_last_name',
             'affiliates.surname_husband as surname_husband',
             'procedure_modalities.name as modality',
-            'workflows.name as workflow','retirement_funds.code',
+            'workflows.name as workflow',
+            'retirement_funds.code',
             'retirement_funds.reception_date',
+            'ret_fun_states.name as state',
             'retirement_funds.total'
         )
                                 ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
+                                ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 //->where('procedure_modalities.name','LIKE',$modality.'%')
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
@@ -470,6 +496,7 @@ class RetirementFundController extends Controller
                                 ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
+                                ->whereRaw("coalesce(ret_fun_states.name,'') iLIKE '$state%'")
                                 ->skip($offset)
                                 ->take($limit)
                                 ->orderBy($sort,$order)
@@ -574,6 +601,7 @@ class RetirementFundController extends Controller
         $retirement_fund->city_end_id = $request->city_end_id;
         $retirement_fund->city_start_id = $request->city_start_id;
         $retirement_fund->reception_date = $request->reception_date;
+        $retirement_fund->ret_fun_state_id = $request->ret_fun_state_id;
         $retirement_fund->save();
         $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality'=>$retirement_fund->procedure_modality,'city_start'=>$retirement_fund->city_start,'city_end'=>$retirement_fund->city_end );
         return $datos;

@@ -46,7 +46,7 @@ class ProcedureTablesSeeder extends Seeder {
             ['name' => 'Certificado de nacimiento del titular (original y actualizado).'],
             ['name' => 'Memorándum de agradecimiento de servicios emitido por el Comando general de la Policía Boliviana(original).'],
             ['name' => 'Memorándum de destino a disponibilidad a las letras "C" y "A" (reserva activa) según corresponda (original).'],
-            ['name' => 'Certificado de haberes otorgado por el Comando general de la Policía Boliviana, de los últimos 60 meses efectivamente percibidos antes de su destino a disponibilidad de las letras(reserva activa), (original).'],
+            ['name' => 'Certificado de haberes otorgado por el Comando general de la Policía Boliviana, de los últimos 60 meses efectivamente percibidos antes de su destino a disponibilidad de las letras (reserva activa), (original).'],
             ['name' => 'Certificado de años de servicio desglosado, otorgado por el Comando General de la Policía Boliviana (original).'],
             ['name' => 'Certificado de defunción (original y actualizado).'],
             ['name' => 'Certificado de nacimiento de los derechohabientes (original y actualizado).'],
@@ -73,6 +73,9 @@ class ProcedureTablesSeeder extends Seeder {
             ['name' => 'Certificado de nacimiento de la o del viudo original y actualizado'],
             ['name' => 'Certificado de defunción de la o del viudo original y actualizado'],
             ['name' => 'Fotocopia simple de la cédula de identidad de la o del viudo'],
+            ['name' => 'Resolución de baja definitiva a solicitud voluntaria, emitida por el Comando General de la Policía Boliviana (original).'],
+            ['name' => 'Memorándum de baja definitiva a solicitud voluntaria, emitida por el Comando General de la Policía Boliviana (original).'],
+            
         ]);
 
         DB::table('procedure_requirements')->insert([
@@ -81,9 +84,7 @@ class ProcedureTablesSeeder extends Seeder {
             ['procedure_modality_id' => '3', 'procedure_document_id' => '3', 'number' => '3'],
             ['procedure_modality_id' => '3', 'procedure_document_id' => '4', 'number' => '4'],
             ['procedure_modality_id' => '3', 'procedure_document_id' => '5', 'number' => '5'],
-            ['procedure_modality_id' => '3', 'procedure_document_id' => '23', 'number' => '5'],
             ['procedure_modality_id' => '3', 'procedure_document_id' => '6', 'number' => '6'],
-            ['procedure_modality_id' => '3', 'procedure_document_id' => '23', 'number' => '6'],
             ['procedure_modality_id' => '3', 'procedure_document_id' => '7', 'number' => '7'],
             ['procedure_modality_id' => '3', 'procedure_document_id' => '8', 'number' => '8'],
             ['procedure_modality_id' => '4', 'procedure_document_id' => '1', 'number' => '1'],
@@ -92,8 +93,7 @@ class ProcedureTablesSeeder extends Seeder {
             ['procedure_modality_id' => '4', 'procedure_document_id' => '4', 'number' => '4'],
             ['procedure_modality_id' => '4', 'procedure_document_id' => '9', 'number' => '5'],
             ['procedure_modality_id' => '4', 'procedure_document_id' => '6', 'number' => '6'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '23', 'number' => '6'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '7', 'number' => '7'],
+            ['procedure_modality_id' => '4', 'procedure_document_id' => '10', 'number' => '7'],
             ['procedure_modality_id' => '4', 'procedure_document_id' => '11', 'number' => '8'],
             ['procedure_modality_id' => '4', 'procedure_document_id' => '12', 'number' => '9'],
             ['procedure_modality_id' => '4', 'procedure_document_id' => '13', 'number' => '9'],
@@ -108,6 +108,8 @@ class ProcedureTablesSeeder extends Seeder {
             ['procedure_modality_id' => '5', 'procedure_document_id' => '2', 'number' => '2'],
             ['procedure_modality_id' => '5', 'procedure_document_id' => '3', 'number' => '3'],
             ['procedure_modality_id' => '5', 'procedure_document_id' => '4', 'number' => '4'],
+            ['procedure_modality_id' => '5', 'procedure_document_id' => '19', 'number' => '5'], 
+            ['procedure_modality_id' => '5', 'procedure_document_id' => '42', 'number' => '5'],//revisar
             ['procedure_modality_id' => '5', 'procedure_document_id' => '19', 'number' => '5'],
             ['procedure_modality_id' => '5', 'procedure_document_id' => '20', 'number' => '5'],
             ['procedure_modality_id' => '5', 'procedure_document_id' => '7', 'number' => '6'],
@@ -127,8 +129,8 @@ class ProcedureTablesSeeder extends Seeder {
             ['procedure_modality_id' => '7', 'procedure_document_id' => '2', 'number' => '2'],
             ['procedure_modality_id' => '7', 'procedure_document_id' => '3', 'number' => '3'],
             ['procedure_modality_id' => '7', 'procedure_document_id' => '4', 'number' => '4'],
-            ['procedure_modality_id' => '7', 'procedure_document_id' => '19', 'number' => '5'],
-            ['procedure_modality_id' => '7', 'procedure_document_id' => '20', 'number' => '5'],
+            ['procedure_modality_id' => '7', 'procedure_document_id' => '34', 'number' => '5'],//-- 19,20 por 34 y 35
+            ['procedure_modality_id' => '7', 'procedure_document_id' => '35', 'number' => '5'],
             ['procedure_modality_id' => '7', 'procedure_document_id' => '21', 'number' => '6'],
             ['procedure_modality_id' => '7', 'procedure_document_id' => '7', 'number' => '6'],
             ['procedure_modality_id' => '7', 'procedure_document_id' => '8', 'number' => '7'],

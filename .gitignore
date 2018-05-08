@@ -1,7 +1,9 @@
 /node_modules
 /public/hot
 public/js/app.js
+public/js/datatable.js
 public/css/app.css
+public/css/datatable.css
 public/css/materialicons.css
 public/css/wkhtml.css
 /public/storage

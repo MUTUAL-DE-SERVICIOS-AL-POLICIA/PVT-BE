@@ -38,8 +38,7 @@
                     </tr>
                         @foreach($contributions as $contribution)
                             <tr>
-                                {{-- <td class='text-center p-5'>{!! date("F/Y", strtotime($contribution->month_year)) !!}</td> --}}
-                                <td class='text-center p-5'>{!! $util::getStringDate($contribution->month_year) !!}</td>
+                                <td class='text-center p-5'>{{ strtoupper($util::getStringDate($contribution->month_year,true)) }}</td>
                                 <td class='text-right p-5'>{{ $util::formatMoney($contribution->base_wage) }} </td>
                                 <td class='text-right p-5'>{{ $contribution->retirement_fund }} </td>
                                 <td class='text-right p-5'>{{ $contribution->mortuary_quota }} </td>

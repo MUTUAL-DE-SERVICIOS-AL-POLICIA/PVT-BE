@@ -4,7 +4,8 @@ export default {
       'retirement_fund',
       'rf_city_start',
       'rf_city_end',
-      'rf_procedure_modality'
+      'rf_procedure_modality',
+      'states'
   ],
   data(){
       return{
@@ -12,7 +13,7 @@ export default {
           form:this.retirement_fund,
           city_end: this.rf_city_end,
           city_start: this.rf_city_start,
-          procedure_modality: this.rf_procedure_modality,
+          procedure_modality: this.rf_procedure_modality,          
           values:{
               reception_date: this.retirement_fund.reception_date
           }
@@ -41,6 +42,13 @@ export default {
             this.form.procedure_modality_id = this.procedure_modality.id; 
         }
 		  },
+      getState: function(state_id){
+          var i;
+          for(i =0; i<this.states.length;i++){
+              if(this.states[i].id == state_id)
+                return this.states[i].name;
+          }
+      },
       update: function () {  
         let uri = `/update_information_rf`;
         this.show_spinner=true;

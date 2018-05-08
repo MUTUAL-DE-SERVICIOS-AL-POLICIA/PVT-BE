@@ -1,6 +1,6 @@
 <template>
     <div>
-        Solicitante
+        <strong>Solicitante</strong><br>
         <ret-fun-beneficiary :beneficiary="retfun.applicant"
                  :cities="cities"
                  :kinships="kinships"
@@ -15,7 +15,11 @@
                              v-on:remove="removeBeneficiary(index)">
         </ret-fun-beneficiary>
         <div class="row">
-            <button class="btn btn-success" @click="addBeneficiary()" type="button" ><i class="fa fa-plus"></i></button>
+            <div class="col-md-5"></div>
+            <div class="col-md-1">
+                <button class="btn btn-success" @click="addBeneficiary()" type="button" ><i class="fa fa-plus"></i></button>
+            </div>
+            <div class="col-md-6"></div>
         </div>
     </div>
 </template>

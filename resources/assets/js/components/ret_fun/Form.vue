@@ -26,9 +26,13 @@ export default {
             if (!this.$refs.uno.$children[0].modality) {
                 return false;
             }
-            var someRequirement = this.$refs.uno.$children[0].requirementList.some((val)=>{
-                return val.status;
-            })
+            let x=this.$refs.uno.$children[0].requirementList;
+            var someRequirement=true;
+            Object.keys(x).forEach(function(key) {
+                if( !x[key].some(rq=> rq.status) ){
+                    someRequirement=false;
+                }
+            });
             if (!someRequirement) {
                 return false;
             }
