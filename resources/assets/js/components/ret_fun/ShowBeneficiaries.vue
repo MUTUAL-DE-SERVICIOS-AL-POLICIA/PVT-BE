@@ -1,17 +1,18 @@
 <script>
 	export default{
 		props:[
-			'beneficiaries',
-                        'cities',
-                        'kinships',
-                        'original_beneficiaries',
+			'beneficiariesBackend',
+			'originalBeneficiariesBackend',
+            'cities',
+            'kinships',
+            'retFunId'
 		],
         data(){
             return{
                 editing: false,
                 show_spinner: false,
-                ben:this.original_beneficiaries,
                 iterator:-1,
+                beneficiaries: this.beneficiariesBackend,
             }
         },
         computed:{
@@ -25,12 +26,16 @@
             //         return '';
             //     }
             // },
-        },        
-        methods:{            
-            toggle_editing:function () {
+        },
+        methods:{
+            toggle_editing () {
                 this.editing = !this.editing;
-                //this.ben = this.original_beneficiaries;
+            },
+            cancel(){
+                this.beneficiaries =  this.originalBeneficiariesBackend;
+                this.originalBeneficiariesBackend = this.beneficiaries;
                 
+                this.toggle_editing();
             },
             getCity (id){
                 var i=0;
@@ -46,49 +51,40 @@
                         return this.kinships[i].name;
                 return "S/N";
             },
-            searchPerson(iterator){
-                let ci= this.ben[iterator].identity_card;
-                
-                axios.get('/search_ajax', {
-                    params: {
-                    ci
-                    }
-                })
-                .then( (response) => {
-                    let data = response.data;
-                    this.setDataBeneficiary(data, iterator);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-                },
-                setDataBeneficiary(data, index) {
-                    this.ben[index].first_name = data.first_name;
-                    this.ben[index].second_name = data.second_name;
-                    this.ben[index].last_name = data.last_name;
-                    this.ben[index].mothers_last_name = data.mothers_last_name;
-                    this.ben[index].surname_husband = data.surname_husband;
-                    this.ben[index].identity_card = data.identity_card;
-                    this.ben[index].city_identity_card_id = data.city_identity_card_id;
-                    this.ben[index].birth_date = data.birth_date;
-                    this.ben[index].kinship_id = data.kinship_id;
-                    },
             update () {
-                console.log(this.ben[0].identity_card+"console");        
-                //console.log(this.$refs.name_ben[0].value);
-                let uri = `/update_beneficiaries/322`;
+                let uri = `/update_beneficiaries/${this.retFunId}`;
                 this.show_spinner=true;
-                axios.patch(uri,this.ben)
-                    .then(()=>{                       
-                        this.editing = false;
-                        this.show_spinner=false;
-                        this.beneficiaries = this.ben;
-                        flash('Informacion del Afiliado Actualizada');
-                    }).catch((response)=>{
-                        this.show_spinner=false;
-                        this.beneficiaries = this.ben;
-                        flash('Error al actualizar el afiliado: '+response.message,'error');
-                    })
+
+                axios.patch(uri,this.beneficiaries)
+                .then((response)=>{
+                    console.log(response.data);
+                    
+                    this.editing = false;
+                    this.show_spinner=false;
+                    this.beneficiaries = response.data.beneficiaries;
+                    flash('Informacion del Afiliado Actualizada  '+response.data);
+                }).catch((response)=>{
+                    this.show_spinner=false;
+                    this.beneficiaries = this.ben;
+                    flash('Error al actualizar el afiliado: '+response.message,'error');
+                })
+            },
+            addBeneficiary(){
+                let beneficiary = {
+                        first_name: null,
+                        second_name: null,
+                        last_name: null,
+                        mothers_last_name: null,
+                        surname_husband: null,
+                        identity_card: null,
+                        city_identity_card: null,
+                        birth_date: null,
+                        kinship: null,
+                }
+                this.beneficiaries.push(beneficiary);
+            },
+            removeBeneficiary(index){
+                this.beneficiaries.splice(index,1);
             }
         }
 	}

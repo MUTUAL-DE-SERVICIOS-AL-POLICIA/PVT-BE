@@ -54,12 +54,11 @@
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedicion</label>
+                        <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedición</label>
                             <div class="col-sm-8">
                                 <select class="form-control m-b" name="applicant_city_identity_card" v-model="applicant_city_identity_card">
-                                    <option v-for="city in cities" :value="city.id">
-                                        @{{ city.name }}
-                                    </option>
+                                    <option :value="null"></option>
+                                    <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -80,9 +79,8 @@
                         <div class="form-group"><label class="col-sm-6 control-label">Parentesco</label>
                             <div class="col-sm-6">
                                 <select class="form-control m-b" name="applicant_kinship" v-model="applicant_kinship">
-                                    <option v-for="kinship in kinships" :value="kinship.id">
-                                        @{{ kinship.name }}
-                                    </option>
+                                    <option :value="null"></option>
+                                    <option v-for="kinship in kinships" :value="kinship.id">@{{ kinship.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -158,9 +156,10 @@
                             </div>
                         </div>
                         <div class="col-md-7">
-                            <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedicion</label>
+                            <div class="form-group"><label class="col-sm-4 control-label">Ciudad de Expedición</label>
                                 <div class="col-sm-8">
                                     <select class="form-control m-b" name="legal_guardian_city_identity_card" v-model="legal_guardian_city_identity_card">
+                                        <option :value="null"></option>
                                         <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
                                     </select>
                                 </div>
