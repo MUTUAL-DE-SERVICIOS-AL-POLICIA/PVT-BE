@@ -530,6 +530,14 @@ tr {
 	//Instead of the line below you could use @include border-top-right-radius($radius)
 	border-top-right-radius: .7rem;
 }
+.rounded-bl {
+	//Instead of the line below you could use @include border-bottom-left-radius($radius)
+  	border-bottom-left-radius: .7rem;
+}
+.rounded-br {
+	//Instead of the line below you could use @include border-bottom-right-radius($radius)
+  	border-bottom-right-radius: .7rem;
+}
 .leading-none {
 	line-height: 1;
 }

@@ -380,7 +380,8 @@ class AidContributionController extends Controller
             $aid_contribution = new AidContribution();
             $aid_contribution->user_id = Auth::user()->id;
             $aid_contribution->affiliate_id = $affiliate->id;            
-            $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
+            // $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
+            $aid_contribution->month_year = $aporte->year.'-'.$aporte->month.'-01';
             $aid_contribution->type='DIRECTO';
             $aid_contribution->quotable = $aporte->auxilio_mortuorio;
             if(is_numeric($aporte->dignity_rent))            

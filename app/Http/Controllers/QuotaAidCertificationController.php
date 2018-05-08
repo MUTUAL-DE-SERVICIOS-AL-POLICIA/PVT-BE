@@ -99,6 +99,7 @@ class QuotaAidCertificationController extends Controller
         $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
         $number = $voucher->code;
         $descripcion = VoucherType::where('id', $voucher->voucher_type_id)->first();
+        $util = new Util();
         if ($affiliate->affiliate_state->name == "Fallecido") {
             $title = "PAGO DE APORTE DIRECTO DE LAS (OS) VIUDAS (OS) DEL  SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
             $spouses = Spouse::where('affiliate_id', $affiliate->id)->first();
@@ -117,7 +118,8 @@ class QuotaAidCertificationController extends Controller
                         'username', 
                         'title', 
                         'affiliate',
-                        'beneficiary', 
+                        'beneficiary',
+                        'util', 
                         'glosa',
                         'aid_contributions', 
                         'number', 

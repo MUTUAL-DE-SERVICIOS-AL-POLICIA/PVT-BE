@@ -37,7 +37,7 @@
                 </tr>
                     @foreach($aid_contributions as $aid_contribution)
                         <tr>
-                            <td class='text-center p-5'>{{ getStringDate($aid_contribution->month_year) }}</td>
+                            <td class='text-center p-5'>{{ strtoupper($util::getStringDate($aid_contribution->month_year,true)) }}</td>
                             <td class='text-right p-5'>{{ $aid_contribution->rent }} </td>
                             <td class='text-right p-5'>{{ $aid_contribution->interest }} </td>    
                             <td class='text-right p-5'>{{ $aid_contribution->total }} </td>
