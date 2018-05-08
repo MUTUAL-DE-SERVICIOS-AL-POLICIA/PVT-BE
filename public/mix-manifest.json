@@ -2,7 +2,5 @@
     "/js/app.js": "/js/app.js",
     "/css/wkhtml.css": "/css/wkhtml.css",
     "/css/materialicons.css": "/css/materialicons.css",
-    "/css/app.css": "/css/app.css",
-    "/css/datatable.css": "/css/datatable.css",
-    "/js/datatable.js": "/js/datatable.js"
+    "/css/app.css": "/css/app.css"
 }
