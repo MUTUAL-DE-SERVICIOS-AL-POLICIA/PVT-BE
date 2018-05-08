@@ -55,4 +55,8 @@ class RetirementFund extends Model
     public function ret_fun_state(){
         return $this->belongsTo('Muserpol\Models\RetirementFund\RetFunState','ret_fun_state_id');
     }
+    public function ret_fun_records()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunRecord');
+    }
 }

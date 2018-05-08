@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Redirect;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\RetirementFund\RetFunState;
+use Muserpol\Models\RetirementFund\RetFunRecord;
 class RetirementFundController extends Controller
 {
     /**
@@ -387,8 +388,9 @@ class RetirementFundController extends Controller
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
 
-        $states = RetFunState::get();     
+        $states = RetFunState::get();
         
+        $ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
         //return $retirement_fund->ret_fun_state->name;
         $data = [
             'retirement_fund' => $retirement_fund,
@@ -404,6 +406,7 @@ class RetirementFundController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
+            'ret_fun_records' => $ret_fun_records,
         ];
         
         return view('ret_fun.show',$data);
