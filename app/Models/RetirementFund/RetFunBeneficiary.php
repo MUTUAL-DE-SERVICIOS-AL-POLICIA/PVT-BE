@@ -4,9 +4,11 @@ namespace Muserpol\Models\RetirementFund;
 
 use Illuminate\Database\Eloquent\Model;
 use Muserpol\Helpers\Util;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RetFunBeneficiary extends Model
 {
+    use SoftDeletes;
     public function kinship()
     {
         return $this->belongsTo('Muserpol\Models\Kinship');

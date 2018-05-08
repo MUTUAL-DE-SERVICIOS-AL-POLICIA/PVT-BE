@@ -58,7 +58,7 @@ export default {
                 mothers_last_name: null,
                 surname_husband: null,
                 identity_card: null,
-                city_identity_card: null,
+                city_identity_card_id: null,
                 birth_date: null,
                 kinship: null,
         }
