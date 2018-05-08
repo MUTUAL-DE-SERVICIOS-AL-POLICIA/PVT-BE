@@ -5,9 +5,8 @@
                 <label class="col-sm-3 control-label">Tipo de Pago</label>
                 <div class="col-sm-8">
                     <select class="form-control m-b" ref="procedure_type_id" name="procedure_type_id" @change="onChooseProcedureType" v-model="procedure_type_id">
-                        <option v-for="type in procedureTypes" :value="type.id" :key="type.id">
-                            @{{ type.name }}
-                        </option>
+                        <option :value="null"></option>
+                        <option v-for="type in procedureTypes" :value="type.id" :key="type.id">@{{ type.name }}</option>
                     </select>
                     <i v-show="errors.has('procedure_type_id')" class="fa fa-warning text-danger"></i>
                     <span v-show="errors.has('procedure_type_id')" class="text-danger">@{{ errors.first('procedure_type_id') }}</span>
@@ -21,9 +20,8 @@
                 <label class="col-sm-4 control-label">Regional</label>
                 <div class="col-sm-8">
                     <select class="form-control m-b" ref="city_end" name="city_end_id" @change="onChooseCity" v-model="city_end_id" v-validate.initial="'required'">
-                        <option v-for="city in cities" :value="city.id" :key="city.id">
-                            @{{ city.name }}
-                        </option>
+                        <option :value="null"></option>
+                        <option v-for="city in cities" :value="city.id" :key="city.id">@{{ city.name }}</option>
                     </select>
                     <i v-show="errors.has('city_end_id')" class="fa fa-warning text-danger"></i>
                     <span v-show="errors.has('city_end_id')" class="text-danger">@{{ errors.first('city_end_id') }}</span>
@@ -35,6 +33,7 @@
                 <label class="col-sm-4 control-label">Modalidad</label>
                 <div class="col-sm-8">
                     <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality" name="ret_fun_modality" id="ret_fun_modality" v-validate.initial="'required'">
+                        <option :value="null"></option>
                         <option v-for="(modality, index) in modalitiesFilter" :value="modality.id" :key="index">@{{modality.name}}</option>
                     </select>
                     <i v-show="errors.has('ret_fun_modality')" class="fa fa-warning text-danger"></i>
