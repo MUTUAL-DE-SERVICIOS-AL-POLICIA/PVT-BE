@@ -61,14 +61,18 @@ class RetirementFundController extends Controller
      */
     public function store(Request $request)
     {
-        
+        // Log::info(json_encode($request->beneficiary_city_identity_card));
+        // Log::info(json_encode($request->beneficiary_first_name));
+        // Log::info(json_encode($request->beneficiary_kinship));
+        Log::info($request->uno);
+        return json_encode($request->beneficiary_city_identity_card);
         $first_name = $request->beneficiary_first_name;
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
         $mothers_last_name = $request->beneficiary_mothers_last_name;
         $surname_husband = $request->surname_husband;
         $identity_card = $request->beneficiary_identity_card;
-        $city_id = $request-> beneficiary_city_identity_card;
+        $city_id = $request->beneficiary_city_identity_card;
         $birth_date = $request->beneficiary_birth_date;
         $kinship = $request->beneficiary_kinship;
         $account_type = $request->input('accountType');
@@ -225,7 +229,7 @@ class RetirementFundController extends Controller
         $beneficiary->retirement_fund_id = $retirement_fund->id;
         $beneficiary->city_identity_card_id = strtoupper(trim($request->applicant_city_identity_card));
         $beneficiary->kinship_id = $request->applicant_kinship;
-        $beneficiary->identity_card = $request->applicant_identity_card;
+        $beneficiary->identity_card = strtoupper($request->applicant_identity_card);
         $beneficiary->last_name = strtoupper(trim($request->applicant_last_name));
         $beneficiary->mothers_last_name = strtoupper(trim($request->applicant_mothers_last_name));
         $beneficiary->first_name = strtoupper(trim($request->applicant_first_name));
@@ -268,26 +272,25 @@ class RetirementFundController extends Controller
         {
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
-            $legal_guardian->city_identity_card_id = $request->legal_guardian_identity_card;            
+            $legal_guardian->city_identity_card_id = $request->legal_guardian_city_identity_card;
             $legal_guardian->identity_card = strtoupper(trim($request->legal_guardian_identity_card));
             $legal_guardian->last_name = strtoupper(trim($request->legal_guardian_last_name));
             $legal_guardian->mothers_last_name = strtoupper(trim($request->legal_guardian_mothers_last_name));
             $legal_guardian->first_name = strtoupper(trim($request->legal_guardian_first_name));
             $legal_guardian->second_name = strtoupper(trim($request->legal_guardian_second_name));
             $legal_guardian->surname_husband = strtoupper(trim($request->legal_guardian_surname_husband));
-            //$legal_guardian->gender = "M";                    
-            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));            
+            //$legal_guardian->gender = "M";
+            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));
             $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
-            $legal_guardian->number_authority = $request->legal_guardian_number_authority;            
+            $legal_guardian->number_authority = $request->legal_guardian_number_authority;
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
             $legal_guardian->save();
-            
             $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
             $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
             $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
-            //$beneficiary->type = "N";            
+            //$beneficiary->type = "N";
         }
         
         
@@ -345,7 +348,7 @@ class RetirementFundController extends Controller
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         
-        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('type','desc')->get();        
+        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();        
         
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
         
@@ -544,28 +547,76 @@ class RetirementFundController extends Controller
         return redirect('ret_fun/'.$retirement_fund->id);
         //return $retirement_fund;
     }
-    public function updateBeneficiaries(Request $request){
-        
+    public function updateBeneficiaries(Request $request, $id){
         $this->authorize('update',new RetFunBeneficiary);
         $i = 0;
         $ben = 0;
-        foreach ($request->all() as $ben){            
-            $beneficiary = RetFunBeneficiary::find($ben['id']);
-            $beneficiary->city_identity_card_id = $ben['city_identity_card_id'];
-            $beneficiary->kinship_id = $ben['kinship_id'];
-            $beneficiary->identity_card = $ben['identity_card'];
-            $beneficiary->last_name = $ben['last_name'];
-            $beneficiary->mothers_last_name = $ben['mothers_last_name'];
-            $beneficiary->first_name = $ben['first_name'];
-            $beneficiary->second_name = $ben['second_name'];
-            $beneficiary->surname_husband = $ben['surname_husband'];            
-            $beneficiary->gender = $ben['gender'];
-            $beneficiary->phone_number = $ben['phone_number'];
-            $beneficiary->cell_phone_number = $ben['cell_phone_number'];
-            $beneficiary->save();
-            $i++;                    
+        $beneficiaries_array_request = [];
+        foreach (array_pluck($request->all(), 'id') as $key => $value) {
+            if($value){
+                array_push($beneficiaries_array_request, $value);
+            }
         }
-        return json_encode(0);
+        Log::info(json_encode($request->all()[0]));
+        /* delete beneficiaries */
+        $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries;
+        foreach ($beneficiaries as $key => $ben) {
+            $index = array_search($ben->id, $beneficiaries_array_request);
+            if ($index === false) {
+                $ben->delete();
+            }
+        }
+
+        /*update info beneficiaries*/
+        $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries->toArray();
+        foreach ($request->all() as $key => $new_ben) {
+
+            $found = [];
+            if (isset($new_ben['id'])) {
+                $found = array_filter($beneficiaries,function ($var) use($new_ben)
+                {
+                    return ($var['id'] == $new_ben['id']);
+                });
+            }
+            
+            if($found){
+
+                $old_ben = RetFunBeneficiary::find($new_ben['id']);
+                $old_ben->city_identity_card_id = $new_ben['city_identity_card_id'];
+                $old_ben->kinship_id = $new_ben['kinship_id'];
+                $old_ben->identity_card = $new_ben['identity_card'];
+                $old_ben->last_name = $new_ben['last_name'];
+                $old_ben->mothers_last_name = $new_ben['mothers_last_name'];
+                $old_ben->first_name = $new_ben['first_name'];
+                $old_ben->second_name = $new_ben['second_name'];
+                $old_ben->surname_husband = $new_ben['surname_husband'];
+                $old_ben->gender = $new_ben['gender'];
+                $old_ben->save();
+            }else{
+                $beneficiary = new RetFunBeneficiary();
+                $beneficiary->retirement_fund_id = $id;
+                $beneficiary->city_identity_card_id = strtoupper(trim($new_ben['city_identity_card_id']));
+                $beneficiary->kinship_id = $new_ben['kinship_id'];
+                $beneficiary->identity_card = $new_ben['identity_card'];
+                $beneficiary->last_name = strtoupper(trim($new_ben['last_name']));
+                $beneficiary->mothers_last_name = strtoupper(trim($new_ben['mothers_last_name']));
+                $beneficiary->first_name = strtoupper(trim($new_ben['first_name']));
+                $beneficiary->second_name = strtoupper(trim($new_ben['second_name']));
+                $beneficiary->surname_husband = strtoupper(trim($new_ben['surname_husband']));
+                $beneficiary->birth_date = $new_ben['birth_date'];
+                $beneficiary->gender = $new_ben['gender'];
+                // $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
+                // $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+                $beneficiary->type = "N";
+                $beneficiary->save();
+            }
+        }
+        $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries()->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();
+        $data=[
+            'beneficiaries' => $beneficiaries,
+        ];
+        return $data;
+
     }
     public function updateInformation(Request $request)
     {
@@ -611,6 +662,7 @@ class RetirementFundController extends Controller
             'kinships' => $kinships,
         ];
         return view('ret_fun.qualification', $data);
+
     }
 
     public function geDataQualification(Request $request, $id)

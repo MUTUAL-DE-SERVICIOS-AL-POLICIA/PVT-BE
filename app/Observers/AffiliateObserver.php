@@ -22,7 +22,7 @@ class AffiliateObserver
 
         if($affiliate->city_identity_card_id != $old->city_identity_card_id)
         {
-            $message = $message . ' lugar de expedicion '.$old->city_identity_card->name.' a '.$affiliate->city_identity_card->name.', ';
+            $message = $message . ' lugar de expedición '.$old->city_identity_card->name.' a '.$affiliate->city_identity_card->name.', ';
         }
         
         if($affiliate->identity_card != $old->identity_card)
