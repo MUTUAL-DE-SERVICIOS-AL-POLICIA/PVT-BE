@@ -36,23 +36,37 @@
     </div>
     
     <div class="row">
-        <div class="col-md-6">
-            {{-- @if($retirement_fund->modality_id==1) --}}
-            <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template> 
-                   @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities])
-            </affiliate-show>             
-            {{-- @else --}}
-                {{-- @include('ret_fun.applicant_info', ['affiliate'=>$retirement_fund->affiliate]) --}}
-            {{-- @endif --}}
+        <div class="col-md-12">
+            <div class="tabs-container">
+            <div class="tabs-left">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab-ret-fun"> Fondo de Retiro</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-affiliate">Afiliado</a></li>
+                </ul>
+                <div class="tab-content ">
+                    <div id="tab-ret-fun" class="tab-pane active">
+                        <div class="panel-body">
+                                @can('update',$retirement_fund)
+                                <div class="col-md-12">
+                                    <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" inline-template>
+                                        @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
+                                    </ret-fun-info>
+                                </div>
+                                @endcan
+                        </div>
+                    </div>
+                    <div id="tab-affiliate" class="tab-pane">
+                        <div class="panel-body">
+                            <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template> 
+                                @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities])
+                            </affiliate-show>  
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        @can('update',$retirement_fund)
-        <div class="col-md-6">
-            <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" inline-template>
-                @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
-            </ret-fun-info>
-        </div>
-        @endcan
-    </div>
+    </div> <!-- final row !-->
+
     <div class="row">
         @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
         <div class="col-md-6">
