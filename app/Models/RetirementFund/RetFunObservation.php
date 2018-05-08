@@ -8,4 +8,6 @@ class RetFunObservation extends Model
 {
     //
     protected $table = "ret_fun_observations";
+
+    
 }

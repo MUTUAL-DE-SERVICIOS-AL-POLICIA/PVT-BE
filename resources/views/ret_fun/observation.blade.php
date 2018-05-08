@@ -18,12 +18,11 @@
                     <table class="table table-hover table-sprite">
                         <thead>
                             <tr>
-                            <th> Fecha </th>
-                            <th> Tipo de Observación </th>
-                            <th> Descripción </th>
-                            <th> Habilidado </th>
-                            <th> Opciones </th>
-
+                                <th> Fecha </th>
+                                <th> Tipo de Observación </th>
+                                <th> Descripción </th>
+                                <th> Habilidado </th>
+                                <th> Opciones </th>
                             </tr>
                         </thead>
                         <tbody>

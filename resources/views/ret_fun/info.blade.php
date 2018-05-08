@@ -11,7 +11,7 @@
             @endcan
         </div>
         <div class="panel-body " v-if="! editing">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <dl class="dl-">
                     <dt>Modalidad:</dt>
                     <dd>@{{ procedure_modality_name}} </dd>
@@ -48,7 +48,7 @@
               <div class="sk-circle11 sk-circle"></div>
               <div class="sk-circle12 sk-circle"></div>
             </div> --}}
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <dl class="dl-">
                     <dt>Modalidad:</dt>
                     <dd><input type="text" class="form-control" v-model="procedure_modality_name" disabled=""> </dd>

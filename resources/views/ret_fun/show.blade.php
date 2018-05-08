@@ -42,16 +42,18 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a data-toggle="tab" href="#tab-ret-fun"> Fondo de Retiro</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-affiliate">Afiliado</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-beneficiaries">Beneficiarios</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-summited-document">Documentos Presentados</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-folder">Archivos</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-observations">Observaciones</a></li>
                 </ul>
                 <div class="tab-content ">
                     <div id="tab-ret-fun" class="tab-pane active">
                         <div class="panel-body">
                                 @can('update',$retirement_fund)
-                                <div class="col-md-12">
                                     <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" inline-template>
                                         @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
                                     </ret-fun-info>
-                                </div>
                                 @endcan
                         </div>
                     </div>
@@ -62,33 +64,37 @@
                             </affiliate-show>  
                         </div>
                     </div>
+                    <div id="tab-beneficiaries" class="tab-pane">
+                        <div class="panel-body">
+                            @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
+                                @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
+                            @endcan
+                        </div>
+                    </div>
+                    <div id="tab-summited-document" class="tab-pane">
+                        <div class="panel-body">
+                            @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
+                                @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])
+                            @endcan
+                        </div>
+                    </div>
+                    <div id="tab-folder" class="tab-pane">
+                        <div class="panel-body">
+                            @can('view',new Muserpol\Models\AffiliateFolder)
+                                @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
+                            @endcan
+                        </div>
+                    </div>
+                    <div id="tab-observations" class="tab-pane">
+                        <div class="panel-body">
+                            @include('ret_fun.observation');
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div> <!-- final row !-->
 
-    <div class="row">
-        @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
-        <div class="col-md-6">
-            @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
-        </div>
-        @endcan
-        @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-        <div class="col-md-6">
-            @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])
-        </div>
-        @endcan
-    </div>
-    @can('view',new Muserpol\Models\AffiliateFolder)
-    <div class="row">
-        <div class="col-md-6">
-            @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
-        </div>
-        <div class="col-md-6">
-            @include('ret_fun.observation');
-        </div>
-    </div>
-    @endcan
 </div>
 @endsection
 @section('jss')
@@ -120,4 +126,4 @@
         });
     });
 </script>
-@endsection
+@endsection 
