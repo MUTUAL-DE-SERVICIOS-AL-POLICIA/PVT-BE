@@ -43,9 +43,9 @@
                                 <td>Observaciones:</td>
                                 <td>
                                     <p class="documents_comment_text">{{$document->comment}}</p>
-                                    <input type="text" style="display: none;" name="comment{{$document->id}}" class="from-control col-md-12 documents_comment" value="{{$document->comment}}"> 
+                                    <input type="text" style="display: none;" name="comment{{$document->id}}" class="from-control col-md-12 documents_comment" value="{{$document->comment}}">
                                 </td>
-                            </tr> 
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>

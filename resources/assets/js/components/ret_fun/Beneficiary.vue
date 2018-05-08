@@ -24,10 +24,11 @@
             </div>
             <div class="col-md-6">
                 <div class="col-md-4">
-                    <label class="control-label">Ciudad de Expedicion</label>
+                    <label class="control-label">Ciudad de Expedicion xd</label>
                 </div>
                 <div class="col-md-8">
                     <select class="form-control" v-model.trim="beneficiary.city_identity_card_id" name="beneficiary_city_identity_card[]">
+                        <option value="0">0option</option>
                         <option v-for="city in cities" :key="city.id" :value="city.id" >{{ city.name }}</option>
                     </select>
                 </div>
@@ -246,7 +247,11 @@ export default {
       this.beneficiary.mothers_last_name = data.mothers_last_name;
       this.beneficiary.surname_husband = data.surname_husband;
       this.beneficiary.identity_card = data.identity_card;
-      this.beneficiary.city_identity_card_id = data.city_identity_card_id;
+    //   if(data.city_identity_card_id!=null){
+    //     this.beneficiary.city_identity_card_id = data.city_identity_card_id;
+    //   }
+    //   else 
+      this.beneficiary.city_identity_card_id = 0;
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
     }

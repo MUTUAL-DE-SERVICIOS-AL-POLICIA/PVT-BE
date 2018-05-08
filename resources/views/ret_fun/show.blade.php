@@ -24,7 +24,7 @@
         <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
         @endif
         @can('view', new Muserpol\Models\Contribution\Contribution)   
-    <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
+        <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
             <button class="btn btn-primary dim"  data-toggle="tooltip" data-placement="top" title=" Clasificar Aportes " >
             <i class="fa fa-list-alt"></i>
             </button>
@@ -61,7 +61,12 @@
         @endcan
         @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
         <div class="col-md-6">
-            @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])
+                {{-- <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
+                inline-template>
+            @include('ret_fun.step1_requirements')
+        </ret-fun-step1-requirements> --}}
+
+            @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents, 'requirements'=>$requirements]) 
         </div>
         @endcan
     </div>

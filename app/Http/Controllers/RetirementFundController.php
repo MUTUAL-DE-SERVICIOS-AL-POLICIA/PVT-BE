@@ -61,16 +61,14 @@ class RetirementFundController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        
-        $first_name = $request->beneficiary_first_name;
-        //return $first_name;
+    {        
+        $first_name = $request->beneficiary_first_name;        
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
         $mothers_last_name = $request->beneficiary_mothers_last_name;
         $surname_husband = $request->surname_husband;
         $identity_card = $request->beneficiary_identity_card;
-        $city_id = $request-> beneficiary_city_identity_card;
+        $city_id = $request->beneficiary_city_identity_card;
         $birth_date = $request->beneficiary_birth_date;
         $kinship = $request->beneficiary_kinship;
         $account_type = $request->input('accountType');
@@ -179,7 +177,7 @@ class RetirementFundController extends Controller
          //*********END VALIDATOR************//  
         
         
-        $requirements = ProcedureRequirement::select('id')->get();        
+        $requirements = ProcedureRequirement::select('id')->get();
         
         $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled',true)->select('id')->first();
         
@@ -282,7 +280,7 @@ class RetirementFundController extends Controller
         {
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
-            $legal_guardian->city_identity_card_id = $request->legal_guardian_identity_card;            
+            $legal_guardian->city_identity_card_id = $request->legal_guardian_identity_card_id;            
             $legal_guardian->identity_card = strtoupper(trim($request->legal_guardian_identity_card));
             $legal_guardian->last_name = strtoupper(trim($request->legal_guardian_last_name));
             $legal_guardian->mothers_last_name = strtoupper(trim($request->legal_guardian_mothers_last_name));
@@ -380,6 +378,7 @@ class RetirementFundController extends Controller
         
         $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
         $procedures_modalities = ProcedureModality::whereIn('id',$procedures_modalities_ids)->get();
+        $requirements = ProcedureRequirement::where('procedure_modality_id',$retirement_fund->procedure_modality_id)->get();        
         $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         $cities = City::get();
         $kinships = Kinship::get();        
@@ -387,9 +386,24 @@ class RetirementFundController extends Controller
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
 
-        $states = RetFunState::get();     
-        
+        $states = RetFunState::get();
+
+        ///proof
+        $user = User::find(Auth::user()->id);
+        $procedure_types = ProcedureType::where('module_id', 3)->get();
+        $procedure_requirements = ProcedureRequirement::
+                                    select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
+                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
+                                    ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+                                    ->orderBy('procedure_requirements.number','ASC')
+                                    ->get();
+        $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();
+        //return $procedures_modalities;
+        //$modality => ProcedureModality::
+        //endproof
+        //return $requirements;
         //return $retirement_fund->ret_fun_state->name;
+        
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -404,6 +418,10 @@ class RetirementFundController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
+            'requirements'  =>  $procedure_requirements,
+            'user'  =>  $user,
+            'procedure_types'   =>  $procedure_types,
+            'modalities'    =>  $modalities,
         ];
         
         return view('ret_fun.show',$data);
