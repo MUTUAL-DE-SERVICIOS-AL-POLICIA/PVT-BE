@@ -61,11 +61,6 @@ class RetirementFundController extends Controller
      */
     public function store(Request $request)
     {
-        // Log::info(json_encode($request->beneficiary_city_identity_card));
-        // Log::info(json_encode($request->beneficiary_first_name));
-        // Log::info(json_encode($request->beneficiary_kinship));
-        Log::info($request->uno);
-        return json_encode($request->beneficiary_city_identity_card);
         $first_name = $request->beneficiary_first_name;
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
