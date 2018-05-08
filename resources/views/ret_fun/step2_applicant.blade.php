@@ -18,7 +18,8 @@
                             </div>
                             <div class="col-md-8">
                                 <select class="form-control" autofocus name="accountType" @change="change_applicant()" v-model.trim="applicant_type">
-                                    <option v-for="(type,index) in applicant_types"   :value="index+1">@{{type}} </option>
+                                    <option :value="null"></option>
+                                    <option v-for="(type,index) in applicant_types" :value="index+1">@{{type}}</option>
                                 </select>
                             </div>
                         </div>
@@ -28,9 +29,8 @@
                             </div>
                             <div class="col-md-8">
                                 <select class="form-control" name="applicant_kinship" v-model.trim="applicant_kinship_id">
-                                    <option v-for="kinship in kinships" :value="kinship.id">
-                                        @{{ kinship.name }}
-                                    </option>
+                                    <option :value="null"></option>
+                                    <option v-for="kinship in kinships" :value="kinship.id">@{{ kinship.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -59,13 +59,12 @@
                         </div>
                         <div class="col-md-6">
                             <div class="col-md-4">
-                                <label class="control-label">Ciudad de Expedicion</label>
+                                <label class="control-label">Ciudad de Expedición</label>
                             </div>
                             <div class="col-md-8">
                                 <select class="form-control" name="applicant_city_identity_card" v-model.trim="applicant_city_identity_card_id">
-                                    <option v-for="city in cities" :value="city.id">
-                                        @{{ city.name }}
-                                    </option>
+                                    <option :value="null"></option>
+                                    <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -143,6 +142,7 @@
                             </div>
                             <div class="col-md-8">
                                 <select class="form-control m-b" name="applicant_gender" v-model.trim="applicant_gender">
+                                    <option :value="null"></option>
                                     <option value="M">Masculino</option>
                                     <option value="F">Femenino</option>
                                 </select>
@@ -256,10 +256,11 @@
                         </div>
                         <div class="col-md-6">
                             <div class="col-md-4">
-                                <label class="control-label">Ciudad de Expedicion</label>
+                                <label class="control-label">Ciudad de Expedición</label>
                             </div>
                             <div class="col-md-8">
                                 <select class="form-control" name="legal_guardian_city_identity_card" v-model.trim="legal_guardian_city_identity_card">
+                                    <option :value="null"></option>
                                     <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
                                 </select>
                             </div>
