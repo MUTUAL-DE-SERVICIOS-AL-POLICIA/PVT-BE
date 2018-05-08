@@ -32,11 +32,11 @@
                 <tbody>
                     <tr class="font-medium text-white text-sm font-bold bg-grey-darker">
                         <td class="text-center p-5 w-20">MES/AÑO</td>
-                        <td class="text-center p-5 w-15">SUELDO</td>
-                        <td class="text-center p-5 w-15">F.R.P. (4.77%)</td>
-                        <td class="text-center p-5 w-20">CUOTA MORTUORIA (1.09%)</td>
-                        <td class="text-center p-5 w-10">AJUSTE</td>
-                        <td class="text-center p-5 w-20">SUBTOTAL APORTE</td>
+                        <td class="text-center p-5 w-15">SUELDO (BS)</td>
+                        <td class="text-center p-5 w-15">F.R.P. (4.77%) (BS)</td>
+                        <td class="text-center p-5 w-20">CUOTA MORTUORIA (1.09%) (BS)</td>
+                        <td class="text-center p-5 w-10">AJUSTE (BS)</td>
+                        <td class="text-center p-5 w-20">SUBTOTAL APORTE (BS)</td>
                     </tr>
                         @foreach($contributions as $contribution)
                             <tr>
@@ -87,6 +87,4 @@
             </th>
         </tr>
     </table>
-
-</div>
 @endsection
