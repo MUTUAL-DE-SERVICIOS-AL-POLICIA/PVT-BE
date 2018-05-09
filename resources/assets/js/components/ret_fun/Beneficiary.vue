@@ -15,10 +15,10 @@
             <div class="col-md-6">
                 <dl class="dl-">
                     <dt>Parentesco:</dt> <dd> {{ !!beneficiary.kinship ? beneficiary.kinship.name : '' }} </dd>
-                    <dt>Genero:</dt> <dd>{{ beneficiary.gender }}</dd>
+                    <dt>Generos:</dt> <dd>{{ getGender(beneficiary.gender) }}</dd>
                     <dt>Estado Civil:</dt> <dd>{{ beneficiary.civil_status }}</dd>
                     <dt>Fecha de Nacimiento:</dt> <dd>{{ beneficiary.birth_date }}</dd>
-                    <dt>Edad:</dt> <dd> ERROR </dd>
+                    <dt>Edad:</dt> <dd> {{ beneficiaryAge }} </dd>
                     <dt>Telefono:</dt> <dd>{{ beneficiary.phone_number }}</dd>
                     <dt>Celular:</dt> <dd>{{ beneficiary.cell_phone_number }}</dd>
                 </dl>
@@ -248,6 +248,7 @@
     </div>
 </template>
 <script>
+import { getGender } from '../../helper.js'
 export default {
   props: ["kinships", "cities", "beneficiary", "editable", "readOnly"],
   data() {
@@ -289,6 +290,14 @@ export default {
       this.beneficiary.kinship_id = data.kinship_id;
       this.beneficiary.gender = data.gender;
     }
+  },
+  computed:{
+      beneficiaryAge(){
+          if (this.beneficiary.birth_date) {
+              return moment().diff(this.beneficiary.birth_date, 'years');
+          }
+          return null;
+      }
   }
 };
 </script>
