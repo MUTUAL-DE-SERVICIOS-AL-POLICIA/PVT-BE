@@ -376,7 +376,8 @@ class RetirementFundController extends Controller
             $guardian = new RetFunLegalGuardian();                
         
         $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
-        $procedures_modalities = ProcedureModality::whereIn('id',$procedures_modalities_ids)->get();
+        //return $procedures_modalities_ids;
+        $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();
         $requirements = ProcedureRequirement::where('procedure_modality_id',$retirement_fund->procedure_modality_id)->get();        
         $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         $cities = City::get();
