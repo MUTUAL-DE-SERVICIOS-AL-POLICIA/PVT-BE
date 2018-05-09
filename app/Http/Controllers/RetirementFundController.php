@@ -171,7 +171,11 @@ class RetirementFundController extends Controller
         
         $validator = Validator::make($request->all(),$rules);
         if($validator->fails()){            
-            return Redirect::back()->withErrors($validator);
+            // Log::info(json_encode($validator->errors));
+            return redirect(route('create_ret_fun', $request->affiliate_id))
+                ->withErrors($validator)
+                ->withInput();
+            // return Redirect::back()->withErrors($validator)->withInput();
             //return response()->json($validator->errors(), 406);
         }                
                         
@@ -619,7 +623,6 @@ class RetirementFundController extends Controller
         /*update info beneficiaries*/
         $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries->toArray();
         foreach ($request->all() as $key => $new_ben) {
-
             $found = [];
             if (isset($new_ben['id'])) {
                 $found = array_filter($beneficiaries,function ($var) use($new_ben)
@@ -627,9 +630,7 @@ class RetirementFundController extends Controller
                     return ($var['id'] == $new_ben['id']);
                 });
             }
-            
             if($found){
-
                 $old_ben = RetFunBeneficiary::find($new_ben['id']);
                 $old_ben->city_identity_card_id = $new_ben['city_identity_card_id'];
                 $old_ben->kinship_id = $new_ben['kinship_id'];
@@ -639,6 +640,7 @@ class RetirementFundController extends Controller
                 $old_ben->first_name = $new_ben['first_name'];
                 $old_ben->second_name = $new_ben['second_name'];
                 $old_ben->surname_husband = $new_ben['surname_husband'];
+                $old_ben->birth_date = $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
                 $old_ben->save();
             }else{

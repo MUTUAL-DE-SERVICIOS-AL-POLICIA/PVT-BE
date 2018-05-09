@@ -50,7 +50,7 @@
                         @endforeach
                         <tr>
                             {{-- <td colspan="4" style="border:none!important"></td> --}}
-                            <td colspan="5" class="font-medium text-white text-sm font-bold text-center p-5 bg-grey-darker rounded-bl">TOTAL:</td>
+                            <td colspan="5" class="font-medium text-white text-sm font-bold text-center p-5 bg-grey-darker rounded-bl">TOTAL</td>
                             <td class="text-right p-5">{!! $voucher->total !!}</td>
                         </tr>
                 </tbody>
