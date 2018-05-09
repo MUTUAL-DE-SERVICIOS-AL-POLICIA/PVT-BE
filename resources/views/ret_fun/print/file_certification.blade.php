@@ -46,7 +46,7 @@
                     <p>
                         SOLICITADO POR:
                     </p>
-                    @include('ret_fun.print.applicant_info', ['applicant' => $applicant ])
+                    @include('print_global.applicant_info', ['applicant' => $applicant ])
             </ol> 
 <span>
     Es cuanto certifico para fines consiguientes.

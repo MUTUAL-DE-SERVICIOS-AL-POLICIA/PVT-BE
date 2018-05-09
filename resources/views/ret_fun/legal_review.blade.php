@@ -17,7 +17,7 @@
         
       <form action="{{asset('ret_fun/'.$retirement_fund->id.'/legal_review/create')}}" method="POST">
         <div class="panel-body">
-            {{ csrf_field() }}
+            {{ csrf_field() }}            
             <div class="row">
                 <div class="ibox-content table-responsive">                    
                     <table class="table">
@@ -34,9 +34,9 @@
                               <td>{{$document->procedure_requirement->number}}</td>
                               <td>{{$document->procedure_requirement->procedure_document->name}}</td>
                               <td class="text-center">
-                                  <div class="checkbox">
-                                      <input type="checkbox" class="documents_check" value="1"@if($document->is_valid) checked @endif name="document{{$document->id}}" disabled>
-                                  </div>
+                                  {{-- <div class="checkbox">                                       --}}
+                                      <input type="checkbox" class="documents_check" value="1" @if($document->is_valid) checked @endif name="document{{$document->id}}" disabled>
+                                  {{-- </div> --}}
                               </td>
                             </tr>
                             <tr>

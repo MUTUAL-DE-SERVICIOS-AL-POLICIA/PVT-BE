@@ -17,7 +17,7 @@
         @endif
         
         @if(Muserpol\Helpers\Util::getRol()->id == 15)
-        <button class="btn btn-prfolder_idimary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>        
+        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
         @endif
         
         @if(Muserpol\Helpers\Util::getRol()->id == 11)
