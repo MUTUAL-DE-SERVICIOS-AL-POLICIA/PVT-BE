@@ -275,7 +275,15 @@ export default {
                     timer: 6000,
                     type: 'success'
                     })
-                    printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
+                    var json_contribution= JSON.stringify(response.data.contributions);
+                    console.log("--------------");
+                    console.log(json_contribution);
+                    printJS({printable:
+                            '/ret_fun/'+
+                            response.data.affiliate_id+
+                            '/print/voucher/'+
+                            response.data.voucher_id + "?contributions="+json_contribution, 
+                            type:'pdf', showModal:true});
                     })                    
                     .catch(error => {
                     this.show_spinner = false;            
