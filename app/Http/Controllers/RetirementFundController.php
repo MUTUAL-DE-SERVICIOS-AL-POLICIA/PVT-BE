@@ -77,8 +77,9 @@ class RetirementFundController extends Controller
         $biz_rules = [];
                                
         $has_ret_fun = false;
-        $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate_id)->first();
-        if(isset($ret_fun)){
+        $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate_id)->where('code','NOT LIKE','%A')->first();
+    
+        if(isset($ret_fun->id)){
             $has_ret_fun = true;
             $biz_rules = [
                 'ret_fun_double'  =>  $has_ret_fun?'required':'',
@@ -194,12 +195,18 @@ class RetirementFundController extends Controller
             return $validator->errors();            
         }
         
+        $nextcode = RetirementFund::where('affiliate_id',$request->affiliate_id)->where('code','LIKE','%A')->first();
+        if(isset($nextcode->id))
+        {
+            $code = str_replace("A","",$nextcode->code);    
+        }else{
+            $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();        
+            if(!isset($ret_fund->id))
+            $code = Util::getNextCode ("");
+            else        
+            $code = Util::getNextCode ($ret_fund->code);
+        }
         
-        $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
-        if(!isset($ret_fund->id))
-        $code = Util::getNextCode ("");
-        else        
-        $code = Util::getNextCode ($ret_fund->code);
         $retirement_fund = new RetirementFund();
         $this->authorize('create', $retirement_fund);
         $retirement_fund->user_id = Auth::user()->id;
@@ -525,7 +532,7 @@ class RetirementFundController extends Controller
     }
     
     public function generateProcedure(Affiliate $affiliate){  
-        
+                
         $this->authorize('create',RetirementFund::class);
         $user = Auth::User();
         $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number')
@@ -668,6 +675,9 @@ class RetirementFundController extends Controller
         $retirement_fund->city_start_id = $request->city_start_id;
         $retirement_fund->reception_date = $request->reception_date;
         $retirement_fund->ret_fun_state_id = $request->ret_fun_state_id;
+        if($retirement_fund->ret_fun_state_id == 3){
+            $retirement_fund->code.="A";
+        }
         $retirement_fund->save();
         $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality'=>$retirement_fund->procedure_modality,'city_start'=>$retirement_fund->city_start,'city_end'=>$retirement_fund->city_end );
         return $datos;
