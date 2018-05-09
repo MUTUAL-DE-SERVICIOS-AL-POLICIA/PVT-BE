@@ -19,15 +19,15 @@ Auth::routes();
 
 //afiliates
 Route::group(['middleware' => ['auth']], function () {
-        App::setLocale("es");
+	App::setLocale("es");
 
 	Route::get('/changerol', 'UserController@changerol')->name('changerol');
 	Route::post('postchangerol', 'UserController@postchangerol');
-                
-	Route::group(['middleware' => ['session']], function () {
-
-	Route::get('/', 'HomeController@index')->name("main");
 	
+	Route::group(['middleware' => ['session']], function () {
+		
+		Route::get('/', 'HomeController@index')->name("main");
+
 	//Roles y permisos
 	Route::resource('permission', 'PermissionController');
 

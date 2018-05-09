@@ -10,9 +10,15 @@
     <div class="row">
         <div class="col-md-12">
             <div class="ibox-content">
-                @if ($errors->any())                
-                    {{implode('', $errors->all('<div>-:message</div><br>')) }}
-                    <flash message="werwer"></flash>
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    <h2>Se encotraron los siguientes errores. ({{ count($errors->all()) }})</h2>
+                    <ol>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ol>
+                </div>
                 @endif
                 {!! Form::open(['url' => 'ret_fun', 'method' => 'POST', 'id'=>'ret-fun-form']) !!}
                 <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
@@ -45,6 +51,7 @@
                             @include('ret_fun.step3_beneficiaries')
                         </ret-fun-step3-beneficiaries>
                     </tab-content>
+                    <butTON SLOT="next">next</butTON>
                     </form-wizard>
                 </ret-fun-form>
                 {!! Form::close() !!}
