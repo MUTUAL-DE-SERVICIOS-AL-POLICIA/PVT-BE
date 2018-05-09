@@ -1,6 +1,4 @@
 <div class="col-lg-12">
-      
-
     <div class="panel panel-danger">
         <div class="panel-heading">
             <h3 class="pull-left">Observaciones</h3>
@@ -27,19 +25,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {{-- @foreach($folders as $folder )
+                    @foreach($observations as $observation )
                     <tr>
-                        <td> {{ $folder->procedure_modality->name }} </td>
-                        <td> {{ $folder->code_file }} </td>
-                        <td> {{ $folder->folder_number }} </td>
-                        @can('update', new Muserpol\Models\Affiliatefolder)
-                            <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog" data-modid="{{ $folder->procedure_modality_id }}" data-id="{{$folder->id}}" data-codfile="{{ $folder->code_file }}" data-folnum="{{ $folder->folder_number }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
-                        @endcan
-                        @can('delete', new Muserpol\Models\Affiliatefolder)
-                            <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $folder->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button></td>
-                        @endcan
+                        <td> {{ $observation->date }} </td>
+                        <td> {{ $observation->observation_type_id }} </td>
+                        <td> {{ $observation->message }} </td>
+                        <td> {{ $observation->is_enabled }} </td>
+                            <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $observation->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button></td>
                     </tr>
-                    @endforeach --}}
+                    @endforeach
                     </tbody>
                 </table>
             {{-- </div> --}}

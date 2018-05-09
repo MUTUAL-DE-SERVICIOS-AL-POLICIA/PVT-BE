@@ -353,7 +353,7 @@ class RetirementFundController extends Controller
     public function show($id)
     {
         $retirement_fund = RetirementFund::find($id);
-                
+
         $this->authorize('view', $retirement_fund);
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
@@ -402,6 +402,7 @@ class RetirementFundController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
+            'observations' => $retirement_fund->ret_fun_observations
         ];
         
         return view('ret_fun.show',$data);
