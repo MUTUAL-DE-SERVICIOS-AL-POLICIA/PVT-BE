@@ -1,9 +1,8 @@
 @extends('print_global.print')
 @section('content')
     <div>
-         {{-- @include('ret_fun.print.applicant_info', ['applicant'=>$applicant])  --}}
+         @include('print_global.applicant_info', ['applicant'=>$beneficiary]) 
         <div>
-            <hr color=black>
             <p>Periodo: </p>
         </div>
     </div>
@@ -11,17 +10,19 @@
         
         <tbody>
             <tr class="font-medium text-white text-sm font-bold bg-grey-darker">
-                <td class="text-center p-5">COTIZABLE</td>
-                <td class="text-center p-5">APORTE</td>
-                <td class="text-center p-5">F.R.P.</td>
-                <td class="text-center p-5">CUOTA MORTUORIA</td>
-                <td class="text-center p-5">AJUSTE IPC</td>
-                <td class="text-center p-5">TOTAL APORTE</td>
+                <td class="text-center p-5 w-20">MES/AÑO</td>
+                <td class="text-center p-5 w-15">COTIZABLE (BS)</td>
+                <td class="text-center p-5 w-10">APORTE (BS)</td>
+                <td class="text-center p-5 w-10">F.R.P. (4.77%) (BS)</td>
+                <td class="text-center p-5 w-20">CUOTA MORTUORIA (1.09%) (BS)</td>
+                <td class="text-center p-5 w-10">AJUSTE IPC (BS)</td>
+                <td class="text-center p-5 w-15">TOTAL APORTE (BS)</td>
             </tr>
         @foreach($contributions as $i=>$item)
             <tr>
-                <td class='text-center p-5'>{!! $item->monthyear !!}</td>
+                <td class='text-left p-5'>{!! $item->monthyear !!}</td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->sueldo) !!} </td>
+                <td class='text-right p-5'>{!! $util::formatMoney($item->fr + $item->cm) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->fr) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->cm) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->interes) !!} </td>
@@ -29,65 +30,67 @@
             </tr>
         @endforeach
             <tr>
-                <td colspan="4"></td>
-                <td class="text-right py-4 bg-grey-darker text-white font-bold">Total:</td>
-                  <td class='text-right p-5 bg-grey-darker text-white font-bold'>{!! $util::formatMoney($total) !!} </td>  
+                {{-- <td colspan="4"></td> --}}
+                <td colspan="6" class="text-center py-4 bg-grey-darker text-white font-bold">TOTAL</td>
+                <td class='text-right p-5'>{!! $util::formatMoney($total) !!} </td>  
             </tr>
         </tbody>
     </table>
 <br>
-    <table class="w-100 border">
+    <table class="w-100 border rounded">
         <tbody>
             <tr>
                 <td>Son:</td>
-                <td class='text-justify p-5'>{!! $total_literal !!} </td>  
+                <td class='text-justify p-5'>{!! ucwords(strtolower($total_literal)) !!} </td>  
             </tr>
-            </tr>
-            <tr>
-                <td>Glosa:</td>
-                 <td class='text-justify p-5'>{!! $detail !!} </td> 
             </tr>
         </tbody>
     </table>
-
+    <br><br><br><br>
     <table class="w-100">
         <tbody>
-            <tr>
+            {{-- <tr>
                 <th class="no-border text-center" colspan="2"></th>
                 <th class="no-border text-center">
                     <p class="font-bold">
                         Impresión de Refrendo y Sello de Tesorería
                     </p>
                 </th>
-            </tr>
+            </tr> --}}
             <tr>
                 <th class="no-border text-center">
-                    <p class="font-bold"><br><br><br><br><br><br><br>
-                        ----------------------------------------------------<br>
-                        <strong>ELABORADO POR</strong>
-                    </p>
+                    <span>
+                        <strong>
+                            ----------------------------------------------------<br>
+                            ELABORADO POR
+                        </strong><br>
+                        {{$name_user_complet}}
+                    </span>
                 </th>
-                <th class="no-border text-center">
-                    <p class="font-bold"><br><br><br><br><br><br><br>
-                        ----------------------------------------------------<br>
-                        PAGADO POR
-                    </p>
-                </th>
-                <th class="border text-center" rowspan="5">
+                {{-- <th class=" text-center">
+                    <span>
+                        <strong>
+                            ----------------------------------------------------<br>
+                            PAGADO POR
+                        </strong><br>
+                        {{ $name_beneficiary_complet }}
+                    </span>
+                </th> --}}
+                {{-- <th class="border text-center" rowspan="5">
                     <p class="font-bold"><br><br><br><br><br>
                         ----------------------------------------------------<br>
                         COBRADO POR: <br> {{$name_user_complet}}
                     </p>
-                </th>
+                </th> --}}
                 
             </tr>
-            <tr>
-                <th class="no-border text-left" colspan="2">
+            {{-- <tr>
+                <th class="no-border text-left">
                     <p>
-                        """Esta liquidación no es válida sin el Refrendo y Sello de Tesorería"""
+                        ***Esta liquidación no es válida sin el Refrendo y Sello de Tesorería***
                     </p>
                 </th>
-            </tr>
+            </tr> --}}
         </tbody>
        
     </table>

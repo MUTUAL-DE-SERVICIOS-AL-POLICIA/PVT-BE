@@ -390,28 +390,28 @@ class RetirementFundCertificationController extends Controller
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
         $detail = "Pago de aporte directo";
-        $bene = $affiliate;
+        $beneficiary = $affiliate;
+        $name_beneficiary_complet = Util::fullName($beneficiary);
         $pdftitle = "Comprobante";
-        $namepdf = Util::getPDFName($pdftitle, $bene);
+        $namepdf = Util::getPDFName($pdftitle, $beneficiary);
         $util = new Util();
 
         return \PDF::loadView(
             'ret_fun.print.affiliate_contribution',
             compact(
                 'date',
-                'subtitle',
                 'username',
                 'title',
                 'number',
                 'retirement_fund',
-                'affiliate',
-                'submitted_documents',
+                'beneficiary',
                 'contributions',
                 'total',
                 'total_literal',
                 'detail',
                 'util',
-                'name_user_complet'
+                'name_user_complet',
+                'name_beneficiary_complet'
             )
         )
             ->setPaper('letter')
