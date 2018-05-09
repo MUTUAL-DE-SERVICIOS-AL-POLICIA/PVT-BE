@@ -205,6 +205,7 @@ class ContributionController extends Controller
        // return $voucher;
         //return $request->aportes;
         $result = [];
+        $stored_contributions = [];
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;
@@ -217,7 +218,8 @@ class ContributionController extends Controller
             $contribution->unit_id = $affiliate->unit_id;
             $contribution->breakdown_id = $affiliate->breakdown_id;
             $contribution->category_id = $affiliate->category_id;
-            $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1);
+            // $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
+            $contribution->month_year = $aporte->year.'-'.$aporte->month.'-01';
             $contribution->type='Directo';     
             $contribution->base_wage = $aporte->sueldo;            
             $contribution->seniority_bonus = 0;
@@ -243,12 +245,14 @@ class ContributionController extends Controller
                 'total'=>$contribution->total,
                 'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
                     ]);
+            array_push($stored_contributions,$contribution);
             //Log::info(json_encode($contribution));
             //return $contribution;
         }
         
         $data = [
             'contribution'  =>  $result,
+            'contributions'  =>  $stored_contributions,
             'voucher_id'    => $voucher->id,
             'affiliate_id'  =>  $affiliate->id,
         ];

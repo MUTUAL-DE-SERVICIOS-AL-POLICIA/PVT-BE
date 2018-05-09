@@ -59,7 +59,7 @@
             <div class="col-md-6">
                 <dl class="dl-">
                     <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">
-                        {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control','v-model' => 'form.city_identity_card_id']) !!}
+                        {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control','v-model' => 'form.city_identity_card_id']) !!}
                     </dd>
                     <dt><label>Registro:</label></dt> <dd><input type="text" v-model="form.registration" class="form-control"></dd>
                     <dt><label>Primer Nombre:</label></dt> <dd><input type="text" v-model="form.first_name" class="form-control"></dd>
@@ -86,7 +86,7 @@
                         </div>
                         </dd>
                     <dt>Edad:</dt> <dd><input v-model="age" type="text" class="form-control" disabled></dd>
-                    <dt>Lugar de Nacimiento:</dt> <dd>{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control','v-model'=>'form.city_birth_id']) !!}</dd>
+                    <dt>Lugar de Nacimiento:</dt> <dd>{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control','v-model'=>'form.city_birth_id']) !!}</dd>
                     {{-- <dt>Telefono:</dt> <dd><input type="text" v-model="form.phone_number" class="form-control"></dd>
                     <dt>Celular:</dt> <dd><input type="text" v-model="form.cell_phone_number" class="form-control"></dd> --}}
                 </dl>

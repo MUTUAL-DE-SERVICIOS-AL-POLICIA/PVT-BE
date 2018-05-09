@@ -1,9 +1,35 @@
 <template>
 <div>
-    <div v-if="editable">
+    <div v-if="readOnly">
         <div class="row"> 
-            <div class="col-md-11"></div>
-            <div class="col-md-1">
+            <div class="col-md-6">
+                <dl class="dl-">
+                    <dt>Cedula de identidad:</dt> <dd>{{ beneficiary.identity_card }} {{ !!beneficiary.city_identity_card ? beneficiary.city_identity_card.first_shortened : '' }} </dd>
+                    <dt>Primer Nombre:</dt> <dd>{{ beneficiary.first_name }}</dd>
+                    <dt>Segundo Nombre:</dt> <dd>{{ beneficiary.second_name }}</dd>
+                    <dt>Apellido Paterno:</dt> <dd>{{ beneficiary.last_name }}</dd>
+                    <dt>Apellido Materno:</dt> <dd>{{ beneficiary.mothers_last_name }}</dd>
+                    <dt v-show="beneficiary.gender === 'F'">Apellido de Casada:</dt> <dd v-show="beneficiary.gender === 'F'">{{ beneficiary.surname_husband }}</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <dl class="dl-">
+                    <dt>Parentesco:</dt> <dd> {{ !!beneficiary.kinship ? beneficiary.kinship.name : '' }} </dd>
+                    <dt>Genero:</dt> <dd>{{ beneficiary.gender }}</dd>
+                    <dt>Estado Civil:</dt> <dd>{{ beneficiary.civil_status }}</dd>
+                    <dt>Fecha de Nacimiento:</dt> <dd>{{ beneficiary.birth_date }}</dd>
+                    <dt>Edad:</dt> <dd> ERROR </dd>
+                    <dt>Telefono:</dt> <dd>{{ beneficiary.phone_number }}</dd>
+                    <dt>Celular:</dt> <dd>{{ beneficiary.cell_phone_number }}</dd>
+                </dl>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div v-else-if="editable">
+        <div class="row">
+            <div class="col-sm-10"></div>
+            <div class="col-sm-2">
                 <button class="btn btn-danger" type="button" v-on:click= "remove"> <i class="fa fa-trash"></i> </button>
             </div>
         </div>
@@ -24,11 +50,11 @@
             </div>
             <div class="col-md-6">
                 <div class="col-md-4">
-                    <label class="control-label">Ciudad de Expedicion xd</label>
+                    <label class="control-label">Ciudad de Expedición</label>
                 </div>
                 <div class="col-md-8">
                     <select class="form-control" v-model.trim="beneficiary.city_identity_card_id" name="beneficiary_city_identity_card[]">
-                        <option value="0">0option</option>
+                        <option :value="null"></option>
                         <option v-for="city in cities" :key="city.id" :value="city.id" >{{ city.name }}</option>
                     </select>
                 </div>
@@ -82,6 +108,18 @@
                     <input type="text" v-model.trim="beneficiary.surname_husband" name="surname_husband[]" class="form-control">
                 </div>
             </div>
+             <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="control-label">Genero</label>
+                </div>
+                <div class="col-md-8">
+                    <select name="gender" id="" v-model.trim="beneficiary.gender" class="form-control">
+                        <option :value="null"></option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Fenemino</option>
+                    </select>
+                </div>
+            </div>
         </div>
        <br>
         <div class="row">
@@ -99,6 +137,7 @@
                 </div>
                 <div class="col-md-8">
                     <select class="form-control " v-model.trim="beneficiary.kinship_id" name="beneficiary_kinship[]">
+                        <option :value="null"></option>
                         <option v-for="kinship in kinships" :key="beneficiary.id + ''+kinship.id " :value="kinship.id">{{kinship.name}}</option>
                     </select>
                 </div>
@@ -150,7 +189,6 @@
                     <input type="text" v-model.trim="beneficiary.mothers_last_name" disabled  class="form-control">
                 </div>
             </div>
-            
         </div>
         <br>
         <div class="row">
@@ -205,14 +243,13 @@
                 </div>
             </div>
         </div>
-        
         <div class="hr-line-dashed"></div>
         </div>
     </div>
 </template>
 <script>
 export default {
-  props: ["kinships", "cities", "beneficiary", "editable"],
+  props: ["kinships", "cities", "beneficiary", "editable", "readOnly"],
   data() {
     return {};
   },
@@ -254,6 +291,7 @@ export default {
       this.beneficiary.city_identity_card_id = 0;
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
+      this.beneficiary.gender = data.gender;
     }
   }
 };
