@@ -145,6 +145,11 @@ class AffiliateController extends Controller
             }
         
         $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->first();
+        $nextcode = RetirementFund::where('affiliate_id', $affiliate->id)->where('code','LIKE','%A')->first();
+        if(isset($nextcode))
+            $nextcode = $nextcode->code;
+        else 
+            $nextcode = "";        
         $affiliate->load([
             'city_identity_card:id,first_shortened',
             'city_birth:id,name',
@@ -165,6 +170,7 @@ class AffiliateController extends Controller
             'cuota'=>$cuota,
             'auxilio'=>$auxilio,
             'affiliate_records'=>$affiliate_records,
+            'nextcode'  =>  $nextcode,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);
