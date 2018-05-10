@@ -15,12 +15,25 @@
             <div class="col-md-6">
                 <dl class="dl-">
                     <dt>Parentesco:</dt> <dd> {{ !!beneficiary.kinship ? beneficiary.kinship.name : '' }} </dd>
-                    <dt>Generos:</dt> <dd>{{ getGender(beneficiary.gender) }}</dd>
+                    <!-- <dt>Generos:</dt> <dd>{{ getGender(beneficiary.gender) }}</dd> -->
                     <dt>Estado Civil:</dt> <dd>{{ beneficiary.civil_status }}</dd>
                     <dt>Fecha de Nacimiento:</dt> <dd>{{ beneficiary.birth_date }}</dd>
                     <dt>Edad:</dt> <dd> {{ beneficiaryAge }} </dd>
                     <dt>Telefono:</dt> <dd>{{ beneficiary.phone_number }}</dd>
                     <dt>Celular:</dt> <dd>{{ beneficiary.cell_phone_number }}</dd>
+                </dl>
+            </div>
+        </div>
+        <hr>
+        <div class="row"> 
+            <div class="col-md-6">
+                <dl class="dl-">
+                    <dt>Documentos Completos:</dt>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <dl class="dl-">
+                    <dd>{{ beneficiary.state }}</dd>
                 </dl>
             </div>
         </div>
