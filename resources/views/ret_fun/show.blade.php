@@ -87,7 +87,7 @@
                     </div>
                     <div id="tab-observations" class="tab-pane">
                         <div class="panel-body">
-                            @include('ret_fun.observation');
+                            @include('ret_fun.observation')
                         </div>
                     </div>
                 </div>
