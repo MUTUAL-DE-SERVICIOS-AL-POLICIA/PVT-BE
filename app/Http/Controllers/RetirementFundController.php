@@ -16,6 +16,7 @@ use Log;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
+use Muserpol\Models\ObservationType;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardianBeneficiary;
@@ -363,7 +364,7 @@ class RetirementFundController extends Controller
     public function show($id)
     {
         $retirement_fund = RetirementFund::find($id);
-                
+
         $this->authorize('view', $retirement_fund);
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
@@ -409,11 +410,8 @@ class RetirementFundController extends Controller
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
         $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();
-        //return $procedures_modalities;
-        //$modality => ProcedureModality::
-        //endproof
-        //return $requirements;
-        //return $retirement_fund->ret_fun_state->name;
+
+        $observation_types = ObservationType::where('module_id',3)->get();
         
         $data = [
             'retirement_fund' => $retirement_fund,
@@ -433,6 +431,8 @@ class RetirementFundController extends Controller
             'user'  =>  $user,
             'procedure_types'   =>  $procedure_types,
             'modalities'    =>  $modalities,
+            'observation_types' => $observation_types,
+            'observations' => $retirement_fund->ret_fun_observations
         ];
         
         return view('ret_fun.show',$data);

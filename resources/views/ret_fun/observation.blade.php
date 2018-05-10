@@ -1,48 +1,150 @@
 <div class="col-lg-12">
-      
-
-    <div class="panel panel-danger">
-        <div class="panel-heading">
-            <h3 class="pull-left">Observaciones</h3>
-            <div class="text-right">
-                @can('create',Muserpol\Models\AffiliateFolder::class)
-                <a href="" class="btn btn-primary" data-toggle="modal" data-target="#folderModalRe">
-                        <i class="fa fa-plus"> </i>
-                </a>
-                @else
-                <br>
-                @endcan
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseObservation">Observaciones</a>
+                    <div class="pull-right">
+                        <button typer="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#observationModal"> <i class="fa fa-plus"></i></button>
+                    </div>
+                </h3>
             </div>
-        </div>
-        <div >
-            {{-- <div class="ibox-content table-responsive"> --}}
+            <div id="collapseObservation" class="panel-collapse collapse in">
                 <table class="table table-hover table-sprite">
                     <thead>
                         <tr>
                             <th> Fecha </th>
                             <th> Tipo de Observación </th>
                             <th> Descripción </th>
-                            <th> Habilidado </th>
+                            <th> Estado </th>
                             <th> Opciones </th>
                         </tr>
                     </thead>
                     <tbody>
-                    {{-- @foreach($folders as $folder )
+                    @foreach($observations as $observation )
                     <tr>
-                        <td> {{ $folder->procedure_modality->name }} </td>
-                        <td> {{ $folder->code_file }} </td>
-                        <td> {{ $folder->folder_number }} </td>
-                        @can('update', new Muserpol\Models\Affiliatefolder)
-                            <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog" data-modid="{{ $folder->procedure_modality_id }}" data-id="{{$folder->id}}" data-codfile="{{ $folder->code_file }}" data-folnum="{{ $folder->folder_number }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
-                        @endcan
-                        @can('delete', new Muserpol\Models\Affiliatefolder)
-                            <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $folder->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button></td>
-                        @endcan
+                        <td> {{ $observation->date }} </td>
+                        <td> {{ $observation->observation_type->name }} </td>
+                        <td> {{ $observation->message }} </td>
+                        <td>
+                            <h3>
+                            @if($observation->is_enabled)
+                            <span class="label  label-primary">
+                                Subsanado
+                            </span>    
+                            @else
+                            <span class="label label-danger">
+                                Vigente
+                            </span>    
+                            @endif
+                            </h3> 
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#eliminar" data-elim="{{ $observation->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button>
+                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $observation->id }}"><i class="fa fa-pencil" aria-hidden="true" ></i></button>
+                        </td>
                     </tr>
-                    @endforeach --}}
+                    @endforeach
                     </tbody>
                 </table>
-            {{-- </div> --}}
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseObservationDeleted">Observaciones Eliminadas</a>
+                </h4>
+            </div>
+            <div id="collapseObservationDeleted" class="panel-collapse collapse">
+                <table class="table table-hover table-sprite">
+                    <thead>
+                        <tr>
+                            <th> Fecha </th>
+                            <th> Tipo de Observación </th>
+                            <th> Descripción </th>
+                            <th> Estado </th>
+                            <th> Opciones </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($observations as $observation )
+                    <tr>
+                        <td> {{ $observation->date }} </td>
+                        <td> {{ $observation->observation_type->name }} </td>
+                        <td> {{ $observation->message }} </td>
+                        <td>
+                            <h3>
+                            @if($observation->is_enabled)
+                            <span class="label  label-primary">
+                                Subsanado
+                            </span>    
+                            @else
+                            <span class="label label-danger">
+                                Vigente
+                            </span>    
+                            @endif
+                            </h3> 
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#observationModal" data-elim="{{ $observation->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button>
+                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#observationModal" data-elim="{{ $observation->id }}"><i class="fa fa-pencil" aria-hidden="true" ></i></button>
+                        </td>
+                    </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div> <!-- fin XD !-->
+<div class="modal inmodal" id="observationModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <i class="fa fa-warning modal-icon"></i>
+                <h4 class="modal-title">Observacion</h4>
+                <small class="font-bold">crear una observacion al tramite</small>
+            </div>
+            <div class="modal-body">
+               <div class="row">
+                   <div class="col-md-4 text-right">
+                       <label>Tipo de Observacion:</label>
+                   </div>
+                   <div class="col-md-8">
+                       <select class="form-control">
+                        @foreach($observation_types as $observation)
+                        <option value="{{ $observation->id }}"> {{ $observation->name }}</option>
+                        @endforeach
+                        </select>
+                   </div>
+               </div>
+               <br>
+               <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label>Estado:</label>
+                    </div>
+                    <div class="col-md-8">
+                            <label> <input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios"> Vigente </label> &nbsp;&nbsp;
+                            <label> <input type="radio" value="option2" id="optionsRadios2" name="optionsRadios"> Subsanado </label>
+                    </div>
+               </div>
+               <br>
+               <div class="row">
+                    <div class="col-md-4 text-right">
+                       <label> Descripción:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cancelar</button>
+                <button type="button" class="btn btn-primary"><i class="fa fa-check-circle"></i> Guardar</button>
+            </div>
         </div>
     </div>
 </div>
+
