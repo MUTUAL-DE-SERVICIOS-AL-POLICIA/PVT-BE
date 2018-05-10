@@ -222,7 +222,24 @@ class RetirementFundController extends Controller
         $retirement_fund->total_ret_fun = 0;        
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
-                
+        $af = Affiliate::find($request->affiliate_id);
+        switch ($request->ret_fun_modality) {
+            case 1:
+            case 4:
+                $af->affiliate_state_id = 4;
+                break;
+            case 2:
+            case 3:
+            case 5:
+            case 6:
+            case 7:
+                $af->affiliate_state_id = 5;
+                break;
+            default:
+                $this->info("error");
+                break;
+        }
+        $af->save();
         //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
         
         foreach ($requirements  as  $requirement)

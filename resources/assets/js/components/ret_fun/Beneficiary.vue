@@ -15,7 +15,7 @@
             <div class="col-md-6">
                 <dl class="dl-">
                     <dt>Parentesco:</dt> <dd> {{ !!beneficiary.kinship ? beneficiary.kinship.name : '' }} </dd>
-                    <dt>Generos:</dt> <dd>{{ getGender(beneficiary.gender) }}</dd>
+                    <dt>Generos:</dt> <dd>{{ getGenderBeneficiary(beneficiary.gender) }}</dd>
                     <dt>Estado Civil:</dt> <dd>{{ beneficiary.civil_status }}</dd>
                     <dt>Fecha de Nacimiento:</dt> <dd>{{ beneficiary.birth_date }}</dd>
                     <dt>Edad:</dt> <dd> {{ beneficiaryAge }} </dd>
@@ -271,7 +271,6 @@ export default {
         })
         .then(response => {
           let data = response.data;
-          console.log(data);
           this.setDataBeneficiary(data);
         })
         .catch(function(error) {
@@ -289,6 +288,9 @@ export default {
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
       this.beneficiary.gender = data.gender;
+    },
+    getGenderBeneficiary(value){
+        return getGender(value);
     }
   },
   computed:{
