@@ -395,7 +395,6 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);
         $util = new Util();
-
         return \PDF::loadView(
             'ret_fun.print.affiliate_contribution',
             compact(
@@ -403,7 +402,6 @@ class RetirementFundCertificationController extends Controller
                 'username',
                 'title',
                 'number',
-                'retirement_fund',
                 'beneficiary',
                 'contributions',
                 'total',
