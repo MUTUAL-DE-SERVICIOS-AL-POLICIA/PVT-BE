@@ -285,7 +285,11 @@ export default {
       this.beneficiary.mothers_last_name = data.mothers_last_name;
       this.beneficiary.surname_husband = data.surname_husband;
       this.beneficiary.identity_card = data.identity_card;
-      this.beneficiary.city_identity_card_id = data.city_identity_card_id;
+    //   if(data.city_identity_card_id!=null){
+    //     this.beneficiary.city_identity_card_id = data.city_identity_card_id;
+    //   }
+    //   else 
+      this.beneficiary.city_identity_card_id = 0;
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
       this.beneficiary.gender = data.gender;
