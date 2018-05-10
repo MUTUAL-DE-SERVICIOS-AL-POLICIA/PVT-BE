@@ -16,6 +16,7 @@ use Log;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
+use Muserpol\Models\ObservationType;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardianBeneficiary;
@@ -386,7 +387,7 @@ class RetirementFundController extends Controller
         $birth_cities = City::all()->pluck('name', 'id');
 
         $states = RetFunState::get();     
-        
+        $observation_types = ObservationType::where('module_id',3)->get();
         //return $retirement_fund->ret_fun_state->name;
         $data = [
             'retirement_fund' => $retirement_fund,
@@ -402,6 +403,7 @@ class RetirementFundController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
+            'observation_types' => $observation_types,
             'observations' => $retirement_fund->ret_fun_observations
         ];
         
