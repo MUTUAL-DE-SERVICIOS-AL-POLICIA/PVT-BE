@@ -13,6 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        //
+        Commands\ContributionsCorrect::class,
         Commands\UpdateAffiliateState::class
     ];
 
