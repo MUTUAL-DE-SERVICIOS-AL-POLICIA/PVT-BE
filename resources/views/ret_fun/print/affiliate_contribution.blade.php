@@ -20,7 +20,7 @@
             </tr>
         @foreach($contributions as $i=>$item)
             <tr>
-                <td class='text-left p-5'>{!! $item->monthyear !!}</td>
+                <td class='text-left p-5'>{!! strtoupper($util::getStringDate($item->year."-".$item->month."-01",true)) !!}</td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->sueldo) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->fr + $item->cm) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->fr) !!} </td>
@@ -32,17 +32,16 @@
             <tr>
                 {{-- <td colspan="4"></td> --}}
                 <td colspan="6" class="text-center py-4 bg-grey-darker text-white font-bold">TOTAL</td>
-                <td class='text-right p-5'>{!! $util::formatMoney($total) !!} </td>  
+                <td class='text-right p-5'><strong>{!! $util::formatMoney($total) !!}</strong></td>
             </tr>
         </tbody>
     </table>
-<br>
+    <br>
     <table class="w-100 border rounded">
         <tbody>
             <tr>
                 <td>Son:</td>
-                <td class='text-justify p-5'>{!! ucwords(strtolower($total_literal)) !!} </td>  
-            </tr>
+                <td class='text-justify p-5'>{!! ucwords(strtolower($total_literal)) !!} Bolivianos.</td>  
             </tr>
         </tbody>
     </table>

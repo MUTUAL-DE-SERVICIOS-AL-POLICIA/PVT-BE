@@ -58,8 +58,9 @@
                 <input type="hidden" name ="affiliate_id" value="{{$affiliate_id}}">
                 <div class="form-group"><label>Modalidad</label>
                      <select class="form-control" name="procedure_modality_id">
-                         @foreach($procedure_modalities as $modality)
-                         <option value={{$modality->id}}>{{$modality->name}}</option>
+                        <option></option>
+                         @foreach($procedure_modalities as $modality)                         
+                         <option value={{$modality->id}}>{{$modality->procedure_type->name ." - " .$modality->name }}</option>
                          @endforeach
                      </select>
                 </div>

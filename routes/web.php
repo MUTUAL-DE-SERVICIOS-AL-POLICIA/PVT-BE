@@ -79,6 +79,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('get_data_certification/{ret_fun_id}', 'RetirementFundController@getDataQualificationCertification')->name('get_data_certification');
 		Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 
+		Route::resource('ret_fun_observation','RetirementFundObservationController');
+
 	//Retirement Fund Certification
 		Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
 		Route::get('affiliate/{affiliate}/print/file', 'RetirementFundCertificationController@printFile')->name('ret_fun_print_file');
