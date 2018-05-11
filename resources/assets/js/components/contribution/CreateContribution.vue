@@ -144,7 +144,7 @@ export default {
         }              
       },
       CalcularAporte(con, index){        
-        con.sueldo = parseMoney(con.sueldo);        
+        con.sueldo = parseMoney(con.sueldo);   
         if(parseFloat(con.sueldo) >0)
         {            
         if(this.count > 0)
@@ -245,7 +245,7 @@ export default {
       Guardar(){                
         if(this.tipo !== null) 
         {
-            this.contributions =  this.contributions.filter((item)=> {
+            this.contributions =  this.contributions.filter((item)=> {                
                 return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
             });       
       
@@ -275,11 +275,16 @@ export default {
                     timer: 6000,
                     type: 'success'
                     })
-                    printJS({printable:'/ret_fun/'+response.data.affiliate_id+'/print/voucher/'+response.data.voucher_id, type:'pdf', showModal:true});
+                    var json_contribution= JSON.stringify(response.data.contributions);                    
+                    printJS({printable:
+                            '/ret_fun/'+
+                            response.data.affiliate_id+
+                            '/print/voucher/'+
+                            response.data.voucher_id + "?contributions="+json_contribution, 
+                            type:'pdf', showModal:true});
                     })                    
                     .catch(error => {
-                    this.show_spinner = false;            
-                        //alert(e); 
+                    this.show_spinner = false;                                    
                         console.log(error.response.data);
 //                        console.log(xhr.responseText);
 //                        var resp = jQuery.parseJSON(xhr.responseText);

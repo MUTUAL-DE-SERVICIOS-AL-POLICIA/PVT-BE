@@ -57,27 +57,26 @@ class QuotaAidCertificationController extends Controller
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name." ".Auth::user()->last_name;        
         $detail = "Pago de aporte directo";
-        $bene = $affiliate;
+        $beneficiary = $affiliate;
+        $name_beneficiary_complet = Util::fullName($beneficiary);
         $pdftitle = "Comprobante";
-        $namepdf = Util::getPDFName($pdftitle, $bene);
+        $namepdf = Util::getPDFName($pdftitle, $beneficiary);
         $util = new Util();
-        
-        return \PDF::loadView('quota_aid.print.affiliate_aid_contribution', 
+        return \PDF::loadView(
+            'quota_aid.print.affiliate_aid_contribution', 
                 compact(
                         'date', 
-                        'subtitle', 
                         'username', 
                         'title', 
-                        'number', 
-                        'retirement_fund', 
-                        'affiliate', 
-                        'submitted_documents',
+                        'number',  
+                        'beneficiary', 
                         'contributions',
                         'total',
                         'total_literal',
                         'detail',
                         'util',
-                        'name_user_complet'
+                        'name_user_complet',
+                        'name_beneficiary_complet'
                 ))
                 ->setPaper('letter')
                 ->setOption('encoding', 'utf-8')
@@ -94,18 +93,18 @@ class QuotaAidCertificationController extends Controller
         $total_literal = Util::convertir($voucher->total);
         $payment_date = Util::getStringDate($voucher->payment_date);
         $date = Util::getStringDate(date('Y-m-d'));
-        // $title = "PAGO DE APORTES VOLUNTARIOS APORTE";
+        $title = "RECIBO";
+        $subtitle = "AUXILIO MORTUORIO";
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
         $number = $voucher->code;
         $descripcion = VoucherType::where('id', $voucher->voucher_type_id)->first();
+        $util = new Util();
         if ($affiliate->affiliate_state->name == "Fallecido") {
-            $title = "PAGO DE APORTE DIRECTO DE LAS (OS) VIUDAS (OS) DEL  SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
             $spouses = Spouse::where('affiliate_id', $affiliate->id)->first();
             $beneficiary = $spouses;
             $aid_contributions  = json_decode($request->aid_contributions);
         } else {
-            $title = "PAGO DE APORTE DIRECTO DEL SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
             $beneficiary = $affiliate;
             $aid_contributions  = json_decode($request->aid_contributions);
         }
@@ -115,9 +114,11 @@ class QuotaAidCertificationController extends Controller
         return \PDF::loadView('quota_aid.print.voucher_aid_contribution', 
                 compact('date', 
                         'username', 
-                        'title', 
+                        'title',
+                        'subtitle', 
                         'affiliate',
-                        'beneficiary', 
+                        'beneficiary',
+                        'util', 
                         'glosa',
                         'aid_contributions', 
                         'number', 

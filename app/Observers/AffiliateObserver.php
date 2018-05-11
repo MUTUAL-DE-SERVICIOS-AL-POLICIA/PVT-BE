@@ -15,6 +15,7 @@ class AffiliateObserver
     }
     public function updating(Affiliate $affiliate){
         // Log::info('antes de actualizar');
+        
         $old = Affiliate::find($affiliate->id);
 
         $message = 'El usuario '.Auth::user()->username.' modifico ';
@@ -147,5 +148,5 @@ class AffiliateObserver
         $affiliate_record->message = $message;
         $affiliate_record->save();
     }
-   
+
 }

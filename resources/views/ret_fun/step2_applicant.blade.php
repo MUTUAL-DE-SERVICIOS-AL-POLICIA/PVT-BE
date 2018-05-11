@@ -12,60 +12,63 @@
                 <div class="col-md-12">
                     <legend>Datos del Solicitante</legend>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6" :class="{'has-error': errors.has('accountType') }">
                             <div class="col-md-4">
                                 <label class="control-label">Tipo de Solicitante</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control" autofocus name="accountType" @change="change_applicant()" v-model.trim="applicant_type">
+                                <select class="form-control" autofocus name="accountType" @change="change_applicant()" v-model.trim="applicant_type" v-validate.initial="'required'">
                                     <option :value="null"></option>
                                     <option v-for="(type,index) in applicant_types" :value="index+1">@{{type}}</option>
                                 </select>
+                                <i v-show="errors.has('accountType')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('accountType')" class="text-danger">@{{ errors.first('accountType') }}</span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" :class="{'has-error': errors.has('applicant_kinship') }">
                             <div class="col-md-4">
                                 <label class="control-label">Parentesco</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control" name="applicant_kinship" v-model.trim="applicant_kinship_id">
+                                <select class="form-control" name="applicant_kinship" v-model.trim="applicant_kinship_id" v-validate.initial="'required'">
                                     <option :value="null"></option>
                                     <option v-for="kinship in kinships" :value="kinship.id">@{{ kinship.name }}</option>
                                 </select>
+                                <i v-show="errors.has('applicant_kinship')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('applicant_kinship')" class="text-danger">@{{ errors.first('applicant_kinship') }}</span>
                             </div>
                         </div>
                     </div> 
                     <br>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group" :class="{'has-error': error.applicant_identity_card }">
+                            <div class="form-group" :class="{'has-error': errors.has('applicant_identity_card') }">
                                 <div class="col-md-4">
                                     <label class="control-label">Carnet de Identidad</label>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <input type="text" name="applicant_identity_card" v-model.trim="applicant_identity_card" class="form-control">
+                                        <input type="text" name="applicant_identity_card" v-model.trim="applicant_identity_card" class="form-control" v-validate.initial="'required'">
                                         <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="button" @click="searchApplicant" type="button" role="button"><i class="fa fa-search"></i></button>
+                                            <button class="btn" :class="errors.has('applicant_identity_card') ? 'btn-danger' : 'btn-primary' " type="button" @click="searchApplicant" type="button" role="button"><i class="fa fa-search"></i></button>
                                         </span>
-                                    </div><!-- /input-group -->
-                                    <i v-show="error.applicant_identity_card" class="fa fa-warning text-danger"></i>
-                                    <span v-show="error.applicant_identity_card" class="text-danger">@{{ errors.applicant_identity_card }}</span>
-                                    
+                                    </div>
+                                    <i v-show="errors.has('applicant_identity_card')" class="fa fa-warning text-danger"></i>
+                                    <span v-show="errors.has('applicant_identity_card')" class="text-danger">@{{ errors.first('applicant_identity_card') }}</span>
                                 </div>
-                        
                             </div>
-                            
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" :class="{'has-error': errors.has('applicant_city_identity_card') }">
                             <div class="col-md-4">
                                 <label class="control-label">Ciudad de Expedición</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control" name="applicant_city_identity_card" v-model.trim="applicant_city_identity_card_id">
+                                <select class="form-control" name="applicant_city_identity_card" v-model.trim="applicant_city_identity_card_id" v-validate.initial="'required'">
                                     <option :value="null"></option>
                                     <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
                                 </select>
+                                <i v-show="errors.has('applicant_city_identity_card')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('applicant_city_identity_card')" class="text-danger">@{{ errors.first('applicant_city_identity_card') }}</span>
                             </div>
                         </div>
                     </div>
@@ -240,18 +243,20 @@
                     <br>
 
                     <legend v-if=" show_apoderado_form " >Datos del Apoderado</legend>
-                    <div class="row" v-if=" show_apoderado_form ">
-                        <div class="col-md-6">
+                    <div class="row" v-if="show_apoderado_form ">
+                        <div class="col-md-6" :class="{'has-error': errors.has('legal_guardian_identity_card') }">
                             <div class="col-md-4">
                                 <label class="control-label">Carnet de Identidad</label>
                             </div>
                             <div class="col-md-8">
                                 <div class="input-group">
-                                    <input type="text" name="legal_guardian_identity_card" v-model.trim="legal_guardian_identity_card" class="form-control">
+                                    <input type="text" name="legal_guardian_identity_card" v-model.trim="legal_guardian_identity_card" class="form-control" v-validate.initial="'required'">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button" @click="searchLegalGuardian" type="button" role="button"><i class="fa fa-search"></i></button>
+                                        <button class="btn" :class="errors.has('legal_guardian_identity_card') ? 'btn-danger' : 'btn-primary'" type="button" @click="searchLegalGuardian" type="button" role="button"><i class="fa fa-search"></i></button>
                                     </span>
-                                </div><!-- /input-group -->
+                                </div>
+                                <i v-show="errors.has('legal_guardian_identity_card')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('legal_guardian_identity_card')" class="text-danger">@{{ errors.first('legal_guardian_identity_card') }}</span>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -267,13 +272,15 @@
                         </div>
                     </div>
                     <br>
-                    <div class="row" v-if=" show_apoderado_form ">
-                        <div class="col-md-6">
+                    <div class="row" v-if="show_apoderado_form">
+                        <div class="col-md-6" :class="{'has-error': errors.has('legal_guardian_first_name') }" >
                             <div class="col-md-4">
                                 <label class="control-label">Primer Nombre</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="legal_guardian_first_name" v-model.trim="legal_guardian_first_name" class="form-control">
+                                <input type="text" name="legal_guardian_first_name" v-model.trim="legal_guardian_first_name" class="form-control" v-validate.initial="'required'">
+                                <i v-show="errors.has('legal_guardian_first_name')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('legal_guardian_first_name')" class="text-danger">@{{ errors.first('legal_guardian_first_name') }}</span>
                             </div>
                         </div>
                         <div class="col-md-6">

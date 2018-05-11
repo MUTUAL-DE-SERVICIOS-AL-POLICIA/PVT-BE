@@ -1,3 +1,5 @@
+import Axios from "axios";
+
 export function moneyInputMaskAll() {
     document.querySelectorAll('input').forEach(element => {
         if (element.getAttribute('data-money') == "true") {
@@ -50,4 +52,28 @@ export function phoneInputMaskAll() {
 }
 export function phoneInputMask() {
     return "(9) 999-999";
+}
+export function getGender(value) {
+    var gender = '';
+    if (!value) {
+        return gender;
+    }
+    switch (value.toUpperCase()) {
+        case "M":
+            gender = 'Masculino';
+        break;
+        case "F":
+            gender = 'Femenino';
+        break;
+    }
+    return gender;
+}
+export function getCurrentDate() {
+    axios.get("/get_current_date")
+    .then(response =>{
+        console.log(response);
+    }).catch(error =>{
+        console.log(error);
+    })
+    ;
 }

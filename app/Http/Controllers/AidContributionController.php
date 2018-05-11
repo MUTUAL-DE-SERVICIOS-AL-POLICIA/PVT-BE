@@ -319,7 +319,7 @@ class AidContributionController extends Controller
     }
 
     public function storeDirectContribution(Request $request)    
-    {        
+    {                
         //*********START VALIDATOR************//                
         $rules=[];                
         $biz_rules = [];
@@ -380,13 +380,16 @@ class AidContributionController extends Controller
             $aid_contribution = new AidContribution();
             $aid_contribution->user_id = Auth::user()->id;
             $aid_contribution->affiliate_id = $affiliate->id;            
-            $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
+            // $aid_contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
+            $aid_contribution->month_year = $aporte->year.'-'.$aporte->month.'-01';
             $aid_contribution->type='DIRECTO';
-            $aid_contribution->quotable = $aporte->auxilio_mortuorio;
-            if(is_numeric($aporte->dignity_rent))            
-                $aid_contribution->dignity_rent = $aporte->sueldo-$aporte->dignity_rent;
-            else
-                $aid_contribution->dignity_rent = $aporte->sueldo;
+            if(is_numeric($aporte->dignity_rent)){
+                $aid_contribution->dignity_rent = $aporte->dignity_rent;
+                $aid_contribution->quotable = $aporte->sueldo - $aporte->dignity_rent;
+            }else{
+                $aid_contribution->dignity_rent = 0;
+                $aid_contribution->quotable = $aporte->sueldo;
+            }
             $aid_contribution->rent = $aporte->sueldo;
             $aid_contribution->total = $aporte->subtotal;
             $aid_contribution->interest = $aporte->interes;

@@ -15,10 +15,10 @@
             <div class="col-md-6">
                 <dl class="dl-">
                     <dt>Parentesco:</dt> <dd> {{ !!beneficiary.kinship ? beneficiary.kinship.name : '' }} </dd>
-                    <dt>Genero:</dt> <dd>{{ beneficiary.gender }}</dd>
+                    <dt>Generos:</dt> <dd>{{ getGenderBeneficiary(beneficiary.gender) }}</dd>
                     <dt>Estado Civil:</dt> <dd>{{ beneficiary.civil_status }}</dd>
                     <dt>Fecha de Nacimiento:</dt> <dd>{{ beneficiary.birth_date }}</dd>
-                    <dt>Edad:</dt> <dd> ERROR </dd>
+                    <dt>Edad:</dt> <dd> {{ beneficiaryAge }} </dd>
                     <dt>Telefono:</dt> <dd>{{ beneficiary.phone_number }}</dd>
                     <dt>Celular:</dt> <dd>{{ beneficiary.cell_phone_number }}</dd>
                 </dl>
@@ -248,6 +248,7 @@
     </div>
 </template>
 <script>
+import { getGender } from '../../helper.js'
 export default {
   props: ["kinships", "cities", "beneficiary", "editable", "readOnly"],
   data() {
@@ -270,7 +271,6 @@ export default {
         })
         .then(response => {
           let data = response.data;
-          console.log(data);
           this.setDataBeneficiary(data);
         })
         .catch(function(error) {
@@ -284,11 +284,26 @@ export default {
       this.beneficiary.mothers_last_name = data.mothers_last_name;
       this.beneficiary.surname_husband = data.surname_husband;
       this.beneficiary.identity_card = data.identity_card;
-      this.beneficiary.city_identity_card_id = data.city_identity_card_id;
+    //   if(data.city_identity_card_id!=null){
+    //     this.beneficiary.city_identity_card_id = data.city_identity_card_id;
+    //   }
+    //   else 
+      this.beneficiary.city_identity_card_id = 0;
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
       this.beneficiary.gender = data.gender;
+    },
+    getGenderBeneficiary(value){
+        return getGender(value);
     }
+  },
+  computed:{
+      beneficiaryAge(){
+          if (this.beneficiary.birth_date) {
+              return moment().diff(this.beneficiary.birth_date, 'years');
+          }
+          return null;
+      }
   }
 };
 </script>

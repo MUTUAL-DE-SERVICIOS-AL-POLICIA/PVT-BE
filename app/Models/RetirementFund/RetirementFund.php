@@ -13,7 +13,10 @@ class RetirementFund extends Model
     {
         return $this->belongsTo('Muserpol\Models\Affiliate');
     }
-
+    public function ret_fun_observations()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunObservation');
+    }
     public function user()
     {
         return $this->belongsTo('Muserpol\User');
