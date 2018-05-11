@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Muserpol\Models\RetirementFund\RetirementFund;
-use Muserpol\Models\Degree;
 use Muserpol\Models\Contribution\ContributionType;
-use phpDocumentor\Reflection\Types\Object_;
 use Muserpol\Models\Contribution\Contribution;
 class ContributionsCorrect extends Command
 {
@@ -81,17 +79,74 @@ class ContributionsCorrect extends Command
                     }
                     $this->info($iguales);
                     $this->info('--------');
-                    	
                     ContributionType::destroy($registro->id);
                 }
             }
             if($sw==0){
 
             }else{
-               // DB::table('contribution_types')->insert([ ['name' => $nuevonombre, 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],  ]);
+                DB::table('contribution_types')->insert([ ['name' => $nuevonombre, 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],  ]);
             }
         }
-        
+        //$name=
+      //  DB::table('contribution_types')->insert([ ['name' => , 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],  ]);
+        /*if($sw==1){
+            $this->info('se eliminaran');
+            DB::table('contribution_types')->truncate();
+
+            $this->info('se registraran nuevos');
+            DB::table('contribution_types')->insert([
+                ['name' => 'Período reconocido por comando', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Período en item 0 Con Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Período en item 0 Sin Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Período de Batallón de Seguridad Física Con Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Período de Batallón de Seguridad Física Sin Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Periodos anteriores a Mayo de 1976 Sin Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Período Certificación Con Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Período Certificación Sin Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Período no Trabajado', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Disponibilidad', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+            ]);
+        }else{
+            $this->info('Son los mismos registros');
+        }*/
+
+        //$this->info($sw);
+        //
+        /*$this->info('hola ');
+        if($this->confirm('quieres eliminar la columna de la tabla contribution_types la columna: group_type_contribution_id ?')){
+            $this->info('Eliminando...');
+            if(Schema::hasColumn('contribution_types','group_type_contribution_id')){
+                $this->info('si hay');
+                // DB::table('contribution_types')->delete();
+                Schema::table('contribution_types', function ($table) {
+                    $table->dropColumn('group_type_contribution_id');
+                });
+            }else{
+                $this->info('No existe la columna');
+            }
+            // Schema::table('contribution_types', function ($table) {
+            //     $table->dropColumn('group_type_contribution_id');
+            // });
+        }else{
+            $this->info('No Eliminado');
+        }
+
+        if($this->confirm('quieres eliminar la tabla group_type_contributions?')){
+            if(Schema::hasTable('group_type_contributions')){
+                $this->info('si hay la tabla');
+                Schema::drop('group_type_contributions');
+            }else{
+                $this->info('No existe la tabla');
+            }
+        }
+        //     Schema::drop('group_type_contributions');
+        // }else{
+        //     $this->info('No Eliminado');
+        // }
+
+        // ContributionType::destroy($id);
+*/
 
     }
 

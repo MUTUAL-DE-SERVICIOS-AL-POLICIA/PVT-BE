@@ -417,11 +417,9 @@ class RetirementFundController extends Controller
         $birth_cities = City::all()->pluck('name', 'id');
 
         $states = RetFunState::get();
-<<<<<<< HEAD
         
         $ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
         //return $retirement_fund->ret_fun_state->name;
-=======
 
         ///proof
         $user = User::find(Auth::user()->id);
@@ -436,7 +434,6 @@ class RetirementFundController extends Controller
 
         $observation_types = ObservationType::where('module_id',3)->get();
         
->>>>>>> upstream/master
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -451,16 +448,13 @@ class RetirementFundController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
-<<<<<<< HEAD
             'ret_fun_records' => $ret_fun_records,
-=======
             'requirements'  =>  $procedure_requirements,
             'user'  =>  $user,
             'procedure_types'   =>  $procedure_types,
             'modalities'    =>  $modalities,
             'observation_types' => $observation_types,
             'observations' => $retirement_fund->ret_fun_observations
->>>>>>> upstream/master
         ];
         
         return view('ret_fun.show',$data);
