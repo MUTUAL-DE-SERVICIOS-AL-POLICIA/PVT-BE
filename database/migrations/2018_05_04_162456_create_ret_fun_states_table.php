@@ -17,12 +17,14 @@ class CreateRetFunStatesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->timestamps(); 
+            $table->softDeletes();
         });
 
         Schema::table('retirement_funds', function (Blueprint $table) {
             $table->bigInteger('ret_fun_state_id')->unsigned()->nullable();
             $table->foreign('ret_fun_state_id')->references('id')->on('ret_fun_states')->onDelete('cascade');
         });
+        
     }
 
     /**
