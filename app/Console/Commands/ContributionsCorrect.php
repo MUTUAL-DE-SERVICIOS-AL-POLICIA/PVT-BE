@@ -3,10 +3,15 @@
 namespace Muserpol\Console\Commands;
 
 use Illuminate\Console\Command;
-use Muserpol\Models\Contribution\ContributionType;
+
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
-
+use Illuminate\Support\Facades\DB;
+use Muserpol\Models\RetirementFund\RetirementFund;
+use Muserpol\Models\Degree;
+use Muserpol\Models\Contribution\ContributionType;
+use phpDocumentor\Reflection\Types\Object_;
+use Muserpol\Models\Contribution\Contribution;
 class ContributionsCorrect extends Command
 {
     /**
@@ -40,25 +45,54 @@ class ContributionsCorrect extends Command
      */
     public function handle()
     {
-        //
         $this->info('hola ');
-        $columna =$this->ask('(s/n)quieres eliminar la columna de la tabla contribution_types la columna: group_type_contribution_id ?');
-        if($columna=='s'){
-            $this->info('Eliminando...');
-            Schema::table('contribution_types', function ($table) {
-                $table->dropColumn('group_type_contribution_id');
-            });
-        }else{
-            $this->info('No Eliminado');
-        }
-        $tabla = $this->ask('quieres eliminar la columna de la tabla contribution_types?');
-        // if($tabla){
-        //     Schema::drop('group_type_contributions');
-        // }else{
-        //     $this->info('No Eliminado');
-        // }
+        $registros=ContributionType::all();
+        $nuevosnombres=array(
+         'Período reconocido por comando',
+        'Período en item 0 Con Aporte',
+        'Período en item 0 Sin Aporte',
+        'Período de Batallón de Seguridad Física Con Aporte',
+        'Período de Batallón de Seguridad Física Sin Aporte',
+       'Periodos anteriores a Mayo de 1976 Sin Aporte',
+       'Período Certificación Con Aporte',
+        'Período Certificación Sin Aporte',
+        'Período no Trabajado',
+        'Disponibilidad'
+        );
+        print_r($nuevosnombres);
+        //DB::table('contribution_types')->truncate();
 
-        // ContributionType::destroy($id);
+        foreach($nuevosnombres as $nuevonombre){
+            print_r($nuevonombre);
+            $this->info('compara con');
+            $sw=0;//iguales
+            foreach($registros as $registro){
+                $this->info($registro->name);
+                $this->info('esto');
+                if(strcasecmp(($registro->name), $nuevonombre) == 0){ //iguales
+                    
+                }else{//no iguales
+                    $sw=1; //hay diferentes
+                    $iguales=Contribution::whereNotNull('contribution_type_id')->where('contribution_type_id',$registro->id)->get();
+                    foreach($iguales as $igual){
+                        $nuevo=Contribution::find($iguales->id);
+                        $nuevo->contribution_type_id=null;
+                        $this->info('contribution');
+                    }
+                    $this->info($iguales);
+                    $this->info('--------');
+                    	
+                    ContributionType::destroy($registro->id);
+                }
+            }
+            if($sw==0){
+
+            }else{
+               // DB::table('contribution_types')->insert([ ['name' => $nuevonombre, 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],  ]);
+            }
+        }
+        
 
     }
+
 }
