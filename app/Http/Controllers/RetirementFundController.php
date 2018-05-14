@@ -41,7 +41,9 @@ class RetirementFundController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {                
+    {
+        // $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->get();
+        // return $ret_fund;
         return view('ret_fun.index');
        
     }
@@ -204,7 +206,7 @@ class RetirementFundController extends Controller
         {
             $code = str_replace("A","",$nextcode->code);    
         }else{
-            $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();        
+            $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
             if(!isset($ret_fund->id))
             $code = Util::getNextCode ("");
             else        
@@ -228,6 +230,9 @@ class RetirementFundController extends Controller
         $retirement_fund->total_ret_fun = 0;        
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
+        
+        $reception_code = Util::getNextAreaCode($retirement_fund->id);
+
                 
         //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
         

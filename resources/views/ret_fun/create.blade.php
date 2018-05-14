@@ -51,7 +51,7 @@
                             @include('ret_fun.step3_beneficiaries')
                         </ret-fun-step3-beneficiaries>
                     </tab-content>
-                    <butTON SLOT="next">next</butTON>
+                    {{-- <butTON SLOT="next">next</butTON> --}}
                     </form-wizard>
                 </ret-fun-form>
                 {!! Form::close() !!}
