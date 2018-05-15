@@ -12,8 +12,8 @@ class AffiliateRecord extends Model
     {
         return $this->belongsTo('Muserpol\Models\Affiliate');
     }
-    public function users()
+    public function user()
     {
-    	return $this->belongToMany(User::class, 'role_user');
+        return $this->belongsTo('Muserpol\User');
     }
 }

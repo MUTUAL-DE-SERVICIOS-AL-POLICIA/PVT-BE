@@ -98,6 +98,7 @@
         
     </div>
 </div> <!-- fin XD !-->
+{!! Form::open(['action' => 'RetirementFundObservationController@store']) !!}
 <div class="modal inmodal" id="observationModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
     <div class="modal-content animated bounceInRight">
@@ -109,14 +110,15 @@
             </div>
             <div class="modal-body">
                <div class="row">
+                   <input type="hidden" name="retirement_fund_id" value="{{ $retirement_fund->id}}">
                    <div class="col-md-4 text-right">
                        <label>Tipo de Observacion:</label>
                    </div>
                    <div class="col-md-8">
-                       <select class="form-control">
-                        @foreach($observation_types as $observation)
-                        <option value="{{ $observation->id }}"> {{ $observation->name }}</option>
-                        @endforeach
+                       <select class="form-control" name="observation_type_id">
+                            @foreach($observation_types as $observation)
+                            <option value="{{ $observation->id }}"> {{ $observation->name }}</option>
+                            @endforeach
                         </select>
                    </div>
                </div>
@@ -126,8 +128,8 @@
                         <label>Estado:</label>
                     </div>
                     <div class="col-md-8">
-                            <label> <input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios"> Vigente </label> &nbsp;&nbsp;
-                            <label> <input type="radio" value="option2" id="optionsRadios2" name="optionsRadios"> Subsanado </label>
+                            <label> <input type="radio" checked="" value="false"  name="is_enabled"> Vigente </label> &nbsp;&nbsp;
+                            <label> <input type="radio" value="true" name="is_enabled"> Subsanado </label>
                     </div>
                </div>
                <br>
@@ -136,15 +138,17 @@
                        <label> Descripción:</label>
                     </div>
                     <div class="col-md-8">
-                        <textarea class="form-control"></textarea>
+                        <textarea class="form-control" name="message"></textarea>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cancelar</button>
-                <button type="button" class="btn btn-primary"><i class="fa fa-check-circle"></i> Guardar</button>
+                <div class="text-center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-check-circle"></i> Guardar</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
+{!! Form::close() !!}
