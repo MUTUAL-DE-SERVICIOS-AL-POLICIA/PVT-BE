@@ -11,38 +11,38 @@
             @endcan
         </div>
         <div  v-if="! editing">
-            <br>
+            <br> 
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-5">
                    <strong> Modalidad:</strong> &nbsp;@{{ procedure_modality_name}}
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-5">
                     <strong>Ciudad de Recepcion:</strong> &nbsp;@{{ city_start_name }}
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-md-1 col-sm-1" ></div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-5">
                     <strong> Fecha de Recepcion:</strong>&nbsp; @{{ form.reception_date}}
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-5">
                     <strong>Regional:</strong>&nbsp;@{{ city_end_name }}
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-md-1 col-sm-1"></div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-5">
                     <strong>Estado:</strong> @{{ getState(form.ret_fun_state_id)}}
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-5">
                  
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-md-1 col-sm-1"></div>
             </div>
             <br>
          
