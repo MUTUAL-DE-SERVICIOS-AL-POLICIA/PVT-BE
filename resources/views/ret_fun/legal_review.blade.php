@@ -18,6 +18,8 @@
       <form action="{{asset('ret_fun/'.$retirement_fund->id.'/legal_review/create')}}" method="POST">
         <div v-if="! editing">
             {{ csrf_field() }}
+      {{--   <div class="panel-body">
+            {{ csrf_field() }}             --}}
             <div class="row">
                 <br>
                 <div></div>
@@ -92,18 +94,18 @@
                               <td>{{$document->procedure_requirement->number}}</td>
                               <td>{{$document->procedure_requirement->procedure_document->name}}</td>
                               <td class="text-center">
-                                  <div class="checkbox">
-                                      <input type="checkbox" class="documents_check" value="1"@if($document->is_valid) checked @endif name="document{{$document->id}}" disabled>
-                                  </div>
+                                  {{-- <div class="checkbox">                                       --}}
+                                      <input type="checkbox" class="documents_check" value="1" @if($document->is_valid) checked @endif name="document{{$document->id}}" disabled>
+                                  {{-- </div> --}}
                               </td>
                             </tr>
                             <tr>
                                 <td>Observaciones:</td>
                                 <td>
                                     <p class="documents_comment_text">{{$document->comment}}</p>
-                                    <input type="text" style="display: none;" name="comment{{$document->id}}" class="from-control col-md-12 documents_comment" value="{{$document->comment}}"> 
+                                    <input type="text" style="display: none;" name="comment{{$document->id}}" class="from-control col-md-12 documents_comment" value="{{$document->comment}}">
                                 </td>
-                            </tr> 
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>

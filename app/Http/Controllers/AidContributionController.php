@@ -319,7 +319,7 @@ class AidContributionController extends Controller
     }
 
     public function storeDirectContribution(Request $request)    
-    {        
+    {                
         //*********START VALIDATOR************//                
         $rules=[];                
         $biz_rules = [];

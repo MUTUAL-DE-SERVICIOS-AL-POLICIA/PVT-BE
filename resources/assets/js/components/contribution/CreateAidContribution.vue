@@ -184,11 +184,12 @@ export default {
     },
     Guardar() {        
       this.contributions = this.contributions.filter(item => {
-        return (
+        item.sueldo = parseMoney(item.sueldo);
+        item.dignity_rent = parseMoney(item.dignity_rent);
+        return (          
           item.sueldo != 0 && item.auxilio_mortuorio != 0 && item.subtotal != 0
         );
-      });
-      console.log(this.contributions);
+      });      
        if (this.contributions.length > 0) {
         this.$swal({
           title: "Esta usted seguro de guardar?",
@@ -200,16 +201,14 @@ export default {
           cancelButtonText: "Cancelar"
         }).then(result => {
           if (result.value) {
-            var aportes = this.contributions;
-            console.log(aportes);
+            var aportes = this.contributions;            
             axios
               .post("/aid_contribution_save", {
                 aportes,
                 total: this.total,
                 afid: this.afid
               })
-              .then(response => {
-                
+              .then(response => {                
               //this.enableDC();
               var i;
                 for(i=0;i<response.data.aid_contribution.length;i++){                        
@@ -221,8 +220,7 @@ export default {
               timer: 6000,
               type: "success"
               });
-              var json_aid_contribution = JSON.stringify(response.data.aid_contributions);
-              console.log("-------------------------");
+              var json_aid_contribution = JSON.stringify(response.data.aid_contributions);              
               console.log(json_aid_contribution);
               printJS({
                   printable:

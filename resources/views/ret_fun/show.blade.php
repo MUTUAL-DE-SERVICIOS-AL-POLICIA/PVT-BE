@@ -17,14 +17,14 @@
         @endif
         
         @if(Muserpol\Helpers\Util::getRol()->id == 15)
-        <button class="btn btn-prfolder_idimary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>        
+        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
         @endif
         
         @if(Muserpol\Helpers\Util::getRol()->id == 11)
         <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
         @endif
         @can('view', new Muserpol\Models\Contribution\Contribution)   
-    <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
+        <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
             <button class="btn btn-primary dim"  data-toggle="tooltip" data-placement="top" title=" Clasificar Aportes " >
             <i class="fa fa-list-alt"></i>
             </button>
@@ -33,6 +33,10 @@
             <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar"></i></button>
         </a>
         @endcan
+        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecordRetFun" data-placement="top" title="Historial del Tramite">
+            <i class="fa fa-history"></i>
+        </button>
+        @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
     </div>
     
     <div class="row">
@@ -87,7 +91,7 @@
                     </div>
                     <div id="tab-observations" class="tab-pane">
                         <div class="panel-body">
-                            @include('ret_fun.observation');
+                            @include('ret_fun.observation')
                         </div>
                     </div>
                 </div>
@@ -97,7 +101,13 @@
 
 </div>
 @endsection
+
+@section('styles')
+<link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
+@endsection
+
 @section('jss')
+<script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
     $( document ).ready(function() {
     console.log( "ready!" );
@@ -124,6 +134,8 @@
             console.log(cod_folder)
             console.log($('#cod_file_eli').val(cod_folder))
         });
+        console.log( "del show... " );
+        $('#example').DataTable();
     });
 </script>
 @endsection 
