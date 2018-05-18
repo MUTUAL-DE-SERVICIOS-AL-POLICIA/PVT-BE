@@ -39,7 +39,6 @@
                     <div v-else>
                         <input type="checkbox" name="state" value="false" disabled class="form-control">
                     </div>
-                    <dd>{{ beneficiary.state }}</dd>
                 </dl>
             </div>
         </div>
@@ -178,7 +177,6 @@
                         <div v-else>
                             <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" class="form-control">
                         </div>
-                        <dd>{{ beneficiary.state }}</dd>
                     </dl>
                 </div>
             </div>
@@ -296,7 +294,6 @@
                         <div v-else>
                             <input type="checkbox" v-model.trim="beneficiary.state" :value="beneficiary.state" class="form-control">
                         </div>
-                        <dd>{{ beneficiary.state }}</dd>
                     </dl>
                 </div>
             </div>
