@@ -1,6 +1,7 @@
 <script>
 	export default{
 		props:[
+            'beneficiaries2',
 			'beneficiariesBackend',
 			'originalBeneficiariesBackend',
             'cities',
@@ -29,7 +30,12 @@
         },
         methods:{
             toggle_editing () {
-                this.editing = !this.editing;
+			this.editing = !this.editing;
+            console.log(this.editing);
+                if(this.editing==false)
+                {
+                    this.beneficiaries =  this.beneficiaries2;
+                }
             },
             cancel(){
                 this.beneficiaries =  this.originalBeneficiariesBackend;
