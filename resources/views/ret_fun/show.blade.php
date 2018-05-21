@@ -78,7 +78,11 @@
                     <div id="tab-summited-document" class="tab-pane">
                         <div class="panel-body">
                             @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])
+                                {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}
+                                    <ret-fun-step1-requirements-edit :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :show-requirements-error="showRequirementsError" :ret-fun-id="777"
+                                    inline-template>
+                                    @include('ret_fun.step1_requirements_edit')
+                                </ret-fun-step1-requirements-edit>
                             @endcan
                         </div>
                     </div>

@@ -1169,4 +1169,15 @@ class RetirementFundController extends Controller
         ];
         return $data;
     }
+
+    public function editRequirements(Request $request, $id){
+        
+        return $request->requirements;
+        $num = 0;
+        foreach($request->requirements as $req){
+            if($req[0]->status == true)
+                $num++;
+        }
+        return $num;
+    }
 }
