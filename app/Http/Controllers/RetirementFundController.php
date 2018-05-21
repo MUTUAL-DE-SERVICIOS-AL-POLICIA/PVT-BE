@@ -274,7 +274,7 @@ class RetirementFundController extends Controller
         $beneficiary->second_name = strtoupper(trim($request->applicant_second_name));
         $beneficiary->surname_husband = strtoupper(trim($request->applicant_surname_husband));        
         $beneficiary->birth_date = $request->applicant_birth_date;        
-        $beneficiary->gender = "M";        
+        $beneficiary->gender = $request->applicant_gender;        
         $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));        
         $beneficiary->type = "S";

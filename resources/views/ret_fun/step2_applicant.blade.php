@@ -170,7 +170,7 @@
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-danger" v-show="applicant_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                                 </span>
-                                            </div><!-- /input-group -->   
+                                            </div><!-- /input-group -->
                                         </div>
                                     </div>
                                 </div>
