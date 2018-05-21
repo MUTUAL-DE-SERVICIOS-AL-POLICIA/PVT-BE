@@ -664,6 +664,7 @@ class RetirementFundController extends Controller
                 $old_ben->surname_husband = $new_ben['surname_husband'];
                 $old_ben->birth_date = $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
+                $old_ben->state = $new_ben['state'];
                 $old_ben->save();
             }else{
                 $beneficiary = new RetFunBeneficiary();
@@ -678,6 +679,7 @@ class RetirementFundController extends Controller
                 $beneficiary->surname_husband = strtoupper(trim($new_ben['surname_husband']));
                 $beneficiary->birth_date = $new_ben['birth_date'];
                 $beneficiary->gender = $new_ben['gender'];
+                $old_ben->state = $new_ben['state'];
                 // $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
                 // $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
                 $beneficiary->type = "N";
