@@ -4,7 +4,7 @@
             <div class="form-group" :class="{'has-error': errors.has('procedure_type_id') }">
                 <label class="col-sm-3 control-label">Tipo de Pago</label>
                 <div class="col-sm-8">
-                    <select class="form-control m-b" ref="procedure_type_id" name="procedure_type_id" @change="onChooseProcedureType" v-model="procedure_type_id">
+                    <select class="form-control m-b" ref="procedure_type_id" name="procedure_type_id" @change="onChooseProcedureType" v-model="procedure_type_id" v-validate.initial="'required'">
                         <option :value="null"></option>
                         <option v-for="type in procedureTypes" :value="type.id" :key="type.id">@{{ type.name }}</option>
                     </select>
@@ -32,7 +32,8 @@
             <div class="form-group" :class="{'has-error': errors.has('ret_fun_modality') }">
                 <label class="col-sm-4 control-label">Modalidad</label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality" name="ret_fun_modality" id="ret_fun_modality" v-validate.initial="'required'">
+                    <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality" name="ret_fun_modality" id="ret_fun_modality"
+                        v-validate.initial="'required'">
                         <option :value="null"></option>
                         <option v-for="(modality, index) in modalitiesFilter" :value="modality.id" :key="index">@{{modality.name}}</option>
                     </select>
@@ -48,67 +49,44 @@
 
     <div class="wrapper wrapper-content animated fadeInRight">
         <div v-for="(requirement, index) in requirementList" :key="index">
-
-        
-        <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement" :class="rq.background"  style="cursor:pointer" :key="i" >
-            {{-- <div class="row" @click="checked(index)" style="cursor:pointer" :class="requirement.status ? 'bg-success-green' : ''"> --}}
-            <div class="row" >
-                <div class="col-md-10">
-                    <div class="vote-actions">
-                         {{-- <h1 v-show="groupNumbers(rq.number) === true">  --}}
-                        <h1>
-                            {{-- @{{requirement.number}} --}}
-                            @{{rq.number}}
-                        </h1>
-                    </div>
-                    {{-- <span class="vote-title">@{{requirement.document}}</span> --}}
-                    <span class="vote-title">@{{rq.document}}</span>
-                    <div class="vote-info">
-                        <div class="col-md-2 no-margins no-padding">
-                            <i class="fa fa-comments-o"></i> Comentario:
+            <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement" :class="rq.background" style="cursor:pointer"
+                :key="i">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="vote-actions">
+                            <h1>
+                                @{{rq.number}}
+                            </h1>
                         </div>
-                        <div class="col-md-6 no-margins no-padding">
-                            {{-- <input type="text" :name="'comment'+requirement.id" class="form-control"> --}}
-                            <input type="text" :name="'comment'+rq.id" class="form-control">
+                        <span class="vote-title">@{{rq.document}}</span>
+                        <div class="vote-info">
+                            <div class="col-md-2 no-margins no-padding">
+                                <i class="fa fa-comments-o"></i> Comentario:
+                            </div>
+                            <div class="col-md-6 no-margins no-padding">
+                                <input type="text" :name="'comment'+rq.id" class="form-control">
+                            </div>
+                            <br>
                         </div>
-                        <br>
                     </div>
-                </div>
-                <div class="col-md-2 ">
-                    <div class="vote-icon" >
-                        {{-- <input type="checkbox" v-model="requirement.status" value="checked" :name="'document'+requirement.id" class="largerCheckbox" > --}}
-                        <span style="color:#3c3c3c"><i class="fa " :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i></span>
-                        <div style="opacity:0">
-                            <input type="checkbox" v-model="rq.status" value="checked" :name="'document'+rq.id" class="largerCheckbox" >
+                    <div class="col-md-2 ">
+                        <div class="vote-icon">
+                            <span style="color:#3c3c3c"><i class="fa " :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i></span>
+                            <div style="opacity:0">
+                                <input type="checkbox" v-model="rq.status" value="checked" :name="'document'+rq.id" class="largerCheckbox">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    </div>
-    
-    {{--  <div class="panel panel-success" v-for="(requirement, index) in requirementList" :key="index">
-        <span v-if="requirement.number != actualTarget(requirement.number)">
-           <div class="panel-heading">@{{requirement.number}}</div>
-       </span>
-        <div class="panel-body">
-            <div class="col-md-12">
-                <div class="col-md-10">
-                    <span class="m-l-xs">@{{requirement.document}}</span>
-                </div>
-                <div class="col-md-2">
-                    <input type="checkbox" value="checked" :name="'document'+requirement.id" class="i-checks" />
-                </div>
+        <transition
+            name="show-requirements-error"
+            enter-active-class="animated bounceInLeft"
+        >
+            <div class="alert alert-danger" v-if="showRequirementsError">
+                <h2>Debe seleccionar los requisitos</h2>
             </div>
-            <div class="col-md-12">
-                <div class="col-md-2">
-                    Comentarios
-                </div>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" :name="'comment'+requirement.id">
-                </div>
-            </div>
-        </div>
-    </div>  --}}
+        </transition>
+    </div>
 </div>

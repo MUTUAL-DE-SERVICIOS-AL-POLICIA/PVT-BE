@@ -33,7 +33,37 @@ import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
 import VeeValidate from 'vee-validate';
-Vue.use(VeeValidate);
+Vue.use(VeeValidate, {
+  fieldsBagName: "vFields",
+  dictionary: {
+    en: {
+      custom: {
+        procedure_type_id: {
+          required: "Debe seleccionar el tipo de Pago para el Trámite."
+        },
+        city_end_id: {
+          required: "Debe seleccionar la regional del Trámite."
+        },
+        ret_fun_modality: {
+          required: "Debe seleccionar la modalidad del Trámite."
+        },
+		accountType: {
+          required: "Debe seleccionar el tipo de solicitante."
+        },
+		applicant_identity_card: {
+          required: "Debe escribir el ci del solicitante."
+        },
+		applicant_city_identity_card: {
+          required: "Debe seleccionar la ciudad de expedición del ci del solicitante."
+        },
+		applicant_kinship: {
+          required: "Debe seleccionar el parentesco del solicitante."
+        },
+      }
+    }
+  }
+});
+
 
 
 import Vuelidate from 'vuelidate'

@@ -16,6 +16,7 @@ use Log;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
+use Muserpol\Models\ObservationType;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardianBeneficiary;
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\Redirect;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\RetirementFund\RetFunState;
+use Muserpol\Models\RetirementFund\RetFunRecord;
 class RetirementFundController extends Controller
 {
     /**
@@ -234,6 +236,26 @@ class RetirementFundController extends Controller
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
 
                 
+
+        $af = Affiliate::find($request->affiliate_id);
+        switch ($request->ret_fun_modality) {
+            case 1:
+            case 4:
+                $af->affiliate_state_id = 4;
+                break;
+            case 2:
+            case 3:
+            case 5:
+            case 6:
+            case 7:
+                $af->affiliate_state_id = 5;
+                break;
+            default:
+                $this->info("error");
+                break;
+        }
+        $af->save();
+
         //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
         
         foreach ($requirements  as  $requirement)
@@ -368,7 +390,7 @@ class RetirementFundController extends Controller
     public function show($id)
     {
         $retirement_fund = RetirementFund::find($id);
-                
+
         $this->authorize('view', $retirement_fund);
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
@@ -403,6 +425,9 @@ class RetirementFundController extends Controller
         $birth_cities = City::all()->pluck('name', 'id');
 
         $states = RetFunState::get();
+        
+        $ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
+        //return $retirement_fund->ret_fun_state->name;
 
         ///proof
         $user = User::find(Auth::user()->id);
@@ -414,11 +439,8 @@ class RetirementFundController extends Controller
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
         $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();
-        //return $procedures_modalities;
-        //$modality => ProcedureModality::
-        //endproof
-        //return $requirements;
-        //return $retirement_fund->ret_fun_state->name;
+
+        $observation_types = ObservationType::where('module_id',3)->get();
         
         $data = [
             'retirement_fund' => $retirement_fund,
@@ -434,10 +456,13 @@ class RetirementFundController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
+            'ret_fun_records' => $ret_fun_records,
             'requirements'  =>  $procedure_requirements,
             'user'  =>  $user,
             'procedure_types'   =>  $procedure_types,
             'modalities'    =>  $modalities,
+            'observation_types' => $observation_types,
+            'observations' => $retirement_fund->ret_fun_observations
         ];
         
         return view('ret_fun.show',$data);

@@ -20,7 +20,7 @@ class Util
         $date = DateTime::createFromFormat("Y-m-d", $string);
         if($date){
             if($month_year)
-            return strftime("%B / %Y",$date->getTimestamp());
+            return strftime("%B/%Y",$date->getTimestamp());
             else
             return strftime("%d de %B de %Y",$date->getTimestamp());
         }
