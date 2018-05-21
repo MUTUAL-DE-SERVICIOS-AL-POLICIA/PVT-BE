@@ -13,61 +13,61 @@
         <div v-if="! editing ">
             <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5    ">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-1">
                     <strong>Cedula de identidad: </strong> @{{ form.identity_card }} @{{ city_identity_card_name }}
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-1">
                     <strong>Fecha de Nacimiento: </strong>@{{ form.birth_date }}</div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-1">
                     <strong>Primer Nombre: </strong>@{{ form.first_name}}</div>
                 <input type="text" class="form-control" v-model="first_name.value" v-show="first_name.edit ==  true">
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-1">
                     <strong>Segundo Nombre: </strong> @{{ form.second_name }}</div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-1">
                     <strong>Apellido Paterno: </strong>@{{ form.last_name }}</div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-1">
                     <strong>Apellido Materno: </strong>@{{ form.mothers_last_name }}</div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-1">
                     <strong>Apellido de Casada: </strong>@{{ form.surname_husband }}</div>
                 <!-- <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'">@{{ form.surname_husband }}</dd> -->
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-1">
                     <strong>Genero: </strong>@{{ gender_name }}</div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-1">
                     <strong>Estado Civil: </strong>@{{ civil_status_name }}</div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-1">
                     <strong>Fecha de Nacimiento: </strong>@{{ form.birth_date }}</div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-1">
                     <strong>Edad: </strong> @{{ age }}</div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-1">
                     <strong>Lugar de Nacimiento: </strong> @{{ city_birth_name}}</div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+                <div class="col-md-1 col-sm-1"></div>
+                <div class="col-md-5 col-sm-1">
                     <strong>Telefono: </strong>@{{ form.phone_number }}</div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-sm-1">
                     <strong>Celular: </strong>@{{ form.cell_phone_number }}</div>
             </div>
             <br>
