@@ -4,6 +4,7 @@ namespace Muserpol;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Muserpol\Helpers\Util;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -48,9 +49,9 @@ class User extends Authenticatable
         return $query->where('id', $id);
     }
 
-    public function getFullName()
+    public function fullName($style = "uppercase")
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return Util::fullName($this, $style);
     }
 
     public function getAllRolesToString(){
