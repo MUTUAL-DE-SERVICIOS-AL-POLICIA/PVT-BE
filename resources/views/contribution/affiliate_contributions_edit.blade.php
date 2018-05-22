@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
-            <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}" :rate="{{$rate}}"></contribution-create>
+            <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}" :rate="{{$rate}}" :commitment="{{ $commitment }}"></contribution-create>
         </div>
     </div>
     @if(Muserpol\Helpers\Util::getRol()->id != 36)
