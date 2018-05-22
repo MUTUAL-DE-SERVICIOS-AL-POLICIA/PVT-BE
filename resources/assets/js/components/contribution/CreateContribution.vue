@@ -126,7 +126,6 @@ export default {
     window.addEventListener("load", function(event) {
         moneyInputMaskAll();
     });
-    console.log(this.commitment);
     if(this.commitment.id == 0){
           this.tipo=null;
     }else{
