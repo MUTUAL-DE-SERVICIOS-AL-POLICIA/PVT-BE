@@ -1,15 +1,16 @@
-
 <script>
 //import { mapState, mapMutations } from 'vuex';
 	export default{
 		props:[
+            'ret_fun',
 			'modalities',
             'requirements',
             'user',
             'cities',
             'procedureTypes',
-            'showRequirementsError',
-            ///'ret_fun_id'
+            'submitted',
+            //'showRequirementsError',
+            
 		],
         data(){
             return{
@@ -23,12 +24,18 @@
                 procedure_type_id:2,
                 my_index: 1,
                 modalitiesFilter: [],                
-                ret_fun_id: 370
+                ret_fun_id: 428
             }
         },
+        created(){
+            console.log("monted");
+            console.log(this.submitted);
+        },
         mounted(){
-            this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
+            //this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
             this.onChooseProcedureType();
+            this.modality = this.ret_fun.procedure_modality_id;
+            this.getRequirements();
         },
         methods:{
             onChooseProcedureType(){
@@ -46,15 +53,21 @@
                         name:selectedText,
                         id: this.modality
                     }
-                    this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
+                    //this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
                 }
                 this.getRequirements();
             },
             getRequirements(){
                 this.requirementList = this.requirements.filter((r) => {
                     if (r.modality_id == this.modality) {
-                        r['status'] = false;
-                        r['background'] = '';
+                        if(this.submitted[r.number] == r.id){
+                            r['status'] = true;
+                            r['background'] = 'bg-success-green';
+                        }
+                        else{
+                            r['status'] = false;
+                            r['background'] = '';
+                        }                        
                         return r;
                     }
                 });
@@ -98,8 +111,7 @@
             onChooseCity(event){
                 const options = event.target.options;
                 const selectedOption = options[options.selectedIndex];
-                const selectedText = selectedOption.textContent;
-                this.$store.commit('setCity',selectedText)
+                const selectedText = selectedOption.textContent;                
             },
             groupNumbers(number){
                 // return (parseInt(number) % 2) == 0;
@@ -112,8 +124,8 @@
             },
             store(ret_fun){
                 
-                console.log(this.requirementList);
-                let uri = `/ret_fun/${this.ret_fun_id}/edit_requirements`;                
+                //console.log(this.requirementList);
+                let uri = `/ret_fun/${this.ret_fun.id}/edit_requirements`;                
                 axios.post(uri,
                     {
                     requirements: this.requirementList
@@ -121,6 +133,7 @@
                 ).then(response =>{
                     flash("Verificacion Correcta");
                     console.log(response.data);
+                    console.log("guardado david y nadia");
                     //this.showEconomicData = true
                     //TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
                 }).catch(error =>{

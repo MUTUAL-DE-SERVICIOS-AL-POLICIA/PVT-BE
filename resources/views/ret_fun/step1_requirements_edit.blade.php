@@ -1,6 +1,6 @@
 <div>
     <form id="myform">
-    <div class="row">
+    <div class="row" style="display: none;">
         <div class="col-md-6 col-md-offset-3">
             <div class="form-group" :class="{'has-error': errors.has('procedure_type_id') }">
                 <label class="col-sm-3 control-label">Tipo de Pago</label>
@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="display: none;">
         <div class="col-md-6">
             <div class="form-group" :class="{'has-error': errors.has('city_end_id') }">
                 <label class="col-sm-4 control-label">Regional</label>
@@ -74,21 +74,20 @@
                         <div class="vote-icon">
                             <span style="color:#3c3c3c"><i class="fa " :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i></span>
                             <div style="opacity:0">
-                                <input type="checkbox" v-model="rq.status" value="checked" :name="'document'+rq.id" class="largerCheckbox">
+                                <input type="checkbox" v-model="rq.status" value="checked"  :name="'document'+rq.id" class="largerCheckbox">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <transition
+        {{-- <transition
             name="show-requirements-error"
-            enter-active-class="animated bounceInLeft"
-        >
+            enter-active-class="animated bounceInLeft">
             <div class="alert alert-danger" v-if="showRequirementsError">
                 <h2>Debe seleccionar los requisitos</h2>
             </div>
-        </transition>
+        </transition> --}}
         <div class="text-center">
                 <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
                 <button class="btn btn-primary" type="button" @click="store(ret_fun_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>

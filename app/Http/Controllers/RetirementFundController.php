@@ -442,6 +442,14 @@ class RetirementFundController extends Controller
 
         $observation_types = ObservationType::where('module_id',3)->get();
         
+        //selected documents
+        $submitted = RetFunSubmittedDocument::
+            select('procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id')
+            ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+            ->orderby('procedure_requirements.number','ASC')
+            ->where('ret_fun_submitted_documents.retirement_fund_id',$id)
+            ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'); 
+
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -462,7 +470,8 @@ class RetirementFundController extends Controller
             'procedure_types'   =>  $procedure_types,
             'modalities'    =>  $modalities,
             'observation_types' => $observation_types,
-            'observations' => $retirement_fund->ret_fun_observations
+            'observations' => $retirement_fund->ret_fun_observations,
+            'submitted' =>  $submitted
         ];
         
         return view('ret_fun.show',$data);
@@ -1171,13 +1180,32 @@ class RetirementFundController extends Controller
     }
 
     public function editRequirements(Request $request, $id){
-        
-        return $request->requirements;
-        $num = 0;
-        foreach($request->requirements as $req){
-            if($req[0]->status == true)
-                $num++;
+                
+        //return $request->requirements;
+        $documents = RetFunSubmittedDocument::
+            select('procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id')
+            ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+            ->orderby('procedure_requirements.number','ASC')
+            ->where('ret_fun_submitted_documents.retirement_fund_id',$id)
+            ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');        
+
+        $num = $num2 = 0;
+        foreach($request->requirements as $requirement){ 
+                $from = $to = 0;
+                for($i=0;$i<count($requirement);$i++){
+                    $from = $requirement[$i]['number'];
+                    if($requirement[$i]['status'] == true)
+                    {      
+                        $to = $requirement[$i]['id'];                                          
+                    }
+                }
+                if($documents[$from] != $to){
+                    $doc = RetFunSubmittedDocument::where('retirement_fund_id',$id)->where('procedure_requirement_id',$documents[$from])->first();
+                    $doc->procedure_requirement_id = $to;                    
+                    $doc->save();
+                }
         }
+        
         return $num;
     }
 }
