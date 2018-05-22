@@ -8,6 +8,9 @@ use DB;
 use Carbon\Carbon;
 use Log;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
+use Muserpol\Models\RetirementFund\RetFunCorrelative;
+use Muserpol\Models\Workflow\WfState;
+use Muserpol\Models\Role;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -74,14 +77,38 @@ class Util
     public static function getNextCode($actual){
         $year =  date('Y');
         if($actual == "")
-            return "675/".$year;
-        
-        $data = explode('/', $actual);        
+            return "675/".$year;  
+        $data = explode('/', $actual);
         if(!isset($data[1]))
             return "675/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
 
+    public static function getNextAreaCode($retirement_fund_id){
+        $wf_state = WfState::where('role_id', Session::get('rol_id'))->first();        
+        $year =  date('Y');
+        $role = Role::find($wf_state->role_id);
+        if($role->correlative == ""){
+            $role->correlative = "1/".$year;
+        }
+        else{
+            $data = explode('/', $role->correlative);
+            if(!isset($data[1]))
+                $role->correlative = "1/".$year;
+            else
+                $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+        }
+        $role->save();
+
+        //Correlative 
+        $correlative = new RetFunCorrelative();
+        $correlative->wf_state_id = $wf_state->id;
+        $correlative->retirement_fund_id = $retirement_fund_id;
+        $correlative->code = $role->correlative;
+        $correlative->save();
+
+        return $role->correlative;
+    }
     private static $UNIDADES = [
         '',
         'UN ',

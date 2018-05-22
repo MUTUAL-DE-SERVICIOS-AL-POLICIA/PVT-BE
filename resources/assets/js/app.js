@@ -106,6 +106,7 @@ Vue.component('ret-fun-index', require('./components/ret_fun/Index.vue'));
 Vue.component('ret-fun-form', require('./components/ret_fun/Form.vue'));
 Vue.component('ret-fun-create-info', require('./components/ret_fun/CreateInfo.vue'));
 Vue.component('ret-fun-step1-requirements', require('./components/ret_fun/Step1Requirements.vue'));
+Vue.component('ret-fun-step1-requirements-edit', require('./components/ret_fun/Step1RequirementsEdit.vue'));
 Vue.component('ret-fun-step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
 Vue.component('ret-fun-step3-beneficiaries', require('./components/ret_fun/Step3Beneficiaries.vue'));
 Vue.component('ret-fun-beneficiary-list', require('./components/ret_fun/BeneficiaryList.vue'));
