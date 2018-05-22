@@ -21,9 +21,8 @@
                         
                         <div class="col-md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>   
-                            {{ contributions1 }}
                             <select v-model="tipo" class="form-control" v-on:change="changeType">
-                                <option value="2">Comisión {{ $afid }}</option>
+                                <option value="2">Comisión</option>
                                 <option value="10">Agregado Policial</option>
                                 <option value="9">Baja Temporal</option>
                            </select>
@@ -102,6 +101,7 @@ export default {
         'afid',
         'last_quotable',
         'rate',
+        'commitment'
     ],
     data() {   
 
@@ -125,7 +125,27 @@ export default {
     //alert('making time');    
     window.addEventListener("load", function(event) {
         moneyInputMaskAll();
-    });        
+    });
+    console.log(this.commitment);
+    if(this.commitment.id == 0){
+          this.tipo=null;
+    }else{
+        if(this.commitment.commitment_type=="COMISION")
+            {
+              this.tipo=2;
+            }else{
+                if(this.commitment.commitment_type=="BAJA TEMPORAL")
+                {
+                this.tipo=9;
+                }else{
+                    if(this.commitment.commitment_type=="AGREGADO POLICIAL")
+                    {
+                        this.tipo=10;
+                    } 
+                }
+            }        
+        }
+
   },
   created(){    
   },
