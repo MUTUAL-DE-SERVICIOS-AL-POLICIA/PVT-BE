@@ -127,7 +127,12 @@ class RetirementFundCertificationController extends Controller
         $date = Util::getStringDate($retirement_fund->reception_date);
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
         $submitted_documents = RetFunSubmittedDocument::leftJoin('procedure_requirements', 'procedure_requirements.id', '=', 'ret_fun_submitted_documents.procedure_requirement_id')->where('retirement_fund_id', $retirement_fund->id)->orderBy('procedure_requirements.number', 'asc')->get();
-        $bar_code = \DNS2D::getBarcodePNG(("Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt quaerat enim, ea iure similique mollitia, molestiae voluptas, consequuntur aspernatur deserunt accusamus eius id beatae corporis! Blanditiis dolore aut aperiam error!"), "PDF417", 100, 33, array(1, 1, 1));
+
+        #todo
+        /*
+            add support utf-8
+        */
+        $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code']."\n\n". $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
 
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
