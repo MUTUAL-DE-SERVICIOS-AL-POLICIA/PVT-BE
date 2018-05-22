@@ -14,6 +14,6 @@
 <div class="wrapper wrapper-content animated fadeInRight">
    
      {{-- <p><pre>query: {{ json_encode($contributions) }}</pre></p> ---}}
-    <contribution-create :contributions1="{{ json_encode($contributions) }}" :afid="{{ $affiliate->id }}" ></contribution-create>
+    <contribution-create :contributions1="{{ json_encode($contributions) }}" :afid="{{ $affiliate->id }}"></contribution-create>
 </div>
 @endsection

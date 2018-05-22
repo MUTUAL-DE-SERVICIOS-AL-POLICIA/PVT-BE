@@ -48,6 +48,7 @@
                     <li class=""><a data-toggle="tab" href="#tab-affiliate">Afiliado</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-beneficiaries">Beneficiarios</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-summited-document">Documentos Presentados</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-legal-review">Revisi&oacute;n Legal</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-folder">Archivos</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-observations">Observaciones</a></li>
                 </ul>
@@ -78,7 +79,18 @@
                     <div id="tab-summited-document" class="tab-pane">
                         <div class="panel-body">
                             @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])
+                                {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}
+                        <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submitted}}"
+                                    inline-template>
+                                    @include('ret_fun.step1_requirements_edit')
+                                </ret-fun-step1-requirements-edit>
+                            @endcan
+                        </div>
+                    </div>
+                    <div id="tab-legal-review" class="tab-pane">
+                        <div class="panel-body">
+                            @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
+                                @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])                        
                             @endcan
                         </div>
                     </div>

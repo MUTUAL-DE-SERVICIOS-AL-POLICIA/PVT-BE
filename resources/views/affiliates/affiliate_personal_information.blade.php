@@ -65,7 +65,7 @@
                     <dt>Segundo Nombre:</dt> <dd><input type="text" v-model="form.second_name" class="form-control"></dd>
                     <dt>Apellido Paterno:</dt> <dd><input type="text" v-model="form.last_name" class="form-control"></dd>
                     <dt>Apellido Materno:</dt> <dd><input type="text" v-model="form.mothers_last_name" class="form-control"></dd>
-                    <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'"><input type="text" class="form-control"></dd>
+                    <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'"><input type="text" class="form-control" v-model="form.surname_husband"></dd>
                 </dl>
             </div>
             <div class="col-md-6">
