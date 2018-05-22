@@ -25,6 +25,24 @@
             </div>
         </div>
         <hr>
+        <div class="row"> 
+            <div class="col-md-6">
+                <dl class="dl-">
+                    <dt>Documentos Completos:</dt>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <dl class="dl-">
+                    <div v-if="beneficiary.state==true">
+                        <input type="checkbox" name="state" value="true" disabled checked class="form-control">
+                    </div>
+                    <div v-else>
+                        <input type="checkbox" name="state" value="false" disabled class="form-control">
+                    </div>
+                </dl>
+            </div>
+        </div>
+        <hr>
     </div>
     <div v-else-if="editable">
         <div class="row">
@@ -145,6 +163,24 @@
             
         </div>
         <div class="hr-line-dashed"></div>
+            <div class="row"> 
+                <div class="col-md-6">
+                    <dl class="dl-">
+                        <dt>Documentos Completos:</dt>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="dl-">
+                        <div v-if="beneficiary.state">
+                            <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" checked class="form-control">
+                        </div>
+                        <div v-else>
+                            <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" class="form-control">
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        <div class="hr-line-dashed"></div>
     </div>
     <div v-else>
         <!-- <div class="row"> 
@@ -244,6 +280,24 @@
             </div>
         </div>
         <div class="hr-line-dashed"></div>
+            <div class="row"> 
+                <div class="col-md-6">
+                    <dl class="dl-">
+                        <dt>Documentos Completos:</dt>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="dl-">
+                        <div v-if="beneficiary.state==true">
+                            <input type="checkbox" v-model.trim="beneficiary.state" :value="beneficiary.state" checked class="form-control">
+                        </div>
+                        <div v-else>
+                            <input type="checkbox" v-model.trim="beneficiary.state" :value="beneficiary.state" class="form-control">
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        <div class="hr-line-dashed"></div>
         </div>
     </div>
 </template>
@@ -292,6 +346,7 @@ export default {
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
       this.beneficiary.gender = data.gender;
+      this.beneficiary.state = data.state;
     },
     getGenderBeneficiary(value){
         return getGender(value);

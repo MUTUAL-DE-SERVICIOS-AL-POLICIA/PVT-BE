@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Redirect;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\RetirementFund\RetFunState;
+use Muserpol\Models\RetirementFund\RetFunRecord;
 class RetirementFundController extends Controller
 {
     /**
@@ -416,6 +417,9 @@ class RetirementFundController extends Controller
         $birth_cities = City::all()->pluck('name', 'id');
 
         $states = RetFunState::get();
+        
+        $ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
+        //return $retirement_fund->ret_fun_state->name;
 
         ///proof
         $user = User::find(Auth::user()->id);
@@ -444,6 +448,7 @@ class RetirementFundController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
+            'ret_fun_records' => $ret_fun_records,
             'requirements'  =>  $procedure_requirements,
             'user'  =>  $user,
             'procedure_types'   =>  $procedure_types,
@@ -659,6 +664,7 @@ class RetirementFundController extends Controller
                 $old_ben->surname_husband = $new_ben['surname_husband'];
                 $old_ben->birth_date = $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
+                $old_ben->state = $new_ben['state'];
                 $old_ben->save();
             }else{
                 $beneficiary = new RetFunBeneficiary();
@@ -673,6 +679,7 @@ class RetirementFundController extends Controller
                 $beneficiary->surname_husband = strtoupper(trim($new_ben['surname_husband']));
                 $beneficiary->birth_date = $new_ben['birth_date'];
                 $beneficiary->gender = $new_ben['gender'];
+                $old_ben->state = $new_ben['state'];
                 // $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
                 // $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
                 $beneficiary->type = "N";
