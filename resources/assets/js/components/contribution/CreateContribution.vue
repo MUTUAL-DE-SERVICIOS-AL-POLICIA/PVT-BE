@@ -20,9 +20,10 @@
                     <div class="row" >
                         
                         <div class="col-md-6" style="margin-bottom:20px">
-                            <label>Tipo de Aporte:</label>
+                            <label>Tipo de Aporte:</label>   
+                            {{ contributions1 }}
                             <select v-model="tipo" class="form-control" v-on:change="changeType">
-                                <option value="2">Comisión</option>
+                                <option value="2">Comisión {{ $afid }}</option>
                                 <option value="10">Agregado Policial</option>
                                 <option value="9">Baja Temporal</option>
                            </select>
