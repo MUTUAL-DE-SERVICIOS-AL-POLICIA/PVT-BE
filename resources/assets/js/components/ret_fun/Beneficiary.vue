@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-1">
                 <br>
-        <h3><u>Beneficiario.-</u></h3>
+        <h3><u>Beneficiario</u>.-</h3>
             </div>
         </div>
         <div class="row">
