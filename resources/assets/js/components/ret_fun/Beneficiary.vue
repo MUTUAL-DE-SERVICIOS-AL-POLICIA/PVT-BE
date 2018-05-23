@@ -3,7 +3,8 @@
     <div v-if="readOnly">
         <div class="row">
             <div class="col-md-1">
-        <h3>Beneficiario.-</h3>
+                <br>
+        <h3><u>Beneficiario.-</u></h3>
             </div>
         </div>
         <div class="row">
