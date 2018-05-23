@@ -131,7 +131,7 @@
                     <label class="control-label">Genero</label>
                 </div>
                 <div class="col-md-8">
-                    <select name="gender" id="" v-model.trim="beneficiary.gender" class="form-control">
+                    <select name="gender[]" id="" v-model.trim="beneficiary.gender" class="form-control">
                         <option :value="null"></option>
                         <option value="M">Masculino</option>
                         <option value="F">Fenemino</option>
