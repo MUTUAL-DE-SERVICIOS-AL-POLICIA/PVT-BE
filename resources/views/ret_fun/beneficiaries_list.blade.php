@@ -12,7 +12,7 @@
                             @endcan
                         </div>
                     </div>
-                    <div class="panel-body ">
+                    <div>
                     <ret-fun-beneficiary v-for="(beneficiary, index) in beneficiaries"
                         :key='index'
                         :beneficiary="beneficiary"

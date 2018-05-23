@@ -159,6 +159,7 @@ export default {
       },
       repeatSalary(){
           var i;
+           console.log('contri..' + this.contributions);
         for(i=0;i<this.contributions.length;i++){
             this.contributions[i].sueldo = this.general_salary;
             this.CalcularAporte(this.contributions[i],i);
@@ -240,6 +241,7 @@ export default {
       },
 
       SumTotal(){
+         
             let total1 = 0;
             this.contributions.forEach(con => {                            
                 total1 += parseFloat(con.subtotal) ;                
