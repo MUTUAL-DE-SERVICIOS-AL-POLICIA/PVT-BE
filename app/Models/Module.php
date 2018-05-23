@@ -9,5 +9,10 @@ class Module extends Model
 	protected $fillable = [
 		'name',
 		'description'
-	];   
+	];
+
+	public function procedure_types()
+	{
+		return $this->hasMany('Muserpol\Models\ProcedureType');
+	}
 }
