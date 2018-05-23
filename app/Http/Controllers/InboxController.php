@@ -16,7 +16,7 @@ class InboxController extends Controller
                 break;
             case 3:
                 # ret fun
-                return "hola";
+                // return "hola";
                 break;
             case 4:
                 # cm
