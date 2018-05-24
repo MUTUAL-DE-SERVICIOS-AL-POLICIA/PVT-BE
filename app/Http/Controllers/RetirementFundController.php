@@ -81,8 +81,7 @@ class RetirementFundController extends Controller
         $biz_rules = [];
                                
         $has_ret_fun = false;
-        $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate_id)->where('code','NOT LIKE','%A')->first();
-    
+        $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate_id)->where('code','NOT LIKE','%A')->first();        
         if(isset($ret_fun->id)){
             $has_ret_fun = true;
             $biz_rules = [
