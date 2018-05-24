@@ -73,6 +73,9 @@ export default {
             if (!this.$refs.dos.$children[0].applicant_city_identity_card_id) {
                 return false;
             }
+            if (!this.$refs.dos.$children[0].applicant_gender) {
+                return false;
+            }
 
             if (this.$refs.dos.$children[0].applicant_type == 3) {
                 // 3 id de Apoderado
