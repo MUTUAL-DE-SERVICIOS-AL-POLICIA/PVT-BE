@@ -108,15 +108,15 @@
                { type: 'monthYear', targets: 0 }
             ],
             */
-            ajax: "{{ url('/api/documents') }}",
-            dom:"<'row'<'col-sm-12'lB>><'row'<'col-sm-5'i>><'row'<'col-sm-12't>><'row'<'bottom'p>>",
+            ajax: "{{ url('/api/documents', \Muserpol\Helpers\Util::getRol()->id) }}",
+            dom:"<'row'<'col-sm-12'lB>><'row'<'col-sm-12't>><'row'<'col-sm-5'i>><'row'<'bottom'p>>",
             lengthMenu: [[10, 15, 25, 50,100, -1], [10, 15, 25, 50,100, "Todos"]],
             language: {
                 "lengthMenu": "Ver _MENU_ rgistros",
                 "zeroRecords": "No hay ningun registro",
-                "info": "Página _PAGE_ de _PAGES_",
+                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
                 "infoEmpty": "No hay registros disponibles",
-                "infoFiltered": "(filtered from _MAX_ total records)",
+                "infoFiltered": "(filtered from _MAX_ total entries)",
                 "paginate": {
                     "first":      "Primero",
                     "last":       "Ultimo",

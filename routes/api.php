@@ -18,5 +18,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 // Route::group(['middleware' => ['asssspi']], function () {
-    Route::get('documents', 'API\DocumentController@index');
+    Route::get('documents/{rol_id}', 'API\DocumentController@index');
 // });/

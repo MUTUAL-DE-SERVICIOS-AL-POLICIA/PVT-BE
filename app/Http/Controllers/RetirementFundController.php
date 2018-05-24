@@ -226,7 +226,7 @@ class RetirementFundController extends Controller
         $retirement_fund->reception_date = Carbon::now();
         $retirement_fund->code = $code;
         $retirement_fund->workflow_id = 4;
-        $retirement_fund->wf_state_current_id = 1;
+        $retirement_fund->wf_state_current_id = 19;
         //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal_ret_fun = 0;
         $retirement_fund->total_ret_fun = 0;        
