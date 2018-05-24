@@ -150,6 +150,7 @@ class AffiliateController extends Controller
             $nextcode = $nextcode->code;
         else 
             $nextcode = "";        
+        $active_ret_fun = RetirementFund::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
         $affiliate->load([
             'city_identity_card:id,first_shortened',
             'city_birth:id,name',
@@ -171,6 +172,7 @@ class AffiliateController extends Controller
             'auxilio'=>$auxilio,
             'affiliate_records'=>$affiliate_records,
             'nextcode'  =>  $nextcode,
+            'has_ret_fun'   =>  isset($active_ret_fun->id)?true:false,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);
