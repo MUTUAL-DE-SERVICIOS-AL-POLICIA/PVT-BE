@@ -90,13 +90,13 @@
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-2">
-                    <strong> Fecha de Recepcion:</strong>&nbsp; @{{ form.reception_date}}
+                    <strong> Fecha de Recepcion:</strong>&nbsp;
                 </div>
                 <div class="col-md-3">
-                    <input type="text" v-model="form.reception_date" class="form-control"> 
+                    <input type="date" v-model="form.reception_date" class="form-control"> 
                 </div>
                 <div class="col-md-2">
-                    <strong>Regional:</strong>&nbsp;@{{ city_end_name }}
+                    <strong>Regional:</strong>&nbsp;
                 </div>
                 <div class="col-md-3">
                     {!! Form::select('city_end_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_end_id']) !!}

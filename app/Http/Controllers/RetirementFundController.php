@@ -35,20 +35,20 @@ use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\RetirementFund\RetFunState;
 use Muserpol\Models\RetirementFund\RetFunRecord;
+use DB;
 class RetirementFundController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     */
+     */ 
     public function index()
-    {
-        // $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->get();
-        // return $ret_fund;
+    {                
         return view('ret_fun.index');
        
     }
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -158,7 +158,7 @@ class RetirementFundController extends Controller
         $rules = array_merge($rules,$biz_rules);
         
                 
-        for($i=0;$i<sizeof($first_name);$i++){
+        for($i=0;is_array($first_name) && $i<sizeof($first_name);$i++){
             $beneficiary_has_lastname = false;                
             if($request->beneficiary_last_name[$i] == '' && $request->beneficiary_mothers_last_name[$i]=='')
                 $beneficiary_has_lastname = true;
@@ -206,14 +206,18 @@ class RetirementFundController extends Controller
         $nextcode = RetirementFund::where('affiliate_id',$request->affiliate_id)->where('code','LIKE','%A')->first();
         if(isset($nextcode->id))
         {
-            $code = str_replace("A","",$nextcode->code);    
+            $code = str_replace("A","",$nextcode->code);
         }else{
-            $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
-            if(!isset($ret_fund->id))
-            $code = Util::getNextCode ("");
-            else        
-            $code = Util::getNextCode ($ret_fund->code);
-        }
+            
+            //$ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
+            $ret_fund = RetirementFund::select('id','code')
+            ->limit(10)
+            ->orderBy('id','desc')
+            ->get();
+             
+            $ret_fun_code = $this->getLastCode($ret_fund);                        
+            $code = Util::getNextCode ($ret_fun_code);
+        }        
         
         $retirement_fund = new RetirementFund();
         $this->authorize('create', $retirement_fund);
@@ -232,8 +236,8 @@ class RetirementFundController extends Controller
         $retirement_fund->total_ret_fun = 0;        
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->save();
-        
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
+        
 
                 
 
@@ -353,7 +357,7 @@ class RetirementFundController extends Controller
         $address_rel->save();
         
         
-        for($i=0;$i<sizeof($first_name);$i++){
+        for($i=0;$i<is_array($first_name) && sizeof($first_name);$i++){
             if($first_name[$i] != "" && ($last_name[$i] != "" || $mothers_last_name[$i] != "") ){
                 $beneficiary = new RetFunBeneficiary();
                 $beneficiary->retirement_fund_id = $retirement_fund->id;
@@ -1209,5 +1213,24 @@ class RetirementFundController extends Controller
         }
         
         return $num;
+    }
+    private function getLastCode($retirement_funds){
+        $num = 0;
+        $year = 0;
+        if(count($retirement_funds) == 0)
+        return "";
+        foreach($retirement_funds as $retirement_fund)
+        {
+            $code = str_replace('A','',$retirement_fund->code);     
+            if( $code != "")
+            {
+                $code = explode('/',$code);
+                if($code[1]>$year)
+                    $year = $code[1];
+                if($code[0]>$num)
+                    $num = $code[0];
+            }
+        }
+        return $num."/".$year;
     }
 }
