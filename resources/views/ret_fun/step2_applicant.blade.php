@@ -32,7 +32,7 @@
                             <div class="col-md-8">
                                 <select class="form-control" name="applicant_kinship" v-model.trim="applicant_kinship_id" v-validate.initial="'required'">
                                     <option :value="null"></option>
-                                    <option v-for="kinship in kinships" :value="kinship.id">@{{ kinship.name }}</option>
+                                    <option v-for="(kinship, index) in kinshipsFilter" :value="kinship.id" :key="index">@{{ kinship.name }}</option>
                                 </select>
                                 <i v-show="errors.has('applicant_kinship')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('applicant_kinship')" class="text-danger">@{{ errors.first('applicant_kinship') }}</span>
