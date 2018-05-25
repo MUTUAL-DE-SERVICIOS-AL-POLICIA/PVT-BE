@@ -88,8 +88,7 @@
                 <h2>Debe seleccionar los requisitos</h2>
             </div>
         </transition> --}}
-        <div class="text-center">
-                <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
+        <div class="text-center">                
                 <button class="btn btn-primary" type="button" @click="store(ret_fun_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
             </div>
     </div>
