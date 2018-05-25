@@ -120,7 +120,7 @@ class RetirementFundCertificationController extends Controller
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $modality = $retirement_fund->procedure_modality->name;
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . strtoupper($modality);
+        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . mb_strtoupper($modality);
         $number = $retirement_fund->code;
         $user = Auth::user();//agregar cuando haya roles
         $username = Auth::user()->username;//agregar cuando haya roles
@@ -137,20 +137,26 @@ class RetirementFundCertificationController extends Controller
 
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
     //    return view('ret_fun.print.reception',compact('user','title','institution', 'direction', 'unit','username','date','modality','applicant','submitted_documents','header','number'));
-        $pdftitle = "Recepcion";
+        $pdftitle = "RECEPCIÓN - " . $title;
         $namepdf = Util::getPDFName($pdftitle, $applicant);
         $footerHtml = view()->make('ret_fun.print.footer', ['bar_code'=>$bar_code])->render();
-        return \PDF::loadView('ret_fun.print.reception', compact('bar_code','user','title', 'institution', 'direction', 'unit', 'username', 'date', 'modality', 'applicant', 'submitted_documents', 'header', 'number'))
-            ->setPaper('letter')
-            // ->setOption('margin-top', '20mm')
-            ->setOption('margin-bottom', '15mm')
-            // ->setOption('margin-left', '25mm')
-            // ->setOption('margin-right', '15mm')
-            // ->setOption('encoding', 'utf-8')
-            ->setOption('footer-right', 'Pagina [page] de [toPage]')
-            // ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
-            ->setOption('footer-html', $footerHtml)
-            ->stream("$namepdf");
+
+        $pages = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $pages[] = \View::make('ret_fun.print.reception', compact('bar_code', 'user', 'title', 'institution', 'direction', 'unit', 'username', 'date', 'modality', 'applicant', 'submitted_documents', 'header', 'number'))->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setPaper('letter')
+                   ->setOption('encoding', 'utf-8')
+                //    ->setOption('margin-top', '20mm')
+                   ->setOption('margin-bottom', '15mm')
+                //    ->setOption('margin-left', '25mm')
+                //    ->setOption('margin-right', '15mm')
+                   ->setOption('footer-right', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018   ')
+                //    ->setOption('footer-right', 'Pagina [page] de [toPage]')
+                   ->setOption('footer-html', $footerHtml)
+                   ->stream("$namepdf");
     }
     public function printFile($id)
     {
