@@ -84,17 +84,23 @@
                                 @for(;$year_start>=$year_end;$year_start--)
                                 <tr>
                                     <td> {{ $year_start }} </td>
-                                    @for($i=1;$i
-                                    <13;$i++) @php $period=$ year_start. '-'.($i<10? '0'.$i:$i). '-01'; $valid_period=t rue; if((date( 'Y')==$year_start && date(
-                                        'm')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976)) $valid_period=f alse;
-
-@endphp @if($valid_period) @if(isset($contributions[$period]->id))
-                                        <td class="numberformat" id="main{{$period}}">{{$contributions[$period]->total}}</td>
+                                    @for($i=1;$i<13;$i++) 
+                                        @php 
+                                            $period=$year_start.'-'.($i<10?'0'.$i:$i).'-01';
+                                            $valid_period=true; 
+                                            if((date( 'Y')==$year_start && date('m')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976))
+                                                $valid_period=false;
+                                        @endphp 
+                                        @if($valid_period) 
+                                            @if(isset($contributions[$period]->id))
+                                                <td class="numberformat" id="main{{$period}}">{{$contributions[$period]->total}}</td>
+                                            @else
+                                                <td class="numberformat" id="main{{$period}}">0</td>
+                                            @endif 
                                         @else
-                                        <td class="numberformat" id="main{{$period}}">0</td>
-                                        @endif @else
-                                        <td>-</td>
-                                        @endif @endfor
+                                            <td>-</td>
+                                        @endif 
+                                    @endfor
                                         <td>
                                             <button class="btn btn-default" type="button" data-toggle="tooltip" data-placement="top" title="Editar" onclick="toggleNestedComp(this)"><i class="fa fa-pencil"></i></button>
                                         </td>
@@ -119,9 +125,7 @@
                                             </tr>
                                         </table>
                                     </td>
-                                    @for($i=1;$i
-                                    <13;$i++) @php $period=$ year_start. '-'.($i<10? '0'.$i:$i). '-01'; $valid_period=t rue; if((date( 'Y')==$year_start && date(
-                                        'm')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976)) $valid_period=f alse;
+                                    @for($i=1;$i<13;$i++) @php $period=$year_start.'-'.($i<10? '0'.$i:$i).'-01'; $valid_period=true; if((date( 'Y')==$year_start && date('m')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976)) $valid_period=false;
                                         
 @endphp @if($valid_period) @if(isset($contributions[$period]->id))
                                         <td>
