@@ -75,7 +75,7 @@ class ProcedureTablesSeeder extends Seeder {
             ['name' => 'Fotocopia simple de la cédula de identidad de la o del viudo'],
             ['name' => 'Resolución de baja definitiva a solicitud voluntaria, emitida por el Comando General de la Policía Boliviana (original).'],
             ['name' => 'Memorándum de baja definitiva a solicitud voluntaria, emitida por el Comando General de la Policía Boliviana (original).'],
-            
+                                
         ]);
 
         DB::table('procedure_requirements')->insert([
