@@ -40,27 +40,5 @@ class ReceptionTablesUpdateSeeder extends Seeder
             ['procedure_modality_id' => '2', 'procedure_document_id' => '20', 'number' => '6'],
             ['procedure_modality_id' => '2', 'procedure_document_id' => '46', 'number' => '6'],
         ]);
-
-        //Updating 
-        // $requirements_to_update = App\ProcedureRequirements::where('procedure_modality_id','1')->get();
-        // $i = 0;
-        // $update_table = [
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        //     ['procedure_document_id' => '', 'number' => ''],
-        // ];
-        // foreach($requirements_to_update as $requirement){
-        //     $requirement
-        // }
-
     }
 }
