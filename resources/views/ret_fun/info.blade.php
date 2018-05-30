@@ -94,7 +94,9 @@
                     <strong> Fecha de Recepcion:</strong>&nbsp;
                 </div>
                 <div class="col-md-3">
-                    <input type="date" v-model="form.reception_date" class="form-control"> 
+                    @if(Session::get('rol_id') == 28)
+                        <input type="date" v-model="form.reception_date" class="form-control"> 
+                    @endif
                 </div>
                 <div class="col-md-2">
                     <strong>Regional:</strong>&nbsp;
