@@ -19,6 +19,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidLegalGuardian;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisor;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\ProcedureType;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -378,8 +379,10 @@ class QuotaAidMortuaryController extends Controller
     }
     
     public function generateProcedure(Affiliate $affiliate){  
-        
+                
         //$this->authorize('create',QuotaAidMortuary::class);
+        $procedure_types = ProcedureType::where('id','3')->orWhere('id','4')->get();
+
         $affiliate = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
@@ -396,7 +399,7 @@ class QuotaAidMortuaryController extends Controller
         $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
         if(!isset($spouse->id))
             $spouse = new Spouse();
-        $modalities = ProcedureModality::where('procedure_type_id','3')->orWhere('procedure_type_id','4')->select('id','name')->get();
+        $modalities = ProcedureModality::where('procedure_type_id','3')->orWhere('procedure_type_id','4')->select('id','procedure_type_id','name')->get();
         
         $kinships = Kinship::get();
         
@@ -410,6 +413,7 @@ class QuotaAidMortuaryController extends Controller
             'cities'    =>  $cities,
             'ret'    =>  $cities,
             'spouse' =>  $spouse,
+            'procedure_types'    =>  $procedure_types,
         ];        
         
         //return $data;

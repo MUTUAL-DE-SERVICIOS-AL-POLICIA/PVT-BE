@@ -120,6 +120,8 @@ Vue.component('ret-fun-qualification-group', require('./components/ret_fun/Quali
 
 // Quota Aid Mortuaries
 Vue.component('quota-aid-mortuary-index', require('./components/quota_aid/Index.vue'));
+Vue.component('quota-aid-form', require('./components/quota_aid/Form.vue'));
+Vue.component('quota-aid-create-info', require('./components/quota_aid/CreateInfo.vue'));
 
 //quota_aid
 Vue.component('quota-aid-step1-requirements', require('./components/quota_aid/Step1Requirements.vue'));

@@ -1,52 +1,62 @@
 @extends('layouts.app')
-
 @section('title', 'Cuota y Auxilio Mortuorio')
-
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-   <div class="col-lg-9">
-       {{--  {{ Breadcrumbs::render('show_affiliate', $affiliate) }}  --}}
-   </div>
+    <div class="col-lg-9">
+        {{-- Breadcrumbs::render('create_retirement_fund', $affiliate) --}}
+    </div>
 </div>
-
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content animated fadeInRight">    
     <div class="row">
         <div class="col-md-12">
-            {!! Form::open(['url' => 'ret_fun', 'method' => 'POST']) !!}
-            <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
-            <form-wizard 
-            color="#1AB394"
-            error-color="#ED5565"
-            >
-                    <tab-content
-                    title="Modalidad y Requisitos"
-                    icon="mdi mdi-format-list-checks"
-                    {{--  :before-change="validateAsync"  --}}
+            <div class="ibox-content">
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    <h2>Se encontraron los siguientes errores. ({{ count($errors->all()) }})</h2>
+                    <ol>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ol>
+                </div>
+                @endif
+                {!! Form::open(['url' => 'quota_aid', 'method' => 'POST', 'id'=>'quota-aid-form']) !!}
+                <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
+                <quota-aid-form inline-template>
+                    <form-wizard
+                        color="#1AB394"
+                        title=""
+                        subtitle=""
+                        back-button-text="Volver"
+                        next-button-text="Siguiente"
+                        finish-button-text="Finalizar"
+                        error-color="#ED5565"
+                        @on-complete="onFinish"
+                        @on-loading="setLoading"
                     >
-                        <quota-aid-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" inline-template>
-                            @include('quota_aid.step1_requirements')
-                        </quota-aid-step1-requirements>
+                    <quota-aid-create-info></quota-aid-create-info> 
+                        <tab-content title="Modalidad y Requisitos" ref="one" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
+                            <quota-aid-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ Auth::user() }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :show-requirements-error="showRequirementsError"
+                                    inline-template>
+                                @include('quota_aid.step1_requirements')
+                            </quota-aid-step1-requirements>
+                        </tab-content>
+                        <tab-content title="Datos del Solicitante" ref="two" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
+                            <quota-aid-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
+                                @include('quota_aid.step2_applicant')
+                            </quota-aid-step2-applicant>
+                        </tab-content>
+                    <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
+                        <quota-aid-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
+                            @include('ret_fun.step3_beneficiaries')
+                        </quota-aid-step3-beneficiaries>
                     </tab-content>
-                    <tab-content
-                        title="Datos del Solicitante"
-                        icon="mdi mdi-account-edit">
-                        <quota-aid-step2-applicant :cities="{{ $cities }}" inline-template>
-                            @include('quota_aid.step2_applicant')
-                        </quota-aid-step2-applicant>
-                    </tab-content>
-                    <tab-content
-                    title="Datos de los Derechohabientes"
-                    icon="mdi mdi-account-multiple-plus">
-                    <quota-aid-step3-beneficiaries :items="{{ $ret }}" inline-template>
-                        @include('quota_aid.step3_beneficiaries')
-                    </quota-aid-step3-beneficiaries>
-                </tab-content>
-                {!! Form::submit('Click Me!') !!}
-            </form-wizard>
-        </form>
+                    </form-wizard>
+                </quota-aid-form>
+                {!! Form::close() !!}
+            </div>
         </div>
     </div>
 </div>
-
-
 @endsection
+
