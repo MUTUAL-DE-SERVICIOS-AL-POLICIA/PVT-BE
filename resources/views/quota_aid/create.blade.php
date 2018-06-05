@@ -3,7 +3,7 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {{-- Breadcrumbs::render('create_retirement_fund', $affiliate) --}}
+        {{ Breadcrumbs::render('create_quota_aid', $affiliate) }}
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">    
@@ -34,7 +34,7 @@
                         @on-complete="onFinish"
                         @on-loading="setLoading"
                     >
-                    <quota-aid-create-info></quota-aid-create-info> 
+                    <quota-aid-create-info :affiliate="{{ $affiliate }}" :hierarchy="{{ $hierarchy }}"></quota-aid-create-info> 
                         <tab-content title="Modalidad y Requisitos" ref="one" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
                             <quota-aid-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ Auth::user() }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :show-requirements-error="showRequirementsError"
                                     inline-template>

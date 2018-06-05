@@ -529,7 +529,7 @@ class RetirementFundController extends Controller
         $modality = strtoupper($request->modality) ?? '';
 
         $total = RetirementFund::select('retirement_funds.id')
-                                ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
+                                ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')

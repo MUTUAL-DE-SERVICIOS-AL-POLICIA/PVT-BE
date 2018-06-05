@@ -29,16 +29,16 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="form-group" :class="{'has-error': errors.has('ret_fun_modality') }">
+            <div class="form-group" :class="{'has-error': errors.has('quota_aid_modality') }">
                 <label class="col-sm-4 control-label">Modalidad</label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality" name="ret_fun_modality" id="ret_fun_modality"
+                    <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality" name="quota_aid_modality" id="quota_aid_modality"
                         v-validate.initial="'required'">
                         <option :value="null"></option>
                         <option v-for="(modality, index) in modalitiesFilter" :value="modality.id" :key="index">@{{modality.name}}</option>
                     </select>
-                    <i v-show="errors.has('ret_fun_modality')" class="fa fa-warning text-danger"></i>
-                    <span v-show="errors.has('ret_fun_modality')" class="text-danger">@{{ errors.first('ret_fun_modality') }}</span>
+                    <i v-show="errors.has('quota_aid_modality')" class="fa fa-warning text-danger"></i>
+                    <span v-show="errors.has('quota_aid_modality')" class="text-danger">@{{ errors.first('quota_aid_modality') }}</span>
                 </div>
             </div>
         </div>

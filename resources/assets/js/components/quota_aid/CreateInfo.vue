@@ -9,7 +9,7 @@
                 <strong>Parentesco:</strong> {{ retfun.applicant.kinship }}
             </div>
             <div class="col-md-4">
-                <!-- reservado para el grado hdp -->
+                <strong>Grado:</strong> {{ hierarchy.name+' - '+affiliate.degree }}
             </div>
           </div>
       </div>
@@ -18,6 +18,10 @@
 <script>
 import {mapState, mapGetters, mapMutations} from 'vuex';
 export default {
+    props:[
+        'affiliate',
+        'hierarchy',
+	],
     computed: {
         ...mapGetters({
             retfun: 'getData'
@@ -25,7 +29,7 @@ export default {
     },
     created()
     {
-        console.log(this.retfun);
+        console.log(this.affiliate);
     }
 
 }

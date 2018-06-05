@@ -19,82 +19,82 @@ export default {
         setLoading: function(value) {
             this.loadingWizard = value;
         },
-        showRequirementsErrorChanged(val){        
+        showRequirementsErrorChanged(val){
             this.showRequirementsError = val;
         },
-         validateFirstStep() {},
-        //     this.showRequirementsError = false;
-        //     if (!this.$refs.uno.$children[0].city_end_id) {
-        //         return false;
-        //     }
-        //     if (!this.$refs.uno.$children[0].modality) {
-        //         return false;
-        //     }
-        //     let x=this.$refs.uno.$children[0].requirementList;
-        //     var someRequirement=true;
-        //     Object.keys(x).forEach(function(key) {
-        //         if( !x[key].some(rq=> rq.status) ){
-        //             someRequirement=false;
-        //         }
-        //     });
-        //     if (!someRequirement) {
-        //         this.showRequirementsError = ! this.showRequirementsError;
-        //         return false;
-        //     }
-        //     return true;
-        // },
-         validateSecondStep() {},
-        //     if (!this.$refs.dos.$children[0].applicant_type) {
-        //         return false;
-        //     }
-        //     if (!this.$refs.dos.$children[0].applicant_identity_card) {
-        //         return false;
-        //     }
-        //     if (!this.$refs.dos.$children[0].applicant_first_name) {
-        //         return false;
-        //     }
-        //     if (!this.$refs.dos.$children[0].applicant_kinship_id) {
-        //         return false;
-        //     }
-        //     if (!this.$refs.dos.$children[0].applicant_city_identity_card_id) {
-        //         return false;
-        //     }
-        //     if (!this.$refs.dos.$children[0].applicant_gender) {
-        //         return false;
-        //     }
+         validateFirstStep() {
+            this.showRequirementsError = false;
+            if (!this.$refs.one.$children[0].city_end_id) {
+                return false;
+            }
+            if (!this.$refs.one.$children[0].modality) {
+                return false;
+            }
+            let x=this.$refs.one.$children[0].requirementList;
+            var someRequirement=true;
+            Object.keys(x).forEach(function(key) {
+                if( !x[key].some(rq=> rq.status) ){
+                    someRequirement=false;
+                }
+            });
+            if (!someRequirement) {
+                this.showRequirementsError = ! this.showRequirementsError;
+                return false;
+            }
+            return true;
+        },
+         validateSecondStep() {
+            if (!this.$refs.two.$children[0].applicant_type) {
+                return false;
+            }
+            if (!this.$refs.two.$children[0].applicant_identity_card) {
+                return false;
+            }
+            if (!this.$refs.two.$children[0].applicant_first_name) {
+                return false;
+            }
+            if (!this.$refs.two.$children[0].applicant_kinship_id) {
+                return false;
+            }
+            if (!this.$refs.two.$children[0].applicant_city_identity_card_id) {
+                return false;
+            }
+            if (!this.$refs.two.$children[0].applicant_gender) {
+                return false;
+            }
 
-        //     if (this.$refs.dos.$children[0].applicant_type == 3) {
-        //         // 3 id de Apoderado
-        //         if (!this.$refs.dos.$children[0].legal_guardian_first_name) {
-        //             return false;
-        //         }
-        //         if (!this.$refs.dos.$children[0].legal_guardian_identity_card) {
-        //             return false;
-        //         }
-        //     }
+            if (this.$refs.two.$children[0].applicant_type == 3) {
+                // 3 id de Apoderado
+                if (!this.$refs.two.$children[0].legal_guardian_first_name) {
+                    return false;
+                }
+                if (!this.$refs.two.$children[0].legal_guardian_identity_card) {
+                    return false;
+                }
+            }
 
-        //     this.sendApplicant();
-        //     return true;
+            this.sendApplicant();
+            return true;
 
-        // },
-         sendApplicant() {}
-        // let applicant = {
-        //     type: this.$refs.dos.$children[0].applicant_type,
-        //     first_name: this.$refs.dos.$children[0].applicant_first_name,
-        //     second_name: this.$refs.dos.$children[0].applicant_second_name,
-        //     last_name: this.$refs.dos.$children[0].applicant_last_name,
-        //     mothers_last_name: this.$refs.dos.$children[0].applicant_mothers_last_name,
-        //     surname_husband: this.$refs.dos.$children[0].applicant_surname_husband,
-        //     identity_card: this.$refs.dos.$children[0].applicant_identity_card,
-        //     city_identity_card_id: this.$refs.dos.$children[0].applicant_city_identity_card_id,
-        //     kinship_id: this.$refs.dos.$children[0].applicant_kinship_id,
-        //     birth_date: this.$refs.dos.$children[0].applicant_birth_date,
-        //     phone_number: this.$refs.dos.$children[0].applicant_phone_number,
-        //     cell_phone_number: this.$refs.dos.$children[0].applicant_cell_phone_number
-        // };
-        // this.$store.commit("setApplicant", applicant);
-        // return true;
-        // }
+        },
+        sendApplicant() {
+        let applicant = {
+            type: this.$refs.two.$children[0].applicant_type,
+            first_name: this.$refs.two.$children[0].applicant_first_name,
+            second_name: this.$refs.two.$children[0].applicant_second_name,
+            last_name: this.$refs.two.$children[0].applicant_last_name,
+            mothers_last_name: this.$refs.two.$children[0].applicant_mothers_last_name,
+            surname_husband: this.$refs.two.$children[0].applicant_surname_husband,
+            identity_card: this.$refs.two.$children[0].applicant_identity_card,
+            city_identity_card_id: this.$refs.two.$children[0].applicant_city_identity_card_id,
+            kinship_id: this.$refs.two.$children[0].applicant_kinship_id,
+            birth_date: this.$refs.two.$children[0].applicant_birth_date,
+            phone_number: this.$refs.two.$children[0].applicant_phone_number,
+            cell_phone_number: this.$refs.two.$children[0].applicant_cell_phone_number
+        };
+        this.$store.commit("setApplicant", applicant);
+        return true;
+        }
     },
     computed: {
     //   checkboxErrors () {
