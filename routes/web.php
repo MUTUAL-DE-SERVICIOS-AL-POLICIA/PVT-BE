@@ -174,7 +174,11 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 		//inbox
-		Route::get('inbox', 'InboxController@index');
+		Route::get('inbox', function () {
+			return redirect('inbox/received');
+		});
+		Route::get('inbox/received', 'InboxController@received');
+		Route::get('inbox/edited', 'InboxController@edited');
 	});
 });
 
