@@ -18,7 +18,7 @@ class AffiliateObserver
         
         $old = Affiliate::find($affiliate->id);
 
-        $message = 'El usuario '.Auth::user()->username.' modifico ';
+        $message = 'El usuario '.Auth::user()->username.' modificó ';
 
 
         if($affiliate->city_identity_card_id != $old->city_identity_card_id)
@@ -28,7 +28,7 @@ class AffiliateObserver
         
         if($affiliate->identity_card != $old->identity_card)
         {   
-            $message = $message . ' numero de CI '.$old->identity_card.' a '.$affiliate->identity_card.', ';
+            $message = $message . ' número de CI '.$old->identity_card.' a '.$affiliate->identity_card.', ';
             
         }
 
@@ -64,7 +64,7 @@ class AffiliateObserver
 
         if($affiliate->gender != $old->gender)
         {   
-            $message = $message . ' genero '.Util::getGenderLabel($old->gender).' a '.Util::getGenderLabel($affiliate->gender).', ';
+            $message = $message . ' género '.Util::getGenderLabel($old->gender).' a '.Util::getGenderLabel($affiliate->gender).', ';
             
         }
         
@@ -88,7 +88,7 @@ class AffiliateObserver
 
         if($affiliate->phone_number != $old->phone_number)
         {   
-            $message = $message . ' numero de telefono '.$old->phone_number.' a '.$affiliate->phone_number.', ';
+            $message = $message . ' némero de teléfono '.$old->phone_number.' a '.$affiliate->phone_number.', ';
 
         }
 
@@ -112,7 +112,7 @@ class AffiliateObserver
 
         if($affiliate->category_id != $old->category_id)
         {   
-            $message = $message . ' categoria '.$old->category->name.' a '.$affiliate->category->name.', ';
+            $message = $message . ' categoría '.$old->category->name.' a '.$affiliate->category->name.', ';
 
         }
         
@@ -136,7 +136,7 @@ class AffiliateObserver
 
         if($affiliate->item != $old->item)
         {   
-            $message = $message . ' numero de item '.$old->item.' a '.$affiliate->item.', ';
+            $message = $message . ' número de ítem '.$old->item.' a '.$affiliate->item.', ';
         }
         
         $message = $message . ' ';
