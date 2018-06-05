@@ -15,17 +15,17 @@
                     <input class="iCheck-helper" type="checkbox">
                 </td>
                 <td class="mail-ontact">
-                    <a :href="`/ret_fun/${row.id}`">{{ row.ci }}</a>
+                    <a :href="`${row.path}`">{{ row.ci }}</a>
                     <span class="label label-danger pull-right">Documents</span>
                 </td>
                 <td class="mail-subject">
-                    <a :href="`/ret_fun/${row.id}`">{{ row.name }}</a>
+                    <a :href="`${row.path}`">{{ row.name }}</a>
                 </td>
                 <td class="">
                     <i class="fa fa-paperclip"></i>
                 </td>
                 <td class="text-right mail-date">
-                    <a :href="`/ret_fun/${row.id}`">
+                    <a :href="`${row.path}`">
                         {{ row.code }}
                     </a>
                 </td>

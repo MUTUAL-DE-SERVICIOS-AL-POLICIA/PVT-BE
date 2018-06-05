@@ -74,7 +74,7 @@
         </div>
         <div class="col-lg-9 animated fadeInRight">
             <div class="mail-box-header">
-                <form method="get" action="index.html" class="pull-right mail-search ng-pristine ng-valid">
+                {{-- <form method="get" action="index.html" class="pull-right mail-search ng-pristine ng-valid">
                     <div class="input-group">
                         <input type="text" class="form-control input-sm" name="search" placeholder="Search email">
                         <div class="input-group-btn">
@@ -83,14 +83,14 @@
                     </button>
                         </div>
                     </div>
-                </form>
+                </form> --}}
                 <h2>
-                    <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`"
+                    <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`received`"
                         inline-template>
                         <span>Recibidos (@{{totalDocs}})</span>
                     </tabs-content>
                 </h2>
-                <div class="mail-tools tooltip-demo m-t-md">
+                {{-- <div class="mail-tools tooltip-demo m-t-md">
                     <div class="btn-group pull-right">
                         <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
                         <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
@@ -99,7 +99,7 @@
                     <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i></button>
                     <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i></button>
                     <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i></button>
-                </div>
+                </div> --}}
             </div>
             <div class="mail-box">
                 <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :inbox-state="'received'" inline-template>

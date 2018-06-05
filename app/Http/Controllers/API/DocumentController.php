@@ -33,7 +33,8 @@ class DocumentController extends Controller
                         economic_complements.code as code,
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
-                        economic_complements.workflow_id as workflow_id
+                        economic_complements.workflow_id as workflow_id,
+                        concat('/economic_complement/', economic_complements.id) as path
                         "
                     )
                 )
@@ -43,7 +44,6 @@ class DocumentController extends Controller
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('economic_complements.state', '=', 'Received')
                     ->get();
-
                 $temp = Workflow::leftJoin('modules', 'workflows.module_id', '=', 'modules.id')
                     ->leftJoin('roles', 'modules.id', '=', 'roles.module_id')
                     ->select('workflows.id')
@@ -61,7 +61,8 @@ class DocumentController extends Controller
                         retirement_funds.code as code,
                         ret_fun_cities.second_shortened as city,
                         retirement_funds.reception_date as reception_date,
-                        retirement_funds.workflow_id as workflow_id
+                        retirement_funds.workflow_id as workflow_id,
+                        concat('/ret_fun/', retirement_funds.id) as path
                         "
                         )
                     )
@@ -114,14 +115,15 @@ class DocumentController extends Controller
                 $documents = DB::table('economic_complements')
                 ->select(
                     DB::raw(
-                        "
+                            "
                         economic_complements.id as id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
                         economic_complements.code as code,
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
-                        economic_complements.workflow_id as workflow_id
+                        economic_complements.workflow_id as workflow_id,
+                        concat('/economic_complement/', economic_complements.id) as path
                         "
                     )
                 )
@@ -132,6 +134,7 @@ class DocumentController extends Controller
                     ->where('economic_complements.state', '=', 'Edited')
                     ->where('economic_complements.user_id', '=', $user_id)
                     ->get();
+                dd($documents);
                 break;
             case 3:
                 # ret fun
@@ -144,7 +147,8 @@ class DocumentController extends Controller
                         retirement_funds.code as code,
                         ret_fun_cities.second_shortened as city,
                         retirement_funds.reception_date as reception_date,
-                        retirement_funds.workflow_id as workflow_id
+                        retirement_funds.workflow_id as workflow_id,
+                        concat('/ret_fun/', retirement_funds.id) as path
                         "
                         )
                     )
@@ -153,6 +157,7 @@ class DocumentController extends Controller
                     ->leftJoin('wf_states', 'retirement_funds.wf_state_current_id', '=', 'wf_states.id')
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('retirement_funds.inbox_state', '=', true)
+                    ->where('retirement_funds.user_id', '=', $user_id)
                     ->get();
                 break;
             default:

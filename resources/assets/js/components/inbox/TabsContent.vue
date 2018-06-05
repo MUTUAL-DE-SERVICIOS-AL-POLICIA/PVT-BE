@@ -8,6 +8,8 @@ export default {
         }
     },
     mounted(){
+        console.log(this.rolId, this.user);
+        
         let uri;
         if (this.inboxState == 'received') {
             uri = `/api/documents/${this.inboxState}/${this.rolId.id}`;
