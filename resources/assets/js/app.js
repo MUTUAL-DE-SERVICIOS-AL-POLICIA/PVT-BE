@@ -92,10 +92,15 @@ Vue.filter('percentage', function (value) {
 
 
 /* tabs */
-import { Tabs, Tab } from 'vue-tabs-component';
+import VueTabs from 'vue-nav-tabs'
+import "vue-nav-tabs/themes/vue-tabs.css";
+Vue.use(VueTabs)
 
-Vue.component('tabs', Tabs);
-Vue.component('tab', Tab);
+
+// import { Tabs, Tab } from 'vue-tabs-component';
+
+// Vue.component('tabs', Tabs);
+// Vue.component('tab', Tab);
 
 
 Vue.component('flash', require('./components/Flash.vue'));

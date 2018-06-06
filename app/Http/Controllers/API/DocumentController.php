@@ -134,7 +134,6 @@ class DocumentController extends Controller
                     ->where('economic_complements.state', '=', 'Edited')
                     ->where('economic_complements.user_id', '=', $user_id)
                     ->get();
-                dd($documents);
                 break;
             case 3:
                 # ret fun
@@ -169,10 +168,23 @@ class DocumentController extends Controller
             ->select('workflows.id')
             ->where('roles.id', '=', $rol_id)
             ->pluck('id');
+        $wf_current_state_id = DB::table('wf_states')->where('role_id', $rol_id)->first();
+        if ($wf_current_state_id) {
+            $wf_sequences_next = DB::table("wf_sequences")
+                ->leftJoin('wf_states', 'wf_sequences.wf_state_next_id', '=', 'wf_states.id')
+                ->whereIn("workflow_id", $temp)
+                ->where("wf_state_current_id", $wf_current_state_id->id)
+                ->where('action', 'Aprobar')
+                ->select('wf_states.id as wf_state_id', 'workflow_id as workflow_id', 'wf_states.name as wf_state_name')
+                ->get();
+        }else{
+            $wf_sequences_next = null;
+        }
         $workflows = Workflow::whereIn('id',$temp)->get();
         $data = [
             'documents' => $documents,
-            'workflows' => $workflows
+            'workflows' => $workflows,
+            'wf_sequences_next' => $wf_sequences_next,
         ];
         return $data;
         // return DataTables::of($documents)

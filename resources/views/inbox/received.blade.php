@@ -103,11 +103,13 @@
             </div>
             <div class="mail-box">
                 <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :inbox-state="'received'" inline-template>
-                    <tabs>
-                        <tab
-                            :name="`${itab.name}`"
+                    <vue-tabs>
+                        <v-tab
+                            :title="`${itab.name} (${classification(itab.id).length})`"
                             v-for="(itab, index) in workflows"
-                            :key="index"
+                            :dataId="itab.id"
+                            icon="fa fa-check"
+                            :key="`tab-received-${index}`"
                             :suffix="`<span class='badge'> ${classification(itab.id).length} </span>`"
                         >
                             <inbox-content
@@ -115,15 +117,14 @@
                                 :documents="classification(itab.id)"
                             ></inbox-content>
                         </tab>
-                    </tabs>
+                    </vue-tabs>
                 </tabs-content>
-
             </div>
         </div>
     </div>
 </div>
 @endsection
-@section('styles')
+{{-- @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 <style>
     td.highlight {
@@ -139,7 +140,7 @@
     }
     thead, tfoot { display: table-header-group; }
 </style>
-@endsection
+@endsection --}}
     {{-- @section('scripts')
     <script src="{{ asset('/js/datatables.js')}}"></script>
     <script>

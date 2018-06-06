@@ -54,7 +54,7 @@
 
                         <div class="space-25"></div>
                         <h5>Tramites</h5>
-                        <ul class="folder-list m-b-md" style="padding: 0">
+                        {{-- <ul class="folder-list m-b-md" style="padding: 0">
                             <li>
                                 <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`received`"
                                     inline-template>
@@ -71,7 +71,7 @@
                                     </a>
                                 </tabs-content>
                             </li>
-                        </ul>
+                        </ul> --}}
 
                         <div class="clearfix"></div>
                     </div>
@@ -79,53 +79,75 @@
             </div>
         </div>
         <div class="col-lg-9 animated fadeInRight">
-            <div class="mail-box-header">
-                {{-- <form method="get" action="index.html" class="pull-right mail-search ng-pristine ng-valid">
-                    <div class="input-group">
-                        <input type="text" class="form-control input-sm" name="search" placeholder="Search email">
-                        <div class="input-group-btn">
-                            <button type="submit" class="btn btn-sm btn-primary">
-                        Search
-                    </button>
+            <tabs-content
+                :rol-id="{{Muserpol\Helpers\Util::getRol()}}"
+                :user="{{Muserpol\Helpers\Util::getAuthUser()}}"
+                :inbox-state="`edited`"
+                inline-template
+            >
+                <div>
+
+                    <div class="mail-box-header">
+                        {{-- <form method="get" action="index.html" class="pull-right mail-search ng-pristine ng-valid">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-sm" name="search" placeholder="Search email">
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+                        </form> --}}
+                        <h2>
+                            {{-- <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`"
+                            inline-template> --}}
+                            <span>
+                                Revisados (@{{totalDocs}})
+                            </span>
+                            {{-- </tabs-content> --}}
+                        </h2>
+                        <div class="mail-tools tooltip-demo m-t-md">
+                            {{-- <div class="btn-group pull-right">
+                                <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
+                                <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
+                            </div> --}}
+                            {{-- <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
+                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i></button>
+                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i></button>
+                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i></button> --}}
+                            <button :disabled="! docs > 0 " class="btn btn-sm" :class="{'btn-primary': docs > 0  }" data-toggle="tooltip" data-placement="top" title="Enviar los tramites seleccionados">Enviar <i class="fa fa-send"></i> (@{{docs}}) </button>
+                            <transition
+                                name="fade"
+                                enter-active-class="animated bounceInLeft"
+                                leave-active-class="animated bounceOutleft"
+                                :duration="{ enter: 1000, leave: 500 }"
+                            >
+                            <div class="form-group col-md-3" v-if="docs > 0">
+                                    <select name="" id="" class="form-control">
+                                        <option :value="wfs.wf_state_id"  v-for="(wfs, index) in wfSequenceNextList">@{{wfs.wf_state_name}}</option>
+                                    </select>
+                                </div>
+                            </transition>
+                            <input type="hidden" v-model="docIds">
                         </div>
                     </div>
-                </form> --}}
-                <h2>
-                    <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`"
-                        inline-template>
-                        <span>
-                            Revisados (@{{totalDocs}})
-                        </span>
-                    </tabs-content>
-                </h2>
-                {{-- <div class="mail-tools tooltip-demo m-t-md">
-                    <div class="btn-group pull-right">
-                        <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
-                        <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
+                    <div class="mail-box">
+                        {{-- <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`" inline-template> --}}
+                            <vue-tabs @tab-change="handleTabChange">
+                                <v-tab :title="`${itab.name} (${classification(itab.id).length})`" :dataId="itab.id" icon="fa fa-check" v-for="(itab, index) in workflows" :key="`tab-edited-${index}`" :suffix="` <span class='badge'> ${classification(itab.id).length} </span>`">
+                                    <inbox-content :workflow-id="itab.id" :documents="classification(itab.id)"></inbox-content>
+                                </tab>
+                            </vue-tabs>
+                        
                     </div>
-                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
-                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i></button>
-                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i></button>
-                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i></button>
-                </div> --}}
-            </div>
-            <div class="mail-box">
-                <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`" inline-template>
-                    <tabs>
-                        <tab :name="`${itab.name} `" v-for="(itab, index) in workflows" :key="index" :suffix="` <span class='badge'> ${classification(itab.id).length} </span>`">
-                            <inbox-content :workflow-id="itab.id" :documents="classification(itab.id)"></inbox-content>
-                        </tab>
-                    </tabs>
-                </tabs-content>
-
-            </div>
+                </div>
+            </tabs-content>
         </div>
     </div>
-</div>
-@endsection
- 
-@section('styles')
-<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+    @endsection
+    {{--  
+        @section('styles')
+        <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 <style>
     td.highlight {
         background-color: #e3eaef !important;
@@ -145,7 +167,7 @@
         display: table-header-group;
     }
 </style>
-@endsection
+@endsection --}}
  
 {{-- @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
