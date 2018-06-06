@@ -91,6 +91,13 @@ Vue.filter('percentage', function (value) {
 });
 
 
+/* tabs */
+import { Tabs, Tab } from 'vue-tabs-component';
+
+Vue.component('tabs', Tabs);
+Vue.component('tab', Tab);
+
+
 Vue.component('flash', require('./components/Flash.vue'));
 
 //setting files
@@ -116,6 +123,11 @@ Vue.component('ret-fun-beneficiaries-show', require('./components/ret_fun/ShowBe
 Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualification.vue'));
 Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterval.vue'));
 Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
+
+// inbox
+Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));
+Vue.component('inbox-content', require('./components/inbox/Content.vue'));
+
 
 
 // Quota Aid Mortuaries

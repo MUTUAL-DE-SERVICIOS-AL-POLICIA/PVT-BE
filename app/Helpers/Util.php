@@ -226,6 +226,11 @@ class Util
         }
         return $output;
     }
+    
+    public static function getAuthUser()
+    {
+        return Auth::user();
+    }
 
     public static function getRol()
     {
