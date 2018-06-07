@@ -1,19 +1,9 @@
 <template>
     <table class="table table-hover table-mail">
-        <thead>
-            <tr>
-                <th></th>
-                <th>CI</th>
-                <th>Nombre</th>
-                <!-- <th>file</th> -->
-                <th>Nº de Tramite</th>
-                <th>Fecha de recepcion</th>
-            </tr>
-        </thead>
         <tbody>
-            <tr class="read" v-for="(row, index)  in rows" :key="`row-${index}`">
+            <tr class="read" v-if="documents.length > 0" v-for="(row, index)  in documents" :key="`row-${index}`">
                 <td class="check-mail">
-                    <input class="iCheck-helper" type="checkbox" :checked="false" :id="row.id" v-model="row.status" @change="checkChange(row.id, row.status)">
+                    <input v-if="inboxState == 'edited'" class="iCheck-helper" type="checkbox" :checked="false" :id="row.id" v-model="row.status" @change="checkChange(row.id, row.status)">
                 </td>
                 <td class="mail-contact">
                     <a :href="`${row.path}`">{{ row.ci }}</a>
@@ -32,22 +22,16 @@
                 </td>
                 <td class="text-right mail-date">{{ row.reception_date}}</td>
             </tr>
+            <tr v-if="! documents.length > 0"><td class="text-center">No hay ningun tramite</td></tr>
         </tbody>
     </table>
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex';
     export default {
-        props:['workflowId', 'documents'],
-
-        data() {
-            return {
-                rows:this.documents
-            };
-        },
+        props:['workflowId', 'documents', 'inboxState'],
         methods:{
             checkChange(id,status){
-
                 let object = {
                     workflow_id: this.workflowId,
                     doc:{

@@ -179,6 +179,8 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 		Route::get('inbox/received', 'InboxController@received');
 		Route::get('inbox/edited', 'InboxController@edited');
+		Route::post('inbox_send_forward', 'InboxController@sendForward')->name('inbox_send_forward');
+		Route::post('inbox_send_backward', 'InboxController@sendBackward')->name('inbox_send_backward');
 	});
 });
 

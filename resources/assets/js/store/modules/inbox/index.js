@@ -19,6 +19,14 @@ const mutations = {
             state.workflows.push({workflow_id: workflow.workflow_id, docs:[workflow.doc] });
         }
     },
+    clear(state, workflow_id){
+        let index = state.workflows.findIndex(o => o.workflow_id == workflow_id);
+        if (index >= 0) {
+            state.workflows[index].docs = [];
+        }else{
+            alert("hubo algun error");
+        }
+    }
 }
 const getters = {
     getDataInbox: state => state

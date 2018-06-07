@@ -1,5 +1,5 @@
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 export default {
     props:['rolId','user', 'inboxState'],
     data(){
@@ -7,31 +7,78 @@ export default {
             workflows: [],
             documents:[],
             activeWorkflowId:null,
-            docIds:null,
-            wfSequenceNext:[],
-            options:[],
+            wfSequenceNextL:[],
+            wfSequenceBackL:[],
+            wfSequenceNext:null,
+            wfSequenceBack:null,
         }
     },
     mounted(){
-        let uri;
-        if (this.inboxState == 'received') {
-            uri = `/api/documents/${this.inboxState}/${this.rolId.id}`;
-        }else{
-            uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
-        }
-        axios.get(uri).then(({data})=>{
-            this.workflows =  data.workflows;
-            this.activeWorkflowId = data.workflows[0].id || null;
-            this.documents =  data.documents;
-            this.wfSequenceNext =  data.wf_sequences_next;
-        });
+        this.getData();
     },
     methods:{
+        getData(){
+            let uri;
+            if (this.inboxState == 'received') {
+                uri = `/api/documents/${this.inboxState}/${this.rolId.id}`;
+            }else{
+                uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
+            }
+            axios.get(uri).then(({data})=>{
+                this.workflows =  data.workflows;
+                this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
+                this.documents =  data.documents;
+                this.wfSequenceNextL =  data.wf_sequences_next;
+                this.wfSequenceBackL =  data.wf_sequences_back;
+            });
+        },
         classification(id){
             return this.documents.filter(v => v.workflow_id == id);
         },
         handleTabChange(tabIndex, newTab, oldTab){
             this.activeWorkflowId = newTab.$attrs.dataid;
+        },
+        sendForward(){
+            let found = this.dataInbox.workflows.find(w =>{
+                return w.workflow_id == this.activeWorkflowId
+            });
+            if (found) {
+                let uri=`/inbox_send_forward`;
+                axios.post(uri,{
+                    wfSequenceNext: this.wfSequenceNext,
+                    docs: found.docs
+                }).then(response =>{
+                    flash('Tramites enviados correctamente');
+                    this.getData();
+                    this.classification(this.activeWorkflowId);
+                    this.$store.commit("clear", this.activeWorkflowId);
+                }).catch(error =>{
+                    flash('Error al enviar los tramites: '+error.message,'error');
+                })
+            }else{
+                alert("error")
+            }
+        },
+        sendBackward(){
+            let found = this.dataInbox.workflows.find(w =>{
+                return w.workflow_id == this.activeWorkflowId
+            });
+            if (found) {
+                let uri=`/inbox_send_backward`;
+                axios.post(uri,{
+                    wfSequenceBack: this.wfSequenceBack,
+                    docs: found.docs
+                }).then(response =>{
+                    flash('Tramites enviados correctamente');
+                    this.$store.commit("clear", this.activeWorkflowId);
+                    this.getData();
+                    this.classification(this.activeWorkflowId);
+                }).catch(error =>{
+                    flash('Error al enviar los tramites: '+error.message,'error');
+                })
+            }else{
+                alert("error")
+            }
         },
     },
     computed:{
@@ -39,7 +86,11 @@ export default {
           dataInbox: 'getDataInbox',
         }),
         wfSequenceNextList(){
-            return  this.wfSequenceNext.filter(wfs => wfs.workflow_id == this.activeWorkflowId)
+            return  this.wfSequenceNextL.filter(wfs => wfs.workflow_id == this.activeWorkflowId)
+        },
+        wfSequenceBackList(){
+            return this.wfSequenceBackL;
+            return  this.wfSequenceBackL.filter(wfs => wfs.workflow_id == this.activeWorkflowId)
         },
         rejectObject(obj, keys) {
             const vkeys = Object.keys(obj)
@@ -51,7 +102,6 @@ export default {
                 return w.workflow_id == this.activeWorkflowId
             });
             if (found) {
-                this.docIds = found.docs.map(d => d.id);
                 return found.docs.length;
             }
             return 0;
