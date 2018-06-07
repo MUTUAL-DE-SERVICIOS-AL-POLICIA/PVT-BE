@@ -241,6 +241,7 @@ class RetirementFundController extends Controller
                 
 
         $af = Affiliate::find($request->affiliate_id);
+        $af->date_derelict = $request->date_derelict;
         switch ($request->ret_fun_modality) {
             case 1:
             case 4:
@@ -581,7 +582,7 @@ class RetirementFundController extends Controller
                 
         $this->authorize('create',RetirementFund::class);
         $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_derelict')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
@@ -1193,10 +1194,10 @@ class RetirementFundController extends Controller
             ->orderby('procedure_requirements.number','ASC')
             ->where('ret_fun_submitted_documents.retirement_fund_id',$id)
             ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');        
-
+        //return $documents;
         $num = $num2 = 0;
         foreach($request->requirements as $requirement){ 
-                $from = $to = 0;
+                $from = $to = 0;                                
                 for($i=0;$i<count($requirement);$i++){
                     $from = $requirement[$i]['number'];
                     if($requirement[$i]['status'] == true)

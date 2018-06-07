@@ -21,6 +21,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\ProcedureType;
+use Muserpol\Models\AidCommitment;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -384,7 +385,8 @@ class QuotaAidMortuaryController extends Controller
     }
     
     public function generateProcedure(Affiliate $affiliate){  
-                               
+                        
+        //return $affiliate;
         //$this->authorize('create',QuotaAidMortuary::class);
         $hierarchy = $affiliate->degree->hierarchy;
         $procedure_types = ProcedureType::where('id','3')->orWhere('id','4')->get();
