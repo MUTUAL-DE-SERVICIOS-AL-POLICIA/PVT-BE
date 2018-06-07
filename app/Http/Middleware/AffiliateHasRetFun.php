@@ -15,9 +15,10 @@ class AffiliateHasRetFun
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {
-        $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate->id)->where('code','LIKE','%A')->first();
-        if($request->affiliate->retirement_funds->count() > 0 && !isset($ret_fun->id)){
+    {        
+        $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate->id)->where('code','LIKE','%A')->get();        
+        $cant = $ret_fun->count();
+        if($request->affiliate->retirement_funds->count()-$cant > 0){
             return redirect()->route('affiliate.show', $request->affiliate->id);
         }
         return $next($request);

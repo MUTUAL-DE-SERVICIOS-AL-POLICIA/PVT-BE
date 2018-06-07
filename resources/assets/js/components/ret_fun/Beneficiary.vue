@@ -1,26 +1,89 @@
 <template>
 <div>
     <div v-if="readOnly">
+        <div class="row">
+            <div class="col-md-1">
+                <br>
+        <h3><u>Beneficiario</u>.-</h3>
+            </div>
+        </div>
+        <div class="row">
+            <br>
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+            <strong>Cedula de identidad: </strong>{{ beneficiary.identity_card }} {{ !!beneficiary.city_identity_card ? beneficiary.city_identity_card.first_shortened : '' }}
+            </div>
+            <div class="col-md-5">
+                <strong>Parentesco: </strong>{{ !!beneficiary.kinship ? beneficiary.kinship.name : '' }}
+            </div>
+        </div>
+            <br>
+            <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+            <strong>Primer Nombre: </strong>{{ beneficiary.first_name }}
+            </div>
+            <div class="col-md-5">
+                <strong>Segundo Nombre: </strong>{{ beneficiary.second_name }}
+            </div>
+            </div>
+            <br>
+            <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+            <strong> Apellido Paterno: </strong>{{ beneficiary.last_name }}
+            </div>
+            <div class="col-md-5">
+            <strong>Apellido Materno: </strong>{{ beneficiary.mothers_last_name }}
+            </div>
+            </div>
+            <br>
+            <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+            <strong>Genero: </strong>{{ getGenderBeneficiary(beneficiary.gender) }}
+            </div>
+            <div class="col-md-5">
+            <strong>Estado Civil: </strong> {{ beneficiary.civil_status }}
+            </div>
+            </div>
+            <br>
+            <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+            <strong>Fecha de Nacimiento: </strong>{{ beneficiary.birth_date }}
+            </div>
+            <div class="col-md-5">
+            <strong>Edad: </strong> {{ beneficiaryAge }}
+            </div>
+            </div>
+            <br>
+            <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <strong>Telefono: </strong>{{ beneficiary.phone_number }}
+            </div>
+            <div class="col-md-5">
+                <strong>Celular: </strong>{{ beneficiary.cell_phone_number }}
+            </div>
+            </div>
+            <br>
+            <hr>
         <div class="row"> 
             <div class="col-md-6">
                 <dl class="dl-">
-                    <dt>Cedula de identidad:</dt> <dd>{{ beneficiary.identity_card }} {{ !!beneficiary.city_identity_card ? beneficiary.city_identity_card.first_shortened : '' }} </dd>
-                    <dt>Primer Nombre:</dt> <dd>{{ beneficiary.first_name }}</dd>
-                    <dt>Segundo Nombre:</dt> <dd>{{ beneficiary.second_name }}</dd>
-                    <dt>Apellido Paterno:</dt> <dd>{{ beneficiary.last_name }}</dd>
-                    <dt>Apellido Materno:</dt> <dd>{{ beneficiary.mothers_last_name }}</dd>
-                    <dt v-show="beneficiary.gender === 'F'">Apellido de Casada:</dt> <dd v-show="beneficiary.gender === 'F'">{{ beneficiary.surname_husband }}</dd>
-                </dl>
-            </div>
-            <div class="col-md-6">
+                      <div class="col-md-2"></div>
+                        <dt><h3>Documentos Completos:</h3></dt>
+                    </dl>
+                </div>
+                <div class="col-md-1">
                 <dl class="dl-">
-                    <dt>Parentesco:</dt> <dd> {{ !!beneficiary.kinship ? beneficiary.kinship.name : '' }} </dd>
-                    <dt>Generos:</dt> <dd>{{ getGenderBeneficiary(beneficiary.gender) }}</dd>
-                    <dt>Estado Civil:</dt> <dd>{{ beneficiary.civil_status }}</dd>
-                    <dt>Fecha de Nacimiento:</dt> <dd>{{ beneficiary.birth_date }}</dd>
-                    <dt>Edad:</dt> <dd> {{ beneficiaryAge }} </dd>
-                    <dt>Telefono:</dt> <dd>{{ beneficiary.phone_number }}</dd>
-                    <dt>Celular:</dt> <dd>{{ beneficiary.cell_phone_number }}</dd>
+                    <div v-if="beneficiary.state==true">
+                        <input type="checkbox" name="state" value="true" disabled checked class="form-control">
+                    </div>
+                    <div v-else>
+                        <input type="checkbox" name="state" value="false" disabled class="form-control">
+                    </div>
                 </dl>
             </div>
         </div>
@@ -58,7 +121,7 @@
                         <option v-for="city in cities" :key="city.id" :value="city.id" >{{ city.name }}</option>
                     </select>
                 </div>
-            </div>    
+            </div>
         </div>
         <br>
         <div class="row" >
@@ -113,7 +176,7 @@
                     <label class="control-label">Genero</label>
                 </div>
                 <div class="col-md-8">
-                    <select name="gender" id="" v-model.trim="beneficiary.gender" class="form-control">
+                    <select name="gender[]" id="" v-model.trim="beneficiary.gender" class="form-control">
                         <option :value="null"></option>
                         <option value="M">Masculino</option>
                         <option value="F">Fenemino</option>
@@ -144,6 +207,25 @@
             </div>
             
         </div>
+        <div class="hr-line-dashed"></div>
+            <div class="row"> 
+                <div class="col-md-6">
+                    <dl class="dl-">
+                        <div class="col-md-2"></div>
+                        <dt><h3>Documentos Completos:</h3></dt>
+                    </dl>
+                </div>
+                <div class="col-md-1">
+                    <dl class="dl-">
+                        <div v-if="beneficiary.state">
+                            <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" checked class="form-control">
+                        </div>
+                        <div v-else>
+                            <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" class="form-control">
+                        </div>
+                    </dl>
+                </div>
+            </div>
         <div class="hr-line-dashed"></div>
     </div>
     <div v-else>
@@ -244,6 +326,26 @@
             </div>
         </div>
         <div class="hr-line-dashed"></div>
+            <div class="row"> 
+                <div class="col-md-6">
+                    <dl class="dl-">
+                        <dt>  
+                            <div class="col-md-2"></div>
+                        <dt><h3>Documentos Completos:</h3></dt>
+                    </dl>
+                </div>
+                <div class="col-md-1">
+                    <dl class="dl-">
+                        <div v-if="beneficiary.state==true">
+                            <input type="checkbox" v-model.trim="beneficiary.state" :value="beneficiary.state" checked class="form-control">
+                        </div>
+                        <div v-else>
+                            <input type="checkbox" v-model.trim="beneficiary.state" :value="beneficiary.state" class="form-control">
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        <div class="hr-line-dashed"></div>
         </div>
     </div>
 </template>
@@ -292,6 +394,7 @@ export default {
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
       this.beneficiary.gender = data.gender;
+      this.beneficiary.state = data.state;
     },
     getGenderBeneficiary(value){
         return getGender(value);

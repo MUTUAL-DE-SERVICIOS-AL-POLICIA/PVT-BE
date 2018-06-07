@@ -17,7 +17,7 @@
                 },
                 values:{
                     identity_card:this.spouse.identity_card,
-                        resgistration:this.spouse.resgistration,
+                    resgistration:this.spouse.resgistration,
                     first_name: this.spouse.first_name,
                     second_name: this.spouse.second_name,
                     last_name: this.spouse.last_name,

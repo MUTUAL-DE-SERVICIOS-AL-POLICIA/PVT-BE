@@ -16,7 +16,7 @@
         </ret-fun-beneficiary>
         <div class="row">
             <div class="col-md-5"></div>
-            <div class="col-md-1">
+            <div class="col-md-1" v-if="possibleAddBeneficiary">
                 <button class="btn btn-success" @click="addBeneficiary()" type="button" ><i class="fa fa-plus"></i></button>
             </div>
             <div class="col-md-6"></div>
@@ -47,7 +47,10 @@ export default {
   computed: {
       ...mapGetters({
           retfun: 'getData',
-      })
+      }),
+      possibleAddBeneficiary(){
+          return (this.retfun.modality_id == 1 || this.retfun.modality_id == 4)
+      }
   },
   methods: {
       addBeneficiary(){

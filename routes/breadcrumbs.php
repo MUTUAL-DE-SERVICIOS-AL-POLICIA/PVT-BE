@@ -67,3 +67,9 @@ Breadcrumbs::register('payment_contributions', function($breadcrumbs, $affiliate
 	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
 
+/* inbox */
+Breadcrumbs::register('inbox', function($breadcrumbs)
+{
+	$breadcrumbs->push('Mi bandeja');
+});
+

@@ -91,6 +91,13 @@ Vue.filter('percentage', function (value) {
 });
 
 
+/* tabs */
+import { Tabs, Tab } from 'vue-tabs-component';
+
+Vue.component('tabs', Tabs);
+Vue.component('tab', Tab);
+
+
 Vue.component('flash', require('./components/Flash.vue'));
 
 //setting files
@@ -106,6 +113,7 @@ Vue.component('ret-fun-index', require('./components/ret_fun/Index.vue'));
 Vue.component('ret-fun-form', require('./components/ret_fun/Form.vue'));
 Vue.component('ret-fun-create-info', require('./components/ret_fun/CreateInfo.vue'));
 Vue.component('ret-fun-step1-requirements', require('./components/ret_fun/Step1Requirements.vue'));
+Vue.component('ret-fun-step1-requirements-edit', require('./components/ret_fun/Step1RequirementsEdit.vue'));
 Vue.component('ret-fun-step2-applicant', require('./components/ret_fun/Step2Applicant.vue'));
 Vue.component('ret-fun-step3-beneficiaries', require('./components/ret_fun/Step3Beneficiaries.vue'));
 Vue.component('ret-fun-beneficiary-list', require('./components/ret_fun/BeneficiaryList.vue'));
@@ -115,6 +123,11 @@ Vue.component('ret-fun-beneficiaries-show', require('./components/ret_fun/ShowBe
 Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualification.vue'));
 Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterval.vue'));
 Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
+
+// inbox
+Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));
+Vue.component('inbox-content', require('./components/inbox/Content.vue'));
+
 
 
 // Quota Aid Mortuaries

@@ -1,21 +1,26 @@
-@extends('layouts.app')
-@section('title', 'Contribuciones')
+@extends('layouts.app') 
+@section('title', 'Contribuciones') 
 @section('styles')
 <style>
     .disableddiv {
         pointer-events: none;
         opacity: 0;
     }
-    .size-13{
+
+    .size-13 {
         font-size: 13px;
     }
-    .table-striped-1>tbody>tr:nth-child(4n+1){background-color:#f2f2f2}
+
+    .table-striped-1>tbody>tr:nth-child(4n+1) {
+        background-color: #f2f2f2
+    }
+
     .table-hover>tbody>tr:hover {
         background-color: #DBDBDB
     }
 </style>
 @endsection
-
+ 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
@@ -27,19 +32,19 @@
         <div class="col-md-12">
             <div class="col-md-6">
                 <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{ $cities_objects }}" inline-template>
-                    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
+    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
                 </affiliate-show>
             </div>
             <div class="col-md-6">
-                @include('contribution.aditional_info',['summary',$summary])
+    @include('contribution.aditional_info',['summary',$summary])
             </div>
-                       
+
             <div class="col-md-6">
-                @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
+    @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
             </div>
         </div>
         <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
-            <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}" :rate="{{$rate}}"></contribution-create>
+            <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}" :rate="{{$rate}}" :commitment="{{ $commitment }}"></contribution-create>
         </div>
     </div>
     @if(Muserpol\Helpers\Util::getRol()->id != 36)
@@ -47,188 +52,180 @@
         <div class="col-md-12">
             <form>
                 <input type="hidden" name="affiliate_id" id="affiliate_id" value="{{$affiliate_id}}">
-                    <div class="ibox">
-                        <div class="ibox-title">
-                            <h5>Aportes</h5>
-                            <div class="ibox-tools">
-                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                <a class="fullscreen-link" data-toggle="tooltip" data-placement="bottom" title="Pantalla completa"><i class="fa fa-expand"></i></a>
-                            </div>
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Aportes</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            <a class="fullscreen-link" data-toggle="tooltip" data-placement="bottom" title="Pantalla completa"><i class="fa fa-expand"></i></a>
                         </div>
-                        <div class="ibox-content table-responsive">
-                            <table class="table table-striped-1 table-bordered table-hover size-13">
-                                <thead>
-                                    <tr>
-                                        <th>A&ntilde;o</th>
-                                        <th>Enero</th>
-                                        <th>Febrero</th>
-                                        <th>Marzo</th>
-                                        <th>Abril</th>
-                                        <th>Mayo</th>
-                                        <th>Junio</th>
-                                        <th>Julio</th>
-                                        <th>Agosto</th>
-                                        <th>Septiembre</th>
-                                        <th>Octubre</th>
-                                        <th>Noviembre</th>
-                                        <th>Diciembre</th>
-                                        <th>Editar</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for(;$year_start>=$year_end;$year_start--)
-                                        <tr>
-                                            <td> {{ $year_start }} </td>
-                                            @for($i=1;$i<13;$i++)
-                                                @php
-                                                    $period = $year_start. '-'.($i<10? '0'.$i:$i). '-01';
-                                                    $valid_period = true;
-                                                    if((date('Y')==$year_start && date('m')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976))
-                                                        $valid_period = false;
-                                                @endphp
-                                                @if($valid_period)
-                                                    @if(isset($contributions[$period]->id))
-                                                        <td class="numberformat" id="main{{$period}}">{{$contributions[$period]->total}}</td>
-                                                    @else
-                                                        <td class="numberformat" id="main{{$period}}">0</td>
-                                                    @endif
-                                                @else
-                                                       <td>-</td>
-                                                @endif
-                                            @endfor
-                                            <td>
-                                                <button class="btn btn-default" type="button" data-toggle="tooltip" data-placement="top" title="Editar" onclick="toggleNestedComp(this)"><i class="fa fa-pencil"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr class="tabl2" style="display:none;">
-                                            <td>
-                                                <table class="table table-striped table-bordered size-13">
+                    </div>
+                    <div class="ibox-content table-responsive">
+                        <table class="table table-striped-1 table-bordered table-hover size-13">
+                            <thead>
+                                <tr>
+                                    <th>A&ntilde;o</th>
+                                    <th>Enero</th>
+                                    <th>Febrero</th>
+                                    <th>Marzo</th>
+                                    <th>Abril</th>
+                                    <th>Mayo</th>
+                                    <th>Junio</th>
+                                    <th>Julio</th>
+                                    <th>Agosto</th>
+                                    <th>Septiembre</th>
+                                    <th>Octubre</th>
+                                    <th>Noviembre</th>
+                                    <th>Diciembre</th>
+                                    <th>Editar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for(;$year_start>=$year_end;$year_start--)
+                                <tr>
+                                    <td> {{ $year_start }} </td>
+                                    @for($i=1;$i<13;$i++) 
+                                        @php 
+                                            $period=$year_start.'-'.($i<10?'0'.$i:$i).'-01';
+                                            $valid_period=true; 
+                                            if((date( 'Y')==$year_start && date('m')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976))
+                                                $valid_period=false;
+                                        @endphp 
+                                        @if($valid_period) 
+                                            @if(isset($contributions[$period]->id))
+                                                <td class="numberformat" id="main{{$period}}">{{$contributions[$period]->total}}</td>
+                                            @else
+                                                <td class="numberformat" id="main{{$period}}">0</td>
+                                            @endif 
+                                        @else
+                                            <td>-</td>
+                                        @endif 
+                                    @endfor
+                                        <td>
+                                            <button class="btn btn-default" type="button" data-toggle="tooltip" data-placement="top" title="Editar" onclick="toggleNestedComp(this)"><i class="fa fa-pencil"></i></button>
+                                        </td>
+                                </tr>
+                                <tr class="tabl2" style="display:none;">
+                                    <td>
+                                        <table class="table table-striped table-bordered size-13">
+                                            <tr>
+                                                <td>Sueldo</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Categoria</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ganado</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Aporte</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Reintegro</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    @for($i=1;$i<13;$i++) @php $period=$year_start.'-'.($i<10? '0'.$i:$i).'-01'; $valid_period=true; if((date( 'Y')==$year_start && date('m')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976)) $valid_period=false;
+                                        
+@endphp @if($valid_period) @if(isset($contributions[$period]->id))
+                                        <td>
+                                            <table class="table table-striped table-bordered size-13">
+                                                <thead style="display: none">
                                                     <tr>
-                                                        <td>Sueldo</td>
+                                                        <td>
+                                                            <input type="hidden" disabled name="iterator[{{$period}}]" value="{{$contributions[$period]->id}}">
+                                                        </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>Categoria</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Ganado</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Aporte</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Reintegro</td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                            @for($i=1;$i<13;$i++)
-                                                @php
-                                                    $period = $year_start. '-'.($i<10? '0'.$i:$i). '-01';
-                                                    $valid_period = true;
-                                                    if((date('Y')==$year_start && date('m')<=$i) || ($year_start==1976 && $i<=4) || ($year_start<1976))
-                                                        $valid_period = false;
-                                                @endphp
-                                                @if($valid_period)
-                                                    @if(isset($contributions[$period]->id))
+                                                </thead>
+                                                <tr>
                                                     <td>
-                                                        <table class="table table-striped table-bordered size-13">
-                                                            <thead style="display: none">
-                                                                <tr>
-                                                                    <td>
-                                                                        <input type="hidden" disabled name="iterator[{{$period}}]" value="{{$contributions[$period]->id}}">
-                                                                    </td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tr>
-                                                                <td>
-                                                                    <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->base_wage}} </div>
-                                                                    <input type="hidden" disabled name="base_wage[{{$period}}]" value="{{$contributions[$period]->base_wage}}">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <select class="" name="category[{{$period}}]">
+                                                        <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->base_wage}} </div>
+                                                        <input type="hidden" disabled name="base_wage[{{$period}}]" value="{{$contributions[$period]->base_wage}}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <select class="" name="category[{{$period}}]">
                                                                         @foreach($categories as $category)
                                                                             <option value="{{$category->id}}" @if($category->id == $contributions[$period]->category_id) SELECTED @endif >{{$category->percentage}}</option>
                                                                         @endforeach
                                                                     </select>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->gain}} </div>
-                                                                    <input type="hidden" disabled name="gain[{{$period}}]" value="{{$contributions[$period]->gain}}">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->total ?? '-'}} </div>
-                                                                    <input type="hidden" disabled name="total[{{$period}}]" value="{{$contributions[$period]->total??'-'}}">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td id="reim{{$period}}">
-                                                                    {{$reims[$period]->total ?? '-'}}
-                                                                </td>
-                                                            </tr>
-                                                        </table>
                                                     </td>
-                                                    @else
+                                                </tr>
+                                                <tr>
                                                     <td>
-                                                        <table class="table table-bordered table-striped size-13">
-                                                            <thead style="display: none">
-                                                                <tr>
-                                                                    <td>
-                                                                        <input type="hidden" disabled name="iterator[{{$period}}]" value="0">
-                                                                    </td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tr>
-                                                                <td>
-                                                                    <div contenteditable="true" class="editcontent numberformat">0</div>
-                                                                    <input type="hidden" disabled name="base_wage[{{$period}}]" value="0">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <select class="" name="category[{{$period}}]">
+                                                        <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->gain}} </div>
+                                                        <input type="hidden" disabled name="gain[{{$period}}]" value="{{$contributions[$period]->gain}}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->total ?? '-'}} </div>
+                                                        <input type="hidden" disabled name="total[{{$period}}]" value="{{$contributions[$period]->total??'-'}}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td id="reim{{$period}}">
+                                                        {{$reims[$period]->total ?? '-'}}
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        @else
+                                        <td>
+                                            <table class="table table-bordered table-striped size-13">
+                                                <thead style="display: none">
+                                                    <tr>
+                                                        <td>
+                                                            <input type="hidden" disabled name="iterator[{{$period}}]" value="0">
+                                                        </td>
+                                                    </tr>
+                                                </thead>
+                                                <tr>
+                                                    <td>
+                                                        <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                        <input type="hidden" disabled name="base_wage[{{$period}}]" value="0">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <select class="" name="category[{{$period}}]">
                                                                         @foreach($categories as $category)
                                                                             <option value="{{$category->id}}">{{$category->percentage}}</option>
                                                                         @endforeach
                                                                     </select>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div contenteditable="true" class="editcontent numberformat">0</div>
-                                                                    <input type="hidden" disabled name="gain[{{$period}}]" value="0">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div contenteditable="true" class="editcontent numberformat">0</div>
-                                                                    <input type="hidden" disabled name="total[{{$period}}]" value="0">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td id="reim{{$period}}}">-</td>
-                                                            </tr>
-                                                        </table>
                                                     </td>
-                                                    @endif
-                                                @else
-                                                    <td></td>
-                                                @endif
-                                            @endfor
-                                            <td>
-                                                <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" onclick="createReimbursement({{$year_start}})"><i class="fa fa-dollar"></i></button>
-                                                <button class="btn btn-default" data-toggle="tooltip" data-placement="left" type="button" title="Guardar" onclick="storeData(this)"><i class="fa fa-save"></i></button>
-                                            </td>
-                                        </tr>
-                                    @endfor
-                                </tbody>
-                            </table>
-                        </div>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                        <input type="hidden" disabled name="gain[{{$period}}]" value="0">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                        <input type="hidden" disabled name="total[{{$period}}]" value="0">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td id="reim{{$period}}}">-</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        @endif @else
+                                        <td></td>
+                                        @endif @endfor
+                                        <td>
+                                            <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" onclick="createReimbursement({{$year_start}})"><i class="fa fa-dollar"></i></button>
+                                            <button class="btn btn-default" data-toggle="tooltip" data-placement="left" type="button" title="Guardar" onclick="storeData(this)"><i class="fa fa-save"></i></button>
+                                        </td>
+                                </tr>
+                                @endfor
+                            </tbody>
+                        </table>
                     </div>
+                </div>
             </form>
         </div>
     </div>
@@ -258,10 +255,10 @@
                         <option value="12">Diciembre</option>
                      </select>
                 </div>
-                <div class="form-group">                                        
-                    <label>Sueldo</label>                
+                <div class="form-group">
+                    <label>Sueldo</label>
                     <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
-                    <label>Categor&iacute;a</label> 
+                    <label>Categor&iacute;a</label>
                     <select class="form-control" name="reim_category" id="reim_category">
                         @foreach($categories as $category)
                             <option value="{{$category->id}}">{{$category->percentage}}</option>
@@ -285,7 +282,7 @@
 </div>
 <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
 @endsection
-
+ 
 @section('scripts')
 <script>
     $('.numberformat').each(function(i, obj) {
@@ -389,5 +386,6 @@ function setPeriodData(period,amount){
     alert(period+' - '+amount);
     $('#main'+period).html(amount);
 }
+
 </script>
 @endsection

@@ -35,18 +35,20 @@ use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\RetirementFund\RetFunState;
 use Muserpol\Models\RetirementFund\RetFunRecord;
+use DB;
 class RetirementFundController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     */
+     */ 
     public function index()
     {                
         return view('ret_fun.index');
        
     }
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -79,8 +81,7 @@ class RetirementFundController extends Controller
         $biz_rules = [];
                                
         $has_ret_fun = false;
-        $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate_id)->where('code','NOT LIKE','%A')->first();
-    
+        $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate_id)->where('code','NOT LIKE','%A')->first();        
         if(isset($ret_fun->id)){
             $has_ret_fun = true;
             $biz_rules = [
@@ -156,7 +157,7 @@ class RetirementFundController extends Controller
         $rules = array_merge($rules,$biz_rules);
         
                 
-        for($i=0;$i<sizeof($first_name);$i++){
+        for($i=0;is_array($first_name) && $i<sizeof($first_name);$i++){
             $beneficiary_has_lastname = false;                
             if($request->beneficiary_last_name[$i] == '' && $request->beneficiary_mothers_last_name[$i]=='')
                 $beneficiary_has_lastname = true;
@@ -204,14 +205,18 @@ class RetirementFundController extends Controller
         $nextcode = RetirementFund::where('affiliate_id',$request->affiliate_id)->where('code','LIKE','%A')->first();
         if(isset($nextcode->id))
         {
-            $code = str_replace("A","",$nextcode->code);    
+            $code = str_replace("A","",$nextcode->code);
         }else{
-            $ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();        
-            if(!isset($ret_fund->id))
-            $code = Util::getNextCode ("");
-            else        
-            $code = Util::getNextCode ($ret_fund->code);
-        }
+            
+            //$ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
+            $ret_fund = RetirementFund::select('id','code')
+            ->limit(10)
+            ->orderBy('id','desc')
+            ->get();
+             
+            $ret_fun_code = $this->getLastCode($ret_fund);                        
+            $code = Util::getNextCode ($ret_fun_code);
+        }        
         
         $retirement_fund = new RetirementFund();
         $this->authorize('create', $retirement_fund);
@@ -224,12 +229,19 @@ class RetirementFundController extends Controller
         $retirement_fund->reception_date = Carbon::now();
         $retirement_fund->code = $code;
         $retirement_fund->workflow_id = 4;
-        $retirement_fund->wf_state_current_id = 1;
+        $retirement_fund->wf_state_current_id = 19;
         //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal_ret_fun = 0;
         $retirement_fund->total_ret_fun = 0;        
         $retirement_fund->reception_date = date('Y-m-d');
+        $retirement_fund->inbox_state = true;
+
         $retirement_fund->save();
+        $reception_code = Util::getNextAreaCode($retirement_fund->id);
+        
+
+                
+
         $af = Affiliate::find($request->affiliate_id);
         switch ($request->ret_fun_modality) {
             case 1:
@@ -248,6 +260,7 @@ class RetirementFundController extends Controller
                 break;
         }
         $af->save();
+
         //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
         
         foreach ($requirements  as  $requirement)
@@ -274,7 +287,7 @@ class RetirementFundController extends Controller
         $beneficiary->second_name = strtoupper(trim($request->applicant_second_name));
         $beneficiary->surname_husband = strtoupper(trim($request->applicant_surname_husband));        
         $beneficiary->birth_date = $request->applicant_birth_date;        
-        $beneficiary->gender = "M";        
+        $beneficiary->gender = $request->applicant_gender;        
         $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));        
         $beneficiary->type = "S";
@@ -345,7 +358,7 @@ class RetirementFundController extends Controller
         $address_rel->save();
         
         
-        for($i=0;$i<sizeof($first_name);$i++){
+        for($i=0;$i<is_array($first_name) && sizeof($first_name);$i++){
             if($first_name[$i] != "" && ($last_name[$i] != "" || $mothers_last_name[$i] != "") ){
                 $beneficiary = new RetFunBeneficiary();
                 $beneficiary->retirement_fund_id = $retirement_fund->id;
@@ -434,6 +447,14 @@ class RetirementFundController extends Controller
 
         $observation_types = ObservationType::where('module_id',3)->get();
         
+        //selected documents
+        $submitted = RetFunSubmittedDocument::
+            select('procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id')
+            ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+            ->orderby('procedure_requirements.number','ASC')
+            ->where('ret_fun_submitted_documents.retirement_fund_id',$id)
+            ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'); 
+
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -454,7 +475,8 @@ class RetirementFundController extends Controller
             'procedure_types'   =>  $procedure_types,
             'modalities'    =>  $modalities,
             'observation_types' => $observation_types,
-            'observations' => $retirement_fund->ret_fun_observations
+            'observations' => $retirement_fund->ret_fun_observations,
+            'submitted' =>  $submitted
         ];
         
         return view('ret_fun.show',$data);
@@ -664,6 +686,7 @@ class RetirementFundController extends Controller
                 $old_ben->surname_husband = $new_ben['surname_husband'];
                 $old_ben->birth_date = $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
+                $old_ben->state = $new_ben['state'];
                 $old_ben->save();
             }else{
                 $beneficiary = new RetFunBeneficiary();
@@ -678,6 +701,7 @@ class RetirementFundController extends Controller
                 $beneficiary->surname_husband = strtoupper(trim($new_ben['surname_husband']));
                 $beneficiary->birth_date = $new_ben['birth_date'];
                 $beneficiary->gender = $new_ben['gender'];
+                $old_ben->state = $new_ben['state'];
                 // $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
                 // $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
                 $beneficiary->type = "N";
@@ -1160,5 +1184,54 @@ class RetirementFundController extends Controller
 
         ];
         return $data;
+    }
+
+    public function editRequirements(Request $request, $id){
+                
+        //return $request->requirements;
+        $documents = RetFunSubmittedDocument::
+            select('procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id')
+            ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+            ->orderby('procedure_requirements.number','ASC')
+            ->where('ret_fun_submitted_documents.retirement_fund_id',$id)
+            ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');        
+
+        $num = $num2 = 0;
+        foreach($request->requirements as $requirement){ 
+                $from = $to = 0;
+                for($i=0;$i<count($requirement);$i++){
+                    $from = $requirement[$i]['number'];
+                    if($requirement[$i]['status'] == true)
+                    {      
+                        $to = $requirement[$i]['id'];                                          
+                    }
+                }
+                if($documents[$from] != $to){
+                    $doc = RetFunSubmittedDocument::where('retirement_fund_id',$id)->where('procedure_requirement_id',$documents[$from])->first();
+                    $doc->procedure_requirement_id = $to;                    
+                    $doc->save();
+                }
+        }
+        
+        return $num;
+    }
+    private function getLastCode($retirement_funds){
+        $num = 0;
+        $year = 0;
+        if(count($retirement_funds) == 0)
+        return "";
+        foreach($retirement_funds as $retirement_fund)
+        {
+            $code = str_replace('A','',$retirement_fund->code);     
+            if( $code != "")
+            {
+                $code = explode('/',$code);
+                if($code[1]>$year)
+                    $year = $code[1];
+                if($code[0]>$num)
+                    $num = $code[0];
+            }
+        }
+        return $num."/".$year;
     }
 }

@@ -3,7 +3,7 @@ import {mapGetters} from 'vuex';
 import { cellPhoneInputMaskAll, phoneInputMaskAll }  from "../../helper.js";
 export default {
   props:[
-    'modality',
+
     'cities',
     'kinships',
     'spouse',
@@ -49,7 +49,6 @@ export default {
       show_apoderado_form: false,
       applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
 
-
       error:{
         applicant_identity_card: false,
       }
@@ -66,6 +65,11 @@ export default {
     }),
     applicantIsMale(){
       return this.applicant_gender == 'M';
+    },
+    kinshipsFilter(){
+      return this.kinships.filter((k) => {
+        return !(this.retfun.modality_id == 4 && k.id == 1);
+      })
     }
   },
   methods: {

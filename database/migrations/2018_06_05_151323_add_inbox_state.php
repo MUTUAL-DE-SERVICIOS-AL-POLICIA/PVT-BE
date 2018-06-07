@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class RetFunObservationIsEnabled extends Migration
+class AddInboxState extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class RetFunObservationIsEnabled extends Migration
      */
     public function up()
     {
-        //
-        Schema::table('ret_fun_observations', function (Blueprint $table) {
-            $table->boolean('is_enabled')->default(false);
+        Schema::table('retirement_funds', function (Blueprint $table) {
+            $table->boolean('inbox_state')->default(false);
         });
     }
 
@@ -26,6 +25,8 @@ class RetFunObservationIsEnabled extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('retiremet_funds', function (Blueprint $table) {
+            //
+        });
     }
 }

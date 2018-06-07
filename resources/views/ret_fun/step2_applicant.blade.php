@@ -32,7 +32,7 @@
                             <div class="col-md-8">
                                 <select class="form-control" name="applicant_kinship" v-model.trim="applicant_kinship_id" v-validate.initial="'required'">
                                     <option :value="null"></option>
-                                    <option v-for="kinship in kinships" :value="kinship.id">@{{ kinship.name }}</option>
+                                    <option v-for="(kinship, index) in kinshipsFilter" :value="kinship.id" :key="index">@{{ kinship.name }}</option>
                                 </select>
                                 <i v-show="errors.has('applicant_kinship')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('applicant_kinship')" class="text-danger">@{{ errors.first('applicant_kinship') }}</span>
@@ -139,16 +139,18 @@
                                 <input type="date" class="form-control" v-model.trim="applicant_birth_date">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" :class="{'has-error': errors.has('applicant_gender') }">
                             <div class="col-md-4">
                                 <label class="control-label">Genero</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control m-b" name="applicant_gender" v-model.trim="applicant_gender">
+                                <select class="form-control m-b" name="applicant_gender" v-model.trim="applicant_gender" v-validate.initial="'required'">
                                     <option :value="null"></option>
                                     <option value="M">Masculino</option>
                                     <option value="F">Femenino</option>
                                 </select>
+                                <i v-show="errors.has('applicant_gender')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('applicant_gender')" class="text-danger">@{{ errors.first('applicant_gender') }}</span>
                             </div>
                         </div>
                     </div>
@@ -170,7 +172,7 @@
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-danger" v-show="applicant_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                                 </span>
-                                            </div><!-- /input-group -->   
+                                            </div><!-- /input-group -->
                                         </div>
                                     </div>
                                 </div>
