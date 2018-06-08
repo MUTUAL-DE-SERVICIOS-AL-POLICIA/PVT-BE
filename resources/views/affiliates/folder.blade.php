@@ -66,16 +66,13 @@
                 </div>                
                 <div class="form-group"><label>N&uacute;mero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control"></div>
                 
-                <div class="form-group"><label>Pago</label> 
-                    {{-- <div class="vote-icon"> --}}
-                            <div class="toggle">
-                                    <label><input type="radio" name="toggle"><span>Pagado</span></label>    
-                                </div>
-                                <div class="toggle">
-                                    <label><input type="radio" name="toggle"><span>No Pagado</span></label>
-                                </div>
-                    {{-- <input name="is_paid" type="checkbox" value="paid"  class="form-control"> --}}
-                {{-- </div> --}}
+                <div class="form-group"><label>Pago</label>                     
+                    <div class="toggle">
+                        <label><input type="radio" name="is_paid" value="paid"><span>Pagado</span></label>    
+                    </div>
+                    <div class="toggle">
+                        <label><input type="radio" name="is_paid"  value="nopaid"><span>No Pagado</span></label>
+                    </div>                    
                 </div>
                 
                 <div class="form-group"><label>Nota</label> <input name="note" type="text" placeholder="Nota adicionales" class="form-control"></div>

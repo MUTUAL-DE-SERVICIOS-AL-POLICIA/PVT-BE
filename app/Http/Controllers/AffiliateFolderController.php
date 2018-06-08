@@ -46,7 +46,7 @@ class AffiliateFolderController extends Controller
         $folder->note = $request->note;
         if($request->is_paid == 'paid')
             $folder->is_paid = true;
-        else
+        if($request->is_paid == 'nopaid')
             $folder->is_paid = false;
         $folder->save();
         return back()->withInput();

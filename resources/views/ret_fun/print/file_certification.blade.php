@@ -35,7 +35,7 @@
                         <tr>
                             <td class="text-center uppercase font-bold px-5 py-3">{!! $item->procedure_modality->name ?? 'ERROR' !!} </td>
                             <td class="text-center uppercase font-bold px-5 py-3">{!! $item->procedure_modality->shortened ?? 'ERROR' !!}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">@if($item->is_paid == true) SI @endif @if(!$item->is_paid == false) NO @endif</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">@if($item->is_paid === true) SI @endif @if($item->is_paid === false) NO @endif</td>
                             <td class="text-center uppercase font-bold px-5 py-3">SI</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{!! $item->note !!}</td>
                         </tr>
