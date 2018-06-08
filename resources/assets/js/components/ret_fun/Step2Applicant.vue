@@ -7,7 +7,7 @@ export default {
     'cities',
     'kinships',
     'spouse',
-    'affiliate',
+    'affiliate',    
   ],
   data(){
     return{
@@ -48,6 +48,7 @@ export default {
       show_advisor_form: false,
       show_apoderado_form: false,
       applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
+      date_derelict: this.affiliate.date_derelict,
 
       error:{
         applicant_identity_card: false,
@@ -56,6 +57,8 @@ export default {
   },
   mounted(){
     //this or define initial value  => [{ value:null }]
+    console.log('date_derelict');
+    console.log(this.affiliate.date_derelict);
     this.addPhoneNumber();
     this.addCellPhoneNumber();
   },
