@@ -24,18 +24,20 @@
                 <table class="w-100 table-info m-b-10">
                     <thead class="bg-grey-darker">
                         <tr class="font-medium text-white text-sm">
-                            <th class="w-50"><strong>TIPOS DE BENEFICIOS</strong></th>
+                            <th class="w-40"><strong>TIPOS DE BENEFICIOS</strong></th>
                             <th class="w-20"><strong>SIGLA</strong></th>
+                            <th class="w-10"><strong>PAGADO</strong></th>
                             <th class="w-10"><strong>EXISTE</strong></th>
-                            <th class="w-20"><strong>DESCRIPCIÓN</strong></th>
+                            <th class="w-20"><strong>NOTA</strong></th>
                         </tr>
                     </thead>
                     @foreach($affiliate_folders as $i=>$item)
                         <tr>
                             <td class="text-center uppercase font-bold px-5 py-3">{!! $item->procedure_modality->name ?? 'ERROR' !!} </td>
                             <td class="text-center uppercase font-bold px-5 py-3">{!! $item->procedure_modality->shortened ?? 'ERROR' !!}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">@if($item->is_paid == true) SI @endif @if(!$item->is_paid == false) NO @endif</td>
                             <td class="text-center uppercase font-bold px-5 py-3">SI</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{!! $item->description !!}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{!! $item->note !!}</td>
                         </tr>
                     @endforeach
                 </table>

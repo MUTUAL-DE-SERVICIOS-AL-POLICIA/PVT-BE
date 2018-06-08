@@ -59,13 +59,28 @@
                 <div class="form-group"><label>Modalidad</label>
                      <select class="form-control" name="procedure_modality_id">
                         <option></option>
-                         @foreach($procedure_modalities as $modality)                         
+                         @foreach($file_modalities as $modality)                         
                          <option value={{$modality->id}}>{{$modality->procedure_type->name ." - " .$modality->name }}</option>
                          @endforeach
                      </select>
+                </div>                
+                <div class="form-group"><label>N&uacute;mero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control"></div>
+                
+                <div class="form-group"><label>Pago</label> 
+                    {{-- <div class="vote-icon"> --}}
+                            <div class="toggle">
+                                    <label><input type="radio" name="toggle"><span>Pagado</span></label>    
+                                </div>
+                                <div class="toggle">
+                                    <label><input type="radio" name="toggle"><span>No Pagado</span></label>
+                                </div>
+                    {{-- <input name="is_paid" type="checkbox" value="paid"  class="form-control"> --}}
+                {{-- </div> --}}
                 </div>
-                <div class="form-group"><label>Codigo De Archivo</label> <input name="code_file" type="text" placeholder="Codigo generado por achivo" class="form-control"></div>
-                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control"></div>
+                
+                <div class="form-group"><label>Nota</label> <input name="note" type="text" placeholder="Nota adicionales" class="form-control"></div>
+
+                <div class="form-group"><label>Codigo De Archivo</label> <input name="code_file" type="text" placeholder="Codigo generado por achivo" class="form-control"></div>                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>

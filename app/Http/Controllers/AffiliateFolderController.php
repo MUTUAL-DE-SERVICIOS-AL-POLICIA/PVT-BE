@@ -43,6 +43,11 @@ class AffiliateFolderController extends Controller
         $folder->procedure_modality_id = $request->procedure_modality_id;
         $folder->code_file = $request->code_file;
         $folder->folder_number = $request->folder_number;
+        $folder->note = $request->note;
+        if($request->is_paid == 'paid')
+            $folder->is_paid = true;
+        else
+            $folder->is_paid = false;
         $folder->save();
         return back()->withInput();
     }
