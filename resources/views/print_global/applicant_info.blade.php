@@ -1,5 +1,5 @@
 
-<table class="table-info w-100">
+<table class="table-info w-100 m-b-5">
     <thead class="bg-grey-darker">
         <tr class="font-medium text-white text-sm">
             {{--  <td class="text-center">

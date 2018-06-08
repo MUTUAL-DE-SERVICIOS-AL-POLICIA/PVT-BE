@@ -25,7 +25,7 @@
                                     </a>
                                     </li>
                                     <li>
-                                        <a href="{{ url('inbox/edited') }}" class="btn-outline" style="border-left:5px solid #59B75C; padding-left:10px; color: #3c3c3c; font-weight: bold;"> <i class="fa fa-check"></i> Revisados
+                                        <a href="{{ url('inbox/edited') }}" class="btn-outline" style="border-left:5px solid #59B75C; padding-left:10px; color: #3c3c3c; background:#F8F8F9;font-weight: bold;"> <i class="fa fa-check"></i> Revisados
                                         {{-- <a href="{{ url('inbox/edited') }}" class="btn-outline" style="background: #59B75C; color: #fff; font-weight: bold;"> <i class="fa fa-check"></i> Revisados --}}
                                         <span class="label label-warning pull-right">@{{totalDocs}}</span>
                                     </a>

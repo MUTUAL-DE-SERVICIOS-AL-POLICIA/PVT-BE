@@ -156,6 +156,11 @@ Vue.component('contribution-select', require('./components/contribution/SelectCo
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
+
+// utils
+Vue.component('swal-modal', require('./components/utils/SweetAlertModal.vue'));
+
+
 const app = new Vue({
 	el: '#app',
 	store

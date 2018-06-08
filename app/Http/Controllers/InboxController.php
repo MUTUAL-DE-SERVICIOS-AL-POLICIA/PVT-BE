@@ -9,7 +9,9 @@ use Muserpol\Models\RetirementFund\RetirementFund;
 use Illuminate\Validation\ValidationException;
 use Log;
 use DB;
+use Auth;
 use Muserpol\Models\Role;
+use Exception;
 class InboxController extends Controller
 {
     public function received()
@@ -152,5 +154,37 @@ class InboxController extends Controller
             'status' => 'success',
             'msg' => 'Okay',
         ], 201);
+    }
+    public function validateDoc(Request $request, $doc_id)
+    {
+        $rol_id = Util::getRol()->id;
+        $module = Role::find($rol_id)->module;
+        switch ($module->id) {
+            case 1:
+            break;
+            case 2:
+            break;
+            case 3:
+                try {
+                    $ret_fun = RetirementFund::find($doc_id);
+                    if ($ret_fun->inbox_state == true) {
+                        throw new Exception('Tramite ya validado.');
+                    }
+                    $ret_fun->inbox_state = true;
+                    $ret_fun->user_id = Auth::user()->id;
+
+                    /* TODO
+                     * adicionar fechas de revision calificacion etc.
+                     */
+                    $ret_fun->save();
+                } catch (Exception $exception) {
+                    return response()->json([
+                        'status' => 'error',
+                        'errors' => $exception->getMessage(),
+                    ], 422);
+                }
+                return response()->json($ret_fun, 200);
+            break;
+        }
     }
 }

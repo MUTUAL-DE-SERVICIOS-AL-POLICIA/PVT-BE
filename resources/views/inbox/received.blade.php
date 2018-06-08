@@ -20,7 +20,7 @@
                                 <h5>Tramites</h5>
                                 <ul class="folder-list m-b-md" style="padding: 0">
                                     <li>
-                                        <a href="{{ url('inbox/received') }}" class="btn-outline" style="border-left:5px solid #59B75C; padding-left:10px; color: #3c3c3c; font-weight: bold;"> <i class="fa fa-envelope-o "></i> Recibidos
+                                        <a href="{{ url('inbox/received') }}" class="btn-outline" style="border-left:5px solid #59B75C; padding-left:10px; color: #3c3c3c; background:#F8F8F9;font-weight: bold;"> <i class="fa fa-envelope-o "></i> Recibidos
                                             <span class="label label-warning pull-right">@{{totalDocs}}</span>
                                         </a>
                                     </li>
