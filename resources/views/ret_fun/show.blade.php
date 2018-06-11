@@ -129,24 +129,38 @@
             var cod_folder = button.data('codfile')
             var num_folder = button.data('folnum')
             var moda_id =button.data('modid');
-            console.log(cod_folder)
-            console.log(num_folder)
-            console.log(id)
-            console.log('modalidad'+moda_id)
+            var note = button.data('note');
+            var is_paid = button.data('ispaid');
+            // console.log(num_folder)
+            // console.log(id)
+            // console.log('modalidad'+moda_id)
             var modal = $(this)
             $('#id_folder').val(id)
+            //revisar esta parte con el nuevo disenio
+            //if(typeof(is_paid) === "boolean"){
+                if(is_paid == true){
+                    console.log('paid');
+                    $(".modal-body #paid").prop("checked", true);
+                }
+                if(is_paid == false){
+                    console.log('nopaid');
+                    $(".modal-body #nopaid").prop("checked", true);
+                }
+            //}
+
             modal.find('.modal-body #cod_folder').val(cod_folder)
             modal.find('.modal-body #num_folder').val(num_folder)
-            console.log($('#mod_id').val(moda_id))
+            modal.find('.modal-body #note').val(note)
+            // console.log($('#mod_id').val(moda_id))
         });
         $('#eliminar').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
-            console.log('metodo 2')
+            // console.log('metodo 2')
             var cod_folder = button.data('elim')
-            console.log(cod_folder)
-            console.log($('#cod_file_eli').val(cod_folder))
+            // console.log(cod_folder)
+            // console.log($('#cod_file_eli').val(cod_folder))
         });
-        console.log( "del show... " );
+        // console.log( "del show... " );
         $('#example').DataTable();
     });
 </script>

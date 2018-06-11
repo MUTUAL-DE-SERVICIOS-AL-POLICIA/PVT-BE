@@ -153,7 +153,7 @@ class RetirementFundCertificationController extends Controller
                    ->setOption('margin-bottom', '15mm')
                 //    ->setOption('margin-left', '25mm')
                 //    ->setOption('margin-right', '15mm')
-                   ->setOption('footer-right', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018   ')
+                   ->setOption('footer-right', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
                 //    ->setOption('footer-right', 'Pagina [page] de [toPage]')
                    ->setOption('footer-html', $footerHtml)
                    ->stream("$namepdf");
@@ -172,7 +172,29 @@ class RetirementFundCertificationController extends Controller
         $subtitle = $cite;
         $pdftitle = "Certificación de Archivo";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-        return \PDF::loadView('ret_fun.print.file_certification', compact('date', 'subtitle', 'username', 'cite', 'title', 'number', 'retirement_fund', 'affiliate', 'affiliate_folders', 'applicant'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        $user = Auth::user();
+        $footerHtml = view()->make('ret_fun.print.footer', ['bar_code'=>$this->generateBarCode($retirement_fund)])->render();
+        return \PDF::loadView(
+                'ret_fun.print.file_certification', 
+                compact(
+                    'date', 
+                    'subtitle', 
+                    'username', 
+                    'cite', 
+                    'title', 
+                    'number', 
+                    'retirement_fund', 
+                    'affiliate', 
+                    'affiliate_folders', 
+                    'applicant',
+                    'user'))
+                ->setPaper('letter')
+                ->setOption('encoding', 'utf-8')
+                ->setOption('margin-bottom', '15mm')
+                //->setOption('footer-right', 'Pagina [page] de [toPage]')
+                ->setOption('footer-right', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+                ->setOption('footer-html', $footerHtml)
+                ->stream("$namepdf");
 
     }
     public function printLegalReview($id)
@@ -441,5 +463,16 @@ class RetirementFundCertificationController extends Controller
             ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
             ->stream("$namepdf");
+    }
+
+    private function generateBarCode($retirement_fund){
+        $bar_code = \DNS2D::getBarcodePNG((
+                        $retirement_fund->getBasicInfoCode()['code']."\n\n".$retirement_fund->getBasicInfoCode()['hash']), 
+                        "PDF417", 
+                        100, 
+                        33, 
+                        array(1, 1, 1)
+                    );
+        return $bar_code;
     }
 }
