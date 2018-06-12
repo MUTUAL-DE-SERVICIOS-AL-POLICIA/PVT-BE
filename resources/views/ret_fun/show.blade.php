@@ -4,20 +4,41 @@
 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
+    <div class="col-md-5">
         {!!Breadcrumbs::render('show_retirement_fund', $retirement_fund)!!}
     </div>
-    <div class="pull-right" style="margin-top:20px; margin-right:150px;">
-        <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
-            <div>
-                <div v-if="status == true" data-toggle="tooltip" data-placement="right" title="Tramite ya procesado">
-                    <button data-toggle="tooltip" data-placement="right" title="Tramite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button>
-                </div>
-                <div v-else>
-                    <button data-toggle="tooltip" data-placement="right" title="Procesar tramite" class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="showModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
-                </div>
+    <div class="col-md-7 text-center" style="margin-top:20px;">
+        <div class="pull-left">
+            <button class="btn btn-primary " type="button"><i class="fa fa-check"></i>&nbsp;Submit</button>
+            <button class="btn btn-default " type="button"><i class="fa fa-map-marker"></i>&nbsp;&nbsp;Map</button>
+            <button type="button" class="btn btn-outline btn-warning">Warning</button>
+            <button type="button" class="btn btn-outline btn-danger">Danger</button>
+            <button class="btn btn-primary dim" type="button"><i class="fa fa-check"></i></button>
+            <button class="btn btn-outline btn-info  dim" type="button"><i class="fa fa-paste"></i> </button>
+
+            <button class="btn btn-primary btn-circle btn-lg" type="button"><i class="fa fa-list"></i></button>
+            <button class="btn btn-success btn-circle btn-lg" type="button"><i class="fa fa-list"></i></button>
+            <button class="btn btn-warning btn-circle btn-lg" type="button"><i class="fa fa-times"></i></button>
+
+            <div class="btn-group">
+                <button class="btn btn-white" type="button">Left</button>
+                <button class="btn btn-success" type="button">Middle</button>
+                <button class="btn btn-white" type="button">Right</button>
             </div>
-        </swal-modal>
+            <a class="btn btn-success btn-rounded" href="#">Success</a>
+        </div>
+        <div class="pull-right">
+            <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
+                <div>
+                    <div v-if="status == true" data-toggle="tooltip" data-placement="top" title="Tramite ya procesado">
+                        <button data-toggle="tooltip" data-placement="right" title="Tramite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                    </div>
+                    <div v-else>
+                        <button data-toggle="tooltip" data-placement="right" title="Procesar tramite" class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="showModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                    </div>
+                </div>
+            </swal-modal>
+        </div>
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
