@@ -7,234 +7,94 @@
     </div>
 </div>
 <div class="wrapper wrapper-content">
-    {{--
-    <div class="col-md-6">
-        <div class="ibox">
-            <div class="ibox-title">
-                <h5>Tramites por revisar</h5>
-            </div>
-            <div class="ibox-content" style="">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover display" id="datatables-inbox-left" cellspacing="0" width="100%"
-                        style="font-size: 10px">
-                        <thead>
-                            <tr class="success">
-                                <th>ID</th>
-                                <th>ci</th>
-                                <th>Nombre de beneficiario</th>
-                                <th>Regional</th>
-                                <th>Tŕamite</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th style="max-width: 100px; padding:5px;"><input type="text" class="form-control search-icon" style="width:100%; font-family:'Font Awesome'"
-                                        placeholder="&#xf002;"></th>
-                                <th style="max-width: 60px;padding:5px;"><input type="text" class="form-control search-icon" style="width:100%; font-family:'Font Awesome'"
-                                        placeholder="&#xf002;"></th>
-                                <th style="max-width: 60px;padding:5px;"><input type="text" class="form-control search-icon" style="width:100%; font-family:'Font Awesome'"
-                                        placeholder="&#xf002;"></th>
-                                <th style="max-width: 60px;padding:5px;"><input type="text" class="form-control search-icon" style="width:100%; font-family:'Font Awesome'"
-                                        placeholder="&#xf002;"></th>
-                                <th style="max-width: 60px;padding:5px;"><input type="text" class="form-control search-icon" style="width:100%; font-family:'Font Awesome'"
-                                        placeholder="&#xf002;"></t>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div> --}}
     <div class="row">
-        <div class="col-lg-3">
-            <div class="ibox float-e-margins">
-                <div class="ibox-content mailbox-content">
-                    <div class="file-manager">
-                        {{-- <a class="btn btn-block btn-primary compose-mail" ui-sref="email_compose">Compose Mail</a> --}}
-
-                        <div class="space-25"></div>
-                        <h5>Tramites</h5>
-                        <ul class="folder-list m-b-md" style="padding: 0">
-                            <li>
-                                <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`received`"
-                                    inline-template>
-                                    <a href="{{ url('inbox/received') }}" class="btn-outline"> <i class="fa fa-envelope-o "></i> Recibidos
+        <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`"
+            inline-template>
+            <div>
+                <div class="col-lg-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content mailbox-content">
+                            <div class="file-manager">
+                                {{-- <a class="btn btn-block btn-primary compose-mail" ui-sref="email_compose">Compose Mail</a> --}}
+                                <div class="space-25"></div>
+                                <h5>Tramites</h5>
+                                <ul class="folder-list m-b-md" style="padding: 0">
+                                    <li>
+                                        <a href="{{ url('inbox/received') }}" class="btn-outline"> <i class="fa fa-envelope-o "></i> Recibidos
+                                        {{-- <span class="label label-warning pull-right">@{{totalDocs}}</span> --}}
+                                    </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('inbox/edited') }}" class="btn-outline" style="border-left:5px solid #59B75C; padding-left:10px; color: #3c3c3c; background:#F8F8F9;font-weight: bold;"> <i class="fa fa-check"></i> Revisados
+                                        {{-- <a href="{{ url('inbox/edited') }}" class="btn-outline" style="background: #59B75C; color: #fff; font-weight: bold;"> <i class="fa fa-check"></i> Revisados --}}
                                         <span class="label label-warning pull-right">@{{totalDocs}}</span>
                                     </a>
-                                </tabs-content>
-                            </li>
-                            <li>
-                                <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`"
-                                    inline-template>
-                                    <a href="{{ url('inbox/edited') }}" class="btn-outline" style="background: #59B75C; color: #fff; font-weight: bold;"> <i class="fa fa-check"></i> Revisados
-                                        <span class="label label-warning pull-right">@{{totalDocs}}</span>
-                                    </a>
-                                </tabs-content>
-                            </li>
-                        </ul>
-
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-9 animated fadeInRight">
-            <div class="mail-box-header">
-                {{-- <form method="get" action="index.html" class="pull-right mail-search ng-pristine ng-valid">
-                    <div class="input-group">
-                        <input type="text" class="form-control input-sm" name="search" placeholder="Search email">
-                        <div class="input-group-btn">
-                            <button type="submit" class="btn btn-sm btn-primary">
-                        Search
-                    </button>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
                         </div>
                     </div>
-                </form> --}}
-                <h2>
-                    <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`"
-                        inline-template>
-                        <span>
+                </div>
+                <div class="col-lg-9 animated fadeInRight">
+                    <div class="mail-box-header">
+                        <h2>
+                            <span>
                             Revisados (@{{totalDocs}})
                         </span>
-                    </tabs-content>
-                </h2>
-                {{-- <div class="mail-tools tooltip-demo m-t-md">
-                    <div class="btn-group pull-right">
-                        <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
-                        <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
+                        </h2>
+                        <div class="mail-tools tooltip-demo m-t-md" style="margin-bottom:45px;">
+                            <div>
+                                {{-- backward  --}}
+                                <div class="col-md-5 text-center">
+                                    <transition name="fade" enter-active-class="animated bounceInLeft" leave-active-class="animated bounceOutleft">
+                                        <div class="input-group" v-if="docs > 0">
+                                            <span class="input-group-btn">
+                                                <button :disabled="! docs > 0 " class="btn " :class="{'btn-primary': docs > 0  }" @click="sendBackward()" data-toggle="tooltip"
+                                                    data-placement="top" title="Enviar los tramites seleccionados"><i class="fa fa-arrow-left"></i> Enviar <i class="fa fa-send"></i> <strong>(@{{docs}})</strong></button>
+                                            </span>
+                                            <select name="" v-model="wfSequenceBack" id="" class="form-control">
+                                                <option :value="null"> Seleccione a donde enviara los tramites </option>
+                                                <option :value="wfs.wf_state_id" v-for="(wfs, index) in wfSequenceBackList">@{{wfs.wf_state_name}}</option>
+                                            </select>
+                                        </div>
+                                    </transition>
+                                </div>
+                                <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                                    <div class="col-md-2 text-center" v-if="! docs > 0 ">
+                                        <button class="btn btn-default" @click="getData()" data-toggle="tooltip" data-placement="top" title="Actualizar">
+                                            Actualizar <i class="fa fa-refresh"></i>
+                                        </button>
+                                    </div>
+                                </transition>
+                                {{-- forward --}}
+                                <div class="col-md-5 col-xs-offset-2 text-center">
+                                    <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutRight">
+                                        <div class="input-group" v-if="docs > 0">
+                                            <select name="" v-model="wfSequenceNext" id="" class="form-control">
+                                                <option :value="null"> Seleccione a donde enviara los tramites </option>
+                                                <option :value="wfs.wf_state_id"  v-for="(wfs, index) in wfSequenceNextList">@{{wfs.wf_state_name}}</option>
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button :disabled="! docs > 0 " class="btn" :class="{'btn-primary': docs > 0  }" @click="sendForward" data-toggle="tooltip"
+                                                    data-placement="top" title="Enviar los tramites seleccionados">Enviar <i class="fa fa-send"></i> <strong>(@{{docs}})</strong>  <i class="fa fa-arrow-right">  </i></button>
+                                            </span>
+                                        </div>
+                                    </transition>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
-                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i></button>
-                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i></button>
-                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i></button>
-                </div> --}}
+                    <div class="mail-box">
+                        <vue-tabs @tab-change="handleTabChange">
+                            <v-tab :title="`${itab.name} (${classification(itab.id).length})`" :dataId="itab.id" icon="fa fa-check" v-for="(itab, index) in workflows"
+                                :key="`tab-edited-${index}`" :suffix="` <span class='badge'> ${classification(itab.id).length} </span>`">
+                                <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="classification(itab.id)"></inbox-content>
+                                </tab>
+                        </vue-tabs>
+                    </div>
+                </div>
             </div>
-            <div class="mail-box">
-                <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`" inline-template>
-                    <tabs>
-                        <tab :name="`${itab.name} `" v-for="(itab, index) in workflows" :key="index" :suffix="` <span class='badge'> ${classification(itab.id).length} </span>`">
-                            <inbox-content :workflow-id="itab.id" :documents="classification(itab.id)"></inbox-content>
-                        </tab>
-                    </tabs>
-                </tabs-content>
-
-            </div>
-        </div>
+        </tabs-content>
     </div>
-</div>
 @endsection
- 
-@section('styles')
-<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
-<style>
-    td.highlight {
-        background-color: #e3eaef !important;
-    }
-
-    .table-hover tbody tr:hover td,
-    .table-hover tbody tr:hover th {
-        background-color: #e3eaef;
-    }
-
-    .yellow-row {
-        background-color: #ffe6b3 !important;
-    }
-
-    thead,
-    tfoot {
-        display: table-header-group;
-    }
-</style>
-@endsection
- 
-{{-- @section('scripts')
-<script src="{{ asset('/js/datatables.js')}}"></script>
-<script>
-    $(document).ready(function () {
-        $('body').addClass("mini-navbar");
-        var datatableInboxLeft = $('#datatables-inbox-left').DataTable({
-            responsive: true,
-            fixedHeader: {
-                header: true,
-                footer: true,
-                headerOffset: $('#navbar-fixed-top').outerHeight()
-            },
-            order: [],
-            /* para personalizar el orden
-             columnDefs: [
-               { type: 'monthYear', targets: 0 }
-            ],
-            */
-            ajax: "{{ url('/api/documents/edited', [\Muserpol\Helpers\Util::getRol()->id, \Muserpol\Helpers\Util::getAuthUser()->id]) }}",
-            dom:"<'row'<'col-sm-12'lB>><'row'<'col-sm-12't>><'row'<'col-sm-5'i>><'row'<'bottom'p>>",
-            lengthMenu: [[10, 15, 25, 50,100, -1], [10, 15, 25, 50,100, "Todos"]],
-            language: {
-                "lengthMenu": "Ver _MENU_ rgistros",
-                "zeroRecords": "No hay ningun registro",
-                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                "infoEmpty": "No hay registros disponibles",
-                "infoFiltered": "(filtered from _MAX_ total entries)",
-                "paginate": {
-                    "first":      "Primero",
-                    "last":       "Ultimo",
-                    "next":       "Siguiente",
-                    "previous":   "Anterior"
-                },
-            },
-            buttons:[
-                {extend: 'colvis', columnText: function ( dt, idx, title ) { return (idx+1)+': '+title; }},
-                { extend: 'copy'},
-                { extend: 'csv'},
-                { extend: 'excel'},
-            ],
-            columns:[
-                {data: 'id'},
-                {data: 'ci'},
-                {data: 'name'},
-                {data: 'city'},
-                {data: 'code'},
-            ],
-            // "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            //     if ( aData.type == " RE " )
-            //     {
-            //         $('td', nRow).addClass('warning');
-            //     }
-            // }
-        });
-        datatableInboxLeft.columns().every( function () {
-            var that = this;
-            $('input', this.footer()).on('keyup change', function () {
-                if ( that.search() !== this.value ) {
-                    that.search( this.value ).draw();
-                }
-            });
-        });
-        /*  para personalizar el orden
-        jQuery.extend(jQuery.fn.dataTableExt.oSort, {
-            "monthYear-pre": function(s) {
-                var a = s.split('-');
-                // Date uses the American "MM DD YY" format
-                return new Date(a[0] + ' 01 ' + a[1]);
-            },
-            "monthYear-asc": function(a, b) {
-                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-            },
-            "monthYear-desc": function(a, b) {
-                return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-            }
-        });
-        */
-
-         $('#datatables-inbox-left tbody').on('mouseenter', 'td', function () {
-            var colIdx = datatableInboxLeft.cell(this).index().column;
-            $( datatableInboxLeft.cells().nodes()).removeClass('highlight');
-            $( datatableInboxLeft.column(colIdx).nodes()).addClass( 'highlight' );
-        } );
-        $('[data-toggle="tooltip"]').tooltip();
-        $('.btn.btn-default.buttons-collection.buttons-colvis').on('click', function () {
-            $('div.dt-button-background').remove()
-        });
-    })
-
-</script>
-@endsection --}}

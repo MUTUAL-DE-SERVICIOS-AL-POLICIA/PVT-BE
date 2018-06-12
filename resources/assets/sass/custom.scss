@@ -507,3 +507,10 @@ input.largerCheckbox {
 #disabled-button-wrapper.disabled {
   cursor: not-allowed;
 }
+
+.md-skin .navbar-fixed-top{
+	z-index: 1000;
+}
+.navbar-static-side{
+	z-index: 999;
+}

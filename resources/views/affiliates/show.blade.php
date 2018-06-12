@@ -24,6 +24,9 @@
                 </a>
             @endif
         @endcan
+        <a href="{{route('create_quota_aid', $affiliate->id)}}">
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-paste"></i> </button>
+        </a>
         <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
             <i class="fa fa-history"></i>
         </button>
