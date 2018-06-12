@@ -134,6 +134,7 @@ class RetirementFundCertificationController extends Controller
             add support utf-8
         */
         $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code']."\n\n". $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
 
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
@@ -154,7 +155,7 @@ class RetirementFundCertificationController extends Controller
                    ->setOption('margin-bottom', '15mm')
                 //    ->setOption('margin-left', '25mm')
                 //    ->setOption('margin-right', '15mm')
-                    ->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
+                    //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
                 //    ->setOption('footer-right', 'Pagina [page] de [toPage]')
                    ->setOption('footer-html', $footerHtml)
                    ->stream("$namepdf");
