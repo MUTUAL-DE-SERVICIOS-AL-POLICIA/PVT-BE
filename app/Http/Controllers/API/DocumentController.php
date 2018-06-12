@@ -9,8 +9,10 @@ use Yajra\DataTables\DataTables;
 use Muserpol\Helpers\Util;
 use DB;
 use Muserpol\Models\Role;
-use Muserpol\Workflow;
+use Muserpol\Models\Workflow\Workflow;
 use Auth;
+use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\Models\Workflow\WorkflowSequence;
 class DocumentController extends Controller
 {
     public function received(Request $request, $rol_id)
@@ -123,7 +125,8 @@ class DocumentController extends Controller
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
-                        concat('/economic_complement/', economic_complements.id) as path
+                        concat('/economic_complement/', economic_complements.id) as path,
+                        false as status
                         "
                     )
                 )
@@ -147,7 +150,8 @@ class DocumentController extends Controller
                         ret_fun_cities.second_shortened as city,
                         retirement_funds.reception_date as reception_date,
                         retirement_funds.workflow_id as workflow_id,
-                        concat('/ret_fun/', retirement_funds.id) as path
+                        concat('/ret_fun/', retirement_funds.id) as path,
+                        false as status
                         "
                         )
                     )
@@ -168,10 +172,9 @@ class DocumentController extends Controller
             ->select('workflows.id')
             ->where('roles.id', '=', $rol_id)
             ->pluck('id');
-        $wf_current_state = DB::table('wf_states')->where('role_id', $rol_id)->first();
+        $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id','=', $module->id)->first();
         if ($wf_current_state) {
-            $wf_sequences_next = DB::table("wf_sequences")
-                ->leftJoin('wf_states', 'wf_sequences.wf_state_next_id', '=', 'wf_states.id')
+            $wf_sequences_next = WorkflowSequence::leftJoin('wf_states', 'wf_sequences.wf_state_next_id', '=', 'wf_states.id')
                 ->whereIn("workflow_id", $temp)
                 ->where("wf_state_current_id", $wf_current_state->id)
                 ->where('action', 'Aprobar')

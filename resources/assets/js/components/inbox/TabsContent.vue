@@ -110,6 +110,9 @@ export default {
             return this.workflows.reduce((accu, curr)=>{
                 return accu + this.classification(curr.id).length;
             }, 0)
+        },
+        docss(){
+            return this.dataInbox.filterCi;
         }
     }
 }

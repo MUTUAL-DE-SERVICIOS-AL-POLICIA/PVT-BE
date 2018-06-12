@@ -44,7 +44,7 @@
                         </span>
                         </h2>
                         <div class="mail-tools tooltip-demo m-t-md" style="margin-bottom:45px;">
-                            <div>
+                            <div class="text-center">
                                 {{-- backward  --}}
                                 <div class="col-md-5 text-center">
                                     <transition name="fade" enter-active-class="animated bounceInLeft" leave-active-class="animated bounceOutleft">
@@ -61,14 +61,14 @@
                                     </transition>
                                 </div>
                                 <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-                                    <div class="col-md-2 text-center" v-if="! docs > 0 ">
+                                    <div class="col-md-2 text-center" v-if="! docs > 0">
                                         <button class="btn btn-default" @click="getData()" data-toggle="tooltip" data-placement="top" title="Actualizar">
                                             Actualizar <i class="fa fa-refresh"></i>
                                         </button>
                                     </div>
                                 </transition>
                                 {{-- forward --}}
-                                <div class="col-md-5 col-xs-offset-2 text-center">
+                                <div class="col-md-5 text-center">
                                     <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutRight">
                                         <div class="input-group" v-if="docs > 0">
                                             <select name="" v-model="wfSequenceNext" id="" class="form-control">
@@ -86,10 +86,12 @@
                         </div>
                     </div>
                     <div class="mail-box">
+                       @{{docss}}
                         <vue-tabs @tab-change="handleTabChange">
                             <v-tab :title="`${itab.name} (${classification(itab.id).length})`" :dataId="itab.id" icon="fa fa-check" v-for="(itab, index) in workflows"
                                 :key="`tab-edited-${index}`" :suffix="` <span class='badge'> ${classification(itab.id).length} </span>`">
                                 <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="classification(itab.id)"></inbox-content>
+                                {{-- <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="docss"></inbox-content> --}}
                                 </tab>
                         </vue-tabs>
                     </div>

@@ -4,8 +4,7 @@ namespace Muserpol\Models\Workflow;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WfState extends Model
-{        
-
-    
+class WorkflowSequence extends Model
+{
+    protected $table = "wf_sequences";
 }
