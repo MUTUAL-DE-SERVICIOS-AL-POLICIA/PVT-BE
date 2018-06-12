@@ -199,6 +199,7 @@ class DocumentController extends Controller
             'documents' => $documents,
             'workflows' => $workflows,
             'wf_sequences_next' => $wf_sequences_next,
+            'wf_current_state' => $wf_current_state,
             'wf_sequences_back' => $wf_sequences_back,
         ];
         return $data;

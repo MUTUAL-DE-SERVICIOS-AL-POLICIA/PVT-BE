@@ -50,7 +50,7 @@
                                     <transition name="fade" enter-active-class="animated bounceInLeft" leave-active-class="animated bounceOutleft">
                                         <div class="input-group" v-if="docs > 0">
                                             <span class="input-group-btn">
-                                                <button :disabled="! docs > 0 " class="btn " :class="{'btn-primary': docs > 0  }" @click="sendBackward()" data-toggle="tooltip"
+                                                <button :disabled="! (docs > 0 && wfSequenceBack != null) " class="btn " :class="{'btn-primary': docs > 0  }" @click="sendBackward()" data-toggle="tooltip"
                                                     data-placement="top" title="Enviar los tramites seleccionados"><i class="fa fa-arrow-left"></i> Enviar <i class="fa fa-send"></i> <strong>(@{{docs}})</strong></button>
                                             </span>
                                             <select name="" v-model="wfSequenceBack" id="" class="form-control">
@@ -76,7 +76,7 @@
                                                 <option :value="wfs.wf_state_id"  v-for="(wfs, index) in wfSequenceNextList">@{{wfs.wf_state_name}}</option>
                                             </select>
                                             <span class="input-group-btn">
-                                                <button :disabled="! docs > 0 " class="btn" :class="{'btn-primary': docs > 0  }" @click="sendForward" data-toggle="tooltip"
+                                                <button :disabled="! (docs > 0 && wfSequenceNext != null)" class="btn" :class="{'btn-primary': docs > 0  }" @click="sendForward" data-toggle="tooltip"
                                                     data-placement="top" title="Enviar los tramites seleccionados">Enviar <i class="fa fa-send"></i> <strong>(@{{docs}})</strong>  <i class="fa fa-arrow-right">  </i></button>
                                             </span>
                                         </div>
