@@ -3,7 +3,13 @@
 
     function isActiveRoute($route, $output = 'active')
     {
-        if (Route::currentRouteName() == $route) {
-            return $output;
+        if (is_array($route)) {
+            if (in_array(Route::currentRouteName(), $route)) {
+                return $output;
+            }
+        } else {
+            if (Route::currentRouteName() == $route) {
+                return $output;
+            }
         }
     }

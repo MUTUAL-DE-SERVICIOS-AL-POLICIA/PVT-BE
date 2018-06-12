@@ -91,6 +91,18 @@ Vue.filter('percentage', function (value) {
 });
 
 
+/* tabs */
+import VueTabs from 'vue-nav-tabs'
+import "vue-nav-tabs/themes/vue-tabs.css";
+Vue.use(VueTabs)
+
+
+// import { Tabs, Tab } from 'vue-tabs-component';
+
+// Vue.component('tabs', Tabs);
+// Vue.component('tab', Tab);
+
+
 Vue.component('flash', require('./components/Flash.vue'));
 
 //setting files
@@ -117,6 +129,11 @@ Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualificati
 Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterval.vue'));
 Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
 
+// inbox
+Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));
+Vue.component('inbox-content', require('./components/inbox/Content.vue'));
+
+
 
 // Quota Aid Mortuaries
 Vue.component('quota-aid-mortuary-index', require('./components/quota_aid/Index.vue'));
@@ -141,6 +158,11 @@ Vue.component('contribution-select', require('./components/contribution/SelectCo
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
+
+// utils
+Vue.component('swal-modal', require('./components/utils/SweetAlertModal.vue'));
+
+
 const app = new Vue({
 	el: '#app',
 	store

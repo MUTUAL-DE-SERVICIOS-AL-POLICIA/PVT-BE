@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "datatables.net": "^1.10.16",
     "datatables.net-bs": "^1.10.16",
     "datatables.net-dt": "^1.10.16",
@@ -38,6 +39,7 @@
     "vee-validate": "^2.0.5",
     "vue-currency-filter": "^2.1.1",
     "vue-form-wizard": "^0.8.4",
+    "vue-nav-tabs": "^0.5.7",
     "vue-select": "^2.4.0",
     "vue-sweetalert2": "^1.2.4",
     "vue2-datatable-component": "^2.1.20",

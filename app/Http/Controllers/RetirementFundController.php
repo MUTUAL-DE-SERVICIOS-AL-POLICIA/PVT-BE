@@ -234,6 +234,8 @@ class RetirementFundController extends Controller
         $retirement_fund->subtotal_ret_fun = 0;
         $retirement_fund->total_ret_fun = 0;        
         $retirement_fund->reception_date = date('Y-m-d');
+        $retirement_fund->inbox_state = true;
+
         $retirement_fund->save();
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
         
