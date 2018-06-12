@@ -1,99 +1,11 @@
 <template>
-<div>
-    <div v-if="readOnly">
+
+    <div v-if="editable">
         <div class="row">
-            <div class="col-md-1">
-                <br>
-        <h3><u>Beneficiario</u>.-</h3>
-            </div>
-        </div>
-        <div class="row">
-            <br>
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong>Cedula de identidad: </strong>{{ beneficiary.identity_card }} {{ !!beneficiary.city_identity_card ? beneficiary.city_identity_card.first_shortened : '' }}
-            </div>
-            <div class="col-md-5">
-                <strong>Parentesco: </strong>{{ !!beneficiary.kinship ? beneficiary.kinship.name : '' }}
-            </div>
-        </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong>Primer Nombre: </strong>{{ beneficiary.first_name }}
-            </div>
-            <div class="col-md-5">
-                <strong>Segundo Nombre: </strong>{{ beneficiary.second_name }}
-            </div>
-            </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong> Apellido Paterno: </strong>{{ beneficiary.last_name }}
-            </div>
-            <div class="col-md-5">
-            <strong>Apellido Materno: </strong>{{ beneficiary.mothers_last_name }}
-            </div>
-            </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong>Genero: </strong>{{ getGenderBeneficiary(beneficiary.gender) }}
-            </div>
-            <div class="col-md-5">
-            <strong>Estado Civil: </strong> {{ beneficiary.civil_status }}
-            </div>
-            </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong>Fecha de Nacimiento: </strong>{{ beneficiary.birth_date }}
-            </div>
-            <div class="col-md-5">
-            <strong>Edad: </strong> {{ beneficiaryAge }}
-            </div>
-            </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-                <strong>Telefono: </strong>{{ beneficiary.phone_number }}
-            </div>
-            <div class="col-md-5">
-                <strong>Celular: </strong>{{ beneficiary.cell_phone_number }}
-            </div>
-            </div>
-            <br>
-            <hr>
-        <div class="row"> 
-            <div class="col-md-6">
-                <dl class="dl-">
-                      <div class="col-md-2"></div>
-                        <dt><h3>Documentos Completos:</h3></dt>
-                    </dl>
+            <div class="col-md-12">
+                <div class="text-right">
+                    <button class="btn btn-danger" type="button" v-on:click= "remove"> <i class="fa fa-trash"></i> </button>
                 </div>
-                <div class="col-md-1">
-                <dl class="dl-">
-                    <div v-if="beneficiary.state==true">
-                        <input type="checkbox" name="state" value="true" disabled checked class="form-control">
-                    </div>
-                    <div v-else>
-                        <input type="checkbox" name="state" value="false" disabled class="form-control">
-                    </div>
-                </dl>
-            </div>
-        </div>
-        <hr>
-    </div>
-    <div v-else-if="editable">
-        <div class="row">
-            <div class="col-sm-10"></div>
-            <div class="col-sm-2">
-                <button class="btn btn-danger" type="button" v-on:click= "remove"> <i class="fa fa-trash"></i> </button>
             </div>
         </div>
         <br>
@@ -346,8 +258,8 @@
                 </div>
             </div>
         <div class="hr-line-dashed"></div>
-        </div>
     </div>
+
 </template>
 <script>
 import { getGender } from '../../helper.js'

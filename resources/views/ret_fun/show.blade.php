@@ -10,7 +10,7 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     
-    <div class="row text-center">
+    {{-- <div class="row text-center">
         
         @if(Muserpol\Helpers\Util::getRol()->id == 10)
         <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button> 
@@ -37,7 +37,7 @@
             <i class="fa fa-history"></i>
         </button>
         @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
-    </div>
+    </div> --}}
     
     <div class="row">
         <div class="ibox float-e-margins">
