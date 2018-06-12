@@ -52,75 +52,82 @@
     </div>
     
     <div class="row">
-        <div class="col-md-12">
-            <div class="tabs-container">
-            <div class="tabs-left">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#tab-ret-fun"> Fondo de Retiro</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-affiliate">Afiliado</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-beneficiaries">Beneficiarios</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-summited-document">Documentos Presentados</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-legal-review">Revisi&oacute;n Legal</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-folder">Archivos</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-observations">Observaciones</a></li>
-                </ul>
-                <div class="tab-content ">
-                    <div id="tab-ret-fun" class="tab-pane active">
-                        <div class="panel-body">
-                                @can('update',$retirement_fund)
-                                    <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" inline-template>
-                                        @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
-                                    </ret-fun-info>
-                                @endcan
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                
+                <div class="tabs-container">
+                    <div class="tabs-left">
+                        <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#tab-ret-fun"><i class="glyphicon glyphicon-piggy-bank"></i> Fondo de Retiro</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-affiliate"><i class="fa fa-user"></i> Affiliado </a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-beneficiaries"><i class="fa fa-users"></i> Beneficiarios</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-summited-document"><i class="fa fa-file"></i> Documentos Presentados</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-legal-review"><i class="fa fa-legal"></i> Revisi&oacute;n Legal</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-folder"><i class="fa fa-copy"></i> Archivos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-observations"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
+                        </ul>
+                        <div class="tab-content ">
+                            <div id="tab-ret-fun" class="tab-pane active">
+                                <div class="panel-body">
+                                        @can('update',$retirement_fund)
+                                            <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" inline-template>
+                                                @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
+                                            </ret-fun-info>
+                                        @endcan
+                                </div>
+                            </div>
+                            <div id="tab-affiliate" class="tab-pane">
+                                <div class="panel-body">
+                                    <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template> 
+                                        @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities])
+                                    </affiliate-show>  
+                                </div>
+                            </div>
+                            <div id="tab-beneficiaries" class="tab-pane">
+                                <div class="panel-body">
+                                    @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
+                                        @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
+                                    @endcan
+                                </div>
+                            </div>
+                            <div id="tab-summited-document" class="tab-pane">
+                                <div class="panel-body">
+                                    @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
+                                        {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}
+                                        <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submitted}}"
+                                            inline-template>
+                                            @include('ret_fun.step1_requirements_edit')
+                                        </ret-fun-step1-requirements-edit>
+                                    @endcan
+                                </div>
+                            </div>
+                            <div id="tab-legal-review" class="tab-pane">
+                                <div class="panel-body">
+                                    @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
+                                        @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])                        
+                                    @endcan
+                                </div>
+                            </div>
+                            <div id="tab-folder" class="tab-pane">
+                                <div class="panel-body">
+                                    @can('view',new Muserpol\Models\AffiliateFolder)
+                                        @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
+                                    @endcan
+                                </div>
+                            </div>
+                            <div id="tab-observations" class="tab-pane">
+                                <div class="panel-body">
+                                    @include('ret_fun.observation')
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div id="tab-affiliate" class="tab-pane">
-                        <div class="panel-body">
-                            <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template> 
-                                @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities])
-                            </affiliate-show>  
-                        </div>
-                    </div>
-                    <div id="tab-beneficiaries" class="tab-pane">
-                        <div class="panel-body">
-                            @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
-                                @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
-                            @endcan
-                        </div>
-                    </div>
-                    <div id="tab-summited-document" class="tab-pane">
-                        <div class="panel-body">
-                            @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}
-                        <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submitted}}"
-                                    inline-template>
-                                    @include('ret_fun.step1_requirements_edit')
-                                </ret-fun-step1-requirements-edit>
-                            @endcan
-                        </div>
-                    </div>
-                    <div id="tab-legal-review" class="tab-pane">
-                        <div class="panel-body">
-                            @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])                        
-                            @endcan
-                        </div>
-                    </div>
-                    <div id="tab-folder" class="tab-pane">
-                        <div class="panel-body">
-                            @can('view',new Muserpol\Models\AffiliateFolder)
-                                @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
-                            @endcan
-                        </div>
-                    </div>
-                    <div id="tab-observations" class="tab-pane">
-                        <div class="panel-body">
-                            @include('ret_fun.observation')
-                        </div>
+            
                     </div>
                 </div>
+                
             </div>
         </div>
+        
     </div> <!-- final row !-->
 
 </div>

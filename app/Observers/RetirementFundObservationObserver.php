@@ -16,5 +16,7 @@ class RetirementFundObservationObserver{
         $retfun->ret_fun_id = $rf_observation->id;
         $retfun->message = 'El usuario '.Auth::user()->username.' creo la observación '.$rf_observation->observation_type->name.'.';
         $retfun->save();
+
+        Log::info($retfun);
     }
 }
