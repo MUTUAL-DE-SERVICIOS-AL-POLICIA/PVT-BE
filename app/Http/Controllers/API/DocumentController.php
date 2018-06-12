@@ -134,7 +134,6 @@ class DocumentController extends Controller
                     ->where('economic_complements.state', '=', 'Edited')
                     ->where('economic_complements.user_id', '=', $user_id)
                     ->get();
-                dd($documents);
                 break;
             case 3:
                 # ret fun
@@ -169,10 +168,35 @@ class DocumentController extends Controller
             ->select('workflows.id')
             ->where('roles.id', '=', $rol_id)
             ->pluck('id');
+        $wf_current_state = DB::table('wf_states')->where('role_id', $rol_id)->first();
+        if ($wf_current_state) {
+            $wf_sequences_next = DB::table("wf_sequences")
+                ->leftJoin('wf_states', 'wf_sequences.wf_state_next_id', '=', 'wf_states.id')
+                ->whereIn("workflow_id", $temp)
+                ->where("wf_state_current_id", $wf_current_state->id)
+                ->where('action', 'Aprobar')
+                ->select('wf_states.id as wf_state_id', 'workflow_id as workflow_id', 'wf_states.name as wf_state_name')
+                ->get();
+            /* TODO (improve)*/
+            $wf_sequences_back = DB::table("wf_states")
+            // ->whereIn("workflow_id", $temp)
+            ->where("wf_states.module_id", "=", $module->id)
+            // ->where("wf_state_current_id", $wf_current_state->id)
+            ->where('wf_states.sequence_number', '<', $wf_current_state->sequence_number)
+            ->select('wf_states.id as wf_state_id',
+            //      'workflow_id as workflow_id',
+            'wf_states.name as wf_state_name')
+            ->get();
+        }else{
+            $wf_sequences_next = null;
+            $wf_sequences_back = null;
+        }
         $workflows = Workflow::whereIn('id',$temp)->get();
         $data = [
             'documents' => $documents,
-            'workflows' => $workflows
+            'workflows' => $workflows,
+            'wf_sequences_next' => $wf_sequences_next,
+            'wf_sequences_back' => $wf_sequences_back,
         ];
         return $data;
         // return DataTables::of($documents)

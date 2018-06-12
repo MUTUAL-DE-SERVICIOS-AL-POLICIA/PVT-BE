@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="page-break">
-    <table class="w-100 m-b-15">
+    <table class="w-100 ">
         <tr>
             <th class="w-20 text-left no-padding no-margins align-middle">
                 <div class="text-center">
@@ -56,10 +56,7 @@
                 @endif
             </th>
         </tr>
-        <tr><td colspan="3"><hr></td></tr>
-        <tr><td colspan="3"></td></tr>
-        <tr><td colspan="3"></td></tr>
-        
+        <tr class="no-border"><td colspan="3" class="no-border" style="border-bottom: 1px solid #22292f;"></td></tr>
         <tr>
             <td colspan="3" class="font-bold text-center text-xl uppercase">
                 {{ $title }}
@@ -68,9 +65,9 @@
                 @endif
             </td>
         </tr>
-        <tr><td colspan="3"></td></tr>
-        <tr><td colspan="3"></td></tr>
-        <tr><td colspan="3"></td></tr>
+        {{-- <tr><td colspan="3"></td></tr>
+        <tr><td colspan="3"></td></tr> --}}
+
     </table>
 
     <div class="block">

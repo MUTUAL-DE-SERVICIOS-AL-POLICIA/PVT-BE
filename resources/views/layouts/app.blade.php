@@ -46,6 +46,11 @@
 <script>
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
     });
 </script>
 <script>

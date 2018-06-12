@@ -7,6 +7,18 @@
     <div class="col-lg-9">
         {!!Breadcrumbs::render('show_retirement_fund', $retirement_fund)!!}
     </div>
+    <div class="pull-right" style="margin-top:20px; margin-right:150px;">
+        <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
+            <div>
+                <div v-if="status == true" data-toggle="tooltip" data-placement="right" title="Tramite ya procesado">
+                    <button data-toggle="tooltip" data-placement="right" title="Tramite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                </div>
+                <div v-else>
+                    <button data-toggle="tooltip" data-placement="right" title="Procesar tramite" class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="showModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                </div>
+            </div>
+        </swal-modal>
+    </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     
