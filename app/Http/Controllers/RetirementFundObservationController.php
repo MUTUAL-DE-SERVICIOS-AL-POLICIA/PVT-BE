@@ -44,7 +44,6 @@ class RetirementFundObservationController extends Controller
         $observation->retirement_fund_id = $request->retirement_fund_id;
         $observation->is_enabled = $request->is_enabled;
         $observation->message = $request->message;
-        $observation->date= Carbon::now()->format('Y/d/m');
         $observation->save();
         return back();
     }

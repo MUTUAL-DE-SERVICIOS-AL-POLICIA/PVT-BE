@@ -1,4 +1,17 @@
 <div class="col-lg-12">
+
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <legend>Datos del afiliado</legend>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group"><label class="col-sm-4 control-label">Fecha de desvinculaci&oacute;n</label>
+                        <div class="col-sm-8"><input type="date" name="date_derelict" v-model="date_derelict" value="date_derelict" class="form-control"></div>
+                    </div>
+                </div>                       
+            </div>
+        </div>
+    </div>
     <div class="ibox float-e-margins">
         {{-- <div class="ibox-title">
             <h5>Datos del Solicitante <small> @{{modality}}</small></h5>

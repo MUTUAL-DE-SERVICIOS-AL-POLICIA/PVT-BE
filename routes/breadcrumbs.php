@@ -52,6 +52,13 @@ Breadcrumbs::register('quota_aid_mortuary', function($breadcrumbs)
 {
 	$breadcrumbs->push('Cuota y Auxilio Mortuorio', URL::to('quota_aid'));
 });
+Breadcrumbs::register('create_quota_aid', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('quota_aid_mortuary');
+	$breadcrumbs->push("Nuevo Tramite");
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
+});
+
 Breadcrumbs::register('classify_contributions', function($breadcrumbs,$retirement_fund)
 {	
 	$breadcrumbs->parent('show_retirement_fund',$retirement_fund);
