@@ -11,6 +11,7 @@ use Log;
 use DB;
 use Auth;
 use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowState;
 use Exception;
 class InboxController extends Controller
 {
@@ -169,6 +170,10 @@ class InboxController extends Controller
                     $ret_fun = RetirementFund::find($doc_id);
                     if ($ret_fun->inbox_state == true) {
                         throw new Exception('Trámite ya validado.');
+                    }
+                    $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id', '=', $module->id)->first();
+                    if($wf_current_state->id != $ret_fun->wf_state_current_id){
+                        throw new Exception('Error al validar el Trámite, verifique que el tramite este en unas de las bandejas.');
                     }
                     $ret_fun->inbox_state = true;
                     $ret_fun->user_id = Auth::user()->id;

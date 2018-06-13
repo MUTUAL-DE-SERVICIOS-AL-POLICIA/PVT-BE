@@ -518,3 +518,21 @@ input.largerCheckbox {
 .tab-content{
 	padding: 10px;
 }
+.breadcrumb{
+	margin-top: 20px;
+    margin-bottom: 10px;
+}
+.breadcrumb li a{
+	font-size:19px;
+	font-weight: 100;
+}
+.breadcrumb > li + li:before {
+    font-size: 19px;
+    padding: 0 5px;
+    color: #ccc;
+    content: "/\A0";
+}
+.breadcrumb > .active {
+	font-size:19px;
+	font-weight: 500;
+}

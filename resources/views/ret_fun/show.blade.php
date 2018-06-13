@@ -4,28 +4,15 @@
 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-md-5">
+    <div class="col-md-7">
         {!!Breadcrumbs::render('show_retirement_fund', $retirement_fund)!!}
     </div>
-    <div class="col-md-7 text-center" style="margin-top:20px;">
+    <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
             <button class="btn btn-primary " type="button"><i class="fa fa-check"></i>&nbsp;Submit</button>
-            <button class="btn btn-default " type="button"><i class="fa fa-map-marker"></i>&nbsp;&nbsp;Map</button>
-            <button type="button" class="btn btn-outline btn-warning">Warning</button>
+            <button class="btn btn-danger " type="button"><i class="fa fa-times"></i>&nbsp;Cancel</button>
+            <button type="button" class="btn btn-outline btn-warning"> <i class="fa fa-facebook"></i> &nbsp; Warning</button>
             <button type="button" class="btn btn-outline btn-danger">Danger</button>
-            <button class="btn btn-primary dim" type="button"><i class="fa fa-check"></i></button>
-            <button class="btn btn-outline btn-info  dim" type="button"><i class="fa fa-paste"></i> </button>
-
-            <button class="btn btn-primary btn-circle btn-lg" type="button"><i class="fa fa-list"></i></button>
-            <button class="btn btn-success btn-circle btn-lg" type="button"><i class="fa fa-list"></i></button>
-            <button class="btn btn-warning btn-circle btn-lg" type="button"><i class="fa fa-times"></i></button>
-
-            <div class="btn-group">
-                <button class="btn btn-white" type="button">Left</button>
-                <button class="btn btn-success" type="button">Middle</button>
-                <button class="btn btn-white" type="button">Right</button>
-            </div>
-            <a class="btn btn-success btn-rounded" href="#">Success</a>
         </div>
         <div class="pull-right">
             @if ($has_validate)
