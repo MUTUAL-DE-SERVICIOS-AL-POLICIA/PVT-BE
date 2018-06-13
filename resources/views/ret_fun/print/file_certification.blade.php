@@ -18,7 +18,7 @@
                 <li><strong>ANTECEDENTES DE CARPETA</strong></li>
                 <p>
                     Estableciendo que <strong>@if(sizeof($affiliate_folders)==0)NO @else SI @endif</strong> existe expediente del referido.<br>
-                    Tipo de tramite cancelado:
+                    Tipo de trámite cancelado:
                 </p>
                 @if(sizeof($affiliate_folders)>0)
                 <table class="w-100 table-info m-b-10">

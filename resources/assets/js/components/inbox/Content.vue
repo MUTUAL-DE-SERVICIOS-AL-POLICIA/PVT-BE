@@ -3,10 +3,10 @@
         <thead>
             <tr>
                 <th v-if="inboxState == 'edited'"></th>
-                <th><input type="text" v-model="ci" @keyup="search('ci')" class="form-control" placeholder="ci"></th>
-                <th><input type="text" class="form-control" placeholder="nombre"></th>
-                <th><input type="text" class="form-control" placeholder="# TRAMITE"></th>
-                <th><input type="text" class="form-control" placeholder="FECHA RECECION"></th>
+                <th><input type="text" v-model="ci" @keyup="search('ci')" class="form-control" placeholder="CI"></th>
+                <th><input type="text" class="form-control" placeholder="NOMBRE"></th>
+                <th><input type="text" class="form-control" placeholder="# Trámite"></th>
+                <th><input type="text" class="form-control" placeholder="FECHA RECEPCION"></th>
             </tr>
         </thead>
         <tfoot style="display:table-header-group">
@@ -16,8 +16,8 @@
                 </th>
                 <th class="text-center" style="width:100px;">CI</th>
                 <th class="text-center">NOMBRE</th>
-                <th class="text-center" style="width:100px;"># TRAMITE</th>
-                <th class="text-center">FECHA RECECION</th>
+                <th class="text-center" style="width:100px;"># Trámite</th>
+                <th class="text-center">FECHA RECEPCION</th>
             </tr>
         </tfoot>
         <tbody>
@@ -42,7 +42,7 @@
                 </td>   
                 <td class="text-right mail-date">{{ row.reception_date}}</td>
             </tr>
-            <tr v-if="! documents.length > 0"><td class="text-center" colspan="4">No hay ningun tramite</td></tr>
+            <tr v-if="! documents.length > 0"><td class="text-center" colspan="4">No hay ningun Trámite</td></tr>
         </tbody>
     </table>
 </template>

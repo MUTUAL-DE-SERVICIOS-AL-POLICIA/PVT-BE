@@ -4,7 +4,7 @@
             <div class="modal-footer">
                 <div class="text-center">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h5 class="modal-title"> <i class="fa fa-folder"></i> Historial del Tramite</h5>
+                    <h5 class="modal-title"> <i class="fa fa-folder"></i> Historial del Trámite</h5>
                 </div>
                 <table id="example" class="table table-striped table-bordered" >
                     <thead>

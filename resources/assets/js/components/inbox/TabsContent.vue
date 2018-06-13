@@ -32,7 +32,30 @@ export default {
                 this.wfCurrentState =  data.wf_current_state;
                 this.wfSequenceNextL =  data.wf_sequences_next;
                 this.wfSequenceBackL =  data.wf_sequences_back;
+                this.updateCheckStatus();
             });
+        },
+        updateCheckStatus(){
+            //first method
+            if (this.dataInbox.workflows.length > 0) {
+                this.dataInbox.workflows.forEach(w => {
+                    this.documents.forEach(docs=>{
+                        if (docs.workflow_id == w.workflow_id) {
+                            w.docs.forEach(d => {
+                                if (d.id == docs.id) {
+                                    docs.status = d.status; 
+                                }
+                            });
+                        }
+                    })
+                });
+            }
+            //second method
+            // if(this.dataInbox.workflows.length > 0){
+            //     this.workflows.forEach(wf => {
+            //         this.$store.commit("clear", wf.id);
+            //     });
+            // }
         },
         classification(id){
             return this.documents.filter(v => v.workflow_id == id);
@@ -46,12 +69,12 @@ export default {
             });
             if (found) {
                 if (!this.wfSequenceNextL.find(w=> w.wf_state_id == this.wfSequenceNext)) {
-                    flash("Debe seleccionar el destino al donde enviara los tramites.", "error")
+                    flash("Debe seleccionar el destino al donde enviara los Trámites.", "error")
                     return;
                 }
                 let wfSequenceNextName = this.wfSequenceNextL.find(w=> w.wf_state_id == this.wfSequenceNext).wf_state_name;
                 this.$swal({
-                    title: `¿Está seguro de enviar (${found.docs.length}) tramite(s), de ${this.wfCurrentState.name} a ${wfSequenceNextName} ?`,
+                    title: `¿Está seguro de enviar (${found.docs.length}) Trámite(s), de ${this.wfCurrentState.name} a ${wfSequenceNextName} ?`,
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#59B75C",
@@ -71,17 +94,17 @@ export default {
                             return response.data;
                         }).catch((error) => {
                             this.$swal.showValidationError(`Solicitud fallida: ${error.response.data.errors}`);
-                            flash('Error al enviar los tramites: '+error.message,'error');
+                            flash('Error al enviar los Trámites: '+error.message,'error');
                         })
                     },
                     allowOutsideClick: () => !this.$swal.isLoading()
                 }).then(result => {
                     if (result.value) {
-                        flash('Tramites enviados correctamente');
+                        flash('Trámites enviados correctamente');
                         this.getData();
                         this.classification(this.activeWorkflowId);
                         this.$store.commit("clear", this.activeWorkflowId);
-                        this.$swal('Hecho!', 'Los tramites fueron enviados correctamente.','success')
+                        this.$swal('Hecho!', 'Los Trámites fueron enviados correctamente.','success')
                     }
                 });
             }else{
@@ -94,12 +117,12 @@ export default {
             });
             if (found) {
                 if (!this.wfSequenceBackL.find(w=> w.wf_state_id == this.wfSequenceBack)) {
-                    flash("Debe seleccionar el destino al donde enviara los tramites.", "error");
+                    flash("Debe seleccionar el destino al donde enviara los Trámites.", "error");
                     return;
                 }
                 let wfSequenceBackName = this.wfSequenceBackL.find(w=> w.wf_state_id == this.wfSequenceBack).wf_state_name;
                 this.$swal({
-                    title: `¿Está seguro de enviar (${found.docs.length}) tramite(s), de ${this.wfCurrentState.name} a ${wfSequenceBackName} ?`,
+                    title: `¿Está seguro de enviar (${found.docs.length}) Trámite(s), de ${this.wfCurrentState.name} a ${wfSequenceBackName} ?`,
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#59B75C",
@@ -119,17 +142,17 @@ export default {
                             return response.data;
                         }).catch((error) => {
                             this.$swal.showValidationError(`Solicitud fallida: ${error.response.data.errors}`);
-                            flash('Error al enviar los tramites: '+error.message,'error');
+                            flash('Error al enviar los Trámites: '+error.message,'error');
                         })
                     },
                     allowOutsideClick: () => !this.$swal.isLoading()
                 }).then(result => {
                     if (result.value) {
-                        flash('Tramites enviados correctamente');
+                        flash('Trámites enviados correctamente');
                         this.getData();
                         this.classification(this.activeWorkflowId);
                         this.$store.commit("clear", this.activeWorkflowId);
-                        this.$swal('Hecho!', 'Los tramites fueron enviados correctamente.','success')
+                        this.$swal('Hecho!', 'Los Trámites fueron enviados correctamente.','success')
                     }
                 });
             }else{

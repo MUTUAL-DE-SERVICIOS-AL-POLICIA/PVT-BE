@@ -28,16 +28,18 @@
             <a class="btn btn-success btn-rounded" href="#">Success</a>
         </div>
         <div class="pull-right">
-            <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
-                <div>
-                    <div v-if="status == true" data-toggle="tooltip" data-placement="top" title="Tramite ya procesado">
-                        <button data-toggle="tooltip" data-placement="right" title="Tramite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+            @if ($has_validate)
+                <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
+                    <div>
+                        <div v-if="status == true" data-toggle="tooltip" data-placement="top" title="Trámite ya procesado">
+                            <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                        </div>
+                        <div v-else>
+                            <button data-toggle="tooltip" data-placement="top" title="Procesar Trámite" class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="showModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                        </div>
                     </div>
-                    <div v-else>
-                        <button data-toggle="tooltip" data-placement="right" title="Procesar tramite" class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="showModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
-                    </div>
-                </div>
-            </swal-modal>
+                </swal-modal>
+            @endif
         </div>
     </div>
 </div>
@@ -66,7 +68,7 @@
             <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar"></i></button>
         </a>
         @endcan
-        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecordRetFun" data-placement="top" title="Historial del Tramite">
+        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecordRetFun" data-placement="top" title="Historial del Trámite">
             <i class="fa fa-history"></i>
         </button>
         @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])

@@ -168,7 +168,7 @@ class InboxController extends Controller
                 try {
                     $ret_fun = RetirementFund::find($doc_id);
                     if ($ret_fun->inbox_state == true) {
-                        throw new Exception('Tramite ya validado.');
+                        throw new Exception('Trámite ya validado.');
                     }
                     $ret_fun->inbox_state = true;
                     $ret_fun->user_id = Auth::user()->id;

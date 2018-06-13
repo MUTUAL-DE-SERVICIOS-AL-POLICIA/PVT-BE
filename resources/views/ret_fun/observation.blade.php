@@ -106,7 +106,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <i class="fa fa-warning modal-icon"></i>
                 <h4 class="modal-title">Observacion</h4>
-                <small class="font-bold">crear una observacion al tramite</small>
+                <small class="font-bold">crear una observacion al Trámite</small>
             </div>
             <div class="modal-body">
                <div class="row">
