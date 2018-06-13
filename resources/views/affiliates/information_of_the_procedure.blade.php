@@ -15,7 +15,7 @@
                                 <dl class="dl-horizontal">
                                     <dt>Codigo:</dt><dd>{{ $retirement_fund->code }}</dd>
                                     <dt>Fecha de recepcion:</dt><dd>{{ $retirement_fund->reception_date }}</dd>
-                                    <dt>Ciudad inicio Tramite:</dt><dd>{{ $retirement_fund->city_start->name ?? 'ERROR' }}</dd>
+                                    <dt>Ciudad inicio Trámite:</dt><dd>{{ $retirement_fund->city_start->name ?? 'ERROR' }}</dd>
                                     <dt>Modalidad:</dt><dd>{{ $retirement_fund->procedure_modality->name ?? 'ERROR' }}</dd>
                                     <dt>Tipo:</dt><dd>{{ $retirement_fund->type }}</dd>
                                     <dt>Subtotal:</dt><dd>{{ $retirement_fund->subtotal }}</dd>
@@ -38,7 +38,7 @@
                                 <dl class="dl-horizontal">   
                                     <dt>Codigo:</dt> <dd>{{ $cuota->code }}</dd>
                                     <dt>Fecha de recepcion:</dt><dd>{{ $cuota->reception_date }}</dd>
-                                    <dt>Ciudad inicio Tramite:</dt><dd>{{ $cuota->city_start->name }}</dd>
+                                    <dt>Ciudad inicio Trámite:</dt><dd>{{ $cuota->city_start->name }}</dd>
                                     <dt>Modalidad:</dt><dd>{{ $cuota->procedure_modality->name }}</dd>
                                     <dt>Tipo:</dt><dd>{{ $cuota->type }}</dd>
                                     <dt>Subtotal:</dt><dd>{{ $cuota->subtotal }}</dd>
@@ -60,7 +60,7 @@
                                 <dl class="dl-horizontal">     
                                     <dt>Codigo:</dt> <dd>{{ $auxilio->code }}</dd>
                                     <dt>Fecha de recepcion:</dt><dd>{{ $auxilio->reception_date }}</dd>
-                                    <dt>Ciudad inicio Tramite:</dt><dd>{{ $auxilio->city_start->name }}</dd>
+                                    <dt>Ciudad inicio Trámite:</dt><dd>{{ $auxilio->city_start->name }}</dd>
                                     <dt>Modalidad:</dt><dd>{{ $auxilio->procedure_modality->name }}</dd>
                                     <dt>Tipo:</dt><dd>{{ $auxilio->type }}</dd>
                                     <dt>Subtotal:</dt><dd>{{ $auxilio->subtotal }}</dd>

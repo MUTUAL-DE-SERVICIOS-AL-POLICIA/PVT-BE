@@ -39,7 +39,7 @@
              this.status = true;
              this.$swal(
                 'Hecho!',
-                'El tramite fue procesado correctamente.',
+                'El Trámite fue procesado correctamente.',
                 'success'
                 )
             }

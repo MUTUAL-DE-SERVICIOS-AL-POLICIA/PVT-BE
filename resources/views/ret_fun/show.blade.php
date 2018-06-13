@@ -4,20 +4,30 @@
 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
+    <div class="col-md-7">
         {!!Breadcrumbs::render('show_retirement_fund', $retirement_fund)!!}
     </div>
-    <div class="pull-right" style="margin-top:20px; margin-right:150px;">
-        <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
-            <div>
-                <div v-if="status == true" data-toggle="tooltip" data-placement="right" title="Tramite ya procesado">
-                    <button data-toggle="tooltip" data-placement="right" title="Tramite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button>
-                </div>
-                <div v-else>
-                    <button data-toggle="tooltip" data-placement="right" title="Procesar tramite" class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="showModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
-                </div>
-            </div>
-        </swal-modal>
+    <div class="col-md-5 text-center" style="margin-top:12px;">
+        <div class="pull-left">
+            <button class="btn btn-primary " type="button"><i class="fa fa-check"></i>&nbsp;Submit</button>
+            <button class="btn btn-danger " type="button"><i class="fa fa-times"></i>&nbsp;Cancel</button>
+            <button type="button" class="btn btn-outline btn-warning"> <i class="fa fa-facebook"></i> &nbsp; Warning</button>
+            <button type="button" class="btn btn-outline btn-danger">Danger</button>
+        </div>
+        <div class="pull-right">
+            @if ($has_validate)
+                <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
+                    <div>
+                        <div v-if="status == true" data-toggle="tooltip" data-placement="top" title="Trámite ya procesado">
+                            <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                        </div>
+                        <div v-else>
+                            <button data-toggle="tooltip" data-placement="top" title="Procesar Trámite" class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="showModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                        </div>
+                    </div>
+                </swal-modal>
+            @endif
+        </div>
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -45,7 +55,7 @@
             <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar"></i></button>
         </a>
         @endcan
-        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecordRetFun" data-placement="top" title="Historial del Tramite">
+        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecordRetFun" data-placement="top" title="Historial del Trámite">
             <i class="fa fa-history"></i>
         </button>
         @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
