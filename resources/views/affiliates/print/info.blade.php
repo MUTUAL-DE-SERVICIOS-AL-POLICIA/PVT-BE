@@ -43,9 +43,9 @@
             <td class="px-15 text-center">
                 GRADO
             </td>
-            <td class="px-15 text-center">
+            {{-- <td class="px-15 text-center">
                 categoría
-            </td>
+            </td> --}}
         </tr>
     </thead>
     <tbody>
@@ -54,7 +54,7 @@
             <td class="text-center uppercase font-bold px-5 py-3">{{$affiliate->city_identity_card->name ?? ''}}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->registration }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->category->name }}</td>
+            {{-- <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->category->name }}</td> --}}
         </tr>
     </tbody>
 </table>
