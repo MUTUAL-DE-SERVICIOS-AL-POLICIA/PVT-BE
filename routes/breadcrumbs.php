@@ -43,7 +43,7 @@ Breadcrumbs::register('show_qualification_certification_retirement_fund', functi
 Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliate)
 {
 	$breadcrumbs->parent('retirement_fund');
-	$breadcrumbs->push("Nuevo Tramite");
+	$breadcrumbs->push("Nuevo Trámite");
 	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
 
@@ -55,7 +55,7 @@ Breadcrumbs::register('quota_aid_mortuary', function($breadcrumbs)
 Breadcrumbs::register('create_quota_aid', function($breadcrumbs, $affiliate)
 {
 	$breadcrumbs->parent('quota_aid_mortuary');
-	$breadcrumbs->push("Nuevo Tramite");
+	$breadcrumbs->push("Nuevo Trámite");
 	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
 

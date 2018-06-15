@@ -1,8 +1,10 @@
 <div class="col-md-12">
+
     <div class="ibox">
         <div class="ibox-content">
                 <div  class="pull-left">
                     <legend>Fondo de Retiro</legend>
+
                 </div>
                 @can('update',new Muserpol\Models\RetirementFund\RetirementFund)
                 <div class="text-right">
