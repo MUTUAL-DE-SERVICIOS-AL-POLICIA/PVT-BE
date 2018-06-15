@@ -58,10 +58,10 @@
             <div class="col-md-3" style="padding-right: 3px">
                     <div class="widget-head-color-box navy-bg p-lg text-center">
                         <div class="m-b-md">
-                        <h2 class="font-bold no-margins">
-                            {{ ucwords($retirement_fund->affiliate->fullName()) }}
+                        <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado ">
+                        <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullName() }}</a>    
                         </h2>
-                            <small>{{  $retirement_fund->affiliate->degree->name }}</small>
+                            <small><strong>{{  $retirement_fund->affiliate->degree->name }}</strong></small>
                         </div>
                         
                     </div>

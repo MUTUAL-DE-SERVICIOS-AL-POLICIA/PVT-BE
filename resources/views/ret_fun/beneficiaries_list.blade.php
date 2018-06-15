@@ -21,7 +21,6 @@
                     :cities="cities"
                     :kinships="kinships"
                     :editable="editing"
-                    :read-only="!editing"
                     v-on:remove="removeBeneficiary(index)" >
                 
                 </ret-fun-beneficiary>
@@ -33,7 +32,7 @@
                     </div>
                     <div class="col-md-6"></div>
                 </div>
-                
+                <br>
                 <div class="text-center" v-show="editing">
                     <button class="btn btn-danger" type="button" @click="cancel"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
                     <button class="btn btn-primary" type="button" @click="update"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>

@@ -1,6 +1,9 @@
 <div class="col-md-12">
     <div class="ibox">
         <div class="ibox-content">
+                <div  class="pull-left">
+                    <legend>Fondo de Retiro</legend>
+                </div>
                 @can('update',new Muserpol\Models\RetirementFund\RetirementFund)
                 <div class="text-right">
                     <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
@@ -9,6 +12,8 @@
                 <br>
                     @endcan
                 <br>
+                
+                   
                 <div class="row">
                     {{-- <div class="col-md-1"></div> --}}
                     <div class="col-md-2">

@@ -5,8 +5,7 @@
     
         <div class="ibox-content">
 
-                <h3 data-toggle="tooltip" data-placement="top" title="Ver Información del Affiliado - {{ $affiliate->fullName('capitalize') }}"
-                        class="pull-left"><a href="{{route('affiliate.show', $affiliate->id)}}" style="color: #fff">Información Personal</a></h3>
+                <div class="pull-left"> <legend > Información Personal</legend></div>
                     @can('update',$affiliate)
                     <div class="text-right">
                         <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>

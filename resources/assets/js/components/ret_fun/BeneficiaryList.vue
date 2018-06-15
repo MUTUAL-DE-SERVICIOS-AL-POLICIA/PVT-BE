@@ -1,11 +1,12 @@
 <template>
     <div>
-        <strong>Solicitante</strong><br>
         <ret-fun-beneficiary :beneficiary="retfun.applicant"
                  :cities="cities"
                  :kinships="kinships"
                  :editable="false"
-                 ></ret-fun-beneficiary>
+                 :solicitante="true"
+                 >
+        </ret-fun-beneficiary>
         <ret-fun-beneficiary v-for="(beneficiary, index) in beneficiaries"
                              :beneficiary="beneficiary"
                              :key='index'
