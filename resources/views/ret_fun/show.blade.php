@@ -190,7 +190,8 @@
             // console.log($('#cod_file_eli').val(cod_folder))
         });
         // console.log( "del show... " );
-        $('#example').DataTable();
+        $('#example').DataTable().column('1:visible').order('desc').draw();
+        $('#workflow-table').DataTable().column('1:visible').order('desc').draw();
     });
 </script>
 @endsection 

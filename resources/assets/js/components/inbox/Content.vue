@@ -42,7 +42,7 @@
                 </td>   
                 <td class="text-right mail-date">{{ row.reception_date}}</td>
             </tr>
-            <tr v-if="! documents.length > 0"><td class="text-center" colspan="4">No hay ningun Trámite</td></tr>
+            <tr v-if="! documents.length > 0"><td class="text-center" :colspan="inboxState == 'edited' ? '5' : '4'" >No hay ningun Trámite</td></tr>
         </tbody>
     </table>
 </template>

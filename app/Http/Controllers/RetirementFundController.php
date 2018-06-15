@@ -38,6 +38,7 @@ use Muserpol\Models\RetirementFund\RetFunRecord;
 use DB;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowRecord;
 class RetirementFundController extends Controller
 {
     /**
@@ -465,6 +466,8 @@ class RetirementFundController extends Controller
         $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
         $has_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
 
+        //workflow record
+        $workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -489,6 +492,7 @@ class RetirementFundController extends Controller
             'observations' => $retirement_fund->ret_fun_observations,
             'submitted' =>  $submitted,
             'has_validate' =>  $has_validate,
+            'workflow_records' =>  $workflow_records,
         ];
         
         return view('ret_fun.show',$data);
