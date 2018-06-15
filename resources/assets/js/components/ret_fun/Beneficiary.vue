@@ -4,7 +4,7 @@
         <div class="row" >
             <div class="col-md-12">
                 <div  class="pull-left">
-                    <legend >Beneficiario {{beneficiary.type=='S'?'Solicitante':''}} </legend>
+                    <legend >Beneficiario {{beneficiary.type=='S'?'Solicitante':''}}{{solicitante?'Solicitante':''}} </legend>
                 </div>
                 <div class="text-right" v-if="editable&&beneficiary.type!='S'?true:false">
                     <button class="btn btn-danger" type="button" v-on:click= "remove"> <i class="fa fa-trash" ></i> </button>
@@ -126,10 +126,10 @@
             <div class="row"> 
                 <div class="col-md-6">
                     <div class="col-md-4">
-                        <h3>Documentos Completos:</h3>
+                        <strong>Documentos Completos:</strong>
                     </div>
                     <div class="col-md-2">
-                        <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" :checked="beneficiary.state" class="form-control" :disabled="!editable">
+                        <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" :checked="beneficiary.state" class="form-control mediumCheckBox" :disabled="!editable">     
                     </div>
                     <div class="col-md-6"></div>
                 </div>
@@ -151,21 +151,11 @@ export default {
     };
   },
   created(){
-     console.log(this.beneficiary);
-    if(this.solicitante)
-    {
-        this.beneficiary.type = 'S';
-    }
-    //   if(!this.removable)
-    //   {
-    //       console.log("no existe");
-    //   }else{
-    //       console.log("existe");
-    //   }
+    //  Parche Brian y Tati
   },
   mounted() {
     //this.$refs.identity_card.focus();
-    
+
   },
   methods: {
     remove() {
@@ -218,4 +208,12 @@ export default {
   }
 };
 </script>
+<style>
+input.mediumCheckBox
+{
+width: 20px;
+height: 20px;
+}
+
+</style>
 

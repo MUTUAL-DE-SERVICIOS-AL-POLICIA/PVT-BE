@@ -63,7 +63,6 @@
                         </h2>
                             <small><strong>{{  $retirement_fund->affiliate->degree->name }}</strong></small>
                         </div>
-                        
                     </div>
                     <div class="widget-text-box">
                             <ul class="list-group elements-list">
@@ -131,9 +130,7 @@
                                 
                             </div>
                             <div id="tab-observations" class="tab-pane">
-                                
                                     @include('ret_fun.observation')
-                                
                             </div>
     
                         </div>

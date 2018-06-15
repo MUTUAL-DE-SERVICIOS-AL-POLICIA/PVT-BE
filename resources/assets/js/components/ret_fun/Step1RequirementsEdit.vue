@@ -24,7 +24,8 @@
                 procedure_type_id:2,
                 my_index: 1,
                 modalitiesFilter: [],
-                ret_fun_id: 428
+                ret_fun_id: 428,
+                edit:false
             }
         },
         created(){
@@ -56,6 +57,9 @@
                     //this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
                 }
                 this.getRequirements();
+            },
+            toggle_edit:function () {
+                this.edit = !this.edit;
             },
             getRequirements(){
                 this.requirementList = this.requirements.filter((r) => {
