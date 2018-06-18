@@ -3,25 +3,8 @@
 @section('title', 'Fondo de Retiro')
 
 @section('content')
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-<div class="row wrapper border-bottom white-bg  page-heading">
-    <div class="col-lg-9">
-=======
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-md-7">
->>>>>>> upstream/master
-=======
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-md-7">
->>>>>>> upstream/master
-=======
-
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-md-7">
->>>>>>> 2b77920e6a1e4873de5fffbde9b9a6a1b75806bf
         {!!Breadcrumbs::render('show_retirement_fund', $retirement_fund)!!}
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
