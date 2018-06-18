@@ -1,6 +1,6 @@
 <div class="footer">
     <div class="pull-right">
-        Plataforma Virtual de Tramites
+        Plataforma Virtual de Trámites
     </div>
     <div>
         <strong>Copyright</strong> Muserpol &copy; 2018

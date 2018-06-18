@@ -17,7 +17,7 @@
                             <div class="file-manager">
                                 {{-- <a class="btn btn-block btn-primary compose-mail" ui-sref="email_compose">Compose Mail</a>--}}
                                 <div class="space-25"></div>
-                                <h5>Tramites</h5>
+                                <h5>Trámites</h5>
                                 <ul class="folder-list m-b-md" style="padding: 0">
                                     <li>
                                         <a href="{{ url('inbox/received') }}" class="btn-outline" style="border-left:5px solid #59B75C; padding-left:10px; color: #3c3c3c; background:#F8F8F9;font-weight: bold;"> <i class="fa fa-envelope-o "></i> Recibidos
@@ -51,17 +51,24 @@
                         <h2>
                             <span>Recibidos (@{{totalDocs}})</span>
                         </h2>
-                        {{--
-                        <div class="mail-tools tooltip-demo m-t-md">
-                            <div class="btn-group pull-right">
+                        
+                        <div class="mail-tools tooltip-demo m-t-md" style="margin-bottom:45px;">
+                            {{-- <div class="btn-group pull-right">
                                 <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
                                 <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
                             </div>
                             <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
                             <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i></button>
                             <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i></button>
-                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i></button>
-                        </div> --}}
+                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i></button> --}}
+                            <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                                <div class="col-md-1 text-center" v-if="! docs > 0 ">
+                                    <button class="btn btn-default" @click="getData()" data-toggle="tooltip" data-placement="top" title="Actualizar">
+                                        Actualizar <i class="fa fa-refresh"></i>
+                                    </button>
+                                </div>
+                            </transition>
+                        </div>
                     </div>
                     <div class="mail-box">
                         <vue-tabs>
