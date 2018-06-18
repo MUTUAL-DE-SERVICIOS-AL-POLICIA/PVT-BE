@@ -21,6 +21,7 @@ if (app == "test") {
     .sass("resources/assets/sass/materialicons.scss", "public/css")
     .sass("resources/assets/sass/app.scss", "public/css")
     .sass("resources/assets/sass/datatable.scss", "public/css")
+    .stylus('resources/assets/stylus/vuetify.styl', 'public/css');
     // .purgeCss({
     //   enabled: true,
 

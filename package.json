@@ -20,6 +20,8 @@
     "jquery": "^3.1.1",
     "laravel-mix": "^1.0",
     "lodash": "^4.17.5",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
     "vue": "^2.1.10"
   },
   "dependencies": {
@@ -40,11 +42,11 @@
     "vue-currency-filter": "^2.1.1",
     "vue-form-wizard": "^0.8.4",
     "vue-nav-tabs": "^0.5.7",
-    "vue-select": "^2.4.0",
     "vue-sweetalert2": "^1.2.4",
     "vue2-datatable-component": "^2.1.20",
     "vuedraggable": "^2.16.0",
     "vuelidate": "^0.6.2",
+    "vuetify": "^1.0.19",
     "vuex": "^3.0.1"
   }
 }

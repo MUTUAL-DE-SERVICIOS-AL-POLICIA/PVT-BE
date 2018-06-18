@@ -32,6 +32,10 @@ Vue.use(VueFormWizard);
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
+import Vuetify from 'vuetify'
+
+Vue.use(Vuetify)
+
 import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate, {
   fieldsBagName: "vFields",
@@ -68,11 +72,6 @@ Vue.use(VeeValidate, {
 
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
-
-import vSelect from 'vue-select'
-Vue.component('v-select', vSelect)
-
-Vue.component('v-select', vSelect)
 
 import VueCurrencyFilter from 'vue-currency-filter';
 

@@ -12,16 +12,29 @@ export default {
             wfSequenceNext:null,
             wfSequenceBack:null,
             wfCurrentState:null,
+            showLoading:true,
+            documentsReceivedTotal:0,
+            documentsEditedTotal:0,
         }
     },
     mounted(){
         this.getData();
+
+        // $('.datatable').each(function(i, obj) {
+        //     console.log(obj);
+            
+        //     obj.removeClass('datatable table datatable--select-all');
+        //     obj.addClass('table table-hover table-mail');
+        // });
+
+        
     },
     methods:{
         getData(){
+            this.showLoading=true;
             let uri;
             if (this.inboxState == 'received') {
-                uri = `/api/documents/${this.inboxState}/${this.rolId.id}`;
+                uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
             }else{
                 uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
             }
@@ -32,7 +45,10 @@ export default {
                 this.wfCurrentState =  data.wf_current_state;
                 this.wfSequenceNextL =  data.wf_sequences_next;
                 this.wfSequenceBackL =  data.wf_sequences_back;
+                this.documentsReceivedTotal = data.documents_received_total;
+                this.documentsEditedTotal = data.documents_edited_total;
                 this.updateCheckStatus();
+                this.showLoading = false;
             });
         },
         updateCheckStatus(){
@@ -173,11 +189,6 @@ export default {
             return this.wfSequenceBackL;
             return  this.wfSequenceBackL.filter(wfs => wfs.workflow_id == this.activeWorkflowId)
         },
-        rejectObject(obj, keys) {
-            const vkeys = Object.keys(obj)
-                .filter(k => !keys.includes(k));
-            return pick(obj, vkeys);
-        },
         docs(){
             let found = this.dataInbox.workflows.find(w =>{
                 return w.workflow_id == this.activeWorkflowId
@@ -192,9 +203,6 @@ export default {
                 return accu + this.classification(curr.id).length;
             }, 0)
         },
-        docss(){
-            return this.dataInbox.filterCi;
-        }
     }
 }
 </script>

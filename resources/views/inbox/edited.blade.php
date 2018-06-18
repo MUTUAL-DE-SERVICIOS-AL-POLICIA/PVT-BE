@@ -21,12 +21,11 @@
                                 <ul class="folder-list m-b-md" style="padding: 0">
                                     <li>
                                         <a href="{{ url('inbox/received') }}" class="btn-outline"> <i class="fa fa-envelope-o "></i> Recibidos
-                                        {{-- <span class="label label-warning pull-right">@{{totalDocs}}</span> --}}
+                                        <span class="label label-default pull-right">@{{documentsReceivedTotal}}</span>
                                     </a>
                                     </li>
                                     <li>
                                         <a href="{{ url('inbox/edited') }}" class="btn-outline" style="border-left:5px solid #59B75C; padding-left:10px; color: #3c3c3c; background:#F8F8F9;font-weight: bold;"> <i class="fa fa-check"></i> Revisados
-                                        {{-- <a href="{{ url('inbox/edited') }}" class="btn-outline" style="background: #59B75C; color: #fff; font-weight: bold;"> <i class="fa fa-check"></i> Revisados --}}
                                         <span class="label label-warning pull-right">@{{totalDocs}}</span>
                                     </a>
                                     </li>
@@ -36,18 +35,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-9 animated fadeInRight">
+                <div class="col-lg-9 animated fadeInRight my-inbox" :class="showLoading ? 'sk-loading' : ''">
                     <div class="mail-box-header">
                         <h2>
                             <span>
                             Revisados (@{{totalDocs}})
                         </span>
                         </h2>
-                        <div class="mail-tools tooltip-demo m-t-md" style="margin-bottom:45px;">
-                            <div class="text-center">
+
+                        <div class="mail-tools tooltip-demo" >
+                            <div class="row text-center">
                                 {{-- backward  --}}
                                 <div class="col-md-5 text-center">
-                                    <transition name="fade" enter-active-class="animated bounceInLeft" leave-active-class="animated bounceOutleft">
+                                    <transition name="fade" enter-active-class="animated bounceInLeft" leave-active-class="animated bounceOutLeft">
                                         <div class="input-group" v-if="docs > 0">
                                             <span class="input-group-btn">
                                                 <button :disabled="! (docs > 0 && wfSequenceBack != null) " class="btn " :class="{'btn-primary': docs > 0  }" @click="sendBackward()" data-toggle="tooltip"
@@ -68,7 +68,7 @@
                                     </div>
                                 </transition>
                                 {{-- forward --}}
-                                <div class="col-md-5 text-center">
+                                <div class="col-xs-offset-7 text-center">
                                     <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutRight">
                                         <div class="input-group" v-if="docs > 0">
                                             <select name="" v-model="wfSequenceNext" id="" class="form-control">
@@ -86,17 +86,27 @@
                         </div>
                     </div>
                     <div class="mail-box">
-                       @{{docss}}
+                        <div class="sk-folding-cube" v-show="showLoading">
+                            <div class="sk-cube1 sk-cube"></div>
+                            <div class="sk-cube2 sk-cube"></div>
+                            <div class="sk-cube4 sk-cube"></div>
+                            <div class="sk-cube3 sk-cube"></div>
+                        </div>
                         <vue-tabs @tab-change="handleTabChange">
-                            <v-tab :title="`${itab.name} (${classification(itab.id).length})`" :dataId="itab.id" icon="fa fa-check" v-for="(itab, index) in workflows"
-                                :key="`tab-edited-${index}`" :suffix="` <span class='badge'> ${classification(itab.id).length} </span>`">
+                            <v-tab :title="`${itab.name} (${classification(itab.id).length})`" :dataId="itab.id" icon="fa fa-file-text-o" v-for="(itab, index) in workflows"
+                            :key="`tab-edited-${index}`" :suffix="` <span class='badge'> ${classification(itab.id).length} </span>`"
+                            >
                                 <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="classification(itab.id)"></inbox-content>
                                 {{-- <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="docss"></inbox-content> --}}
-                                </tab>
+                            </v-tab>
                         </vue-tabs>
                     </div>
                 </div>
             </div>
         </tabs-content>
     </div>
+@endsection
+@section('styles')
+    {{-- <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet"> --}}
+    <link rel="stylesheet" href="{!! asset('css/vuetify.css') !!}" />
 @endsection
