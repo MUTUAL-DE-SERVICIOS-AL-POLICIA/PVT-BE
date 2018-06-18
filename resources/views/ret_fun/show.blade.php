@@ -4,9 +4,14 @@
 
 @section('content')
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 <div class="row wrapper border-bottom white-bg  page-heading">
     <div class="col-lg-9">
+=======
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-md-7">
+>>>>>>> upstream/master
 =======
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-md-7">
