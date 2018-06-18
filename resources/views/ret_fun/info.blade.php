@@ -1,9 +1,14 @@
 <div class="col-md-12">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2b77920e6a1e4873de5fffbde9b9a6a1b75806bf
     <div class="ibox">
         <div class="ibox-content">
                 <div  class="pull-left">
                     <legend>Fondo de Retiro</legend>
+<<<<<<< HEAD
 =======
     <div class="panel panel-primary">
         <div class="panel-heading">
@@ -69,6 +74,9 @@
                         <input type="date" v-model="form.reception_date" class="form-control" disabled> 
                     @endif
 >>>>>>> upstream/master
+=======
+
+>>>>>>> 2b77920e6a1e4873de5fffbde9b9a6a1b75806bf
                 </div>
                 @can('update',new Muserpol\Models\RetirementFund\RetirementFund)
                 <div class="text-right">
