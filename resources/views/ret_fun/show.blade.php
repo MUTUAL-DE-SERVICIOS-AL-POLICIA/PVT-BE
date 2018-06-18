@@ -8,11 +8,32 @@
         {!!Breadcrumbs::render('show_retirement_fund', $retirement_fund)!!}
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
-        <div class="pull-left">
-            <button class="btn btn-primary " type="button"><i class="fa fa-check"></i>&nbsp;Submit</button>
-            <button class="btn btn-danger " type="button"><i class="fa fa-times"></i>&nbsp;Cancel</button>
-            <button type="button" class="btn btn-outline btn-warning"> <i class="fa fa-facebook"></i> &nbsp; Warning</button>
-            <button type="button" class="btn btn-outline btn-danger">Danger</button>
+            <div class="pull-left">
+                @if(Muserpol\Helpers\Util::getRol()->id == 10)
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button> 
+            @endif
+            
+            @if(Muserpol\Helpers\Util::getRol()->id == 15)
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
+            @endif
+            
+            @if(Muserpol\Helpers\Util::getRol()->id == 11)
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
+            @endif
+            @can('view', new Muserpol\Models\Contribution\Contribution)   
+            <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
+                <button class="btn btn-primary dim"  data-toggle="tooltip" data-placement="top" title=" Clasificar Aportes " >
+                <i class="fa fa-list-alt"></i>
+                </button>
+            </a>
+            <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
+                <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar"></i></button>
+            </a>
+            @endcan
+            <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecordRetFun" data-placement="top" title="Historial del Trámite">
+                <i class="fa fa-history"></i>
+            </button>
+            @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
         </div>
         <div class="pull-right">
             @if ($has_validate)
@@ -31,36 +52,6 @@
     </div>
 </div>
 
-    
-    {{-- <div class="row text-center">
-        
-        @if(Muserpol\Helpers\Util::getRol()->id == 10)
-        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button> 
-        @endif
-        
-        @if(Muserpol\Helpers\Util::getRol()->id == 15)
-        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
-        @endif
-        
-        @if(Muserpol\Helpers\Util::getRol()->id == 11)
-        <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
-        @endif
-        @can('view', new Muserpol\Models\Contribution\Contribution)   
-        <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
-            <button class="btn btn-primary dim"  data-toggle="tooltip" data-placement="top" title=" Clasificar Aportes " >
-            <i class="fa fa-list-alt"></i>
-            </button>
-        </a>
-        <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
-            <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar"></i></button>
-        </a>
-        @endcan
-        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecordRetFun" data-placement="top" title="Historial del Trámite">
-            <i class="fa fa-history"></i>
-        </button>
-        @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
-    </div> --}}
-    
 
     <div class="row">
            
@@ -117,7 +108,7 @@
                                 
                                     @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
                                         {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}
-                                        <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submitted}}"
+                                        <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}"
                                             inline-template>
                                             @include('ret_fun.step1_requirements_edit')
                                         </ret-fun-step1-requirements-edit>

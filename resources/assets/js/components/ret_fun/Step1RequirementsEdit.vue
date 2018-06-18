@@ -14,7 +14,6 @@
 		],
         data(){
             return{
-                editing: false,
                 requirementList: [],
                 modality: null,
                 show_spinner: false,
@@ -25,12 +24,15 @@
                 my_index: 1,
                 modalitiesFilter: [],
                 ret_fun_id: 428,
-                edit:false
+                editing:false
             }
         },
         created(){
-            console.log("monted");
+            console.log("cargando documentos ");
             console.log(this.submitted);
+            // this.submitted.forEach(item => {
+            //     console.log(item.procedure_requirement_id);
+            // });
         },
         mounted(){
             //this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
@@ -58,23 +60,33 @@
                 }
                 this.getRequirements();
             },
-            toggle_edit:function () {
-                this.edit = !this.edit;
+            toggle_editing:function () {
+                this.editing = !this.editing;
             },
             getRequirements(){
+
                 this.requirementList = this.requirements.filter((r) => {
                     if (r.modality_id == this.modality) {
-                        if(this.submitted[r.number] == r.id){
+                        // if(this.submitted[r.number] == r.id){
+                       let $submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });
+                        console.log($submit_document);
+                        if($submit_document){
                             r['status'] = true;
                             r['background'] = 'bg-success-green';
+                            r['comment'] = $submit_document.comment;
                         }
                         else{
                             r['status'] = false;
                             r['background'] = '';
+                            r['comment'] = null;
                         }                        
                         return r;
                     }
                 });
+
+             
+                console.log('lista generada');
+                console.log(this.requirementList);
                 Array.prototype.groupBy = function(prop) {
                     return this.reduce(function(groups, item) {
                         const val = item[prop]
@@ -93,24 +105,36 @@
                 // console.log(this.requirementList);
             },
             checked(index, i){
-                for(var k = 0; k < this.requirementList[index].length; k++ ){
-                    if (k != i ) {
-                    this.requirementList[index][k].status = false;
-                    this.requirementList[index][k].background = 'bg-warning-yellow';
-
-                    }
-                }
-                this.requirementList[index][i].status =  ! this.requirementList[index][i].status;
-                this.requirementList[index][i].background = this.requirementList[index][i].background == 'bg-success-green' ? '' : 'bg-success-green';
-                // this.requirementList[index][i].status = true;
-                if (this.requirementList[index].every(r => !r.status )) {
+                if(this.editing){
                     for(var k = 0; k < this.requirementList[index].length; k++ ){
-                        if (!this.requirementList[index][k].status) {
-                            this.requirementList[index][k].background = '';
+                        if (k != i ) {
+                        this.requirementList[index][k].status = false;
+                        this.requirementList[index][k].background = 'bg-warning-yellow';
+
                         }
                     }
+                    this.requirementList[index][i].status =  ! this.requirementList[index][i].status;
+                    this.requirementList[index][i].background = this.requirementList[index][i].background == 'bg-success-green' ? '' : 'bg-success-green';
+                    // this.requirementList[index][i].status = true;
+                    if (this.requirementList[index].every(r => !r.status )) {
+                        for(var k = 0; k < this.requirementList[index].length; k++ ){
+                            if (!this.requirementList[index][k].status) {
+                                this.requirementList[index][k].background = '';
+                            }
+                        }
+                    }
+                }else{
+                    console.log("no sea pendejo no puede editar");
                 }
 
+            },
+            isVisible(requeriment){
+                // console.log(requeriment)
+                if(this.editing){
+                   return true; 
+                }else{
+                    return requeriment.status;
+                }
             },
             onChooseCity(event){
                 const options = event.target.options;
@@ -128,7 +152,8 @@
             },
             store(ret_fun){
                 
-                //console.log(this.requirementList);
+                console.log(this.requirementList);
+                console.log('guardando documentos hdps');
                 let uri = `/ret_fun/${this.ret_fun.id}/edit_requirements`;                
                 axios.post(uri,
                     {
@@ -137,7 +162,7 @@
                 ).then(response =>{
                     flash("Verificacion Correcta");
                     console.log(response.data);
-                    console.log("guardado david y nadia");
+                  
                     //this.showEconomicData = true
                     //TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
                 }).catch(error =>{
@@ -146,24 +171,8 @@
                 });                
                 //console.log(this.requirementList);
             }
-        //   actualTarget:function(data){
-        //         var tar = this.actual_target;
-        //         this.actual_target = data;
-        //         return tar;
-        //     }
+   
         },
-        // computed:{
-        //     requirementsList(){
-        //         if (this.modality) {
-        //             var list = [];
-        //             for(var i=0;i<this.requirements.length;i++){
-        //                 if(this.modality == this.requirements[i].modality_id)
-        //                     list.push(this.requirements[i]);
-        //             }
-        //             return list;
-        //         }
-        //         return [];
-        //     },
-        // },
+
 	}
 </script>
