@@ -1233,7 +1233,6 @@ class RetirementFundController extends Controller
                     {      
                         $to = $requirement[$i]['id'];                                        
                         $comment = $requirement[$i]['comment'];
-
                         $doc = RetFunSubmittedDocument::where('retirement_fund_id',$id)->where('procedure_requirement_id',$documents[$from])->first();
                         $doc->procedure_requirement_id = $to;      
                         $doc->comment = $comment;              
