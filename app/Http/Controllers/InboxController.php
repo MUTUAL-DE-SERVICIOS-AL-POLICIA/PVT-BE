@@ -85,23 +85,27 @@ class InboxController extends Controller
                 # code...
                 break;
             case 2:
+            /* TODO
+            no crea historial del workflow (tema de observers)
+            utilizar modelos
+             */
                 DB::table('economic_complements')
                     ->whereIn('id', $doc_ids)
                     ->update(['wf_current_state_id' => $wf_state_next_id, 'state' => 'Received']);
                 break;
             case 3:
-                DB::table('retirement_funds')
-                    ->whereIn('id', $doc_ids)
-                    ->update([
-                        'wf_state_current_id' => $wf_state_next_id,
-                        'inbox_state' => false
-                    ]);
-                // $retirement_funds = RetirementFund::whereIn('id', $doc_ids)->get();
-                // foreach ($retirement_funds as $ret_fun) {
-                //     $ret_fun->wf_state_current_id = $wf_state_next_id;
-                //     $ret_fun->inbox_state = false;
-                //     $ret_fun->save();
-                // }
+                // DB::table('retirement_funds')
+                //     ->whereIn('id', $doc_ids)
+                //     ->update([
+                //         'wf_state_current_id' => $wf_state_next_id,
+                //         'inbox_state' => false
+                //     ]);
+                $retirement_funds = RetirementFund::whereIn('id', $doc_ids)->get();
+                foreach ($retirement_funds as $ret_fun) {
+                    $ret_fun->wf_state_current_id = $wf_state_next_id;
+                    $ret_fun->inbox_state = false;
+                    $ret_fun->save();
+                }
                 break;
             default:
                 # code...
@@ -111,7 +115,6 @@ class InboxController extends Controller
             'status' => 'success',
             'msg' => 'Okay',
         ], 201);
-        return ($request->all());
     }
     public function sendBackward(Request $request)
     {
@@ -139,10 +142,13 @@ class InboxController extends Controller
                 # code...
                 break;
             case 2:
+                /* TODO
+                no crea historial del workflow (tema de observers)
+                utilizar modelos
+                */
                 DB::table('economic_complements')
                 ->whereIn('id', $doc_ids)
                 ->update(['wf_current_state_id' => $wf_state_back_id, 'state'=>'Received']);
-
                 break;
             case 3:
                 $retirement_funds = RetirementFund::whereIn('id', $doc_ids)->get();
