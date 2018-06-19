@@ -58,7 +58,7 @@
                         <div v-for="(requirement, index) in requirementList" :key="index">
                             <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement" :class="rq.background" style="cursor:pointer" :key="i" v-if="isVisible(rq)">
                                 <div class="row">
-                                    <div :class="editing?'col-md-10':'col-md-12'">
+                                    <div :class="editing?'col-md-10':'col-md-10'">
                                         <div class="vote-actions">
                                             <h1>
                                                 @{{rq.number}}
@@ -75,10 +75,10 @@
                                             <br>
                                         </div>
                                     </div>
-                                    <div class="col-md-2 " v-if="editing">
+                                    <div class="col-md-2 ">
                                         <div class="vote-icon" >
-                                            <span style="color:#3c3c3c"><i class="fa " :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i></span>
-                                            <div style="opacity:0">
+                                            <span style="color:#3c3c3c"  ><i class="fa " :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i></span>
+                                            <div style="opacity:0" v-if="rol!=11">
                                                 <input type="checkbox" v-model="rq.status" value="checked"  :name="'document'+rq.id" class="largerCheckbox">
                                             </div>
                                         </div>

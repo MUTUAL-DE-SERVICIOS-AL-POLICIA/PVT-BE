@@ -9,6 +9,7 @@
             'cities',
             'procedureTypes',
             'submitted',
+            'rol'
             //'showRequirementsError',
             
 		],
@@ -29,7 +30,7 @@
         },
         created(){
             console.log("cargando documentos ");
-            console.log(this.submitted);
+            console.log(this.rol);
             // this.submitted.forEach(item => {
             //     console.log(item.procedure_requirement_id);
             // });
@@ -68,25 +69,46 @@
                 this.requirementList = this.requirements.filter((r) => {
                     if (r.modality_id == this.modality) {
                         // if(this.submitted[r.number] == r.id){
-                       let $submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });
-                        console.log($submit_document);
-                        if($submit_document){
-                            r['status'] = true;
-                            r['background'] = 'bg-success-green';
-                            r['comment'] = $submit_document.comment;
+                       
+                       let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });
+                        // console.log(submit_document);
+                        if(this.rol!=11){ //revision legal
+                            if(submit_document){
+                                r['status'] = true;
+                                r['background'] = 'bg-success-green';
+                                r['comment'] = submit_document.comment;
+                                
+                            }
+                            else{
+                                r['status'] = false;
+                                r['background'] = '';
+                                r['comment'] = null;
+                            }                        
+                            return r;
+                        }else{
+                            if(submit_document)
+                            {
+                                if(submit_document.is_valid){
+                                    r['status'] = true;
+                                    r['background'] = 'bg-success-green';
+                                    r['comment'] = submit_document.comment;
+                                    r['submit_document_id'] = submit_document.id;
+                                }
+                                else{
+                                     r['status'] = false;
+                                    r['background'] = '';
+                                    r['comment'] = submit_document.comment;
+                                    r['submit_document_id'] = submit_document.id;
+                                }
+                                return r;
+                            }
                         }
-                        else{
-                            r['status'] = false;
-                            r['background'] = '';
-                            r['comment'] = null;
-                        }                        
-                        return r;
                     }
                 });
 
-             
-                console.log('lista generada');
+                console.log('lista de requerimientos');
                 console.log(this.requirementList);
+                
                 Array.prototype.groupBy = function(prop) {
                     return this.reduce(function(groups, item) {
                         const val = item[prop]
@@ -123,6 +145,7 @@
                             }
                         }
                     }
+                    console.log(this.requirementList);
                 }else{
                     console.log("no sea pendejo no puede editar");
                 }
@@ -130,10 +153,16 @@
             },
             isVisible(requeriment){
                 // console.log(requeriment)
-                if(this.editing){
-                   return true; 
-                }else{
-                    return requeriment.status;
+                if(this.rol!=11)
+                {
+                    if(this.editing){
+                    return true; 
+                    }else{
+                        return requeriment.status;
+                    }
+                }
+                else{
+                    return true;
                 }
             },
             onChooseCity(event){
@@ -152,23 +181,44 @@
             },
             store(ret_fun){
                 
-                console.log(this.requirementList);
                 console.log('guardando documentos hdps');
-                let uri = `/ret_fun/${this.ret_fun.id}/edit_requirements`;                
-                axios.post(uri,
-                    {
-                    requirements: this.requirementList
-                    }
-                ).then(response =>{
-                    flash("Verificacion Correcta");
-                    console.log(response.data);
-                  
-                    //this.showEconomicData = true
-                    //TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
-                }).catch(error =>{
-                    flash("Los Datos no Coinciden", "error");
-                    //this.showEconomicData = false;
-                });                
+                console.log(this.requirementList);
+                if(this.rol!=11){
+                    console.log('editando requerimientos');
+                    let uri = `/ret_fun/${this.ret_fun.id}/edit_requirements`;                
+                    axios.post(uri,
+                        {
+                        requirements: this.requirementList
+                        }
+                    ).then(response =>{
+                        flash("Verificacion Correcta");
+                        console.log(response.data);
+                    
+                        //this.showEconomicData = true
+                        //TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+                    }).catch(error =>{
+                        flash("Los Datos no Coinciden", "error");
+                        //this.showEconomicData = false;
+                    });                
+                }else{
+                    console.log('enviando para revision legal');
+                    let uri = `/ret_fun/${this.ret_fun.id}/legal_review/create`;                
+                        axios.post(uri,
+                            {
+                            submit_documents: this.requirementList
+                            }
+                        ).then(response =>{
+                            flash("Verificacion Correcta");
+                            console.log(response.data);
+                        
+                            //this.showEconomicData = true
+                            //TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+                        }).catch(error =>{
+                            flash("Los Datos no Coinciden", "error");
+                            //this.showEconomicData = false;
+                        }); 
+                }
+
                 //console.log(this.requirementList);
             }
    

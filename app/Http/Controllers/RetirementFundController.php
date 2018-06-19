@@ -453,7 +453,7 @@ class RetirementFundController extends Controller
         
         //selected documents
         $submitted = RetFunSubmittedDocument::
-            select('ret_fun_submitted_documents.id','procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id','ret_fun_submitted_documents.comment')
+            select('ret_fun_submitted_documents.id','procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id','ret_fun_submitted_documents.comment','ret_fun_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
             ->where('ret_fun_submitted_documents.retirement_fund_id',$id);
@@ -640,22 +640,34 @@ class RetirementFundController extends Controller
     
     public function storeLegalReview(Request $request,$id){
         //return 0;
+        // return $request;
         $retirement_fund = RetirementFund::find($id);
         $this->authorize('update',new RetFunSubmittedDocument);
-        $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
-        foreach ($submited_documents as $document)
-        {
-            $value= "comment".$document->id."";
-            $document->comment = $request->input($value);
-            $value= "document".$document->id."";
-            if($request->input($value) == '1')
-                $document->is_valid = true;
-            else 
-                $document->is_valid = false;
-            $document->save();    
+
+        foreach($request->submit_documents as $document_array){
+ 
+            $document = $document_array[0];
+            $submit_document = RetFunSubmittedDocument::find($document['submit_document_id']);
+            $submit_document->is_valid=$document['status'];
+            $submit_document->comment=$document['comment'];
+            $submit_document->save();
+            // Log::info($document['number']);
         }
+        return $request;
+        // $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
+        // foreach ($submited_documents as $document)
+        // {
+        //     $value= "comment".$document->id."";
+        //     $document->comment = $request->input($value);
+        //     $value= "document".$document->id."";
+        //     if($request->input($value) == '1')
+        //         $document->is_valid = true;
+        //     else 
+        //         $document->is_valid = false;
+        //     $document->save();    
+        // }
         
-        return redirect('ret_fun/'.$retirement_fund->id);
+        // return redirect('ret_fun/'.$retirement_fund->id);
         //return $retirement_fund;
     }
     public function updateBeneficiaries(Request $request, $id){
@@ -1211,22 +1223,22 @@ class RetirementFundController extends Controller
             ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');        
         //return $documents;
         $num = $num2 = 0;
+    
         foreach($request->requirements as $requirement){ 
                 $from = $to = 0;          
-                $comment = '';                      
+                $comment = null;                      
                 for($i=0;$i<count($requirement);$i++){
                     $from = $requirement[$i]['number'];
                     if($requirement[$i]['status'] == true)
                     {      
                         $to = $requirement[$i]['id'];                                        
                         $comment = $requirement[$i]['comment'];
+
+                        $doc = RetFunSubmittedDocument::where('retirement_fund_id',$id)->where('procedure_requirement_id',$documents[$from])->first();
+                        $doc->procedure_requirement_id = $to;      
+                        $doc->comment = $comment;              
+                        $doc->save();
                     }
-                }
-                if($documents[$from] != $to){
-                    $doc = RetFunSubmittedDocument::where('retirement_fund_id',$id)->where('procedure_requirement_id',$documents[$from])->first();
-                    $doc->procedure_requirement_id = $to;      
-                    $doc->comment = $comment;              
-                    $doc->save();
                 }
         }
         
