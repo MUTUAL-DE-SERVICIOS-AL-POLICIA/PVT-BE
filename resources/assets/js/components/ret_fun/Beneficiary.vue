@@ -151,7 +151,7 @@ export default {
     };
   },
   created(){
-    //  Parche Brian y Tati
+    //  Parche
   },
   mounted() {
     //this.$refs.identity_card.focus();
