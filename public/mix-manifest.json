@@ -4,5 +4,6 @@
     "/css/materialicons.css": "/css/materialicons.css",
     "/css/app.css": "/css/app.css",
     "/css/datatable.css": "/css/datatable.css",
+    "/css/vuetify.css": "/css/vuetify.css",
     "/js/datatable.js": "/js/datatable.js"
 }

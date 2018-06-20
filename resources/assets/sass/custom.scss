@@ -284,6 +284,41 @@ $color_mountain_mist_approx: #999;
 		display: none;
 	}
 }
+.my-inbox {
+	&.sk-loading {
+		position: relative;
+		&:after {
+			content: '';
+			background-color: $white_80;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+		> .mail-box > {
+			.sk-folding-cube {
+				display: block;
+				position: absolute;
+				top: 10%;
+				left: 0;
+				right: 0;
+				z-index: 2000;
+			}
+			.sk-fading-circle {
+				display: block;
+				position: absolute;
+				top: 10%;
+				left: 0;
+				right: 0;
+				z-index: 2000;
+			}
+		}
+	}
+	> .sk-folding-cube {
+		display: none;
+	}
+}
 .toast-title {
 	font-weight: 700;
 }

@@ -15,7 +15,7 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Workflow\WorkflowSequence;
 class DocumentController extends Controller
 {
-    public function received(Request $request, $rol_id)
+    public function received(Request $request, $rol_id, $user_id)
     {
         $module = Role::find($rol_id)->module;
         // return DB::table('wf_states')->where('role_id', '=',10)->get();
@@ -46,11 +46,29 @@ class DocumentController extends Controller
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('economic_complements.state', '=', 'Received')
                     ->get();
-                $temp = Workflow::leftJoin('modules', 'workflows.module_id', '=', 'modules.id')
-                    ->leftJoin('roles', 'modules.id', '=', 'roles.module_id')
-                    ->select('workflows.id')
-                    ->where('roles.id', '=', $rol_id)
-                    ->pluck('id');
+                $documents_edited_total = DB::table('economic_complements')
+                ->select(
+                    DB::raw(
+                            "
+                        economic_complements.id as id,
+                        affiliates.identity_card as ci,
+                        trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
+                        economic_complements.code as code,
+                        eco_com_cities.second_shortened as city,
+                        economic_complements.reception_date as reception_date,
+                        economic_complements.workflow_id as workflow_id,
+                        concat('/economic_complement/', economic_complements.id) as path,
+                        false as status
+                        "
+                    )
+                )
+                    ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
+                    ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
+                    ->where('wf_states.role_id', '=', $rol_id)
+                    ->where('economic_complements.state', '=', 'Edited')
+                    ->where('economic_complements.user_id', '=', $user_id)
+                    ->get()->count();
                 break;
             case 3:
                 # ret fun
@@ -74,23 +92,30 @@ class DocumentController extends Controller
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('retirement_funds.inbox_state', '=', false)
                     ->get();
-
-                $temp = Workflow::leftJoin('modules', 'workflows.module_id', '=', 'modules.id')
-                    ->leftJoin('roles', 'modules.id', '=', 'roles.module_id')
-                    ->select('workflows.id')
-                    ->where('roles.id', '=', $rol_id)
-                    ->pluck('id');
+                $documents_edited_total = RetirementFund::select('retirement_funds.id as id')
+                    ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('cities as ret_fun_cities', 'retirement_funds.city_end_id', '=', 'ret_fun_cities.id')
+                    ->leftJoin('wf_states', 'retirement_funds.wf_state_current_id', '=', 'wf_states.id')
+                    ->where('wf_states.role_id', '=', $rol_id)
+                    ->where('retirement_funds.inbox_state', '=', true)
+                    ->where('retirement_funds.user_id', '=', $user_id)
+                    ->get()->count();
+                
                 break;
-            
             default:
                 # code...
                 break;
         }
-        
 
-
+        $temp = Workflow::leftJoin('modules', 'workflows.module_id', '=', 'modules.id')
+                ->leftJoin('roles', 'modules.id', '=', 'roles.module_id')
+                ->select('workflows.id')
+                ->where('roles.id', '=', $rol_id)
+                ->pluck('id');
         $workflows = Workflow::whereIn('id',$temp)->get();
         $data = [
+            'documents_received_total' => $documents->count() ?? 0,
+            'documents_edited_total' => $documents_edited_total ?? 0,
             'documents' => $documents,
             'workflows' => $workflows
         ];
@@ -137,6 +162,27 @@ class DocumentController extends Controller
                     ->where('economic_complements.state', '=', 'Edited')
                     ->where('economic_complements.user_id', '=', $user_id)
                     ->get();
+                $documents_received_total = DB::table('economic_complements')
+                    ->select(
+                        DB::raw(
+                            "
+                        economic_complements.id as id,
+                        affiliates.identity_card as ci,
+                        trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
+                        economic_complements.code as code,
+                        eco_com_cities.second_shortened as city,
+                        economic_complements.reception_date as reception_date,
+                        economic_complements.workflow_id as workflow_id,
+                        concat('/economic_complement/', economic_complements.id) as path
+                        "
+                        )
+                    )
+                    ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
+                    ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
+                    ->where('wf_states.role_id', '=', $rol_id)
+                    ->where('economic_complements.state', '=', 'Received')
+                    ->get()->count();
                 break;
             case 3:
                 # ret fun
@@ -162,6 +208,13 @@ class DocumentController extends Controller
                     ->where('retirement_funds.inbox_state', '=', true)
                     ->where('retirement_funds.user_id', '=', $user_id)
                     ->get();
+                $documents_received_total = RetirementFund::select('retirement_funds.id as id')
+                    ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('cities as ret_fun_cities', 'retirement_funds.city_end_id', '=', 'ret_fun_cities.id')
+                    ->leftJoin('wf_states', 'retirement_funds.wf_state_current_id', '=', 'wf_states.id')
+                    ->where('wf_states.role_id', '=', $rol_id)
+                    ->where('retirement_funds.inbox_state', '=', false)
+                    ->get()->count();
                 break;
             default:
                 # code...
@@ -196,6 +249,8 @@ class DocumentController extends Controller
         }
         $workflows = Workflow::whereIn('id',$temp)->get();
         $data = [
+            'documents_received_total' => $documents_received_total ?? 0,
+            'documents_edited_total' => $documents->count() ?? 0,
             'documents' => $documents,
             'workflows' => $workflows,
             'wf_sequences_next' => $wf_sequences_next,
