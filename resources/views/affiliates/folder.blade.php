@@ -1,18 +1,21 @@
+
 <div class="col-lg-12">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="pull-left">Archivos</h3>
+    <div class="ibox">
+        <div class="ibox-content">
+           
+            <div class="pull-left">
+                <legend> Archivos</legend>
+            </div>
             <div class="text-right">
-               @can('create',Muserpol\Models\AffiliateFolder::class)
+                @can('create',Muserpol\Models\AffiliateFolder::class)
                 <a href="" class="btn btn-primary" data-toggle="modal" data-target="#folderModalRe">
-                     <i class="fa fa-plus"> </i>
+                        <i class="fa fa-plus"> </i>
                 </a>
                 @else
                 <br>
                 @endcan
             </div>
-        </div>
-        <div class="panel-body">
+           
             <div class="row">
                 <div class="ibox-content table-responsive">
                     <table class="table table-hover table-sprite">
@@ -52,6 +55,7 @@
             </div>
         </div>
     </div>
+    
 </div>
 {{--@include(folderModal)--}}
 {!! Form::open(['action' => 'AffiliateFolderController@store']) !!}
