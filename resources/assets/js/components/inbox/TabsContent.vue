@@ -12,16 +12,29 @@ export default {
             wfSequenceNext:null,
             wfSequenceBack:null,
             wfCurrentState:null,
+            showLoading:true,
+            documentsReceivedTotal:0,
+            documentsEditedTotal:0,
         }
     },
     mounted(){
         this.getData();
+
+        // $('.datatable').each(function(i, obj) {
+        //     console.log(obj);
+            
+        //     obj.removeClass('datatable table datatable--select-all');
+        //     obj.addClass('table table-hover table-mail');
+        // });
+
+        
     },
     methods:{
         getData(){
+            this.showLoading=true;
             let uri;
             if (this.inboxState == 'received') {
-                uri = `/api/documents/${this.inboxState}/${this.rolId.id}`;
+                uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
             }else{
                 uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
             }
@@ -32,7 +45,10 @@ export default {
                 this.wfCurrentState =  data.wf_current_state;
                 this.wfSequenceNextL =  data.wf_sequences_next;
                 this.wfSequenceBackL =  data.wf_sequences_back;
+                this.documentsReceivedTotal = data.documents_received_total;
+                this.documentsEditedTotal = data.documents_edited_total;
                 this.updateCheckStatus();
+                this.showLoading = false;
             });
         },
         updateCheckStatus(){
@@ -84,7 +100,7 @@ export default {
                     showLoaderOnConfirm: true,
                     preConfirm: () => {
                         let uri=`/inbox_send_forward`;
-                        axios.post(uri,{
+                        return axios.post(uri,{
                             wfSequenceNext: this.wfSequenceNext,
                             docs: found.docs
                         }).then(response =>{
@@ -101,10 +117,10 @@ export default {
                 }).then(result => {
                     if (result.value) {
                         flash('Trámites enviados correctamente');
-                        this.getData();
-                        this.classification(this.activeWorkflowId);
                         this.$store.commit("clear", this.activeWorkflowId);
                         this.$swal('Hecho!', 'Los Trámites fueron enviados correctamente.','success')
+                        this.getData();
+                        this.classification(this.activeWorkflowId);
                     }
                 });
             }else{
@@ -132,7 +148,7 @@ export default {
                     showLoaderOnConfirm: true,
                     preConfirm: () => {
                         let uri=`/inbox_send_backward`;
-                        axios.post(uri,{
+                        return axios.post(uri,{
                             wfSequenceBack: this.wfSequenceBack,
                             docs: found.docs
                         }).then(response =>{
@@ -149,10 +165,10 @@ export default {
                 }).then(result => {
                     if (result.value) {
                         flash('Trámites enviados correctamente');
-                        this.getData();
-                        this.classification(this.activeWorkflowId);
                         this.$store.commit("clear", this.activeWorkflowId);
                         this.$swal('Hecho!', 'Los Trámites fueron enviados correctamente.','success')
+                        this.getData();
+                        this.classification(this.activeWorkflowId);
                     }
                 });
             }else{
@@ -171,11 +187,6 @@ export default {
             return this.wfSequenceBackL;
             return  this.wfSequenceBackL.filter(wfs => wfs.workflow_id == this.activeWorkflowId)
         },
-        rejectObject(obj, keys) {
-            const vkeys = Object.keys(obj)
-                .filter(k => !keys.includes(k));
-            return pick(obj, vkeys);
-        },
         docs(){
             let found = this.dataInbox.workflows.find(w =>{
                 return w.workflow_id == this.activeWorkflowId
@@ -190,9 +201,6 @@ export default {
                 return accu + this.classification(curr.id).length;
             }, 0)
         },
-        docss(){
-            return this.dataInbox.filterCi;
-        }
     }
 }
 </script>
