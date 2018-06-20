@@ -81,17 +81,17 @@
         </td>
         <td>
             <a :href="`${props.item.path}`">
+                {{ props.item.code }}
+            </a>
+        </td>
+        <td>
+            <a :href="`${props.item.path}`">
                 {{ props.item.ci }}
             </a>
         </td>
         <td>
             <a :href="`${props.item.path}`">
                 {{ props.item.name }}
-            </a>
-        </td>
-        <td>
-            <a :href="`${props.item.path}`">
-                {{ props.item.code }}
             </a>
         </td>
         <td>
@@ -130,9 +130,9 @@ import { mapState, mapMutations } from 'vuex';
                 search: '',
                 selected: [],
                 headers: [
+                    { text: '# Tramite', value: 'code' },
                     { text: 'CI', align: 'left', value: 'ci' },
                     { text: 'Nombre', value: 'name' },
-                    { text: '# Tramite', value: 'code' },
                     { text: 'Regional', value: 'city' },
                     { text: 'Fecha de Recepcion', value: 'date_reception' },
                 ],
