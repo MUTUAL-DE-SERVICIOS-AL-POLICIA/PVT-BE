@@ -20,6 +20,9 @@
 		
 			}
 		},
+		created(){
+			console.log(this.affiliate);
+		},
 		computed:{
 			state_name: function(){
 				// console.log('reactividad hdp ');
