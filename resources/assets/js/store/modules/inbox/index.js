@@ -1,5 +1,6 @@
 const state = {
   workflows: [],
+  filterCi: null,
 };
 const mutations = {
     pushDoc(state, workflow) {
@@ -26,6 +27,9 @@ const mutations = {
         }else{
             alert("hubo algun error");
         }
+    },
+    search(state, field){
+        state.filterCi = field; 
     }
 }
 const getters = {

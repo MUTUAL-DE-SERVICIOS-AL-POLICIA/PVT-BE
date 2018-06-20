@@ -1,99 +1,14 @@
 <template>
-<div>
-    <div v-if="readOnly">
-        <div class="row">
-            <div class="col-md-1">
-                <br>
-        <h3><u>Beneficiario</u>.-</h3>
-            </div>
-        </div>
-        <div class="row">
-            <br>
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong>Cedula de identidad: </strong>{{ beneficiary.identity_card }} {{ !!beneficiary.city_identity_card ? beneficiary.city_identity_card.first_shortened : '' }}
-            </div>
-            <div class="col-md-5">
-                <strong>Parentesco: </strong>{{ !!beneficiary.kinship ? beneficiary.kinship.name : '' }}
-            </div>
-        </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong>Primer Nombre: </strong>{{ beneficiary.first_name }}
-            </div>
-            <div class="col-md-5">
-                <strong>Segundo Nombre: </strong>{{ beneficiary.second_name }}
-            </div>
-            </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong> Apellido Paterno: </strong>{{ beneficiary.last_name }}
-            </div>
-            <div class="col-md-5">
-            <strong>Apellido Materno: </strong>{{ beneficiary.mothers_last_name }}
-            </div>
-            </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong>Genero: </strong>{{ getGenderBeneficiary(beneficiary.gender) }}
-            </div>
-            <div class="col-md-5">
-            <strong>Estado Civil: </strong> {{ beneficiary.civil_status }}
-            </div>
-            </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-            <strong>Fecha de Nacimiento: </strong>{{ beneficiary.birth_date }}
-            </div>
-            <div class="col-md-5">
-            <strong>Edad: </strong> {{ beneficiaryAge }}
-            </div>
-            </div>
-            <br>
-            <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-5">
-                <strong>Telefono: </strong>{{ beneficiary.phone_number }}
-            </div>
-            <div class="col-md-5">
-                <strong>Celular: </strong>{{ beneficiary.cell_phone_number }}
-            </div>
-            </div>
-            <br>
-            <hr>
-        <div class="row"> 
-            <div class="col-md-6">
-                <dl class="dl-">
-                      <div class="col-md-2"></div>
-                        <dt><h3>Documentos Completos:</h3></dt>
-                    </dl>
+    <div >
+            
+        <div class="row" >
+            <div class="col-md-12">
+                <div  class="pull-left">
+                    <legend >Beneficiario {{beneficiary.type=='S'?'Solicitante':''}}{{solicitante?'Solicitante':''}} </legend>
                 </div>
-                <div class="col-md-1">
-                <dl class="dl-">
-                    <div v-if="beneficiary.state==true">
-                        <input type="checkbox" name="state" value="true" disabled checked class="form-control">
-                    </div>
-                    <div v-else>
-                        <input type="checkbox" name="state" value="false" disabled class="form-control">
-                    </div>
-                </dl>
-            </div>
-        </div>
-        <hr>
-    </div>
-    <div v-else-if="editable">
-        <div class="row">
-            <div class="col-sm-10"></div>
-            <div class="col-sm-2">
-                <button class="btn btn-danger" type="button" v-on:click= "remove"> <i class="fa fa-trash"></i> </button>
+                <div class="text-right" v-if="editable&&beneficiary.type!='S'?true:false">
+                    <button class="btn btn-danger" type="button" v-on:click= "remove"> <i class="fa fa-trash" ></i> </button>
+                </div>
             </div>
         </div>
         <br>
@@ -104,9 +19,9 @@
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" v-model.trim="beneficiary.identity_card" ref="identity_card" name="beneficiary_identity_card[]" class="form-control">
+                        <input type="text" v-model.trim="beneficiary.identity_card" ref="identity_card" name="beneficiary_identity_card[]" class="form-control" :disabled="!editable">
                         <span class="input-group-btn">
-                            <button class="btn btn-primary" type="button" @click="searchBeneficiary" role="button"><i class="fa fa-search"></i></button>
+                            <button class="btn btn-primary" type="button" @click="searchBeneficiary" role="button" :disabled="!editable"><i class="fa fa-search"></i></button>
                         </span>
                     </div><!-- /input-group -->
                 </div>
@@ -116,7 +31,7 @@
                     <label class="control-label">Ciudad de Expedición</label>
                 </div>
                 <div class="col-md-8">
-                    <select class="form-control" v-model.trim="beneficiary.city_identity_card_id" name="beneficiary_city_identity_card[]">
+                    <select class="form-control" v-model.trim="beneficiary.city_identity_card_id" name="beneficiary_city_identity_card[]" :disabled="!editable">
                         <option :value="null"></option>
                         <option v-for="city in cities" :key="city.id" :value="city.id" >{{ city.name }}</option>
                     </select>
@@ -130,7 +45,7 @@
                     <label class="control-label">Primer Nombre</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.first_name" name="beneficiary_first_name[]"  class="form-control">
+                    <input type="text" v-model.trim="beneficiary.first_name" name="beneficiary_first_name[]"  class="form-control" :disabled="!editable">
                 </div>
             </div>
             <div class="col-md-6">
@@ -138,7 +53,7 @@
                     <label class="control-label">Segundo Nombre</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.second_name" name="beneficiary_second_name[]" class="form-control">
+                    <input type="text" v-model.trim="beneficiary.second_name" name="beneficiary_second_name[]" class="form-control" :disabled="!editable">
                 </div>
             </div>
         </div>
@@ -149,7 +64,7 @@
                     <label class="control-label">Apellido Paterno</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.last_name" name="beneficiary_last_name[]" class="form-control">
+                    <input type="text" v-model.trim="beneficiary.last_name" name="beneficiary_last_name[]" class="form-control" :disabled="!editable">
                 </div>
             </div>
             <div class="col-md-6">
@@ -157,7 +72,7 @@
                     <label class="control-label">Apellido Materno</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.mothers_last_name" name="beneficiary_mothers_last_name[]" class="form-control">
+                    <input type="text" v-model.trim="beneficiary.mothers_last_name" name="beneficiary_mothers_last_name[]" class="form-control" :disabled="!editable">
                 </div>
             </div>
         </div>
@@ -168,7 +83,7 @@
                     <label class="control-label">Apellido de Casada</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.surname_husband" name="surname_husband[]" class="form-control">
+                    <input type="text" v-model.trim="beneficiary.surname_husband" name="surname_husband[]" class="form-control" :disabled="!editable">
                 </div>
             </div>
              <div class="col-md-6">
@@ -176,7 +91,7 @@
                     <label class="control-label">Genero</label>
                 </div>
                 <div class="col-md-8">
-                    <select name="gender[]" id="" v-model.trim="beneficiary.gender" class="form-control">
+                    <select name="gender[]" id="" v-model.trim="beneficiary.gender" class="form-control" :disabled="!editable">
                         <option :value="null"></option>
                         <option value="M">Masculino</option>
                         <option value="F">Fenemino</option>
@@ -191,7 +106,7 @@
                     <label class="control-label">Fecha de Nacimiento</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="date" v-model.trim="beneficiary.birth_date" name="beneficiary_birth_date[]" class="form-control">
+                    <input type="date" v-model.trim="beneficiary.birth_date" name="beneficiary_birth_date[]" class="form-control" :disabled="!editable">
                 </div>
             </div>
             <div class="col-md-6">
@@ -199,7 +114,7 @@
                     <label class="control-label">Parentesco</label>
                 </div>
                 <div class="col-md-8">
-                    <select class="form-control " v-model.trim="beneficiary.kinship_id" name="beneficiary_kinship[]">
+                    <select class="form-control " v-model.trim="beneficiary.kinship_id" name="beneficiary_kinship[]" :disabled="!editable">
                         <option :value="null"></option>
                         <option v-for="kinship in kinships" :key="beneficiary.id + ''+kinship.id " :value="kinship.id">{{kinship.name}}</option>
                     </select>
@@ -210,154 +125,37 @@
         <div class="hr-line-dashed"></div>
             <div class="row"> 
                 <div class="col-md-6">
-                    <dl class="dl-">
-                        <div class="col-md-2"></div>
-                        <dt><h3>Documentos Completos:</h3></dt>
-                    </dl>
+                    <div class="col-md-4">
+                        <strong>Documentos Completos:</strong>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" :checked="beneficiary.state" class="form-control mediumCheckBox" :disabled="!editable">     
+                    </div>
+                    <div class="col-md-6"></div>
                 </div>
-                <div class="col-md-1">
-                    <dl class="dl-">
-                        <div v-if="beneficiary.state">
-                            <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" checked class="form-control">
-                        </div>
-                        <div v-else>
-                            <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" class="form-control">
-                        </div>
-                    </dl>
-                </div>
-            </div>
-        <div class="hr-line-dashed"></div>
-    </div>
-    <div v-else>
-        <!-- <div class="row"> 
-            <div class="col-md-11"></div>
-            <div class="col-md-1">
-                <button class="btn btn-danger" type="button" v-on:click= "remove"> <i class="fa fa-times"></i> </button>
-            </div>
-        </div> -->
-        <div class="row" >
-            <div class="col-md-6">
-                <div class="col-md-4">
-                    <label class="control-label">Primer Nombre</label>
-                </div>
-                <div class="col-md-8">
-                   <input type="text" v-model.trim="beneficiary.first_name" disabled   class="form-control">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="col-md-4">
-                    <label class="control-label">Segundo Nombre</label>
-                </div>
-                <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.second_name" disabled  class="form-control">
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="col-md-4">
-                    <label class="control-label">Apellido Paterno</label>
-                </div>
-                <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.last_name" disabled  class="form-control">
-            </div>
-                </div>
-            <div class="col-md-6">
-                <div class="col-md-4">
-                    <label class="control-label">Apellido Materno</label>
-                </div>
-                <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.mothers_last_name" disabled  class="form-control">
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="col-md-4">
-                    <label class="control-label">Apellido de Casada</label>
-                </div>
-                <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.surname_husband" disabled  class="form-control">
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="col-md-4">
-                    <label class="control-label">Carnet de Identidad</label>
-                </div>
-                <div class="col-md-8">
-                    <input type="text" v-model.trim="beneficiary.identity_card" ref="identity_card" disabled  class="form-control">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="col-md-4">
-                    <label class="control-label">Ciudad de Expedicion</label>
-                </div>
-                <div class="col-md-8">
-                    <select class="form-control" v-model.trim="beneficiary.city_identity_card_id" disabled >
-                        <option v-for="city in cities" :key="city.id" :value="city.id" >{{ city.name }}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="col-md-4">
-                    <label class="control-label">Fecha de Nacimiento</label>
-                </div>
-                <div class="col-md-8">
-                    <input type="date" v-model.trim="beneficiary.birth_date" disabled  class="form-control">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="col-md-4">
-                    <label class="control-label">Parentesco</label>
-                </div>
-                <div class="col-md-8">
-                    <select class="form-control m-b" v-model.trim="beneficiary.kinship_id" disabled >
-                        <option v-for="kinship in kinships" :key="beneficiary.id + ''+kinship.id " :value="kinship.id">{{kinship.name}}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="hr-line-dashed"></div>
-            <div class="row"> 
                 <div class="col-md-6">
-                    <dl class="dl-">
-                        <dt>  
-                            <div class="col-md-2"></div>
-                        <dt><h3>Documentos Completos:</h3></dt>
-                    </dl>
-                </div>
-                <div class="col-md-1">
-                    <dl class="dl-">
-                        <div v-if="beneficiary.state==true">
-                            <input type="checkbox" v-model.trim="beneficiary.state" :value="beneficiary.state" checked class="form-control">
-                        </div>
-                        <div v-else>
-                            <input type="checkbox" v-model.trim="beneficiary.state" :value="beneficiary.state" class="form-control">
-                        </div>
-                    </dl>
+                    
                 </div>
             </div>
         <div class="hr-line-dashed"></div>
-        </div>
     </div>
+
 </template>
 <script>
 import { getGender } from '../../helper.js'
 export default {
-  props: ["kinships", "cities", "beneficiary", "editable", "readOnly"],
+  props: ["kinships", "cities", "beneficiary", "editable", "removable","solicitante" ],
   data() {
-    return {};
+    return {
+        // removable_beneficiary: true
+    };
+  },
+  created(){
+    //  Parche
   },
   mounted() {
     //this.$refs.identity_card.focus();
+
   },
   methods: {
     remove() {
@@ -410,4 +208,12 @@ export default {
   }
 };
 </script>
+<style>
+input.mediumCheckBox
+{
+width: 20px;
+height: 20px;
+}
+
+</style>
 
