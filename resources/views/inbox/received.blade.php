@@ -26,7 +26,7 @@
                                     </li>
                                     <li>
                                         <a href="{{ url('inbox/edited') }}" class="btn-outline"> <i class="fa fa-check"></i> Revisados
-                                            {{-- <span class="label label-warning pull-right">@{{totalDocs}}</span> --}}
+                                            <span class="label label-default pull-right">@{{documentsEditedTotal}}</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -35,32 +35,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-9 animated fadeInRight">
+                <div class="col-lg-9 animated fadeInRight my-inbox" :class="showLoading ? 'sk-loading' : ''">
                     <div class="mail-box-header">
-                        {{--
-                        <form method="get" action="index.html" class="pull-right mail-search ng-pristine ng-valid">
-                            <div class="input-group">
-                                <input type="text" class="form-control input-sm" name="search" placeholder="Search email">
-                                <div class="input-group-btn">
-                                    <button type="submit" class="btn btn-sm btn-primary">
-                                Search
-                            </button>
-                                </div>
-                            </div>
-                        </form> --}}
                         <h2>
                             <span>Recibidos (@{{totalDocs}})</span>
                         </h2>
-                        
                         <div class="mail-tools tooltip-demo m-t-md" style="margin-bottom:45px;">
-                            {{-- <div class="btn-group pull-right">
-                                <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
-                                <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
-                            </div>
-                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
-                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i></button>
-                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i></button>
-                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i></button> --}}
                             <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
                                 <div class="col-md-1 text-center" v-if="! docs > 0 ">
                                     <button class="btn btn-default" @click="getData()" data-toggle="tooltip" data-placement="top" title="Actualizar">
@@ -71,8 +51,14 @@
                         </div>
                     </div>
                     <div class="mail-box">
+                        <div class="sk-folding-cube" v-show="showLoading">
+                            <div class="sk-cube1 sk-cube"></div>
+                            <div class="sk-cube2 sk-cube"></div>
+                            <div class="sk-cube4 sk-cube"></div>
+                            <div class="sk-cube3 sk-cube"></div>
+                        </div>
                         <vue-tabs>
-                            <v-tab :title="`${itab.name} (${classification(itab.id).length})`" v-for="(itab, index) in workflows" :dataId="itab.id" icon="fa fa-check"
+                            <v-tab :title="`${itab.name} (${classification(itab.id).length})`" v-for="(itab, index) in workflows" :dataId="itab.id" icon="fa fa-file-text-o "
                                 :key="`tab-received-${index}`" :suffix="`<span class='badge'> ${classification(itab.id).length} </span>`">
                                 <inbox-content :inbox-state="`received`" :workflow-id="itab.id" :documents="classification(itab.id)"></inbox-content>
                             </v-tab>
@@ -83,4 +69,8 @@
         </tabs-content>
     </div>
 </div>
+@endsection
+@section('styles')
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link rel="stylesheet" href="{!! asset('css/vuetify.css') !!}" />
 @endsection

@@ -6,6 +6,7 @@ use Muserpol\Models\RetirementFund\RetFunRecord;
 use Auth;
 use Log;
 use Carbon\Carbon;
+use Muserpol\Models\Workflow\WorkflowRecord;
 class RetirementFundObserver
 {
     public function created(RetirementFund $rf)
@@ -48,6 +49,22 @@ class RetirementFundObserver
         $retfun->ret_fun_id = $rf->id;
         $retfun->message = $message;
         $retfun->save();
-
+        if ( $rf->wf_state_current_id != $old->wf_state_current_id ) {
+            $wf_record = new WorkflowRecord;
+            $wf_record->user_id = Auth::user()->id;
+            $wf_record->wf_state_id = $rf->wf_state_current_id;
+            $wf_record->ret_fun_id = $rf->id;
+            $wf_record->date = Carbon::now();
+            $wf_record->record_type_id = 1;
+            $wf_record->message = "El usuario " . Auth::user()->username . " derivo el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $rf->wf_state->name . ".";
+            $wf_record->save();
+        }
+        if ( $old->inbox_state == false && $rf->inbox_state == true ) {
+            $ret_fun_record = new RetFunRecord;
+            $ret_fun_record->user_id = Auth::user()->id;
+            $ret_fun_record->ret_fun_id = $rf->id;
+            $ret_fun_record->message = 'El usuario ' . Auth::user()->username . ' Procesó el trámite.';
+            $ret_fun_record->save();
+        }
     }
 }
