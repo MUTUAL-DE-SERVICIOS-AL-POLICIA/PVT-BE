@@ -4,6 +4,7 @@ namespace Muserpol\Models\RetirementFund;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RetirementFund extends Model
 {
@@ -64,9 +65,13 @@ class RetirementFund extends Model
     }
     public function getBasicInfoCode()
     {
-        $code = $this->id." ".($this->affiliate->id ?? null) ."\n"."Tramite Nro: ".$this->code."\nModalidad: ".$this->procedure_modality->name."\nSolicitante: ".($this->ret_fun_beneficiaries()->where('type', 'S')->first()->fullName() ?? null);
+        $code = $this->id." ".($this->affiliate->id ?? null) ."\n". "Trámite Nro: ".$this->code."\nModalidad: ".$this->procedure_modality->name."\nSolicitante: ".($this->ret_fun_beneficiaries()->where('type', 'S')->first()->fullName() ?? null);
         $hash = crypt($code, 100);
         return array('code' => $code, 'hash'=>$hash);
         ;
+    }
+    public function wf_state()
+    {
+        return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_state_current_id', 'id');
     }
 }

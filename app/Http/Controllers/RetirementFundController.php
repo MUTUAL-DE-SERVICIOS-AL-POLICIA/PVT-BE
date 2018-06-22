@@ -36,6 +36,9 @@ use Muserpol\Models\ProcedureType;
 use Muserpol\Models\RetirementFund\RetFunState;
 use Muserpol\Models\RetirementFund\RetFunRecord;
 use DB;
+use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowRecord;
 class RetirementFundController extends Controller
 {
     /**
@@ -234,6 +237,8 @@ class RetirementFundController extends Controller
         $retirement_fund->subtotal_ret_fun = 0;
         $retirement_fund->total_ret_fun = 0;        
         $retirement_fund->reception_date = date('Y-m-d');
+        $retirement_fund->inbox_state = true;
+
         $retirement_fund->save();
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
         
@@ -241,6 +246,7 @@ class RetirementFundController extends Controller
                 
 
         $af = Affiliate::find($request->affiliate_id);
+        $af->date_derelict = $request->date_derelict;
         switch ($request->ret_fun_modality) {
             case 1:
             case 4:
@@ -419,6 +425,7 @@ class RetirementFundController extends Controller
         $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
         //return $procedures_modalities_ids;
         $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();
+        $file_modalities = ProcedureModality::get();
         $requirements = ProcedureRequirement::where('procedure_modality_id',$retirement_fund->procedure_modality_id)->get();        
         $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         $cities = City::get();
@@ -447,12 +454,20 @@ class RetirementFundController extends Controller
         
         //selected documents
         $submitted = RetFunSubmittedDocument::
-            select('procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id')
+            select('ret_fun_submitted_documents.id','procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id','ret_fun_submitted_documents.comment','ret_fun_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
-            ->where('ret_fun_submitted_documents.retirement_fund_id',$id)
-            ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'); 
+            ->where('ret_fun_submitted_documents.retirement_fund_id',$id);
+        // return $submitted->get();
+            // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'); 
+        /**for validate doc*/
+        $rol = Util::getRol();
+        $module = Role::find($rol->id)->module;
+        $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
+        $has_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
 
+        //workflow record
+        $workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -461,6 +476,7 @@ class RetirementFundController extends Controller
             'advisor'  =>  $advisor,
             'legal_guardian'    =>  $guardian,
             'procedure_modalities' => $procedures_modalities,     
+            'file_modalities'   =>  $file_modalities,
             'documents' => $documents,            
             'cities'    =>  $cities,
             'kinships'   =>  $kinships,
@@ -474,8 +490,12 @@ class RetirementFundController extends Controller
             'modalities'    =>  $modalities,
             'observation_types' => $observation_types,
             'observations' => $retirement_fund->ret_fun_observations,
-            'submitted' =>  $submitted
+            'submitted' =>  $submitted->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'),
+            'submit_documents' => $submitted->get(),
+            'has_validate' =>  $has_validate,
+            'workflow_records' =>  $workflow_records,
         ];
+        // return $data;
         
         return view('ret_fun.show',$data);
     }
@@ -529,7 +549,7 @@ class RetirementFundController extends Controller
         $modality = strtoupper($request->modality) ?? '';
 
         $total = RetirementFund::select('retirement_funds.id')
-                                ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
+                                ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
@@ -581,7 +601,7 @@ class RetirementFundController extends Controller
                 
         $this->authorize('create',RetirementFund::class);
         $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_derelict')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
@@ -624,22 +644,34 @@ class RetirementFundController extends Controller
     
     public function storeLegalReview(Request $request,$id){
         //return 0;
+        // return $request;
         $retirement_fund = RetirementFund::find($id);
         $this->authorize('update',new RetFunSubmittedDocument);
-        $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
-        foreach ($submited_documents as $document)
-        {
-            $value= "comment".$document->id."";
-            $document->comment = $request->input($value);
-            $value= "document".$document->id."";
-            if($request->input($value) == '1')
-                $document->is_valid = true;
-            else 
-                $document->is_valid = false;
-            $document->save();    
+
+        foreach($request->submit_documents as $document_array){
+ 
+            $document = $document_array[0];
+            $submit_document = RetFunSubmittedDocument::find($document['submit_document_id']);
+            $submit_document->is_valid=$document['status'];
+            $submit_document->comment=$document['comment'];
+            $submit_document->save();
+            // Log::info($document['number']);
         }
+        return $request;
+        // $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
+        // foreach ($submited_documents as $document)
+        // {
+        //     $value= "comment".$document->id."";
+        //     $document->comment = $request->input($value);
+        //     $value= "document".$document->id."";
+        //     if($request->input($value) == '1')
+        //         $document->is_valid = true;
+        //     else 
+        //         $document->is_valid = false;
+        //     $document->save();    
+        // }
         
-        return redirect('ret_fun/'.$retirement_fund->id);
+        // return redirect('ret_fun/'.$retirement_fund->id);
         //return $retirement_fund;
     }
     public function updateBeneficiaries(Request $request, $id){
@@ -1186,28 +1218,30 @@ class RetirementFundController extends Controller
 
     public function editRequirements(Request $request, $id){
                 
-        //return $request->requirements;
+        // return $request->requirements;
         $documents = RetFunSubmittedDocument::
             select('procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id')
             ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
             ->where('ret_fun_submitted_documents.retirement_fund_id',$id)
             ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');        
-
+        //return $documents;
         $num = $num2 = 0;
+    
         foreach($request->requirements as $requirement){ 
-                $from = $to = 0;
+                $from = $to = 0;          
+                $comment = null;                      
                 for($i=0;$i<count($requirement);$i++){
                     $from = $requirement[$i]['number'];
                     if($requirement[$i]['status'] == true)
                     {      
-                        $to = $requirement[$i]['id'];                                          
+                        $to = $requirement[$i]['id'];                                        
+                        $comment = $requirement[$i]['comment'];
+                        $doc = RetFunSubmittedDocument::where('retirement_fund_id',$id)->where('procedure_requirement_id',$documents[$from])->first();
+                        $doc->procedure_requirement_id = $to;      
+                        $doc->comment = $comment;              
+                        $doc->save();
                     }
-                }
-                if($documents[$from] != $to){
-                    $doc = RetFunSubmittedDocument::where('retirement_fund_id',$id)->where('procedure_requirement_id',$documents[$from])->first();
-                    $doc->procedure_requirement_id = $to;                    
-                    $doc->save();
                 }
         }
         

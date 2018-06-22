@@ -25,6 +25,9 @@
                     M
                 </div>
             </li>
+            <li class="{{ isActiveRoute(['inbox_received', 'inbox_edited']) }}" data-toggle="tooltip" data-placement="right" title="Mi Bandeja">
+                <a href="{{ url('/inbox') }}"><i class="fa fa-inbox"></i> <span class="nav-label">Mi Bandeja</span></a>
+            </li>
             <li class="{{ isActiveRoute('affiliate.index') }}" data-toggle="tooltip" data-placement="right" title="Afiliados">
                 <a href="{{ url('/affiliate') }}"><i class="fa fa-user"></i> <span class="nav-label">Afiliados</span></a>
             </li>

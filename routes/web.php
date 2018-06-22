@@ -174,7 +174,14 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 		//inbox
-		Route::get('inbox', 'InboxController@index');
+		Route::get('inbox', function () {
+			return redirect('inbox/received');
+		});
+		Route::get('inbox/received', 'InboxController@received')->name('inbox_received');
+		Route::get('inbox/edited', 'InboxController@edited')->name('inbox_edited');
+		Route::post('inbox_send_forward', 'InboxController@sendForward')->name('inbox_send_forward');
+		Route::post('inbox_send_backward', 'InboxController@sendBackward')->name('inbox_send_backward');
+		Route::patch('inbox_validate_doc/{doc_id}', 'InboxController@validateDoc')->name('inbox_validate_doc');
 	});
 });
 

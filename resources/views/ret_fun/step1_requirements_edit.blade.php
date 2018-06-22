@@ -1,5 +1,5 @@
 <div>
-    <form id="myform">
+  
     <div class="row" style="display: none;">
         <div class="col-md-6 col-md-offset-3">
             <div class="form-group" :class="{'has-error': errors.has('procedure_type_id') }">
@@ -44,53 +44,57 @@
             </div>
         </div>
     </div>
-    <h2>Lista de Requisitos</h2>
-    <div>
+   
+    <div class="ibox">
+            <div class="ibox-content">
+                    <div class="row">
+                        <div class="pull-left"> <legend > Documentos Presentados</legend></div>
+                        <div class="pull-right">
+                            <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar</button>
+                        </div>
+                    </div>
+                <form id="brianytati">
+                    <div class="row">
+                        <div v-for="(requirement, index) in requirementList" :key="index">
+                            <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement" :class="rq.background" style="cursor:pointer" :key="i" v-if="isVisible(rq)">
+                                <div class="row">
+                                    <div :class="editing?'col-md-10':'col-md-10'">
+                                        <div class="vote-actions">
+                                            <h1>
+                                                @{{rq.number}}
+                                            </h1>
+                                        </div> 
+                                        <span class="vote-title">@{{rq.document}}</span>
+                                        <div class="vote-info">
+                                            <div class="col-md-2 no-margins no-padding">
+                                                <i class="fa fa-comments-o"></i> Comentario:
+                                            </div>
+                                            <div class="col-md-6 no-margins no-padding">
+                                                <input type="text" :name="'comment'+rq.id" class="form-control" :disabled="!editing" v-model="rq.comment" >
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 ">
+                                        <div class="vote-icon" >
+                                            <span style="color:#3c3c3c"  ><i class="fa " :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i></span>
+                                            <div style="opacity:0" v-if="rol!=11">
+                                                <input type="checkbox" v-model="rq.status" value="checked"  :name="'document'+rq.id" class="largerCheckbox">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="text-center" v-if="editing" >     
+                        <button class="btn btn-danger" type="button" @click="toggle_editing"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span cla   ss="bold">Cancelar</span></button>           
+                        <button type="button" class="btn btn-primary" type="button" @click="store(ret_fun_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+                    </div>
+                </form>
+            </div>
     </div>
 
-    <div class="wrapper wrapper-content animated fadeInRight">
-        <div v-for="(requirement, index) in requirementList" :key="index">
-            <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement" :class="rq.background" style="cursor:pointer"
-                :key="i">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="vote-actions">
-                            <h1>
-                                @{{rq.number}}
-                            </h1>
-                        </div>
-                        <span class="vote-title">@{{rq.document}}</span>
-                        <div class="vote-info">
-                            <div class="col-md-2 no-margins no-padding">
-                                <i class="fa fa-comments-o"></i> Comentario:
-                            </div>
-                            <div class="col-md-6 no-margins no-padding">
-                                <input type="text" :name="'comment'+rq.id" class="form-control">
-                            </div>
-                            <br>
-                        </div>
-                    </div>
-                    <div class="col-md-2 ">
-                        <div class="vote-icon">
-                            <span style="color:#3c3c3c"><i class="fa " :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i></span>
-                            <div style="opacity:0">
-                                <input type="checkbox" v-model="rq.status" value="checked"  :name="'document'+rq.id" class="largerCheckbox">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{-- <transition
-            name="show-requirements-error"
-            enter-active-class="animated bounceInLeft">
-            <div class="alert alert-danger" v-if="showRequirementsError">
-                <h2>Debe seleccionar los requisitos</h2>
-            </div>
-        </transition> --}}
-        <div class="text-center">                
-                <button class="btn btn-primary" type="button" @click="store(ret_fun_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
-            </div>
-    </div>
-</form>
+
 </div>

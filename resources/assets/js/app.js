@@ -32,6 +32,10 @@ Vue.use(VueFormWizard);
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
+import Vuetify from 'vuetify'
+
+Vue.use(Vuetify)
+
 import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate, {
   fieldsBagName: "vFields",
@@ -53,6 +57,9 @@ Vue.use(VeeValidate, {
 		applicant_identity_card: {
           required: "Debe escribir el ci del solicitante."
         },
+    date_derelict: {
+          required: "Debe ingresar fecha de desvinculación."
+     },   
 		applicant_city_identity_card: {
           required: "Debe seleccionar la ciudad de expedición del ci del solicitante."
         },
@@ -69,11 +76,6 @@ Vue.use(VeeValidate, {
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
 
-import vSelect from 'vue-select'
-Vue.component('v-select', vSelect)
-
-Vue.component('v-select', vSelect)
-
 import VueCurrencyFilter from 'vue-currency-filter';
 
 Vue.use(VueCurrencyFilter,
@@ -89,6 +91,18 @@ Vue.use(VueCurrencyFilter,
 Vue.filter('percentage', function (value) {
 	return `${value.toFixed(4)} %`;
 });
+
+
+/* tabs */
+import VueTabs from 'vue-nav-tabs'
+import "vue-nav-tabs/themes/vue-tabs.css";
+Vue.use(VueTabs)
+
+
+// import { Tabs, Tab } from 'vue-tabs-component';
+
+// Vue.component('tabs', Tabs);
+// Vue.component('tab', Tab);
 
 
 Vue.component('flash', require('./components/Flash.vue'));
@@ -117,9 +131,16 @@ Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualificati
 Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterval.vue'));
 Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
 
+// inbox
+Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));
+Vue.component('inbox-content', require('./components/inbox/Content.vue'));
+
+
 
 // Quota Aid Mortuaries
 Vue.component('quota-aid-mortuary-index', require('./components/quota_aid/Index.vue'));
+Vue.component('quota-aid-form', require('./components/quota_aid/Form.vue'));
+Vue.component('quota-aid-create-info', require('./components/quota_aid/CreateInfo.vue'));
 
 //quota_aid
 Vue.component('quota-aid-step1-requirements', require('./components/quota_aid/Step1Requirements.vue'));
@@ -139,6 +160,11 @@ Vue.component('contribution-select', require('./components/contribution/SelectCo
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
+
+// utils
+Vue.component('swal-modal', require('./components/utils/SweetAlertModal.vue'));
+
+
 const app = new Vue({
 	el: '#app',
 	store

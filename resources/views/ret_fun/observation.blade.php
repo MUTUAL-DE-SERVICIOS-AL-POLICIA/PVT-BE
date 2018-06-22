@@ -1,102 +1,107 @@
 <div class="col-lg-12">
-    <div class="panel-group" id="accordion">
-        <div class="panel panel-danger">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseObservation">Observaciones</a>
-                    <div class="pull-right">
-                        <button typer="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#observationModal"> <i class="fa fa-plus"></i></button>
+        <div class="ibox">
+            <div class="ibox-content">
+                    <div class="panel-group" id="accordion">
+                            <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseObservation">Observaciones</a>
+                                    <div class="pull-right">
+                                        <button typer="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#observationModal"> <i class="fa fa-plus"></i></button>
+                                    </div>
+                                </h3>
+                            </div>
+                            <div id="collapseObservation" class="panel-collapse collapse in">
+                                <table class="table table-hover table-sprite">
+                                    <thead>
+                                        <tr>
+                                            <th> Fecha </th>
+                                            <th> Tipo de Observación </th>
+                                            <th> Descripción </th>
+                                            <th> Estado </th>
+                                            <th> Opciones </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($observations as $observation )
+                                    <tr>
+                                        <td> {{ $observation->date }} </td>
+                                        <td> {{ $observation->observation_type->name }} </td>
+                                        <td> {{ $observation->message }} </td>
+                                        <td>
+                                            <h3>
+                                            @if($observation->is_enabled)
+                                            <span class="label  label-primary">
+                                                Subsanado
+                                            </span>    
+                                            @else
+                                            <span class="label label-danger">
+                                                Vigente
+                                            </span>    
+                                            @endif
+                                            </h3> 
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#eliminar" data-elim="{{ $observation->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button>
+                                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $observation->id }}"><i class="fa fa-pencil" aria-hidden="true" ></i></button>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseObservationDeleted">Observaciones Eliminadas</a>
+                                </h4>
+                            </div>
+                            <div id="collapseObservationDeleted" class="panel-collapse collapse">
+                                <table class="table table-hover table-sprite">
+                                    <thead>
+                                        <tr>
+                                            <th> Fecha </th>
+                                            <th> Tipo de Observación </th>
+                                            <th> Descripción </th>
+                                            <th> Estado </th>
+                                            <th> Opciones </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($observations as $observation )
+                                    <tr>
+                                        <td> {{ $observation->date }} </td>
+                                        <td> {{ $observation->observation_type->name }} </td>
+                                        <td> {{ $observation->message }} </td>
+                                        <td>
+                                            <h3>
+                                            @if($observation->is_enabled)
+                                            <span class="label  label-primary">
+                                                Subsanado
+                                            </span>    
+                                            @else
+                                            <span class="label label-danger">
+                                                Vigente
+                                            </span>    
+                                            @endif
+                                            </h3> 
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#observationModal" data-elim="{{ $observation->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button>
+                                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#observationModal" data-elim="{{ $observation->id }}"><i class="fa fa-pencil" aria-hidden="true" ></i></button>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
                     </div>
-                </h3>
             </div>
-            <div id="collapseObservation" class="panel-collapse collapse in">
-                <table class="table table-hover table-sprite">
-                    <thead>
-                        <tr>
-                            <th> Fecha </th>
-                            <th> Tipo de Observación </th>
-                            <th> Descripción </th>
-                            <th> Estado </th>
-                            <th> Opciones </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($observations as $observation )
-                    <tr>
-                        <td> {{ $observation->date }} </td>
-                        <td> {{ $observation->observation_type->name }} </td>
-                        <td> {{ $observation->message }} </td>
-                        <td>
-                            <h3>
-                            @if($observation->is_enabled)
-                            <span class="label  label-primary">
-                                Subsanado
-                            </span>    
-                            @else
-                            <span class="label label-danger">
-                                Vigente
-                            </span>    
-                            @endif
-                            </h3> 
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#eliminar" data-elim="{{ $observation->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button>
-                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $observation->id }}"><i class="fa fa-pencil" aria-hidden="true" ></i></button>
-                        </td>
-                    </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseObservationDeleted">Observaciones Eliminadas</a>
-                </h4>
-            </div>
-            <div id="collapseObservationDeleted" class="panel-collapse collapse">
-                <table class="table table-hover table-sprite">
-                    <thead>
-                        <tr>
-                            <th> Fecha </th>
-                            <th> Tipo de Observación </th>
-                            <th> Descripción </th>
-                            <th> Estado </th>
-                            <th> Opciones </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($observations as $observation )
-                    <tr>
-                        <td> {{ $observation->date }} </td>
-                        <td> {{ $observation->observation_type->name }} </td>
-                        <td> {{ $observation->message }} </td>
-                        <td>
-                            <h3>
-                            @if($observation->is_enabled)
-                            <span class="label  label-primary">
-                                Subsanado
-                            </span>    
-                            @else
-                            <span class="label label-danger">
-                                Vigente
-                            </span>    
-                            @endif
-                            </h3> 
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#observationModal" data-elim="{{ $observation->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button>
-                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#observationModal" data-elim="{{ $observation->id }}"><i class="fa fa-pencil" aria-hidden="true" ></i></button>
-                        </td>
-                    </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-    </div>
+        </div>     
+  
 </div> <!-- fin XD !-->
 {!! Form::open(['action' => 'RetirementFundObservationController@store']) !!}
 <div class="modal inmodal" id="observationModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -106,7 +111,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <i class="fa fa-warning modal-icon"></i>
                 <h4 class="modal-title">Observacion</h4>
-                <small class="font-bold">crear una observacion al tramite</small>
+                <small class="font-bold">crear una observacion al Trámite</small>
             </div>
             <div class="modal-body">
                <div class="row">

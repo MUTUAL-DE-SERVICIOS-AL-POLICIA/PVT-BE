@@ -284,6 +284,41 @@ $color_mountain_mist_approx: #999;
 		display: none;
 	}
 }
+.my-inbox {
+	&.sk-loading {
+		position: relative;
+		&:after {
+			content: '';
+			background-color: $white_80;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+		> .mail-box > {
+			.sk-folding-cube {
+				display: block;
+				position: absolute;
+				top: 10%;
+				left: 0;
+				right: 0;
+				z-index: 2000;
+			}
+			.sk-fading-circle {
+				display: block;
+				position: absolute;
+				top: 10%;
+				left: 0;
+				right: 0;
+				z-index: 2000;
+			}
+		}
+	}
+	> .sk-folding-cube {
+		display: none;
+	}
+}
 .toast-title {
 	font-weight: 700;
 }
@@ -506,4 +541,33 @@ input.largerCheckbox {
 }
 #disabled-button-wrapper.disabled {
   cursor: not-allowed;
+}
+
+.md-skin .navbar-fixed-top{
+	z-index: 1000;
+}
+.navbar-static-side{
+	z-index: 999;
+}
+
+.tab-content{
+	padding: 10px;
+}
+.breadcrumb{
+	margin-top: 20px;
+    margin-bottom: 10px;
+}
+.breadcrumb li a{
+	font-size:19px;
+	font-weight: 100;
+}
+.breadcrumb > li + li:before {
+    font-size: 19px;
+    padding: 0 5px;
+    color: #ccc;
+    content: "/\A0";
+}
+.breadcrumb > .active {
+	font-size:19px;
+	font-weight: 500;
 }

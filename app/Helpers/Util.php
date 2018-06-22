@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Log;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
-use Muserpol\Models\Workflow\WfState;
+use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Role;
 class Util
 {
@@ -85,7 +85,7 @@ class Util
     }
 
     public static function getNextAreaCode($retirement_fund_id){
-        $wf_state = WfState::where('role_id', Session::get('rol_id'))->first();        
+        $wf_state = WorkflowState::where('role_id', Session::get('rol_id'))->first();        
         $year =  date('Y');
         $role = Role::find($wf_state->role_id);
         if($role->correlative == ""){
@@ -225,6 +225,11 @@ class Util
             }
         }
         return $output;
+    }
+    
+    public static function getAuthUser()
+    {
+        return Auth::user();
     }
 
     public static function getRol()

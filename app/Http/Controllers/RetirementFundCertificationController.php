@@ -116,6 +116,8 @@ class RetirementFundCertificationController extends Controller
     public function printReception($id)
     {
         $retirement_fund = RetirementFund::find($id);
+        $affiliate = $retirement_fund->affiliate;
+        $degree = $affiliate->degree;
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $modality = $retirement_fund->procedure_modality->name;
@@ -125,7 +127,6 @@ class RetirementFundCertificationController extends Controller
         $user = Auth::user();//agregar cuando haya roles
         $username = Auth::user()->username;//agregar cuando haya roles
         $date = Util::getStringDate($retirement_fund->reception_date);
-        $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
         $submitted_documents = RetFunSubmittedDocument::leftJoin('procedure_requirements', 'procedure_requirements.id', '=', 'ret_fun_submitted_documents.procedure_requirement_id')->where('retirement_fund_id', $retirement_fund->id)->orderBy('procedure_requirements.number', 'asc')->get();
 
         #todo
@@ -133,17 +134,18 @@ class RetirementFundCertificationController extends Controller
             add support utf-8
         */
         $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code']."\n\n". $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
         //return view('ret_fun.print.reception', compact('title','usuario','fec_emi','name','ci','expedido'));
 
        // $pdf = view('print_global.reception', compact('title','usuario','fec_emi','name','ci','expedido'));       
-    //    return view('ret_fun.print.reception',compact('user','title','institution', 'direction', 'unit','username','date','modality','applicant','submitted_documents','header','number'));
+    //    return view('ret_fun.print.reception',compact('user','title','institution', 'direction', 'unit','username','date','modality','applicant', 'affiliate', 'degree','submitted_documents','header','number'));
         $pdftitle = "RECEPCIÓN - " . $title;
         $namepdf = Util::getPDFName($pdftitle, $applicant);
         $footerHtml = view()->make('ret_fun.print.footer', ['bar_code'=>$bar_code])->render();
 
         $pages = [];
         for ($i = 1; $i <= 2; $i++) {
-            $pages[] = \View::make('ret_fun.print.reception', compact('bar_code', 'user', 'title', 'institution', 'direction', 'unit', 'username', 'date', 'modality', 'applicant', 'submitted_documents', 'header', 'number'))->render();
+            $pages[] = \View::make('ret_fun.print.reception', compact('bar_code', 'user', 'title', 'institution', 'direction', 'unit', 'username', 'date', 'modality', 'applicant', 'affiliate', 'degree', 'submitted_documents', 'header', 'number'))->render();
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
@@ -153,7 +155,7 @@ class RetirementFundCertificationController extends Controller
                    ->setOption('margin-bottom', '15mm')
                 //    ->setOption('margin-left', '25mm')
                 //    ->setOption('margin-right', '15mm')
-                   ->setOption('footer-right', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018   ')
+                    //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
                 //    ->setOption('footer-right', 'Pagina [page] de [toPage]')
                    ->setOption('footer-html', $footerHtml)
                    ->stream("$namepdf");
@@ -172,7 +174,29 @@ class RetirementFundCertificationController extends Controller
         $subtitle = $cite;
         $pdftitle = "Certificación de Archivo";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-        return \PDF::loadView('ret_fun.print.file_certification', compact('date', 'subtitle', 'username', 'cite', 'title', 'number', 'retirement_fund', 'affiliate', 'affiliate_folders', 'applicant'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        $user = Auth::user();
+        $footerHtml = view()->make('ret_fun.print.footer', ['bar_code'=>$this->generateBarCode($retirement_fund)])->render();
+        return \PDF::loadView(
+                'ret_fun.print.file_certification', 
+                compact(
+                    'date', 
+                    'subtitle', 
+                    'username', 
+                    'cite', 
+                    'title', 
+                    'number', 
+                    'retirement_fund', 
+                    'affiliate', 
+                    'affiliate_folders', 
+                    'applicant',
+                    'user'))
+                ->setPaper('letter')
+                ->setOption('encoding', 'utf-8')
+                ->setOption('margin-bottom', '15mm')
+                //->setOption('footer-right', 'Pagina [page] de [toPage]')
+                ->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
+                ->setOption('footer-html', $footerHtml)
+                ->stream("$namepdf");
 
     }
     public function printLegalReview($id)
@@ -441,5 +465,16 @@ class RetirementFundCertificationController extends Controller
             ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
             ->stream("$namepdf");
+    }
+
+    private function generateBarCode($retirement_fund){
+        $bar_code = \DNS2D::getBarcodePNG((
+                        $retirement_fund->getBasicInfoCode()['code']."\n\n".$retirement_fund->getBasicInfoCode()['hash']), 
+                        "PDF417", 
+                        100, 
+                        33, 
+                        array(1, 1, 1)
+                    );
+        return $bar_code;
     }
 }

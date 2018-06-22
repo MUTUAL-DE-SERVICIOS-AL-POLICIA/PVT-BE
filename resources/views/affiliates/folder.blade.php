@@ -1,36 +1,48 @@
+
 <div class="col-lg-12">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="pull-left">Archivos</h3>
+    <div class="ibox">
+        <div class="ibox-content">
+           
+            <div class="pull-left">
+                <legend> Archivos</legend>
+            </div>
             <div class="text-right">
-               @can('create',Muserpol\Models\AffiliateFolder::class)
+                @can('create',Muserpol\Models\AffiliateFolder::class)
                 <a href="" class="btn btn-primary" data-toggle="modal" data-target="#folderModalRe">
-                     <i class="fa fa-plus"> </i>
+                        <i class="fa fa-plus"> </i>
                 </a>
                 @else
                 <br>
                 @endcan
             </div>
-        </div>
-        <div class="panel-body">
+           
             <div class="row">
                 <div class="ibox-content table-responsive">
                     <table class="table table-hover table-sprite">
                         <thead>
                             <tr>
-                            <th> Modalidad </th>
                             <th> Código </th>
+                            <th> Modalidad </th>                            
                             <th> Número de Folder </th>
+                            <th> Pagado </th>
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($folders as $folder )
                         <tr>
-                            <td> {{ $folder->procedure_modality->name }} </td>
                             <td> {{ $folder->code_file }} </td>
+                            <td> {{ $folder->procedure_modality->name }} </td>                            
                             <td> {{ $folder->folder_number }} </td>
+                            <td> @if($folder->is_paid === true) SI @endif @if($folder->is_paid === false)NO @endif </td>
                             @can('update', new Muserpol\Models\Affiliatefolder)
-                                <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog" data-modid="{{ $folder->procedure_modality_id }}" data-id="{{$folder->id}}" data-codfile="{{ $folder->code_file }}" data-folnum="{{ $folder->folder_number }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
+                             <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog"                                 
+                                data-modid="{{ $folder->procedure_modality_id }}" 
+                                data-id="{{$folder->id}}" 
+                                data-codfile="{{ $folder->code_file }}" 
+                                data-folnum="{{ $folder->folder_number }}"
+                                data-ispaid = "{{ $folder->is_paid }}"
+                                data-note="{{ $folder->note }}">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
                             @endcan
                             @can('delete', new Muserpol\Models\Affiliatefolder)
                                 <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $folder->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button></td>
@@ -43,6 +55,7 @@
             </div>
         </div>
     </div>
+    
 </div>
 {{--@include(folderModal)--}}
 {!! Form::open(['action' => 'AffiliateFolderController@store']) !!}
@@ -59,13 +72,25 @@
                 <div class="form-group"><label>Modalidad</label>
                      <select class="form-control" name="procedure_modality_id">
                         <option></option>
-                         @foreach($procedure_modalities as $modality)                         
+                         @foreach($file_modalities as $modality)                         
                          <option value={{$modality->id}}>{{$modality->procedure_type->name ." - " .$modality->name }}</option>
                          @endforeach
                      </select>
+                </div>                
+                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control" id="num_folder"></div>
+                
+                <div class="form-group"><label>Pago</label>                     
+                    <div class="toggle">
+                        <label><input type="radio" name="is_paid" value="paid"><span>Pagado</span></label>    
+                    </div>
+                    <div class="toggle">
+                        <label><input type="radio" name="is_paid"  value="nopaid"><span>No Pagado</span></label>
+                    </div>                    
                 </div>
-                <div class="form-group"><label>Codigo De Archivo</label> <input name="code_file" type="text" placeholder="Codigo generado por achivo" class="form-control"></div>
-                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control"></div>
+                
+                <div class="form-group"><label>Nota</label> <input name="note" type="text" placeholder="Nota adicionales" class="form-control"></div>
+
+                <div class="form-group"><label>Codigo De Archivo</label> <input name="code_file" type="text" placeholder="Codigo generado por achivo" class="form-control"></div>                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
@@ -83,7 +108,7 @@
     <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
                 <i class="fa fa-folder modal-icon"></i>
                 <h4 class="modal-title" id="exampleModalLabel">Registro de Antecedente</h4>
                 <input name="folder_id" type="hidden" id="id_folder" value="id_folder">
@@ -96,9 +121,18 @@
                         <option value={{$modality->id}}>{{$modality->name}}</option>
                         @endforeach
                     </select>
-                </div>
-                <div class="form-group"><label>Codigo De Archivo</label> <input name="code_file" type="text" placeholder="Codigo generado por achivo" class="form-control" id="cod_folder"></div>
+                </div>                
                 <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control" id="num_folder"></div>
+                <div class="form-group"><label>Pago</label>                     
+                    <div class="toggle">
+                        <label><input type="radio" name="is_paid" id="paid" value="paid"><span>Pagado</span></label>    
+                    </div>
+                    <div class="toggle">
+                        <label><input type="radio" name="is_paid"  id="nopaid" value="nopaid"><span>No Pagado</span></label>
+                    </div>                    
+                </div>
+                <div class="form-group"><label>Nota</label> <input name="note" id="note" type="text" placeholder="Nota adicionales" class="form-control"></div>
+                <div class="form-group"><label>Codigo De Archivo</label> <input name="code_file" type="text" placeholder="Codigo generado por achivo" class="form-control" id="cod_folder"></div>
                 </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>

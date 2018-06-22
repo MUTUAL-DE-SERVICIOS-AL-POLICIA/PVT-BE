@@ -11,6 +11,7 @@ use Muserpol\Models\PensionEntity;
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Log;
+use Muserpol\Models\RetirementFund\RetFunState;
 use Yajra\Datatables\Datatables;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
@@ -145,6 +146,7 @@ class AffiliateController extends Controller
             }
         
         $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->first();
+        $states = RetFunState::get();
         $nextcode = RetirementFund::where('affiliate_id', $affiliate->id)->where('code','LIKE','%A')->first();
         if(isset($nextcode))
             $nextcode = $nextcode->code;
@@ -169,6 +171,7 @@ class AffiliateController extends Controller
             'pension_entities' =>$pension_entities,
             'affiliate_states'=>$affiliate_states, 
             'cuota'=>$cuota,
+            'states' => $states,
             'auxilio'=>$auxilio,
             'affiliate_records'=>$affiliate_records,
             'nextcode'  =>  $nextcode,
@@ -235,6 +238,7 @@ class AffiliateController extends Controller
         $affiliate->category_id = $request->category_id;
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->date_derelict = $request->date_derelict;
         $affiliate->save();
         
         $datos = array('affiliate'=>$affiliate,'state'=>$affiliate->affiliate_state,'category'=>$affiliate->category,'degree'=>$affiliate->degree,'pension_entity'=>$affiliate->pension_entity);
