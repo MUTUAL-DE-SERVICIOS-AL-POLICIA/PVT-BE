@@ -4,7 +4,6 @@ export default {
         return{
             pass:false,
             loadingWizard: false,
-            showRequirementsError: false,
             count:0,
             name:null,
             email:null,
@@ -19,13 +18,8 @@ export default {
         setLoading: function(value) {
             this.loadingWizard = value;
         },
-        showRequirementsErrorChanged(val){
-            console.log("llegue emmit");
-            
-            this.showRequirementsError = val;
-        },
         validateFirstStep() {
-            this.showRequirementsError = false;
+
             if (!this.$refs.uno.$children[0].city_end_id) {
                 return false;
             }
@@ -40,7 +34,6 @@ export default {
                 }
             });
             if (!someRequirement) {
-                this.showRequirementsError = ! this.showRequirementsError;
                 return false;
             }
             return true;

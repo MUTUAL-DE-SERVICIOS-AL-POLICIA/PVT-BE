@@ -78,14 +78,7 @@ export default {
   },
   methods: {
     addPhoneNumber(){
-      if (this.applicant_phone_numbers.length > 0) {
-        let last_phone = this.applicant_phone_numbers[this.applicant_phone_numbers.length-1];
-        if (last_phone.value && !last_phone.value.includes('_')) {
-          this.applicant_phone_numbers.push({value:null});
-        }
-      }else{
-          this.applicant_phone_numbers.push({value:null});
-      }
+      this.applicant_phone_numbers.push({value:null});
       setTimeout(() => {
         phoneInputMaskAll();
       }, 500);
@@ -97,14 +90,7 @@ export default {
         this.addPhoneNumber()
     },
     addCellPhoneNumber(){
-      if (this.applicant_cell_phone_numbers.length > 0) {
-        let last_phone = this.applicant_cell_phone_numbers[this.applicant_cell_phone_numbers.length-1];
-        if (last_phone.value && !last_phone.value.includes('_')) {
-          this.applicant_cell_phone_numbers.push({value:null});
-        }
-      }else{
-          this.applicant_cell_phone_numbers.push({value:null});
-      }
+      this.applicant_cell_phone_numbers.push({value:null});
       setTimeout(() => {
         cellPhoneInputMaskAll();
       }, 500);

@@ -37,6 +37,7 @@ import Vuetify from 'vuetify'
 Vue.use(Vuetify)
 
 import VeeValidate from 'vee-validate';
+<<<<<<< HEAD
 Vue.use(VeeValidate, {
   fieldsBagName: "vFields",
   dictionary: {
@@ -71,6 +72,9 @@ Vue.use(VeeValidate, {
   }
 });
 
+=======
+Vue.use(VeeValidate);
+>>>>>>> parent of 72d684a... added, getGender on helper.js, added more validations on first second step create ret fun, and bug fixes edit beneficiaries on show retfun
 
 
 import Vuelidate from 'vuelidate'

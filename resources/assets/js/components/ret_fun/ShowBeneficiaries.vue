@@ -87,14 +87,7 @@
                         birth_date: null,
                         kinship: null,
                 }
-                if(this.beneficiaries.length >= 0){
-                    let last_beneficiary=this.beneficiaries[this.beneficiaries.length-1];
-                    if (last_beneficiary.first_name) {
-                        this.beneficiaries.push(beneficiary);
-                    }
-                }else{
-                        this.beneficiaries.push(beneficiary);
-                }
+                this.beneficiaries.push(beneficiary);
             },
             removeBeneficiary(index){
                 this.beneficiaries.splice(index,1);
