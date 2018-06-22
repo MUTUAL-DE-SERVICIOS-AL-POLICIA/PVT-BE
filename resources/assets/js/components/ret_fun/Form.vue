@@ -87,6 +87,10 @@ export default {
                 }
             }
 
+            if (!this.$refs.dos.$children[0].date_derelict){
+                return false;
+            }
+
             this.sendApplicant();
             return true;
             // var deferred = $.Deferred();

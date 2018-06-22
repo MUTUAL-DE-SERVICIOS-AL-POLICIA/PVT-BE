@@ -52,6 +52,7 @@ export default {
 
       error:{
         applicant_identity_card: false,
+        //date_derelict: false,
       }
     }
   },

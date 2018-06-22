@@ -194,7 +194,7 @@ class RetirementFundCertificationController extends Controller
                 ->setOption('encoding', 'utf-8')
                 ->setOption('margin-bottom', '15mm')
                 //->setOption('footer-right', 'Pagina [page] de [toPage]')
-                ->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
+                //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
                 ->setOption('footer-html', $footerHtml)
                 ->stream("$namepdf");
 
