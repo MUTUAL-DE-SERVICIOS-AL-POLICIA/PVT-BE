@@ -240,7 +240,6 @@ class RetirementFundController extends Controller
         $retirement_fund->inbox_state = true;
 
         $retirement_fund->save();
-<<<<<<< HEAD
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
         
 
@@ -266,9 +265,6 @@ class RetirementFundController extends Controller
         }
         $af->save();
 
-=======
-                
->>>>>>> parent of 72d684a... added, getGender on helper.js, added more validations on first second step create ret fun, and bug fixes edit beneficiaries on show retfun
         //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
         
         foreach ($requirements  as  $requirement)

@@ -4,10 +4,15 @@
 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-7">
+    <div class="col-lg-9">
         {{ Breadcrumbs::render('show_affiliate', $affiliate) }}
     </div>
-    <div class="col-lg-5" style="margin-top:12px;">
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row text-center">
+        {{-- <a href="{{route('create_quota_aid', $affiliate->id)}}" >
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Initar tr&aacute;mite de CUOTA Y AUXILIO MORTUORIO"><i class="fa fa-paste"></i> </button>
+        </a> --}}
         @can('create', new Muserpol\Models\RetirementFund\RetirementFund)
             @if($has_ret_fun)
                 <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene un tr&aacute;mite de Fondo de Retiro">
@@ -35,6 +40,7 @@
         </a>
         @endcan
     </div>
+<<<<<<< HEAD
 </div>
 
 <div class="row">
@@ -140,6 +146,8 @@
 
 {{-- <div class="wrapper wrapper-content animated fadeInRight">
    
+=======
+>>>>>>> parent of dee2497... reajustando vista del affiliado
     <div class="row">
         <div class="col-md-6">
             <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
@@ -156,7 +164,7 @@
         </div>
     </div>
 
-</div> --}}
+</div>
 
 @endsection
 

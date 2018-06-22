@@ -11,7 +11,6 @@ use Muserpol\Models\PensionEntity;
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Log;
-use Muserpol\Models\RetirementFund\RetFunState;
 use Yajra\Datatables\Datatables;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
@@ -3569,7 +3568,6 @@ echo "finihsed";
             }
         
         $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->first();
-        $states = RetFunState::get();
         $nextcode = RetirementFund::where('affiliate_id', $affiliate->id)->where('code','LIKE','%A')->first();
         if(isset($nextcode))
             $nextcode = $nextcode->code;
@@ -3594,7 +3592,6 @@ echo "finihsed";
             'pension_entities' =>$pension_entities,
             'affiliate_states'=>$affiliate_states, 
             'cuota'=>$cuota,
-            'states' => $states,
             'auxilio'=>$auxilio,
             'affiliate_records'=>$affiliate_records,
             'nextcode'  =>  $nextcode,
