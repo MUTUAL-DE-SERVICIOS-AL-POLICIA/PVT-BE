@@ -55,6 +55,9 @@ export function phoneInputMask() {
 }
 export function getGender(value) {
     var gender = '';
+    if (!value) {
+        return gender;
+    }
     switch (value.toUpperCase()) {
         case "M":
             gender = 'Masculino';

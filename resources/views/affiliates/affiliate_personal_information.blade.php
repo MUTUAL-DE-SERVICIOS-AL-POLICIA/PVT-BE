@@ -5,7 +5,7 @@
     
         <div class="ibox-content">
 
-                <div class="pull-left"> <legend > Información Personal</legend></div>
+                    <div class="pull-left"> <legend > Información Personal</legend></div>
                     @can('update',$affiliate)
                     <div class="text-right">
                         <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
@@ -13,7 +13,6 @@
                     @else
                     <br>
                     @endcan
-                    
                     <br>
                     <div class="row">
                         

@@ -52,7 +52,6 @@ export default {
 
       error:{
         applicant_identity_card: false,
-        //date_derelict: false,
       }
     }
   },
@@ -78,7 +77,14 @@ export default {
   },
   methods: {
     addPhoneNumber(){
-      this.applicant_phone_numbers.push({value:null});
+      if (this.applicant_phone_numbers.length > 0) {
+        let last_phone = this.applicant_phone_numbers[this.applicant_phone_numbers.length-1];
+        if (last_phone.value && !last_phone.value.includes('_')) {
+          this.applicant_phone_numbers.push({value:null});
+        }
+      }else{
+          this.applicant_phone_numbers.push({value:null});
+      }
       setTimeout(() => {
         phoneInputMaskAll();
       }, 500);
@@ -90,7 +96,14 @@ export default {
         this.addPhoneNumber()
     },
     addCellPhoneNumber(){
-      this.applicant_cell_phone_numbers.push({value:null});
+      if (this.applicant_cell_phone_numbers.length > 0) {
+        let last_phone = this.applicant_cell_phone_numbers[this.applicant_cell_phone_numbers.length-1];
+        if (last_phone.value && !last_phone.value.includes('_')) {
+          this.applicant_cell_phone_numbers.push({value:null});
+        }
+      }else{
+          this.applicant_cell_phone_numbers.push({value:null});
+      }
       setTimeout(() => {
         cellPhoneInputMaskAll();
       }, 500);

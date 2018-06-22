@@ -61,7 +61,7 @@
                         <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado ">
                         <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullName() }}</a>    
                         </h2>
-                            <small><strong>{{  $retirement_fund->affiliate->degree->name }}</strong></small>
+                            <h4><strong>{{  $retirement_fund->affiliate->degree->name }}</strong></h4>
                         </div>
                     </div>
                     <div class="widget-text-box">
@@ -70,7 +70,6 @@
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-affiliate"><i class="fa fa-user"></i> Affiliado </a></li>
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-beneficiaries"><i class="fa fa-users"></i> Beneficiarios</a></li>
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-summited-document"><i class="fa fa-file"></i> Documentos Presentados</a></li>
-                                <li class="list-group-item "><a data-toggle="tab" href="#tab-legal-review"><i class="fa fa-legal "></i> Revisi&oacute;n Legal</a></li>
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-folder"><i class="fa fa-copy"></i> Archivos</a></li>
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-observations"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                                 
@@ -115,13 +114,7 @@
                                     @endcan
                                 
                             </div>
-                            <div id="tab-legal-review" class="tab-pane">
-                                
-                                    @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                        @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents])                        
-                                    @endcan
-                                
-                            </div>
+                            
                             <div id="tab-folder" class="tab-pane">
                                 
                                     @can('view',new Muserpol\Models\AffiliateFolder)
