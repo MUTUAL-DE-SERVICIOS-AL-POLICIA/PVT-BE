@@ -4,9 +4,15 @@
         <div class="ibox-content">
             <legend>Datos del afiliado</legend>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group"><label class="col-sm-4 control-label">Fecha de desvinculaci&oacute;n</label>
-                        <div class="col-sm-8"><input type="date" name="date_derelict" v-model="date_derelict" value="date_derelict" class="form-control"></div>
+                <div class="col-md-4" :class="{'has-error': errors.has('date_derelict') }">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            Fecha de desvinculaci&oacute;n</label>
+                        <div class="col-sm-8">
+                            <input type="date" name="date_derelict" v-model="date_derelict" value="date_derelict" class="form-control" v-validate.initial="'required'">
+                            <i v-show="errors.has('date_derelict')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('date_derelict')" class="text-danger">@{{ errors.first('date_derelict') }}</span>
+                        </div>
                     </div>
                 </div>                       
             </div>

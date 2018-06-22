@@ -238,6 +238,7 @@ class AffiliateController extends Controller
         $affiliate->category_id = $request->category_id;
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->date_derelict = $request->date_derelict;
         $affiliate->save();
         
         $datos = array('affiliate'=>$affiliate,'state'=>$affiliate->affiliate_state,'category'=>$affiliate->category,'degree'=>$affiliate->degree,'pension_entity'=>$affiliate->pension_entity);
