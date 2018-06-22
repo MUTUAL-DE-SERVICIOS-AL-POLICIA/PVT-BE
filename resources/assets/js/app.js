@@ -57,6 +57,9 @@ Vue.use(VeeValidate, {
 		applicant_identity_card: {
           required: "Debe escribir el ci del solicitante."
         },
+    date_derelict: {
+          required: "Debe ingresar fecha de desvinculación."
+     },   
 		applicant_city_identity_card: {
           required: "Debe seleccionar la ciudad de expedición del ci del solicitante."
         },

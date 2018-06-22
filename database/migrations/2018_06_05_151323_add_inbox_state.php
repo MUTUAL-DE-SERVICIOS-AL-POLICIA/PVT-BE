@@ -16,6 +16,14 @@ class AddInboxState extends Migration
         Schema::table('retirement_funds', function (Blueprint $table) {
             $table->boolean('inbox_state')->default(false);
         });
+        // Schema::table('contribution_types', function(Blueprint $table){
+        //     $table->mediumText('description')->nullable();
+        // });
+        Schema::table('affiliate_folders', function(Blueprint $table){
+            $table->boolean('is_paid')->nullable();
+            $table->string('note')->nullable();
+            //$table->string('folder_number')->nullable(); //mada directly from db
+        });
     }
 
     /**
