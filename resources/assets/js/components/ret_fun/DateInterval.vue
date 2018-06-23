@@ -11,14 +11,29 @@
     <button type="button" class="btn" :class="valid_year ? 'btn-primary' : 'btn-danger'">Años: <strong>{{ years }}</strong></button>
     <button type="button" class="btn" :class="valid_month ? 'btn-primary' : 'btn-danger'">Meses: <strong>{{ months }}</strong></button>
 </div> -->
-  <div class="input-daterange input-group col-md-offset-4 col-md-5" :class="! valid ? 'has-error' : ''" >
-      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+  <div class="input-daterange input-group col-md-offset-4 col-md-8" :class="! valid ? 'has-error' : ''" >
+      <!-- <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
       <input type="date" name="date_availability_start" ref="start" :value="value.start" @change="updateDate()" class="form-control">
       <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
       <input type="date" name="date_availability_start" ref="end" :value="value.end" @change="updateDate()" class="form-control">
       <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
       <button type="button" class="btn" :class="valid_year ? 'btn-primary' : 'btn-danger'">Años: <strong>{{ years }}</strong></button>
-      <button type="button" class="btn" :class="valid_month ? 'btn-primary' : 'btn-danger'">Meses: <strong>{{ months }}</strong></button>
+      <button type="button" class="btn" :class="valid_month ? 'btn-primary' : 'btn-danger'">Meses: <strong>{{ months }}</strong></button> -->
+      <div class="form-inline m-b-sm">
+        <div class="form-group">
+            <div class="input-daterange input-group">
+                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                <input type="date" name="date_availability_start" ref="start" :value="value.start" @change="updateDate()" class="form-control">
+                <span class="input-group-addon"><i class="fa fa-arrow-right"></i></span>
+                <input type="date" name="date_availability_end" ref="end" :value="value.end" @change="updateDate()" class="form-control">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
+        </div>
+        <div class="col-xs-offset-1 inline">
+          <button type="button" class="btn" :class="valid_year ? 'btn-outline btn-primary' : 'btn-danger'">Años: <strong>{{ years }}</strong></button>
+          <button type="button" class="btn" :class="valid_month ? 'btn-outline btn-primary' : 'btn-danger'">Meses: <strong>{{ months }}</strong></button>
+        </div>
+      </div>
   </div>
 </template>
 

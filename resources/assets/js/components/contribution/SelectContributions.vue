@@ -220,21 +220,21 @@ export default {
         return type.name  == 'Disponibilidad';   
     })[0];
     this.item0 =  this.types.filter(function (type) {
-        return type.name  == 'Item 0';   
+        return type.name  == 'Período en item 0 Con Aporte';   
     })[0];
     this.servicio = this.types.filter(function (type) {
-        return type.name  == 'Servicio';   
+        return type.name  == 'Período reconocido por comando';   
     })[0];
     this.nh = this.types.filter(function (type) {
-        return type.name  == 'No Hay Registro';   
+        return type.name  == 'Período no Trabajado';   
     })[0];    
 
     this.cas = this.types.filter(function (type) {
-        return type.name  == 'Registro Segun CAS';   
+        return type.name  == 'Período Certificación Con Aporte';   
     })[0];
 
     this.bfs = this.types.filter(function (type) {
-        return type.name  == 'Batallon de Seguridad Fisica';   
+        return type.name  == 'Período de Batallón de Seguridad Física Con Aporte';   
     })[0];
 
     if(!this.con_type){

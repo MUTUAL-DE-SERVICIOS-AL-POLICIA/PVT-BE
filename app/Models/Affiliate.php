@@ -144,29 +144,46 @@ class Affiliate extends Model
     {
         return Util::getCivilStatus($this->civil_status, $this->gender);
     }
+    /*contributions */
     public function getDatesContributions()
     {
-        return $this->getContributionsWithType('Servicio');
+        return $this->getContributionsWithType(1);
+    }
+    public function getDatesItemZeroWithContribution()
+    {
+        return $this->getContributionsWithType(2);
+    }
+    public function getDatesItemZeroWithoutContribution()
+    {
+        return $this->getContributionsWithType(3);
+    }
+    public function getDatesSecurityBattalionWithContribution()
+    {
+        return $this->getContributionsWithType(4);
+    }
+    public function getDatesSecurityBattalionWithoutContribution()
+    {
+        return $this->getContributionsWithType(5);
+    }
+    public function getDatesMay1976WithoutContribution()
+    {
+        return $this->getContributionsWithType(6);
+    }
+    public function getCertificationPeriodWithContribution()
+    {
+        return $this->getContributionsWithType(7);
+    }
+    public function getCertificationPeriodWithoutContribution()
+    {
+        return $this->getContributionsWithType(8);
+    }
+    public function getDatesNotWorked()
+    {
+        return $this->getContributionsWithType(9);
     }
     public function getDatesAvailability()
     {
-        return $this->getContributionsWithType('Disponibilidad');
-    }
-    public function getDatesItemZero()
-    {
-        return $this->getContributionsWithType('Item 0');
-    }
-    public function getDatesSecurityBattalion()
-    {
-        return $this->getContributionsWithType('Batallon de Seguridad Fisica');
-    }
-    public function getDatesNoRecords()
-    {
-        return $this->getContributionsWithType('No Hay Registro');
-    }
-    public function getDatesCas()
-    {
-        return $this->getContributionsWithType('Registro Segun CAS');
+        return $this->getContributionsWithType(10);
     }
     public function getDatesGlobal()
     {
@@ -178,9 +195,9 @@ class Affiliate extends Model
         }
         return $dates;
     }
-    public function getContributionsWithType($name_contribution_type)
+    public function getContributionsWithType($contribution_type_id)
     {
-        $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
+        $contribution_type = ContributionType::find($contribution_type_id);
         $dates=[];
         if (!$contribution_type) return "error";
         $contributions = $this->contributions()->where('contribution_type_id', '=', $contribution_type->id)->orderBy('month_year', 'asc')->get();
@@ -196,13 +213,11 @@ class Affiliate extends Model
                     }
                 }
                 $dates[] = (object) array('start' => $start, 'end' => $contributions[$i]->month_year);
-                // dd($contributions->pluck('month_year'),$dates);
-                // dd($dates);
             }
         return $dates;
     }
     public function getTotalContributionsAmount($name_contribution_type)
-    {      
+    {
         $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
         if(!$contribution_type)
         {
@@ -218,12 +233,12 @@ class Affiliate extends Model
     public function getTotalQuotes()
     {
         $total_global_backed = Util::sumTotalContributions($this->getDatesGlobal());
-        $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Servicio'));
-        $total_item_zero_backed = Util::sumTotalContributions($this->getContributionsWithType('Item 0'));
+        $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Período reconocido por comando'));
+        $total_item_zero_backed = Util::sumTotalContributions($this->getContributionsWithType('Período en item 0 Con Aporte'));
         $total_availability_backed = Util::sumTotalContributions($this->getContributionsWithType('Disponibilidad'));
-        $total_security_battalion_backed = Util::sumTotalContributions($this->getContributionsWithType('Batallon de Seguridad Fisica'));
-        $total_cas_backed = Util::sumTotalContributions($this->getContributionsWithType('Registro Segun CAS'));
-        $total_no_records_backed = Util::sumTotalContributions($this->getContributionsWithType('No Hay Registro'));
+        $total_security_battalion_backed = Util::sumTotalContributions($this->getContributionsWithType('Período de Batallón de Seguridad Física Con Aporte'));
+        $total_cas_backed = Util::sumTotalContributions($this->getContributionsWithType('Período Certificación Con Aporte'));
+        $total_no_records_backed = Util::sumTotalContributions($this->getContributionsWithType('Período no Trabajado'));
         // $total_quotes = ($total_contributions_backed ?? 0)
         //     + ($total_item_zero_backed ?? 0)
         //     - ($total_availability_backed ?? 0)
@@ -241,14 +256,14 @@ class Affiliate extends Model
     {
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
         $availability = $this->getContributionsWithType('Disponibilidad');
-        $contributions = $this->getContributionsWithType('Servicio');
+        $contributions = $this->getContributionsWithType('Período reconocido por comando');
 
         if (sizeOf($availability) > 0) {
             /* has availability */
             $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
             $contributions = $this->contributions()
                 ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-                ->where("contribution_types.name", '=', 'Servicio')
+                ->where("contribution_types.name", '=', 'Período reconocido por comando')
                 ->where('contributions.month_year', '<=', $start_date_availability)
                 ->orderBy('contributions.month_year', 'desc')
                 ->take($number_contributions)
@@ -263,7 +278,7 @@ class Affiliate extends Model
             $last_date_contribution = Carbon::parse(end($contributions)->end)->toDateString();
             $contributions = $this->contributions()
                 ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-                ->where("contribution_types.name", '=', 'Servicio')
+                ->where("contribution_types.name", '=', 'Período reconocido por comando')
                 ->where('contributions.month_year', '<=', $last_date_contribution)
                 ->orderBy('contributions.month_year', 'desc')
                 ->take($number_contributions)

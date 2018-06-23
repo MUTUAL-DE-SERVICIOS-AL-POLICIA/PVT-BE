@@ -39,6 +39,7 @@ use DB;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowRecord;
+use Muserpol\Models\Contribution\ContributionType;
 class RetirementFundController extends Controller
 {
     /**
@@ -765,13 +766,19 @@ class RetirementFundController extends Controller
         $retirement_fund = RetirementFund::find($ret_fun_id);
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
         $affiliate = $retirement_fund->affiliate;
+
         $dates_global = $affiliate->getDatesGlobal();
         $dates_contributions = $affiliate->getDatesContributions();
+        $dates_item_zero_with_contribution = $affiliate->getDatesItemZeroWithContribution();
+        $dates_item_zero_without_contribution = $affiliate->getDatesItemZeroWithoutContribution();
+        $dates_security_battalion_with_contribution = $affiliate->getDatesSecurityBattalionWithContribution();
+        $dates_security_battalion_without_contribution = $affiliate->getDatesSecurityBattalionWithoutContribution();
+        $dates_may1976_without_contribution = $affiliate->getDatesMay1976WithoutContribution();
+        $dates_certification_period_with_contribution = $affiliate->getCertificationPeriodWithContribution();
+        $dates_certification_period_without_contribution = $affiliate->getCertificationPeriodWithoutContribution();
+        $dates_not_worked = $affiliate->getDatesNotWorked();
         $dates_availability = $affiliate->getDatesAvailability();
-        $dates_item_zero = $affiliate->getDatesItemZero();
-        $dates_security_battalion = $affiliate->getDatesSecurityBattalion();
-        $dates_no_records = $affiliate->getDatesNoRecords();
-        $dates_cas = $affiliate->getDatesCas();
+
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $cities = City::get();
         $kinships = Kinship::get();
@@ -779,13 +786,19 @@ class RetirementFundController extends Controller
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
+
             'dates_global' => $dates_global,
-            'dates_availability' => $dates_availability,
-            'dates_item_zero' => $dates_item_zero,
             'dates_contributions' => $dates_contributions,
-            'dates_security_battalion' => $dates_security_battalion,
-            'dates_no_records' => $dates_no_records,
-            'dates_cas' => $dates_cas,
+            'dates_item_zero_with_contribution' => $dates_item_zero_with_contribution,
+            'dates_item_zero_without_contribution' => $dates_item_zero_without_contribution,
+            'dates_security_battalion_with_contribution' => $dates_security_battalion_with_contribution,
+            'dates_security_battalion_without_contribution' => $dates_security_battalion_without_contribution,
+            'dates_may1976_without_contribution' => $dates_may1976_without_contribution,
+            'dates_certification_period_with_contribution' => $dates_certification_period_with_contribution,
+            'dates_certification_period_without_contribution' => $dates_certification_period_without_contribution,
+            'dates_not_worked' => $dates_not_worked,
+            'dates_availability' => $dates_availability,
+            'contribution_types' => ContributionType::orderBy('id')->get(),
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'beneficiaries' => $beneficiaries,
@@ -793,7 +806,6 @@ class RetirementFundController extends Controller
             'kinships' => $kinships,
         ];
         return view('ret_fun.qualification', $data);
-
     }
 
     public function geDataQualification(Request $request, $id)
@@ -808,12 +820,12 @@ class RetirementFundController extends Controller
         $total_cas_fronted = Util::sumTotalContributions($request->datesCas, true);
         $total_no_records_fronted = Util::sumTotalContributions($request->datesNoRecords, true);
 
-        $total_contributions_backed = Util::sumTotalContributions($affiliate->getContributionsWithType('Servicio'));
-        $total_item_zero_backed = Util::sumTotalContributions($affiliate->getContributionsWithType('Item 0'));
-        $total_availability_backed = Util::sumTotalContributions($affiliate->getContributionsWithType('Disponibilidad'));
-        $total_security_battalion_backed = Util::sumTotalContributions($affiliate->getContributionsWithType('Batallon de Seguridad Fisica'));
-        $total_cas_backed = Util::sumTotalContributions($affiliate->getContributionsWithType('Registro Segun CAS'));
-        $total_no_records_backed = Util::sumTotalContributions($affiliate->getContributionsWithType('No Hay Registro'));
+        $total_contributions_backed = Util::sumTotalContributions($affiliate->getDatesContributions());
+        $total_item_zero_backed = Util::sumTotalContributions($affiliate->getDatesItemZero());
+        $total_availability_backed = Util::sumTotalContributions($affiliate->getDatesAvailability());
+        $total_security_battalion_backed = Util::sumTotalContributions($affiliate->getDatesSecurityBattalion());
+        $total_cas_backed = Util::sumTotalContributions($affiliate->getDatesCas());
+        $total_no_records_backed = Util::sumTotalContributions($affiliate->getDatesNoRecords());
         /*        */
 
         if(

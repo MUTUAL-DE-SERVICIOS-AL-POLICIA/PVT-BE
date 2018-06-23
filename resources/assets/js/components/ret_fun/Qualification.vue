@@ -1,7 +1,20 @@
 <script>
 import { dateInputMask, moneyInputMask, parseMoney, moneyInputMaskAll }  from "../../helper.js";
 export default {
-  props: ["datesGlobal","datesContributions", "datesAvailability", "datesItemZero","datesSecurityBattalion","datesNoRecords","datesCas","retirementFundId"],
+  props: [
+    'datesGlobal',
+    'datesContributions',
+    'datesItemZeroWithContribution',
+    'datesItemZeroWithoutContribution',
+    'datesSecurityBattalionWithContribution',
+    'datesSecurityBattalionWithoutContribution',
+    'datesMay1976WithoutContribution',
+    'datesCertificationPeriodWithContribution',
+    'datesCertificationPeriodWithoutContribution',
+    'datesNotWorked',
+    'datesAvailability',
+    "retirementFundId"
+  ],
   mounted() {
     this.calculate();
     moneyInputMaskAll();

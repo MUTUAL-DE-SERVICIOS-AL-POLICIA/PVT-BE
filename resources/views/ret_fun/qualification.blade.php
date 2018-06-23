@@ -8,14 +8,47 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <ret-fun-qualification inline-template
-            :dates-global="{{json_encode($dates_global)}}"
-            :dates-contributions="{{json_encode($dates_contributions)}}"
-            :dates-availability="{{json_encode($dates_availability)}}"
-            :dates-item-zero="{{json_encode($dates_item_zero)}}"
-            :dates-security-battalion="{{json_encode($dates_security_battalion)}}"
-            :dates-no-records="{{json_encode($dates_no_records)}}"
-            :dates-cas="{{json_encode($dates_cas)}}"
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Aportes y periodos considerados</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="">
+                    @foreach ($contribution_types as $c)
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4>{{ $c->name }} <span data-toggle="tooltip" data-placement="top" title="{{ $c->shortened }}"><i class="fa fa-heart"></i></span></h4>
+                            </div>
+                            <ret-fun-qualification-group
+                                :dates-child="{{ json_encode($affiliate->getContributionsWithType($c->id)) }}"
+                                @total="calculate"
+                            >
+                            </ret-fun-qualification-group>
+                        </div>
+                        </ret-fun-qualification-group>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+        {{-- <ret-fun-qualification inline-template
+            :dates-global={{json_encode($dates_global)}}
+            :dates-contributions={{json_encode($dates_contributions)}}
+            :dates-item-zero-with-contribution={{json_encode($dates_item_zero_with_contribution)}}
+            :dates-item-zero-without-contribution={{json_encode($dates_item_zero_without_contribution)}}
+            :dates-security-battalion-with-contribution={{json_encode($dates_security_battalion_with_contribution)}}
+            :dates-security-battalion-without-contribution={{json_encode($dates_security_battalion_without_contribution)}}
+            :dates-may1976-without-contribution={{json_encode($dates_may1976_without_contribution)}}
+            :dates-certification-period-with-contribution={{json_encode($dates_certification_period_with_contribution)}}
+            :dates-certification-period-without-contribution={{json_encode($dates_certification_period_without_contribution)}}
+            :dates-not-worked={{json_encode($dates_not_worked)}}
+            :dates-availability={{json_encode($dates_availability)}}
+
             :retirement-fund-id="{{$retirement_fund->id}}">
             <div class="col-lg-12">
                 <div class="ibox">
@@ -130,8 +163,8 @@
                                 </tr>
                                 <tr>
                                     <td>Aportes anteriores a mayo de 1976</td>
-                                    {{-- <td>@{{ yearsItemZero }}</td>
-                                    <td>@{{ monthsItemZero }}</td> --}}
+                                    <td>@{{ yearsItemZero }}</td>
+                                    <td>@{{ monthsItemZero }}</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
@@ -417,7 +450,7 @@
                                             </thead>
                                             <tbody>
                                                 <tr v-for="(discount, index) in arrayDiscounts">
-                                                    <td>@{{ discount.full_name }}</td>
+                                                    <td>@{{ discount.name }}</td>
                                                     <td>@{{ discount.amount }}</td>
                                                 </tr>
                                                 <tr class="success">
@@ -433,7 +466,7 @@
                     </div>
                 </div>
             </div>
-        </ret-fun-qualification>
+        </ret-fun-qualification> --}}
     </div>
 </div>
 @endsection

@@ -25,7 +25,7 @@ class TypeContributionSeeder extends Seeder
             $value->delete();
         }
         $statuses = [
-            ['name' => 'Período reconocido por comando ', 'shortened' => ''],
+            ['name' => 'Período reconocido por comando', 'shortened' => ''],
             ['name' => 'Período en item 0 Con Aporte', 'shortened' => ''],
             ['name' => 'Período en item 0 Sin Aporte', 'shortened' => ''],
             ['name' => 'Período de Batallón de Seguridad Física Con Aporte', 'shortened' => ''],
