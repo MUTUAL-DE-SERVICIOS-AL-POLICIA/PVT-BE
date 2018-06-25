@@ -1,5 +1,5 @@
 <template>
-  <div class="fluid container">
+  <div class="fluid container" style="padding-left:0px">
 
     <!-- <div class="panel panel-default">
         <div class="panel-body">
@@ -11,7 +11,7 @@
         </div>
     </div> -->
 
-  <div class="col-md-12 col-lg-11 col-sm-12">
+  <div class="col-md-12 col-lg-11 col-sm-12" style="padding-top: 10px">
         <div class="ibox float-e-margins ibox-primary">
           <!-- <div class="ibox-title"> -->
               <!-- <h5>Aportes <small class="m-l-sm"></small></h5> <i :class="order_aportes?'fa fa-sort-amount-desc':'fa fa-sort-amount-asc'" @click="orderList"></i> -->
@@ -23,41 +23,57 @@
           <!-- </div> -->
           <div class="ibox-content">
                 <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-2">
                         <h2>Aportes <small class="m-l-sm"></small></h2> 
                         <button class="btn btn-sm btn-info"  @click="orderList" ><i :class="order_aportes?'fa fa-sort-amount-desc':'fa fa-sort-amount-asc'"></i></button>
                         <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalcyk" @click="clear"><i class="fa fa-table"></i></button>
-                        <div v-if="show_certification">
-                            <a :href="this.urlcertification" class="btn btn-sm btn-primary " v-if="count(servicio.id)>0" ><i class="fa fa-file-pdf-o"></i> 60 Aportes </a>
-                            <a :href="this.ulrzero" class="btn btn-sm btn-primary " v-if="count(item0.id)>0" ><i class="fa fa-file-pdf-o"></i> Item 0 </a>
+                        <!-- <div v-if="show_certification">
+                            <a :href="this.urlcertification" class="btn btn-sm btn-primary" v-if="count(comando.id)>0" ><i class="fa fa-file-pdf-o"></i> 60 Aportes </a>
+                            <a :href="this.ulrzero" class="btn btn-sm btn-primary " v-if="count(item0_con_aporte.id)>0" ><i class="fa fa-file-pdf-o"></i> Item 0 </a>
                             <a :href="this.urlavailable" class="btn btn-sm btn-primary " v-if="count(disponibilidad.id)>0"><i class="fa fa-file-pdf-o"></i> Disponibilidad </a>
-                        </div>  
+                        </div>   -->
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-10">
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="row">
                                     <!-- <div class="col-md-1"> <div class="square"></div> </div> -->
-                                    <div class="col-md-6">
-                                        <label>Servicio:</label> {{count(servicio.id)}} 
-                                        
+                                    <div class="col-md-4">
+                                        <label class="label comando">Periodo recononico por comando: </label> <strong class="label comando"> {{count(comando.id)}}</strong> 
                                     </div>
                                     <!-- <div class="col-md-1"> <div class="square"></div> </div> -->
-                                    <div class="col-md-6">
-                                        <label>Disponibilidad:</label> {{count(disponibilidad.id)}}
+                                    <div class="col-md-4">
+                                        <label class="label comando">Disponibilidad:</label> <strong class="label disponibilidad"> {{count(disponibilidad.id)}}  </strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="label comando">Periodo No Trabajado:</label> <strong class="label perdiodo_no_trabajado"> {{count(perdiodo_no_trabajado.id)}} </strong>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Item 0:</label> {{count(item0.id)}}
+                                    <div class="col-md-4">
+                                        <label class="label comando">Item 0 con Aporte:</label> <strong class="label item0_con_aporte"> {{count(item0_con_aporte.id)}}</strong>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label>CAS:</label> {{count(cas.id)}}
+                                    <div class="col-md-4">
+                                        <label class="label comando">Item 0 sin Aporte:</label> <strong class="label item0_sin_aporte"> {{count(item0_sin_aporte.id)}}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="label comando">mayo_1976:</label> <strong class="label mayo_1976"> {{count(mayo_1976.id)}}</strong>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <label>No has registro:</label> {{ count(nh.id)}}
+                                    <div class="col-md-4">
+                                        <label class="label comando"> Batallon con Aporte:</label> <strong class="label bfs_con_aporte">{{ count(bfs_con_aporte.id)}}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="label comando"> Batallon sin Aporte:</label> <strong class="label bfs_sin_aporte"> {{ count(bfs_sin_aporte.id)}}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="label comando"> Certificacion con aporte:</label> <strong class="label certificacion_con_aporte"> {{ count(certificacion_con_aporte.id)}}</strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="label comando"> Certificacion sin aporte:</label> <strong class="label certificacion_sin_aporte"> {{ count(certificacion_sin_aporte.id)}}</strong>
                                     </div>
                                 </div>
                             </div>
@@ -170,16 +186,16 @@
                 </div>
             </div>
         </div>
-    </div>
+     </div> <!-- fin del modal -->
   </div>
   
-</template>table
+</template>
  
 <script>
 import draggable from 'vuedraggable'
 
 export default {
-  name: 'CechuzyKaren',
+  name: 'clasificacion-aportes',
   components: {
     draggable,
   },
@@ -199,12 +215,16 @@ export default {
         con_type: this.contype,
         last_date: this.contributions[0],
         first_date: this.contributions[this.contributions.length-1],
-        item0 : null,
+        comando: null,
+        item0_con_aporte : null,
+        item0_sin_aporte : null,
+        bfs_con_aporte: null, //batallon de seguridad fisica (bsf)
+        bfs_sin_aporte: null, //batallon de seguridad fisica (bsf)
+        mayo_1976: null, //periodos antes de mayo
+        certificacion_con_aporte: null, //periodos antes de mayo
+        certificacion_sin_aporte: null, //periodos antes de mayo
+        perdiodo_no_trabajado: null, //periodos antes de mayo
         disponibilidad: null,
-        servicio: null,
-        bfs:null,
-        nh: null,
-        cas: null,
         order_aportes: true,
         show_certification: false,
         modal: { first_date: null, last_date: null,contribution_type_id: null},
@@ -216,31 +236,53 @@ export default {
     console.log('Revisando lista_aportes: ' + this.list_aportes.length)
     // console.log(this.urlcertification);
     console.log(this.types);
+    this.comando = this.types.filter(function (type) {
+        return type.name  == 'Período reconocido por comando';   
+    })[0];
+    this.item0_con_aporte =  this.types.filter(function (type) {
+        return type.name  == 'Período en item 0 Con Aporte';   
+    })[0];
+    this.item0_sin_aporte =  this.types.filter(function (type) {
+        return type.name  == 'Período en item 0 Sin Aporte';   
+    })[0];
+    this.bfs_con_aporte =  this.types.filter(function (type) {
+        return type.name  == 'Período de Batallón de Seguridad Física Con Aporte';   
+    })[0];
+    this.bfs_sin_aporte =  this.types.filter(function (type) {
+        return type.name  == 'Período de Batallón de Seguridad Física Sin Aporte';   
+    })[0];
+    this.mayo_1976 =  this.types.filter(function (type) {
+        return type.name  == 'Periodos anteriores a Mayo de 1976 Sin Aporte';   
+    })[0];
+    this.certificacion_con_aporte =  this.types.filter(function (type) {
+        return type.name  == 'Período Certificación Con Aporte';   
+    })[0];
+    this.certificacion_sin_aporte =  this.types.filter(function (type) {
+        return type.name  == 'Período Certificación Sin Aporte';   
+    })[0];
+    this.perdiodo_no_trabajado =  this.types.filter(function (type) {
+        return type.name  == 'Período no Trabajado';   
+    })[0];
     this.disponibilidad = this.types.filter(function (type) {
         return type.name  == 'Disponibilidad';   
     })[0];
-    this.item0 =  this.types.filter(function (type) {
-        return type.name  == 'Item 0';   
-    })[0];
-    this.servicio = this.types.filter(function (type) {
-        return type.name  == 'Servicio';   
-    })[0];
-    this.nh = this.types.filter(function (type) {
-        return type.name  == 'No Hay Registro';   
-    })[0];    
-
-    this.cas = this.types.filter(function (type) {
-        return type.name  == 'Registro Segun CAS';   
-    })[0];
-
-    this.bfs = this.types.filter(function (type) {
-        return type.name  == 'Batallon de Seguridad Fisica';   
-    })[0];
+    console.log('revisando ids');
+    console.log('comando '+this.comando.id);
+    console.log('item0_con_aporte '+this.item0_con_aporte.id);
+    console.log('item0_sin_aporte '+this.item0_sin_aporte.id);
+    console.log('bfs_con_aporte '+this.bfs_con_aporte.id);
+    console.log('bfs_sin_aporte '+this.bfs_sin_aporte.id);
+    console.log('mayo_1976 '+this.mayo_1976.id);
+    console.log('certificacion_con_aporte '+this.certificacion_con_aporte.id);
+    console.log('certificacion_sin_aporte '+this.certificacion_sin_aporte.id);
+    console.log('perdiodo_no_trabajado '+this.perdiodo_no_trabajado.id);
+    console.log('disponibilidad '+this.disponibilidad.id);
 
     if(!this.con_type){
         this.show_certification =true;
     }
-    console.log(this.nh);
+
+    // console.log(this.nh);
     let list_hdp= this.list_aportes;
     if(this.con_type){
         for (let i = 0; i < list_hdp.length; i++) {
@@ -253,13 +295,13 @@ export default {
                         break;
 
                     case 3:
-                        list_hdp[i].breakdown_id = this.item0.id;
-                        list_hdp[i].breakdown_name = this.item0.name;              
+                        list_hdp[i].breakdown_id = this.item0_con_aporte.id;
+                        list_hdp[i].breakdown_name = this.item0_con_aporte.name;              
                     break;
             
-                default:
-                        list_hdp[i].breakdown_id = this.servicio.id;
-                        list_hdp[i].breakdown_name = this.servicio.name;
+                    default:
+                        list_hdp[i].breakdown_id = this.comando.id;
+                        list_hdp[i].breakdown_name = this.comando.name;
                     break;
             }   
             // console.log(list_hdp[i].breakdown_id);    
@@ -300,9 +342,11 @@ export default {
         }
         ff= year+'-'+month+'-01';
     }
-    // console.log(list);
+
+    console.log(list);
     this.list_aportes = list;
     this.row_higth = 386/this.list_aportes.length;
+    console.log('termino los procesos');
   },
   methods:{
     orderList () {
@@ -353,34 +397,47 @@ export default {
     getStyle(breakdown_id){
         let style = 'display: block;width: 100%; height:'+this.row_higth+'px;';
          var color="cya";
+        //  console.log(breakdown_id);
         switch (breakdown_id) {
             case this.disponibilidad.id:
                 color="#aeda8a";
                 break;
-            case this.item0.id:
+            case this.item0_con_aporte.id:
                 color="#f7f097fd";
                 break;
-            case this.servicio.id:
+            case this.item0_sin_aporte.id:
+                color="#f7a197fd";
+                break;
+            case this.comando.id:
                 color="#ffffff";
                 break;
-            case this.bfs.id:
+            case this.bfs_con_aporte.id:
                 color="#a1a7fffd";
                 break;
-            case this.nh.id:
+            case this.bfs_sin_aporte.id:
+                color="#b1e7faca";
+                break;
+            case this.mayo_1976.id:
                 color="#e0ad7dfd";
                 break;
-            case this.cas.id:
+            case this.certificacion_con_aporte.id:
                 color="#80e9bdfd";
+                break;
+            case this.certificacion_sin_aporte.id:
+                color="#50c1bdfa";
+                break;
+            case this.perdiodo_no_trabajado.id:
+                color="#30c1edfb";
                 break;
             case 0:
                 color="#bbbaadfd";
                 break;
             default: 
-                console.log(breakdown_id);
+                console.log('no se encontro'+breakdown_id);
             break;
             
         }
-        console.log(style);
+        // console.log(style);
         return style+'background:'+color+';';
     },
     getColor(breakdown_id)
@@ -388,28 +445,40 @@ export default {
         var color="cya";
         switch (breakdown_id) {
             case this.disponibilidad.id:
-                color="cyk";
+                color="disponibilidad";
                 break;
-            case this.item0.id:
-                color="cyv";
+            case this.item0_con_aporte.id:
+                color="item0_con_aporte";
                 break;
-            case this.servicio.id:
-                color="cya";
+            case this.item0_sin_aporte.id:
+                color="item0_sin_aporte";
                 break;
-            case this.bfs.id:
-                color="bsf";
+            case this.comando.id:
+                color="comando";
                 break;
-            case this.nh.id:
-                color="nh";
+            case this.bfs_con_aporte.id:
+                color="bfs_con_aporte";
                 break;
-            case this.cas.id:
-                color="cas";
+            case this.bfs_sin_aporte.id:
+                color="bfs_sin_aporte";
+                break;
+            case this.mayo_1976.id:
+                color="mayo_1976";
+                break;
+            case this.certificacion_con_aporte.id:
+                color="certificacion_con_aporte";
+                break;
+            case this.certificacion_sin_aporte.id:
+                color="certificacion_sin_aporte";
+                break;
+            case this.perdiodo_no_trabajado.id:
+                color="perdiodo_no_trabajado";
                 break;
             case 0:
                 color="cym";
                 break;
             default: 
-                console.log(breakdown_id);
+                console.log('no se encontro color :'+breakdown_id);
             break;
             
         }
@@ -576,27 +645,37 @@ export default {
   opacity: .5;
   background: #C8EBFB;
 }
-.cyk {
+.disponibilidad {
  background: #aeda8a;   
 }
-.cya {
-    background: #ffffff;
-}
-.cyv {
+.item0_con_aporte {
     background: #f7f097fd;
 }
-.cym {
-    background: #bbbaadfd;
+.item0_sin_aporte{
+    background: #f7a197fd;
 }
-.nh {
-    background: #e0ad7dfd;
+.comando {
+    background: #ffffff;
 }
-.cas{
-    background: #80e9bdfd;
-}
-.bsf{
+.bfs_con_aporte {
     background: #a1a7fffd;
 }
+.bfs_sin_aporte {
+    background: #b1e7faca;
+}
+.mayo_1976 {
+    background: #e0ad7dfd;
+}
+.certificacion_con_aporte{
+    background: #80e9bdfd;
+}
+.certificacion_sin_aporte{
+    background: #50c1bdfa;
+}
+.perdiodo_no_trabajado{
+    background: #30c1edfb;
+}
+
 tr {
 width: 100%;
 display: inline-table;
@@ -616,8 +695,8 @@ tbody{
 }
 .square {
   display: block;
-  width: 15px;
-  height: 1px;
+  width: 10px;
+  height: 10px;
   background: #124405fd;
 }
 </style>|
