@@ -66,6 +66,21 @@
                     @endif        
                 @endforeach
             @endif
+            @if($contribution->contribution_type_id == $itemcero_sin_aporte->id)
+                <tr class="text-sm">
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->quotable }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->retirement_fund }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->mortuary_quota }}</td>                        
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->ipc }}</td>
+                    {{-- con la bd devretfun
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->interest }}</td>--}}
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                </tr> 
+                
+            @endif
         @endforeach               
     </tbody>
 </table>
