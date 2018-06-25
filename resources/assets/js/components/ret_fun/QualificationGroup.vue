@@ -7,8 +7,10 @@
     @setDate="updateDate"
     >
     </ret-fun-date-interval>
-    <div><strong>Años:</strong> {{ years }}</div>
-    <div><strong>Meses:</strong> {{ months }}</div>
+    <div class="alert alert-info">
+        <div>Años:<strong> {{ years }} </strong></div>
+        <div>Meses:<strong> {{ months }} </strong></div>
+    </div>
     <hr>
 </div>
 </template>
@@ -33,15 +35,19 @@ export default {
     },
     methods:{
         updateDate(data, index){
+            console.log("received emit", data);
             this.datesChild[index].start=data.start;
             this.datesChild[index].end=data.end;
             this.calculate();
             this.$emit('total');
+            console.log("emit total");
         },
         calculate(){
             const x=this.datesChild.reduce((prev, current)=>{
                 return prev + (moment(current.end).diff(moment(current.start), 'months') + 1);
             }, 0);
+            console.log(x);
+            
             this.years = parseInt(x/12);
             this.months = x%12;
         }

@@ -2,6 +2,7 @@
 import { dateInputMask, moneyInputMask, parseMoney, moneyInputMaskAll }  from "../../helper.js";
 export default {
   props: [
+    'contributions',
     'datesGlobal',
     'datesContributions',
     'datesItemZeroWithContribution',
@@ -16,13 +17,15 @@ export default {
     "retirementFundId"
   ],
   mounted() {
-    this.calculate();
-    moneyInputMaskAll();
+    // this.calculate();
+    // moneyInputMaskAll();
   },
   data() {
     return {
-      years: 0,
-      months: 0,
+
+
+      years: this.contributions.years,
+      months: this.contributions.months,
       yearsContributions: 0,
       monthsContributions: 0,
       yearsGlobal: 0,
@@ -83,37 +86,38 @@ export default {
       }
     },
     calculate(){
-        let global = this.calculateDiffWithYearMonth(this.datesGlobal);
-        this.yearsGlobal = global.years;
-        this.monthsGlobal = global.months;
-        let totalContributions = this.calculateDiffWithYearMonth(this.datesContributions);
-        this.yearsContributions = totalContributions.years;
-        this.monthsContributions = totalContributions.months;
-        let totalAvailability = this.calculateDiffWithYearMonth(this.datesAvailability);
-        this.yearsAvailability = totalAvailability.years;
-        this.monthsAvailability = totalAvailability.months;
-        let totalItemZero = this.calculateDiffWithYearMonth(this.datesItemZero);
-        this.yearsItemZero = totalItemZero.years;
-        this.monthsItemZero = totalItemZero.months;
-        let totalSecurityBattalion = this.calculateDiffWithYearMonth(this.datesSecurityBattalion);
-        this.yearsSecurityBattalion = totalSecurityBattalion.years;
-        this.monthsSecurityBattalion = totalSecurityBattalion.months;
-        let totalCas = this.calculateDiffWithYearMonth(this.datesCas);
-        this.yearsCas = totalCas.years;
-        this.monthsCas = totalCas.months;
-        let totalNoRecords = this.calculateDiffWithYearMonth(this.datesNoRecords);
-        this.yearsNoRecords = totalNoRecords.years;
-        this.monthsNoRecords = totalNoRecords.months;
+        // let global = this.calculateDiffWithYearMonth(this.datesGlobal);
+        // this.yearsGlobal = global.years;
+        // this.monthsGlobal = global.months;
+        // let totalContributions = this.calculateDiffWithYearMonth(this.datesContributions);
+        // this.yearsContributions = totalContributions.years;
+        // this.monthsContributions = totalContributions.months;
+        // let totalAvailability = this.calculateDiffWithYearMonth(this.datesAvailability);
+        // this.yearsAvailability = totalAvailability.years;
+        // this.monthsAvailability = totalAvailability.months;
+        // let totalItemZero = this.calculateDiffWithYearMonth(this.datesItemZero);
+        // this.yearsItemZero = totalItemZero.years;
+        // this.monthsItemZero = totalItemZero.months;
+        // let totalSecurityBattalion = this.calculateDiffWithYearMonth(this.datesSecurityBattalion);
+        // this.yearsSecurityBattalion = totalSecurityBattalion.years;
+        // this.monthsSecurityBattalion = totalSecurityBattalion.months;
+        // let totalCas = this.calculateDiffWithYearMonth(this.datesCas);
+        // this.yearsCas = totalCas.years;
+        // this.monthsCas = totalCas.months;
+        // let totalNoRecords = this.calculateDiffWithYearMonth(this.datesNoRecords);
+        // this.yearsNoRecords = totalNoRecords.years;
+        // this.monthsNoRecords = totalNoRecords.months;
 
-        const datesGlobal = this.calculateDiff(this.datesGlobal);
-        const datesContributions = this.calculateDiff(this.datesContributions);
-        const datesAvailability = this.calculateDiff(this.datesAvailability);
-        const datesItemZero = this.calculateDiff(this.datesItemZero);
-        const datesSecurityBattalion = this.calculateDiff(this.datesSecurityBattalion);
-        const datesCas = this.calculateDiff(this.datesCas);
-        const datesNoRecords = this.calculateDiff(this.datesNoRecords);
-        // const total = datesContributions + datesItemZero - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
-        const total = datesGlobal - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
+        // const datesGlobal = this.calculateDiff(this.datesGlobal);
+        // const datesContributions = this.calculateDiff(this.datesContributions);
+        // const datesAvailability = this.calculateDiff(this.datesAvailability);
+        // const datesItemZero = this.calculateDiff(this.datesItemZero);
+        // const datesSecurityBattalion = this.calculateDiff(this.datesSecurityBattalion);
+        // const datesCas = this.calculateDiff(this.datesCas);
+        // const datesNoRecords = this.calculateDiff(this.datesNoRecords);
+        // // const total = datesContributions + datesItemZero - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
+        // const total = datesGlobal - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
+        var total = 182;
         this.years = parseInt(total/12);
         this.months = (total%12);
     },

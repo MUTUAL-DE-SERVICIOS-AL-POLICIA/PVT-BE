@@ -783,22 +783,44 @@ class RetirementFundController extends Controller
         $cities = City::get();
         $kinships = Kinship::get();
         $birth_cities = City::all()->pluck('name', 'id');
+
+        /*  qualification*/
+        $group_dates = [];
+        $total_dates = 0;
+        foreach (ContributionType::orderBy('id')->get() as $c){
+            $sub_total_dates = Util::sumTotalContributions($affiliate->getContributionsWithType($c->id));
+            $dates = array(
+                'id' => $c->id,
+                'dates' => $affiliate->getContributionsWithType($c->id),
+                'name' => $c->name,
+                'description' => $c->shortened,
+                'years' => intval($sub_total_dates / 12),
+                'months' => $sub_total_dates % 12,
+            );
+            eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
+            $group_dates[] = $dates;
+        }
+        $contributions = array(
+            'contribution_types' => $group_dates,
+            'years' => intval($total_dates/12),
+            'months' => $total_dates%12
+        );
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
-
-            'dates_global' => $dates_global,
-            'dates_contributions' => $dates_contributions,
-            'dates_item_zero_with_contribution' => $dates_item_zero_with_contribution,
-            'dates_item_zero_without_contribution' => $dates_item_zero_without_contribution,
-            'dates_security_battalion_with_contribution' => $dates_security_battalion_with_contribution,
-            'dates_security_battalion_without_contribution' => $dates_security_battalion_without_contribution,
-            'dates_may1976_without_contribution' => $dates_may1976_without_contribution,
-            'dates_certification_period_with_contribution' => $dates_certification_period_with_contribution,
-            'dates_certification_period_without_contribution' => $dates_certification_period_without_contribution,
-            'dates_not_worked' => $dates_not_worked,
-            'dates_availability' => $dates_availability,
-            'contribution_types' => ContributionType::orderBy('id')->get(),
+            'contributions' => json_encode($contributions),
+            // 'dates_global' => $dates_global,
+            // 'dates_contributions' => $dates_contributions,
+            // 'dates_item_zero_with_contribution' => $dates_item_zero_with_contribution,
+            // 'dates_item_zero_without_contribution' => $dates_item_zero_without_contribution,
+            // 'dates_security_battalion_with_contribution' => $dates_security_battalion_with_contribution,
+            // 'dates_security_battalion_without_contribution' => $dates_security_battalion_without_contribution,
+            // 'dates_may1976_without_contribution' => $dates_may1976_without_contribution,
+            // 'dates_certification_period_with_contribution' => $dates_certification_period_with_contribution,
+            // 'dates_certification_period_without_contribution' => $dates_certification_period_without_contribution,
+            // 'dates_not_worked' => $dates_not_worked,
+            // 'dates_availability' => $dates_availability,
+            // 'contribution_types' => ContributionType::orderBy('id')->get(),
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'beneficiaries' => $beneficiaries,
