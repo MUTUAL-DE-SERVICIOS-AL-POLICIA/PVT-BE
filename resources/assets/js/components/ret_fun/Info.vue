@@ -5,7 +5,8 @@ export default {
       'rf_city_start',
       'rf_city_end',
       'rf_procedure_modality',
-      'states'
+      'states',
+      'read'
   ],
   data(){
       return{
@@ -18,6 +19,9 @@ export default {
               reception_date: this.retirement_fund.reception_date
           }
       }
+  },
+  created(){
+    //   console.log(this.read);
   },
   computed:{
      city_start_name: function(){

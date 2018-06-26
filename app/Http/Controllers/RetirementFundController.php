@@ -785,20 +785,38 @@ class RetirementFundController extends Controller
         $birth_cities = City::all()->pluck('name', 'id');
 
         /*  qualification*/
+        $c=ContributionType::find(1);
         $group_dates = [];
-        $total_dates = 0;
+        $total_dates = Util::sumTotalContributions($affiliate->getContributionsWithType(1));
+        $dates = array(
+            'id' => $c->id,
+            'dates' => $affiliate->getContributionsWithType($c->id),
+            'name' => $c->name,
+            'operator' => $c->operator,
+            'description' => $c->shortened,
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12,
+        );
+        $group_dates[] = $dates;
         foreach (ContributionType::orderBy('id')->get() as $c){
-            $sub_total_dates = Util::sumTotalContributions($affiliate->getContributionsWithType($c->id));
-            $dates = array(
-                'id' => $c->id,
-                'dates' => $affiliate->getContributionsWithType($c->id),
-                'name' => $c->name,
-                'description' => $c->shortened,
-                'years' => intval($sub_total_dates / 12),
-                'months' => $sub_total_dates % 12,
-            );
-            eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
-            $group_dates[] = $dates;
+            if($c->id != 1){
+                $contributionsWithType = $affiliate->getContributionsWithType($c->id);
+                if (sizeOf($contributionsWithType) > 0) {
+                    $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+                    $dates = array(
+                        'id' => $c->id,
+                        'dates' => $affiliate->getContributionsWithType($c->id),
+                        'name' => $c->name,
+                        'operator' => $c->operator,
+                        'description' => $c->shortened,
+                        'years' => intval($sub_total_dates / 12),
+                        'months' => $sub_total_dates % 12,
+                    );
+                        // Log::info($total_dates ." " . $c->operator . " " . $sub_total_dates);
+                    eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';'); 
+                    $group_dates[] = $dates;
+                }
+            }
         }
         $contributions = array(
             'contribution_types' => $group_dates,
@@ -830,44 +848,17 @@ class RetirementFundController extends Controller
         return view('ret_fun.qualification', $data);
     }
 
-    public function geDataQualification(Request $request, $id)
+    public function getAverageQuotable(Request $request, $id)
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        /* needed this? */
-        $total_contributions_fronted = Util::sumTotalContributions($request->datesContributions, true);
-        $total_item_zero_fronted = Util::sumTotalContributions($request->datesItemZero, true);
-        $total_availability_fronted = Util::sumTotalContributions($request->datesAvailability, true);
-        $total_security_battalion_fronted = Util::sumTotalContributions($request->datesSecurityBattalion, true);
-        $total_cas_fronted = Util::sumTotalContributions($request->datesCas, true);
-        $total_no_records_fronted = Util::sumTotalContributions($request->datesNoRecords, true);
-
-        $total_contributions_backed = Util::sumTotalContributions($affiliate->getDatesContributions());
-        $total_item_zero_backed = Util::sumTotalContributions($affiliate->getDatesItemZero());
-        $total_availability_backed = Util::sumTotalContributions($affiliate->getDatesAvailability());
-        $total_security_battalion_backed = Util::sumTotalContributions($affiliate->getDatesSecurityBattalion());
-        $total_cas_backed = Util::sumTotalContributions($affiliate->getDatesCas());
-        $total_no_records_backed = Util::sumTotalContributions($affiliate->getDatesNoRecords());
-        /*        */
-
-        if(
-            $total_contributions_backed == $total_contributions_fronted &&
-            $total_item_zero_backed == $total_item_zero_fronted &&
-            $total_availability_backed == $total_availability_fronted &&
-            $total_security_battalion_backed == $total_security_battalion_fronted &&
-            $total_cas_backed == $total_cas_fronted &&
-            $total_no_records_backed == $total_no_records_fronted
-            ){
-            $total_quotes = $affiliate->getTotalQuotes();
-            $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable();
-            $data = [
-                'total_quotes' => $total_quotes,
-            ];
-            $data = array_merge($total_salary_quotable, $data);
-            return $data;
-        }else{
-            return response("error",500);
-        }
+        $total_quotes = $affiliate->getTotalQuotes();
+        $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable();
+        $data = [
+            'total_quotes' => $total_quotes,
+            'total_salary_quotable' => $total_salary_quotable,
+        ];
+        return $data;
     }
     public function getDataQualificationCertification(DataTables $datatables, $retirement_fund_id)
     {
@@ -1105,7 +1096,7 @@ class RetirementFundController extends Controller
             $new_beneficiary->amount_ret_fun = $beneficiary['temp_amount'];
             $new_beneficiary->save();
         }
-        $availability = $affiliate->getContributionsWithType('Disponibilidad');
+        $availability = $affiliate->getContributionsWithType(10);
         $has_availability = sizeOf($availability) > 0;
         $total = $retirement_fund->total_ret_fun;
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();

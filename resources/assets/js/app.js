@@ -57,6 +57,9 @@ Vue.use(VeeValidate, {
 		applicant_identity_card: {
           required: "Debe escribir el ci del solicitante."
         },
+    date_derelict: {
+          required: "Debe ingresar fecha de desvinculación."
+     },   
 		applicant_city_identity_card: {
           required: "Debe seleccionar la ciudad de expedición del ci del solicitante."
         },
@@ -87,6 +90,13 @@ Vue.use(VueCurrencyFilter,
 
 Vue.filter('percentage', function (value) {
 	return `${value.toFixed(4)} %`;
+});
+moment.locale("es");
+Vue.filter('month', function (value) {
+  return moment(value).format("MMMM").toString().toUpperCase();
+});
+Vue.filter('year', function (value) {
+  return moment(value).format("YYYY");
 });
 
 

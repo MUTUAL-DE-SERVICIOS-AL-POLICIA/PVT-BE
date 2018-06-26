@@ -232,32 +232,63 @@ class Affiliate extends Model
     }
     public function getTotalQuotes()
     {
-        $total_global_backed = Util::sumTotalContributions($this->getDatesGlobal());
-        $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Período reconocido por comando'));
-        $total_item_zero_backed = Util::sumTotalContributions($this->getContributionsWithType('Período en item 0 Con Aporte'));
-        $total_availability_backed = Util::sumTotalContributions($this->getContributionsWithType('Disponibilidad'));
-        $total_security_battalion_backed = Util::sumTotalContributions($this->getContributionsWithType('Período de Batallón de Seguridad Física Con Aporte'));
-        $total_cas_backed = Util::sumTotalContributions($this->getContributionsWithType('Período Certificación Con Aporte'));
-        $total_no_records_backed = Util::sumTotalContributions($this->getContributionsWithType('Período no Trabajado'));
-        // $total_quotes = ($total_contributions_backed ?? 0)
-        //     + ($total_item_zero_backed ?? 0)
+        // $total_global_backed = Util::sumTotalContributions($this->getDatesGlobal());
+        // $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Período reconocido por comando'));
+        // $total_item_zero_backed = Util::sumTotalContributions($this->getContributionsWithType('Período en item 0 Con Aporte'));
+        // $total_availability_backed = Util::sumTotalContributions($this->getContributionsWithType('Disponibilidad'));
+        // $total_security_battalion_backed = Util::sumTotalContributions($this->getContributionsWithType('Período de Batallón de Seguridad Física Con Aporte'));
+        // $total_cas_backed = Util::sumTotalContributions($this->getContributionsWithType('Período Certificación Con Aporte'));
+        // $total_no_records_backed = Util::sumTotalContributions($this->getContributionsWithType('Período no Trabajado'));
+        // $total_quotes = ($total_global_backed ?? 0)
         //     - ($total_availability_backed ?? 0)
         //     - ($total_security_battalion_backed ?? 0)
         //     - ($total_cas_backed ?? 0)
         //     - ($total_no_records_backed ?? 0);
-        $total_quotes = ($total_global_backed ?? 0)
-            - ($total_availability_backed ?? 0)
-            - ($total_security_battalion_backed ?? 0)
-            - ($total_cas_backed ?? 0)
-            - ($total_no_records_backed ?? 0);
-        return $total_quotes;
+        $c = ContributionType::find(1);
+        $group_dates = [];
+        $total_dates = Util::sumTotalContributions($this->getContributionsWithType(1));
+        $dates = array(
+            'id' => $c->id,
+            'dates' => $this->getContributionsWithType($c->id),
+            'name' => $c->name,
+            'operator' => $c->operator,
+            'description' => $c->shortened,
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12,
+        );
+        $group_dates[] = $dates;
+        foreach (ContributionType::orderBy('id')->get() as $c) {
+            if ($c->id != 1) {
+                $contributionsWithType = $this->getContributionsWithType($c->id);
+                if (sizeOf($contributionsWithType) > 0) {
+                    $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+                    $dates = array(
+                        'id' => $c->id,
+                        'dates' => $this->getContributionsWithType($c->id),
+                        'name' => $c->name,
+                        'operator' => $c->operator,
+                        'description' => $c->shortened,
+                        'years' => intval($sub_total_dates / 12),
+                        'months' => $sub_total_dates % 12,
+                    );
+                        // Log::info($total_dates ." " . $c->operator . " " . $sub_total_dates);
+                    eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
+                    $group_dates[] = $dates;
+                }
+            }
+        }
+        $contributions = array(
+            'contribution_types' => $group_dates,
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12
+        );
+        return $total_dates;
     }
     public function getTotalAverageSalaryQuotable()
     {
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
-        $availability = $this->getContributionsWithType('Disponibilidad');
-        $contributions = $this->getContributionsWithType('Período reconocido por comando');
-
+        $availability = $this->getContributionsWithType(10);#disponibilidad
+        $contributions = $this->getContributionsWithType(1);
         if (sizeOf($availability) > 0) {
             /* has availability */
             $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();

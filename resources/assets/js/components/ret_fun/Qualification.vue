@@ -121,9 +121,9 @@ export default {
         this.years = parseInt(total/12);
         this.months = (total%12);
     },
-    save(){
-      let uri = `/ret_fun/${this.retirementFundId}/get_data_qualification`;
-      axios.post(uri,
+    firstContinue(){
+      let uri = `/ret_fun/${this.retirementFundId}/get_average_quotable`;
+      axios.get(uri,
         {
           datesAvailability: this.datesAvailability,
           datesItemZero: this.datesItemZero,
@@ -135,9 +135,9 @@ export default {
       ).then(response =>{
           flash("Verificacion Correcta");
           this.showEconomicData = true
-          TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+          TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_salary_quotable.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
       }).catch(error =>{
-          flash("Los Datos no Coinciden", "error");
+          flash("Error", "error");
           this.showEconomicData = false;
       });
     },
@@ -151,7 +151,6 @@ export default {
       }).catch(error => {
         this.showEconomicDataTotal = false
       });
-      
     },
     saveTotalRetFun(){
       let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun`;

@@ -5,9 +5,14 @@
                     <legend>Fondo de Retiro</legend>
                 </div>
                 @can('update',new Muserpol\Models\RetirementFund\RetirementFund)
-                <div class="text-right">
+                <div class="text-right" v-if="!read">
                     <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
                 </div>
+                <div class="text-right" v-if="read">
+                <a href="{{ url('ret_fun/'.$retirement_fund->id)}}" class="btn btn-primary"> <i class="fa fa-eye"></i> Ver</a>
+                    {{-- <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button> --}}
+                </div>
+
                 @else
                 <br>
                     @endcan

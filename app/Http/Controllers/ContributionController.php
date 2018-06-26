@@ -636,6 +636,7 @@ class ContributionController extends Controller
         // return $contributions;
        
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
+        // return $contribution_types;
         $data =   array('contributions' => $contributions,
                         'con_type'=>$con_type ,
                         'contribution_types'=> $contribution_types,
@@ -705,8 +706,8 @@ class ContributionController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $servicio = ContributionType::where('name','=','Servicio')->first();
-        $item_cero = ContributionType::where('name','=','Item 0')->first();
+        $servicio = ContributionType::where('name','=','Período reconocido por comando')->first();
+        $item_cero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
         $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
         $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)
                         ->where(function ($query) use ($servicio,$item_cero){
@@ -775,7 +776,8 @@ class ContributionController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $itemcero = ContributionType::where('name','=','Item 0')->first();
+        $itemcero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
+        $itemcero_sin_aporte = ContributionType::where('name','=','Período en item 0 Sin Aporte')->first();
         $contributions = Contribution::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
                         ->get();
@@ -797,6 +799,6 @@ class ContributionController extends Controller
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-        return \PDF::loadView('contribution.print.certification_item0', compact('itemcero','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        return \PDF::loadView('contribution.print.certification_item0', compact('itemcero','itemcero_sin_aporte','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     } 
 }
