@@ -137,13 +137,13 @@
                             <label>De:</label>
                         </div>
                         <div class="col-md-4">
-                            <input id="date_start_id" class="form-control" v-model="modal.first_date">
+                            <input type="tel" v-mask="'##/####'" placeholder="mm/yyyy" class="form-control" v-model="modal.first_date">
                         </div>
                         <div class="col-md-1">
                             <label>Hasta:</label>
                         </div>
                         <div class="col-md-4">
-                            <input class="form-control" type="date" v-model="modal.last_date">
+                            <input type="tel" v-mask="'##/####'" placeholder="mm/yyyy" class="form-control" v-model="modal.last_date">
                         </div>
                     </div>
                 
@@ -163,13 +163,12 @@
 </template>
  
 <script>
-import draggable from 'vuedraggable'
-
+import {TheMask} from 'vue-the-mask'
 
 export default {
   name: 'clasificacion-aportes',
   components: {
-    draggable,
+    TheMask,
   },
    props: [
         'contributions',
@@ -532,8 +531,12 @@ export default {
     {
         if(this.isValid())
         {
-            let fi = this.modal.first_date;
-            let ff = this.modal.last_date;
+            let fi = '01/'+this.modal.first_date;
+            console.log(fi);
+            console.log(new Date(fi));
+            let ff = '01/'+this.modal.last_date;
+             console.log(ff);
+             console.log(new Date(ff));
             let c_type_id = this.modal.contribution_type_id;
             let year = null;
             let month = null;
@@ -541,18 +544,23 @@ export default {
             let c_type = this.types.filter(function (type) {
                 return type.id  == c_type_id;   
             })[0];
-            // console.log(c_type);
+            console.log(this.order_aportes);
             for (let i = 0; i < this.list_aportes.length; i++) {
                 let aporte = this.list_aportes[i];
+                
                 if(new Date(aporte.month_year).getTime() >= new Date(fi).getTime() && new Date(aporte.month_year).getTime() <= new Date(ff).getTime()  )
                 {
-                    console.log(aporte);
+                    console.log('comparando');
+                    console.log(new Date(aporte.month_year).getTime());
+                    console.log(new Date(fi).getTime());
+                    //console.log(aporte);
                     aporte.breakdown_id = c_type.id;
                     aporte.breakdown_name = c_type.name;
                     Vue.set(this.list_aportes,i,aporte);
                 }
             }
         }
+        console.log(this.isValid());
     },
     isValid()
     {
@@ -575,19 +583,19 @@ export default {
         }
         if(response)
         {
-            if(new Date(this.modal.first_date).getTime() < new Date(this.first_date.month_year).getTime()  )
+            if(new Date('01/'+this.modal.first_date).getTime() < new Date('01/'+this.first_date.month_year).getTime()  )
             {
                 flash('Error: la fecha '+this.modal.first_date+' no debe ser menor a '+this.first_date.month_year ,'warning');
                 response = false;
                 console.log('Error: la fecha '+this.modal.first_date+' no debe ser menos a '+this.first_date.month_year);
             }
-            if(new Date(this.modal.last_date).getTime() > new Date(this.last_date.month_year).getTime() )
+            if(new Date('01/'+this.modal.last_date).getTime() > new Date('01/'+this.last_date.month_year).getTime() )
             {
                 flash('Error: la fecha '+this.modal.last_date+' no debe ser mayor a '+this.last_date.month_year ,'warning');
                 response = false;
                 console.log('Error: la fecha '+this.modal.last_date+' no debe ser mayor a '+this.last_date.month_year);
             }
-            if(new Date(this.modal.first_date).getTime() > new Date(this.modal.last_date).getTime())
+            if(new Date('01/'+this.modal.first_date).getTime() > new Date('01/'+this.modal.last_date).getTime())
             {
                 flash('Error: la fecha '+this.modal.first_date+' no debe ser mayor a '+this.modal.last_date ,'warning');
                 response = false;

@@ -89,6 +89,9 @@ Vue.filter('percentage', function (value) {
 	return `${value.toFixed(4)} %`;
 });
 
+//vue mask hdp
+import VueTheMask from 'vue-the-mask'
+Vue.use(VueTheMask)
 
 /* tabs */
 import VueTabs from 'vue-nav-tabs'
