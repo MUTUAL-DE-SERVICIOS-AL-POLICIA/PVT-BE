@@ -1,84 +1,21 @@
 <template>
-  <div class="fluid container" style="padding-left:0px">
-
-    <!-- <div class="panel panel-default">
-        <div class="panel-body">
-            <label>Servicio </label>
-            <label>Disponibilidad </label>
-            <label>Item 0 </label>
-            <label>CAS </label>
-            <label>No has registro</label>
-        </div>
-    </div> -->
-
-  <div class="col-md-12 col-lg-11 col-sm-12" style="padding-top: 10px">
+  <div class="col-md-12" style="padding-top: 5px;padding-left: 0px">
         <div class="ibox float-e-margins ibox-primary">
-          <!-- <div class="ibox-title"> -->
-              <!-- <h5>Aportes <small class="m-l-sm"></small></h5> <i :class="order_aportes?'fa fa-sort-amount-desc':'fa fa-sort-amount-asc'" @click="orderList"></i> -->
-              <!-- <div class="ibox-tools">
-                  <a class="collapse-link">
-                      <i class="fa fa-chevron-up"></i>
-                  </a>
-              </div> -->
-          <!-- </div> -->
-          <div class="ibox-content">
+          
+            <div class="ibox-content">
                 <div class="row">
                     <div class="col-md-2">
-                        <h2>Aportes <small class="m-l-sm"></small></h2> 
+                        <h3>
                         <button class="btn btn-sm btn-info"  @click="orderList" ><i :class="order_aportes?'fa fa-sort-amount-desc':'fa fa-sort-amount-asc'"></i></button>
+                            Aportes
+
+                        </h3> 
+                        
+                    </div>
+                    <div class="pull-right" style="padding-right:10px">
                         <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalcyk" @click="clear"><i class="fa fa-table"></i></button>
-                        <!-- <div v-if="show_certification">
-                            <a :href="this.urlcertification" class="btn btn-sm btn-primary" v-if="count(comando.id)>0" ><i class="fa fa-file-pdf-o"></i> 60 Aportes </a>
-                            <a :href="this.ulrzero" class="btn btn-sm btn-primary " v-if="count(item0_con_aporte.id)>0" ><i class="fa fa-file-pdf-o"></i> Item 0 </a>
-                            <a :href="this.urlavailable" class="btn btn-sm btn-primary " v-if="count(disponibilidad.id)>0"><i class="fa fa-file-pdf-o"></i> Disponibilidad </a>
-                        </div>   -->
                     </div>
-                    <div class="col-md-10">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <!-- <div class="col-md-1"> <div class="square"></div> </div> -->
-                                    <div class="col-md-4">
-                                        <label class="label comando">Periodo recononico por comando: </label> <strong class="label comando"> {{count(comando.id)}}</strong> 
-                                    </div>
-                                    <!-- <div class="col-md-1"> <div class="square"></div> </div> -->
-                                    <div class="col-md-4">
-                                        <label class="label comando">Disponibilidad:</label> <strong class="label disponibilidad"> {{count(disponibilidad.id)}}  </strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="label comando">Periodo No Trabajado:</label> <strong class="label perdiodo_no_trabajado"> {{count(perdiodo_no_trabajado.id)}} </strong>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="label comando">Item 0 con Aporte:</label> <strong class="label item0_con_aporte"> {{count(item0_con_aporte.id)}}</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="label comando">Item 0 sin Aporte:</label> <strong class="label item0_sin_aporte"> {{count(item0_sin_aporte.id)}}</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="label comando">mayo_1976:</label> <strong class="label mayo_1976"> {{count(mayo_1976.id)}}</strong>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="label comando"> Batallon con Aporte:</label> <strong class="label bfs_con_aporte">{{ count(bfs_con_aporte.id)}}</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="label comando"> Batallon sin Aporte:</label> <strong class="label bfs_sin_aporte"> {{ count(bfs_sin_aporte.id)}}</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="label comando"> Certificacion con aporte:</label> <strong class="label certificacion_con_aporte"> {{ count(certificacion_con_aporte.id)}}</strong>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="label comando"> Certificacion sin aporte:</label> <strong class="label certificacion_sin_aporte"> {{ count(certificacion_sin_aporte.id)}}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     
                 </div>
                 <div class="row">
@@ -86,55 +23,96 @@
                             <label style="font-size:80%;" v-if="list_aportes.length>0" > {{ getFormatDate(list_aportes[0].month_year) }}</label>                           
                             <div style="border-style: solid; border-width: 1px; ">
                                 <div v-for="(contribution,index) in list_aportes" :key="contribution.id" >
-                                        <div :style="getStyle(contribution.breakdown_id)" @click="selectRow(index)" data-toggle="tooltip" data-placement="left" :title="getFormatDate(contribution.month_year)"></div> 
+                                        <div :style="getStyle(contribution.breakdown_id,false)" @click="selectRow(index)" data-toggle="tooltip" data-placement="left" :title="getFormatDate(contribution.month_year)"></div> 
                                 </div>
                             </div>
                             <label style="font-size:80%;" v-if="list_aportes.length>0"> {{ getFormatDate(list_aportes[list_aportes.length-1].month_year) }}</label>                           
 
                     </div>
-                    <div class="col-md-11">
+                    <div class="col-md-9">
                         <table class="table " id="contribution_table">
                             <thead>
                             <tr> 
-                                <th class="col-md-1">Fecha </th>
-                                <th class="col-md-3">Sueldo</th>
-                                <th class="col-md-3">Categoria</th>
+                                <th class="col-md-2">Fecha </th>
+                                <th class="col-md-2">Sueldo</th>
+                                <th class="col-md-2">Categoria</th>
                                 <th class="col-md-2">Total</th>
-                                <th class="col-md-3">Tipo</th>
+                                <th class="col-md-4">Tipo</th>
                             </tr>
                             </thead>
                             <tbody id="contenedor">
                                 <tr v-for="contribution in list_aportes" :key="contribution.id" :class="getColor(contribution.breakdown_id)" >
-                                    <td class="col-md-1">{{getFormatDate(contribution.month_year)}}</td>
-                                    <td class="col-md-3">{{contribution.base_wage}}</td>
-                                    <td class="col-md-3">{{contribution.category_name}}</td>
+                                    <td class="col-md-2">{{getFormatDate(contribution.month_year)}}</td>
+                                    <td class="col-md-2">{{contribution.base_wage}}</td>
+                                    <td class="col-md-2">{{contribution.category_name}}</td>
                                     <td class="col-md-2">{{ contribution.total }}</td>
-                                    <td class="col-md-3">
+                                    <td class="col-md-4">
                                         <select class="form-control" v-model="contribution.breakdown_id" >
                                         <option v-for="item in list_types" :value="item.id" :key="item.id"> {{item.name}}</option>
                                         </select>
-                                    </td>
+                                    </td> 
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-
+                    <div class="col-md-2" style="padding-left:0px;padding-right: 2px">
+                        <h3>Tipos de Aportes</h3>
+                        <ul class="list-group">
+                            <li class="list-group-item comando" v-if="count(this.comando.id)>0">
+                                <span class="badge" >{{count(this.comando.id)}}</span>
+                                {{this.comando.name}}
+                            </li>
+                            <li class="list-group-item item0_con_aporte" v-if="count(this.item0_con_aporte.id)>0">
+                                <span class="badge ">{{count(this.item0_con_aporte.id)}}</span>
+                                {{this.item0_con_aporte.name}}
+                            </li>
+                            <li class="list-group-item item0_sin_aporte" v-if="count(this.item0_sin_aporte.id)>0">
+                                <span class="badge ">{{count(this.item0_sin_aporte.id)}}</span>
+                                {{this.item0_sin_aporte.name}}
+                            </li>
+                            <li class="list-group-item bfs_con_aporte" v-if="count(this.bfs_con_aporte.id)>0">
+                                <span class="badge ">{{count(this.bfs_con_aporte.id)}}</span>
+                                {{this.bfs_con_aporte.name}}
+                            </li>
+                            <li class="list-group-item bfs_sin_aporte" v-if="count(this.bfs_sin_aporte.id)>0">
+                                <span class="badge ">{{count(this.bfs_sin_aporte.id)}}</span>
+                                {{this.bfs_sin_aporte.name}}
+                            </li>
+                            <li class="list-group-item mayo_1976" v-if="count(this.mayo_1976.id)>0">
+                                <span class="badge ">{{count(this.mayo_1976.id)}}</span>
+                                {{this.mayo_1976.name}}
+                            </li>
+                            <li class="list-group-item certificacion_con_aporte" v-if="count(this.certificacion_con_aporte.id)>0">
+                                <span class="badge ">{{count(this.certificacion_con_aporte.id)}}</span>
+                                {{this.certificacion_con_aporte.name}}
+                            </li>
+                            <li class="list-group-item certificacion_sin_aporte" v-if="count(this.certificacion_sin_aporte.id)>0">
+                                <span class="badge ">{{count(this.certificacion_sin_aporte.id)}}</span>
+                                {{this.certificacion_sin_aporte.name}}
+                            </li>
+                            <li class="list-group-item perdiodo_no_trabajado" v-if="count(this.perdiodo_no_trabajado.id)>0">
+                                <span class="badge ">{{count(this.perdiodo_no_trabajado.id)}}</span>
+                                {{this.perdiodo_no_trabajado.name}}
+                            </li>
+                            <li class="list-group-item disponibilidad" v-if="count(this.disponibilidad.id)>0">
+                                <span class="badge ">{{count(this.disponibilidad.id)}}</span>
+                                {{this.disponibilidad.name}}
+                            </li>
+                        </ul>
+                       
+                    </div>
                 </div>
-
-          </div>
-          <div class="ibox-footer">
+            </div>
+            <div class="ibox-footer">
                 <button class="btn btn-primary btn-sm" @click="save" ><i class="fa fa-arrow-right"></i> Clasificar</button>
-                
                 <span class="pull-right">
                 <strong>  Cantidad: {{list_aportes.length}} </strong>
                 </span>
-              <br>
-          </div>
+                <br>
+            </div>
       </div>
      
-   
-  </div>
-    <!-- adicionando modal -->
+     <!-- adicionando modal -->
     <div class="modal inmodal" id="modalcyk" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
@@ -142,9 +120,6 @@
                
                 <div class="modal-header">
                     <h4 class="modal-title">Seleccion por rango de Fechas</h4>
-                    <!-- <div class="alert alert-info">
-                           Fecha Inicio: <strong> {{ getFormatDate(first_date.month_year) }} </strong> &nbsp;  Fecha Fin:<strong> {{ getFormatDate(last_date.month_year) }} </strong>
-                    </div> -->
                     <small class="font-bold">De &nbsp; <strong> {{ getFormatDate(first_date.month_year) }} </strong> &nbsp;  hasta &nbsp; <strong> {{ getFormatDate(last_date.month_year) }} </strong></small>
                 </div>
                 <div class="modal-body">
@@ -162,7 +137,7 @@
                             <label>De:</label>
                         </div>
                         <div class="col-md-4">
-                            <input class="form-control" type="date" v-model="modal.first_date">
+                            <input id="date_start_id" class="form-control" v-model="modal.first_date">
                         </div>
                         <div class="col-md-1">
                             <label>Hasta:</label>
@@ -175,9 +150,6 @@
                 </div>
                 <div class="modal-footer">
                     <div class="col-md-5">
-                        <!-- <div class="alert alert-info">
-                            Rango de 1-1900 hasta 2-2016
-                        </div> -->
                     </div>
                     <div class="col-md-7">
                         <button type="button" class="btn btn-white btn-sm" data-dismiss="modal"><i class="fa fa-close"></i> cancelar</button>
@@ -188,11 +160,11 @@
         </div>
      </div> <!-- fin del modal -->
   </div>
-  
 </template>
  
 <script>
 import draggable from 'vuedraggable'
+
 
 export default {
   name: 'clasificacion-aportes',
@@ -347,6 +319,7 @@ export default {
     this.list_aportes = list;
     this.row_higth = 386/this.list_aportes.length;
     console.log('termino los procesos');
+        
   },
   methods:{
     orderList () {
@@ -394,7 +367,7 @@ export default {
                 this.list_item0.push(aporte);
         });
     },
-    getStyle(breakdown_id){
+    getStyle(breakdown_id,only_color){
         let style = 'display: block;width: 100%; height:'+this.row_higth+'px;';
          var color="cya";
         //  console.log(breakdown_id);
@@ -438,7 +411,12 @@ export default {
             
         }
         // console.log(style);
-        return style+'background:'+color+';';
+        if(only_color){
+            console.log('color: '+color);
+            return 'color:'+color;
+        }else{
+            return style+'background:'+color+';';
+        }
     },
     getColor(breakdown_id)
     {
@@ -624,10 +602,6 @@ export default {
     list2String(cNormal){
       return JSON.stringify(this.list_aportes, null, 2);  
     }
-   
-  },
-  watch: {
- 
   }
 }
 </script>
@@ -693,10 +667,5 @@ tbody{
   width: 97%;
   position: absolute;
 }
-.square {
-  display: block;
-  width: 10px;
-  height: 10px;
-  background: #124405fd;
-}
+
 </style>|
