@@ -214,11 +214,29 @@ class RetirementFundCertificationController extends Controller
 //            'retirement_fund'   =>  $retirement_fund,
 //            'submitted_documents'   => $submitted_documents,            
 //        ];
+        $footerHtml = view()->make('ret_fun.print.footer', ['bar_code'=>$this->generateBarCode($retirement_fund)])->render();
         $cite = RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
         $subtitle = $cite;
         $pdftitle = "Revision Legal";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-        return \PDF::loadView('ret_fun.print.legal_certification', compact('date', 'subtitle', 'username', 'title', 'number', 'retirement_fund', 'affiliate', 'submitted_documents'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        $user = Auth::user();
+        return \PDF::loadView('ret_fun.print.legal_certification', 
+            compact(
+                'date', 
+                'subtitle', 
+                'username', 
+                'title', 
+                'number', 
+                'retirement_fund', 
+                'affiliate', 
+                'submitted_documents',
+                'user'))
+            ->setPaper('letter')
+            ->setOption('encoding', 'utf-8')
+            //->setOption('footer-right', 'Pagina [page] de [toPage]')
+            //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("$namepdf");
     }
     public function printBeneficiariesQualification($id)
     {
