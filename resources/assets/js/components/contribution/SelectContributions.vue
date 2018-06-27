@@ -318,7 +318,14 @@ export default {
     this.list_aportes = list;
     this.row_higth = 386/this.list_aportes.length;
     console.log('termino los procesos');
-        
+
+    // let string_date= "08/02/2013"
+    let string_date= "2013-02-08";
+    console.log(string_date);
+    // let date = moment(string_date,"DD/MM/YYYY").toDate();
+    let date = moment(string_date,"YYYY-MM-DD").toDate();
+    // let date = new Date(string_date);
+    console.log(date);    
   },
   methods:{
     orderList () {
@@ -531,41 +538,39 @@ export default {
     {
         if(this.isValid())
         {
-            let fi = '01/'+this.modal.first_date;
-            console.log(fi);
-            console.log(new Date(fi));
-            let ff = '01/'+this.modal.last_date;
-             console.log(ff);
-             console.log(new Date(ff));
+            let fi =moment('01/'+this.modal.first_date,"DD/MM/YYYY").toDate();
+
+            let ff =moment('01/'+this.modal.last_date,"DD/MM/YYYY").toDate();
+        
             let c_type_id = this.modal.contribution_type_id;
             let year = null;
             let month = null;
+            let aporte_date = null;
 
             let c_type = this.types.filter(function (type) {
                 return type.id  == c_type_id;   
             })[0];
-            console.log(this.order_aportes);
-            for (let i = 0; i < this.list_aportes.length; i++) {
+
+            for (let i = 0; i < this.list_aportes.length; i++)
+            {
                 let aporte = this.list_aportes[i];
-                
-                if(new Date(aporte.month_year).getTime() >= new Date(fi).getTime() && new Date(aporte.month_year).getTime() <= new Date(ff).getTime()  )
-                {
-                    console.log('comparando');
-                    console.log(new Date(aporte.month_year).getTime());
-                    console.log(new Date(fi).getTime());
-                    //console.log(aporte);
+          
+                aporte_date = moment(aporte.month_year,"YYYY-MM-DD").toDate();
+               
+                if(aporte_date.getTime() >= fi.getTime() && aporte_date.getTime() <= ff.getTime()  )
+                {   
                     aporte.breakdown_id = c_type.id;
                     aporte.breakdown_name = c_type.name;
                     Vue.set(this.list_aportes,i,aporte);
                 }
             }
         }
-        console.log(this.isValid());
+
     },
     isValid()
     {
         let response = true;
-        // && !this.modal.last_date && !this.modal.contribution_type_id
+        
         if(!this.modal.first_date)
         {
             flash('Error: verifique que la fecha "De:" no este vacia','error');
