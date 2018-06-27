@@ -69,7 +69,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
 		Route::resource('ret_fun', 'RetirementFundController');
 		Route::get('ret_fun/{ret_fun_id}/qualification', 'RetirementFundController@qualification')->name('ret_fun_qualification');
-		Route::post('ret_fun/{ret_fun_id}/get_data_qualification', 'RetirementFundController@geDataQualification');
+		Route::get('ret_fun/{ret_fun_id}/get_average_quotable', 'RetirementFundController@getAverageQuotable');
 		Route::get('ret_fun/{ret_fun_id}/qualification/certification', 'RetirementFundController@qualificationCertification');
 		Route::get('ret_fun/{ret_fun_id}/save_average_quotable', 'RetirementFundController@saveAverageQuotable')->name('save_average_quotable');
 		Route::patch('ret_fun/{ret_fun_id}/save_total_ret_fun', 'RetirementFundController@saveTotalRetFun')->name('save_total_ret_fun');
