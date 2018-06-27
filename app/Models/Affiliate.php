@@ -187,12 +187,12 @@ class Affiliate extends Model
     }
     public function getDatesGlobal()
     {
-        $date = $this->date_entry;
-        if ($date < '1976-05-01') {
-            $dates[] = (object)array('start' => '1976-05-01', 'end' => $this->getLastDateContribution());
-        }else{
-            $dates[] = (object)array('start' => $date, 'end' => $this->getLastDateContribution());
-        }
+        $date_start = $this->date_entry;
+        $date_end = $this->date_derelict;
+        $dates[] = (object)array(
+            'start' => ($date_start < '1976-05-01') ? "1976-05-01" : $date_start,
+            'end' => $date_end
+        );
         return $dates;
     }
     public function getContributionsWithType($contribution_type_id)
@@ -244,38 +244,41 @@ class Affiliate extends Model
         //     - ($total_security_battalion_backed ?? 0)
         //     - ($total_cas_backed ?? 0)
         //     - ($total_no_records_backed ?? 0);
-        $c = ContributionType::find(1);
+        
+        // $c = ContributionType::find(1);
         $group_dates = [];
-        $total_dates = Util::sumTotalContributions($this->getContributionsWithType(1));
+        $total_dates = Util::sumTotalContributions($this->getDatesGlobal());
         $dates = array(
-            'id' => $c->id,
-            'dates' => $this->getContributionsWithType($c->id),
-            'name' => $c->name,
-            'operator' => $c->operator,
-            'description' => $c->shortened,
+            'id' => 0,
+            'dates' => $this->getDatesGlobal(),
+            'name' => "perii",
+            'operator' => '**',
+            'description' => "dsds",
             'years' => intval($total_dates / 12),
             'months' => $total_dates % 12,
         );
         $group_dates[] = $dates;
         foreach (ContributionType::orderBy('id')->get() as $c) {
-            if ($c->id != 1) {
+            // if ($c->id != 1) {
                 $contributionsWithType = $this->getContributionsWithType($c->id);
                 if (sizeOf($contributionsWithType) > 0) {
-                    $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
-                    $dates = array(
-                        'id' => $c->id,
-                        'dates' => $this->getContributionsWithType($c->id),
-                        'name' => $c->name,
-                        'operator' => $c->operator,
-                        'description' => $c->shortened,
-                        'years' => intval($sub_total_dates / 12),
-                        'months' => $sub_total_dates % 12,
-                    );
+                    if ($c->operator == '-') {
+                        $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+                        // $dates = array(
+                        //     'id' => $c->id,
+                        //     'dates' => $this->getContributionsWithType($c->id),
+                        //     'name' => $c->name,
+                        //     'operator' => $c->operator,
+                        //     'description' => $c->shortened,
+                        //     'years' => intval($sub_total_dates / 12),
+                        //     'months' => $sub_total_dates % 12,
+                        // );
                         // Log::info($total_dates ." " . $c->operator . " " . $sub_total_dates);
-                    eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
-                    $group_dates[] = $dates;
+                        eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
+                        $group_dates[] = $dates;
+                    }
                 }
-            }
+            // }
         }
         $contributions = array(
             'contribution_types' => $group_dates,
@@ -287,15 +290,16 @@ class Affiliate extends Model
     public function getTotalAverageSalaryQuotable()
     {
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
-        $availability = $this->getContributionsWithType(10);#disponibilidad
-        $contributions = $this->getContributionsWithType(1);
-        if (sizeOf($availability) > 0) {
+        // $availability = $this->getContributionsWithType(10);#disponibilidad
+
+        // if (sizeOf($availability) > 0) {
             /* has availability */
-            $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
+            // $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
             $contributions = $this->contributions()
                 ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-                ->where("contribution_types.name", '=', 'Período reconocido por comando')
-                ->where('contributions.month_year', '<=', $start_date_availability)
+                // ->where("contribution_types.id", '=', 1)
+                // ->where('contributions.month_year', '<=', $start_date_availability)
+                ->where('contribution_types.operator','=', '+')
                 ->orderBy('contributions.month_year', 'desc')
                 ->take($number_contributions)
                 ->get();
@@ -304,22 +308,23 @@ class Affiliate extends Model
             $total_retirement_fund = $contributions->sum('retirement_fund');
             $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
             $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
-        } else {
+        // } else {
                 //si no tiene periodos en disponibilidad
-            $last_date_contribution = Carbon::parse(end($contributions)->end)->toDateString();
-            $contributions = $this->contributions()
-                ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-                ->where("contribution_types.name", '=', 'Período reconocido por comando')
-                ->where('contributions.month_year', '<=', $last_date_contribution)
-                ->orderBy('contributions.month_year', 'desc')
-                ->take($number_contributions)
-                ->get();
-            $total_base_wage = $contributions->sum('base_wage');
-            $total_seniority_bonus = $contributions->sum('seniority_bonus');
-            $total_retirement_fund = $contributions->sum('retirement_fund');
-            $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
-            $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
-        }
+            // $last_date_contribution = Carbon::parse(end($contributions)->end)->toDateString();
+            // $contributions = $this->contributions()
+                // ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
+                // ->where("contribution_types.id", '=', 1)
+                // ->where('contributions.month_year', '<=', $last_date_contribution)
+                // ->where('contribution_types.operator', '=', '+')
+                // ->orderBy('contributions.month_year', 'desc')
+                // ->take($number_contributions)
+                // ->get();
+        //     $total_base_wage = $contributions->sum('base_wage');
+        //     $total_seniority_bonus = $contributions->sum('seniority_bonus');
+        //     $total_retirement_fund = $contributions->sum('retirement_fund');
+        //     $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
+        //     $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
+        // }
         $data = [
             'total_base_wage' => $total_base_wage,
             'total_seniority_bonus' => $total_seniority_bonus,
@@ -328,13 +333,13 @@ class Affiliate extends Model
         ];
         return $data;
     }
-    public function getLastDateContribution()
-    {
-        $date = $this->contributions()->max('month_year');
-        if ($date) {
-            return $date;
-        }
-        Log::info('contributions not found');
-        return 'error';
-    }
+    // public function getLastDateContribution()
+    // {
+    //     $date = $this->contributions()->max('month_year');
+    //     if ($date) {
+    //         return $date;
+    //     }
+    //     Log::info('contributions not found');
+    //     return 'error';
+    // }
 }

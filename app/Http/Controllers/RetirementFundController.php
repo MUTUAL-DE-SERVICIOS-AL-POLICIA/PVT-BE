@@ -768,16 +768,16 @@ class RetirementFundController extends Controller
         $affiliate = $retirement_fund->affiliate;
 
         $dates_global = $affiliate->getDatesGlobal();
-        $dates_contributions = $affiliate->getDatesContributions();
-        $dates_item_zero_with_contribution = $affiliate->getDatesItemZeroWithContribution();
-        $dates_item_zero_without_contribution = $affiliate->getDatesItemZeroWithoutContribution();
-        $dates_security_battalion_with_contribution = $affiliate->getDatesSecurityBattalionWithContribution();
-        $dates_security_battalion_without_contribution = $affiliate->getDatesSecurityBattalionWithoutContribution();
-        $dates_may1976_without_contribution = $affiliate->getDatesMay1976WithoutContribution();
-        $dates_certification_period_with_contribution = $affiliate->getCertificationPeriodWithContribution();
-        $dates_certification_period_without_contribution = $affiliate->getCertificationPeriodWithoutContribution();
-        $dates_not_worked = $affiliate->getDatesNotWorked();
-        $dates_availability = $affiliate->getDatesAvailability();
+        // $dates_contributions = $affiliate->getDatesContributions();
+        // $dates_item_zero_with_contribution = $affiliate->getDatesItemZeroWithContribution();
+        // $dates_item_zero_without_contribution = $affiliate->getDatesItemZeroWithoutContribution();
+        // $dates_security_battalion_with_contribution = $affiliate->getDatesSecurityBattalionWithContribution();
+        // $dates_security_battalion_without_contribution = $affiliate->getDatesSecurityBattalionWithoutContribution();
+        // $dates_may1976_without_contribution = $affiliate->getDatesMay1976WithoutContribution();
+        // $dates_certification_period_with_contribution = $affiliate->getCertificationPeriodWithContribution();
+        // $dates_certification_period_without_contribution = $affiliate->getCertificationPeriodWithoutContribution();
+        // $dates_not_worked = $affiliate->getDatesNotWorked();
+        // $dates_availability = $affiliate->getDatesAvailability();
 
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $cities = City::get();
@@ -785,21 +785,21 @@ class RetirementFundController extends Controller
         $birth_cities = City::all()->pluck('name', 'id');
 
         /*  qualification*/
-        $c=ContributionType::find(1);
+        // $c=ContributionType::find(1);
         $group_dates = [];
-        $total_dates = Util::sumTotalContributions($affiliate->getContributionsWithType(1));
+        $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
         $dates = array(
-            'id' => $c->id,
-            'dates' => $affiliate->getContributionsWithType($c->id),
-            'name' => $c->name,
-            'operator' => $c->operator,
-            'description' => $c->shortened,
+            'id' => 0,
+            'dates' => $affiliate->getDatesGlobal(),
+            'name' => "perii",
+            'operator' => '**',
+            'description' => "dsds",
             'years' => intval($total_dates / 12),
             'months' => $total_dates % 12,
         );
         $group_dates[] = $dates;
         foreach (ContributionType::orderBy('id')->get() as $c){
-            if($c->id != 1){
+            // if($c->id != 1){
                 $contributionsWithType = $affiliate->getContributionsWithType($c->id);
                 if (sizeOf($contributionsWithType) > 0) {
                     $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
@@ -808,15 +808,16 @@ class RetirementFundController extends Controller
                         'dates' => $affiliate->getContributionsWithType($c->id),
                         'name' => $c->name,
                         'operator' => $c->operator,
-                        'description' => $c->shortened,
+                        'description' => $c->description,
                         'years' => intval($sub_total_dates / 12),
                         'months' => $sub_total_dates % 12,
                     );
-                        // Log::info($total_dates ." " . $c->operator . " " . $sub_total_dates);
-                    eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';'); 
+                    if ($c->operator == '-') {
+                        eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';'); 
+                    }
                     $group_dates[] = $dates;
                 }
-            }
+            // }
         }
         $contributions = array(
             'contribution_types' => $group_dates,
@@ -1039,10 +1040,10 @@ class RetirementFundController extends Controller
         $retirement_fund->save();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
         //create function search spouse
-        $text_spouse = 'Conyugue';
-        $spouse = $beneficiaries->filter(function ($item) use ($text_spouse)
+        $spouse_id = 2;
+        $spouse = $beneficiaries->filter(function ($item) use ($spouse_id)
         {
-            return $item->kinship->name == $text_spouse;
+            return $item->kinship->id == $spouse_id;
         });
         if (sizeOf($spouse)>0) {
             $has_spouse = true;
@@ -1061,7 +1062,7 @@ class RetirementFundController extends Controller
         $one_spouse = 1;
         foreach ($beneficiaries as $beneficiary) {
             $beneficiary->full_name = $beneficiary->fullName();
-            if ($beneficiary->kinship->name == $text_spouse ) {
+            if ($beneficiary->kinship->id == $spouse_id ) {
                 if ($one_spouse <= 1) {
                     $beneficiary->temp_percentage = $total_spouse_percentage;
                     $beneficiary->temp_amount = $total_spouse;
@@ -1134,9 +1135,9 @@ class RetirementFundController extends Controller
             $total_availability = $subtotal_availability + $total_annual_yield;
             $total = $total + $total_availability;
 
-            $text_spouse = 'Conyugue';
-            $spouse = $beneficiaries->filter(function ($item) use ($text_spouse) {
-                return $item->kinship->name == $text_spouse;
+            $spouse_id = 2;
+            $spouse = $beneficiaries->filter(function ($item) use ($spouse_id) {
+                return $item->kinship->id == $spouse_id;
             });
             if (sizeOf($spouse) > 0) {
                 $total_spouse = $total_availability / 2;
@@ -1148,7 +1149,7 @@ class RetirementFundController extends Controller
             $one_spouse = 1;
             foreach ($beneficiaries as $beneficiary) {
                 $beneficiary->full_name = $beneficiary->fullName();
-                if ($beneficiary->kinship->name == $text_spouse) {
+                if ($beneficiary->kinship->id == $spouse_id) {
                     if ($one_spouse <= 1) {
                         $beneficiary->temp_amount_availability = $total_spouse;
                     } else {

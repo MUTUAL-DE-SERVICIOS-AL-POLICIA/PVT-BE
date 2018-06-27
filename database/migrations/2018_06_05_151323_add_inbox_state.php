@@ -24,10 +24,6 @@ class AddInboxState extends Migration
             $table->string('note')->nullable();
             //$table->string('folder_number')->nullable(); //mada directly from db
         });
-        Schema::table('contribution_types', function (Blueprint $table) {
-            $table->string('description')->nullable();
-            $table->string('operator')->nullable();
-        });
     }
 
     /**

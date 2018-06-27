@@ -81,44 +81,10 @@
                 </div>
             </div>
             <button class="btn btn-primary" @click="firstContinue()"><i class="fa fa-save"></i> Continuar</button>
-            <div class="ibox" class="fadeInRight" v-if="showEconomicData">
-                <div class="ibox-title">
-                    <h5>Datos Economicos</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        <a class="close-link"><i class="fa fa-times"></i></a>
-                    </div>
-                </div>
-                <div class="ibox-content">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>foo</th>
-                                <th>bar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Ultimo Sueldo Percibido</td>
-                                <td>Ultimo Sueldo Percibido</td>
-                            </tr>
-                            <tr>
-                                <td>Salario Promedio Cotizable</td>
-                                <td>@{{ totalAverageSalaryQuotableAnimated | currency }}</td>
-                            </tr>
-                            <tr>
-                                <td>Densidad Total de Cotizaciones</td>
-                                <td>@{{ totalQuotesAnimated }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button class="btn btn-primary" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar</button>
-                </div>
-            </div>
-            <div v-show="showEconomicDataTotal">
+            <div v-if="showEconomicData">
                 <div class="ibox" class="fadeInRight">
                     <div class="ibox-title">
-                        <h5>Datos Economicos Total</h5>
+                        <h5>Datos Economicos</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             <a class="close-link"><i class="fa fa-times"></i></a>
@@ -134,170 +100,26 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Sub Total fondo de retiro</td>
-                                    <td>@{{ subTotalRetFun | currency }}</td>
+                                    <td>Ultimo Sueldo Percibido</td>
+                                    <td>Ultimo Sueldo Percibido</td>
                                 </tr>
                                 <tr>
-                                    <td>Anticipo Fondo de Retiro</td>
-                                    <td><input type="text" v-model="advancePayment" data-money='true'></td>
+                                    <td>Salario Promedio Cotizable</td>
+                                    <td>@{{ totalAverageSalaryQuotableAnimated | currency }}</td>
                                 </tr>
                                 <tr>
-                                    <td>% de Anticipo Fondo de Retiro</td>
-                                    <td>@{{ percentageAdvancePayment | percentage }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Retencion para pago de prestamo</td>
-                                    <td><input type="text" v-model="retentionLoanPayment" data-money='true'></td>
-                                </tr>
-                                <tr>
-                                    <td>% de Retencion para pago de prestamo</td>
-                                    <td>@{{ percentageRetentionLoanPayment | percentage }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Retencion para garantes</td>
-                                    <td><input type="text" v-model="retentionGuarantor" data-money='true'></td>
-                                </tr>
-                                <tr>
-                                    <td>% de Retencion para garantes</td>
-                                    <td>@{{ percentageRetentionGuarantor | percentage }}</td>
-                                </tr>
-                                <tr class="success">
-                                    <td>Total fondo de retiro</td>
-                                    <td><strong>@{{ totalAnimated | currency }}</strong></td>
+                                    <td>Densidad Total de Cotizaciones</td>
+                                    <td>@{{ totalQuotesAnimated }}</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <button class="btn btn-primary" type="submit" @click="saveTotalRetFun"><i class="fa fa-save"></i> Guardar</button>
+                        <button class="btn btn-primary" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar</button>
                     </div>
                 </div>
-            </div>
-            <div v-if="showPercentagesRetFun">
-                <div class="ibox" class="fadeInRight">
-                    <div class="ibox-title">
-                        <h5>Calculo de las cuotas partes para los derechohabientes</h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                            <a class="close-link"><i class="fa fa-times"></i></a>
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
-                                    <th>% DE ASIGNACION</th>
-                                    <th>MONTO</th>
-                                    <th>PARENTESCO</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th></th>
-                                    <th>@{{ totalPercentageRetFun }}</th>
-                                    <th>@{{ totalAmountRetFun | currency }}</th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                            <tbody>
-                                <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
-                                    <td>@{{ beneficiary.first_name }}</td>
-                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
-                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
-                                    <td>@{{ beneficiary.kinship.name }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>
-                    </div>
-                </div>
-            </div>
-            <div v-if="hasAvailability">
-                <div class="ibox" class="fadeInRight">
-                    <div class="ibox-title">
-                        <h5>Devolucion de aportes en disponibilidad</h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                            <a class="close-link"><i class="fa fa-times"></i></a>
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Foobar</th>
-                                    <th>baz</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Total aportes en disponibilidad</td>
-                                    <td>@{{ subTotalAvailability | currency }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Con rendimiento del X% Anual</td>
-                                    <td>@{{ totalAnnualYield | currency }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Devolucion de aportes en disponibilidad</td>
-                                    <td>@{{ totalAvailability | currency}}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"></td>
-                                </tr>
-                                <tr v-for="(discount, index) in arrayDiscounts">
-                                    <td>@{{ discount.name }}</td>
-                                    <td>@{{ discount.amount }}</td>
-                                </tr>
-                                <tr class="success">
-                                    <td>@{{ arrayDiscounts[arrayDiscounts.length-1].name }}</td>
-                                    <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="ibox" class="fadeInRight">
-                    <div class="ibox-title">
-                        <h5>Calculo de las cuotas partes para los derechohabientes</h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                            <a class="close-link"><i class="fa fa-times"></i></a>
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
-                                    <th>% DE ASIGNACION</th>
-                                    <th>MONTO</th>
-                                    <th>PARENTESCO</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th></th>
-                                    <th>@{{ totalPercentageAvailability }}</th>
-                                    <th>@{{ totalAmountAvailability | currency }}</th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                            <tbody>
-                                <tr v-for="(beneficiary, index) in beneficiariesAvailability" :key="index">
-                                    <td>@{{ beneficiary.full_name }}</td>
-                                    <td><input type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalAvailability(index)"></td>
-                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount_availability"></td>
-                                    <td>@{{ beneficiary.kinship.name }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <button class="btn btn-primary" type="submit" @click="savePercentagesAvailability"><i class="fa fa-save"></i> Guardar</button>
-                    </div>
-                </div>
-                <div v-if="showPercentagesRetFunAvailability">
+                <div v-show="showEconomicDataTotal">
                     <div class="ibox" class="fadeInRight">
                         <div class="ibox-title">
-                            <h5>Calculo de las cuotas partes para los derechohabientes Total</h5>
+                            <h5>Datos Economicos Total</h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 <a class="close-link"><i class="fa fa-times"></i></a>
@@ -307,61 +129,241 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>NOMBRE DEL DERECHOHABIENTE</th>
-                                        <th>% DE ASIGNACION</th>
-                                        <th>MONTO</th>
-                                        <th>PARENTESCO</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th>@{{ totalPercentageRetFunAvailability }}</th>
-                                        <th>@{{ totalAmountRetFunAvailability | currency }}</th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                                <tbody>
-                                    <tr v-for="(beneficiary, index) in beneficiariesRetFunAvailability" :key="index">
-                                        <td>@{{ beneficiary.full_name }}</td>
-                                        <td><input type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalRetFunAvailability(index)"></td>
-                                        <td><input type="number" step="0.01" v-model="beneficiary.temp_amount_total"></td>
-                                        <td>@{{ beneficiary.kinship.name }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <button class="btn btn-primary" type="submit" @click="saveTotalRetFunAvailability"><i class="fa fa-save"></i> Guardar</button>
-                        </div>
-                    </div>
-                </div>
-                <div v-else>
-                    <div class="ibox" class="fadeInRight" v-if="arrayDiscounts.length">
-                        <div class="ibox-title">
-                            <h5>Total Fondo de retiro con descuentos</h5>
-                            <div class="ibox-tools">
-                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                <a class="close-link"><i class="fa fa-times"></i></a>
-                            </div>
-                        </div>
-                        <div class="ibox-content">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Foobar</th>
-                                        <th>baz</th>
+                                        <th>foo</th>
+                                        <th>bar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(discount, index) in arrayDiscounts">
-                                        <td>@{{ discount.name }}</td>
-                                        <td>@{{ discount.amount }}</td>
+                                    <tr>
+                                        <td>Sub Total fondo de retiro</td>
+                                        <td>@{{ subTotalRetFun | currency }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Anticipo Fondo de Retiro</td>
+                                        <td><input type="text" v-model="advancePayment" data-money='true'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>% de Anticipo Fondo de Retiro</td>
+                                        <td>@{{ percentageAdvancePayment | percentage }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Retencion para pago de prestamo</td>
+                                        <td><input type="text" v-model="retentionLoanPayment" data-money='true'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>% de Retencion para pago de prestamo</td>
+                                        <td>@{{ percentageRetentionLoanPayment | percentage }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Retencion para garantes</td>
+                                        <td><input type="text" v-model="retentionGuarantor" data-money='true'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>% de Retencion para garantes</td>
+                                        <td>@{{ percentageRetentionGuarantor | percentage }}</td>
                                     </tr>
                                     <tr class="success">
-                                        <td>@{{ arrayDiscounts[arrayDiscounts.length-1].name }}</td>
-                                        <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount }}</td>
+                                        <td>Total fondo de retiro</td>
+                                        <td><strong>@{{ totalAnimated | currency }}</strong></td>
                                     </tr>
                                 </tbody>
                             </table>
+                            <button class="btn btn-primary" type="submit" @click="saveTotalRetFun"><i class="fa fa-save"></i> Guardar</button>
+                        </div>
+                    </div>
+                    <div v-if="showPercentagesRetFun">
+                        <div class="ibox" class="fadeInRight">
+                            <div class="ibox-title">
+                                <h5>Calculo de las cuotas partes para los derechohabientes (Fondo de Retiro)</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    <a class="close-link"><i class="fa fa-times"></i></a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                            <th>% DE ASIGNACION</th>
+                                            <th>MONTO</th>
+                                            <th>PARENTESCO</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th>@{{ totalPercentageRetFun }}</th>
+                                            <th>@{{ totalAmountRetFun | currency }}</th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
+                                            <td>@{{ beneficiary.first_name }}</td>
+                                            <td><input type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
+                                            <td><input type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
+                                            <td>@{{ beneficiary.kinship.name }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>
+                            </div>
+                        </div>
+                        <div v-if="hasAvailability">
+                            <div class="ibox" class="fadeInRight">
+                                <div class="ibox-title">
+                                    <h5>Devolucion de aportes en disponibilidad</h5>
+                                    <div class="ibox-tools">
+                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        <a class="close-link"><i class="fa fa-times"></i></a>
+                                    </div>
+                                </div>
+                                <div class="ibox-content">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Foobar</th>
+                                                <th>baz</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Total aportes en disponibilidad</td>
+                                                <td>@{{ subTotalAvailability | currency }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Con rendimiento del X% Anual</td>
+                                                <td>@{{ totalAnnualYield | currency }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Devolucion de aportes en disponibilidad</td>
+                                                <td>@{{ totalAvailability | currency}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr v-for="(discount, index) in arrayDiscounts">
+                                                <td>@{{ discount.name }}</td>
+                                                <td>@{{ discount.amount }}</td>
+                                            </tr>
+                                            <tr class="success">
+                                                <td>@{{ arrayDiscounts[arrayDiscounts.length-1].name }}</td>
+                                                <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="ibox" class="fadeInRight">
+                                <div class="ibox-title">
+                                    <h5>Calculo de las cuotas partes para los derechohabientes</h5>
+                                    <div class="ibox-tools">
+                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        <a class="close-link"><i class="fa fa-times"></i></a>
+                                    </div>
+                                </div>
+                                <div class="ibox-content">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                                <th>% DE ASIGNACION</th>
+                                                <th>MONTO</th>
+                                                <th>PARENTESCO</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th></th>
+                                                <th>@{{ totalPercentageAvailability }}</th>
+                                                <th>@{{ totalAmountAvailability | currency }}</th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            <tr v-for="(beneficiary, index) in beneficiariesAvailability" :key="index">
+                                                <td>@{{ beneficiary.full_name }}</td>
+                                                <td><input type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalAvailability(index)"></td>
+                                                <td><input type="number" step="0.01" v-model="beneficiary.temp_amount_availability"></td>
+                                                <td>@{{ beneficiary.kinship.name }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button class="btn btn-primary" type="submit" @click="savePercentagesAvailability"><i class="fa fa-save"></i> Guardar</button>
+                                </div>
+                            </div>
+                            <div v-if="showPercentagesRetFunAvailability">
+                                <div class="ibox" class="fadeInRight">
+                                    <div class="ibox-title">
+                                        <h5>Calculo de las cuotas partes para los derechohabientes Total</h5>
+                                        <div class="ibox-tools">
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            <a class="close-link"><i class="fa fa-times"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                                    <th>% DE ASIGNACION</th>
+                                                    <th>MONTO</th>
+                                                    <th>PARENTESCO</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>@{{ totalPercentageRetFunAvailability }}</th>
+                                                    <th>@{{ totalAmountRetFunAvailability | currency }}</th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
+                                            <tbody>
+                                                <tr v-for="(beneficiary, index) in beneficiariesRetFunAvailability" :key="index">
+                                                    <td>@{{ beneficiary.full_name }}</td>
+                                                    <td><input type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalRetFunAvailability(index)"></td>
+                                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount_total"></td>
+                                                    <td>@{{ beneficiary.kinship.name }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <button class="btn btn-primary" type="submit" @click="saveTotalRetFunAvailability"><i class="fa fa-save"></i> Guardar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div class="ibox" class="fadeInRight" v-if="arrayDiscounts.length">
+                                    <div class="ibox-title">
+                                        <h5>Total Fondo de retiro con descuentos</h5>
+                                        <div class="ibox-tools">
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            <a class="close-link"><i class="fa fa-times"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Foobar</th>
+                                                    <th>baz</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(discount, index) in arrayDiscounts">
+                                                    <td>@{{ discount.name }}</td>
+                                                    <td>@{{ discount.amount }}</td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td>@{{ arrayDiscounts[arrayDiscounts.length-1].name }}</td>
+                                                    <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
