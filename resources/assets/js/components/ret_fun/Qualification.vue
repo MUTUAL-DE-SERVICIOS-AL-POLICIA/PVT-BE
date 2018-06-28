@@ -1,15 +1,31 @@
 <script>
 import { dateInputMask, moneyInputMask, parseMoney, moneyInputMaskAll }  from "../../helper.js";
 export default {
-  props: ["datesGlobal","datesContributions", "datesAvailability", "datesItemZero","datesSecurityBattalion","datesNoRecords","datesCas","retirementFundId"],
+  props: [
+    'contributions',
+    'datesGlobal',
+    'datesContributions',
+    'datesItemZeroWithContribution',
+    'datesItemZeroWithoutContribution',
+    'datesSecurityBattalionWithContribution',
+    'datesSecurityBattalionWithoutContribution',
+    'datesMay1976WithoutContribution',
+    'datesCertificationPeriodWithContribution',
+    'datesCertificationPeriodWithoutContribution',
+    'datesNotWorked',
+    'datesAvailability',
+    "retirementFundId"
+  ],
   mounted() {
-    this.calculate();
-    moneyInputMaskAll();
+    // this.calculate();
+    // moneyInputMaskAll();
   },
   data() {
     return {
-      years: 0,
-      months: 0,
+
+
+      years: this.contributions.years,
+      months: this.contributions.months,
       yearsContributions: 0,
       monthsContributions: 0,
       yearsGlobal: 0,
@@ -70,43 +86,44 @@ export default {
       }
     },
     calculate(){
-        let global = this.calculateDiffWithYearMonth(this.datesGlobal);
-        this.yearsGlobal = global.years;
-        this.monthsGlobal = global.months;
-        let totalContributions = this.calculateDiffWithYearMonth(this.datesContributions);
-        this.yearsContributions = totalContributions.years;
-        this.monthsContributions = totalContributions.months;
-        let totalAvailability = this.calculateDiffWithYearMonth(this.datesAvailability);
-        this.yearsAvailability = totalAvailability.years;
-        this.monthsAvailability = totalAvailability.months;
-        let totalItemZero = this.calculateDiffWithYearMonth(this.datesItemZero);
-        this.yearsItemZero = totalItemZero.years;
-        this.monthsItemZero = totalItemZero.months;
-        let totalSecurityBattalion = this.calculateDiffWithYearMonth(this.datesSecurityBattalion);
-        this.yearsSecurityBattalion = totalSecurityBattalion.years;
-        this.monthsSecurityBattalion = totalSecurityBattalion.months;
-        let totalCas = this.calculateDiffWithYearMonth(this.datesCas);
-        this.yearsCas = totalCas.years;
-        this.monthsCas = totalCas.months;
-        let totalNoRecords = this.calculateDiffWithYearMonth(this.datesNoRecords);
-        this.yearsNoRecords = totalNoRecords.years;
-        this.monthsNoRecords = totalNoRecords.months;
+        // let global = this.calculateDiffWithYearMonth(this.datesGlobal);
+        // this.yearsGlobal = global.years;
+        // this.monthsGlobal = global.months;
+        // let totalContributions = this.calculateDiffWithYearMonth(this.datesContributions);
+        // this.yearsContributions = totalContributions.years;
+        // this.monthsContributions = totalContributions.months;
+        // let totalAvailability = this.calculateDiffWithYearMonth(this.datesAvailability);
+        // this.yearsAvailability = totalAvailability.years;
+        // this.monthsAvailability = totalAvailability.months;
+        // let totalItemZero = this.calculateDiffWithYearMonth(this.datesItemZero);
+        // this.yearsItemZero = totalItemZero.years;
+        // this.monthsItemZero = totalItemZero.months;
+        // let totalSecurityBattalion = this.calculateDiffWithYearMonth(this.datesSecurityBattalion);
+        // this.yearsSecurityBattalion = totalSecurityBattalion.years;
+        // this.monthsSecurityBattalion = totalSecurityBattalion.months;
+        // let totalCas = this.calculateDiffWithYearMonth(this.datesCas);
+        // this.yearsCas = totalCas.years;
+        // this.monthsCas = totalCas.months;
+        // let totalNoRecords = this.calculateDiffWithYearMonth(this.datesNoRecords);
+        // this.yearsNoRecords = totalNoRecords.years;
+        // this.monthsNoRecords = totalNoRecords.months;
 
-        const datesGlobal = this.calculateDiff(this.datesGlobal);
-        const datesContributions = this.calculateDiff(this.datesContributions);
-        const datesAvailability = this.calculateDiff(this.datesAvailability);
-        const datesItemZero = this.calculateDiff(this.datesItemZero);
-        const datesSecurityBattalion = this.calculateDiff(this.datesSecurityBattalion);
-        const datesCas = this.calculateDiff(this.datesCas);
-        const datesNoRecords = this.calculateDiff(this.datesNoRecords);
-        // const total = datesContributions + datesItemZero - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
-        const total = datesGlobal - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
+        // const datesGlobal = this.calculateDiff(this.datesGlobal);
+        // const datesContributions = this.calculateDiff(this.datesContributions);
+        // const datesAvailability = this.calculateDiff(this.datesAvailability);
+        // const datesItemZero = this.calculateDiff(this.datesItemZero);
+        // const datesSecurityBattalion = this.calculateDiff(this.datesSecurityBattalion);
+        // const datesCas = this.calculateDiff(this.datesCas);
+        // const datesNoRecords = this.calculateDiff(this.datesNoRecords);
+        // // const total = datesContributions + datesItemZero - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
+        // const total = datesGlobal - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
+        var total = 182;
         this.years = parseInt(total/12);
         this.months = (total%12);
     },
-    save(){
-      let uri = `/ret_fun/${this.retirementFundId}/get_data_qualification`;
-      axios.post(uri,
+    firstContinue(){
+      let uri = `/ret_fun/${this.retirementFundId}/get_average_quotable`;
+      axios.get(uri,
         {
           datesAvailability: this.datesAvailability,
           datesItemZero: this.datesItemZero,
@@ -118,9 +135,9 @@ export default {
       ).then(response =>{
           flash("Verificacion Correcta");
           this.showEconomicData = true
-          TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+          TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_salary_quotable.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
       }).catch(error =>{
-          flash("Los Datos no Coinciden", "error");
+          flash("Error", "error");
           this.showEconomicData = false;
       });
     },
@@ -134,7 +151,6 @@ export default {
       }).catch(error => {
         this.showEconomicDataTotal = false
       });
-      
     },
     saveTotalRetFun(){
       let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun`;

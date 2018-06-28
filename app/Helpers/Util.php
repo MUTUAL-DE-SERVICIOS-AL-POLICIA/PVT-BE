@@ -382,7 +382,7 @@ class Util
                     // $value = json_encode($value);
                     $diff = Carbon::parse($value['start'])->diffInMonths(Carbon::parse($value['end'])) + 1;
                 } else {
-                    $diff = Carbon::parse($value->start)->diffInMonths(Carbon::parse($value->end)) + 1;
+                    $diff = (Carbon::parse($value->end)->diffInMonths(Carbon::parse($value->start)) + 1);
                 }
                 if ($diff < 0) {
                     dd("error");

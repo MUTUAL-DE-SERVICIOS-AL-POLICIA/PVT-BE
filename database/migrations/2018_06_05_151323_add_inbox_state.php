@@ -17,8 +17,8 @@ class AddInboxState extends Migration
             $table->boolean('inbox_state')->default(false);
         });
         // Schema::table('contribution_types', function(Blueprint $table){
-        //     $table->mediumText('description')->nullable();
-        // });
+            //     $table->mediumText('description')->nullable();
+            // });
         Schema::table('affiliate_folders', function(Blueprint $table){
             $table->boolean('is_paid')->nullable();
             $table->string('note')->nullable();

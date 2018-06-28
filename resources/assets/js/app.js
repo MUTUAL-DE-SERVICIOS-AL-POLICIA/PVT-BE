@@ -91,6 +91,13 @@ Vue.use(VueCurrencyFilter,
 Vue.filter('percentage', function (value) {
 	return `${value.toFixed(4)} %`;
 });
+moment.locale("es");
+Vue.filter('month', function (value) {
+  return moment(value).format("MMMM").toString().toUpperCase();
+});
+Vue.filter('year', function (value) {
+  return moment(value).format("YYYY");
+});
 
 //vue mask hdp
 import VueTheMask from 'vue-the-mask'
