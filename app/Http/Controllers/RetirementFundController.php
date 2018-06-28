@@ -1266,4 +1266,25 @@ class RetirementFundController extends Controller
         }
         return $num."/".$year;
     }
+    
+    public function dictamenLegal($id){
+
+        $retirement_fund = RetirementFund::find($id);
+
+
+        $actual_date = date('d-m-Y'); 
+        $cite = "D.B.E/A.B.E./GMQ/N°";  
+        $beneficiary = RetFunBeneficiary::where('ret_fun_id',$retirement_fund->id);        
+
+        
+
+
+        $data = [
+            'actual_date'   =>  $actual_date,   //fecha actual (hoy)
+            'cite'  =>  $cite,
+            'beneficiary'   => $beneficiary,
+
+        ];
+        return $data;
+    }
 }

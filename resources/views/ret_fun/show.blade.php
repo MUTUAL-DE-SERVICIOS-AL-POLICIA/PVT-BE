@@ -71,6 +71,9 @@
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-beneficiaries"><i class="fa fa-users"></i> Beneficiarios</a></li>
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-summited-document"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-folder"><i class="fa fa-copy"></i> Archivos</a></li>
+                                <li class="list-group-item "><a data-toggle="tab" href="#tab-folder"><i class="fa fa-copy"></i> Jefatura</a></li>
+                                <li class="list-group-item "><a data-toggle="tab" href="#tab-folder"><i class="fa fa-copy"></i> Dictamen legal</a></li>
+                                <li class="list-group-item "><a data-toggle="tab" href="#tab-folder"><i class="fa fa-copy"></i> Resoluci&oacute;n legal</a></li>
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-observations"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                                 
                             </ul>
@@ -121,6 +124,26 @@
                                         @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
                                     @endcan
                                 
+                            </div>
+                            <div id="tab-folder" class="tab-pane">
+                                
+                                @can('view',new Muserpol\Models\AffiliateFolder)
+                                    @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
+                                @endcan
+                            
+                            </div>
+                            <div id="tab-folder" class="tab-pane">
+                                {{-- @can('view',new Muserpol\Models\AffiliateFolder) --}}
+                                    @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
+                                {{-- @endcan --}}
+                            
+                            </div>
+                            <div id="tab-folder" class="tab-pane">
+                                        
+                                @can('view',new Muserpol\Models\AffiliateFolder)
+                                    @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
+                                @endcan
+                            
                             </div>
                             <div id="tab-observations" class="tab-pane">
                                     @include('ret_fun.observation')

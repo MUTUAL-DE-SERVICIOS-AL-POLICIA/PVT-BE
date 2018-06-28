@@ -182,7 +182,15 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('inbox_send_forward', 'InboxController@sendForward')->name('inbox_send_forward');
 		Route::post('inbox_send_backward', 'InboxController@sendBackward')->name('inbox_send_backward');
 		Route::patch('inbox_validate_doc/{doc_id}', 'InboxController@validateDoc')->name('inbox_validate_doc');
+
+
+		//dictamen legal routes
+		Route::get('ret_fun/{retirement_fund}/dictamen_legal', 'RetirementFundController@dictamenLegal')->name('ret_fun_dictamen_legal');
 	});
+
+	
+
+
 });
 
 
