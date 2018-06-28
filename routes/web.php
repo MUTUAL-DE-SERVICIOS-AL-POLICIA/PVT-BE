@@ -182,6 +182,12 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('inbox_send_forward', 'InboxController@sendForward')->name('inbox_send_forward');
 		Route::post('inbox_send_backward', 'InboxController@sendBackward')->name('inbox_send_backward');
 		Route::patch('inbox_validate_doc/{doc_id}', 'InboxController@validateDoc')->name('inbox_validate_doc');
+
+		/* 7 legal opinion */
+		Route::get('legal_opinion', function(Request $request)
+		{
+			return view('ret_fun.7_legal_opinion.modeloDeDictamenLegalDeFondoDeRetiroPorJubilacionConPagoAGarantes');
+		});
 	});
 });
 
