@@ -636,15 +636,23 @@ class ContributionController extends Controller
         // return $contributions;
        
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
+        $date_entry = $ret_fun->affiliate->date_entry;
+        $date_derelict = $ret_fun->affiliate->date_derelict;
+        // return $date_derelict;
         // return $contribution_types;
-        $data =   array('contributions' => $contributions,
-                        'con_type'=>$con_type ,
-                        'contribution_types'=> $contribution_types,
-                        'url_certification'=> url('ret_fun/'.$ret_fun->id.'/print/certification'),
-                        'url_certification_availability'=> url('ret_fun/'.$ret_fun->id.'/print/cer_availability'),
-                        'url_certification_itemcero'=> url('ret_fun/'.$ret_fun->id.'/print/cer_itemcero'),
-                        'ret_fun'=>$ret_fun);
-        return view('contribution.select',$data);
+        if($date_entry && $date_derelict){
+            $data =   array('contributions' => $contributions,
+                            'con_type'=>$con_type ,
+                            'contribution_types'=> $contribution_types,
+                            'date_entry' => $date_entry,
+                            'date_derelict' => $date_derelict,
+                            'ret_fun'=>$ret_fun);
+            return view('contribution.select',$data);
+        }
+        else{
+            Session::flash('message','Verifique la fecha de entrada y desvinculacion del afiliado antes de continuar');
+            return redirect('ret_fun/'.$ret_fun_id);
+        }
     }
     public function saveContributions(Request $request)
     {   
@@ -674,7 +682,6 @@ class ContributionController extends Controller
                     $contribution->position_bonus = 0;
                     $contribution->border_bonus = 0;
                     $contribution->east_bonus = 0;
-                    $contribution->dignity_pension = 0;
                     $contribution->gain = 0;
                     $contribution->quotable = 0;
                     $contribution->retirement_fund = 0;

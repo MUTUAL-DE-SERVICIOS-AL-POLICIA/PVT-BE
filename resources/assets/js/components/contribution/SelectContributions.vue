@@ -22,7 +22,7 @@
                     <div class="col-md-1">  
                             <label style="font-size:80%;" v-if="list_aportes.length>0" > {{ getFormatDate(list_aportes[0].month_year) }}</label>                           
                             <div style="border-style: solid; border-width: 1px; ">
-                                <div v-for="(contribution,index) in list_aportes" :key="contribution.id" >
+                                <div v-for="(contribution,index) in list_aportes" :key="index" >
                                         <div :style="getStyle(contribution.breakdown_id,false)" @click="selectRow(index)" data-toggle="tooltip" data-placement="left" :title="getFormatDate(contribution.month_year)"></div> 
                                 </div>
                             </div>
@@ -41,7 +41,7 @@
                             </tr>
                             </thead>
                             <tbody id="contenedor">
-                                <tr v-for="contribution in list_aportes" :key="contribution.id" :class="getColor(contribution.breakdown_id)" >
+                                <tr v-for="(contribution,index) in list_aportes" :key="index" :class="getColor(contribution.breakdown_id)" >
                                     <td class="col-md-2">{{getFormatDate(contribution.month_year)}}</td>
                                     <td class="col-md-2">{{contribution.base_wage}}</td>
                                     <td class="col-md-2">{{contribution.category_name}}</td>
@@ -177,15 +177,17 @@ export default {
         'retfunid',
         'urlcertification',
         'ulrzero',
-        'urlavailable'
+        'urlavailable',
+        'start',
+        'end'
     ],
   data () {
     return {
         list_aportes:this.contributions,
         list_types: this.types,
         con_type: this.contype,
-        last_date: this.contributions[0],
-        first_date: this.contributions[this.contributions.length-1],
+        last_date: this.end,
+        first_date: this.start,
         comando: null,
         item0_con_aporte : null,
         item0_sin_aporte : null,
@@ -204,6 +206,11 @@ export default {
   },
   created: function () {
     
+    let array_date = this.first_date.split('-'); 
+    this.first_date = array_date[0]+'-'+array_date[1]+'-01';
+    array_date = this.last_date.split('-'); 
+    this.last_date = array_date[0]+'-'+array_date[1]+'-01';
+    console.log(this.last_date);
     console.log('Revisando lista_aportes: ' + this.list_aportes.length)
     // console.log(this.urlcertification);
     console.log(this.types);
@@ -281,16 +288,19 @@ export default {
         this.list_aportes = list_hdp;
     }
     console.log(this.con_type);
-    console.log(this.first_date);
+    console.log('fi');
+    console.log(moment(this.first_date).toDate());
+    console.log('ff');
     console.log(this.last_date);
-    let fi = this.first_date.month_year;
-    let ff = this.last_date.month_year;
+    let fi = this.first_date;
+
+    let ff = this.last_date;
     let year = null;
     let month = null;
     var list = [];
     let contribution = null;
-
-    while (new Date(ff).getTime() > new Date(fi).getTime() ) {
+    //llenado de datos
+    while (moment(ff,'YYYY-MM-DD').toDate().getTime() >= moment(fi,'YYYY-MM-DD').toDate() ) {
         let ad = ff.split('-');
         year = ad[0];
         month = ad[1];
@@ -307,11 +317,14 @@ export default {
             year--;
             month = 12;
         }
-        if(month.length==1)
+        let month_str=''+month;
+        if(month<10)
         {
-            month = '0'+month;
+
+            month_str = '0'+month;
         }
-        ff= year+'-'+month+'-01';
+        ff= year+'-'+month_str+'-01';
+        console.log(ff);
     }
 
     console.log(list);
@@ -470,8 +483,12 @@ export default {
     },
     getFormatDate(fecha)
     {
-        let str = fecha.split('-');
-        return str[1]+' - '+parseInt(str[0]);
+        // console.log(fecha);
+        if(fecha){
+            let str = fecha.split('-');
+            return str[1]+' - '+parseInt(str[0]);
+        }
+        return fecha;
     },
     searchContribution(date)
     {   
@@ -661,6 +678,9 @@ export default {
 }
 .perdiodo_no_trabajado{
     background: #30c1edfb;
+}
+.cym{
+    background: #bbbaadfd;
 }
 
 tr {
