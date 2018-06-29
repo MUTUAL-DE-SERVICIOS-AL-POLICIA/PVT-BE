@@ -12,6 +12,9 @@
  */
 
 use Muserpol\DataTables\AffiliateContributionsDataTable;
+use Muserpol\Models\Template;
+use Illuminate\Support\Facades\Blade;
+use Muserpol\Models\RetirementFund\RetirementFund;
 
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
@@ -186,7 +189,30 @@ Route::group(['middleware' => ['auth']], function () {
 		/* 7 legal opinion */
 		Route::get('legal_opinion', function(Request $request)
 		{
-			return view('ret_fun.7_legal_opinion.modeloDeDictamenLegalDeFondoDeRetiroPorJubilacionConPagoAGarantes');
+			$ret_fun = RetirementFund::find(3);
+			$affiliate = $ret_fun->affiliate;
+			$args = array(
+				'ret_fun'=> RetirementFund::find(3),
+				'affiliate'=> $affiliate,
+			);
+			foreach (Template::all() as $value) {
+				$generated = \Blade::compileString($value->body);
+
+				ob_start() and extract($args, EXTR_SKIP);
+				try {
+					eval('?>' . $generated);
+				}
+				catch (\Exception $e) {
+					ob_get_clean();
+					throw $e;
+				}
+				$content = ob_get_clean();
+				$pdf = \App::make('snappy.pdf.wrapper');
+				$pdf->loadHTML($content);
+				return $pdf->setPaper('letter')
+					->setOption('encoding', 'utf-8')
+					->stream($value->name.".pdf");
+			}
 		});
 	});
 });

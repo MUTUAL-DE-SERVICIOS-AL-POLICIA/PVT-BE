@@ -78,8 +78,12 @@
         </table>
 
         <div class="block">
-
             @yield('content')
+
+            <?php
+            echo ($body.";")
+            ?>
+
         </div>
         <footer>
             @yield('footer')

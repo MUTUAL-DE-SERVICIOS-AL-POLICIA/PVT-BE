@@ -122,7 +122,7 @@ class RetirementFundCertificationController extends Controller
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $modality = $retirement_fund->procedure_modality->name;
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-        $title = "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . mb_strtoupper($modality);
+        $title = ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 2 ) ? "REQUISITOS DEL PAGO GLOBAL DE APORTES – " . mb_strtoupper($modality)  : "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . mb_strtoupper($modality);
         $number = $retirement_fund->code;
         $user = Auth::user();//agregar cuando haya roles
         $username = Auth::user()->username;//agregar cuando haya roles

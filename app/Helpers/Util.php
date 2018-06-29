@@ -11,6 +11,8 @@ use Muserpol\Models\RetirementFund\RetFunProcedure;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Role;
+use Muserpol\Models\DiscountType;
+use Muserpol\Models\RetirementFund\RetirementFund;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -28,10 +30,13 @@ class Util
             return "sin fecha";
     }
 
-    public static function formatMoney($value)
+    public static function formatMoney($value, $prefix = false)
     {
         if ($value) {
             $value = number_format($value, 2, '.', ',');
+            if ($prefix) {
+                return 'Bs'.$value;
+            }
             return $value;
         }
         return null;
@@ -405,5 +410,49 @@ class Util
                 break;
         }
         return $label;
+    }
+    /*for legal opinion print*/
+    public static function getDiscountCombinations($ret_fun_id)
+    {
+        $retirement_fund = RetirementFund::find($ret_fun_id);
+        $array_discounts = array();
+        $array_discounts_text = array();
+
+        $array = DiscountType::all()->pluck('id');
+        $results = array(array());
+        foreach ($array as $element) {
+            foreach ($results as $combination) {
+                array_push($results, array_merge(array($element), $combination));
+            }
+        }
+        foreach ($results as $value) {
+            $sw = true;
+            foreach ($value as $id) {
+                if (!$retirement_fund->discount_types()->find($id)) {
+                    $sw = false;
+                }
+            }
+            if ($sw) {
+                $temp_total_discount = 0;
+                $array_discounts_text = array();
+                foreach ($value as $id) {
+                    $amount = $retirement_fund->discount_types()->find($id)->pivot->amount;
+                    $temp_total_discount = $temp_total_discount + $amount;
+                    array_push($array_discounts_text, "que descontado el monto ".self::formatMoney($amount,true).' ('.self::convertir($amount). " BOLIVIANOS) por concepto de ". $retirement_fund->discount_types()->find($id)->name);
+                }
+                $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
+                array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+            }
+        }
+        $name = join(' - ', $array_discounts_text);
+        $pos = strrpos($name, ' - que ');
+        if ($pos !== false) {
+            $name = substr_replace($name, ' y ', $pos, strlen(' - que '));
+        }
+        $name = str_replace(" -", ",", $name);
+        if (sizeOf($array_discounts_text) > 0) {
+            $name = ', '. $name.", queda un saldo de ".self::formatMoney($array_discounts[sizeOf($array_discounts)-1]['amount'], true).' ('.self::convertir($array_discounts[sizeOf($array_discounts) - 1]['amount']) .' BOLIVIANOS).';
+        }
+        return $name;
     }
 }

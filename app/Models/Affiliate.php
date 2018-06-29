@@ -132,7 +132,14 @@ class Affiliate extends Model
     {
         return Util::fullName($this, $style);
     }
-
+    public function fullNameWithDegree($style = "uppercase")
+    {
+        return Util::removeSpaces(($this->degree->shortened ?? ''). ' '.Util::fullName($this, $style));
+    }
+    public function ciWithExt()
+    {
+        return Util::removeSpaces($this->identity_card . ' ' .$this->city_identity_card->first_shortened);
+    }
     public function calcAge($text = false, $date_death = true)
     {
         if ($text) {
