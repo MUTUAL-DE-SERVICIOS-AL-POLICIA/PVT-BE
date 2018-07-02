@@ -1,4 +1,4 @@
-@extends('ret_fun.7_legal_opinion.global') 
+@extends('ret_fun.legal_opinion.global') 
 @section('content')
 <div>
     <p class="text-justify">
