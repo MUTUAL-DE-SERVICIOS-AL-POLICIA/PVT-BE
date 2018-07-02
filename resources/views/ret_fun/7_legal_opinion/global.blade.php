@@ -14,76 +14,46 @@
             <tr>
                 <th class="w-20 text-left no-padding no-margins align-middle">
                     <div class="text-center">
-                        <img src="{{ asset('images/logo.jpg') }}" class="w-100">
+                        <img src="{{asset('images/logo.jpg')}}" class="w-100">
                     </div>
                 </th>
-                <th class="w-50 align-top">
+                <th class="w-60 align-top">
                     <span class="font-semibold uppercase leading-tight text-md">
-                    {{ $institution ?? 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"' }} <br>
-                    {{ $direction ?? 'DIRECCIÓN DE BENEFICIOS ECONÓMICOS' }} <br>
-                    {{ $unit ?? 'UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO' }}
-                </span>
+                    MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"
+                    <br> DIRECCIÓN DE BENEFICIOS ECONÓMICOS
+                    <br> UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO
+                  </span>
                 </th>
                 <th class="w-20 no-padding no-margins align-top">
-                    @if(isset($number))
-                    <table class="table-code no-padding no-margins">
-                        <tbody>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
-                                <td class="text-bold text-base">{!! $number ?? 'ERROR' !!}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Fecha de Emisión</td>
-                                <td class="text-xs">{!! $date ?? \Carbon\Carbon::now() !!}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
-                                <td class="text-xs">{!! $username ?? 'user' !!}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    @else
-                    <table class="table-code align-top no-padding no-margins">
-                        <tbody>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Fecha de Emisión</td>
-                                <td class="text-xs">{{ $date ?? \Carbon\Carbon::now() }}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
-                                <td class="text-xs">{!! $username ?? 'user' !!}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    @endif
+                    <div class="text-center">
+                        <img src="{{asset('images/escudo.jpg')}}" class="w-100">
+                    </div>
                 </th>
             </tr>
             <tr class="no-border">
                 <td colspan="3" class="no-border" style="border-bottom: 1px solid #22292f;"></td>
             </tr>
-            <tr>
-                <td colspan="3" class="font-bold text-center text-xl uppercase">
-                    {{ $title ?? '' }} @if (isset($subtitle))
-                    <br><span class="font-medium">{{ $subtitle ?? '' }}</span> @endif
-                </td>
-            </tr>
-            {{--
-            <tr>
-                <td colspan="3"></td>
-            </tr>
-            <tr>
-                <td colspan="3"></td>
-            </tr> --}}
-
         </table>
+        <div class="block">
+            <div class="text-right">
+                <span class="block">
+                   La Paz, 29 de diciembre de 2017
+                 </span>
+                <span class="block">
+                   DBE/UFRPSCAM/AL-DL N° 381/2017
+                 </span>
+            </div>
+            <div class="block">
+                <div class="text-center text-2xl font-bold underline uppercase">
+                    DICTAMEN LEGAL
+                </div>
+            </div>
+            <p class="text-left font-bold">
+                Fondo de Retiro Policial Solidario <br> Modalidad: <span class="uppercase">JUBILACIÓN</span>
+            </p>
 
         <div class="block">
             @yield('content')
-
-            <?php
-            echo ($body.";")
-            ?>
-
         </div>
         <footer>
             @yield('footer')
