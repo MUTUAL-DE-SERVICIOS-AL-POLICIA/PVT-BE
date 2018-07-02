@@ -80,14 +80,16 @@ class ContributionController extends Controller
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
             $diff = $now->subMonths(1)->diffInMonths($lastMonths);                
             $contribution = array();
-            if ($diff > 2) {
+            if ($diff > 3) {
                 $month1 = Carbon::now()->subMonths(1);
                 $month2 = Carbon::now()->subMonths(2);
                 $month3 = Carbon::now()->subMonths(3);       
+                $month4 = Carbon::now()->subMonths(4);
                 $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contributions = array($contribution3, $contribution2, $contribution1);
+                $contribution4 = array('year' => $month3->format('Y'), 'month' => $month4->format('m'), 'monthyear' => $month4->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                $contributions = array($contribution4,$contribution3, $contribution2, $contribution1);
             } 
             else 
             {
@@ -128,8 +130,7 @@ class ContributionController extends Controller
     {
     }
     public function storeDirectContribution(Request $request)
-    {      
-
+    {              
         //*********START VALIDATOR************//        
         $rules=[];        
 //        if(!empty($request->aportes))
@@ -183,7 +184,8 @@ class ContributionController extends Controller
         if($validator->fails()){            
             return response()->json($validator->errors(), 406);
         }                
-         //*********END VALIDATOR************//                               
+        
+         //*********END VALIDATOR************//                                 
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
@@ -206,6 +208,13 @@ class ContributionController extends Controller
         //return $request->aportes;
         $result = [];
         $stored_contributions = [];
+        // $data = [
+        //     'contribution'  =>  '',
+        //     'contributions'  =>  $request->aportes,
+        //     'voucher_id'    => '',
+        //     'affiliate_id'  =>  '',
+        // ];
+        // return $data;
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;

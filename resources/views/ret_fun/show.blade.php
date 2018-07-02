@@ -142,7 +142,7 @@
                             </div>
                             <div id="tab-folder" class="tab-pane">
                                 {{-- @can('view',new Muserpol\Models\AffiliateFolder) --}}
-                                    @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
+                                    {{-- @include('ret_fun.dictamen', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id]) --}}
                                 {{-- @endcan --}}
                             
                             </div>

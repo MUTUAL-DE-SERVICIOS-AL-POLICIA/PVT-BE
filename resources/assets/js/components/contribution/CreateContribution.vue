@@ -113,7 +113,7 @@ export default {
       estado: true,
       afi_id:null,
       show_spinner:false,
-      count:3,
+      count:4,
       ufvs: [],
       general_salary: 0,
     };
@@ -161,9 +161,10 @@ export default {
            console.log('contri..' + this.contributions);
         for(i=0;i<this.contributions.length;i++){
             this.contributions[i].sueldo = this.general_salary;
+            console.log(this.contributions[i].month);
             this.CalcularAporte(this.contributions[i],i);
         }              
-      },
+      },      
       CalcularAporte(con, index){        
         con.sueldo = parseMoney(con.sueldo);   
         if(parseFloat(con.sueldo) >0)
@@ -213,7 +214,7 @@ export default {
         else
         {
             this.show_spinner=false;
-            this.count = 3;
+            this.count = 4;
             return;
         }
         }

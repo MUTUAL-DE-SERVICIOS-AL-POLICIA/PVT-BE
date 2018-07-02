@@ -40,6 +40,9 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowRecord;
 use Muserpol\Models\Contribution\ContributionType;
+use Muserpol\Models\RetirementFund\RetFunCorrelative;
+use Muserpol\Models\InfoLoan;
+
 class RetirementFundController extends Controller
 {
     /**
@@ -49,7 +52,8 @@ class RetirementFundController extends Controller
      */ 
     public function index()
     {                
-        return view('ret_fun.index');
+        
+        return view('ret_fun.index');   
        
     }
     
@@ -399,6 +403,65 @@ class RetirementFundController extends Controller
     //public function show(RetirementFund $retirementFund)
     public function show($id)
     {
+//         $retirement_fund = RetirementFund::find($id);
+//         $affiliate = Affiliate::find($retirement_fund->affiliate_id);       
+//         $discounts = $retirement_fund->discount_types(); //DiscountType::where('retirement_fund_id',$retirement_fund->id)->orderBy('discount_type_id','ASC')->get();                
+//         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
+//         $body = "Por consiguiente, habiendo sido remitido el presente tramite al Área Legal Unidad de
+//         Otorgación del Fondo de Retiro Policial Solidario, autorizado por Jefatura de la Unidad de
+//         Otorgación del Fondo de Retiro Policial Solidario, conforme a los Art. 2, 3, 5, 10, 26, 27, 28,
+//         32, 36, 37, 38, 41, 42, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74 y la Disposición Transitoria
+//         Segunda, del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante
+//         Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante
+//         Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017. Se DICTAMINA en
+//         merito a la documentación de respaldo contenida en el presente, ";
+        
+//         $flagy = 0;
+//         if($discounts->count()>0)
+//             $body .= "proceder a realizar el descuento de ";
+
+//         $discount = $discounts->where('discount_type_id','1')->first();
+        
+//         if(isset($discount->id)){            
+//             $body.="Bs ".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).") por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);            
+//         }
+        
+//         $discounts = $retirement_fund->discount_types();
+        
+//         if(isset($discount->id)){
+//             $body .= $this->getFlagy(3,2);
+//             // if($flagy == 1)
+//             // $body .= " y la suma de ";
+//             $body.="Bs ".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).") por concepto de saldo de deuda con la MUSERPOL de conformidad al contrato de préstamo Nro. ".$discount->code." y nota ".$discount->note_code." de fecha ".Util::getStringDate($discount->date);
+//         }
+//         //
+//         $discounts = $retirement_fund->discount_types();
+//         $discount = $discounts->where('discount_type_id','3')->first();
+//         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
+
+//         $body.="Bs ".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).") por concepto de garantía de préstamo a favor de";// los señores. ".$discount->code." y nota ".$discount->note_code." de fecha ".$discount->date;
+//         $num_loans = $loans->count();
+//         if($num_loans==1)
+//             $body .= "l señore ";
+//         else
+//             $body .= " los señores ";
+//         $i=0;
+//         foreach($loans as $loan){
+//             $i++;
+//             if($i!=1)
+//             {
+//                 if($num_loans-$i==0)
+//                     $body .= " y ";
+//                 else
+//                     $body .= ", ";
+//             }
+//             $body.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card." en la suma de Bs ".Util::formatMoney($loan->amount)." (".Util::convertir($discount->pivot->amount);
+//         }
+//         $body .= " en conformidad al contrato de préstamo Nro. ".$discount->pivot->code." y la nota ".$discount->pivot->note_code." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones. Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".strtoupper($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>"; 
+//         $body .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., el monto de Bs ".Util::formatMoney($retirement_fund->total_ret_fun)." (".Util::convertir($retirement_fund->total_ret_fun).").";
+//         return $body;
+// return "123";
+
         $retirement_fund = RetirementFund::find($id);
 
         $this->authorize('view', $retirement_fund);
@@ -499,6 +562,13 @@ class RetirementFundController extends Controller
         // return $data;
         
         return view('ret_fun.show',$data);
+    }
+    private function getFlagy($num,$pos){
+        if($num == ($pos+1))
+            return ", ";
+        if($num == ($pos+2))
+            return " y la suma de ";
+        return ;
     }
     /**
      * Show the form for editing the specified resource.
@@ -1293,23 +1363,23 @@ class RetirementFundController extends Controller
         return $num."/".$year;
     }
     
-    public function dictamenLegal($id){
-
+    public function dictamenLegal($id){    
         $retirement_fund = RetirementFund::find($id);
-
-
         $actual_date = date('d-m-Y'); 
         $cite = "D.B.E/A.B.E./GMQ/N°";  
-        $beneficiary = RetFunBeneficiary::where('ret_fun_id',$retirement_fund->id);        
-
-        
-
-
+        $applicant = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('type','S')->get();
+        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('type','N')->get();
+        //return $retirement_fund->affiliate_id;
+        $affiliate = Affiliate::find($retirement_fund->affiliate_id);
+        $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
+         
         $data = [
             'actual_date'   =>  $actual_date,   //fecha actual (hoy)
-            'cite'  =>  $cite,
-            'beneficiary'   => $beneficiary,
-
+            'cite'  =>  $cite,      //codigo identificador de usuario por area
+            'beneficiaries'   => $beneficiaries,    //beneficiarios 
+            'applicant' =>  $applicant,     //persona que hace el tramite
+            'affiliate' =>  $affiliate,     //policia afiliado
+            'correlarives'  =>  $correlatives,  //codigos de documentos de cada area
         ];
         return $data;
     }
