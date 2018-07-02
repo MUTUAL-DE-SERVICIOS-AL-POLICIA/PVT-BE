@@ -9,4 +9,13 @@ class RetFunProcedure extends Model
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund');
     }
+    public function scopeCurrent()
+    {
+
+        if ($c = $this->where('is_enabled',true)->first())
+        {
+            return $c;
+        }
+        return false;
+    }
 }

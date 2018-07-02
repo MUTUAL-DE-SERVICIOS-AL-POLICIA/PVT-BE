@@ -12,6 +12,10 @@
  */
 
 use Muserpol\DataTables\AffiliateContributionsDataTable;
+use Muserpol\Models\Template;
+use Illuminate\Support\Facades\Blade;
+use Muserpol\Models\RetirementFund\RetirementFund;
+use Muserpol\Models\RetirementFund\RetFunProcedure;
 
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
@@ -182,6 +186,69 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('inbox_send_forward', 'InboxController@sendForward')->name('inbox_send_forward');
 		Route::post('inbox_send_backward', 'InboxController@sendBackward')->name('inbox_send_backward');
 		Route::patch('inbox_validate_doc/{doc_id}', 'InboxController@validateDoc')->name('inbox_validate_doc');
+
+		/* 7 legal opinion */
+		Route::get('legal_opinion', function(Request $request)
+		{
+			$ret_fun = RetirementFund::find(3);
+			$affiliate = $ret_fun->affiliate;
+			$args = array(
+				'ret_fun'=> RetirementFund::find(3),
+				'affiliate'=> $affiliate,
+				'has_poder'=>true,
+				'poder_number'=>'151/2017',
+				'poder_date' => Util::getStringDate('2014-11-06'),
+				'poder_full_name' => "uihsakdas",
+				'poder_ci_ext' => "65284 UI",
+				'file_code' => "15/2018",
+				'file_date' => Util::getStringDate('2018-10-10'),
+				'has_file' => false,
+				'admin_fin_cite' => '5151/21212',
+				'admin_fin_date' => Util::getStringDate('2018-1-10'),
+				'has_admin_file' => true,
+				'admin_fin_amount' => '5,152.58',
+				'legal_code' => '125/505',
+				'legal_date' => Util::getStringDate('2018-1-10'),
+				'aportes_code' => '5121/1055',
+				'aportes_date' => Util::getStringDate('2018-1-10'),
+				'number_contributions' => RetFunProcedure::current()->number_contributions,
+				'availability_code' => '215/5018',
+				'availability_date' => Util::getStringDate('2018-1-10'),
+				'availability_number_contributions' => 15,
+				'qualification_code' => '5121/5018',
+				'qualification_date' => Util::getStringDate('2018-1-10'),
+				'qualification_years' => 34,
+				'qualification_months' => 2,
+				'qualification_amount' => '515.45',
+				'reserva_date' => Util::getStringDate('2018-1-10'),
+				'annual_yield' => RetFunProcedure::current()->annual_yield,
+				'reserva_amount' => 84136.45,
+			);
+			return \PDF::loadView('ret_fun.legal_opinion.ret_fun_jubilacion', $args)
+				->setPaper('letter')
+				->setOption('encoding', 'utf-8')
+				->stream("dictamenLegal.pdf");
+
+			/*
+			foreach (Template::all() as $value) {
+				$generated = \Blade::compileString($value->body);
+
+				ob_start() and extract($args, EXTR_SKIP);
+				try {
+					eval('?>' . $generated);
+				}
+				catch (\Exception $e) {
+					ob_get_clean();
+					throw $e;
+				}
+				$content = ob_get_clean();
+				$pdf = \App::make('snappy.pdf.wrapper');
+				$pdf->loadHTML($content);
+				return $pdf->setPaper('letter')
+					->setOption('encoding', 'utf-8')
+					->stream($value->name.".pdf");
+			}*/
+		});
 	});
 });
 
