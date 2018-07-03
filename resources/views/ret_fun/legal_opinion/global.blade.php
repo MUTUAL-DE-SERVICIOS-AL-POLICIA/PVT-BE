@@ -26,7 +26,7 @@
                 </th>
                 <th class="w-20 no-padding no-margins align-top">
                     <div class="text-center">
-                        <img src="{{asset('images/escudo.jpg')}}" class="w-100">
+                        <img src="{{asset('images/escudo.jpg')}}" class="w-60">
                     </div>
                 </th>
             </tr>

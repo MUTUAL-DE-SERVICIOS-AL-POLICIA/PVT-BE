@@ -105,7 +105,10 @@
                                 </tr>
                                 <tr>
                                     <td>Salario Promedio Cotizable</td>
-                                    <td>@{{ totalAverageSalaryQuotableAnimated | currency }}</td>
+                                    <td>@{{ totalAverageSalaryQuotableAnimated | currency }}
+                                        <span class="label label-info"> <i class="fa fa-calculator"></i> ver completo</span>
+                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable"  onclick="clickable">gh</button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Densidad Total de Cotizaciones</td>
@@ -116,6 +119,79 @@
                         <button class="btn btn-primary" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar</button>
                     </div>
                 </div>
+
+                <div class="modal inmodal" id="averageSalaryQuotable" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content animated bounceInRight">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+                                <h4 class="modal-title">Registro de Antecedente</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="col-lg-12">
+                                    <div class="ibox ">
+                                        <div class="ibox-title">
+                                            <h5>SALARIO PROMEDIO COTIZABLE</h5>
+                                            <div class="ibox-tools">
+                                                <a class="collapse-link">
+                                                    <i class="fa fa-chevron-up"></i>
+                                                </a>
+                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                                    <i class="fa fa-wrench"></i>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-user">
+                                                    <li><a href="#">Config option 1</a>
+                                                    </li>
+                                                    <li><a href="#">Config option 2</a>
+                                                    </li>
+                                                </ul>
+                                                <a class="close-link">
+                                                    <i class="fa fa-times"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <table class="table table-striped" id="datatables-certification">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Periodo</th>
+                                                        <th>Haber Basico</th>
+                                                        <th>Categoria</th>
+                                                        <th>Salario Cotizable</th>
+                                                        <th>Total Aporte</th>
+                                                        <th>Aporte FRPS</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            <table class="table table-bordered table-striped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Total Aportes Fondo de Retiro Policial Solidario</td>
+                                                        {{-- <td>{{ $total_retirement_fund }}</td> --}}
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Salario Total</td>
+                                                        {{-- <td>{{ $sub_total_average_salary_quotable }}</td> --}}
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Salario Promedio</td>
+                                                        {{-- <td>{{ $total_average_salary_quotable }}</td> --}}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div v-show="showEconomicDataTotal">
                     <div class="ibox" class="fadeInRight">
                         <div class="ibox-title">
@@ -461,7 +537,51 @@
 </div> --}}
 </div>
 @endsection
-
+@section('styles')
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+@endsection
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
+<script src="{{ asset('/js/datatables.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        console.log("hguiasdhu");
+        
+        
+            var datatable_contri = $('#datatables-certification').DataTable({
+                responsive: true,
+                fixedHeader: {
+                header: true,
+                footer: true,
+                    headerOffset: $('#navbar-fixed-top').outerHeight()
+                },
+                order: [],
+                ajax: "{{ url('get_data_certification', $retirement_fund->id) }}",
+                lengthMenu: [[15, 30, 60, -1], [15, 30, 60, "Todos"]],
+                dom: '< "html5buttons"B>lTfgitp',
+                buttons:[
+                    {extend: 'colvis', columnText: function ( dt, idx, title ) { return (idx+1)+': '+title; }},
+                    { extend: 'copy'},
+                    { extend: 'csv'},
+                    { extend: 'excel', title: "{!! $retirement_fund->id.'-'.date('Y-m-d') !!}"},
+                ],
+                columns:[
+                    {data: 'DT_Row_Index' },
+                    {data: 'month_year' },
+                    {data: 'base_wage'},
+                    {data: 'seniority_bonus'},
+                    {data: 'quotable_salary'},
+                    {data: 'total'},
+                    {data: 'retirement_fund'},
+                ],
+                "fnDrawCallback": function(oSettings){ clickable(); }
+            });
+        function clickable() {
+            console.log("hola");
+            
+        }
+            
+    });
+
+</script>
 @endsection

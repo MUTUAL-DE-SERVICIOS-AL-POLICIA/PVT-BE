@@ -18,7 +18,7 @@
             <tr class="text-sm">
                 <td class="text-left uppercase px-5 py-3"> {{ $beneficiary->fullName() }} </td>
                 <td class="text-center uppercase px-5 py-3"><div class="w-70 text-right">{!! $beneficiary->percentage !!}</div> </td>
-                <td class="text-center uppercase font-bold px-5 py-3">{!! $beneficiary->identity_card !!}</td>
+                <td class="text-center uppercase font-bold px-5 py-3">{!! Util::formatMoney($beneficiary->amount_ret_fun) !!}</td>
                 <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? 'error' }}</td>
             </tr>
             @endforeach

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 @section('title', 'Fondo de Retiro')
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -6,7 +6,7 @@
         {!!Breadcrumbs::render('show_qualification_certification_retirement_fund', $retirement_fund, $number_contributions)!!}
     </div>
 </div>
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content animated fadeInRight"> --}}
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
@@ -60,17 +60,12 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="form-group">
-                        {!! Form::open(array('route' => ['save_average_quotable', $retirement_fund->id],'method'=>'PATCH')) !!}
-                        <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar</button>
-                        {!! Form::close() !!}
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@endsection
+{{-- </div> --}}
+{{-- @endsection --}}
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection

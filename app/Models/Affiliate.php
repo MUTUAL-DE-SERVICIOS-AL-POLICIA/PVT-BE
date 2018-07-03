@@ -124,9 +124,17 @@ class Affiliate extends Model
     {
         return Util::getDateFormat($this->date_entry, $size);
     }
-    public function getDateEntryDisponibilidad()
+    public function getDateDerelict($size = 'short')
     {
-        return 'Coming soon ';
+        return Util::getDateFormat($this->date_derelict, $size);
+    }
+    public function getDateEntryAvailability()
+    {
+        $availability = $this->getContributionsWithType(10);
+        if (sizeOf($availability) > 0) {
+            return Util::getDateFormat($availability[0]->start);
+        }
+        return '-';
     }
     public function fullName($style = "uppercase")
     {
@@ -336,6 +344,7 @@ class Affiliate extends Model
             'total_base_wage' => $total_base_wage,
             'total_seniority_bonus' => $total_seniority_bonus,
             'total_retirement_fund' => $total_retirement_fund,
+            'sub_total_average_salary_quotable' => $sub_total_average_salary_quotable,
             'total_average_salary_quotable' => $total_average_salary_quotable,
         ];
         return $data;

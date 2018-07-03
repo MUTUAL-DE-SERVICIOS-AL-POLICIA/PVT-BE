@@ -10,80 +10,48 @@
         <tbody class="table-striped">
             <tr>
                 <td class="w-50"></td>
-                <td class="w-25 text-center font-bold px-10 py-3 uppercase" colspan="2">inicio</td>
-                <td class="w-25 text-center font-bold px-10 py-3 uppercase" colspan="2">fin</td>
+                <td class="w-25 text-center font-bold px-10 py-3 uppercase" colspan="1">inicio</td>
+                <td class="w-25 text-center font-bold px-10 py-3 uppercase" colspan="1">fin</td>
             </tr>
-            <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">periodo de aportes</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ ($ret_fun->getDateContributions()->start) ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ ($ret_fun->getDateContributions()->start) ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ ($ret_fun->getDateContributions()->end) ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ ($ret_fun->getDateContributions()->end) ?? 'error' }} </td>
-            </tr>
-            <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">destinos en letras de disponibilidad</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->end ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->end ?? 'error' }} </td>
-            </tr>
-            <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">periodo de aportes en aportes en item "0"</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateItemZero()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateItemZero()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateItemZero()->end ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateItemZero()->end ?? 'error' }} </td>
-            </tr>
-            <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">periodo de aportes batallon de seguridad fisica</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateSecurityBattalion()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateSecurityBattalion()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateSecurityBattalion()->end ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateSecurityBattalion()->end ?? 'error' }} </td>
-            </tr>
+            @foreach ($contributions['contribution_types'] as $c)
+                <tr class="text-sm">
+                    <td class="text-left px-10 py-3 uppercase" >{{ $c['name'] }}</td>
+                    <td colspan="2">
+                        <table class="no-border">
+                            @foreach ($c['dates'] as $d)
+                            <tr class="no-border">
+                                <td class="text-center uppercase font-bold px-5 py-3 no-border"> {{ Util::getDateFormat($d->start) ?? 'error' }} </td>
+                                <td class="text-center uppercase font-bold px-5 py-3 no-border"> {{ Util::getDateFormat($d->end) ?? 'error' }} </td>
+                            </tr>
+                            @endforeach
+                        </table>
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 </div>
 <div class="block">
     <table class="table-info w-100 m-b-10">
-
+        <thead class="bg-grey-darker">
+            <tr class="font-medium text-white text-sm uppercase">
+                <td class="px-15 text-center">Tipo de contribucion</td>
+                <td class="px-15 text-center">Años</td>
+                <td class="px-15 text-center">Meses</td>
+            </tr>
+        </thead>
         <tbody class="table-striped">
+            @foreach ($contributions['contribution_types'] as $c)
+            <tr class="text-sm">
+                <td class="text-left px-10 py-3 uppercase">{{ $c['name'] }}</td>
+                <td class="text-center px-10 py-3 uppercase">{{ $c['years'] }}</td>
+                <td class="text-center px-10 py-3 uppercase">{{ $c['months'] }}</td>
+            </tr>
+            @endforeach
             <tr>
-                <td class="w-50"></td>
-                <td class="w-25 text-center font-bold px-10 py-3 uppercase" >años</td>
-                <td class="w-25 text-center font-bold px-10 py-3 uppercase" >meses</td>
-            </tr>
-            <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">años de serivcio segun certificacion del comando general de la policia</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ ($ret_fun->getDateContributions()->start) ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ ($ret_fun->getDateContributions()->end) ?? 'error' }} </td>
-            </tr>
-            <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">cantidad de aportes item "0"</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->end ?? 'error' }} </td>
-            </tr>
-            <tr class="text-sm">
-                <!-- TODO mayo 1976 -->
-                <td class="text-left px-10 py-3 uppercase">aportes anteriores a mayo de 1976</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->end ?? 'error' }} </td>
-            </tr>
-            <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">periodos en disponibilidad</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->end ?? 'error' }} </td>
-            </tr>
-            <tr class="text-sm">
-                <!-- TODO Nro 151/2017 -->
-                <td class="text-left px-10 py-3 uppercase">periodos descontados segun certificacion Nro 151/2017</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->end ?? 'error' }} </td>
-            </tr>
-            <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">total de cotizaciones para calificacion</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->start ?? 'error' }} </td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $ret_fun->getDateAvailability()->end ?? 'error' }} </td>
+                <td class="text-left px-10 py-3 uppercase font-bold">Total de cotizaciones para Calificacion</td>
+                <td class="text-center"><strong>{{ $contributions['years'] }}</strong></td>
+                <td class="text-center"><strong>{{ $contributions['months'] }}</strong></td>
             </tr>
         </tbody>
     </table>
