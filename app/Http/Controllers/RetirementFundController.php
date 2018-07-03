@@ -403,6 +403,15 @@ class RetirementFundController extends Controller
     //public function show(RetirementFund $retirementFund)
     public function show($id)
     {
+//         $data = [
+
+//         ];
+//         return \PDF::loadView('ret_fun.print.legal_dictum', $data)
+// 				->setPaper('letter')
+// 				->setOption('encoding', 'utf-8')
+//                 ->stream("dictamenLegal.pdf");
+                
+//         return 123;
 //         $retirement_fund = RetirementFund::find($id);
 //         $affiliate = Affiliate::find($retirement_fund->affiliate_id);       
 //         $discounts = $retirement_fund->discount_types(); //DiscountType::where('retirement_fund_id',$retirement_fund->id)->orderBy('discount_type_id','ASC')->get();                

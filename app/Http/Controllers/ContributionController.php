@@ -742,7 +742,8 @@ class ContributionController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = "CERTIFICACION DE APORTES";
         $subtitle ="Cuenta Individual";
-        $number = $retirement_fund->code;
+        //$number = $retirement_fund->code;
+        $number = Util::getNextAreaCode($retirement_fund->id);
         $date = Util::getStringDate($retirement_fund->reception_date);        
         $degree = Degree::find($affiliate->degree_id);
         $exp = City::find($affiliate->city_identity_card_id);
