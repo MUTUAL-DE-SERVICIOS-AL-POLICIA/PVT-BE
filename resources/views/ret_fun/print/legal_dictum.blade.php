@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
 </head>
 
-<body>
+<body style="border: none">
     <div class="page-break">
         <table class="w-100 ">
             <tr>
@@ -63,22 +63,22 @@
                     {!! $law !!}
                 </p>
                 <ul>
-                    <li>
+                    <li class="text-justify">
                         {!! $body_file !!}
                     </li>
-                    <li>
+                    <li class="text-justify">
                         {!! $body_finance !!}
                     </li>
-                    <li>
+                    <li class="text-justify">
                         {!! $body_legal_review !!}
                     </li>
-                    <li>
+                    <li class="text-justify">
                         {!! $body_accounts !!}
                     </li>
-                    <li>
+                    <li class="text-justify">
                         {!! $body_qualification !!}
                     </li>
-                    <li>
+                    <li class="text-justify">
                         {{ $body_due }}
                     </li>                    
                 </ul>
