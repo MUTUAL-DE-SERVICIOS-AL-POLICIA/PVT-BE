@@ -67,7 +67,7 @@ class ContributionCommitmentController extends Controller
        //*********START VALIDATOR************//
 
        $date_commision = $request->commision_date;
-       $limit=Carbon::now()->subDays(91);
+       $limit=Carbon::now()->subDays(121);
        $rules = [           
           'number' => 'required',
           'commision_date' => 'required|date|date_format:Y-m-d|after:'.$limit,
@@ -109,7 +109,7 @@ class ContributionCommitmentController extends Controller
         $commitment->commision_date = $request->commision_date;
         $commitment->state = "ALTA";
                 
-        $commitment->save();
+        $commitment->save();    
         ///'COMISION', 'BAJA TEMPORAL','AGREGADO POLICIAL'
         $affiliate = Affiliate::find($commitment->affiliate_id);
         if($commitment->commitment_type == 'COMISION')
