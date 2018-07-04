@@ -54,7 +54,7 @@
                                                     data-placement="top" title="Enviar los Trámites seleccionados"><i class="fa fa-arrow-left"></i> Enviar <i class="fa fa-send"></i> <strong>(@{{docs}})</strong></button>
                                             </span>
                                             <select name="" v-model="wfSequenceBack" id="" class="form-control">
-                                                <option :value="null"> Seleccione a donde enviara los Trámites </option>
+                                                <option :value="null"> Seleccione a donde enviará los Trámites </option>
                                                 <option :value="wfs.wf_state_id" v-for="(wfs, index) in wfSequenceBackList">@{{wfs.wf_state_name}}</option>
                                             </select>
                                         </div>
@@ -72,7 +72,7 @@
                                     <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutRight">
                                         <div class="input-group" v-if="docs > 0">
                                             <select name="" v-model="wfSequenceNext" id="" class="form-control">
-                                                <option :value="null"> Seleccione a donde enviara los Trámites </option>
+                                                <option :value="null"> Seleccione a donde enviará los Trámites </option>
                                                 <option :value="wfs.wf_state_id"  v-for="(wfs, index) in wfSequenceNextList">@{{wfs.wf_state_name}}</option>
                                             </select>
                                             <span class="input-group-btn">

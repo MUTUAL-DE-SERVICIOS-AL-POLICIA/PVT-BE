@@ -57,16 +57,31 @@
 
             <div>
                 <p class="text-justify">
-                    @if ($has_poder)
-                        Mediante Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° {{ $poder_number }} de fecha {{ $poder_date }} otorgado al Sr. {{ $poder_full_name }} con C.I. N° {{ $poder_ci_ext }} representa legalmente al
-                    @else
-                        El
-                    @endif
-                    señor {{ $affiliate->fullNameWithDegree() }} con C.I. N° {{ $affiliate->ciWithExt() }}, como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de JUBILACIÓN, presenta la documentación para la otorgación del beneficio en fecha {{ Util::getStringDate($ret_fun->reception_date) }}, a lo cual considera lo siguiente:
+                    {!! $person !!}
                 </p>
                 <p class="text-justify">
-                    {{-- Conforme normativa, el trámite N° {{ $ret_fun->code }} de la Regional {{ $ret_fun->city_start->name }} es ingresado por Ventanilla de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio Mortuorio; verificados los requisitos y la documentación presentada por la parte solicitante según lo señalado el Art. 41 inciso a) del Reglamento de Fondo de Retiro Policial Solidario aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017, y conforme el Art. 45 de referido Reglamento, se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente: --}}
+                    {!! $law !!}
                 </p>
+                <ul>
+                    <li>
+                        {!! $body_file !!}
+                    </li>
+                    <li>
+                        {!! $body_finance !!}
+                    </li>
+                    <li>
+                        {!! $body_legal_review !!}
+                    </li>
+                    <li>
+                        {!! $body_accounts !!}
+                    </li>
+                    <li>
+                        {!! $body_qualification !!}
+                    </li>
+                    <li>
+                        {{ $body_due }}
+                    </li>                    
+                </ul>
                 {{-- <ul>
                     <li>
                         Que, mediante Certificación D.B.E/A.B.E./GMQ/N° {{ $file_code }}, de fecha {{ Util::getStringDate($file_date) }}, de Archivo de Beneficios Económicos, se establece que el trámite signado con el N° {{ $ret_fun->code }}
@@ -103,10 +118,13 @@
                         ...
             
                     --}}
-                    . Por concepto de devolución de aportes durante la permanencia en la reserva activa, se realizó el cálculo por el periodo de {{ $reserva_date }} , en base a la prima del 1,85%, más el {{ $annual_yield }} anual de rendimiento, determinando el monto de {{ $reserva_amount }} ({{Util::convertir($reserva_amount)}}); haciendo un total de {{$ret_fun->total}} ({{Util::convertir($ret_fun->total)}}).
-                    </li>
-                </ul> --}}
-            
+                    {{-- . Por concepto de devolución de aportes durante la permanencia en la reserva activa, se realizó el cálculo por el periodo de {{ $reserva_date }} , en base a la prima del 1,85%, más el {{ $annual_yield }} anual de rendimiento, determinando el monto de {{ $reserva_amount }} ({{Util::convertir($reserva_amount)}}); haciendo un total de {{$ret_fun->total}} ({{Util::convertir($ret_fun->total)}}). --}}
+                    {{-- </li>
+                </ul> 
+             --}}
+             <p class="text-justify">
+                {!! $payment !!}
+            </p>
             </div>
 
 
