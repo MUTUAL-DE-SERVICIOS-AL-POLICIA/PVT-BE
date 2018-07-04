@@ -17,11 +17,11 @@
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase" >{{ $c['name'] }}</td>
                     <td colspan="2">
-                        <table class="no-border">
+                        <table class="no-border" style="border:none">
                             @foreach ($c['dates'] as $d)
-                            <tr class="no-border">
-                                <td class="text-center uppercase font-bold px-5 py-3 no-border"> {{ Util::getDateFormat($d->start) ?? 'error' }} </td>
-                                <td class="text-center uppercase font-bold px-5 py-3 no-border"> {{ Util::getDateFormat($d->end) ?? 'error' }} </td>
+                            <tr class="no-border" style="border:none">
+                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::getDateFormat($d->start) ?? 'error' }} </td>
+                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::getDateFormat($d->end) ?? 'error' }} </td>
                             </tr>
                             @endforeach
                         </table>

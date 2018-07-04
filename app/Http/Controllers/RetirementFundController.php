@@ -469,6 +469,21 @@ class RetirementFundController extends Controller
 
         //workflow record
         $workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
+
+        $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
+        if ($first_wf_state) {
+            $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
+            $str = $first_wf_state->message;
+            preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+            $user_name = $matches[0][0];
+            $user = User::where('username','=', $user_name)->first();
+            $rol = $user->roles->first();
+            $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
+        }
+
+        // dd($first_wf_state);
+
+        $wf_states = WorkflowState::where('module_id', '=', $module->id)->where('sequence_number','>',($first_wf_state->sequence_number ?? 1))->orderBy('sequence_number')->get();
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -495,6 +510,8 @@ class RetirementFundController extends Controller
             'submit_documents' => $submitted->get(),
             'has_validate' =>  $has_validate,
             'workflow_records' =>  $workflow_records,
+            'first_wf_state' =>  $first_wf_state,
+            'wf_states' =>  $wf_states,
         ];
         // return $data;
         
@@ -866,15 +883,7 @@ class RetirementFundController extends Controller
         $retirement_fund = RetirementFund::find($retirement_fund_id);
         $affiliate = $retirement_fund->affiliate;
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
-        
-        $contributions = $affiliate->contributions()
-            ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-            // ->where("contribution_types.id", '=', 1)
-            // ->where('contributions.month_year', '<=', $start_date_availability)
-            ->where('contribution_types.operator', '=', '+')
-            ->orderBy('contributions.month_year', 'desc')
-            ->take($number_contributions)
-            ->get();
+        $contributions = $affiliate->getContributionsPlus();
             return $datatables->of($contributions)
                 ->editColumn('month_year', function ($contribution) {
                     return Util::getDateFormat($contribution->month_year);
@@ -953,6 +962,9 @@ class RetirementFundController extends Controller
 
         $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
         $retirement_fund->total_ret_fun = $total_ret_fun;
+        if (! $affiliate->hasAvailability()) {
+            $retirement_fund->total = $total_ret_fun;
+        }
 
         //mejorar
         $discount_type = DiscountType::where('shortened','anticipo')->first();
@@ -1157,6 +1169,8 @@ class RetirementFundController extends Controller
         $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield) / 100;
         $total_availability = $subtotal_availability + $total_annual_yield;
         $retirement_fund->total_availability =  $total_availability;
+        $retirement_fund->total =  $total_availability + ($retirement_fund->total_ret_fun ?? 0);
+        Log::info($retirement_fund->total);
         $retirement_fund->save();
         /**added function calculate sub_total_availability */
 

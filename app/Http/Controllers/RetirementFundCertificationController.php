@@ -250,6 +250,28 @@ class RetirementFundCertificationController extends Controller
         // return view('ret_fun.print.beneficiaries_qualification', $data);
         return \PDF::loadView('ret_fun.print.beneficiaries_qualification', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
+    public function printQualificationAverageSalaryQuotable($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+        $affiliate = $retirement_fund->affiliate;
+        $date = date('d/m/Y');
+        $title = "SALARIO PROMEDIO COTIZABLE";
+        $username = Auth::user()->username;//agregar cuando haya roles
+        $number = $retirement_fund->code;
+        $data = [
+            'date' => $date,
+            'username' => $username,
+            'title' => $title,
+            'number' => $number,
+            'retirement_fund' => $retirement_fund,
+            'affiliate' => $affiliate,
+            'number_contributions' => $number_contributions,
+        ];
+        $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable());
+        return \PDF::loadView('ret_fun.print.qualification_average_salary_quotable', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("SalarioPromedioCotizable.pdf");
+
+    }
     public function printDataQualification($id)
     {
         $retirement_fund = RetirementFund::find($id);
@@ -339,12 +361,58 @@ class RetirementFundCertificationController extends Controller
         $number = $retirement_fund->code;
         $pdftitle = "Calificacion";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        $group_dates = [];
+        $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
+        $dates = array(
+            'id' => 0,
+            'dates' => $affiliate->getDatesGlobal(),
+            'name' => "perii",
+            'operator' => '**',
+            'description' => "dsds",
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12,
+        );
+        $group_dates[] = $dates;
+        foreach (ContributionType::orderBy('id')->get() as $c) {
+            // if($c->id != 1){
+            $contributionsWithType = $affiliate->getContributionsWithType($c->id);
+            if (sizeOf($contributionsWithType) > 0) {
+                $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+                $dates = array(
+                    'id' => $c->id,
+                    'dates' => $affiliate->getContributionsWithType($c->id),
+                    'name' => $c->name,
+                    'operator' => $c->operator,
+                    'description' => $c->description,
+                    'years' => intval($sub_total_dates / 12),
+                    'months' => $sub_total_dates % 12,
+                );
+                if ($c->operator == '-') {
+                    eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
+                }
+                $group_dates[] = $dates;
+            }
+            // }
+        }
+        $contributions = array(
+            'contribution_types' => $group_dates,
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12
+        );
+        $total_quotes = $affiliate->getTotalQuotes();
+        $discounts = $retirement_fund->discount_types()->where('amount', '>', 0)->get();
+
+        $has_availability = sizeOf($affiliate->getContributionsWithType(10)) > 0;
 
         $data = [
             'date' => $date,
             'username' => $username,
             'title' => $title,
             'number' => $number,
+            'contributions' => $contributions,
+            'total_quotes' => $total_quotes,
+            'discounts' => $discounts,
+            'has_availability' => $has_availability,
 
             'affiliate' => $affiliate,
             'applicant' => $applicant,

@@ -8,6 +8,7 @@ use Muserpol\Helpers\Util;
 use Muserpol\Models\Contribution\ContributionType;
 use Carbon\Carbon;
 use Log;
+use Muserpol\Models\Contribution\Contribution;
 
 class Affiliate extends Model
 {
@@ -302,6 +303,19 @@ class Affiliate extends Model
         );
         return $total_dates;
     }
+    public function getContributionsPlus()
+    {
+        $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+        $contributions = $this->contributions()
+            ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
+                // ->where("contribution_types.id", '=', 1)
+                // ->where('contributions.month_year', '<=', $start_date_availability)
+            ->where('contribution_types.operator', '=', '+')
+            ->orderBy('contributions.month_year', 'desc')
+            ->take($number_contributions)
+            ->get();
+        return $contributions;
+    }
     public function getTotalAverageSalaryQuotable()
     {
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
@@ -310,16 +324,11 @@ class Affiliate extends Model
         // if (sizeOf($availability) > 0) {
             /* has availability */
             // $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
-            $contributions = $this->contributions()
-                ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-                // ->where("contribution_types.id", '=', 1)
-                // ->where('contributions.month_year', '<=', $start_date_availability)
-                ->where('contribution_types.operator','=', '+')
-                ->orderBy('contributions.month_year', 'desc')
-                ->take($number_contributions)
-                ->get();
+
+            $contributions = self::getContributionsPlus();
             $total_base_wage = $contributions->sum('base_wage');
             $total_seniority_bonus = $contributions->sum('seniority_bonus');
+            $total_aporte = $contributions->sum('total');
             $total_retirement_fund = $contributions->sum('retirement_fund');
             $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
             $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
@@ -341,13 +350,19 @@ class Affiliate extends Model
         //     $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
         // }
         $data = [
+            'contributions'=>$contributions,
             'total_base_wage' => $total_base_wage,
             'total_seniority_bonus' => $total_seniority_bonus,
+            'total_aporte' => $total_aporte,
             'total_retirement_fund' => $total_retirement_fund,
             'sub_total_average_salary_quotable' => $sub_total_average_salary_quotable,
             'total_average_salary_quotable' => $total_average_salary_quotable,
         ];
         return $data;
+    }
+    public function hasAvailability()
+    {
+        return sizeOf($this->getContributionsWithType(10)) > 0;
     }
     // public function getLastDateContribution()
     // {
