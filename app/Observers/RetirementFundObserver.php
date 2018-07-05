@@ -14,7 +14,7 @@ class RetirementFundObserver
         $retfun = new RetFunRecord;
         $retfun->user_id = Auth::user()->id;
         $retfun->ret_fun_id = $rf->id;
-        $retfun->message = 'El usuario '.Auth::user()->username. ' creo el Trámite '.$rf->code.' con la modalidad'.$rf->procedure_modality->name.' '.Carbon::now();
+        $retfun->message = 'El usuario '.Auth::user()->username. ' creo el Trámite '.$rf->code.' con la modalidad '.$rf->procedure_modality->name.' '.Carbon::now();
         $retfun->save();
 
         // Log::info('se creo el tramite con el id '.$retfun->id);

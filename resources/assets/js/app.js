@@ -99,6 +99,9 @@ Vue.filter('year', function (value) {
   return moment(value).format("YYYY");
 });
 
+//vue mask hdp
+import VueTheMask from 'vue-the-mask'
+Vue.use(VueTheMask)
 
 /* tabs */
 import VueTabs from 'vue-nav-tabs'

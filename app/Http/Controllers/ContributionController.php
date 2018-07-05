@@ -80,14 +80,16 @@ class ContributionController extends Controller
             $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
             $diff = $now->subMonths(1)->diffInMonths($lastMonths);                
             $contribution = array();
-            if ($diff > 2) {
+            if ($diff > 3) {
                 $month1 = Carbon::now()->subMonths(1);
                 $month2 = Carbon::now()->subMonths(2);
                 $month3 = Carbon::now()->subMonths(3);       
+                $month4 = Carbon::now()->subMonths(4);
                 $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
                 $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contributions = array($contribution3, $contribution2, $contribution1);
+                $contribution4 = array('year' => $month3->format('Y'), 'month' => $month4->format('m'), 'monthyear' => $month4->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                $contributions = array($contribution4,$contribution3, $contribution2, $contribution1);
             } 
             else 
             {
@@ -128,8 +130,7 @@ class ContributionController extends Controller
     {
     }
     public function storeDirectContribution(Request $request)
-    {      
-
+    {              
         //*********START VALIDATOR************//        
         $rules=[];        
 //        if(!empty($request->aportes))
@@ -183,7 +184,8 @@ class ContributionController extends Controller
         if($validator->fails()){            
             return response()->json($validator->errors(), 406);
         }                
-         //*********END VALIDATOR************//                               
+        
+         //*********END VALIDATOR************//                                 
         // Se guarda voucher fecha, total 1 reg
         $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
         if (!isset($voucher_code->id))
@@ -206,6 +208,13 @@ class ContributionController extends Controller
         //return $request->aportes;
         $result = [];
         $stored_contributions = [];
+        // $data = [
+        //     'contribution'  =>  '',
+        //     'contributions'  =>  $request->aportes,
+        //     'voucher_id'    => '',
+        //     'affiliate_id'  =>  '',
+        // ];
+        // return $data;
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;
@@ -611,7 +620,7 @@ class ContributionController extends Controller
         $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                   ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
                                                   ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                  ->where('contributions.month_year','>',$affiliate->date_entry)
+                                                  ->where('contributions.month_year','>=',$affiliate->date_entry)
                                                   //   ->whereNull('contributions.deleted_at')
                                                   ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                   //   ->take(10)
@@ -624,7 +633,7 @@ class ContributionController extends Controller
           $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                     ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
                                                     ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                    ->where('contributions.month_year','>',$affiliate->date_entry)
+                                                    ->where('contributions.month_year','>=',$affiliate->date_entry)
                                                     // ->whereNull('contributions.deleted_at')
                                                     ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                 //   ->take(10)
@@ -636,15 +645,23 @@ class ContributionController extends Controller
         // return $contributions;
        
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
+        $date_entry = $ret_fun->affiliate->date_entry;
+        $date_derelict = $ret_fun->affiliate->date_derelict;
+        // return $date_derelict;
         // return $contribution_types;
-        $data =   array('contributions' => $contributions,
-                        'con_type'=>$con_type ,
-                        'contribution_types'=> $contribution_types,
-                        'url_certification'=> url('ret_fun/'.$ret_fun->id.'/print/certification'),
-                        'url_certification_availability'=> url('ret_fun/'.$ret_fun->id.'/print/cer_availability'),
-                        'url_certification_itemcero'=> url('ret_fun/'.$ret_fun->id.'/print/cer_itemcero'),
-                        'ret_fun'=>$ret_fun);
-        return view('contribution.select',$data);
+        if($date_entry && $date_derelict){
+            $data =   array('contributions' => $contributions,
+                            'con_type'=>$con_type ,
+                            'contribution_types'=> $contribution_types,
+                            'date_entry' => $date_entry,
+                            'date_derelict' => $date_derelict,
+                            'ret_fun'=>$ret_fun);
+            return view('contribution.select',$data);
+        }
+        else{
+            Session::flash('message','Verifique la fecha de entrada y desvinculacion del afiliado antes de continuar');
+            return redirect('ret_fun/'.$ret_fun_id);
+        }
     }
     public function saveContributions(Request $request)
     {   
@@ -661,8 +678,11 @@ class ContributionController extends Controller
              $aporte = (object) $obj;
              if($aporte->id == 0)
              {
-                    // Log::info('intentando guardar objeto');
-                    // Log::info(json_encode($aporte));
+                    Log::info('intentando guardar objeto');
+                    Log::info(json_encode($aporte));
+                    //buscardor por mes
+                    
+
                     $contribution = new Contribution;
                     $contribution->user_id = Auth::user()->id;
                     $contribution->affiliate_id = $ret_fun->affiliate_id;
@@ -674,7 +694,6 @@ class ContributionController extends Controller
                     $contribution->position_bonus = 0;
                     $contribution->border_bonus = 0;
                     $contribution->east_bonus = 0;
-                    $contribution->dignity_pension = 0;
                     $contribution->gain = 0;
                     $contribution->quotable = 0;
                     $contribution->retirement_fund = 0;
@@ -726,7 +745,8 @@ class ContributionController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = "CERTIFICACION DE APORTES";
         $subtitle ="Cuenta Individual";
-        $number = $retirement_fund->code;
+        //$number = $retirement_fund->code;
+        $number = Util::getNextAreaCode($retirement_fund->id);
         $date = Util::getStringDate($retirement_fund->reception_date);        
         $degree = Degree::find($affiliate->degree_id);
         $exp = City::find($affiliate->city_identity_card_id);

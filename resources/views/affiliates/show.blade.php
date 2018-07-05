@@ -3,7 +3,7 @@
 @section('title', 'Afiliados')
 
 @section('content')
-<div class="row">
+<div class="row  wrapper border-bottom white-bg page-heading">
     <div class="col-lg-7">
         {{ Breadcrumbs::render('show_affiliate', $affiliate) }}
     </div>

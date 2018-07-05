@@ -98,6 +98,10 @@
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
             
+            @if(Muserpol\Helpers\Util::getRol()->id == 14)
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Dictamen Legal" onclick="printJS({printable:'{!! route('ret_fun_print_legal_dictum', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
+            @endif
+
             @if(Muserpol\Helpers\Util::getRol()->id == 11)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
@@ -132,27 +136,39 @@
         </div>
     </div>
 </div>
-    <div class="row">
-        <div class="col-lg-12" style="margin-top: 15px;">
-            <div class="progressbar-container">
-                <ul class="progressbar" style="list-style:none">
-                    <li class="">{{ $first_wf_state->name }}</li>
-                    @foreach ($wf_states as $index=>$w)
-                        @if($w->sequence_number+1 <= $retirement_fund->wf_state->sequence_number)
-                            <li class="active">{{ $w->name }}</li>
-                        @else
-                            <li class="">{{ $w->name }}</li>
-                        @endif
-                    @endforeach
-                </ul>
-            </div>
+
+<div class="row">
+    <div class="col-lg-12" style="margin-top: 15px;">
+        <div class="progressbar-container">
+            <ul class="progressbar" style="list-style:none">
+                <li class="">{{ $first_wf_state->name }}</li>
+                @foreach ($wf_states as $index=>$w)
+                    @if($w->sequence_number+1 <= $retirement_fund->wf_state->sequence_number)
+                        <li class="active">{{ $w->name }}</li>
+                    @else
+                        <li class="">{{ $w->name }}</li>
+                    @endif
+                @endforeach
+            </ul>
         </div>
     </div>
+</div>
+
+
+@if(Session::has('message'))
+    <br>
+    <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        {{Session::get('message')}}
+    </div>
+
+@endif
+
 
     <div class="row">
            
             <div class="col-md-3" style="padding-right: 3px">
-                    <div class="widget-head-color-box navy-bg p-lg text-center">
+                    <div class="widget-head-color-box yellow-bg p-lg text-center">
                         <div class="m-b-md">
                         <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado ">
                         <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullName() }}</a>    
@@ -166,9 +182,8 @@
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-affiliate"><i class="fa fa-user"></i> Affiliado </a></li>
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-beneficiaries"><i class="fa fa-users"></i> Beneficiarios</a></li>
                                 <li class="list-group-item "><a data-toggle="tab" href="#tab-summited-document"><i class="fa fa-file"></i> Documentos Presentados</a></li>
-                                <li class="list-group-item "><a data-toggle="tab" href="#tab-folder"><i class="fa fa-copy"></i> Archivos</a></li>
-                                <li class="list-group-item "><a data-toggle="tab" href="#tab-observations"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
-                                
+                                <li class="list-group-item "><a data-toggle="tab" href="#tab-folder"><i class="fa fa-copy"></i> Archivos</a></li>                                
+                                <li class="list-group-item "><a data-toggle="tab" href="#tab-observations"><i class="fa fa-eye-slash"></i> Observaciones</a></li>                                
                             </ul>
                     </div>
             </div>
@@ -217,7 +232,7 @@
                                         @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
                                     @endcan
                                 
-                            </div>
+                            </div>                          
                             <div id="tab-observations" class="tab-pane">
                                     @include('ret_fun.observation')
                             </div>
