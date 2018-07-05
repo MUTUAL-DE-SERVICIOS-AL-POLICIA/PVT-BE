@@ -40,6 +40,7 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowRecord;
 use Muserpol\Models\Contribution\ContributionType;
+use Muserpol\Models\Contribution\Reimbursement;
 class RetirementFundController extends Controller
 {
     /**
@@ -844,25 +845,14 @@ class RetirementFundController extends Controller
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
-            'contributions' => json_encode($contributions),
-            // 'dates_global' => $dates_global,
-            // 'dates_contributions' => $dates_contributions,
-            // 'dates_item_zero_with_contribution' => $dates_item_zero_with_contribution,
-            // 'dates_item_zero_without_contribution' => $dates_item_zero_without_contribution,
-            // 'dates_security_battalion_with_contribution' => $dates_security_battalion_with_contribution,
-            // 'dates_security_battalion_without_contribution' => $dates_security_battalion_without_contribution,
-            // 'dates_may1976_without_contribution' => $dates_may1976_without_contribution,
-            // 'dates_certification_period_with_contribution' => $dates_certification_period_with_contribution,
-            // 'dates_certification_period_without_contribution' => $dates_certification_period_without_contribution,
-            // 'dates_not_worked' => $dates_not_worked,
-            // 'dates_availability' => $dates_availability,
-            // 'contribution_types' => ContributionType::orderBy('id')->get(),
+            'all_contributions' => json_encode($contributions),
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'beneficiaries' => $beneficiaries,
             'cities' => $cities,
             'kinships' => $kinships,
         ];
+        $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable());
         return view('ret_fun.qualification', $data);
     }
 

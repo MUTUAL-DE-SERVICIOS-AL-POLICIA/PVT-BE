@@ -2,10 +2,91 @@
 @section('title', 'Fondo de Retiro') 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
+    <div class="col-lg-7">
         {!!Breadcrumbs::render('show_qualification_retirement_fund', $retirement_fund)!!}
     </div>
+    <div class="col-md-5 text-center" style="margin-top:12px;">
+        <div class="pull-left">
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 1" onclick="printJS({printable:'{!! route('ret_fun_print_beneficiaries_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 2" onclick="printJS({printable:'{!! route('ret_fun_print_qualification_average_salary_quotable', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 3" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if($affiliate->hasAvailability())
+                <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 4" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 4" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+
+            @endif
+
+            <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecordRetFun" data-placement="top"
+                title="Historial del Trámite">
+                    <i class="fa fa-history"></i>
+                </button>
+        </div>
+        <div class="pull-right">
+            {{-- @if ($has_validate)
+            <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
+                <div>
+                    <div v-if="status == true" data-toggle="tooltip" data-placement="top" title="Trámite ya procesado">
+                        <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active"
+                            type="button" :disabled="! status == false "><i class="fa fa-check"></i></button>
+                    </div>
+                    <div v-else>
+                        <button data-toggle="tooltip" data-placement="top" title="Procesar Trámite" class="btn btn-primary btn-circle btn-outline btn-lg"
+                            type="button" @click="showModal()" :disabled="! status == false "><i class="fa fa-check"></i></button>
+                    </div>
+                </div>
+            </swal-modal>
+            @endif --}}
+        </div>
+    </div>
 </div>
+
+<div class="modal inmodal" id="averageSalaryQuotable" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+                <h4 class="modal-title">SALARIO PROMEDIO COTIZABLE</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <table class="table table-striped" id="datatables-certification">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Periodo</th>
+                                <th>Haber Basico</th>
+                                <th>Categoria</th>
+                                <th>Salario Cotizable</th>
+                                <th>Total Aporte</th>
+                                <th>Aporte FRPS</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-bordered table-striped">
+                        <tbody>
+                            <tr>
+                                <td>Total Aportes Fondo de Retiro Policial Solidario</td>
+                                <td>{{ $total_retirement_fund }}</td>
+                            </tr>
+                            <tr>
+                                <td>Salario Total</td>
+                                <td>{{ $sub_total_average_salary_quotable }}</td>
+                            </tr>
+                            <tr>
+                                <td>Salario Promedio</td>
+                                <td>{{ $total_average_salary_quotable }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
@@ -16,7 +97,7 @@
             </div>
         </div>
     </div>
-    <ret-fun-qualification inline-template :retirement-fund-id="{{$retirement_fund->id}}" :contributions="{{$contributions}}">
+    <ret-fun-qualification inline-template :retirement-fund-id="{{$retirement_fund->id}}" :contributions="{{$all_contributions}}">
         <div>
             <div class="row" v-for="(contributionType, index) in contributions.contribution_types">
                 <div class="col-lg-12">
@@ -29,7 +110,7 @@
                                     @{{ contributionType.name }} <span data-toggle="tooltip" data-placement="top" :title="contributionType.description"><i class="fa fa-question-circle" style="opacity:.7"></i></span>
                                 </h4>
                             </div>
-                            <ret-fun-qualification-group :dates-child="contributionType.dates" @total="calculate">
+                            <ret-fun-qualification-group :dates-child="contributionType.dates">
                             </ret-fun-qualification-group>
                         </div>
                     </div>
@@ -76,11 +157,21 @@
                                     </table>
                                 </div>
                             </div>
+                            <button class="btn btn-primary" :class="{'btn-outline': !showEconomicData}" @click="firstContinue()"><i class="fa fa-save"></i> Continuar
+                                <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicData">
+                                    <div>
+                                        <i class="fa fa-check"></i>
+                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                        <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+                                        <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+                                        </svg>
+                                    </div>
+                                </transition>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary" @click="firstContinue()"><i class="fa fa-save"></i> Continuar</button>
             <div v-if="showEconomicData">
                 <div class="ibox" class="fadeInRight">
                     <div class="ibox-title">
@@ -106,8 +197,7 @@
                                 <tr>
                                     <td>Salario Promedio Cotizable</td>
                                     <td>@{{ totalAverageSalaryQuotableAnimated | currency }}
-                                        <span class="label label-info"> <i class="fa fa-calculator"></i> ver completo</span>
-                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable"  onclick="clickable">gh</button>
+                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin:15px;"><i class="fa fa-calculator"></i> ver completo</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -116,82 +206,19 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <button class="btn btn-primary" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar</button>
-                    </div>
-                </div>
-
-                <div class="modal inmodal" id="averageSalaryQuotable" tabindex="-1" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content animated bounceInRight">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                                <h4 class="modal-title">Registro de Antecedente</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="col-lg-12">
-                                    <div class="ibox ">
-                                        <div class="ibox-title">
-                                            <h5>SALARIO PROMEDIO COTIZABLE</h5>
-                                            <div class="ibox-tools">
-                                                <a class="collapse-link">
-                                                    <i class="fa fa-chevron-up"></i>
-                                                </a>
-                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                                    <i class="fa fa-wrench"></i>
-                                                </a>
-                                                <ul class="dropdown-menu dropdown-user">
-                                                    <li><a href="#">Config option 1</a>
-                                                    </li>
-                                                    <li><a href="#">Config option 2</a>
-                                                    </li>
-                                                </ul>
-                                                <a class="close-link">
-                                                    <i class="fa fa-times"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="ibox-content">
-                                            <table class="table table-striped" id="datatables-certification">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Periodo</th>
-                                                        <th>Haber Basico</th>
-                                                        <th>Categoria</th>
-                                                        <th>Salario Cotizable</th>
-                                                        <th>Total Aporte</th>
-                                                        <th>Aporte FRPS</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                            <table class="table table-bordered table-striped">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Total Aportes Fondo de Retiro Policial Solidario</td>
-                                                        {{-- <td>{{ $total_retirement_fund }}</td> --}}
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Salario Total</td>
-                                                        {{-- <td>{{ $sub_total_average_salary_quotable }}</td> --}}
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Salario Promedio</td>
-                                                        {{-- <td>{{ $total_average_salary_quotable }}</td> --}}
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                        <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar
+                            <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicDataTotal">
+                                <div>
+                                    <i class="fa fa-check"></i>
+                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                    <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+                                    <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+                                    </svg>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                            </div>
-                        </div>
+                            </transition>
+                        </button>
                     </div>
                 </div>
-
                 <div v-show="showEconomicDataTotal">
                     <div class="ibox" class="fadeInRight">
                         <div class="ibox-title">
@@ -244,7 +271,17 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <button class="btn btn-primary" type="submit" @click="saveTotalRetFun"><i class="fa fa-save"></i> Guardar</button>
+                            <button class="btn btn-primary" :class="{'btn-outline': !showPercentagesRetFun}" type="submit" @click="saveTotalRetFun"><i class="fa fa-save"></i> Guardar
+                                <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showPercentagesRetFun">
+                                    <div>
+                                        <i class="fa fa-check"></i>
+                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                        <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+                                        <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+                                        </svg>
+                                    </div>
+                                </transition>
+                            </button>
                         </div>
                     </div>
                     <div v-if="showPercentagesRetFun">
@@ -283,7 +320,17 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <button class="btn btn-primary" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar</button>
+                                <button class="btn btn-primary" :class="{'btn-outline': !finishRetFun}" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar
+                                    <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="finishRetFun">
+                                        <div>
+                                            <i class="fa fa-check"></i>
+                                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                            <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+                                            <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+                                            </svg>
+                                        </div>
+                                    </transition>
+                                </button>
                             </div>
                         </div>
                         <div v-if="hasAvailability">
@@ -366,7 +413,17 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <button class="btn btn-primary" type="submit" @click="savePercentagesAvailability"><i class="fa fa-save"></i> Guardar</button>
+                                    <button class="btn btn-primary" :class="{'btn-outline': !showPercentagesRetFunAvailability}" type="submit" @click="savePercentagesAvailability"><i class="fa fa-save"></i> Guardar
+                                        <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showPercentagesRetFunAvailability">
+                                            <div>
+                                                <i class="fa fa-check"></i>
+                                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                                <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+                                                <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+                                                </svg>
+                                            </div>
+                                        </transition>
+                                    </button>
                                 </div>
                             </div>
                             <div v-if="showPercentagesRetFunAvailability">
@@ -405,11 +462,21 @@
                                                 </tr>
                                             </tbody>
                                         </table>
-                                        <button class="btn btn-primary" type="submit" @click="saveTotalRetFunAvailability"><i class="fa fa-save"></i> Guardar</button>
+                                        <button class="btn btn-primary" :class="{'btn-outline':!finishAvailability}" type="submit" @click="saveTotalRetFunAvailability"><i class="fa fa-save"></i> Guardar
+                                            <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="finishAvailability">
+                                                <div>
+                                                    <i class="fa fa-check"></i>
+                                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                                    <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+                                                    <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+                                                    </svg>
+                                                </div>
+                                            </transition>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div v-else>
+                            {{-- <div v-else>
                                 <div class="ibox" class="fadeInRight" v-if="arrayDiscounts.length">
                                     <div class="ibox-title">
                                         <h5>Total Fondo de retiro con descuentos</h5>
@@ -439,7 +506,7 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -539,15 +606,70 @@
 @endsection
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
+<style>
+svg {
+  width:20px;
+  display: inline-block;
+}
+.path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+}
+.path.circle {
+  -webkit-animation: dash 0.9s ease-in-out;
+  animation: dash 0.9s ease-in-out;
+}
+.path.line {
+  stroke-dashoffset: 1000;
+  -webkit-animation: dash 0.9s 0.35s ease-in-out forwards;
+  animation: dash 0.9s 0.35s ease-in-out forwards;
+}
+.path.check {
+  stroke-dashoffset: -100;
+  -webkit-animation: dash-check 0.9s 0.35s ease-in-out forwards;
+  animation: dash-check 0.9s 0.35s ease-in-out forwards;
+}
+
+@-webkit-keyframes dash {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+@-webkit-keyframes dash-check {
+  0% {
+    stroke-dashoffset: -100;
+  }
+  100% {
+    stroke-dashoffset: 900;
+  }
+}
+@keyframes dash-check {
+  0% {
+    stroke-dashoffset: -100;
+  }
+  100% {
+    stroke-dashoffset: 900;
+  }
+}
+
+</style>
 @endsection
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
     $(document).ready(function () {
-        console.log("hguiasdhu");
-        
-        
             var datatable_contri = $('#datatables-certification').DataTable({
                 responsive: true,
                 fixedHeader: {
@@ -560,7 +682,6 @@
                 lengthMenu: [[15, 30, 60, -1], [15, 30, 60, "Todos"]],
                 dom: '< "html5buttons"B>lTfgitp',
                 buttons:[
-                    {extend: 'colvis', columnText: function ( dt, idx, title ) { return (idx+1)+': '+title; }},
                     { extend: 'copy'},
                     { extend: 'csv'},
                     { extend: 'excel', title: "{!! $retirement_fund->id.'-'.date('Y-m-d') !!}"},
@@ -574,14 +695,7 @@
                     {data: 'total'},
                     {data: 'retirement_fund'},
                 ],
-                "fnDrawCallback": function(oSettings){ clickable(); }
             });
-        function clickable() {
-            console.log("hola");
-            
-        }
-            
     });
-
 </script>
 @endsection
