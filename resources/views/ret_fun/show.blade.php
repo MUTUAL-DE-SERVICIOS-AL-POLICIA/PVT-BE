@@ -1,7 +1,88 @@
 @extends('layouts.app')
 
 @section('title', 'Fondo de Retiro')
+@section('styles')
+<style>
+.progressbar-container{
+    
+    /* height: 100px; */
+  width: 100%;
+  position: realtive;
+  z-index: 1;
+  display: block;
+}
+.progressbar li{
+    float: left;
+    width: 10%;
+    position: relative;
+    text-align: center;
+}
+.progressbar li:before{
+  content:"1";
+  width: 30px;
+  height: 30px;
+}
+.progressbar li:before{
+  content:"1";
+  width: 30px;
+  height: 30px;
+  border: 2px solid #bebebe;
+  display: block;
+  margin: 0 auto 10px auto;
+  border-radius: 50%;
+  line-height: 27px;
+  background: white;
+  color: #bebebe;
+  text-align: center;
+  font-weight: bold;
+}
 
+.progressbar{
+  counter-reset: step;
+}
+.progressbar li:before{
+  content:counter(step);
+  counter-increment: step;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #bebebe;
+  display: block;
+  margin: 0 auto 10px auto;
+  border-radius: 50%;
+  line-height: 27px;
+  background: white;
+  color: #bebebe;
+  text-align: center;
+  font-weight: bold;
+}
+.progressbar li:after{
+  content: '';
+  position: absolute;
+  width:100%;
+  height: 3px;
+  background: #979797;
+  top: 15px;
+  left: -50%;
+  z-index: -1;
+}
+.progressbar li:first-child:after{
+    content: none;
+}
+.progressbar li.active:first-child + li.active:after{
+    border-color: #3aac5d;
+    background: #3aac5d;
+    color: white
+}
+.progressbar li.active + li:after{
+    /* background: #3aac5d; */
+}
+.progressbar li.active + li:before{
+    border-color: #3aac5d;
+    background: #3aac5d;
+    color: white
+}
+</style>
+@endsection
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-md-7">
@@ -56,6 +137,24 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-lg-12" style="margin-top: 15px;">
+        <div class="progressbar-container">
+            <ul class="progressbar" style="list-style:none">
+                <li class="">{{ $first_wf_state->name }}</li>
+                @foreach ($wf_states as $index=>$w)
+                    @if($w->sequence_number+1 <= $retirement_fund->wf_state->sequence_number)
+                        <li class="active">{{ $w->name }}</li>
+                    @else
+                        <li class="">{{ $w->name }}</li>
+                    @endif
+                @endforeach
+            </ul>
+        </div>
+    </div>
+</div>
+
+
 @if(Session::has('message'))
     <br>
     <div class="alert alert-danger alert-dismissable">
@@ -64,6 +163,7 @@
     </div>
 
 @endif
+
 
     <div class="row">
            

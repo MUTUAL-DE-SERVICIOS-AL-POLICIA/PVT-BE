@@ -14,37 +14,27 @@
             <tbody class="table-striped">
                 <tr class="text-sm">
                     <td class="w-60 text-left px-10 py-3 uppercase">total aportes en disponibilidad</td>
-                    <td class="w-25 text-right uppercase px-5 py-3"> 5458.888.888.451 </td>
+                    <td class="w-25 text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->subtotal_availability)}} </td>
                     <td class="w-15  text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">con rendimiento del x% anual</td>
-                    <td class="text-right uppercase px-5 py-3"> 9999999.451 </td>
+                    <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_availability) }} </td>
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">devolucion de aportes en disponibilidad</td>
-                    <td class="text-right uppercase px-5 py-3"> 99.99 </td>
+                    <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_availability) }} </td>
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">retencion para pago de prestamo</td>
-                    <td class="text-right uppercase px-5 py-3"> 955459.99 </td>
-                    <td class="text-center uppercase px-5 py-3"> Bs. </td>
-                </tr>
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">GARANTES</td>
-                    <td class="text-right uppercase px-5 py-3"> 955459.99 </td>
-                    <td class="text-center uppercase px-5 py-3"> Bs. </td>
-                </tr>
-                <tr class="text-lg">
+                {{-- <tr>
                     <td class="text-left px-10 py-3 uppercase font-bold">total fondo de retiro + devolucion</td>
-                    <td class="text-right uppercase font-bold px-5 py-3"> 99.99 </td>
+                    <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->total) }} </td>
                     <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
-                </tr>
+                </tr> --}}
             </tbody>
         </table>
     </div>
-    @include('ret_fun.print.qualification_beneficiaries_fair_share', ['beneficiaries'=>$beneficiaries])
+    @include('ret_fun.print.qualification_beneficiaries_fair_share', ['beneficiaries'=>$beneficiaries, 'type'=>'availability'])
 </div>
 @endsection

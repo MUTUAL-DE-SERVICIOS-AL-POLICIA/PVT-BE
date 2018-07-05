@@ -114,15 +114,15 @@
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">fecha de ingreso a disponibilidad</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->getDateEntryDisponibilidad() }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->getDateEntryAvailability() }}</td>
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">fecha de baja</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->getDateEntryDisponibilidad() }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->getDateDerelict() }}</td>
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">motivo de baja</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->getDateEntryDisponibilidad() }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->reason_delerict}}</td>
                 </tr>
             </tbody>
         </table>

@@ -17,7 +17,6 @@ export default {
     "retirementFundId"
   ],
   mounted() {
-    // this.calculate();
     // moneyInputMaskAll();
   },
   data() {
@@ -54,6 +53,8 @@ export default {
       retentionGuarantor: 0,
 
       hasAvailability: false,
+      finishRetFun: false,
+      finishAvailability: false,
 
       arrayDiscounts: [],
 
@@ -84,42 +85,6 @@ export default {
         years: parseInt(date/12),
         months: (date%12),
       }
-    },
-    calculate(){
-        // let global = this.calculateDiffWithYearMonth(this.datesGlobal);
-        // this.yearsGlobal = global.years;
-        // this.monthsGlobal = global.months;
-        // let totalContributions = this.calculateDiffWithYearMonth(this.datesContributions);
-        // this.yearsContributions = totalContributions.years;
-        // this.monthsContributions = totalContributions.months;
-        // let totalAvailability = this.calculateDiffWithYearMonth(this.datesAvailability);
-        // this.yearsAvailability = totalAvailability.years;
-        // this.monthsAvailability = totalAvailability.months;
-        // let totalItemZero = this.calculateDiffWithYearMonth(this.datesItemZero);
-        // this.yearsItemZero = totalItemZero.years;
-        // this.monthsItemZero = totalItemZero.months;
-        // let totalSecurityBattalion = this.calculateDiffWithYearMonth(this.datesSecurityBattalion);
-        // this.yearsSecurityBattalion = totalSecurityBattalion.years;
-        // this.monthsSecurityBattalion = totalSecurityBattalion.months;
-        // let totalCas = this.calculateDiffWithYearMonth(this.datesCas);
-        // this.yearsCas = totalCas.years;
-        // this.monthsCas = totalCas.months;
-        // let totalNoRecords = this.calculateDiffWithYearMonth(this.datesNoRecords);
-        // this.yearsNoRecords = totalNoRecords.years;
-        // this.monthsNoRecords = totalNoRecords.months;
-
-        // const datesGlobal = this.calculateDiff(this.datesGlobal);
-        // const datesContributions = this.calculateDiff(this.datesContributions);
-        // const datesAvailability = this.calculateDiff(this.datesAvailability);
-        // const datesItemZero = this.calculateDiff(this.datesItemZero);
-        // const datesSecurityBattalion = this.calculateDiff(this.datesSecurityBattalion);
-        // const datesCas = this.calculateDiff(this.datesCas);
-        // const datesNoRecords = this.calculateDiff(this.datesNoRecords);
-        // // const total = datesContributions + datesItemZero - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
-        // const total = datesGlobal - datesAvailability - datesSecurityBattalion - datesCas - datesNoRecords;
-        var total = 182;
-        this.years = parseInt(total/12);
-        this.months = (total%12);
     },
     firstContinue(){
       let uri = `/ret_fun/${this.retirementFundId}/get_average_quotable`;
@@ -188,12 +153,13 @@ export default {
           this.totalAvailability = response.data.total_availability;
           this.total = response.data.total;
           this.beneficiariesAvailability = response.data.beneficiaries;
-
+          this.finishRetFun = true,
           this.arrayDiscounts = response.data.array_discounts;
-          console.log(response.data.has_availability);
+          console.log('Has Availability: '+response.data.has_availability);
 
       }).catch(error =>{
         console.log(error);
+          this.finishRetFun = false,
           flash("Error al guardar los porcentages", "error");
       });
     },
@@ -219,6 +185,7 @@ export default {
           beneficiaries: this.beneficiariesRetFunAvailability,
         }
       ).then(response =>{
+          this.finishAvailability =  true,
           flash("Montos de Fondo de Retiro + Disponibilidad Actualizados.");
       }).catch(error =>{
           flash("Error al guardar Montos de Fondo de Retiro + Disponibilidad", "error");
