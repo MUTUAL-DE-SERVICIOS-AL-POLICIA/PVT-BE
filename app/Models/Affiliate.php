@@ -96,7 +96,10 @@ class Affiliate extends Model
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund');
     }
-
+    public function scanned_documents()
+    {
+        return $this->hasMany('Muserpol\Models\ScannedDocument');
+    }
     public function affiliate_folders()
     {
         return $this->hasMany('Muserpol\Models\AffiliateFolder');

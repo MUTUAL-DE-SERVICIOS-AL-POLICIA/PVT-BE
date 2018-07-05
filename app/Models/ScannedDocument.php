@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ScannedDocument extends Model
 {
+    protected $table = 'affiliate_scanned_documents';
     public function affiliate_folder()
     {
         return $this->belongsTo('Muserpol\Models\AffiliateFolder');
