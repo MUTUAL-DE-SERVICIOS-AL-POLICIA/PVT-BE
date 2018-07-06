@@ -28,9 +28,12 @@ export function parseMoney(value) {
     if (!value) {
         return 0;
     }
-    let result = value.replace(/(Bs|\s+)/ig, ``);
-    result = result.replace(/,/g, ``);
-    return result;
+    if (typeof value === 'string'){
+        let result = value.replace(/(Bs|\s+)/ig, ``);
+        result = result.replace(/,/g, ``);
+        return result;
+    }
+    return (typeof value === 'number') ? value : alert('error: parseMoney');
 }
 
 export function cellPhoneInputMaskAll() {
