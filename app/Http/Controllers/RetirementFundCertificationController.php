@@ -301,8 +301,8 @@ class RetirementFundCertificationController extends Controller
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
 
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
-        $number = $retirement_fund->code;
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;        
+        $number = Util::getNextAreaCode($retirement_fund->id);
         $pdftitle = "Calificacion";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
         $group_dates = [];

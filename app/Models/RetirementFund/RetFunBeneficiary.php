@@ -54,7 +54,7 @@ class RetFunBeneficiary extends Model
     public function getAddress()
     {
         $address= $this->address[0];
-        if (sizeOf($address) > 0) {
+        if (isset($address->id)) {
             return 'Calle '.$address->street.' Nº '.$address->number_address . ' '.$address->zone;
         }
         return 'Sin dirección';
