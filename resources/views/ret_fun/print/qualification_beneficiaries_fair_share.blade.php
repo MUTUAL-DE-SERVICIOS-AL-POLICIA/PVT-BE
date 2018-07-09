@@ -3,7 +3,7 @@
         <thead class="bg-grey-darker">
             <tr class="font-medium text-white text-sm uppercase">
                 <td colspan='4' class="px-15 text-center">
-                    CALCULO DE CUOTAS PARTE PARA DERECHOHABIENTES - AFILIADO FALLECIDO
+                    CALCULO DE CUOTAS PARTE PARA DERECHOHABIENTES
                 </td>
             </tr>
         </thead>
@@ -18,7 +18,16 @@
             <tr class="text-sm">
                 <td class="text-left uppercase px-5 py-3"> {{ $beneficiary->fullName() }} </td>
                 <td class="text-center uppercase px-5 py-3"><div class="w-70 text-right">{!! $beneficiary->percentage !!}</div> </td>
-                <td class="text-center uppercase font-bold px-5 py-3">{!! $beneficiary->identity_card !!}</td>
+                @if($type == 'availability')
+                    <td class="text-center uppercase font-bold px-5 py-3">{!! Util::formatMoney($beneficiary->amount_availability) !!}</td>
+                @else
+                    @if($type == 'total')
+                        <td class="text-center uppercase font-bold px-5 py-3">{!! Util::formatMoney($beneficiary->amount_total) !!}</td>
+                    @else
+                    {{-- normal --}}
+                        <td class="text-center uppercase font-bold px-5 py-3">{!! Util::formatMoney($beneficiary->amount_ret_fun) !!}</td>
+                    @endif
+                @endif
                 <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? 'error' }}</td>
             </tr>
             @endforeach

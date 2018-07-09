@@ -53,6 +53,7 @@
                     <ul class="list-group elements-list">
                         <li class="list-group-item active"><a data-toggle="tab" href="#tab-affiliate"><i class="fa fa-address-book"></i> Información Personal </a></li>
                         <li class="list-group-item "><a data-toggle="tab" href="#tab-police-info"><i class="fa fa-address-card"></i> Información Policial </a></li>
+                        <li class="list-group-item "><a data-toggle="tab" href="#tab-documents-scanned"><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
                         <li class="list-group-item "><a data-toggle="tab" href="#tab-ret-fun"><i class="{{ Muserpol\Helpers\Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
                         <li class="list-group-item "><a data-toggle="tab" href="#tab-eco-com"><i class="{{ Muserpol\Helpers\Util::IconModule(2)}}"></i> Complemento</a></li>
                         {{-- <li class="list-group-item "><a data-toggle="tab" href="#tab-aid-cuot-mortuory"><i class="{{ Muserpol\Helpers\Util::IconModule(4)}}"></i> Cuota Mortuorio </a></li>
@@ -79,6 +80,11 @@
                         <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
                             @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
                         </affiliate-police>
+
+                    </div>
+                    <div id="tab-documents-scanned" class="tab-pane">
+                        
+                        @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents])
 
                     </div>
                     <div id="tab-ret-fun" class="tab-pane">
@@ -170,6 +176,10 @@
 $(document).ready(function() {
     console.log( "del show... " );
     $('#example').DataTable();
+    //revisar dependecias XD 
+    // $('.file-box').each(function() {
+    //     animationHover(this, 'pulse');
+    // });
 } );
 </script>
 @endsection

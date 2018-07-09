@@ -349,13 +349,17 @@ class Util
                 break;
         }
     }
-    public function extractMonth($date)
+    public static function extractMonth($date, $short=true)
     {
         if($date){
+            if($short){
+
+                return Carbon::parse($date)->formatLocalized("%b");
+            }
             return Carbon::parse($date)->formatLocalized("%B");
         }
     }
-    public function extractYear($date)
+    public static function extractYear($date)
     {
         if($date){
             return Carbon::parse($date)->formatLocalized("%Y");
@@ -372,6 +376,7 @@ class Util
                 return Carbon::parse($date)->formatLocalized('%d %B. %Y'); //
             }
         }
+        return 'sin fecha';
     }
     public static function getRetFunCurrentProcedure()
     {

@@ -8,6 +8,8 @@ use Muserpol\Helpers\Util;
 use Muserpol\Models\Contribution\ContributionType;
 use Carbon\Carbon;
 use Log;
+use DB;
+use Muserpol\Models\Contribution\Contribution;
 
 class Affiliate extends Model
 {
@@ -94,7 +96,10 @@ class Affiliate extends Model
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund');
     }
-
+    public function scanned_documents()
+    {
+        return $this->hasMany('Muserpol\Models\ScannedDocument');
+    }
     public function affiliate_folders()
     {
         return $this->hasMany('Muserpol\Models\AffiliateFolder');
@@ -124,9 +129,17 @@ class Affiliate extends Model
     {
         return Util::getDateFormat($this->date_entry, $size);
     }
-    public function getDateEntryDisponibilidad()
+    public function getDateDerelict($size = 'short')
     {
-        return 'Coming soon ';
+        return Util::getDateFormat($this->date_derelict, $size);
+    }
+    public function getDateEntryAvailability()
+    {
+        $availability = $this->getContributionsWithType(10);
+        if (sizeOf($availability) > 0) {
+            return Util::getDateFormat($availability[0]->start);
+        }
+        return '-';
     }
     public function fullName($style = "uppercase")
     {
@@ -294,7 +307,100 @@ class Affiliate extends Model
         );
         return $total_dates;
     }
-    public function getTotalAverageSalaryQuotable()
+    public function getContributionsPlus($with_reimbursements = true)
+    {
+        $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+        if ($with_reimbursements) {
+            $contributions = DB::select("
+            SELECT
+                contributions_reimbursements.month_year,
+                contributions_reimbursements.affiliate_id,
+                sum(contributions_reimbursements.base_wage) as base_wage,
+                sum(contributions_reimbursements.seniority_bonus) as seniority_bonus,
+                sum(contributions_reimbursements.total) as total,
+                sum(contributions_reimbursements.retirement_fund) as retirement_fund
+                FROM(
+                SELECT
+                    reimbursements.id,
+                reimbursements.affiliate_id,
+                reimbursements.degree_id,
+                reimbursements.unit_id,
+                reimbursements.breakdown_id,
+                reimbursements.month_year,
+                reimbursements.item,
+                reimbursements.type,
+                reimbursements.base_wage,
+                reimbursements.seniority_bonus,
+                reimbursements.study_bonus,
+                reimbursements.position_bonus,
+                reimbursements.border_bonus,
+                reimbursements.east_bonus,
+                reimbursements.public_security_bonus,
+                reimbursements.deceased,
+                reimbursements.natality,
+                reimbursements.lactation,
+                reimbursements.prenatal,
+                reimbursements.subsidy,
+                reimbursements.gain,
+                reimbursements.payable_liquid,
+                reimbursements.quotable,
+                reimbursements.retirement_fund,
+                reimbursements.mortuary_quota,
+                reimbursements.subtotal,
+                reimbursements.total
+                    FROM reimbursements
+                    WHERE affiliate_id = ".$this->id."
+                    UNION ALL
+                    SELECT
+                    contributions.id,
+                contributions.affiliate_id,
+                contributions.degree_id,
+                contributions.unit_id,
+                contributions.breakdown_id,
+                contributions.month_year,
+                contributions.item,
+                contributions.type,
+                contributions.base_wage,
+                contributions.seniority_bonus,
+                contributions.study_bonus,
+                contributions.position_bonus,
+                contributions.border_bonus,
+                contributions.east_bonus,
+                contributions.public_security_bonus,
+                contributions.deceased,
+                contributions.natality,
+                contributions.lactation,
+                contributions.prenatal,
+                contributions.subsidy,
+                contributions.gain,
+                contributions.payable_liquid,
+                contributions.quotable,
+                contributions.retirement_fund,
+                contributions.mortuary_quota,
+                contributions.subtotal,
+                contributions.total
+                    FROM contributions
+                    LEFT JOIN contribution_types ON contributions.contribution_type_id = contribution_types.id
+                    WHERE affiliate_id = ".$this->id. " and contribution_types.operator LIKE '+'
+            ) as contributions_reimbursements
+                GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id
+                ORDER BY month_year DESC
+                LIMIT ". $number_contributions."");
+            return $contributions;
+        }else{
+            
+            $contributions = $this->contributions()
+            ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
+            // ->where("contribution_types.id", '=', 1)
+            // ->where('contributions.month_year', '<=', $start_date_availability)
+            ->where('contribution_types.operator', '=', '+')
+            ->orderBy('contributions.month_year', 'desc')
+            ->take($number_contributions)
+            ->get();
+            return $contributions;
+        }
+    }
+    public function getTotalAverageSalaryQuotable($with_reimbursements = true)
     {
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
         // $availability = $this->getContributionsWithType(10);#disponibilidad
@@ -302,19 +408,23 @@ class Affiliate extends Model
         // if (sizeOf($availability) > 0) {
             /* has availability */
             // $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
-            $contributions = $this->contributions()
-                ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-                // ->where("contribution_types.id", '=', 1)
-                // ->where('contributions.month_year', '<=', $start_date_availability)
-                ->where('contribution_types.operator','=', '+')
-                ->orderBy('contributions.month_year', 'desc')
-                ->take($number_contributions)
-                ->get();
-            $total_base_wage = $contributions->sum('base_wage');
-            $total_seniority_bonus = $contributions->sum('seniority_bonus');
-            $total_retirement_fund = $contributions->sum('retirement_fund');
-            $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
-            $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
+
+            if ($with_reimbursements) {
+                $contributions = self::getContributionsPlus();
+                $total_base_wage = array_sum(array_column($contributions, 'base_wage'));
+                $total_seniority_bonus = array_sum(array_column($contributions, 'seniority_bonus'));
+                $total_aporte = array_sum(array_column($contributions, 'total'));
+                $total_retirement_fund = array_sum(array_column($contributions, 'retirement_fund'));
+            }else{
+                $contributions = self::getContributionsPlus(false);
+                $total_base_wage =  $contributions->sum('base_wage');
+                $total_seniority_bonus = $contributions->sum('seniority_bonus');
+                $total_aporte = $contributions->sum('total');
+                $total_retirement_fund = $contributions->sum('retirement_fund');
+            }
+
+        $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
+        $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
         // } else {
                 //si no tiene periodos en disponibilidad
             // $last_date_contribution = Carbon::parse(end($contributions)->end)->toDateString();
@@ -333,12 +443,19 @@ class Affiliate extends Model
         //     $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
         // }
         $data = [
+            'contributions'=>$contributions,
             'total_base_wage' => $total_base_wage,
             'total_seniority_bonus' => $total_seniority_bonus,
+            'total_aporte' => $total_aporte,
             'total_retirement_fund' => $total_retirement_fund,
+            'sub_total_average_salary_quotable' => $sub_total_average_salary_quotable,
             'total_average_salary_quotable' => $total_average_salary_quotable,
         ];
         return $data;
+    }
+    public function hasAvailability()
+    {
+        return sizeOf($this->getContributionsWithType(10)) > 0;
     }
     // public function getLastDateContribution()
     // {

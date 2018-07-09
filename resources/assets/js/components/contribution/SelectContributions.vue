@@ -120,7 +120,7 @@
                
                 <div class="modal-header">
                     <h4 class="modal-title">Seleccion por rango de Fechas</h4>
-                    <small class="font-bold">De &nbsp; <strong> {{ getFormatDate(first_date.month_year) }} </strong> &nbsp;  hasta &nbsp; <strong> {{ getFormatDate(last_date.month_year) }} </strong></small>
+                    <small class="font-bold">De &nbsp; <strong> {{ getFormatDate(first_date) }} </strong> &nbsp;  hasta &nbsp; <strong> {{ getFormatDate(last_date) }} </strong></small>
                 </div>
                 <div class="modal-body">
                    

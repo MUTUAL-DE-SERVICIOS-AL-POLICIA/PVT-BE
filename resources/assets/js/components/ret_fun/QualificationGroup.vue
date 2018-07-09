@@ -51,7 +51,6 @@
           this.datesChild[index].end = data.end;
           this.calculate();
           this.$emit("total");
-          console.log("emit total");
         },
         calculate() {
           const x = this.datesChild.reduce((prev, current) => {
@@ -59,7 +58,6 @@
               prev + (moment(current.end).diff(moment(current.start), "months") + 1)
             );
           }, 0);
-          console.log(x);
           this.years = parseInt(x / 12);
           this.months = x % 12;
         }

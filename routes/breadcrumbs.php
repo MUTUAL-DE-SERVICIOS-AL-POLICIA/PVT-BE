@@ -65,6 +65,12 @@ Breadcrumbs::register('classify_contributions', function($breadcrumbs,$retiremen
 	$breadcrumbs->push('Clasificacion de Aportes');
 });
 
+Breadcrumbs::register('document_scanned', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
+	$breadcrumbs->push('Escanear Documento');
+});
+
 //	PAGO DE CONTRIBUCIONES
 
 
