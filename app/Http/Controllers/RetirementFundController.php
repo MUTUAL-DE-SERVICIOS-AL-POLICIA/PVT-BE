@@ -988,6 +988,8 @@ class RetirementFundController extends Controller
         $retirement_fund = RetirementFund::find($id);
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
 
+        $number = Util::getNextAreaCode($retirement_fund->id);
+        
         if($retirement_fund){
             $affiliate = $retirement_fund->affiliate;
             $availability = $affiliate->getContributionsWithType('Disponibilidad');
