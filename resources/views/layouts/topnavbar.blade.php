@@ -9,6 +9,11 @@
             </form>
         </div>
         <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <h3 class="font-bold no-margins" style="color:white">
+                        {{ \Muserpol\Helpers\Util::getRol()->name }} 
+                    </h3>
+                </li>
             <li>
                 <a href="{{route('changerol')}}">
                     <i class="fa fa-exchange fa-lg" data-toggle="tooltip" data-placement="bottom" title="Cambiar de Rol"></i>
