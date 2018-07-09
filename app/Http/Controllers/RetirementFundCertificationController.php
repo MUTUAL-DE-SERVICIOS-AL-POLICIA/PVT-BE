@@ -1232,7 +1232,7 @@ class RetirementFundCertificationController extends Controller
         $then = 'La Comisión de Beneficios Económicos de la Mutual de Servicios al Policía “MUSERPOL” en
         uso de sus facultades y en observancia al Reglamento de Fondo de Retiro Policial Solidario:';
         $number = Util::getNextAreaCode($retirement_fund->id);
-        //$statement 
+        
         $data = [
             'retirement_fund'   =>  $retirement_fund,
             'law'  =>  $law,
