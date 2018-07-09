@@ -62,8 +62,9 @@
     >
     <template slot="headers" slot-scope="props">
       <tr>
-        <th v-if="inboxState == 'edited'">
+        <th v-if="inboxState == 'edited'">            
             <input type="checkbox" :checked="false" v-model="checkedAllStatus" @change="checkedAll()">
+            PARA ENVIAR
         </th>
         <th
           v-for="header in props.headers"
@@ -77,7 +78,7 @@
     <template slot="items" slot-scope="props">
       <tr :active="props.selected" @click="props.selected = !props.selected">
         <td v-if="inboxState == 'edited'">
-            <input class="iCheck-helper" type="checkbox" :checked="false" :id="props.item.id" v-model="props.item.status" @change="checkChange(props.item.id, props.item.status)">
+            <input class="iCheck-helper" type="checkbox" :checked="false" :id="props.item.id" v-model="props.item.status" @change="checkChange(props.item.id, props.item.status)">            
         </td>
         <td>
             <a :href="`${props.item.path}`">
@@ -130,11 +131,11 @@ import { mapState, mapMutations } from 'vuex';
                 search: '',
                 selected: [],
                 headers: [
-                    { text: '# Tramite', value: 'code' },
+                    { text: '# Trámite', value: 'code' },
                     { text: 'CI', align: 'left', value: 'ci' },
                     { text: 'Nombre', value: 'name' },
                     { text: 'Regional', value: 'city' },
-                    { text: 'Fecha de Recepcion', value: 'date_reception' },
+                    { text: 'Fecha de Recepción', value: 'date_reception' },
                 ],
             }
         },
