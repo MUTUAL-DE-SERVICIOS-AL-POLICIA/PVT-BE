@@ -8,60 +8,41 @@
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
 </head>
 
-<body style="border: none">
+<body style="padding:0 70px 0 60px; " class="no-border">
     <div class="page-break">
-        <table class="w-100 ">
-            <tr>
-                <th class="w-20 text-left no-padding no-margins align-middle">
-                    <div class="text-center">
-                        <img src="{{asset('images/logo.jpg')}}" class="w-100">
-                    </div>
-                </th>
-                <th class="w-60 align-top">
-                    <span class="font-semibold uppercase leading-tight text-md">
-                    MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"
-                    <br> DIRECCIÓN DE BENEFICIOS ECONÓMICOS
-                    <br> UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO
-                  </span>
-                </th>
-                <th class="w-20 no-padding no-margins align-top">
-                    <div class="text-center">
-                        <img src="{{asset('images/escudo.jpg')}}" class="w-100">
-                    </div>
-                </th>
-            </tr>
-            <tr class="no-border">
-                <td colspan="3" class="no-border" style="border-bottom: 1px solid #22292f;"></td>
-            </tr>
-        </table>
         <div class="block">
-            <div class="text-right">                
+            <div class="text-right">
                 <span class="block">
                    DBE/UFRPSCAM/AL-DL N° {{ $correlative }}
                  </span>
             </div>
             <div class="block">
                 <div class="text-center text-2xl font-bold underline uppercase">
-                        NFORME DE REVISIÓN
+                    INFORME DE REVISIÓN
                 </div>
-                
             </div>
             <div>
                 <table>
                     <tr>
-                        <td><b>A:</b></td>
+                        <td class="align-top"><strong>A:</strong></td>
                         <td>{!! $to !!}</td>
                     </tr>
+                    <tr><td colspan="2"></td></tr>
+                    <tr><td colspan="2"></td></tr>
                     <tr>
-                        <td><b>DE:</b></td>
+                        <td class="align-top"><strong>DE:</strong></td>
                         <td> {!! $from !!}</td>
                     </tr>
+                    <tr><td colspan="2"></td></tr>
+                    <tr><td colspan="2"></td></tr>
                     <tr>
-                        <td><b>REF:.</b></td>
+                        <td class="align-top"><strong>REF.:</strong></td>
                         <td> {!! $affiliate->fullNameWithDegree() !!}</td>
                     </tr>
+                    <tr><td colspan="2"></td></tr>
+                    <tr><td colspan="2"></td></tr>
                     <tr>
-                        <td><b>FECHA:</b></td>
+                        <td class="align-top w-10"><strong>FECHA:</strong></td>
                         <td>{{ $actual_city }}, {{ $actual_date }}</td>
                     </tr>
                 </table> 
@@ -70,29 +51,29 @@
                 Fondo de Retiro Policial Solidario <br> Modalidad: <span class="uppercase">{{ $ret_fun->procedure_modality->name }}</span>
             </p>
             <div class="block">
-            
-
                 <div>
                     <p class="text-justify">
                         {!! $head !!}
                     </p>
-                    <div >
-                     <b>I.</b> <b>ANTECEDENTES.-   </b>
+                    <div class="m-l-10">
+                     <strong><span class="m-r-20">I.</span> ANTECEDENTES.-</strong>
                     </div>
-                    <p class="text-justify">
-                        {!! $past !!}
-                    </p>
+                    <div class="m-l-50">
+                        <p class="text-justify">
+                            {!! $past !!}
+                        </p>
+                    </div>
                     <p class="text-justify">
                         {!! $past_footer !!}
                     </p>
-                    <div >
-                        <b>II.</b> <b>PROCEDIMIENTOS REALIZADOS.-   </b>
+                    <div class="m-l-10">
+                     <strong><span class="m-r-20">II.</span> PROCEDIMIENTOS REALIZADOS.-</strong>
                     </div>
                     <p class="text-justify">
                         {!! $process !!}
                     </p>
 
-                    <ul>
+                    <ul class="m-l-30">
                         <li class="text-justify">
                             {!! $body_file !!}
                         </li>
@@ -112,16 +93,16 @@
                             {{ $body_due }}
                         </li>
                     </ul>
-                    <div >
-                        <b>III.</b> <b>CONCLUSIONES.-   </b>
-                    </div>          
+                    <div class="m-l-10">
+                        <strong><span class="m-r-20">III.</span> CONCLUSIONES.-</strong>
+                    </div>
                     <p class="text-justify">
                         {!! $conclusion !!}
                     </p>
-                    <ul>
+                    <ul class="m-l-30">
                         @foreach($payments as $payment)
                             <li class="text-justify">
-                                {{ $payment }}
+                                {!! $payment !!}
                             </li>
                         @endforeach
                     </ul>
