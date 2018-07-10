@@ -238,6 +238,7 @@ class RetirementFundCertificationController extends Controller
                 'user'))
             ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
             //->setOption('footer-right', 'Pagina [page] de [toPage]')
             //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
             ->setOption('footer-html', $footerHtml)

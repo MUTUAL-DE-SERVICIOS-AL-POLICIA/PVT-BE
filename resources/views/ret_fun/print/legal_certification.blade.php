@@ -1,7 +1,4 @@
 @extends('print_global.print')
-{{--  @section('title2')
-
-@endsection  --}}
 @section('content')
 <div>
     <div>
