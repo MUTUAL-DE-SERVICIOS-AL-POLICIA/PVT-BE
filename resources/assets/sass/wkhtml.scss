@@ -166,6 +166,9 @@ tr {
 	border-style: solid;
 	border-width: 1px;
 }
+.no-border {
+	border: none!important;
+}
 .border-solid	{border-style: solid;}
 .border-dashed	{border-style: dashed;}
 .border-dotted	{border-style: dotted;}
@@ -301,6 +304,18 @@ tr {
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
+.px-100 {
+	padding-left: 100px;
+	padding-right: 100px;
+}
+.px-75 {
+	padding-left: 75px;
+	padding-right: 75px;
+}
+.px-50 {
+	padding-left: 50px;
+	padding-right: 50px;
+}
 .px-15 {
 	padding-left: 15px;
 	padding-right: 15px;
@@ -377,6 +392,54 @@ tr {
 }
 .m-t-50 {
 	margin-top: 50px;
+}
+.m-r-5 {
+	margin-right: 5px;
+}
+.m-r-10 {
+	margin-right: 10px;
+}
+.m-r-15 {
+	margin-right: 15px;
+}
+.m-r-20 {
+	margin-right: 20px;
+}
+.m-r-25 {
+	margin-right: 25px;
+}
+.m-r-30 {
+	margin-right: 30px;
+}
+.m-r-35 {
+	margin-right: 35px;
+}
+.m-r-50 {
+	margin-right: 50px;
+}
+.mlr-5 {
+	margin-left: 5px;
+}
+.m-l-10 {
+	margin-left: 10px;
+}
+.m-l-15 {
+	margin-left: 15px;
+}
+.m-l-20 {
+	margin-left: 20px;
+}
+.m-l-25 {
+	margin-left: 25px;
+}
+.m-l-30 {
+	margin-left: 30px;
+}
+.m-l-35 {
+	margin-left: 35px;
+}
+.m-l-50 {
+	margin-left: 50px;
 }
 .no-paddings{
 	padding: 0px;
