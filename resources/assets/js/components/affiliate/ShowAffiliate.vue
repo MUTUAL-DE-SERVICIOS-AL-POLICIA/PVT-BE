@@ -2,7 +2,7 @@
 	export default{
 		props:[
             'affiliate',
-                        'cities'
+            'cities'    
 		],
         data(){
             return{
@@ -31,19 +31,19 @@
             }
         },
         created:function(){
-            console.log(this.affiliate);
+            console.log('printing');
             console.log(this.cities);
-            if(!this.city_birth){
-                // console.log('no tiene');
-            let city_id =this.affiliate.city_birth_id;
-            this.city_birth=this.cities.filter(function(city) {
-                return city.id==city_id;
-            })[0];
-            city_id =this.affiliate.city_identity_card_id;
-            this.city_identity_card=this.cities.filter(function(city) {
-                return city.id==city_id;
-            })[0];
-            }
+            // if(!this.city_birth){
+            //     // console.log('no tiene');
+            // let city_id =this.affiliate.city_birth_id;
+            // this.city_birth=this.cities.filter(function(city) {
+            //     return city.id==city_id;
+            // })[0];
+            // city_id =this.affiliate.city_identity_card_id;
+            // this.city_identity_card=this.cities.filter(function(city) {
+            //     return city.id==city_id;
+            // })[0];
+            // }
             
         },
         computed:{
@@ -127,6 +127,8 @@
                 // console.log(this.form);
             },
             update () {
+                console.log("adfasdfasdf");
+                console.log(this.form.city_identity_card_id);
                 let uri = `/update_affiliate/${this.affiliate.id}`;
                 this.show_spinner=true;
                 axios.patch(uri,this.form)
