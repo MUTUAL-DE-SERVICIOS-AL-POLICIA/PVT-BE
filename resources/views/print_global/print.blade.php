@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
 </head>
-<body style="border:none">
+<body>
     <div class="page-break">
     <table class="w-100 ">
         <tr>
