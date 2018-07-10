@@ -70,7 +70,7 @@
                    
                     <div id="tab-affiliate" class="tab-pane active">
                         
-                        <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
+                        <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template> 
                             @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
                         </affiliate-show>
                         
