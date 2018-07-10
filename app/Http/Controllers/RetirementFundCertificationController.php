@@ -742,7 +742,7 @@ class RetirementFundCertificationController extends Controller
         {
             $person .= "El ";
         }
-        $person .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <b>". strtoupper($retirement_fund->procedure_modality->name) ."</b>, presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($retirement_fund->reception_date) .", a lo cual considera lo siguiente:";
+        $person .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong>". strtoupper($retirement_fund->procedure_modality->name) ."</strong>, presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($retirement_fund->reception_date) .", a lo cual considera lo siguiente:";
         /** END PERSON DATA */
 
         /** LAW DATA */
@@ -755,7 +755,7 @@ class RetirementFundCertificationController extends Controller
         y conforme el Art. 45 de referido Reglamento, se detalla la documentación como resultado de
         la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y
         adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro
-        Policial, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:<br><br>";
+        Policial, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:";
         /** END LAW DATA */
 
         $body = "";        
@@ -895,6 +895,11 @@ class RetirementFundCertificationController extends Controller
         $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., el monto de Bs ".Util::formatMoney($retirement_fund->total_ret_fun)." (".Util::convertir($retirement_fund->total_ret_fun).").";
         ///------EN  PAYMENT ------///
         $number = Util::getNextAreaCode($retirement_fund->id);
+
+
+        /*HEADER FOOTER*/
+        $footerHtml = view()->make('ret_fun.print.legal_footer')->render();
+        $headerHtml = view()->make('ret_fun.print.legal_header')->render();
         $data = [
             'ret_fun' => $retirement_fund,
             'beneficiaries'    =>  $beneficiaries,
@@ -916,7 +921,11 @@ class RetirementFundCertificationController extends Controller
         return \PDF::loadView('ret_fun.print.legal_dictum', $data)
         ->setPaper('letter')
         ->setOption('encoding', 'utf-8')
-        ->stream("dictamenLegal.pdf");      
+        ->setOption('footer-html', $footerHtml)
+        ->setOption('header-html', $headerHtml)
+        ->setOption('margin-top',25)
+        ->setOption('margin-bottom',10)
+        ->stream("dictamenLegal.pdf");
     }
 
     public function printHeadshipReview($ret_fun_id){
@@ -1251,14 +1260,15 @@ class RetirementFundCertificationController extends Controller
         return \PDF::loadView('ret_fun.print.legal_resolution', $data)
             ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
-            ->stream("jefaturaRevision.pdf"); 
+            ->stream("jefaturaRevision.pdf");
     }
-    private function getFlagy($num,$pos){
-        if($num == ($pos+1))
+    private function getFlagy($num, $pos)
+    {
+        if ($num == ($pos + 1))
             return ", ";
-        if($num == ($pos+2))
+        if ($num == ($pos + 2))
             return " y la suma de ";
-        return ;
+        return;
     }
 
 }

@@ -18,6 +18,7 @@ export default {
   ],
   mounted() {
     // moneyInputMaskAll();
+    this.addGuarantor();
   },
   data() {
     return {
@@ -70,9 +71,53 @@ export default {
       // perecentageAdvancePayment: 0,
       totalAverageSalaryQuotable: 0,
       totalQuotes:0,
+      guarantors:[],
+
     };
   },
   methods: {
+    updateTotalGuarantor(){
+      this.retentionGuarantor = this.guarantors.reduce((acc, g)=>{
+        return acc + parseFloat(parseMoney(g.amount));
+      },0);
+    },
+    addGuarantor(){
+      let guarantor = {
+        amount: 0,
+        identity_card: null,
+        full_name: null
+      }
+      if (this.guarantors.length > 0) {
+        if (! this.guarantors.some( g =>  { return !g.full_name || !g.identity_card })) {
+          this.guarantors.push(guarantor);
+        }
+      }else{
+        this.guarantors.push(guarantor);
+      }
+      setTimeout(() => {
+        moneyInputMaskAll();
+      }, 500);
+    },
+    deleteGuarantor(index){
+      this.guarantors.splice(index,1);
+      if(this.guarantors.length < 1)
+        this.addGuarantor();
+    },
+    searchGuarantor(index){
+      let ci = this.guarantors[index].identity_card;
+      axios.get('/search_ajax', {
+        params: {
+          ci
+        } 
+      })
+      .then( (response) => {
+        let data = response.data;
+        this.guarantors[index].full_name = `${data.first_name} ${data.second_name} ${data.last_name} ${data.mothers_last_name} ${data.surname_husband}`;
+      })
+      .catch(function (error) {
+        console.log('error al buscar garante: ', error);
+      });
+    },
     calculateDiff(dates){
       const diff = dates.reduce((prev, current)=>{
             return prev + (moment(current.end).diff(moment(current.start), 'months') + 1);

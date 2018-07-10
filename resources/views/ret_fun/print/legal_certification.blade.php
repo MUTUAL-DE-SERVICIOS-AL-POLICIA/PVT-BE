@@ -41,13 +41,11 @@
         numeral 2 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, <strong>CERTIFICA</strong> que la documentación presentada
         es <strong>VALIDA</strong>.
     </p>
-    <table class="m-t-35">
-        <tr>            
-            <th class="no-border text-center" style=" width:50%">
-                <p class="font-bold">----------------------------------------------------<br> {!! strtoupper($user->fullName()) !!}<br/> {!! $user->position !!}
-                </p>
-            </th>
-        </tr>
-    </table>
+    <div class="text-center w-100 m-t-50">
+            <span class="font-bold block">--------------------------------------------------</span>
+            <span class="font-bold block">{!! strtoupper($user->fullName()) !!}</span>
+            <div class="text-xs text-center" style="width: 350px; margin:0 auto">{!! $user->position !!}</div>
+        </div>
+    </div>
 </div>
 @endsection

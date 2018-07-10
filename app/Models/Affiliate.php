@@ -386,9 +386,8 @@ class Affiliate extends Model
                 GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id
                 ORDER BY month_year DESC
                 LIMIT ". $number_contributions."");
-            return $contributions;
+            return array_reverse($contributions);
         }else{
-            
             $contributions = $this->contributions()
             ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
             // ->where("contribution_types.id", '=', 1)
@@ -398,6 +397,7 @@ class Affiliate extends Model
             ->take($number_contributions)
             ->get();
             return $contributions;
+            /* TODO verificar reverse order*/
         }
     }
     public function getTotalAverageSalaryQuotable($with_reimbursements = true)
