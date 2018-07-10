@@ -34,6 +34,8 @@ use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
 use Muserpol\Models\Contribution\ContributionCommitment;
 use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\Reimbursement;
+use Muserpol\Models\Degree;
 use Muserpol\Models\Contribution\ContributionType;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
@@ -649,8 +651,9 @@ class RetirementFundCertificationController extends Controller
         $num=0;       
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
-        $namepdf = Util::getPDFName($pdftitle, $affiliate);       
-        return \PDF::loadView('contribution.print.certification_contribution', compact('num','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        $namepdf = Util::getPDFName($pdftitle, $affiliate); 
+        $total = Util::formatMoney($retirement_fund->subtotal_ret_fun);   
+        return \PDF::loadView('contribution.print.certification_contribution', compact('num','subtitle','place','retirement_fund','total','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     public function printCertificationAvailability($id)
     {
@@ -712,7 +715,10 @@ class RetirementFundCertificationController extends Controller
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-        return \PDF::loadView('contribution.print.certification_item0', compact('itemcero','itemcero_sin_aporte','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        $item0_type = 2;
+        $total = Util::formatMoney(Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$item0_type)->sum('total'));
+        
+        return \PDF::loadView('contribution.print.certification_item0', compact('itemcero','itemcero_sin_aporte','total','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     } 
 
     public function printSecurity(){
