@@ -184,7 +184,7 @@ class InboxController extends Controller
                     }
                     $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id', '=', $module->id)->first();
                     if($wf_current_state->id != $ret_fun->wf_state_current_id){
-                        throw new Exception('Error al validar el Trámite, verifique que el tramite este en unas de las bandejas.');
+                        throw new Exception('Error al validar el Trámite, verifique que el trámite este en unas de las bandejas.');
                     }
                     $ret_fun->inbox_state = true;
                     $ret_fun->user_id = Auth::user()->id;

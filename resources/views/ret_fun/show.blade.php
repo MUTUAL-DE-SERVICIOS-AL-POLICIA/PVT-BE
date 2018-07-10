@@ -101,6 +101,14 @@
             @if(Muserpol\Helpers\Util::getRol()->id == 14)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Dictamen Legal" onclick="printJS({printable:'{!! route('ret_fun_print_legal_dictum', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
+            
+            @if(Muserpol\Helpers\Util::getRol()->id == 28)
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Revisi&oacute;n de Jefatura" onclick="printJS({printable:'{!! route('ret_fun_print_headship_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
+            @endif
+            
+            @if(Muserpol\Helpers\Util::getRol()->id == 29)
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Resoluci&oacute;n Legal" onclick="printJS({printable:'{!! route('ret_fun_print_legal_resolution', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
+            @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 11)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', showModal:true})"><i class="fa fa-print"></i></button>
@@ -137,7 +145,7 @@
     </div>
 </div>
 
-<div class="row">
+{{-- <div class="row">
     <div class="col-lg-12" style="margin-top: 15px;">
         <div class="progressbar-container">
             <ul class="progressbar" style="list-style:none">
@@ -152,7 +160,7 @@
             </ul>
         </div>
     </div>
-</div>
+</div> --}}
 
 
 @if(Session::has('message'))

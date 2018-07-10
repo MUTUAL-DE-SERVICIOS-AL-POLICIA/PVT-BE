@@ -13,7 +13,7 @@
                         
                     </div>
                     <div class="pull-right" style="padding-right:10px">
-                        <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalcyk" @click="clear"><i class="fa fa-table"></i></button>
+                        <label>Seleci&oacute;n masiva</label> <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalcyk" @click="clear"><i class="fa fa-table"></i></button>
                     </div>
                     
                     
@@ -104,7 +104,7 @@
                 </div>
             </div>
             <div class="ibox-footer">
-                <button class="btn btn-primary btn-sm" @click="save" ><i class="fa fa-arrow-right"></i> Clasificar</button>
+                <button class="btn btn-primary btn-sm" @click="save" ><i class="fa fa-arrow-right"></i> Guardar Clasificaci&oacute;n</button>
                 <span class="pull-right">
                 <strong>  Cantidad: {{list_aportes.length}} </strong>
                 </span>
