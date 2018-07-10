@@ -8,9 +8,9 @@
         {!!Breadcrumbs::render('classify_contributions',$ret_fun)!!}
     </div>
     <div class="col-lg-5" style="padding-top: 15px">
-        <a href="{{url('ret_fun/'.$ret_fun->id.'/print/certification')}}" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> 60 Aportes</a>
-        <a href="{{url('ret_fun/'.$ret_fun->id.'/print/cer_availability')}}" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> Disponibilidad</a>
-        <a href="{{url('ret_fun/'.$ret_fun->id.'/print/cer_itemcero')}}" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> Item 0</a>
+        <button onclick="printJS({printable:'{!! url("ret_fun/".$ret_fun->id."/print/certification") !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> 60 Aportes</button>
+        <button onclick="printJS({printable:'{!! url("ret_fun/".$ret_fun->id."/print/cer_availability") !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"  class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> Disponibilidad</button>
+        <button onclick="printJS({printable:'{!! url("ret_fun/".$ret_fun->id."/print/cer_itemcero") !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> Item 0</button>
     </div>
 </div>
 

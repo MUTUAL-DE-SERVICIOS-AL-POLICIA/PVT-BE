@@ -100,6 +100,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{affiliate}/print/voucher/{voucher}', 'RetirementFundCertificationController@printVoucher')->name('ret_fun_print_voucher');
 		Route::get('print_contributions_quote', 'RetirementFundCertificationController@printDirectContributionQuote');
 		Route::get('ret_fun/{retirement_fund}/print/legal_dictum', 'RetirementFundCertificationController@printLegalDictum')->name('ret_fun_print_legal_dictum');
+		Route::get('ret_fun/{retirement_fund}/print/headship_review', 'RetirementFundCertificationController@printHeadshipReview')->name('ret_fun_print_headship_review');
+		Route::get('ret_fun/{retirement_fund}/print/legal_resolution', 'RetirementFundCertificationController@printLegalResolution')->name('ret_fun_print_legal_resolution');
 
 	//Quota Aid Certification
 		Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
@@ -136,9 +138,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 		//contributions certification
 		//contributions certification 60, disponibilidad, item 0
-		Route::get('ret_fun/{retirement_fund}/print/certification', 'ContributionController@printCertification')->name('ret_fun_print_certification');
-		Route::get('ret_fun/{retirement_fund}/print/cer_availability', 'ContributionController@printCertificationAvailability')->name('ret_fun_print_certification_availability');
-		Route::get('ret_fun/{retirement_fund}/print/cer_itemcero', 'ContributionController@printCertificationItem0')->name('ret_fun_print_certification_item0');
+		Route::get('ret_fun/{retirement_fund}/print/certification', 'RetirementFundCertificationController@printCertification')->name('ret_fun_print_certification');
+		Route::get('ret_fun/{retirement_fund}/print/cer_availability', 'RetirementFundCertificationController@printCertificationAvailability')->name('ret_fun_print_certification_availability');
+		Route::get('ret_fun/{retirement_fund}/print/cer_itemcero', 'RetirementFundCertificationController@printCertificationItem0')->name('ret_fun_print_certification_item0');
 
 
 		Route::resource('reimbursement', 'ReimbursementController');
@@ -193,7 +195,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 		//dictamen legal routes
-		Route::get('ret_fun/{retirement_fund}/dictamen_legal', 'RetirementFundController@dictamenLegal')->name('ret_fun_dictamen_legal');
+		Route::get('ret_fun/{retirement_fund}/dictamen_legal', 'RetirementFundController@dictamenLegal')->name('ret_fun_dictamen_legal');		
+
 	});
 
 	
