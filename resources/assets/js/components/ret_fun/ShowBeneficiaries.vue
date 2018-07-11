@@ -28,6 +28,12 @@
             //     }
             // },
         },
+        mounted(){
+            
+            console.log('beneficiaries: ', this.beneficiaries);
+            
+            
+        },
         methods:{
             toggle_editing () {
 			this.editing = !this.editing;
