@@ -244,7 +244,7 @@ class RetirementFundController extends Controller
         $retirement_fund->total_ret_fun = 0;        
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->inbox_state = true;
-        $$retirement_fund->ret_fun_state_id = 1;
+        $retirement_fund->ret_fun_state_id = 1;
         $retirement_fund->save();
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
         
@@ -557,6 +557,12 @@ class RetirementFundController extends Controller
         // dd($first_wf_state);
 
         $wf_states = WorkflowState::where('module_id', '=', $module->id)->where('sequence_number','>',($first_wf_state->sequence_number ?? 1))->orderBy('sequence_number')->get();
+
+        $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
+        $steps = [];
+        $data = $retirement_fund->getReceptionSummary();
+        //return $data;
+        //return $correlatives;
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,

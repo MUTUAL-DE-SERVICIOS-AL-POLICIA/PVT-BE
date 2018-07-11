@@ -23,7 +23,7 @@ class AffiliateObserver
 
         if($affiliate->city_identity_card_id != $old->city_identity_card_id)
         {
-            $message = $message . ' lugar de expedición '.$old->city_identity_card->name.' a '.$affiliate->city_identity_card->name.', ';
+            $message = $message . ' lugar de expedición '.(isset($old->city_identity_card->name)?$old->city_identity_card->name:'Sin Expedición').' a '.(isset($affiliate->city_identity_card->name)?$affiliate->city_identity_card->name:'Sin Expedición').', ';
         }
         
         if($affiliate->identity_card != $old->identity_card)
@@ -82,7 +82,7 @@ class AffiliateObserver
 
         if($affiliate->city_birth_id != $old->city_birth_id)
         {   
-            $message = $message . ' fecha de nacimiento '.$old->city_birth->name.' a '.$affiliate->city_birth->name.', ';
+            $message = $message . ' fecha de nacimiento '.($old->city_birth->name??'Sin cuidad').' a '.($affiliate->city_birth->name??'Sin cuidad').', ';
 
         }
 

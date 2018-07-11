@@ -238,6 +238,7 @@ class RetirementFundCertificationController extends Controller
                 'user'))
             ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
             //->setOption('footer-right', 'Pagina [page] de [toPage]')
             //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
             ->setOption('footer-html', $footerHtml)
@@ -476,7 +477,7 @@ class RetirementFundCertificationController extends Controller
     {
         $affiliate = Affiliate::find($id);
         $commitment = ContributionCommitment::where('affiliate_id', $affiliate->id)->first();
-        $date = Util::getStringDate(date('Y-m-d'));
+        $date = Util::getStringDate(date('Y-m-d'));        
         $username = Auth::user()->username;//agregar cuando haya roles
         $city = Auth::user()->city->name;
         $glosa = "No corresponde";
@@ -514,7 +515,7 @@ class RetirementFundCertificationController extends Controller
             ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-right', 'Pagina [page] de [toPage]')
-            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
             ->stream("$namepdf");
     }
 
@@ -561,7 +562,7 @@ class RetirementFundCertificationController extends Controller
             ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-right', 'Pagina [page] de [toPage]')
-            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
             ->stream("$namepdf");
     }
 
