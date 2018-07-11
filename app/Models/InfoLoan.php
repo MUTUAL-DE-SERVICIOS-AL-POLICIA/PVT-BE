@@ -13,6 +13,6 @@ class InfoLoan extends Model
     
     public function affiliate_guarantor()
     {
-        return $this->belongsTo('Muserpol\Models\Affiliate');
+        return $this->belongsTo('Muserpol\Models\Affiliate', 'affiliate_guarantor_id');
     }
 }
