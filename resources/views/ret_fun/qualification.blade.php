@@ -246,9 +246,9 @@
                                         <td>
                                             <div class="form-inline">
                                                 <input class="form-control" type="text" v-model="advancePayment" data-money='true' style="width:130px">
-                                                <input class="form-control" type="text" placeholder="Numero">
-                                                <input class="form-control" type="text" placeholder="Cite">
-                                                <input class="form-control" type="date" >
+                                                <input class="form-control" type="text" placeholder="Codigo" v-model="advancePaymentCode">
+                                                <input class="form-control" type="text" placeholder="Nota" v-model="advancePaymentNoteCode">
+                                                <input class="form-control" type="date" v-model="advancePaymentDate">
                                             </div>
                                         </td>
                                     </tr>
@@ -261,9 +261,9 @@
                                         <td>
                                             <div class="form-inline">
                                                 <input class="form-control" type="text" v-model="retentionLoanPayment" data-money='true' style="width:130px">
-                                                <input class="form-control" type="text" placeholder="Numero">
-                                                <input class="form-control" type="text" placeholder="Cite">
-                                                <input class="form-control" type="date">
+                                                <input class="form-control" type="text" placeholder="Codigo" v-model="retentionLoanPaymentCode">
+                                                <input class="form-control" type="text" placeholder="Nota" v-model="retentionLoanPaymentNoteCode">
+                                                <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
                                             </div>
                                         </td>
                                     </tr>
@@ -281,7 +281,7 @@
                                             <div class="form-inline" v-for="(guarantor, index) in guarantors">
                                                 <button class="btn btn-danger" type="button" @click="deleteGuarantor(index)" type="button" role="button"><i class="fa fa-trash "></i></button>
                                                 <div class="input-group">
-                                                    <input type="text" name="applicant_identity_card" v-model.trim="guarantor.identity_card" class="form-control" style="width:120px">
+                                                    <input type="text" name="applicant_identity_card" v-model.trim="guarantor.identity_card" class="form-control" style="width:120px" ref="guarantoridentitycard">
                                                     <span class="input-group-btn">
                                                     <button class="btn btn-primary" type="button" @click="searchGuarantor(index)" type="button" role="button"><i class="fa fa-search"></i></button>
                                                     </span>
@@ -289,15 +289,19 @@
                                                 <span>@{{guarantor.full_name}}</span>
                                                 <div v-if="guarantor.full_name">
                                                     <input class="form-control" type="text" v-model="guarantor.amount" data-money='true' style="width:130px" @keyup="updateTotalGuarantor">
-                                                    <input class="form-control" type="text" placeholder="Numero">
-                                                    <input class="form-control" type="text" placeholder="Cite">
-                                                    <input class="form-control" type="date">
                                                 </div>
                                                 <hr>
                                             </div>
                                             <br>
                                             {{-- @{{ totalGuarantor}} --}}
-                                            @{{ retentionGuarantor}}
+                                            <div class="form-inline">
+                                                @{{ retentionGuarantor }}
+                                                <div v-if="retentionGuarantor > 0">
+                                                    <input class="form-control" type="text" placeholder="Codigo" v-model="retentionGuarantorCode">
+                                                    <input class="form-control" type="text" placeholder="Nota" v-model="retentionGuarantorNoteCode">
+                                                    <input class="form-control" type="date" v-model="retentionGuarantorDate">
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>

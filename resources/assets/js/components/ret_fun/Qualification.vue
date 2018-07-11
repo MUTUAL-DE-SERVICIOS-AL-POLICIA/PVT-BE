@@ -50,8 +50,17 @@ export default {
       totalRetFun: 0,
 
       advancePayment: 0,
+      advancePaymentNoteCode: null,
+      advancePaymentCode: null,
+      advancePaymentDate: null,
       retentionLoanPayment: 0,
+      retentionLoanPaymentNoteCode:null,
+      retentionLoanPaymentCode:null,
+      retentionLoanPaymentDate:null,
       retentionGuarantor: 0,
+      retentionGuarantorNoteCode:null,
+      retentionGuarantorCode:null,
+      retentionGuarantorDate:null,
 
       hasAvailability: false,
       finishRetFun: false,
@@ -85,7 +94,8 @@ export default {
       let guarantor = {
         amount: 0,
         identity_card: null,
-        full_name: null
+        full_name: null,
+        id: null
       }
       if (this.guarantors.length > 0) {
         if (! this.guarantors.some( g =>  { return !g.full_name || !g.identity_card })) {
@@ -96,6 +106,10 @@ export default {
       }
       setTimeout(() => {
         moneyInputMaskAll();
+        if(this.$refs.guarantoridentitycard){
+          let lastIndex = this.$refs.guarantoridentitycard.length-1;
+          this.$refs.guarantoridentitycard[lastIndex].focus();
+        }
       }, 500);
     },
     deleteGuarantor(index){
@@ -112,7 +126,10 @@ export default {
       })
       .then( (response) => {
         let data = response.data;
-        this.guarantors[index].full_name = `${data.first_name} ${data.second_name} ${data.last_name} ${data.mothers_last_name} ${data.surname_husband}`;
+        if (data.type == 'afiliado') {
+          this.guarantors[index].full_name = `${data.first_name} ${data.second_name} ${data.last_name} ${data.mothers_last_name} ${data.surname_husband}`;
+          this.guarantors[index].id = data.id;
+        }
       })
       .catch(function (error) {
         console.log('error al buscar garante: ', error);
@@ -156,6 +173,43 @@ export default {
       axios.get(uri).then(response => {
         flash("Salario Promedio Cotizable Actualizado")
         this.showEconomicDataTotal = true;
+        if (response.data.discounts.length) {
+          let advancePaymentResponse = response.data.discounts.filter(d => d.id == 1);
+          if (advancePaymentResponse.length) {
+            this.advancePayment = advancePaymentResponse[0].pivot.amount;
+            this.advancePaymentNoteCode = advancePaymentResponse[0].pivot.note_code;
+            this.advancePaymentCode = advancePaymentResponse[0].pivot.code;
+            this.advancePaymentDate = advancePaymentResponse[0].pivot.date;
+          }
+
+          let retentionLoanPaymentResponse = response.data.discounts.filter(d => d.id == 2);
+          if (retentionLoanPaymentResponse.length) {
+            this.retentionLoanPayment = retentionLoanPaymentResponse[0].pivot.amount;
+            this.retentionLoanPaymentNoteCode = retentionLoanPaymentResponse[0].pivot.note_code;
+            this.retentionLoanPaymentCode = retentionLoanPaymentResponse[0].pivot.code;
+            this.retentionLoanPaymentDate = retentionLoanPaymentResponse[0].pivot.date;
+          }
+
+          let retentionGuarantorResponse = response.data.discounts.filter(d => d.id == 3);
+          if (retentionGuarantorResponse.length) {
+            this.retentionGuarantor = retentionGuarantorResponse[0].pivot.amount;
+            this.retentionGuarantorNoteCode = retentionGuarantorResponse[0].pivot.note_code;
+            this.retentionGuarantorCode = retentionGuarantorResponse[0].pivot.code;
+            this.retentionGuarantorDate = retentionGuarantorResponse[0].pivot.date;
+          }
+        }
+        if (response.data.guarantors) {
+          this.guarantors=[];
+          response.data.guarantors.forEach(g => {
+              let guarantor = {
+                amount: g.amount,
+                identity_card: g.identity_card,
+                full_name: g.full_name,
+                id: g.affiliate_guarantor_id,
+              }
+              this.guarantors.push(guarantor);
+          });
+        }
         TweenLite.to(this.$data, 0.5, { totalRetFun: response.data.total_ret_fun,subTotalRetFun: response.data.sub_total_ret_fun });
         moneyInputMaskAll();
       }).catch(error => {
@@ -169,6 +223,17 @@ export default {
           advancePayment: parseMoney(this.advancePayment),
           retentionLoanPayment: parseMoney(this.retentionLoanPayment),
           retentionGuarantor: parseMoney(this.retentionGuarantor),
+
+          advancePaymentNoteCode:this.advancePaymentNoteCode,
+          advancePaymentCode:this.advancePaymentCode,
+          advancePaymentDate:this.advancePaymentDate,
+          retentionLoanPaymentNoteCode:this.retentionLoanPaymentNoteCode,
+          retentionLoanPaymentCode:this.retentionLoanPaymentCode,
+          retentionLoanPaymentDate:this.retentionLoanPaymentDate,
+          retentionGuarantorNoteCode:this.retentionGuarantorNoteCode,
+          retentionGuarantorCode:this.retentionGuarantorCode,
+          retentionGuarantorDate:this.retentionGuarantorDate,
+          guarantors: this.guarantors,
         }
       ).then(response =>{
           flash("Calculo Total guardado correctamente.");
