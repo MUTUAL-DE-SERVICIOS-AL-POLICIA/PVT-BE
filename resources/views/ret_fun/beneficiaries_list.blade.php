@@ -21,6 +21,7 @@
                     :cities="cities"
                     :kinships="kinships"
                     :editable="editing"
+                    :index="index"
                     v-on:remove="removeBeneficiary(index)"
                     >
                 
@@ -29,7 +30,7 @@
                 <div class="row" v-if="editing">
                     <div class="col-md-5"></div>
                     <div class="col-md-1">
-                        <button class="btn btn-success" @click="addBeneficiary()" type="button"><i class="fa fa-plus"></i></button>
+                        <button class="btn btn-success add-beneficiary-button" @click="addBeneficiary()" type="button"><i class="fa fa-plus"></i></button>
                     </div>
                     <div class="col-md-6"></div>
                 </div>

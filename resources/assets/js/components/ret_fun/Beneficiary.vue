@@ -1,7 +1,7 @@
 <template>
     <div >
             
-        <div class="row" >
+        <div class="row" :id="`footerCreateBeneficiaries${index}`">
             <div class="col-md-12">
                 <div  class="pull-left">
                     <legend >Beneficiario {{beneficiary.type=='S'?'Solicitante':''}}{{solicitante?'Solicitante':''}} </legend>
@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" v-model.trim="beneficiary.identity_card" ref="identity_card" name="beneficiary_identity_card[]" class="form-control" :disabled="!editable">
+                        <input type="text" v-model.trim="beneficiary.identity_card" ref="identitycard" name="beneficiary_identity_card[]" class="form-control" :disabled="!editable">
                         <span class="input-group-btn">
                             <button class="btn btn-primary" type="button" @click="searchBeneficiary" role="button" :disabled="!editable"><i class="fa fa-search"></i></button>
                         </span>
@@ -190,7 +190,7 @@
 <script>
 import { getGender, cellPhoneInputMaskAll, phoneInputMaskAll } from '../../helper.js'
 export default {
-  props: ["kinships", "cities", "beneficiary", "editable", "removable","solicitante" ],
+  props: ["kinships", "cities", "beneficiary", "editable", "removable","solicitante", "index"],
   data() {
     return {
         // removable_beneficiary: true

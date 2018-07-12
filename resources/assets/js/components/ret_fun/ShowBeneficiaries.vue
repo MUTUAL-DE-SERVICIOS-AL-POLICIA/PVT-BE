@@ -1,4 +1,5 @@
 <script>
+import {scroller} from 'vue-scrollto/src/scrollTo'
 	export default{
 		props:[
             'beneficiaries2',
@@ -101,6 +102,13 @@
                 }else{
                         this.beneficiaries.push(beneficiary);
                 }
+                setTimeout(() => {
+                    if (this.$children[this.$children.length-1].$refs.identitycard) {
+                        this.$children[this.$children.length-1].$refs.identitycard.focus();
+                        const scrollToFooterCreateBeneficiaries = scroller();
+                        scrollToFooterCreateBeneficiaries(`#footerCreateBeneficiaries${this.beneficiaries.length-1}`);
+                    }
+                }, 100);
             },
             removeBeneficiary(index){
                 this.beneficiaries.splice(index,1);
