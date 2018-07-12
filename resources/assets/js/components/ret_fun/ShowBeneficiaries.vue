@@ -105,10 +105,6 @@
             removeBeneficiary(index){
                 this.beneficiaries.splice(index,1);
             },
-            newUpdatePhoneNumber(id){
-                console.log("llege",id);
-                
-            }
         }
 	}
 </script>

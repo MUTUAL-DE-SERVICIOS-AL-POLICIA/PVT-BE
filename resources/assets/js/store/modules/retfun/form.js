@@ -13,6 +13,7 @@ const state ={
       city_identity_card_id: null,
       kinship_id: null,
       birth_date: null,
+      gender: null,
       phone_number: null,
       cell_phone_number: null,
     }
@@ -36,6 +37,7 @@ const mutations = {
       state.applicant.city_identity_card_id =object.city_identity_card_id;
       state.applicant.kinship_id =object.kinship_id;
       state.applicant.birth_date =object.birth_date;
+      state.applicant.gender =object.gender;
       state.applicant.phone_number =object.phone_number;
       state.applicant.cell_phone_number =object.cell_phone_number;
     }

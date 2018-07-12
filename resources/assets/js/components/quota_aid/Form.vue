@@ -89,6 +89,7 @@ export default {
             city_identity_card_id: this.$refs.two.$children[0].applicant_city_identity_card_id,
             kinship_id: this.$refs.two.$children[0].applicant_kinship_id,
             birth_date: this.$refs.two.$children[0].applicant_birth_date,
+            gender: this.$refs.two.$children[0].applicant_gender,
             phone_number: this.$refs.two.$children[0].applicant_phone_number,
             cell_phone_number: this.$refs.two.$children[0].applicant_cell_phone_number
         };

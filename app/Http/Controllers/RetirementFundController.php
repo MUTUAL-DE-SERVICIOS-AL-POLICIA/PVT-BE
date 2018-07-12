@@ -79,11 +79,12 @@ class RetirementFundController extends Controller
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
         $mothers_last_name = $request->beneficiary_mothers_last_name;
-        $surname_husband = $request->surname_husband;
+        $surname_husband = $request->beneficiary_surname_husband;
         $identity_card = $request->beneficiary_identity_card;
         $city_id = $request->beneficiary_city_identity_card;
         $birth_date = $request->beneficiary_birth_date;
         $kinship = $request->beneficiary_kinship;
+        $gender = $request->beneficiary_gender;
         $account_type = $request->input('accountType');
         //*********START VALIDATOR************//        
         $rules=[];       
@@ -381,7 +382,7 @@ class RetirementFundController extends Controller
                 $beneficiary->second_name = strtoupper(trim($second_name[$i]));
                 $beneficiary->surname_husband = strtoupper(trim($surname_husband[$i]));
                 $beneficiary->birth_date = $birth_date[$i];
-                $beneficiary->gender = "M";
+                $beneficiary->gender = strtoupper(trim($gender[$i]));
                 //$beneficiary->civil_status = $request->
                 //$beneficiary->phone_number = $request->;
                 //$beneficiary->cell_phone_number = $request->;               
@@ -479,7 +480,10 @@ class RetirementFundController extends Controller
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         
         $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();        
-        
+        foreach ($beneficiaries as $b) {
+            $b->phone_number=explode(',',$b->phone_number);
+            $b->cell_phone_number=explode(',',$b->cell_phone_number);
+        }
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
         
         $beneficiary_avdisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
@@ -808,8 +812,7 @@ class RetirementFundController extends Controller
                     return ($var['id'] == $new_ben['id']);
                 });
             }
-            // Log::info(json_encode($request->beneficiary_phone_number));
-            Log::info(json_encode($request->all()));
+            Log::info($new_ben);
             if($found){
                 $old_ben = RetFunBeneficiary::find($new_ben['id']);
                 $old_ben->city_identity_card_id = $new_ben['city_identity_card_id'];
@@ -822,10 +825,10 @@ class RetirementFundController extends Controller
                 $old_ben->surname_husband = $new_ben['surname_husband'];
                 $old_ben->birth_date = $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
-                $old_ben->state = $new_ben['state'];
+                $old_ben->state = $new_ben['state'] ?? false;
                 if ($old_ben->type == 'S') {
-                    $old_ben->phone_number = trim(implode(",", $request->beneficiary_phone_number));
-                    $old_ben->cell_phone_number = trim(implode(",", $request->beneficiary_cell_phone_number));
+                    $old_ben->phone_number = trim(implode(",", $new_ben['phone_number']));
+                    $old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
                 }
                 $old_ben->save();
             }else{
@@ -849,6 +852,10 @@ class RetirementFundController extends Controller
             }
         }
         $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries()->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();
+        foreach ($beneficiaries as $b) {
+            $b->phone_number = explode(',', $b->phone_number);
+            $b->cell_phone_number = explode(',', $b->cell_phone_number);
+        }
         $data=[
             'beneficiaries' => $beneficiaries,
         ];
