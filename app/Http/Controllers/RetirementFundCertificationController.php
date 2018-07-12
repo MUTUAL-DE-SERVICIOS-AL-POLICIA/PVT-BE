@@ -210,7 +210,7 @@ class RetirementFundCertificationController extends Controller
         $date = Util::getStringDate($retirement_fund->reception_date);
         //$title = "CERTIFICACION DE ARCHIVO – ".strtoupper($retirement_fund->procedure_modality->name);       
         $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
-        $submitted_documents = RetFunSubmittedDocument::where('retirement_fund_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
+        $submitted_documents = RetFunSubmittedDocument::leftJoin('procedure_requirements', 'procedure_requirements.id', '=', 'ret_fun_submitted_documents.procedure_requirement_id')->where('retirement_fund_id', $id)->orderBy('procedure_requirements.number')->get();
         $username = Auth::user()->username;//agregar cuando haya roles
         $date = Util::getStringDate($retirement_fund->reception_date);
         $affiliate = $retirement_fund->affiliate;        
