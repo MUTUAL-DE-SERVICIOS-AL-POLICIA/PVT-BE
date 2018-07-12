@@ -261,8 +261,7 @@
 @section('jss')
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
-    $( document ).ready(function() {
-    console.log( "ready!" );
+    $( document ).ready(function() {    
         $('#folderDialog').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             var id=button.data('id')

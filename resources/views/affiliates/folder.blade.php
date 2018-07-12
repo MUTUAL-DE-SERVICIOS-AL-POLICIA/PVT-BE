@@ -77,7 +77,7 @@
                          @endforeach
                      </select>
                 </div>                
-                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control" id="num_folder"></div>
+                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="N&uacute;mero de Folder" class="form-control" id="num_folder"></div>
                 
                 <div class="form-group"><label>Pago</label>                     
                     <div class="toggle">
@@ -122,7 +122,7 @@
                         @endforeach
                     </select>
                 </div>                
-                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control" id="num_folder"></div>
+                <div class="form-group"><label>N&uacute;mero de Folder</label> <input name="folder_number" type="text" placeholder="N&uacute;mero de Folder" class="form-control" id="num_folder"></div>
                 <div class="form-group"><label>Pago</label>                     
                     <div class="toggle">
                         <label><input type="radio" name="is_paid" id="paid" value="paid"><span>Pagado</span></label>    
