@@ -261,8 +261,7 @@
 @section('jss')
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
-    $( document ).ready(function() {
-    console.log( "ready!" );
+    $( document ).ready(function() {    
         $('#folderDialog').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             var id=button.data('id')
@@ -294,12 +293,14 @@
             // console.log($('#mod_id').val(moda_id))
         });
         $('#eliminar').on('show.bs.modal', function (event) {
+            var modal = $(this)
             var button = $(event.relatedTarget)
             // console.log('metodo 2')
-            var cod_folder = button.data('elim')
-            // console.log(cod_folder)
+            var folder_id = button.data('elim')
+             console.log(folder_id);
             // console.log($('#cod_file_eli').val(cod_folder))
-        });
+            modal.find('.modal-header #folder_id').val(folder_id)
+        });        
         // console.log( "del show... " );
         $('#example').DataTable().column('1:visible').order('desc').draw();
         $('#workflow-table').DataTable().column('1:visible').order('desc').draw();

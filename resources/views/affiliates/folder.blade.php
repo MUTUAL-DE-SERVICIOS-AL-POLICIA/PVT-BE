@@ -21,24 +21,24 @@
                     <table class="table table-hover table-sprite">
                         <thead>
                             <tr>
-                            <th> Código </th>
-                            <th> Modalidad </th>                            
                             <th> Número de Folder </th>
+                            <th> Modalidad </th>                                                        
+                            <th> Código </th>                            
                             <th> Pagado </th>
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($folders as $folder )
                         <tr>
-                            <td> {{ $folder->code_file }} </td>
-                            <td> {{ $folder->procedure_modality->name }} </td>                            
                             <td> {{ $folder->folder_number }} </td>
+                            <td> {{ $folder->procedure_modality->name }} </td>
+                            <td> {{ $folder->code_file }} </td>             
                             <td> @if($folder->is_paid === true) SI @endif @if($folder->is_paid === false)NO @endif </td>
                             @can('update', new Muserpol\Models\Affiliatefolder)
-                             <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog"                                 
-                                data-modid="{{ $folder->procedure_modality_id }}" 
-                                data-id="{{$folder->id}}" 
-                                data-codfile="{{ $folder->code_file }}" 
+                             <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog"
+                                data-modid="{{ $folder->procedure_modality_id }}"
+                                data-id="{{$folder->id}}"
+                                data-codfile="{{ $folder->code_file }}"
                                 data-folnum="{{ $folder->folder_number }}"
                                 data-ispaid = "{{ $folder->is_paid }}"
                                 data-note="{{ $folder->note }}">
@@ -77,7 +77,7 @@
                          @endforeach
                      </select>
                 </div>                
-                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control" id="num_folder"></div>
+                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="N&uacute;mero de Folder" class="form-control" id="num_folder"></div>
                 
                 <div class="form-group"><label>Pago</label>                     
                     <div class="toggle">
@@ -122,7 +122,7 @@
                         @endforeach
                     </select>
                 </div>                
-                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="Numero de Folder" class="form-control" id="num_folder"></div>
+                <div class="form-group"><label>N&uacute;mero de Folder</label> <input name="folder_number" type="text" placeholder="N&uacute;mero de Folder" class="form-control" id="num_folder"></div>
                 <div class="form-group"><label>Pago</label>                     
                     <div class="toggle">
                         <label><input type="radio" name="is_paid" id="paid" value="paid"><span>Pagado</span></label>    
@@ -152,7 +152,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">¿Estás seguro?</h4>
-                    <input name="code_file" type="hidden" class="form-control" id="cod_file_eli" value="cod_file_eli">
+                    <input name="folder_id" type="hidden" class="form-control" id="folder_id">
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
