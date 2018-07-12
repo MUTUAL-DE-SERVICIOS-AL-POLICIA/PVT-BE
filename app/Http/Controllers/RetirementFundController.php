@@ -368,7 +368,7 @@ class RetirementFundController extends Controller
         $address_rel->save();
         
         
-        for($i=0;$i<is_array($first_name) && sizeof($first_name);$i++){
+        for($i=0;is_array($first_name) && $i < sizeof($first_name);$i++){
             if($first_name[$i] != "" && ($last_name[$i] != "" || $mothers_last_name[$i] != "") ){
                 $beneficiary = new RetFunBeneficiary();
                 $beneficiary->retirement_fund_id = $retirement_fund->id;
@@ -808,6 +808,8 @@ class RetirementFundController extends Controller
                     return ($var['id'] == $new_ben['id']);
                 });
             }
+            // Log::info(json_encode($request->beneficiary_phone_number));
+            Log::info(json_encode($request->all()));
             if($found){
                 $old_ben = RetFunBeneficiary::find($new_ben['id']);
                 $old_ben->city_identity_card_id = $new_ben['city_identity_card_id'];
@@ -821,6 +823,10 @@ class RetirementFundController extends Controller
                 $old_ben->birth_date = $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
                 $old_ben->state = $new_ben['state'];
+                if ($old_ben->type == 'S') {
+                    $old_ben->phone_number = trim(implode(",", $request->beneficiary_phone_number));
+                    $old_ben->cell_phone_number = trim(implode(",", $request->beneficiary_cell_phone_number));
+                }
                 $old_ben->save();
             }else{
                 $beneficiary = new RetFunBeneficiary();
@@ -869,18 +875,11 @@ class RetirementFundController extends Controller
         $retirement_fund = RetirementFund::find($ret_fun_id);
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
         $affiliate = $retirement_fund->affiliate;
-
+        $current_procedure = RetFunProcedure::where('is_enabled','=', true)->first();
+        if (! $current_procedure) {
+            return "error: Verifique si existen procedures activos";
+        }
         $dates_global = $affiliate->getDatesGlobal();
-        // $dates_contributions = $affiliate->getDatesContributions();
-        // $dates_item_zero_with_contribution = $affiliate->getDatesItemZeroWithContribution();
-        // $dates_item_zero_without_contribution = $affiliate->getDatesItemZeroWithoutContribution();
-        // $dates_security_battalion_with_contribution = $affiliate->getDatesSecurityBattalionWithContribution();
-        // $dates_security_battalion_without_contribution = $affiliate->getDatesSecurityBattalionWithoutContribution();
-        // $dates_may1976_without_contribution = $affiliate->getDatesMay1976WithoutContribution();
-        // $dates_certification_period_with_contribution = $affiliate->getCertificationPeriodWithContribution();
-        // $dates_certification_period_without_contribution = $affiliate->getCertificationPeriodWithoutContribution();
-        // $dates_not_worked = $affiliate->getDatesNotWorked();
-        // $dates_availability = $affiliate->getDatesAvailability();
 
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $cities = City::get();
@@ -930,6 +929,7 @@ class RetirementFundController extends Controller
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
+            'current_procedure' => $current_procedure,
             'all_contributions' => json_encode($contributions),
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
@@ -1082,6 +1082,10 @@ class RetirementFundController extends Controller
                 TODO
                 crear eliminacion de garantes
                  */
+                $loans = InfoLoan::where('affiliate_id','=', $affiliate->id)->where('retirement_fund_id','=', $retirement_fund->id)->get();
+                foreach ($loans as $value) {
+                    $value->delete();
+                }
                 foreach ($request->guarantors as $value) {
                     $loan = new InfoLoan();
                     $loan->affiliate_id = $affiliate->id;

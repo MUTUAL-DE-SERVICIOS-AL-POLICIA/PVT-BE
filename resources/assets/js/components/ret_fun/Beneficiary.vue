@@ -120,7 +120,53 @@
                     </select>
                 </div>
             </div>
-            
+        </div>
+        <br>
+        <div class="row" v-if="beneficiary.type == 'S'">
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="control-label">Telefono del Solicitante</label>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-2" v-if="editable">
+                            <button class="btn btn-success" type="button" @click="addPhoneNumber"><i class="fa fa-plus"></i></button>
+                        </div>
+                        <div class="col-md-10">
+                            <div v-for="(phone,index) in beneficiary_phone_numbers" :key="'phone-'+index">
+                                <div class="input-group">
+                                    <input type="text" name="beneficiary_phone_number[]" v-model.trim="phone.value" :key="index" class="form-control" data-phone="true" :disabled="!editable" @keyup="updatePhoneNumbers()">
+                                    <span class="input-group-btn" v-if="editable">
+                                        <button class="btn btn-danger" v-show="beneficiary_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="control-label">Celular del Solicitante</label>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-2" v-if="editable">
+                            <button class="btn btn-success" type="button" @click="addCellPhoneNumber"><i class="fa fa-plus"></i></button>
+                        </div>
+                        <div class="col-md-10">
+                            <div v-for="(cell_phone,index) in beneficiary_cell_phone_numbers" :key="`cellphone-${index}`">
+                                <div class="input-group">
+                                    <input type="text" name="beneficiary_cell_phone_number[]" v-model.trim="cell_phone.value" :key="index" class="form-control" data-cell-phone="true" :disabled="!editable" @keyup="updateCellPhones()">
+                                    <span class="input-group-btn" v-if="editable">
+                                        <button class="btn btn-danger" v-show="beneficiary_cell_phone_numbers.length > 1" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
         </div>
         <div class="hr-line-dashed"></div>
             <div class="row"> 
@@ -142,12 +188,14 @@
 
 </template>
 <script>
-import { getGender } from '../../helper.js'
+import { getGender, cellPhoneInputMaskAll, phoneInputMaskAll } from '../../helper.js'
 export default {
   props: ["kinships", "cities", "beneficiary", "editable", "removable","solicitante" ],
   data() {
     return {
         // removable_beneficiary: true
+        beneficiary_phone_numbers: !! this.beneficiary.phone_number ? this.beneficiary.phone_number.split(',').map(x=>Object.create({value:x})) :  [],
+        beneficiary_cell_phone_numbers: !! this.beneficiary.cell_phone_number ? this.beneficiary.cell_phone_number.split(',').map(x=>Object.create({value:x})) :  [],
     };
   },
   created(){
@@ -155,9 +203,50 @@ export default {
   },
   mounted() {
     //this.$refs.identity_card.focus();
-
+    phoneInputMaskAll();
+    cellPhoneInputMaskAll();
   },
   methods: {
+    updatePhoneNumbers(){
+        this.$emit('updatePhoneNumbers');
+        
+    },
+    addPhoneNumber(){
+      if (this.beneficiary_phone_numbers.length > 0) {
+        let last_phone = this.beneficiary_phone_numbers[this.beneficiary_phone_numbers.length-1];
+        if (last_phone.value && !last_phone.value.includes('_')) {
+          this.beneficiary_phone_numbers.push({value:null});
+        }
+      }else{
+          this.beneficiary_phone_numbers.push({value:null});
+      }
+      setTimeout(() => {
+        phoneInputMaskAll();
+      }, 500);
+    },
+    deletePhoneNumber(index){
+      this.beneficiary_phone_numbers.splice(index,1);
+      if(this.beneficiary_phone_numbers.length < 1)
+        this.addPhoneNumber()
+    },
+    addCellPhoneNumber(){
+      if (this.beneficiary_cell_phone_numbers.length > 0) {
+        let last_phone = this.beneficiary_cell_phone_numbers[this.beneficiary_cell_phone_numbers.length-1];
+        if (last_phone.value && !last_phone.value.includes('_')) {
+          this.beneficiary_cell_phone_numbers.push({value:null});
+        }
+      }else{
+          this.beneficiary_cell_phone_numbers.push({value:null});
+      }
+      setTimeout(() => {
+        cellPhoneInputMaskAll();
+      }, 500);
+    },
+    deleteCellPhoneNumber(index){
+      this.beneficiary_cell_phone_numbers.splice(index,1);
+      if(this.beneficiary_cell_phone_numbers.length < 1)
+        this.addCellPhoneNumber()
+    },
     remove() {
       this.$emit("remove");
     },

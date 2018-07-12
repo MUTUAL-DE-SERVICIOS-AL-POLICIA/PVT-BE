@@ -375,7 +375,7 @@ class RetirementFundCertificationController extends Controller
         $retirement_fund = RetirementFund::find($id);
         $date = date('d/m/Y');
         // $title = $retirement_fund->procedure_modality->procedure_type->module->name;
-        $title = "devolución de aportes en disponibilidad ";
+        $title = "RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD";
         $username = Auth::user()->username;//agregar cuando haya roles
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();

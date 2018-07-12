@@ -28,6 +28,12 @@
             //     }
             // },
         },
+        mounted(){
+            
+            console.log('beneficiaries: ', this.beneficiaries);
+            
+            
+        },
         methods:{
             toggle_editing () {
 			this.editing = !this.editing;
@@ -98,6 +104,10 @@
             },
             removeBeneficiary(index){
                 this.beneficiaries.splice(index,1);
+            },
+            newUpdatePhoneNumber(id){
+                console.log("llege",id);
+                
             }
         }
 	}

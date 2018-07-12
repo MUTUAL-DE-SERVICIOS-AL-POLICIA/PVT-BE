@@ -379,7 +379,7 @@
                         <div v-if="hasAvailability">
                             <div class="ibox" class="fadeInRight">
                                 <div class="ibox-title">
-                                    <h5>Devolucion de aportes en disponibilidad</h5>
+                                    <h5>RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD</h5>
                                     <div class="ibox-tools">
                                         <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                         <a class="close-link"><i class="fa fa-times"></i></a>
@@ -399,11 +399,11 @@
                                                 <td>@{{ subTotalAvailability | currency }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Con rendimiento del X% Anual</td>
+                                                <td>Con rendimiento del {{ $current_procedure->annual_yield }}% Anual</td>
                                                 <td>@{{ totalAnnualYield | currency }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Devolucion de aportes en disponibilidad</td>
+                                                <td>Reconocimiento de Aportes en Disponibilidad</td>
                                                 <td>@{{ totalAvailability | currency}}</td>
                                             </tr>
                                             <tr>
