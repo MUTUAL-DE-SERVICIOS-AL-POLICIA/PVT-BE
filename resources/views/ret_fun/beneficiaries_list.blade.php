@@ -1,5 +1,5 @@
 
-<ret-fun-beneficiaries-show :beneficiaries2="{{ $beneficiaries }}" :beneficiaries-backend="{{ $beneficiaries }}" :ret-fun-id="{{ $retirement_fund->id }}" :original-beneficiaries-backend="{{ $beneficiaries }}" :cities="{{$cities}}" :kinships="{{$kinships}}" inline-template> 
+<ret-fun-beneficiaries-show :beneficiaries2="{{ $beneficiaries }}" :beneficiaries-backend="{{ $beneficiaries }}" :ret-fun-id="{{ $retirement_fund->id }}" :original-beneficiaries-backend="{{ $beneficiaries }}" :cities="{{$cities}}" :kinships="{{$kinships}}" inline-template v-on:update-phone-numbers="newUpdatePhoneNumber(4)"> 
     <div class="col-lg-12">
         <div class="ibox">
     
@@ -21,7 +21,8 @@
                     :cities="cities"
                     :kinships="kinships"
                     :editable="editing"
-                    v-on:remove="removeBeneficiary(index)" >
+                    v-on:remove="removeBeneficiary(index)"
+                    >
                 
                 </ret-fun-beneficiary>
                 </div>

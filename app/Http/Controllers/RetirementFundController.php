@@ -808,6 +808,8 @@ class RetirementFundController extends Controller
                     return ($var['id'] == $new_ben['id']);
                 });
             }
+            // Log::info(json_encode($request->beneficiary_phone_number));
+            Log::info(json_encode($request->all()));
             if($found){
                 $old_ben = RetFunBeneficiary::find($new_ben['id']);
                 $old_ben->city_identity_card_id = $new_ben['city_identity_card_id'];
@@ -821,6 +823,10 @@ class RetirementFundController extends Controller
                 $old_ben->birth_date = $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
                 $old_ben->state = $new_ben['state'];
+                if ($old_ben->type == 'S') {
+                    $old_ben->phone_number = trim(implode(",", $request->beneficiary_phone_number));
+                    $old_ben->cell_phone_number = trim(implode(",", $request->beneficiary_cell_phone_number));
+                }
                 $old_ben->save();
             }else{
                 $beneficiary = new RetFunBeneficiary();
