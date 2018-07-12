@@ -21,24 +21,24 @@
                     <table class="table table-hover table-sprite">
                         <thead>
                             <tr>
-                            <th> Código </th>
-                            <th> Modalidad </th>                            
                             <th> Número de Folder </th>
+                            <th> Modalidad </th>                                                        
+                            <th> Código </th>                            
                             <th> Pagado </th>
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($folders as $folder )
                         <tr>
-                            <td> {{ $folder->code_file }} </td>
-                            <td> {{ $folder->procedure_modality->name }} </td>                            
                             <td> {{ $folder->folder_number }} </td>
+                            <td> {{ $folder->procedure_modality->name }} </td>
+                            <td> {{ $folder->code_file }} </td>             
                             <td> @if($folder->is_paid === true) SI @endif @if($folder->is_paid === false)NO @endif </td>
                             @can('update', new Muserpol\Models\Affiliatefolder)
-                             <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog"                                 
-                                data-modid="{{ $folder->procedure_modality_id }}" 
-                                data-id="{{$folder->id}}" 
-                                data-codfile="{{ $folder->code_file }}" 
+                             <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog"
+                                data-modid="{{ $folder->procedure_modality_id }}"
+                                data-id="{{$folder->id}}"
+                                data-codfile="{{ $folder->code_file }}"
                                 data-folnum="{{ $folder->folder_number }}"
                                 data-ispaid = "{{ $folder->is_paid }}"
                                 data-note="{{ $folder->note }}">
