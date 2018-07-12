@@ -1,5 +1,5 @@
 
-<ret-fun-beneficiaries-show :beneficiaries2="{{ $beneficiaries }}" :beneficiaries-backend="{{ $beneficiaries }}" :ret-fun-id="{{ $retirement_fund->id }}" :original-beneficiaries-backend="{{ $beneficiaries }}" :cities="{{$cities}}" :kinships="{{$kinships}}" inline-template>
+<ret-fun-beneficiaries-show :beneficiaries2="{{ $beneficiaries }}" :beneficiaries-backend="{{ $beneficiaries }}" :ret-fun-id="{{ $retirement_fund->id }}" :procedure-modality-id="{{ $retirement_fund->procedure_modality_id }}" :original-beneficiaries-backend="{{ $beneficiaries }}" :cities="{{$cities}}" :kinships="{{$kinships}}" inline-template>
     <div class="col-lg-12">
         <div class="ibox">
     
@@ -27,7 +27,7 @@
                 
                 </ret-fun-beneficiary>
                 </div>
-                <div class="row" v-if="editing">
+                <div class="row" v-if="editing && canAddBeneficiary() ">
                     <div class="col-md-5"></div>
                     <div class="col-md-1">
                         <button class="btn btn-success add-beneficiary-button" @click="addBeneficiary()" type="button"><i class="fa fa-plus"></i></button>
