@@ -114,6 +114,26 @@ Vue.use(VueTabs)
 // Vue.component('tabs', Tabs);
 // Vue.component('tab', Tab);
 
+import VueScrollTo from 'vue-scrollto';
+
+Vue.use(VueScrollTo, {
+  container: "body",
+  duration: 500,
+  easing: "ease",
+  offset: 0,
+  cancelable: true,
+  onStart: false,
+  onDone: false,
+  onCancel: false,
+  x: false,
+  y: true
+})
+
+
+
+
+
+/* Components */
 
 Vue.component('flash', require('./components/Flash.vue'));
 
