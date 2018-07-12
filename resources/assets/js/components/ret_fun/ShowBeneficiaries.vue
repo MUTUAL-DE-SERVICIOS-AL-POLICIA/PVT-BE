@@ -7,7 +7,8 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
 			'originalBeneficiariesBackend',
             'cities',
             'kinships',
-            'retFunId'
+            'retFunId',
+            'procedureModalityId',
 		],
         data(){
             return{
@@ -109,6 +110,9 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
                         scrollToFooterCreateBeneficiaries(`#footerCreateBeneficiaries${this.beneficiaries.length-1}`);
                     }
                 }, 100);
+            },
+            canAddBeneficiary(){
+                return this.procedureModalityId == 1 || this.procedureModalityId == 4;
             },
             removeBeneficiary(index){
                 this.beneficiaries.splice(index,1);
