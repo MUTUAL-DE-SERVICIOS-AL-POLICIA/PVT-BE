@@ -152,7 +152,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">¿Estás seguro?</h4>
-                    <input name="code_file" type="hidden" class="form-control" id="cod_file_eli" value="cod_file_eli">
+                    <input name="folder_id" type="hidden" class="form-control" id="folder_id">
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
