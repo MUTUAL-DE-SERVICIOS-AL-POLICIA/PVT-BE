@@ -118,7 +118,7 @@ class AffiliateController extends Controller
     public function show(Affiliate $affiliate)
     {
         $this->authorize('view',$affiliate);
-        $cities = City::all()->pluck('first_shortened', 'id');
+        $cities = City::all()->pluck('name', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         $categories = Category::all()->pluck('name', 'id');
         $degrees = Degree::all()->pluck('name', 'id');
@@ -218,7 +218,7 @@ class AffiliateController extends Controller
         $affiliate->phone_number = $request->phone_number;
         $affiliate->cell_phone_number = $request->cell_phone_number;
         $affiliate->city_birth_id = $request->city_birth_id;
-        $affiliate->city_identity_card_id =1;
+        $affiliate->city_identity_card_id =$request->city_identity_card_id;
         $affiliate->surname_husband = $request->surname_husband;
 
         $affiliate->save();
