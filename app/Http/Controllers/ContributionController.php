@@ -716,7 +716,7 @@ class ContributionController extends Controller
         }
         $total = $affiliate->getTotalContributionsAmount(Affiliate::DISPONIBILIDAD);
         // return $total;
-        $ret_fun->total_availability =number_format((float)$total, 2, '.', ''); 
+        $ret_fun->subtotal_availability =number_format((float)$total, 2, '.', ''); 
         $ret_fun->save();
         return  $ret_fun;
         return $request->all();
