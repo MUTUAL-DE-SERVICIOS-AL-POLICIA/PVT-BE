@@ -20,4 +20,8 @@ class Address extends Model
     {
         return $this->belongToMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary', 'address_quota_aid_beneficiary', 'quota_aid_beneficiary_id', 'address_id');
     }
+    public function ret_fun_beneficiary()
+    {
+        return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunBeneficiary','ret_fun_address_beneficiary');
+    }
 }

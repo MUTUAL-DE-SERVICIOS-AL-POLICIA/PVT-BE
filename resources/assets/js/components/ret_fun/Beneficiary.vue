@@ -169,6 +169,39 @@
             </div>
         </div>
         <div class="hr-line-dashed"></div>
+        <div class="row" v-if="beneficiary.type == 'S'">
+            <div class="col-md-4">
+                <div class="col-md-4">
+                    <label class="control-label">Zona</label>
+                </div>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="beneficiary_zone[]" v-model.trim="beneficiary.address[0].zone" class="form-control" :disabled="!editable">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="col-md-4">
+                    <label class="control-label">Calle</label>
+                </div>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="beneficiary_street[]" v-model.trim="beneficiary.address[0].street" class="form-control" :disabled="!editable">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="col-md-4">
+                    <label class="control-label">Numero</label>
+                </div>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="beneficiary_number_address[]" v-model.trim="beneficiary.address[0].number_address" class="form-control" :disabled="!editable">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
             <div class="row"> 
                 <div class="col-md-6">
                     <div class="col-md-4">

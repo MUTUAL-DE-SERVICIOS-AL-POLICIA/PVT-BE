@@ -101,7 +101,7 @@
             </a>
         </td>
         <td>
-            {{ props.item.reception_date}}
+            {{ props.item.reception_date | formatDateInbox | uppercase}}
         </td>
       </tr>
     </template>
@@ -125,9 +125,6 @@ import { mapState, mapMutations } from 'vuex';
         data(){
             return{
                 checkedAllStatus: false,
-                pagination: {
-                    sortBy: 'code'
-                },
                 search: '',
                 selected: [],
                 headers: [

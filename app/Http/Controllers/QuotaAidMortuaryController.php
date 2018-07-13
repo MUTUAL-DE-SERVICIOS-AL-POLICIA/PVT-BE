@@ -223,6 +223,8 @@ class QuotaAidMortuaryController extends Controller
         $address->number_address = $request->beneficiary_number_address;
         $address->save();
         
+        // crear relacion
+        //borrar esto
         // $address_rel = new RetFunAddressBeneficiary();
         // $address_rel->ret_fun_beneficiary_id = $beneficiary->id;
         // $address_rel->address_id = $address->id;

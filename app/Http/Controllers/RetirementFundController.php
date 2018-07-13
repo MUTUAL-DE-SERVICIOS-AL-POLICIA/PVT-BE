@@ -9,7 +9,6 @@ use Muserpol\Models\City;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
-use Muserpol\Models\RetirementFund\RetFunAddressBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Auth;
 use Log;
@@ -354,21 +353,17 @@ class RetirementFundController extends Controller
             $beneficiary_legal_guardian->save();
             //$beneficiary->type = "N";
         }
-        
-        
-        $address = new Address();
-        $address->city_address_id = 1;
-        $address->zone = $request->beneficiary_zone;
-        $address->street = $request->beneficiary_street;
-        $address->number_address = $request->beneficiary_number_address;
-        $address->save();
-        
-        $address_rel = new RetFunAddressBeneficiary();
-        $address_rel->ret_fun_beneficiary_id = $beneficiary->id;
-        $address_rel->address_id = $address->id;
-        $address_rel->save();
-        
-        
+        if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
+            $address = new Address();
+            $address->city_address_id = 1;
+            $address->zone = $request->beneficiary_zone;
+            $address->street = $request->beneficiary_street;
+            $address->number_address = $request->beneficiary_number_address;
+            $address->save();
+    
+            $beneficiary->address()->save($address);
+        }
+
         for($i=0;is_array($first_name) && $i < sizeof($first_name);$i++){
             if($first_name[$i] != "" && ($last_name[$i] != "" || $mothers_last_name[$i] != "") ){
                 $beneficiary = new RetFunBeneficiary();
@@ -479,10 +474,13 @@ class RetirementFundController extends Controller
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         
-        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();        
+        $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();        
         foreach ($beneficiaries as $b) {
             $b->phone_number=explode(',',$b->phone_number);
             $b->cell_phone_number=explode(',',$b->cell_phone_number);
+            if(! sizeOf($b->address) > 0 && $b->type == 'S'){
+                $b->address[]= array('zone' => null, 'street'=>null, 'number_address'=>null);
+            }
         }
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
         
@@ -829,6 +827,35 @@ class RetirementFundController extends Controller
                 if ($old_ben->type == 'S') {
                     $old_ben->phone_number = trim(implode(",", $new_ben['phone_number']));
                     $old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
+
+                    $old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
+                    /*Actualizar direccion  */
+                    if (sizeOf($old_ben->address) > 0) {
+                        $address_id = $old_ben->address()->first()->id;
+                        $address = Address::find($address_id);
+                        if($new_ben['address'][0]['zone'] || $new_ben['address'][0]['street'] || $new_ben['address'][0]['number_address'] ){
+                            $address->city_address_id = 1;
+                            $address->zone = $new_ben['address'][0]['zone'];
+                            $address->street = $new_ben['address'][0]['street'];
+                            $address->number_address = $new_ben['address'][0]['number_address'];
+                            $address->save();
+                        }else{
+                            $old_ben->address()->detach($address->id);
+                            $address->delete();
+                        }
+                    }else{
+                        if ($new_ben['address']) {
+                            $address = new Address();
+                            $address->city_address_id = 1;
+                            $address->zone = $new_ben['address'][0]['zone'];
+                            $address->street = $new_ben['address'][0]['street'];
+                            $address->number_address = $new_ben['address'][0]['number_address'];
+                            $address->save();
+                            $old_ben->address()->save($address);
+                        }
+                    }
+
+
                 }
                 $old_ben->save();
             }else{
@@ -851,10 +878,13 @@ class RetirementFundController extends Controller
                 $beneficiary->save();
             }
         }
-        $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries()->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();
+        $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries()->with(['kinship', 'city_identity_card', 'address'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();
         foreach ($beneficiaries as $b) {
             $b->phone_number = explode(',', $b->phone_number);
             $b->cell_phone_number = explode(',', $b->cell_phone_number);
+            if (!sizeOf($b->address) > 0 && $b->type == 'S') {
+                $b->address[] = array('zone' => null, 'street' => null, 'number_address' => null);
+            }
         }
         $data=[
             'beneficiaries' => $beneficiaries,
