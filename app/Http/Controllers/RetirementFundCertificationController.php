@@ -12,7 +12,7 @@ use Muserpol\Models\City;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
-use Muserpol\Models\RetirementFund\RetFunAddressBeneficiary;
+
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Muserpol\Models\RetirementFund\RetFunIncrement;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
@@ -1111,7 +1111,7 @@ class RetirementFundCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->setOption('margin-top', 25)
             ->setOption('margin-bottom', 10)
-            ->stream("jefaturaRevision.pdf");              
+            ->stream("jefaturaRevision.pdf");
     }
     public function printLegalResolution($ret_fun_id){
 
