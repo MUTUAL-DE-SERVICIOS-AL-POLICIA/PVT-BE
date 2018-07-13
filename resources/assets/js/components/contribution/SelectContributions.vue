@@ -211,11 +211,13 @@ export default {
     array_date = this.last_date.split('-'); 
     this.last_date = array_date[0]+'-'+array_date[1]+'-01';
     console.log(this.last_date);
+    console.log(this.types[0].name);    
     console.log('Revisando lista_aportes: ' + this.list_aportes.length)
-    // console.log(this.urlcertification);
+    // console.log(this.urlcertification);    
     console.log(this.types);
+    console.log(this.comando);    
     this.comando = this.types.filter(function (type) {
-        return type.name  == 'Período reconocido por comando';   
+        return type.name  == 'Período reconocido por comando ';                                                           
     })[0];
     this.item0_con_aporte =  this.types.filter(function (type) {
         return type.name  == 'Período en item 0 Con Aporte';   
@@ -245,7 +247,7 @@ export default {
         return type.name  == 'Disponibilidad';   
     })[0];
     console.log('revisando ids');
-    console.log('comando '+this.comando.id);
+    //console.log('comando '+this.comando.id);
     console.log('item0_con_aporte '+this.item0_con_aporte.id);
     console.log('item0_sin_aporte '+this.item0_sin_aporte.id);
     console.log('bfs_con_aporte '+this.bfs_con_aporte.id);
