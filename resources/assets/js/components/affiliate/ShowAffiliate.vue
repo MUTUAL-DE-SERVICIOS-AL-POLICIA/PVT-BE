@@ -56,12 +56,10 @@
                     return '';
                 }
             },
-            city_birth_name: function(){
-                console.log("reactividad hdp 0");
+            city_birth_name: function(){                
                 return !!this.city_birth?this.city_birth.name:'';
             },
-            city_identity_card_name: function(){
-                console.log('reactividad hdp 1');
+            city_identity_card_name: function(){                
                 return !!this.city_identity_card?this.city_identity_card.first_shortened:'';
             },
             gender_name: function(){
