@@ -248,7 +248,8 @@ class ContributionController extends Controller
             $contribution->retirement_fund = $aporte->fr;
             $contribution->mortuary_quota = $aporte->cm;
             $contribution->total = $aporte->subtotal;
-            $contribution->interest = $aporte->interes;            
+            $contribution->interest = $aporte->interes;        
+            $contribution->breakdown_id = 3;    
             $contribution->save();
             array_push($result, [
                 'total'=>$contribution->total,
@@ -642,13 +643,14 @@ class ContributionController extends Controller
            $con_type=true;
         }  
         
-        // return $contributions;
+        
        
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
         $date_entry = $ret_fun->affiliate->date_entry;
         $date_derelict = $ret_fun->affiliate->date_derelict;
         // return $date_derelict;
         // return $contribution_types;
+        //return $contributions;
         if($date_entry && $date_derelict){
             $data =   array('contributions' => $contributions,
                             'con_type'=>$con_type ,

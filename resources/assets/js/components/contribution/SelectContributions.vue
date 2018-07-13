@@ -210,12 +210,10 @@ export default {
     this.first_date = array_date[0]+'-'+array_date[1]+'-01';
     array_date = this.last_date.split('-'); 
     this.last_date = array_date[0]+'-'+array_date[1]+'-01';
-    console.log(this.last_date);
-    console.log('Revisando lista_aportes: ' + this.list_aportes.length)
-    // console.log(this.urlcertification);
-    console.log(this.types);
+    console.log(this.last_date);    
+    console.log('Revisando lista_aportes: ' + this.list_aportes.length)    
     this.comando = this.types.filter(function (type) {
-        return type.name  == 'Período reconocido por comando';   
+        return type.name  == 'Período reconocido por comando ';                                                           
     })[0];
     this.item0_con_aporte =  this.types.filter(function (type) {
         return type.name  == 'Período en item 0 Con Aporte';   
@@ -324,10 +322,10 @@ export default {
             month_str = '0'+month;
         }
         ff= year+'-'+month_str+'-01';
-        console.log(ff);
+      //  console.log(ff);
     }
 
-    console.log(list);
+    //console.log(list);
     this.list_aportes = list;
     this.row_higth = 386/this.list_aportes.length;
     console.log('termino los procesos');
