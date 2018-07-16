@@ -16,3 +16,11 @@
     </div>
 </div>
 @endsection
+@section('scripts')
+<script>
+    (function() {
+        //added responsive table affiliate
+        document.getElementsByName('SimpleTable')[0].className+='table-responsive';
+    })();
+</script>
+@endsection
