@@ -21,23 +21,19 @@
 			}
 		},
 		created(){
-			console.log(this.affiliate);
+			
 		},
 		computed:{
 			state_name: function(){
-				// console.log('reactividad hdp ');
 				return !!this.state? this.state.name:'';
 			},
 			category_name: function(){
-				// console.log('reactividad hdp 2 ');
 				return !!this.category? this.category.name:'';		
 			},
 			degree_name: function(){
-				// console.log('reactividad hdp 3');
 				return !!this.degree? this.degree.name:'';
 			},
 			pension_entity_name: function(){
-				// console.log('reactividad hdp 4');
 				return !!this.pension_entity? this.pension_entity.name:'';
 			}
 
@@ -57,7 +53,6 @@
 					this.form.pension_entity_id = this.pension_entity.id;
 					this.form.state_id = this.state.id;
 					this.form.type = this.values.type;
-					console.log('restaurando valor');
 				}
 			},
 			update: function () {	

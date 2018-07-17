@@ -1,7 +1,7 @@
 <?php
 
 namespace Muserpol\Http\Controllers;
-
+use Muserpol\Models\Address;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\AffiliateState;
 use Muserpol\Models\Category;
@@ -161,6 +161,11 @@ class AffiliateController extends Controller
             'category',
             'degree',
         ]);
+
+        if (! sizeOf($affiliate->address) > 0) {
+            $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id'=>null);
+        }
+
         $data = array(
             'retirement_fund'=>$retirement_fund,
             'affiliate'=>$affiliate,
@@ -221,8 +226,44 @@ class AffiliateController extends Controller
         $affiliate->city_identity_card_id =$request->city_identity_card_id;
         $affiliate->surname_husband = $request->surname_husband;
 
+        if (sizeOf($affiliate->address) > 0) {
+            $address_id = $affiliate->address()->first()->id;
+            $address = Address::find($address_id);
+        
+            foreach ($request->address as $value) {
+                if ($value['zone'] || $value['street'] || $value['number_address']) {
+                    $address->city_address_id = $value['city_address_id'];
+                    $address->zone = $value['zone'];
+                    $address->street = $value['street'];
+                    $address->number_address = $value['number_address'];
+                    $address->save();
+                }else{
+                    $affiliate->address()->detach($address->id);
+                    $address->delete();
+                }
+            }
+        
+        }else{
+            if (sizeOf($request->address) > 0) {
+                foreach ($request->address as $value) {
+                    if ($value['zone'] || $value['street'] || $value['number_address']) {
+                        Log::info('zoneee '.$value['zone']);
+                        $address = new Address();
+                        $address->city_address_id = $value['city_address_id'];
+                        $address->zone = $value['zone'];
+                        $address->street = $value['street'];
+                        $address->number_address = $value['number_address'];
+                        $address->save();
+                        $affiliate->address()->save($address);
+                    }
+                }
+            }
+        }
         $affiliate->save();
-
+        $affiliate = Affiliate::with('address')->find($affiliate->id);
+        if (!sizeOf($affiliate->address) > 0) {
+            $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id'=>null);
+        }
         $datos=array('affiliate' => $affiliate ,'city_birth' => $affiliate->city_birth,'city_identity_card' => $affiliate->city_identity_card);
         return $datos;
 

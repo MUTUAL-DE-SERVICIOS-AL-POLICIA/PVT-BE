@@ -13,8 +13,8 @@ export default {
             wfSequenceBack:null,
             wfCurrentState:null,
             showLoading:true,
-            documentsReceivedTotal:0,
-            documentsEditedTotal:0,
+            documentsReceivedTotal:null,
+            documentsEditedTotal:null,
         }
     },
     mounted(){
@@ -197,6 +197,9 @@ export default {
             return 0;
         },
         totalDocs(){
+            if(this.workflows.length == 0){
+                return null;
+            }
             return this.workflows.reduce((accu, curr)=>{
                 return accu + this.classification(curr.id).length;
             }, 0)

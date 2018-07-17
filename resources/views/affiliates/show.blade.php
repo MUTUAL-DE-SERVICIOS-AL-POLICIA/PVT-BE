@@ -174,7 +174,6 @@
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
 $(document).ready(function() {
-    console.log( "del show... " );
     $('#example').DataTable();
     //revisar dependecias XD 
     // $('.file-box').each(function() {

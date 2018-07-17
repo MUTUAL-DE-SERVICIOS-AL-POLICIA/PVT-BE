@@ -30,16 +30,9 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
             //     }
             // },
         },
-        mounted(){
-            
-            console.log('beneficiaries: ', this.beneficiaries);
-            
-            
-        },
         methods:{
             toggle_editing () {
 			this.editing = !this.editing;
-            console.log(this.editing);
                 if(this.editing==false)
                 {
                     this.beneficiaries =  this.beneficiaries2;
@@ -48,7 +41,6 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
             cancel(){
                 this.beneficiaries =  this.originalBeneficiariesBackend;
                 this.originalBeneficiariesBackend = this.beneficiaries;
-                
                 this.toggle_editing();
             },
             getCity (id){
@@ -71,8 +63,6 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
 
                 axios.patch(uri,this.beneficiaries)
                 .then((response)=>{
-                    console.log(response.data);
-                    
                     this.editing = false;
                     this.show_spinner=false;
                     this.beneficiaries = response.data.beneficiaries;

@@ -370,8 +370,6 @@ function storeReimbursement(){
             //console.log($(button).closest('form').serialize());
         },
         success: function(result){
-            console.log('saved reim');
-            console.log(result);
             $("#reim"+result.month_year).html(result.total);
         },
         error: function(xhr, status, error) {

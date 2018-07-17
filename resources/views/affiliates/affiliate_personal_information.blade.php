@@ -90,6 +90,43 @@
                         <div class="col-md-4"></div>
                         
                     </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="col-md-4"><strong>Ciudad:</strong></div>
+                            <div class="col-md-8">{!! Form::select('city_address_id', $birth_cities, null , ['placeholder' => 'Seleccione departamento', 'class' => 'form-control','v-model'=>'form.address[0].city_address_id',':disabled'=>'!editing'])!!} </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col-md-4">
+                                <label class="control-label">Zona</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" v-model.trim="form.address[0].zone" class="form-control" :disabled="!editing">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col-md-4">
+                                <label class="control-label">Calle</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" v-model.trim="form.address[0].street" class="form-control" :disabled="!editing">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col-md-4">
+                                <label class="control-label">Numero</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" v-model.trim="form.address[0].number_address" class="form-control" :disabled="!editing">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <br>
                     <div class="row" v-show="editing">
                         <div class="text-center">

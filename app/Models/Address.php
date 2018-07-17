@@ -24,4 +24,8 @@ class Address extends Model
     {
         return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunBeneficiary','ret_fun_address_beneficiary');
     }
+    public function city()
+    {
+        return $this->belongsTo('Muserpol\Models\City','city_address_id','id');
+    }
 }

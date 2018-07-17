@@ -48,11 +48,13 @@
                 <td class="text-center px-10 py-3 uppercase">{{ $c['months'] }}</td>
             </tr>
             @endforeach
-            <tr>
-                <td class="text-left px-10 py-3 uppercase font-bold">Total de cotizaciones para Calificacion</td>
-                <td class="text-center"><strong>{{ $contributions['years'] }}</strong></td>
-                <td class="text-center"><strong>{{ $contributions['months'] }}</strong></td>
-            </tr>
+            @if ($type != 'availability')
+                <tr>
+                    <td class="text-left px-10 py-3 uppercase font-bold">Total de cotizaciones para Calificacion</td>
+                    <td class="text-center"><strong>{{ $contributions['years'] }}</strong></td>
+                    <td class="text-center"><strong>{{ $contributions['months'] }}</strong></td>
+                </tr>
+            @endif
         </tbody>
     </table>
 </div>

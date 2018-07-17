@@ -49,6 +49,10 @@ class Affiliate extends Model
         'nua',
         'item'
     ];
+    public function address()
+    {
+        return $this->belongsToMany('Muserpol\Models\Address');
+    }
     public function spouse()
     {
         return $this->hasMany('Muserpol\Models\Spouse');
