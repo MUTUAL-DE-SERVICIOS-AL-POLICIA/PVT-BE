@@ -473,6 +473,9 @@ class RetirementFundController extends Controller
         $this->authorize('view', $retirement_fund);
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
+        if (!sizeOf($affiliate->address) > 0) {
+            $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
+        }
         
         $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();        
         foreach ($beneficiaries as $b) {

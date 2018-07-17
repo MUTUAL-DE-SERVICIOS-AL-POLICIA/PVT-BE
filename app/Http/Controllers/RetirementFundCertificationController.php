@@ -39,6 +39,7 @@ use Muserpol\Models\Degree;
 use Muserpol\Models\Contribution\ContributionType;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
+use Muserpol\Models\DiscountType;
 
 class RetirementFundCertificationController extends Controller
 {
@@ -362,6 +363,41 @@ class RetirementFundCertificationController extends Controller
 
         $has_availability = sizeOf($affiliate->getContributionsWithType(10)) > 0;
 
+
+
+        /*  discount combinations*/
+        $array_discounts = array();
+        $array = DiscountType::all()->pluck('id');
+        $results = array(array());
+        foreach ($array as $element) {
+            foreach ($results as $combination) {
+                array_push($results, array_merge(array($element), $combination));
+            }
+        }
+        foreach ($results as $value) {
+            $sw = true;
+            foreach ($value as $id) {
+                if (!$retirement_fund->discount_types()->find($id)) {
+                    $sw = false;
+                }
+            }
+            if ($sw) {
+                $temp_total_discount = 0;
+                foreach ($value as $id) {
+                    $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
+                }
+                $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
+                array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+            }
+        }
+
+        $array_discounts_combi = [];
+        foreach ($array_discounts as $value) {
+            array_push($array_discounts_combi, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
+        }
+        
+        /*  / discount combinations*/
+
         $data = [
             'date' => $date,
             'username' => $username,
@@ -370,6 +406,7 @@ class RetirementFundCertificationController extends Controller
             'contributions' => $contributions,
             'total_quotes' => $total_quotes,
             'discounts' => $discounts,
+            'array_discounts_combi' => $array_discounts_combi,
             'has_availability' => $has_availability,
             'affiliate' => $affiliate,
             'applicant' => $applicant,
@@ -473,11 +510,46 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Calificacion";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
+
+        /*  discount combinations*/
+        $array_discounts = array();
+        $array = DiscountType::all()->pluck('id');
+        $results = array(array());
+        foreach ($array as $element) {
+            foreach ($results as $combination) {
+                array_push($results, array_merge(array($element), $combination));
+            }
+        }
+        foreach ($results as $value) {
+            $sw = true;
+            foreach ($value as $id) {
+                if (!$retirement_fund->discount_types()->find($id)) {
+                    $sw = false;
+                }
+            }
+            if ($sw) {
+                $temp_total_discount = 0;
+                foreach ($value as $id) {
+                    $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
+                }
+                $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
+                array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+            }
+        }
+        if ($affiliate->hasAvailability()) {
+            $array_discounts_availability = [];
+            foreach ($array_discounts as $value) {
+                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + Disponibilidad ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun + $retirement_fund->total_availability - $value['amount'])));
+            }
+        }
+        /*  discount combinations*/
+
         $data = [
             'date' => $date,
             'username' => $username,
             'title' => $title,
             'number' => $number,
+            'array_discounts_availability' => $array_discounts_availability,
 
             'affiliate' => $affiliate,
             'applicant' => $applicant,

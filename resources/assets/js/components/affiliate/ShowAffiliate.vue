@@ -26,7 +26,8 @@
                     cell_phone_number: this.affiliate.cell_phone_number,
                     gender: this.affiliate.gender,
                     civil_status: this.affiliate.civil_status,
-                    surname_husband: this.affiliate.surname_husband
+                    surname_husband: this.affiliate.surname_husband,
+                    address: this.affiliate.address
                 }
             }
         },
@@ -118,6 +119,7 @@
                     this.form.city_birth_id = this.city_birth.id;
                     this.form.city_identity_card_id = this.city_identity_card.id;
                     this.form.surname_husband = this.values.surname_husband;
+                    this.form.address = this.values.address;
 
                 }
             },
@@ -142,6 +144,7 @@
                         this.values.gender = response.data.affiliate.gender;
                         this.values.civil_status = response.data.affiliate.civil_status;
                         this.values.surname_husband = response.data.affiliate.surname_husband;
+                        this.values.address = response.data.affiliate.address;
 
                         flash('Informacion del Afiliado Actualizada');
                     }).catch((response)=>{

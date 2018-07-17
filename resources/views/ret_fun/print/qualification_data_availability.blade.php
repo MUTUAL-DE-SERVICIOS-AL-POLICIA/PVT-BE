@@ -1,7 +1,7 @@
 @extends('print_global.print') 
 @section('content')
 <div>
-    @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund, 'availability'=>true ])
+    @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund, 'type'=>'availability'])
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
