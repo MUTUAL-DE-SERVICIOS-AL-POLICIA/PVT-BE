@@ -41,9 +41,9 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
                     @if($contribution->contribution_type_id == $security_contributions->id)
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->base_wage }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->seniority_bonus }}</td>                        
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->gain) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->base_wage) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                     @else
                     <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
@@ -55,9 +55,9 @@
                             <td class="text-center uppercase font-bold px-5 py-3"></td>
                             <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>                            
-                                <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->gain }}</td>
-                                <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->base_wage }}</td>
-                                <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->seniority_bonus }}</td>
+                                <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($reimbursement->gain) }}</td>
+                                <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($reimbursement->base_wage) }}</td>
+                                <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($reimbursement->seniority_bonus) }}</td>
                                 <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->total }}</td>                            
                         </tr>
                     @endif        
@@ -80,7 +80,7 @@
 </div>
 <br>
 <div>
-    <b>INCORPORACION</b>  Por Resolución Suprema No. 227336 de fecha 21 de Mayo de 2007, los Batallones de Seguridad  Física  Privada La Paz  y  del  Interior  de la  República,són  incorporados al Escalafón Unico del Comando General de la Policía Boliviana, a partir de Diciembre del Año 2007.							
+    <b>INCORPORACI&Oacute;N</b>  Por Resolución Suprema No. 227336 de fecha 21 de Mayo de 2007, los Batallones de Seguridad  Física  Privada La Paz  y  del  Interior  de la  República,són  incorporados al Escalafón Unico del Comando General de la Policía Boliviana, a partir de Diciembre del Año 2007.							
 
 </div>
 <br>
@@ -94,4 +94,12 @@
     {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
 </div>
 Cc: Arch
+<table class="m-t-35">
+    <tr>            
+        <th class="no-border text-center" style=" width:50%">
+            <p class="font-bold">----------------------------------------------------<br> {!! strtoupper($user->fullName()) !!}<br/> {!! $user->position !!}
+            </p>
+        </th>
+    </tr>
+</table>
 @endsection
