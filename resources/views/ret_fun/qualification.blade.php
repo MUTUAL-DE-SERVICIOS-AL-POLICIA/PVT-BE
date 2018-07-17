@@ -7,12 +7,12 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 1" onclick="printJS({printable:'{!! route('ret_fun_print_beneficiaries_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 2" onclick="printJS({printable:'{!! route('ret_fun_print_qualification_average_salary_quotable', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 3" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Informacion General Solicitante y Afiliado" onclick="printJS({printable:'{!! route('ret_fun_print_beneficiaries_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Salario Promedio Cotizable" onclick="printJS({printable:'{!! route('ret_fun_print_qualification_average_salary_quotable', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Datos de la Calificacion" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @if($affiliate->hasAvailability())
-                <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 4" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
-                <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Calificacion 4" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
 
             @endif
 
@@ -185,8 +185,8 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>foo</th>
-                                    <th>bar</th>
+                                    <th>Cotizacion</th>
+                                    <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -222,7 +222,7 @@
                 <div v-show="showEconomicDataTotal">
                     <div class="ibox" class="fadeInRight">
                         <div class="ibox-title">
-                            <h5>Datos Economicos Total</h5>
+                            <h5>Datos Economicos Total (Descuentos)</h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 <a class="close-link"><i class="fa fa-times"></i></a>
@@ -232,8 +232,11 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>foo</th>
-                                        <th>bar</th>
+                                        <th>Tipo</th>
+                                        <th>Monto</th>
+                                        <th>Codigo</th>
+                                        <th>Nota</th>
+                                        <th>Fecha</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -244,12 +247,16 @@
                                     <tr>
                                         <td>Anticipo Fondo de Retiro</td>
                                         <td>
-                                            <div class="form-inline">
-                                                <input class="form-control" type="text" v-model="advancePayment" data-money='true' style="width:130px">
-                                                <input class="form-control" type="text" placeholder="Codigo" v-model="advancePaymentCode">
-                                                <input class="form-control" type="text" placeholder="Nota" v-model="advancePaymentNoteCode">
-                                                <input class="form-control" type="date" v-model="advancePaymentDate">
-                                            </div>
+                                            <input class="form-control" type="text" v-model="advancePayment" data-money='true' style="width:130px">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="text" placeholder="Codigo" v-model="advancePaymentCode">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="text" placeholder="Nota" v-model="advancePaymentNoteCode">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="date" v-model="advancePaymentDate">
                                         </td>
                                     </tr>
                                     <tr>
@@ -259,12 +266,16 @@
                                     <tr>
                                         <td>Retencion para pago de prestamo</td>
                                         <td>
-                                            <div class="form-inline">
-                                                <input class="form-control" type="text" v-model="retentionLoanPayment" data-money='true' style="width:130px">
-                                                <input class="form-control" type="text" placeholder="Codigo" v-model="retentionLoanPaymentCode">
-                                                <input class="form-control" type="text" placeholder="Nota" v-model="retentionLoanPaymentNoteCode">
-                                                <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
-                                            </div>
+                                            <input class="form-control" type="text" v-model="retentionLoanPayment" data-money='true' style="width:130px">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="text" placeholder="Codigo" v-model="retentionLoanPaymentCode">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="text" placeholder="Nota" v-model="retentionLoanPaymentNoteCode">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
                                         </td>
                                     </tr>
                                     <tr>
@@ -273,44 +284,49 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            Retencion para garantes
+                                            Garantes
                                             <button class="btn btn-info" @click="addGuarantor"><i class="fa fa-plus"></i></button>
                                         </td>
-                                        <td>
-                                            {{-- <input type="text" v-model="retentionGuarantor" data-money='true'> --}}
+                                        <td colspan="4">
                                             <div class="form-inline" v-for="(guarantor, index) in guarantors">
                                                 <button class="btn btn-danger" type="button" @click="deleteGuarantor(index)" type="button" role="button"><i class="fa fa-trash "></i></button>
                                                 <div class="input-group">
-                                                    <input type="text" name="applicant_identity_card" v-model.trim="guarantor.identity_card" class="form-control" style="width:120px" ref="guarantoridentitycard">
+                                                    <input type="text" name="applicant_identity_card" v-model.trim="guarantor.identity_card" class="form-control" style="width:130px" ref="guarantoridentitycard" @keypress.enter="searchGuarantor(index)" placeholder="Buscar por CI"
+                                                    >
                                                     <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="button" @click="searchGuarantor(index)" type="button" role="button"><i class="fa fa-search"></i></button>
+                                                        <button class="btn btn-primary" type="button" @click="searchGuarantor(index)" type="button" role="button"><i class="fa fa-search"></i></button>
                                                     </span>
                                                 </div>
-                                                <span>@{{guarantor.full_name}}</span>
-                                                <div v-if="guarantor.full_name">
-                                                    <input class="form-control" type="text" v-model="guarantor.amount" data-money='true' style="width:130px" @keyup="updateTotalGuarantor">
-                                                </div>
+                                                <input type="text" disabled :value="guarantor.full_name" class="form-control" style="width:256px;">
+                                                <input type="text" v-if="guarantor.full_name" class="form-control" type="text" v-model="guarantor.amount" data-money='true' style="width:130px" @keyup="updateTotalGuarantor" ref=" guarantoramount">
                                                 <hr>
-                                            </div>
-                                            <br>
-                                            {{-- @{{ totalGuarantor}} --}}
-                                            <div class="form-inline">
-                                                @{{ retentionGuarantor }}
-                                                <div v-if="retentionGuarantor > 0">
-                                                    <input class="form-control" type="text" placeholder="Codigo" v-model="retentionGuarantorCode">
-                                                    <input class="form-control" type="text" placeholder="Nota" v-model="retentionGuarantorNoteCode">
-                                                    <input class="form-control" type="date" v-model="retentionGuarantorDate">
-                                                </div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td>
+                                            Retencion para garantes
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="text" :value="retentionGuarantor" disabled>
+                                        </td>
+                                        <td v-if="retentionGuarantor > 0">
+                                            <input class="form-control" type="text" placeholder="Codigo" v-model="retentionGuarantorCode">
+                                        </td>
+                                        <td v-if="retentionGuarantor > 0">
+                                            <input class="form-control" type="text" placeholder="Nota" v-model="retentionGuarantorNoteCode">
+                                        </td>
+                                        <td v-if="retentionGuarantor > 0">
+                                            <input class="form-control" type="date" v-model="retentionGuarantorDate">
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>% de Retencion para garantes</td>
-                                        <td>@{{ percentageRetentionGuarantor | percentage }}</td>
+                                        <td colspan="4">@{{ percentageRetentionGuarantor | percentage }}</td>
                                     </tr>
                                     <tr class="success">
                                         <td>Total fondo de retiro</td>
-                                        <td><strong>@{{ totalAnimated | currency }}</strong></td>
+                                        <td colspan="4"><strong>@{{ totalAnimated | currency }}</strong></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -357,8 +373,8 @@
                                     <tbody>
                                         <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
                                             <td>@{{ beneficiary.first_name }}</td>
-                                            <td><input type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
-                                            <td><input type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
+                                            <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
+                                            <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
                                             <td>@{{ beneficiary.kinship.name }}</td>
                                         </tr>
                                     </tbody>
@@ -389,8 +405,8 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Foobar</th>
-                                                <th>baz</th>
+                                                <th>Tipo</th>
+                                                <th>Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -411,11 +427,11 @@
                                             </tr>
                                             <tr v-for="(discount, index) in arrayDiscounts">
                                                 <td>@{{ discount.name }}</td>
-                                                <td>@{{ discount.amount }}</td>
+                                                <td>@{{ discount.amount | currency }}</td>
                                             </tr>
                                             <tr class="success">
                                                 <td>@{{ arrayDiscounts[arrayDiscounts.length-1].name }}</td>
-                                                <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount }}</td>
+                                                <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount | currency }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -450,8 +466,8 @@
                                         <tbody>
                                             <tr v-for="(beneficiary, index) in beneficiariesAvailability" :key="index">
                                                 <td>@{{ beneficiary.full_name }}</td>
-                                                <td><input type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalAvailability(index)"></td>
-                                                <td><input type="number" step="0.01" v-model="beneficiary.temp_amount_availability"></td>
+                                                <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalAvailability(index)"></td>
+                                                <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_availability"></td>
                                                 <td>@{{ beneficiary.kinship.name }}</td>
                                             </tr>
                                         </tbody>
@@ -499,8 +515,8 @@
                                             <tbody>
                                                 <tr v-for="(beneficiary, index) in beneficiariesRetFunAvailability" :key="index">
                                                     <td>@{{ beneficiary.full_name }}</td>
-                                                    <td><input type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalRetFunAvailability(index)"></td>
-                                                    <td><input type="number" step="0.01" v-model="beneficiary.temp_amount_total"></td>
+                                                    <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalRetFunAvailability(index)"></td>
+                                                    <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_total"></td>
                                                     <td>@{{ beneficiary.kinship.name }}</td>
                                                 </tr>
                                             </tbody>

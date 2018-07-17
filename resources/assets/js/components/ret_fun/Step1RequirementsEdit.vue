@@ -29,8 +29,6 @@
             }
         },
         created(){
-            console.log("cargando documentos ");
-            console.log(this.rol);
             // this.submitted.forEach(item => {
             //     console.log(item.procedure_requirement_id);
             // });
@@ -106,8 +104,6 @@
                     }
                 });
 
-                console.log('lista de requerimientos');
-                console.log(this.requirementList);
                 
                 Array.prototype.groupBy = function(prop) {
                     return this.reduce(function(groups, item) {
@@ -145,9 +141,8 @@
                             }
                         }
                     }
-                    console.log(this.requirementList);
                 }else{
-                    console.log("no sea pendejo no puede editar");
+                    
                 }
 
             },
@@ -180,11 +175,7 @@
                 return false;
             },
             store(ret_fun){
-                
-                console.log('guardando documentos hdps');
-                console.log(this.requirementList);
                 if(this.rol!=11){
-                    console.log('editando requerimientos');
                     let uri = `/ret_fun/${this.ret_fun.id}/edit_requirements`;                
                     axios.post(uri,
                         {
@@ -192,7 +183,6 @@
                         }
                     ).then(response =>{
                         flash("Verificacion Correcta");
-                        console.log(response.data);
                         this.toggle_editing();
                     
                         //this.showEconomicData = true
@@ -202,7 +192,6 @@
                         //this.showEconomicData = false;
                     });                
                 }else{
-                    console.log('enviando para revision legal');
                     let uri = `/ret_fun/${this.ret_fun.id}/legal_review/create`;                
                         axios.post(uri,
                             {
@@ -211,7 +200,6 @@
                         ).then(response =>{
                             flash("Verificacion Correcta");
                             this.toggle_editing();
-                            console.log(response.data);
                         
                             //this.showEconomicData = true
                             //TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });

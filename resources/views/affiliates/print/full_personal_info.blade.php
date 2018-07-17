@@ -60,6 +60,7 @@
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
                     {{-- <td class="px-15 text-center">DATOS DOMICILIO</td> --}}
+                    <td class="text-left px-10 py-3 text-center uppercase">Departamento</td>
                     <td class="text-left px-10 py-3 text-center uppercase">Zona</td>
                     <td class="text-left px-10 py-3 text-center uppercase">av. calle</td>
                     <td class="text-left px-10 py-3 text-center uppercase">numero</td>
@@ -67,9 +68,10 @@
             </thead>
             <tbody>
                 <tr class="text-sm">
-                    <td class="text-center uppercase font-bold px-5 py-3">ERROR</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">ERROR</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">ERROR</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->address()->first() ? $affiliate->address()->first()->city->name : '-' }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->address()->first() ? $affiliate->address()->first()->zone : '-' }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->address()->first() ? $affiliate->address()->first()->street : '-' }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->address()->first() ? $affiliate->address()->first()->number_address : '-' }}</td>
                 </tr>
             </tbody>
         </table>

@@ -89,6 +89,11 @@ export default {
       this.retentionGuarantor = this.guarantors.reduce((acc, g)=>{
         return acc + parseFloat(parseMoney(g.amount));
       },0);
+      if(this.retentionGuarantor == 0){
+        this.retentionGuarantorCode = null;
+        this.retentionGuarantorNoteCode = null;
+        this.retentionGuarantorDate = null;
+      }
     },
     addGuarantor(){
       let guarantor = {
@@ -111,11 +116,13 @@ export default {
           this.$refs.guarantoridentitycard[lastIndex].focus();
         }
       }, 500);
+      this.updateTotalGuarantor();
     },
     deleteGuarantor(index){
       this.guarantors.splice(index,1);
       if(this.guarantors.length < 1)
         this.addGuarantor();
+      this.updateTotalGuarantor();
     },
     searchGuarantor(index){
       let ci = this.guarantors[index].identity_card;
@@ -129,6 +136,12 @@ export default {
         if (data.type == 'afiliado') {
           this.guarantors[index].full_name = `${data.first_name} ${data.second_name} ${data.last_name} ${data.mothers_last_name} ${data.surname_husband}`;
           this.guarantors[index].id = data.id;
+          // if(data.first_name){
+          //   let lastIndex = this.$refs.guarantoramount.length-1;
+          //   this.$refs.guarantoramount[lastIndex].focus();
+
+          // }
+
         }
       })
       .catch(function (error) {

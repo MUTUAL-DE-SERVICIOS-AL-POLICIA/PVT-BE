@@ -473,6 +473,9 @@ class RetirementFundController extends Controller
         $this->authorize('view', $retirement_fund);
         
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
+        if (!sizeOf($affiliate->address) > 0) {
+            $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
+        }
         
         $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();        
         foreach ($beneficiaries as $b) {
@@ -1108,12 +1111,14 @@ class RetirementFundController extends Controller
             $retirement_fund->discount_types()->detach($discount_type->id);
         }
         $discount_type = DiscountType::where('shortened','garantes')->first();
+        Log::info($request->guarantors);
         if ($retention_guarantor > 0) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
                 $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_guarantor, 'date'=> $request->retentionGuarantorDate, 'code'=> $request->retentionGuarantorCode, 'note_code'=>$request->retentionGuarantorNoteCode]);
             } else {
                 $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_guarantor, 'date'=> $request->retentionGuarantorDate, 'code'=> $request->retentionGuarantorCode, 'note_code'=>$request->retentionGuarantorNoteCode]);
             }
+            
             if (sizeOf($request->guarantors)) {
                 /*
                 TODO
@@ -1130,12 +1135,20 @@ class RetirementFundController extends Controller
                     $loan->code = 'some code';
                     $loan->date = Carbon::now();
                     $loan->affiliate_guarantor_id = $value['id'];
-                    $loan->amount = $value['amount'];
+                    $loan->amount = Util::parseMoney($value['amount']);
                     $loan->save();
                 }
             }
         } else {
             $retirement_fund->discount_types()->detach($discount_type->id);
+            /*
+                TODO
+                crear eliminacion de garantes
+             */
+            $loans = InfoLoan::where('affiliate_id','=', $affiliate->id)->where('retirement_fund_id','=', $retirement_fund->id)->get();
+            foreach ($loans as $value) {
+                $value->delete();
+            }
         }
         // fin mejorar
 

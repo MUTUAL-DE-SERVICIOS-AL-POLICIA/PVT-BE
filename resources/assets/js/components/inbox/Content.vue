@@ -143,6 +143,7 @@ import { mapState, mapMutations } from 'vuex';
                 $(obj).addClass('table table-hover table-mail');
                 $('.datatable__progress').remove();
             });
+            $('.table__overflow').addClass('table-responsive');
         },
         methods:{
             /* TODO

@@ -1,7 +1,7 @@
 @extends('print_global.print')
 @section('content')
 <div>
-    @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund ])
+    @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund, 'type'=>'ret_fun' ])
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
@@ -50,6 +50,13 @@
                         <td class="w-60 text-left px-10 py-3 uppercase">{{ $d->name }}</td>
                         <td class="w-25 text-right uppercase px-5 py-3"> {{ Util::formatMoney($d->pivot->amount) }} </td>
                         <td class="w-15  text-center uppercase px-5 py-3"> Bs. </td>
+                    </tr>
+                @endforeach
+                @foreach ($array_discounts_combi as $item)
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">{{$item['name']}}</td>
+                        <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($item['amount']) }} </td>
+                        <td class="text-center uppercase px-5 py-3"> Bs. </td>
                     </tr>
                 @endforeach
                 <tr class="text-lg">

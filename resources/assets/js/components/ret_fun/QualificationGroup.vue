@@ -46,7 +46,6 @@
       },
       methods: {
         updateDate(data, index) {
-          console.log("received emit", data);
           this.datesChild[index].start = data.start;
           this.datesChild[index].end = data.end;
           this.calculate();

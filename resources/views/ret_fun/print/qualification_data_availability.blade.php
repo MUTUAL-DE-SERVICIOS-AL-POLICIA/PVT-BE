@@ -1,13 +1,13 @@
 @extends('print_global.print') 
 @section('content')
 <div>
-    @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund ])
+    @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund, 'type'=>'availability'])
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
                     <td colspan='3' class="px-15 text-center">
-                        DEVOLUCION DE APORTES EN DISPONIBILIDAD
+                        RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD
                     </td>
                 </tr>
             </thead>
@@ -18,12 +18,12 @@
                     <td class="w-15  text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
                 <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">con rendimiento del x% anual</td>
+                    <td class="text-left px-10 py-3 uppercase">con rendimiento del {{$current_procedure->annual_yield}}% anual</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_availability) }} </td>
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
                 <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">devolucion de aportes en disponibilidad</td>
+                    <td class="text-left px-10 py-3 uppercase">RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_availability) }} </td>
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
