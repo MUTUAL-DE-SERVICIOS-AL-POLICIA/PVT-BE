@@ -7,7 +7,7 @@
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
                     <td colspan='3' class="px-15 text-center">
-                        DEVOLUCION DE APORTES EN DISPONIBILIDAD
+                        RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD
                     </td>
                 </tr>
             </thead>
@@ -23,7 +23,7 @@
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
                 <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">devolucion de aportes en disponibilidad</td>
+                    <td class="text-left px-10 py-3 uppercase">RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_availability) }} </td>
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>

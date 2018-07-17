@@ -6,7 +6,7 @@
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
                     <td colspan='3' class="px-15 text-center">
-                        DEVOLUCION DE APORTES EN DISPONIBILIDAD
+                        RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD
                     </td>
                 </tr>
             </thead>
