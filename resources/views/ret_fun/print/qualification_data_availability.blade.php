@@ -1,7 +1,7 @@
 @extends('print_global.print') 
 @section('content')
 <div>
-    @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund ])
+    @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund, 'availability'=>true ])
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
@@ -18,7 +18,7 @@
                     <td class="w-15  text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
                 <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">con rendimiento del x% anual</td>
+                    <td class="text-left px-10 py-3 uppercase">con rendimiento del {{$current_procedure->annual_yield}}% anual</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_availability) }} </td>
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>

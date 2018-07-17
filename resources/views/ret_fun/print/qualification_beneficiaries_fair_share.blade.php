@@ -3,13 +3,19 @@
         <thead class="bg-grey-darker">
             <tr class="font-medium text-white text-sm uppercase">
                 <td colspan='4' class="px-15 text-center">
-                    CALCULO DE CUOTAS PARTE PARA DERECHOHABIENTES
+                    @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                        CALCULO DE CUOTAS PARTE PARA DERECHOHABIENTES
+                    @else
+                        CALCULO DEL TOTAL
+                    @endif
                 </td>
             </tr>
         </thead>
         <tbody class="table-striped">
             <tr>
-                <td class="w-40 text-center font-bold px-10 py-3 uppercase">nombre del derechohabiente</td>
+                <td class="w-40 text-center font-bold px-10 py-3 uppercase">
+                nombre del {{($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4) ? 'derechohabiente' : 'titular' }}
+                </td>
                 <td class="w-20 text-center font-bold px-10 py-3 uppercase">% de asignacion</td>
                 <td class="w-20 text-center font-bold px-10 py-3 uppercase">monto</td>
                 <td class="w-20 text-center font-bold px-10 py-3 uppercase">parentesco</td>

@@ -41,8 +41,12 @@ class Util
         }
         return null;
     }
-
-    
+    public static function parseMoney($value)
+    {
+        $value = str_replace("Bs", "", $value);
+        $value = str_replace(",", "", $value);
+        return floatval(self::removeSpaces($value));
+    }    
     public static function ucw($string)
 	{
 		if ($string) {

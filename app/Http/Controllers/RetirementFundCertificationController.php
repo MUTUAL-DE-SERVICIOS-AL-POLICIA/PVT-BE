@@ -385,6 +385,9 @@ class RetirementFundCertificationController extends Controller
         $retirement_fund = RetirementFund::find($id);
         $date = date('d/m/Y');
         // $title = $retirement_fund->procedure_modality->procedure_type->module->name;
+
+        $current_procedure = Util::getRetFunCurrentProcedure();
+
         $title = "RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD";
         $username = Auth::user()->username;//agregar cuando haya roles
         $affiliate = $retirement_fund->affiliate;
@@ -405,8 +408,8 @@ class RetirementFundCertificationController extends Controller
             'years' => intval($total_dates / 12),
             'months' => $total_dates % 12,
         );
-        $group_dates[] = $dates;
-        foreach (ContributionType::orderBy('id')->get() as $c) {
+        
+        foreach (ContributionType::orderBy('id')->where('id','=',10)->get() as $c) {
             // if($c->id != 1){
             $contributionsWithType = $affiliate->getContributionsWithType($c->id);
             if (sizeOf($contributionsWithType) > 0) {
@@ -436,7 +439,7 @@ class RetirementFundCertificationController extends Controller
         $discounts = $retirement_fund->discount_types()->where('amount', '>', 0)->get();
 
         $has_availability = sizeOf($affiliate->getContributionsWithType(10)) > 0;
-
+        
         $data = [
             'date' => $date,
             'username' => $username,
@@ -451,6 +454,7 @@ class RetirementFundCertificationController extends Controller
             'applicant' => $applicant,
             'beneficiaries' => $beneficiaries,
             'retirement_fund' => $retirement_fund,
+            'current_procedure' => $current_procedure,
         ];
         // return view('ret_fun.print.beneficiaries_qualification', $data);
         return \PDF::loadView('ret_fun.print.qualification_data_availability', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
