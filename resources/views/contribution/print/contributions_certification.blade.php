@@ -1,7 +1,7 @@
 @extends('print_global.print')
 @section('content')
 <div>
-    El suscrito Encargado de  Cuentas Individuales en base a una revisión manual de planillas de pago de haberes del Batallón de Seguridad Física Privada La Paz, del señor:
+    El suscrito Encargado de  Cuentas Individuales en base a una revisión física de las planillas de haberes proporcionadas por el Comando General de la Policía Boliviana, del señor:
 </div>
 <div>
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
@@ -40,7 +40,7 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
-                    @if($contribution->contribution_type_id == $security_contributions->id)
+                    @if($contribution->contribution_type_id == $certification_contribution->id)
                     <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->gain) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->base_wage) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
@@ -71,22 +71,7 @@
     </tbody>
 </table>
 <br>
-<div>
-    <b>Nota,-</b>  Los Aportes Laborales del personal de Seguridad y Administrativo del Batallón de Seguridad Física Privada La Paz, de 1996: Noviembre y Diciembre y de 1997: Enero a Abril ( 6 meses ), NO fueron emitidos ó cancelados al Ex. Fondo Complementario de Seguridad Social de la Policía Nacional, actual
-</div>
-<br>
-<div>
-    <b>CONVENIO,-</b> Según Convenio el personal de Seguridad y Administrativo del Batallón de Seguridad Física Privada La Paz, efectuó un aporte laboral del 3% a la Mutual de Seguros del Policía "MUSEPOL", a partir de Junio del  2002.
-</div>
-<br>
-<div>
-    <b>INCORPORACI&Oacute;N</b>  Por Resolución Suprema No. 227336 de fecha 21 de Mayo de 2007, los Batallones de Seguridad  Física  Privada La Paz  y  del  Interior  de la  República,són  incorporados al Escalafón Unico del Comando General de la Policía Boliviana, a partir de Diciembre del Año 2007.							
-
-</div>
-<br>
-<div>
-    De la revisión realizada se pudo establecer que el funcionario realizo {{$contributions_number}} aportes en la institucion hasta abril de 2007. 
-    <br>
+<div>    
     Es cuanto se certifica para  fines consiguientes. 
 </div>
 <br>
