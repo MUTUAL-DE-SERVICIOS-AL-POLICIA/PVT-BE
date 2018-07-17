@@ -270,19 +270,15 @@
             var moda_id =button.data('modid');
             var note = button.data('note');
             var is_paid = button.data('ispaid');
-            // console.log(num_folder)
-            // console.log(id)
-            // console.log('modalidad'+moda_id)
+
             var modal = $(this)
             $('#id_folder').val(id)
             //revisar esta parte con el nuevo disenio
             //if(typeof(is_paid) === "boolean"){
                 if(is_paid == true){
-                    console.log('paid');
                     $(".modal-body #paid").prop("checked", true);
                 }
                 if(is_paid == false){
-                    console.log('nopaid');
                     $(".modal-body #nopaid").prop("checked", true);
                 }
             //}
@@ -297,7 +293,6 @@
             var button = $(event.relatedTarget)
             // console.log('metodo 2')
             var folder_id = button.data('elim')
-             console.log(folder_id);
             // console.log($('#cod_file_eli').val(cod_folder))
             modal.find('.modal-header #folder_id').val(folder_id)
         });        

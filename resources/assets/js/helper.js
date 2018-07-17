@@ -71,12 +71,3 @@ export function getGender(value) {
     }
     return gender;
 }
-export function getCurrentDate() {
-    axios.get("/get_current_date")
-    .then(response =>{
-        console.log(response);
-    }).catch(error =>{
-        console.log(error);
-    })
-    ;
-}

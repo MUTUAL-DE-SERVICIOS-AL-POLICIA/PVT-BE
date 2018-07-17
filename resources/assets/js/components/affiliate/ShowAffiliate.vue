@@ -31,10 +31,8 @@
             }
         },
         created:function(){
-            console.log('printing');
-            console.log(this.cities);
             // if(!this.city_birth){
-            //     // console.log('no tiene');
+            //     
             // let city_id =this.affiliate.city_birth_id;
             // this.city_birth=this.cities.filter(function(city) {
             //     return city.id==city_id;
@@ -122,11 +120,8 @@
                     this.form.surname_husband = this.values.surname_husband;
 
                 }
-                // console.log(this.form);
             },
             update () {
-                console.log("adfasdfasdf");
-                console.log(this.form.city_identity_card_id);
                 let uri = `/update_affiliate/${this.affiliate.id}`;
                 this.show_spinner=true;
                 axios.patch(uri,this.form)
@@ -136,7 +131,6 @@
                         this.form = response.data.affiliate;
                         this.city_birth = response.data.city_birth;
                         this.city_identity_card = response.data.city_identity_card; 
-                        console.log(response);
                         this.values.identity_card = response.data.affiliate.identity_card;
                         this.values.first_name =  response.data.affiliate.first_name;
                         this.values.second_name =  response.data.affiliate.second_name;

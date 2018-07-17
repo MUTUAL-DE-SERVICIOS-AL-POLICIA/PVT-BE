@@ -89,15 +89,13 @@ export default {
         this.total = response.data.total
         // this.summary = summary
       }).catch(function (error) {
-        console.log(error)
+        alert(error)
       });/*
       mockData(this.query).then(({ rows, total, summary }) => {
-        console.log(rows)
         // this.data = rows
       })*/
     },
     alertSelectedUids () {
-      console.log(this.selection);
       alert(this.selection.map(({ id }) => id))
     }
   }
