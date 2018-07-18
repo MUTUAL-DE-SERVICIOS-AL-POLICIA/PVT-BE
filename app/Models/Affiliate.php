@@ -461,6 +461,10 @@ class Affiliate extends Model
     {
         return sizeOf($this->getContributionsWithType(10)) > 0;
     }
+    public function selectedContributions()
+    {
+        return $this->contributions()->where('contribution_type_id', '=',null)->get()->count();
+    }
     // public function getLastDateContribution()
     // {
     //     $date = $this->contributions()->max('month_year');
