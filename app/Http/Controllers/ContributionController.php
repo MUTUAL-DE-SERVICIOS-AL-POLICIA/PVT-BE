@@ -4,6 +4,7 @@ use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate; 
 use Muserpol\Models\City;
+use Muserpol\Models\Address;
 use Muserpol\Models\AffiliateState;
 use Muserpol\Models\Category;
 use Muserpol\Models\Degree;
@@ -476,6 +477,11 @@ class ContributionController extends Controller
         }
         //RATES
         $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();
+
+        //direccion del afiliado
+        if (! sizeOf($affiliate->address) > 0) {
+            $affiliate->address[] = new Address();
+        }
         $data = [
             'contributions' => $group,
             'reims' => $group_reim,

@@ -163,7 +163,7 @@ class AffiliateController extends Controller
         ]);
 
         if (! sizeOf($affiliate->address) > 0) {
-            $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id'=>null);
+            $affiliate->address[] = new Address();
         }
 
         $data = array(
@@ -262,7 +262,7 @@ class AffiliateController extends Controller
         $affiliate->save();
         $affiliate = Affiliate::with('address')->find($affiliate->id);
         if (!sizeOf($affiliate->address) > 0) {
-            $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id'=>null);
+            $affiliate->address[] = new Address();
         }
         $datos=array('affiliate' => $affiliate ,'city_birth' => $affiliate->city_birth,'city_identity_card' => $affiliate->city_identity_card);
         return $datos;
