@@ -182,27 +182,32 @@ class RetirementFundCertificationController extends Controller
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
         $user = Auth::user();
         $footerHtml = view()->make('ret_fun.print.footer', ['bar_code'=>$this->generateBarCode($retirement_fund)])->render();
-        return \PDF::loadView(
-                'ret_fun.print.file_certification', 
+        $pages = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $pages[] = \View::make(
+                'ret_fun.print.file_certification',
                 compact(
-                    'date', 
-                    'subtitle', 
-                    'username', 
-                    'cite', 
-                    'title', 
-                    'number', 
-                    'retirement_fund', 
-                    'affiliate', 
-                    'affiliate_folders', 
+                    'date',
+                    'subtitle',
+                    'username',
+                    'cite',
+                    'title',
+                    'number',
+                    'retirement_fund',
+                    'affiliate',
+                    'affiliate_folders',
                     'applicant',
-                    'user'))
-                ->setPaper('letter')
-                ->setOption('encoding', 'utf-8')
-                ->setOption('margin-bottom', '15mm')
-                //->setOption('footer-right', 'Pagina [page] de [toPage]')
-                //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
-                ->setOption('footer-html', $footerHtml)
-                ->stream("$namepdf");
+                    'user'
+                )
+            )->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setPaper('letter')
+            ->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("$namepdf");
 
     }
     public function printLegalReview($id)
@@ -236,22 +241,32 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Revision Legal";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
         $user = Auth::user();
-        return \PDF::loadView('ret_fun.print.legal_certification', 
-            compact(
-                'date', 
-                'subtitle', 
-                'username', 
-                'title', 
-                'number', 
-                'retirement_fund', 
-                'affiliate', 
-                'submitted_documents',
-                'user'))
-            ->setPaper('letter')
+
+
+
+
+        $pages = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $pages[] = \View::make(
+                'ret_fun.print.legal_certification',
+                compact(
+                    'date',
+                    'subtitle',
+                    'username',
+                    'title',
+                    'number',
+                    'retirement_fund',
+                    'affiliate',
+                    'submitted_documents',
+                    'user'
+                )
+            )->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '15mm')
-            //->setOption('footer-right', 'Pagina [page] de [toPage]')
-            //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
             ->setOption('footer-html', $footerHtml)
             ->stream("$namepdf");
     }
