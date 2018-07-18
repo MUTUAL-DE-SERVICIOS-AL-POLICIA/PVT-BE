@@ -255,7 +255,7 @@ class RetirementFundCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("$namepdf");
     }
-    public function printBeneficiariesQualification($id)
+    public function printBeneficiariesQualification($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
         $date = date('d/m/Y');
@@ -281,10 +281,12 @@ class RetirementFundCertificationController extends Controller
             'beneficiaries' => $beneficiaries,
             'retirement_fund' => $retirement_fund,
         ];
-        // return view('ret_fun.print.beneficiaries_qualification', $data);
-        return \PDF::loadView('ret_fun.print.beneficiaries_qualification', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        if ($only_print) {
+            return \PDF::loadView('ret_fun.print.beneficiaries_qualification', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        }
+        return $data;
     }
-    public function printQualificationAverageSalaryQuotable($id)
+    public function printQualificationAverageSalaryQuotable($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
@@ -303,10 +305,12 @@ class RetirementFundCertificationController extends Controller
             'number_contributions' => $number_contributions,
         ];
         $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable());
-        return \PDF::loadView('ret_fun.print.qualification_average_salary_quotable', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("SalarioPromedioCotizable.pdf");
-
+        if ($only_print) {
+            return \PDF::loadView('ret_fun.print.qualification_average_salary_quotable', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("SalarioPromedioCotizable.pdf");
+        }
+        return $data;
     }
-    public function printDataQualification($id)
+    public function printDataQualification($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
         $date = date('d/m/Y');
@@ -414,10 +418,12 @@ class RetirementFundCertificationController extends Controller
             'retirement_fund' => $retirement_fund,
         ];
 
-        // return view('ret_fun.print.beneficiaries_qualification', $data);
-        return \PDF::loadView('ret_fun.print.qualification_step_data', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        if ($only_print) {
+            return \PDF::loadView('ret_fun.print.qualification_step_data', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        }
+        return $data;
     }
-    public function printDataQualificationAvailability($id)
+    public function printDataQualificationAvailability($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
         $date = date('d/m/Y');
@@ -493,10 +499,12 @@ class RetirementFundCertificationController extends Controller
             'retirement_fund' => $retirement_fund,
             'current_procedure' => $current_procedure,
         ];
-        // return view('ret_fun.print.beneficiaries_qualification', $data);
-        return \PDF::loadView('ret_fun.print.qualification_data_availability', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        if($only_print){
+            return \PDF::loadView('ret_fun.print.qualification_data_availability', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        }
+        return $data;
     }
-    public function printDataQualificationRetFunAvailability($id)
+    public function printDataQualificationRetFunAvailability($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
         $date = date('d/m/Y');
@@ -556,8 +564,34 @@ class RetirementFundCertificationController extends Controller
             'beneficiaries' => $beneficiaries,
             'retirement_fund' => $retirement_fund,
         ];
-        // return view('ret_fun.print.beneficiaries_qualification', $data);
-        return \PDF::loadView('ret_fun.print.qualification_data_ret_fun_availability', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        if ($only_print) {
+            return \PDF::loadView('ret_fun.print.qualification_data_ret_fun_availability', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        }
+        return $data;
+    }
+
+    public function printAllQualification($id)
+    {
+        $retirement_fund = RetirementFund::find($id);
+        $affiliate =$retirement_fund->affiliate;
+
+
+        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+        $pages[] =\View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
+        $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
+        if ($affiliate->hasAvailability()) {
+            $pages[] =\View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
+            $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setPaper('letter')
+            ->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
+            // ->setOption('footer-html', $footerHtml)
+            ->setOption('footer-right', 'Pagina [page] de [toPage]')
+            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            ->stream("namepdf");
     }
     public function printRetFunCommitmentLetter($id)
     {
