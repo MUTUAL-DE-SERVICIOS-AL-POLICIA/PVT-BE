@@ -3,6 +3,10 @@
 @section('title', 'Fondo de Retiro')
 @section('styles')
 <style>
+.elements-list .list-group-item:hover{
+    cursor: pointer;
+}
+
 .progressbar-container{
     
     /* height: 100px; */
@@ -186,12 +190,12 @@
                     </div>
                     <div class="widget-text-box">
                             <ul class="list-group elements-list">
-                                <li class="list-group-item active"><a data-toggle="tab" href="#tab-ret-fun"><i class="glyphicon glyphicon-piggy-bank"></i> Fondo de Retiro</a></li>
-                                <li class="list-group-item "><a data-toggle="tab" href="#tab-affiliate"><i class="fa fa-user"></i> Affiliado </a></li>
-                                <li class="list-group-item "><a data-toggle="tab" href="#tab-beneficiaries"><i class="fa fa-users"></i> Beneficiarios</a></li>
-                                <li class="list-group-item "><a data-toggle="tab" href="#tab-summited-document"><i class="fa fa-file"></i> Documentos Presentados</a></li>
-                                <li class="list-group-item "><a data-toggle="tab" href="#tab-folder"><i class="fa fa-copy"></i> Archivos</a></li>                                
-                                <li class="list-group-item "><a data-toggle="tab" href="#tab-observations"><i class="fa fa-eye-slash"></i> Observaciones</a></li>                                
+                                <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Fondo de Retiro</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-affiliate" ><a href="#"><i class="fa fa-user"></i> Affiliado </a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-folder"><a href="#"><i class="fa fa-copy"></i> Archivos</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                             </ul>
                     </div>
             </div>
@@ -261,7 +265,7 @@
 @section('jss')
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
-    $( document ).ready(function() {    
+    $( document ).ready(function() {
         $('#folderDialog').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             var id=button.data('id')

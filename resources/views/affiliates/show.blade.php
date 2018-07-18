@@ -51,14 +51,14 @@
             </div>
             <div class="widget-text-box">
                     <ul class="list-group elements-list">
-                        <li class="list-group-item active"><a data-toggle="tab" href="#tab-affiliate"><i class="fa fa-address-book"></i> Información Personal </a></li>
-                        <li class="list-group-item "><a data-toggle="tab" href="#tab-police-info"><i class="fa fa-address-card"></i> Información Policial </a></li>
-                        <li class="list-group-item "><a data-toggle="tab" href="#tab-documents-scanned"><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
-                        <li class="list-group-item "><a data-toggle="tab" href="#tab-ret-fun"><i class="{{ Muserpol\Helpers\Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
-                        <li class="list-group-item "><a data-toggle="tab" href="#tab-eco-com"><i class="{{ Muserpol\Helpers\Util::IconModule(2)}}"></i> Complemento</a></li>
-                        {{-- <li class="list-group-item "><a data-toggle="tab" href="#tab-aid-cuot-mortuory"><i class="{{ Muserpol\Helpers\Util::IconModule(4)}}"></i> Cuota Mortuorio </a></li>
-                        <li class="list-group-item "><a data-toggle="tab" href="#tab-aid-mortuory"><i class="{{ Muserpol\Helpers\Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
-                        <li class="list-group-item "><a data-toggle="tab" href="#tab-observations"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
+                        <li class="list-group-item active" data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-address-book"></i> Información Personal </a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-documents-scanned"><a href="#" ><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(2)}}"></i> Complemento</a></li>
+                        {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-cuot-mortuory"><i class="{{ Muserpol\Helpers\Util::IconModule(4)}}"></i> Cuota Mortuorio </a></li>
+                        <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Muserpol\Helpers\Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
+                        <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                         
                     </ul>
             </div>
@@ -168,7 +168,9 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
-
+<style>
+    .elements-list .list-group-item:hover{ cursor: pointer; }
+</style>
 @endsection
 @section('jss')
 <script src="{{ asset('/js/datatables.js')}}"></script>
