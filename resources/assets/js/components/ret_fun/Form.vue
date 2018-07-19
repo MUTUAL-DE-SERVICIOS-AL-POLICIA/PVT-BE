@@ -61,6 +61,10 @@ export default {
 
         },
         validateSecondStep() {
+            console.log("HOLA");
+            
+            console.log(this.$refs.dos.$children[0].date_derelict);
+            console.log("/HOLA");
             if (!this.$refs.dos.$children[0].applicant_type) {
                 return false;
             }
