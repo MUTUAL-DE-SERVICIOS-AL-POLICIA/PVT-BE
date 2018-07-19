@@ -31,9 +31,7 @@ export function dateMonthYearInputMask() {
 }
 export function monthYearInputMaskAll() {
     document.querySelectorAll('input').forEach(element => {
-        
         if (element.getAttribute('data-month-year') == "true") {
-            console.log(element);
             Inputmask(dateMonthYearInputMask()).mask(element);
         }
     });
