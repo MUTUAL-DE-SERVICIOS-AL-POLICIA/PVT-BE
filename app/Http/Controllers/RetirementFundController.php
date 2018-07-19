@@ -252,7 +252,7 @@ class RetirementFundController extends Controller
                 
 
         $af = Affiliate::find($request->affiliate_id);
-        $af->date_derelict = $request->date_derelict;
+        $af->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict ;
         switch ($request->ret_fun_modality) {
             case 1:
             case 4:

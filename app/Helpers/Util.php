@@ -46,7 +46,22 @@ class Util
         $value = str_replace("Bs", "", $value);
         $value = str_replace(",", "", $value);
         return floatval(self::removeSpaces($value));
-    }    
+    }
+    public static function parseMonthYearDate($value)
+    {
+        $re = $re = '/^\d{1,2}\/\d{4}$/m';
+        preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
+        if (sizeOf($matches) > 0 ) {
+            return Carbon::createFromFormat('d/m/Y', '01/'.$value)->toDateString();
+        }
+        return 'invalid Month year';
+    }
+    public static function verifyMonthYearDate($value)
+    {
+        $re = $re = '/^\d{1,2}\/\d{4}$/m';
+        preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
+        return (sizeOf($matches) > 0);
+    }
     public static function ucw($string)
 	{
 		if ($string) {

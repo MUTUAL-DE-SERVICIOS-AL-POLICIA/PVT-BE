@@ -24,6 +24,18 @@ export function dateInputMask() {
         inputFormat: "dd/mm/yyyy",
     };
 }
+export function dateMonthYearInputMask() {
+    return {
+        alias: "mm/yyyy"
+    };
+}
+export function monthYearInputMaskAll() {
+    document.querySelectorAll('input').forEach(element => {
+        if (element.getAttribute('data-month-year') == "true") {
+            Inputmask(dateMonthYearInputMask()).mask(element);
+        }
+    });
+}
 export function parseMoney(value) {
     if (!value) {
         return 0;
