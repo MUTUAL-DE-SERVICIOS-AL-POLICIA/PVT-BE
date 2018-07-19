@@ -213,7 +213,7 @@ export default {
     console.log(this.last_date);    
     console.log('Revisando lista_aportes: ' + this.list_aportes.length)    
     this.comando = this.types.filter(function (type) {
-        return type.name  == 'Período reconocido por comando ';                                                           
+        return type.name  == 'Período reconocido por comando';                                                           
     })[0];
     this.item0_con_aporte =  this.types.filter(function (type) {
         return type.name  == 'Período en item 0 Con Aporte';   
