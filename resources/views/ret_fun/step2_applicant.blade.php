@@ -1,5 +1,4 @@
 <div class="col-lg-12">
-
     <div class="ibox float-e-margins">
         <div class="ibox-content">
             <legend>Datos del afiliado</legend>
@@ -36,7 +35,7 @@
                                 <label class="control-label">Tipo de Solicitante</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control" autofocus name="accountType" @change="change_applicant()" v-model.trim="applicant_type" v-validate.initial="'required'">
+                                <select class="form-control" name="accountType" @change="change_applicant()" v-model.trim="applicant_type" v-validate.initial="'required'">
                                     <option :value="null"></option>
                                     <option v-for="(type,index) in applicant_types" :value="index+1">@{{type}}</option>
                                 </select>

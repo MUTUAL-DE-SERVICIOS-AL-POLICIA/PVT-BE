@@ -1,4 +1,5 @@
 <script>
+import {scroller} from 'vue-scrollto/src/scrollTo'
 export default {
     data(){
         return{
@@ -43,6 +44,8 @@ export default {
                 this.showRequirementsError = ! this.showRequirementsError;
                 return false;
             }
+            const scrollToFooterCreateBeneficiaries = scroller();
+            scrollToFooterCreateBeneficiaries('#ret-fun-form-header');
             return true;
             // var deferred = $.Deferred();
 
@@ -91,6 +94,8 @@ export default {
             }
 
             this.sendApplicant();
+            const scrollToFooterCreateBeneficiaries = scroller();
+            scrollToFooterCreateBeneficiaries('#ret-fun-form-header');
             return true;
             // var deferred = $.Deferred();
 
