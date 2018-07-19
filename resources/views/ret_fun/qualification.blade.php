@@ -19,12 +19,22 @@
                     <button v-if="totalRetFun > 0" class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Datos de la Calificacion" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
                 @endif
                 @if ($affiliate->hasAvailability())
-                    <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
-                    <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                    @if ($retirement_fund->total_availability > 0)
+                        <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                    @else
+                        <button v-if="totalAvailability > 0" class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                    @endif
+                    @if($retirement_fund->total > 0)
+                        <button class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                    @else
+                        <button v-if="total > 0" class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                    @endif
                 @else
                     <button v-if="hasAvailability" class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
                     <button v-if="hasAvailability" class="btn btn-warning dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
                 @endif
+                <button class="btn btn-danger dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir todos los documentos de Calificacion"
+                    onclick="printJS({printable:'{!! route('ret_fun_print_all_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             </div>
             <div class="pull-right">
                 {{-- @if ($has_validate)
@@ -124,6 +134,8 @@
                                     </div>
                                 </transition>
                             </button>
+                        @else
+                            <button class="btn btn-primary" class="btn-outline" disabled title="Verifique antes de continuar que TODAS las contribuciones esten clasificadas." ><i class="fa fa-save"></i> Continuar</button>
                         @endif
                     </div>
                 </div>
