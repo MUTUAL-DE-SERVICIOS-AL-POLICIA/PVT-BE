@@ -275,7 +275,7 @@ class AffiliateController extends Controller
         $this->authorize('update', $affiliate);
         $affiliate->affiliate_state_id = $request->affiliate_state_id;
         $affiliate->type = $request->type;
-        $affiliate->date_entry = $request->date_entry;
+        $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;;
         $affiliate->item = $request->item;
         $affiliate->category_id = $request->category_id;
         $affiliate->degree_id = $request->degree_id;

@@ -449,9 +449,9 @@ class ContributionController extends Controller
             $quotaaid = $contribution->mortuary_quota + $quotaaid;
         }
         $total = $fondoret + $quotaaid;
-        $dateentry = Util::getStringDate($affiliate->date_entry);
+        $dateentry = Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry));
         $categories = Category::get();
-        $end = explode('-', $affiliate->date_entry);
+        $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
         $newcontributions = [];
         $month_end = $end[1];
         $year_end = $end[0];
@@ -627,7 +627,7 @@ class ContributionController extends Controller
         $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                   ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
                                                   ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                  ->where('contributions.month_year','>=',$affiliate->date_entry)
+                                                  ->where('contributions.month_year','>=', Util::parseMonthYearDate($affiliate->date_entry))
                                                   //   ->whereNull('contributions.deleted_at')
                                                   ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                   //   ->take(10)
@@ -640,7 +640,7 @@ class ContributionController extends Controller
           $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
                                                     ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
                                                     ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                    ->where('contributions.month_year','>=',$affiliate->date_entry)
+                                                    ->where('contributions.month_year','>=',Util::parseMonthYearDate($affiliate->date_entry))
                                                     // ->whereNull('contributions.deleted_at')
                                                     ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
                                                 //   ->take(10)
@@ -649,11 +649,10 @@ class ContributionController extends Controller
            $con_type=true;
         }  
         
-        
        
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
-        $date_entry = $ret_fun->affiliate->date_entry;
-        $date_derelict = $ret_fun->affiliate->date_derelict;
+        $date_entry = Util::parseMonthYearDate($ret_fun->affiliate->date_entry);
+        $date_derelict = Util::parseMonthYearDate($ret_fun->affiliate->date_derelict);
         // return $date_derelict;
         // return $contribution_types;
         //return $contributions;

@@ -49,9 +49,7 @@ class Util
     }
     public static function parseMonthYearDate($value)
     {
-        $re = $re = '/^\d{1,2}\/\d{4}$/m';
-        preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
-        if (sizeOf($matches) > 0 ) {
+        if (self::verifyMonthYearDate($value) ) {
             return Carbon::createFromFormat('d/m/Y', '01/'.$value)->toDateString();
         }
         return 'invalid Month year';
@@ -388,6 +386,9 @@ class Util
     {
         setlocale(LC_TIME, 'es_ES.utf8');
         if ($date) {
+            if (self::verifyMonthYearDate($date) ) {
+                $date = Carbon::createFromFormat('d/m/Y', '01/'.$date)->toDateString();
+            }
             if ($size == 'short') {
                 // return 05 MAY. 1983 // change %d-> %e for 5 MAY. 1983
                 return Carbon::parse($date)->formatLocalized('%d %b. %Y'); //
