@@ -28,6 +28,7 @@
                         this.ret_fun_procedure.annual_yield = response.data.annual_yield;   
                         this.ret_fun_procedure.administrative_expenses = response.data.administrative_expenses;   
                         this.ret_fun_procedure.contributions_number = response.data.contributions_number;   
+                        this.ret_fun_procedure.contribution_regulate_days = response.data.contribution_regulate_days;   
                         flash('Informacion Actualizada');
                     }).catch((response)=>{
                         this.show_spinner=false;
