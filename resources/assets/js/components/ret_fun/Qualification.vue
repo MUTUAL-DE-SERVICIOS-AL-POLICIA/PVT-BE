@@ -1,4 +1,5 @@
 <script>
+import {scroller} from 'vue-scrollto/src/scrollTo'
 import { dateInputMask, moneyInputMask, parseMoney, moneyInputMaskAll }  from "../../helper.js";
 export default {
   props: [
@@ -81,6 +82,8 @@ export default {
       totalAverageSalaryQuotable: 0,
       totalQuotes:0,
       guarantors:[],
+
+      maxPercentage: 100.00
 
     };
   },
@@ -176,6 +179,9 @@ export default {
           flash("Verificacion Correcta");
           this.showEconomicData = true
           TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_salary_quotable.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+          setTimeout(() => {
+            this.$scrollTo('#showEconomicData');
+          }, 800);
       }).catch(error =>{
           flash("Error", "error");
           this.showEconomicData = false;
@@ -225,11 +231,14 @@ export default {
         }
         TweenLite.to(this.$data, 0.5, { totalRetFun: response.data.total_ret_fun,subTotalRetFun: response.data.sub_total_ret_fun });
         moneyInputMaskAll();
+        setTimeout(() => {
+          this.$scrollTo('#showEconomicDataTotal');
+        }, 800);
       }).catch(error => {
         this.showEconomicDataTotal = false
       });
     },
-    saveTotalRetFun(){
+    saveTotalRetFun(reload){
       let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun`;
       axios.patch(uri,
         {
@@ -247,13 +256,21 @@ export default {
           retentionGuarantorCode:this.retentionGuarantorCode,
           retentionGuarantorDate:this.retentionGuarantorDate,
           guarantors: this.guarantors,
+          reload,
         }
       ).then(response =>{
+        if (reload) {
+          flash("Montos recalculados.");
+        }else{
           flash("Calculo Total guardado correctamente.");
+        }
           this.beneficiaries = response.data.beneficiaries;
           this.totalRetFun = response.data.total_ret_fun;
           this.subTotalRetFun = response.data.sub_total_ret_fun;
           this.showPercentagesRetFun = true;
+          setTimeout(() => {
+            this.$scrollTo('#showPercentagesRetFun');
+          }, 800);
       }).catch(error =>{
           flash("Error al guardar los Datos", "error");
           this.showPercentagesRetFun = false;
@@ -262,14 +279,19 @@ export default {
     // requalificationTotal(index){
     //   this.beneficiaries[index].temp_amount = (this.totalRetFun * this.beneficiaries[index].temp_percentage)/100;
     // },
-    savePercentages(){
+    savePercentages(reload){
       let uri =`/ret_fun/${this.retirementFundId}/save_percentages`;
       axios.patch(uri,
         {
           beneficiaries: this.beneficiaries,
+          reload,
         }
       ).then(response =>{
+        if (reload) {
+          flash("Montos recalculados.");
+        }else{
           flash("Porcentages actualizados a los derechohabientes.");
+        }
           this.hasAvailability = response.data.has_availability;
           this.subTotalAvailability = response.data.subtotal_availability;
           this.totalAnnualYield = response.data.total_annual_yield;
@@ -279,23 +301,37 @@ export default {
           this.finishRetFun = true,
           this.arrayDiscounts = response.data.array_discounts;
           console.log('Has Availability: '+response.data.has_availability);
-
+          setTimeout(() => {
+            if (this.hasAvailability) {
+              this.$scrollTo('#hasAvailabilityScroll');
+            }else{
+              this.$scrollTo('#wrapper');
+            }
+          }, 800);
       }).catch(error =>{
         console.log(error);
           this.finishRetFun = false,
           flash("Error al guardar los porcentages", "error");
       });
     },
-    savePercentagesAvailability(){
+    savePercentagesAvailability(reload){
       let uri =`/ret_fun/${this.retirementFundId}/save_percentages_availability`;
       axios.patch(uri,
         {
           beneficiaries: this.beneficiariesAvailability,
+          reload,
         }
       ).then(response =>{
+        if(reload){
+          flash("Montos recalculados.");
+        }else{
           flash("Montos de Disponibilidad Actualizados.");
+        }
           this.beneficiariesRetFunAvailability = response.data.beneficiaries;
           this.showPercentagesRetFunAvailability = true;
+          setTimeout(() => {
+            this.$scrollTo('#showPercentagesRetFunAvailability');
+          }, 800);
       }).catch(error =>{
           flash("Error al guardar Montos de Disponibilidad", "error");
           this.showPercentagesRetFunAvailability = false;
@@ -310,6 +346,9 @@ export default {
       ).then(response =>{
           this.finishAvailability =  true,
           flash("Montos de Fondo de Retiro + Disponibilidad Actualizados.");
+          setTimeout(() => {
+            this.$scrollTo('#wrapper');
+          }, 800);
       }).catch(error =>{
           flash("Error al guardar Montos de Fondo de Retiro + Disponibilidad", "error");
       });
@@ -320,6 +359,29 @@ export default {
     // requalificationTotalRetFunAvailability(index){
     //   this.beneficiariesRetFunAvailability[index].temp_amount_total = (this.total * this.beneficiariesAvailability[index].percentage)/100;
     // },
+    max(a, b){
+      return (parseFloat(a.toFixed(2)) > parseFloat(b.toFixed(2)) || isNaN(a));
+    },
+    colorClass(a, b){
+      if (isNaN(a)) {
+        return;
+      }
+      if (parseFloat(a.toFixed(2)) === parseFloat(b.toFixed(2))) {
+        return {
+          'text-info': true,
+        };
+      }
+      if (parseFloat(a.toFixed(2)) > parseFloat(b.toFixed(2))) {
+        return {
+          'text-danger': true,
+        };
+      }
+      if (parseFloat(a.toFixed(2)) < parseFloat(b.toFixed(2))) {
+        return{
+          'text-warning':true,
+        }
+      }
+    }
   },
   computed: {
     totalAverageSalaryQuotableAnimated: function() {

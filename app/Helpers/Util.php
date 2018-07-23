@@ -60,6 +60,17 @@ class Util
         preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
         return (sizeOf($matches) > 0);
     }
+    public static function formatMonthYear($date)
+    {
+        setlocale(LC_TIME, 'es_ES.utf8');
+        if ($date) {
+            if (self::verifyMonthYearDate($date)) {
+                $date = Carbon::createFromFormat('d/m/Y', '01/' . $date)->toDateString();
+            }
+            return Carbon::parse($date)->formatLocalized('%b. %Y');
+        }
+        return null;
+    }
     public static function ucw($string)
 	{
 		if ($string) {

@@ -126,11 +126,7 @@
                             <button class="btn btn-primary" :class="{'btn-outline': !showEconomicData}" @click="firstContinue()"><i class="fa fa-save"></i> Continuar
                                 <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicData">
                                     <div>
-                                        <i class="fa fa-check"></i>
-                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-                                        <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-                                        <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-                                        </svg>
+                                        <check-svg></check-svg>
                                     </div>
                                 </transition>
                             </button>
@@ -141,14 +137,10 @@
                 </div>
             </div>
         </div>
-        <div v-if="showEconomicData">
+        <div v-if="showEconomicData" id="showEconomicData">
             <div class="ibox" class="fadeInRight">
                 <div class="ibox-title">
                     <h5>Datos Economicos</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        <a class="close-link"><i class="fa fa-times"></i></a>
-                    </div>
                 </div>
                 <div class="ibox-content">
                     <table class="table table-bordered">
@@ -166,7 +158,7 @@
                             <tr>
                                 <td>Salario Promedio Cotizable</td>
                                 <td>@{{ totalAverageSalaryQuotableAnimated | currency }}
-                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
                                 </td>
                             </tr>
                             <tr>
@@ -178,24 +170,16 @@
                     <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar
                         <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicDataTotal">
                             <div>
-                                <i class="fa fa-check"></i>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-                                <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-                                <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-                                </svg>
+                                <check-svg></check-svg>
                             </div>
                         </transition>
                     </button>
                 </div>
             </div>
-            <div v-show="showEconomicDataTotal">
+            <div v-show="showEconomicDataTotal" id="showEconomicDataTotal">
                 <div class="ibox" class="fadeInRight">
                     <div class="ibox-title">
                         <h5>Datos Economicos Total (Descuentos)</h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                            <a class="close-link"><i class="fa fa-times"></i></a>
-                        </div>
                     </div>
                     <div class="ibox-content">
                         <table class="table table-bordered">
@@ -299,27 +283,20 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <button class="btn btn-primary" :class="{'btn-outline': !showPercentagesRetFun}" type="submit" @click="saveTotalRetFun"><i class="fa fa-save"></i> Guardar
+                        <button class="btn btn-primary" :class="{'btn-outline': !showPercentagesRetFun}" type="submit" @click="saveTotalRetFun(false)"><i class="fa fa-save"></i> Guardar
                             <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showPercentagesRetFun">
                                 <div>
-                                    <i class="fa fa-check"></i>
-                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-                                    <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-                                    <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-                                    </svg>
+                                    <check-svg></check-svg>
                                 </div>
                             </transition>
                         </button>
                     </div>
                 </div>
-                <div v-if="showPercentagesRetFun">
+                <div v-if="showPercentagesRetFun" id="showPercentagesRetFun">
                     <div class="ibox" class="fadeInRight">
                         <div class="ibox-title">
                             <h5>Calculo de las cuotas partes para los derechohabientes (Fondo de Retiro)</h5>
-                            <div class="ibox-tools">
-                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                <a class="close-link"><i class="fa fa-times"></i></a>
-                            </div>
+                            <button class="btn btn-danger btn-xs" @click="saveTotalRetFun(true)"><i class="fa fa-refresh"></i></button>
                         </div>
                         <div class="ibox-content">
                             <table class="table table-bordered">
@@ -334,41 +311,41 @@
                                 <tfoot>
                                     <tr>
                                         <th></th>
-                                        <th>@{{ totalPercentageRetFun | percentage }}</th>
-                                        <th>@{{ totalAmountRetFun | currency }}</th>
+                                        <th :class="colorClass(totalPercentageRetFun, maxPercentage)">@{{ totalPercentageRetFun | percentage }}</th>
+                                        <th :class="colorClass(totalAmountRetFun, totalRetFun)">@{{ totalAmountRetFun | currency }}</th>
                                         <th></th>
                                     </tr>
                                 </tfoot>
                                 <tbody>
                                     <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
-                                        <td>@{{ beneficiary.first_name }}</td>
-                                        <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_percentage" ></td>
-                                        <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
+                                        <td>@{{ beneficiary.full_name }}</td>
+                                        <td>
+                                            <div :class="{ 'has-error': max(totalPercentageRetFun, maxPercentage) }" >
+                                                <input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_percentage" >
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div :class="{ 'has-error': max(totalAmountRetFun,totalRetFun) }">
+                                                <input class="form-control" :class="{'text-danger':max(totalAmountRetFun,totalRetFun)}" type="number" step="0.01" v-model="beneficiary.temp_amount">
+                                            </div>
+                                        </td>
                                         <td>@{{ beneficiary.kinship.name }}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <button class="btn btn-primary" :class="{'btn-outline': !finishRetFun}" type="submit" @click="savePercentages"><i class="fa fa-save"></i> Guardar
+                            <button class="btn btn-primary" :class="{'btn-outline': !finishRetFun}" type="submit" @click="savePercentages(false)"><i class="fa fa-save"></i> Guardar
                                 <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="finishRetFun">
                                     <div>
-                                        <i class="fa fa-check"></i>
-                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-                                        <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-                                        <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-                                        </svg>
+                                        <check-svg></check-svg>
                                     </div>
                                 </transition>
                             </button>
                         </div>
                     </div>
-                    <div v-if="hasAvailability">
+                    <div v-if="hasAvailability" id="hasAvailabilityScroll">
                         <div class="ibox" class="fadeInRight">
                             <div class="ibox-title">
                                 <h5>RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD</h5>
-                                <div class="ibox-tools">
-                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                    <a class="close-link"><i class="fa fa-times"></i></a>
-                                </div>
                             </div>
                             <div class="ibox-content">
                                 <table class="table table-bordered">
@@ -409,10 +386,7 @@
                         <div class="ibox" class="fadeInRight">
                             <div class="ibox-title">
                                 <h5>Calculo de las cuotas partes para los derechohabientes</h5>
-                                <div class="ibox-tools">
-                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                    <a class="close-link"><i class="fa fa-times"></i></a>
-                                </div>
+                                <button class="btn btn-danger btn-xs" @click="savePercentages(true)"><i class="fa fa-refresh"></i></button>
                             </div>
                             <div class="ibox-content">
                                 <table class="table table-bordered">
@@ -428,40 +402,37 @@
                                         <tr>
                                             <th></th>
                                             <th>@{{ totalPercentageAvailability | percentage}}</th>
-                                            <th>@{{ totalAmountAvailability | currency }}</th>
+                                            <th :class="colorClass(totalAmountAvailability,totalAvailability)">@{{ totalAmountAvailability | currency }}</th>
                                             <th></th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
                                         <tr v-for="(beneficiary, index) in beneficiariesAvailability" :key="index">
                                             <td>@{{ beneficiary.full_name }}</td>
-                                            <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.percentage" ></td>
-                                            <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_availability"></td>
+                                            <td><input class="form-control" disabled type="number" step="0.01" v-model="beneficiary.percentage" ></td>
+                                            <td>
+                                                <div :class="{'has-error': max(totalAmountAvailability,totalAvailability) }">
+                                                    <input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_availability">
+                                                </div>
+                                            </td>
                                             <td>@{{ beneficiary.kinship.name }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                                <button class="btn btn-primary" :class="{'btn-outline': !showPercentagesRetFunAvailability}" type="submit" @click="savePercentagesAvailability"><i class="fa fa-save"></i> Guardar
+                                <button class="btn btn-primary" :class="{'btn-outline': !showPercentagesRetFunAvailability}" type="submit" @click="savePercentagesAvailability(false)"><i class="fa fa-save"></i> Guardar
                                     <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showPercentagesRetFunAvailability">
                                         <div>
-                                            <i class="fa fa-check"></i>
-                                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-                                            <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-                                            <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-                                            </svg>
+                                            <check-svg></check-svg>
                                         </div>
                                     </transition>
                                 </button>
                             </div>
                         </div>
-                        <div v-if="showPercentagesRetFunAvailability">
+                        <div v-if="showPercentagesRetFunAvailability" id="showPercentagesRetFunAvailability">
                             <div class="ibox" class="fadeInRight">
                                 <div class="ibox-title">
                                     <h5>Calculo de las cuotas partes para los derechohabientes Total</h5>
-                                    <div class="ibox-tools">
-                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                        <a class="close-link"><i class="fa fa-times"></i></a>
-                                    </div>
+                                    <button class="btn btn-danger btn-xs" @click="savePercentagesAvailability(true)"><i class="fa fa-refresh"></i></button>
                                 </div>
                                 <div class="ibox-content">
                                     <table class="table table-bordered">
@@ -477,15 +448,19 @@
                                             <tr>
                                                 <th></th>
                                                 <th>@{{ totalPercentageRetFunAvailability | percentage }}</th>
-                                                <th>@{{ totalAmountRetFunAvailability | currency }}</th>
+                                                <th :class="colorClass(totalAmountRetFunAvailability, total)">@{{ totalAmountRetFunAvailability | currency }} </th>
                                                 <th></th>
                                             </tr>
                                         </tfoot>
                                         <tbody>
                                             <tr v-for="(beneficiary, index) in beneficiariesRetFunAvailability" :key="index">
                                                 <td>@{{ beneficiary.full_name }}</td>
-                                                <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.percentage" ></td>
-                                                <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_total"></td>
+                                                <td><input class="form-control" disabled type="number" step="0.01" v-model="beneficiary.percentage" ></td>
+                                                <td>
+                                                    <div :class="{'has-error': max(totalAmountRetFunAvailability, total)}">
+                                                        <input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_total">
+                                                    </div>
+                                                </td>
                                                 <td>@{{ beneficiary.kinship.name }}</td>
                                             </tr>
                                         </tbody>
@@ -493,11 +468,7 @@
                                     <button class="btn btn-primary" :class="{'btn-outline':!finishAvailability}" type="submit" @click="saveTotalRetFunAvailability"><i class="fa fa-save"></i> Guardar
                                         <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="finishAvailability">
                                             <div>
-                                                <i class="fa fa-check"></i>
-                                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-                                                <circle class="path circle" fill="none" stroke="#ffffff" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-                                                <polyline class="path check" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-                                                </svg>
+                                                <check-svg></check-svg>
                                             </div>
                                         </transition>
                                     </button>
@@ -508,10 +479,6 @@
                             <div class="ibox" class="fadeInRight" v-if="arrayDiscounts.length">
                                 <div class="ibox-title">
                                     <h5>Total Fondo de retiro con descuentos</h5>
-                                    <div class="ibox-tools">
-                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                        <a class="close-link"><i class="fa fa-times"></i></a>
-                                    </div>
                                 </div>
                                 <div class="ibox-content">
                                     <table class="table table-bordered">
@@ -591,64 +558,6 @@
 @endsection
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
-<style>
-svg {
-  width:20px;
-  display: inline-block;
-}
-.path {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 0;
-}
-.path.circle {
-  -webkit-animation: dash 0.9s ease-in-out;
-  animation: dash 0.9s ease-in-out;
-}
-.path.line {
-  stroke-dashoffset: 1000;
-  -webkit-animation: dash 0.9s 0.35s ease-in-out forwards;
-  animation: dash 0.9s 0.35s ease-in-out forwards;
-}
-.path.check {
-  stroke-dashoffset: -100;
-  -webkit-animation: dash-check 0.9s 0.35s ease-in-out forwards;
-  animation: dash-check 0.9s 0.35s ease-in-out forwards;
-}
-
-@-webkit-keyframes dash {
-  0% {
-    stroke-dashoffset: 1000;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes dash {
-  0% {
-    stroke-dashoffset: 1000;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-@-webkit-keyframes dash-check {
-  0% {
-    stroke-dashoffset: -100;
-  }
-  100% {
-    stroke-dashoffset: 900;
-  }
-}
-@keyframes dash-check {
-  0% {
-    stroke-dashoffset: -100;
-  }
-  100% {
-    stroke-dashoffset: 900;
-  }
-}
-
-</style>
 @endsection
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
