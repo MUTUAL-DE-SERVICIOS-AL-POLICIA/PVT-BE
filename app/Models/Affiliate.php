@@ -159,6 +159,18 @@ class Affiliate extends Model
         }
         return '-';
     }
+    public function getLastBaseWage()
+    {
+        $contributions = $this->contributions()
+            ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
+            ->where('contribution_types.operator', '=', '+')
+            ->orderBy('contributions.month_year', 'desc')
+            ->get();
+        if ($contributions->count()) {
+            return $contributions->first()->base_wage;
+        }
+        return null;
+    }
     public function fullName($style = "uppercase")
     {
         return Util::fullName($this, $style);

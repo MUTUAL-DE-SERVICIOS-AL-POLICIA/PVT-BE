@@ -161,7 +161,7 @@
                         <tbody>
                             <tr>
                                 <td>Ultimo Sueldo Percibido</td>
-                                <td>Ultimo Sueldo Percibido</td>
+                                <td>Bs {{ Util::formatMoney($affiliate->getLastBaseWage()) ?? '-' }}</td>
                             </tr>
                             <tr>
                                 <td>Salario Promedio Cotizable</td>
