@@ -89,7 +89,7 @@ Vue.use(VueCurrencyFilter,
 });
 
 Vue.filter('percentage', function (value) {
-	return `${value.toFixed(4)} %`;
+	return `${value.toFixed(2)} %`;
 });
 moment.locale("es");
 Vue.filter('month', function (value) {
@@ -142,6 +142,7 @@ Vue.use(VueScrollTo, {
 /* Components */
 
 Vue.component('flash', require('./components/Flash.vue'));
+Vue.component('check-svg', require('./components/CheckSvg.vue'));
 
 //setting files
 Vue.component('ret-fun-procedure', require('./components/setting/RetFunProcedure.vue'));

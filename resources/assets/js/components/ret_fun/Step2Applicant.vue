@@ -48,7 +48,7 @@ export default {
       show_advisor_form: false,
       show_apoderado_form: false,
       applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
-      date_derelict: !!this.affiliate.date_derelict ? moment(this.affiliate.date_derelict).format('MM/YYYY') : null,
+      date_derelict: this.affiliate.date_derelict,
 
       error:{
         applicant_identity_card: false,

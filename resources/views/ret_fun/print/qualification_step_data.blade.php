@@ -14,7 +14,7 @@
             <tbody class="table-striped">
                 <tr class="text-sm">
                     <td class="w-60 text-left px-10 py-3 uppercase">ultimo sueldo percibido</td>
-                    <td class="w-25 text-right uppercase font-bold px-5 py-3"> COMMING SSON </td>
+                    <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($affiliate->getLastBaseWage()) ?? '-' }} </td>
                     <td class="w-15  text-center uppercase font-bold px-5 py-3"> Bs. </td>
                 </tr>
                 <tr class="text-sm">

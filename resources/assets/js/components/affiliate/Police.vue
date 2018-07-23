@@ -22,7 +22,7 @@ import { monthYearInputMaskAll } from "../../helper.js";
 			}
 		},
 		created(){
-			
+			monthYearInputMaskAll();
 		},
 		computed:{
 			state_name: function(){
@@ -43,6 +43,7 @@ import { monthYearInputMaskAll } from "../../helper.js";
 		methods: {
 			toggle_editing: function () {
 				this.editing = !this.editing;
+				monthYearInputMaskAll();
 				
 				if(this.editing==false)
 				{
