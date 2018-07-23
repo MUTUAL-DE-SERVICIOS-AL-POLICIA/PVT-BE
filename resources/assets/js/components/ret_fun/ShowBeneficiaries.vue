@@ -60,7 +60,8 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
             update () {
                 let uri = `/update_beneficiaries/${this.retFunId}`;
                 this.show_spinner=true;
-
+                console.log(this.beneficiaries);
+                
                 axios.patch(uri,this.beneficiaries)
                 .then((response)=>{
                     this.editing = false;
@@ -81,9 +82,10 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
                         mothers_last_name: null,
                         surname_husband: null,
                         identity_card: null,
-                        city_identity_card: null,
+                        city_identity_card_id: null,
                         birth_date: null,
                         kinship: null,
+                        state: false,
                 }
                 if(this.beneficiaries.length >= 0){
                     let last_beneficiary=this.beneficiaries[this.beneficiaries.length-1];

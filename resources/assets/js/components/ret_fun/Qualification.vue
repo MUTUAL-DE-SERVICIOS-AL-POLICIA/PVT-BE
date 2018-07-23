@@ -272,7 +272,7 @@ export default {
             this.$scrollTo('#showPercentagesRetFun');
           }, 800);
       }).catch(error =>{
-          flash("Error al guardar los Datos", "error");
+          flash("Error al guardar los Datos, Verifique que los beneficiarios tengan parentesco", "error");
           this.showPercentagesRetFun = false;
       });
     },

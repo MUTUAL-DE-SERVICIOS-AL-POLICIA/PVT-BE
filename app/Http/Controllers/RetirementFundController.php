@@ -864,7 +864,7 @@ class RetirementFundController extends Controller
             }else{
                 $beneficiary = new RetFunBeneficiary();
                 $beneficiary->retirement_fund_id = $id;
-                $beneficiary->city_identity_card_id = strtoupper(trim($new_ben['city_identity_card_id']));
+                $beneficiary->city_identity_card_id = $new_ben['city_identity_card_id'];
                 $beneficiary->kinship_id = $new_ben['kinship_id'];
                 $beneficiary->identity_card = $new_ben['identity_card'];
                 $beneficiary->last_name = strtoupper(trim($new_ben['last_name']));
@@ -874,7 +874,8 @@ class RetirementFundController extends Controller
                 $beneficiary->surname_husband = strtoupper(trim($new_ben['surname_husband']));
                 $beneficiary->birth_date = $new_ben['birth_date'];
                 $beneficiary->gender = $new_ben['gender'];
-                $old_ben->state = $new_ben['state'];
+                $beneficiary->state = $new_ben['state'];
+                // $old_ben->state = $new_ben['state'];
                 // $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
                 // $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
                 $beneficiary->type = "N";
