@@ -259,9 +259,9 @@ export default {
           this.showPercentagesRetFun = false;
       });
     },
-    requalificationTotal(index){
-      this.beneficiaries[index].temp_amount = (this.totalRetFun * this.beneficiaries[index].temp_percentage)/100;
-    },
+    // requalificationTotal(index){
+    //   this.beneficiaries[index].temp_amount = (this.totalRetFun * this.beneficiaries[index].temp_percentage)/100;
+    // },
     savePercentages(){
       let uri =`/ret_fun/${this.retirementFundId}/save_percentages`;
       axios.patch(uri,
@@ -314,12 +314,12 @@ export default {
           flash("Error al guardar Montos de Fondo de Retiro + Disponibilidad", "error");
       });
     },
-    requalificationTotalAvailability(index){
-      this.beneficiariesAvailability[index].temp_amount_availability = (this.totalAvailability * this.beneficiariesAvailability[index].percentage)/100;
-    },
-    requalificationTotalRetFunAvailability(index){
-      this.beneficiariesRetFunAvailability[index].temp_amount_total = (this.total * this.beneficiariesAvailability[index].percentage)/100;
-    },
+    // requalificationTotalAvailability(index){
+    //   this.beneficiariesAvailability[index].temp_amount_availability = (this.totalAvailability * this.beneficiariesAvailability[index].percentage)/100;
+    // },
+    // requalificationTotalRetFunAvailability(index){
+    //   this.beneficiariesRetFunAvailability[index].temp_amount_total = (this.total * this.beneficiariesAvailability[index].percentage)/100;
+    // },
   },
   computed: {
     totalAverageSalaryQuotableAnimated: function() {

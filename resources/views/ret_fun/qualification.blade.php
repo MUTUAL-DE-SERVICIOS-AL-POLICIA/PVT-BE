@@ -334,7 +334,7 @@
                                 <tfoot>
                                     <tr>
                                         <th></th>
-                                        <th>@{{ totalPercentageRetFun }}</th>
+                                        <th>@{{ totalPercentageRetFun | percentage }}</th>
                                         <th>@{{ totalAmountRetFun | currency }}</th>
                                         <th></th>
                                     </tr>
@@ -342,7 +342,7 @@
                                 <tbody>
                                     <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
                                         <td>@{{ beneficiary.first_name }}</td>
-                                        <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_percentage" @change="requalificationTotal(index)"></td>
+                                        <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_percentage" ></td>
                                         <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount"></td>
                                         <td>@{{ beneficiary.kinship.name }}</td>
                                     </tr>
@@ -427,7 +427,7 @@
                                     <tfoot>
                                         <tr>
                                             <th></th>
-                                            <th>@{{ totalPercentageAvailability }}</th>
+                                            <th>@{{ totalPercentageAvailability | percentage}}</th>
                                             <th>@{{ totalAmountAvailability | currency }}</th>
                                             <th></th>
                                         </tr>
@@ -435,7 +435,7 @@
                                     <tbody>
                                         <tr v-for="(beneficiary, index) in beneficiariesAvailability" :key="index">
                                             <td>@{{ beneficiary.full_name }}</td>
-                                            <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalAvailability(index)"></td>
+                                            <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.percentage" ></td>
                                             <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_availability"></td>
                                             <td>@{{ beneficiary.kinship.name }}</td>
                                         </tr>
@@ -476,7 +476,7 @@
                                         <tfoot>
                                             <tr>
                                                 <th></th>
-                                                <th>@{{ totalPercentageRetFunAvailability }}</th>
+                                                <th>@{{ totalPercentageRetFunAvailability | percentage }}</th>
                                                 <th>@{{ totalAmountRetFunAvailability | currency }}</th>
                                                 <th></th>
                                             </tr>
@@ -484,7 +484,7 @@
                                         <tbody>
                                             <tr v-for="(beneficiary, index) in beneficiariesRetFunAvailability" :key="index">
                                                 <td>@{{ beneficiary.full_name }}</td>
-                                                <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.percentage" @change="requalificationTotalRetFunAvailability(index)"></td>
+                                                <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.percentage" ></td>
                                                 <td><input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_total"></td>
                                                 <td>@{{ beneficiary.kinship.name }}</td>
                                             </tr>

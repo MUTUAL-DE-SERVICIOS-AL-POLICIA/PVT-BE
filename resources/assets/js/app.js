@@ -89,7 +89,7 @@ Vue.use(VueCurrencyFilter,
 });
 
 Vue.filter('percentage', function (value) {
-	return `${value.toFixed(4)} %`;
+	return `${value.toFixed(2)} %`;
 });
 moment.locale("es");
 Vue.filter('month', function (value) {
