@@ -122,7 +122,7 @@ class Util
         $wf_state = WorkflowState::where('module_id',3)->where('role_id', Session::get('rol_id'))->first();        
         $reprint = RetFunCorrelative::where('retirement_fund_id',$retirement_fund_id)->where('wf_state_id',$wf_state->id)->first();
         if(isset($reprint->id))
-            return $reprint->code;
+            return $reprint;
         $year =  date('Y');
         $role = Role::find($wf_state->role_id);
         if($role->correlative == ""){
@@ -142,9 +142,10 @@ class Util
         $correlative->wf_state_id = $wf_state->id;
         $correlative->retirement_fund_id = $retirement_fund_id;
         $correlative->code = $role->correlative;
+        $correlative->date = Carbon::now();
         $correlative->save();
 
-        return $role->correlative;
+        return $correlative;
     }
     private static $UNIDADES = [
         '',
