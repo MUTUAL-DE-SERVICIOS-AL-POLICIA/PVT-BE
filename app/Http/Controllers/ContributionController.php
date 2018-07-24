@@ -29,6 +29,7 @@ use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 use Muserpol\Models\Contribution\ContributionType;
 use Muserpol\Policies\ReimbursementPolicy;
 use Muserpol\Models\Contribution\ContributionRate;
+use DateInterval;
 class ContributionController extends Controller
 {
     /**
@@ -69,55 +70,30 @@ class ContributionController extends Controller
             return $foo;
         }
     }
-    public function getMonthContributions($id)
-    {
-        $contributions=[];
-        $lastMonths = Contribution::where('affiliate_id', $id)
-            ->orderBy('month_year', 'desc')
-            ->first();
-        if ($lastMonths) {
-            $now = Carbon::now();
-            $arrayDat = explode('-', $lastMonths->month_year);
-            $lastMonths = Carbon::create($arrayDat[0], $arrayDat[1], $arrayDat[2]);
-            $diff = $now->subMonths(1)->diffInMonths($lastMonths);                
-            $contribution = array();
-            if ($diff > 3) {
-                $month1 = Carbon::now()->subMonths(1);
-                $month2 = Carbon::now()->subMonths(2);
-                $month3 = Carbon::now()->subMonths(3);       
-                $month4 = Carbon::now()->subMonths(4);
-                $contribution1 = array('year' => $month1->format('Y'), 'month' => $month1->format('m'), 'monthyear' => $month1->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contribution2 = array('year' => $month2->format('Y'), 'month' => $month2->format('m'), 'monthyear' => $month2->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contribution3 = array('year' => $month3->format('Y'), 'month' => $month3->format('m'), 'monthyear' => $month3->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contribution4 = array('year' => $month3->format('Y'), 'month' => $month4->format('m'), 'monthyear' => $month4->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
-                $contributions = array($contribution4,$contribution3, $contribution2, $contribution1);
-            } 
-            else 
-            {
-                //$contributions=[];
-                for ($i = 0; $i < $diff; $i++) {                                    
-                    $month_diff = Carbon::now()->subMonths($i + 1);
-                    $month = explode('-', $month_diff);
-                    $montyear = $month_diff->format('m-Y');
-                    $contribution = array(
-                        'year' => $month[0], 
-                        'month' => $month[1], 
-                        'monthyear' => $montyear, 
-                        'sueldo' => 0, 
-                        'fr' => 0, 
-                        'cm' => 0, 
-                        'interes' => 0, 
-                        'subtotal' => 0
-                        );
-                    $contributions[$i] = $contribution;
-                }
-                $contributions = array_reverse($contributions);
-            }
-        }     
-        
+    private function getMonthContributions($id){    
+        $today = date('Y-m-d');//'2018-05-01';//date('Y-m-d');
+        Carbon::useMonthsOverflow(false);        
+        $start_date = Carbon::parse($today);
+        $start_date->subMonth(); //contributions are paid when month finishes                        
+        $end_date = '';
+        $end_date = Carbon::parse($today);
+        $regulairzation = Util::getRetFunCurrentProcedure()->contribution_regulate_days;            
+        $end_date->subDay($regulairzation);
+        $end_date->subMonth();//one month of arrear        
+        $contributions_array  = Contribution::whereDate('month_year','<=',$start_date->format('Y-m')."-01")->whereDate('month_year','>=',$end_date->format('Y-m')."-01")->where('affiliate_id',$id)->pluck('month_year')->toArray();                        
+        $iterator_date = $start_date;
+        $contributions = [];
+        while($iterator_date->format('Y-m') >= $end_date->format('Y-m') ){
+            if(!in_array($iterator_date->format('Y-m')."-01",$contributions_array)){                
+                $contribution = array('year' => $iterator_date->format('Y'), 'month' => $iterator_date->format('m'), 'monthyear' => $iterator_date->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                array_push($contributions,$contribution);
+            }                                    
+            $iterator_date->subMonth();                
+        }
+        $contributions = array_reverse($contributions);
         return $contributions;
     }
-    
+
     public function index()
     {        
         return 0;
@@ -431,9 +407,8 @@ class ContributionController extends Controller
         //
     }
     public function getAffiliateContributions(Affiliate $affiliate = null)
-    {        
-        
-        //codigo para obtener totales para el resument
+    {                
+        //codigo para obtener totales para el resument        
         $this->authorize('update',new Contribution);
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
@@ -447,7 +422,7 @@ class ContributionController extends Controller
             $group[$contribution->month_year] = $contribution;
             $fondoret = $contribution->retirement_fund + $fondoret;
             $quotaaid = $contribution->mortuary_quota + $quotaaid;
-        }
+        }        
         $total = $fondoret + $quotaaid;
         $dateentry = Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry));
         $categories = Category::get();
@@ -482,6 +457,7 @@ class ContributionController extends Controller
         if (! sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
         }
+        
         $data = [
             'contributions' => $group,
             'reims' => $group_reim,
@@ -494,13 +470,14 @@ class ContributionController extends Controller
             'cities' => $cities,
             'cities_objects' => $cities_objects,
             'birth_cities' => $birth_cities,
-            'new_contributions' => self::getMonthContributions($affiliate->id),
+            'new_contributions' => $this->getMonthContributions($affiliate->id),
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'commitment'    =>  $commitment,
             'today_date'         =>  date('Y-m-d'),
             'rate'  =>  $rate,
         ];
         //return  date('Y-m-d');
+        //return $affiliate;
          return view('contribution.affiliate_contributions_edit', $data);
     }
     public function storeContributions(Request $request)

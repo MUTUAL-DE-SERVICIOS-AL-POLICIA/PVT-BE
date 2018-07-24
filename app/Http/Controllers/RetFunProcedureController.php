@@ -77,6 +77,7 @@ class RetFunProcedureController extends Controller
         $procedure->annual_yield = $request->annual_yield;
         $procedure->administrative_expenses = $request->administrative_expenses;
         $procedure->contributions_number = $request->contributions_number;
+        $procedure->contribution_regulate_days = $request->contribution_regulate_days;
         $procedure->is_enabled = true;
         $procedure->save();
         return json_encode($procedure);

@@ -20,6 +20,7 @@
                                     <dt>Porcentaje de Ganancia Anual:</dt> <dd>@{{ ret_fun_procedure.annual_yield }}</dd>
                                     <dt>Porcentaje de Gastos Administrativos:</dt> <dd>@{{ ret_fun_procedure.administrative_expenses }}</dd>
                                     <dt>N&uacute;mero de Contribuciones cotizables:</dt> <dd>@{{ ret_fun_procedure.contributions_number }}</dd>
+                                    <dt>Dias l&iacute;mite de regularizaci&oacute;n de aportes directos:</dt> <dd>@{{ ret_fun_procedure.contribution_regulate_days }}</dd>
                                 </dl>
                             </div>                           
                         </div>
@@ -37,6 +38,7 @@
                                     <dt>Porcentaje de Ganancia Anual:</dt> <dd><input type="text" v-model="procedure.annual_yield" class="form-control"></dd>
                                     <dt>Porcentaje de Gastos Administrativos:</dt> <dd><input type="text" v-model="procedure.administrative_expenses" class="form-control"></dd>
                                     <dt>N&uacute;mero de Contribuciones cotizables:</dt> <dd><input type="text" v-model="procedure.contributions_number" class="form-control"></dd>
+                                    <dt>Dias l&iacute;mite de regularizaci&oacute;n de aportes directos:</dt> <dd><input type="text" v-model="procedure.contribution_regulate_days" class="form-control"></dd> 
                                 </dl>
                             </div>                          
                         </div>

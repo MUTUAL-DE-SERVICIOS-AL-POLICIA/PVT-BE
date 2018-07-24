@@ -800,6 +800,7 @@ class RetirementFundCertificationController extends Controller
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate); 
+
         $total = Util::formatMoney($retirement_fund->subtotal_ret_fun);   
         return \PDF::loadView('contribution.print.certification_contribution', compact('num','subtitle','place','retirement_fund','total','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'header', 'number'))->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
