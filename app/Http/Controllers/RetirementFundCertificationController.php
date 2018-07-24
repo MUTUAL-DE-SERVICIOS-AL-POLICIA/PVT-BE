@@ -280,7 +280,7 @@ class RetirementFundCertificationController extends Controller
 
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
 
         $number = $retirement_fund->code;
         $pdftitle = "Calificacion";
@@ -339,7 +339,7 @@ class RetirementFundCertificationController extends Controller
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
 
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;        
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
         $number = Util::getNextAreaCode($retirement_fund->id);
         $pdftitle = "Calificacion";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
@@ -458,7 +458,7 @@ class RetirementFundCertificationController extends Controller
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
 
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
         $number = $retirement_fund->code;
         $pdftitle = "Calificacion";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
@@ -537,7 +537,7 @@ class RetirementFundCertificationController extends Controller
         $username = Auth::user()->username;//agregar cuando haya roles
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries;
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
         $number = $retirement_fund->code;
         $pdftitle = "Calificacion";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
@@ -1016,7 +1016,7 @@ class RetirementFundCertificationController extends Controller
     public function printLegalDictum($id){
         $retirement_fund = RetirementFund::find($id);
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
-        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->get();
+        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderByDesc('type')->orderBy('id')->get();
 
         /** PERSON DATA */
         $person = "";
@@ -1331,7 +1331,7 @@ class RetirementFundCertificationController extends Controller
         }
         $conclusion .= "<strong>".$affiliate->fullNameWithDegree ()."</strong> con <strong>C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".</strong> cumple con los requisitos de acuerdo a Reglamento y se le reconocen los derechos para otorgar el beneficio de <strong>Fondo de Retiro Policial Solidario</strong> por <strong> ".$retirement_fund->procedure_modality->name."</strong> por el periodo de <strong>". (int)($months/12) ." AÑOS y ". ($months%12) ." MESES</strong>, determinando el monto de <strong>".Util::formatMoney($retirement_fund->ret_fun_total)." (".Util::convertir($retirement_fund->ret_fun_total).")</strong>, descontando la deuda por concepto de garantes de <strong>Bs14.327,85 (CATORCE MIL TRESCIENTOS VEINTE SIETE 85/100 BOLIVIANOS)</strong>, a solicitud de la Dirección de Estrategias Sociales e Inversiones, reconocer el <strong>Fondo de Retiro Policial Solidario</strong> por <strong>Bs27.811,63 (VEINTISIETE MIL OCHOCIENTOS ONCE 63/100 BOLIVIANOS)</strong>, a favor de los derechohabientes según el siguiente detalle:";
 
-        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->get();
+        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderByDesc('type')->orderBy('id')->get();
 
         $payments = [];
         $conclusion .= "Según información contenida en el Certificado de Descendencia presentado por la solicitante, mantener en reserva la cuota parte de: ";
