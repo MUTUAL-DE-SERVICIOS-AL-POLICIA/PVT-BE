@@ -105,5 +105,6 @@
         <p class="uppercase">Salario Promedio: <span class="font-bold">{{Util::formatMoney($total_average_salary_quotable) }}</span></p>
     </div>
     <p class="text-left">Es cuanto se certifica los ultimos {{ $number_contributions }} salarios efectivamenete percibidos previos al destino a la disponibilidad de las letras, para fines consiguientes.</p>
+    @include('ret_fun.print.signature_footer',['user'=>$user])
 </div>
 @endsection

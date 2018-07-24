@@ -18,7 +18,7 @@ $font_0: 'Noto sans';
 //original selectors
 //html, body
 %extend_1 {
-	padding: 10px 10px 15px 10px;
+	padding: 10px 10px 3px 10px;
 	margin: 0;
 	font-family: $font_0;
 	height: 100%;
@@ -31,7 +31,7 @@ body {
 	@extend %extend_1;
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 	border-radius: 0.75em;
-	border: 1px solid $black;
+	border: 1px solid $color_shark_approx;
 	// page-break-after: avoid;
 }
 table {
@@ -292,6 +292,26 @@ tr {
 .p-5 {
 	padding: 5px;
 }
+.py-100 {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+.py-50 {
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+.py-15 {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+.py-10 {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.py-5 {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
 .py-4 {
 	padding-top: 4px;
 	padding-bottom: 4px;
@@ -340,6 +360,7 @@ tr {
 	padding-left: 2px;
 	padding-right: 2px;
 }
+
 .mx-10 {
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -392,6 +413,12 @@ tr {
 }
 .m-t-50 {
 	margin-top: 50px;
+}
+.m-t-75 {
+	margin-top: 75px;
+}
+.m-t-100 {
+	margin-top: 100px;
 }
 .m-r-5 {
 	margin-right: 5px;

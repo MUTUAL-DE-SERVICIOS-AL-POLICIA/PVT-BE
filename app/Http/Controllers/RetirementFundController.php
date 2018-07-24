@@ -477,7 +477,7 @@ class RetirementFundController extends Controller
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
         
-        $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();        
+        $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderByDesc('type')->orderBy('id')->get();
         foreach ($beneficiaries as $b) {
             $b->phone_number=explode(',',$b->phone_number);
             $b->cell_phone_number=explode(',',$b->cell_phone_number);
@@ -882,7 +882,7 @@ class RetirementFundController extends Controller
                 $beneficiary->save();
             }
         }
-        $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries()->with(['kinship', 'city_identity_card', 'address'])->orderBy('type', 'desc')->orderBy('first_name', 'asc')->get();
+        $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries()->with(['kinship', 'city_identity_card', 'address'])->orderByDesc('type')->orderBy('id')->get();
         foreach ($beneficiaries as $b) {
             $b->phone_number = explode(',', $b->phone_number);
             $b->cell_phone_number = explode(',', $b->cell_phone_number);
@@ -914,19 +914,12 @@ class RetirementFundController extends Controller
     public function qualification($ret_fun_id)
     {
         $retirement_fund = RetirementFund::find($ret_fun_id);
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->get();
         $affiliate = $retirement_fund->affiliate;
         $current_procedure = RetFunProcedure::where('is_enabled','=', true)->first();
         if (! $current_procedure) {
             return "error: Verifique si existen procedures activos";
         }
         $dates_global = $affiliate->getDatesGlobal();
-
-        $cities_pluck = City::all()->pluck('first_shortened', 'id');
-        $cities = City::get();
-        $kinships = Kinship::get();
-        $birth_cities = City::all()->pluck('name', 'id');
-
         /*  qualification*/
         // $c=ContributionType::find(1);
         $group_dates = [];
@@ -972,11 +965,6 @@ class RetirementFundController extends Controller
             'affiliate' => $affiliate,
             'current_procedure' => $current_procedure,
             'all_contributions' => json_encode($contributions),
-            'cities_pluck' => $cities_pluck,
-            'birth_cities' => $birth_cities,
-            'beneficiaries' => $beneficiaries,
-            'cities' => $cities,
-            'kinships' => $kinships,
         ];
         $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable());
         return view('ret_fun.qualification', $data);
@@ -1119,7 +1107,6 @@ class RetirementFundController extends Controller
             } else {
                 $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_guarantor, 'date'=> $request->retentionGuarantorDate, 'code'=> $request->retentionGuarantorCode, 'note_code'=>$request->retentionGuarantorNoteCode]);
             }
-            
             if (sizeOf($request->guarantors)) {
                 /*
                 TODO
@@ -1159,7 +1146,7 @@ class RetirementFundController extends Controller
         $retirement_fund->total_ret_fun = $total_ret_fun;
 
         $retirement_fund->save();
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
         //create function search spouse
         $spouse_id = 2;
         $spouse = $beneficiaries->filter(function ($item) use ($spouse_id)
@@ -1220,7 +1207,6 @@ class RetirementFundController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-       
         foreach ($request->beneficiaries as $beneficiary) {
             $new_beneficiary = $retirement_fund->ret_fun_beneficiaries()->where('id',$beneficiary['id'])->first();
             if (!$new_beneficiary) {
@@ -1233,7 +1219,7 @@ class RetirementFundController extends Controller
         $availability = $affiliate->getContributionsWithType(10);
         $has_availability = sizeOf($availability) > 0;
         $total = $retirement_fund->total_ret_fun;
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
 
         $array_discounts = array();
 
@@ -1302,13 +1288,6 @@ class RetirementFundController extends Controller
                 }
             }
 
-            // $discount_type = DiscountType::where('shortened', 'anticipo')->first();
-            // $advance_payment_amount =$retirement_fund->discount_types()->find($discount_type->id) ? $retirement_fund->discount_types()->find($discount_type->id)->pivot->amount : 0;
-            // $discount_type = DiscountType::where('shortened', 'prestamo')->first();
-            // $retention_loan_payment_amount =$retirement_fund->discount_types()->find($discount_type->id) ? $retirement_fund->discount_types()->find($discount_type->id)->pivot->amount : 0;
-            // $discount_type = DiscountType::where('shortened', 'garantes')->first();
-            // $retention_guarantor_amount =$retirement_fund->discount_types()->find($discount_type->id) ? $retirement_fund->discount_types()->find($discount_type->id)->pivot->amount : 0;
-
             /* added availability */
             $array_discounts_availability = [];
             foreach($array_discounts as $value) {
@@ -1347,7 +1326,6 @@ class RetirementFundController extends Controller
         Log::info($retirement_fund->total);
         $retirement_fund->save();
         /**added function calculate sub_total_availability */
-
         foreach ($request->beneficiaries as $beneficiary) {
             $new_beneficiary = $retirement_fund->ret_fun_beneficiaries()->where('id', $beneficiary['id'])->first();
             if (!$new_beneficiary) {
@@ -1356,14 +1334,13 @@ class RetirementFundController extends Controller
             $new_beneficiary->amount_availability = $beneficiary['temp_amount_availability'];
             $new_beneficiary->save();
         }
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
         foreach ($beneficiaries as $beneficiary) {
             if($request->reload){
                 $beneficiary->temp_amount_total = round(($beneficiary->amount_availability + $beneficiary->amount_ret_fun),2);
             }else{
                 $beneficiary->temp_amount_total = $beneficiary->amount_total ? $beneficiary->amount_total : round(($beneficiary->amount_availability + $beneficiary->amount_ret_fun),2);
             }
-            
             $beneficiary->full_name = $beneficiary->fullName();
         }
         $data = [
@@ -1446,7 +1423,7 @@ class RetirementFundController extends Controller
         $actual_date = date('d-m-Y'); 
         $cite = "D.B.E/A.B.E./GMQ/N°";  
         $applicant = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('type','S')->get();
-        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('type','N')->get();
+        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('type','N')->orderBy('id')->get();
         //return $retirement_fund->affiliate_id;
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();

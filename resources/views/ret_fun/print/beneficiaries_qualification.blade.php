@@ -6,5 +6,6 @@
     @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
         @include('ret_fun.print.beneficiaries_list', ['beneficiaries'=>$beneficiaries])
     @endif
+    @include('ret_fun.print.signature_footer',['user'=>$user])
 </div>
 @endsection
