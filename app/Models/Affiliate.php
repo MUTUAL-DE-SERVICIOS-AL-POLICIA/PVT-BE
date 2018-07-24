@@ -49,6 +49,20 @@ class Affiliate extends Model
         'nua',
         'item'
     ];
+    public function getDateEntryAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('m/Y');
+    }
+    public function getDateDerelictAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('m/Y');
+    }
     public function address()
     {
         return $this->belongsToMany('Muserpol\Models\Address');
@@ -145,6 +159,18 @@ class Affiliate extends Model
         }
         return '-';
     }
+    public function getLastBaseWage()
+    {
+        $contributions = $this->contributions()
+            ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
+            ->where('contribution_types.operator', '=', '+')
+            ->orderBy('contributions.month_year', 'desc')
+            ->get();
+        if ($contributions->count()) {
+            return $contributions->first()->base_wage;
+        }
+        return null;
+    }
     public function fullName($style = "uppercase")
     {
         return Util::fullName($this, $style);
@@ -211,8 +237,8 @@ class Affiliate extends Model
     }
     public function getDatesGlobal()
     {
-        $date_start = $this->date_entry;
-        $date_end = $this->date_derelict;
+        $date_start = Util::verifyMonthYearDate($this->date_entry) ? Util::parseMonthYearDate($this->date_entry) : $this->date_entry;
+        $date_end = Util::verifyMonthYearDate( $this->date_derelict) ? Util::parseMonthYearDate( $this->date_derelict) :  $this->date_derelict;
         $dates[] = (object)array(
             'start' => ($date_start < '1976-05-01') ? "1976-05-01" : $date_start,
             'end' => $date_end

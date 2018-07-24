@@ -1,4 +1,5 @@
 <script>
+import { monthYearInputMaskAll } from "../../helper.js";
 	export default{
 		props:[
 			'affiliate'
@@ -21,7 +22,7 @@
 			}
 		},
 		created(){
-			
+			monthYearInputMaskAll();
 		},
 		computed:{
 			state_name: function(){
@@ -42,7 +43,8 @@
 		methods: {
 			toggle_editing: function () {
 				this.editing = !this.editing;
-			
+				monthYearInputMaskAll();
+				
 				if(this.editing==false)
 				{
 					this.form.affiliate_state_id = this.state.id;

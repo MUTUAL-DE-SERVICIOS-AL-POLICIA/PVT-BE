@@ -46,7 +46,31 @@ class Util
         $value = str_replace("Bs", "", $value);
         $value = str_replace(",", "", $value);
         return floatval(self::removeSpaces($value));
-    }    
+    }
+    public static function parseMonthYearDate($value)
+    {
+        if (self::verifyMonthYearDate($value) ) {
+            return Carbon::createFromFormat('d/m/Y', '01/'.$value)->toDateString();
+        }
+        return 'invalid Month year';
+    }
+    public static function verifyMonthYearDate($value)
+    {
+        $re = $re = '/^\d{1,2}\/\d{4}$/m';
+        preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
+        return (sizeOf($matches) > 0);
+    }
+    public static function formatMonthYear($date)
+    {
+        setlocale(LC_TIME, 'es_ES.utf8');
+        if ($date) {
+            if (self::verifyMonthYearDate($date)) {
+                $date = Carbon::createFromFormat('d/m/Y', '01/' . $date)->toDateString();
+            }
+            return Carbon::parse($date)->formatLocalized('%b. %Y');
+        }
+        return null;
+    }
     public static function ucw($string)
 	{
 		if ($string) {
@@ -373,6 +397,9 @@ class Util
     {
         setlocale(LC_TIME, 'es_ES.utf8');
         if ($date) {
+            if (self::verifyMonthYearDate($date) ) {
+                $date = Carbon::createFromFormat('d/m/Y', '01/'.$date)->toDateString();
+            }
             if ($size == 'short') {
                 // return 05 MAY. 1983 // change %d-> %e for 5 MAY. 1983
                 return Carbon::parse($date)->formatLocalized('%d %b. %Y'); //

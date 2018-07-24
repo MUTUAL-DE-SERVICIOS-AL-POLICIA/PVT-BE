@@ -43,7 +43,7 @@
             //     return city.id==city_id;
             // })[0];
             // }
-            
+
         },
         computed:{
             age: function(){

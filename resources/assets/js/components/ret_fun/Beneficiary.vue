@@ -304,11 +304,11 @@ export default {
     //     this.beneficiary.city_identity_card_id = data.city_identity_card_id;
     //   }
     //   else 
-      this.beneficiary.city_identity_card_id = 0;
+      this.beneficiary.city_identity_card_id = data.city_identity_card_id;
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
       this.beneficiary.gender = data.gender;
-      this.beneficiary.state = data.state;
+      this.beneficiary.state = !! data.state ? data.state : false;
     },
     getGenderBeneficiary(value){
         return getGender(value);

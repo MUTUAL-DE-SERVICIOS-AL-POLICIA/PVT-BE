@@ -252,7 +252,7 @@ class RetirementFundController extends Controller
                 
 
         $af = Affiliate::find($request->affiliate_id);
-        $af->date_derelict = $request->date_derelict;
+        $af->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict ;
         switch ($request->ret_fun_modality) {
             case 1:
             case 4:
@@ -864,7 +864,7 @@ class RetirementFundController extends Controller
             }else{
                 $beneficiary = new RetFunBeneficiary();
                 $beneficiary->retirement_fund_id = $id;
-                $beneficiary->city_identity_card_id = strtoupper(trim($new_ben['city_identity_card_id']));
+                $beneficiary->city_identity_card_id = $new_ben['city_identity_card_id'];
                 $beneficiary->kinship_id = $new_ben['kinship_id'];
                 $beneficiary->identity_card = $new_ben['identity_card'];
                 $beneficiary->last_name = strtoupper(trim($new_ben['last_name']));
@@ -874,7 +874,8 @@ class RetirementFundController extends Controller
                 $beneficiary->surname_husband = strtoupper(trim($new_ben['surname_husband']));
                 $beneficiary->birth_date = $new_ben['birth_date'];
                 $beneficiary->gender = $new_ben['gender'];
-                $old_ben->state = $new_ben['state'];
+                $beneficiary->state = $new_ben['state'];
+                // $old_ben->state = $new_ben['state'];
                 // $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
                 // $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
                 $beneficiary->type = "N";
@@ -1184,15 +1185,27 @@ class RetirementFundController extends Controller
             $beneficiary->full_name = $beneficiary->fullName();
             if ($beneficiary->kinship->id == $spouse_id ) {
                 if ($one_spouse <= 1) {
-                    $beneficiary->temp_percentage = $total_spouse_percentage;
-                    $beneficiary->temp_amount = $total_spouse;
+                    // recalculate
+                    if ($request->reload) {
+                        $beneficiary->temp_percentage = $total_spouse_percentage;
+                        $beneficiary->temp_amount = $total_spouse;
+                    }else{
+                        $beneficiary->temp_percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_spouse_percentage;
+                        $beneficiary->temp_amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_spouse;
+                    }
                 }else{
                     return response('error', 500);
                 }
                 $one_spouse++;
             } else {
-                $beneficiary->temp_percentage = $total_derechohabientes_percentage;
-                $beneficiary->temp_amount = $total_derechohabientes;
+                //recalculate
+                if ($request->reload) {
+                    $beneficiary->temp_percentage = $total_derechohabientes_percentage;
+                    $beneficiary->temp_amount = $total_derechohabientes;
+                }else{
+                    $beneficiary->temp_percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_derechohabientes_percentage;
+                    $beneficiary->temp_amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_derechohabientes;
+                }
             }
         }
         $data = [
@@ -1271,13 +1284,21 @@ class RetirementFundController extends Controller
                 $beneficiary->full_name = $beneficiary->fullName();
                 if ($beneficiary->kinship->id == $spouse_id) {
                     if ($one_spouse <= 1) {
-                        $beneficiary->temp_amount_availability = $total_spouse;
+                        if($request->reload){
+                            $beneficiary->temp_amount_availability = $total_spouse;
+                        }else{
+                            $beneficiary->temp_amount_availability = $beneficiary->amount_availability ? $beneficiary->amount_availability : $total_spouse;
+                        }
                     } else {
                         return response('error', 500);
                     }
                     $one_spouse++;
                 } else {
-                    $beneficiary->temp_amount_availability = $total_derechohabientes;
+                    if($request->reload){
+                        $beneficiary->temp_amount_availability = $total_derechohabientes;   
+                    }else{
+                        $beneficiary->temp_amount_availability = $beneficiary->amount_availability ? $beneficiary->amount_availability : $total_derechohabientes;
+                    }
                 }
             }
 
@@ -1337,7 +1358,12 @@ class RetirementFundController extends Controller
         }
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderBy('type', 'desc')->with('kinship')->get();
         foreach ($beneficiaries as $beneficiary) {
-            $beneficiary->temp_amount_total = round(($beneficiary->amount_availability + $beneficiary->amount_ret_fun),2);
+            if($request->reload){
+                $beneficiary->temp_amount_total = round(($beneficiary->amount_availability + $beneficiary->amount_ret_fun),2);
+            }else{
+                $beneficiary->temp_amount_total = $beneficiary->amount_total ? $beneficiary->amount_total : round(($beneficiary->amount_availability + $beneficiary->amount_ret_fun),2);
+            }
+            
             $beneficiary->full_name = $beneficiary->fullName();
         }
         $data = [

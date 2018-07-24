@@ -20,8 +20,8 @@
                         <table class="no-border" style="border:none">
                             @foreach ($c['dates'] as $d)
                             <tr class="no-border" style="border:none">
-                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::getDateFormat($d->start) ?? 'error' }} </td>
-                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::getDateFormat($d->end) ?? 'error' }} </td>
+                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($d->start) ?? 'error' }} </td>
+                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($d->end) ?? 'error' }} </td>
                             </tr>
                             @endforeach
                         </table>
