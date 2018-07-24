@@ -105,20 +105,6 @@
         <p class="uppercase">Salario Promedio: <span class="font-bold">{{Util::formatMoney($total_average_salary_quotable) }}</span></p>
     </div>
     <p class="text-left">Es cuanto se certifica los ultimos {{ $number_contributions }} salarios efectivamenete percibidos previos al destino a la disponibilidad de las letras, para fines consiguientes.</p>
-    <table class="py-100 m-t-50">
-        <tr>
-            <td class="no-border text-center text-base w-100 align-bottom">
-                <span class="font-bold">
-                    ----------------------------------------------------
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td class="no-border text-center text-base w-100">
-                <span class="font-bold block">{!! strtoupper($user->fullName()) !!}</span>
-                <div class="text-xs text-center" style="width: 350px; margin:0 auto; font-weight:100">{!! $user->position !!}</div>
-            </td>
-        </tr>
-    </table>
+    @include('ret_fun.print.signature_footer',['user'=>$user])
 </div>
 @endsection

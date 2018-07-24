@@ -154,8 +154,7 @@ class RetirementFundCertificationController extends Controller
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
-        return $pdf->setPaper('letter')
-                   ->setOption('encoding', 'utf-8')
+        return $pdf->setOption('encoding', 'utf-8')
                 //    ->setOption('margin-top', '20mm')
                    ->setOption('margin-bottom', '15mm')
                 //    ->setOption('margin-left', '25mm')
@@ -203,8 +202,7 @@ class RetirementFundCertificationController extends Controller
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
-        return $pdf->setPaper('letter')
-            ->setOption('encoding', 'utf-8')
+        return $pdf->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '15mm')
             ->setOption('footer-html', $footerHtml)
             ->stream("$namepdf");
@@ -264,8 +262,7 @@ class RetirementFundCertificationController extends Controller
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
-        return $pdf->setPaper('letter')
-            ->setOption('encoding', 'utf-8')
+        return $pdf->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '15mm')
             ->setOption('footer-html', $footerHtml)
             ->stream("$namepdf");
@@ -299,7 +296,7 @@ class RetirementFundCertificationController extends Controller
             'retirement_fund' => $retirement_fund,
         ];
         if ($only_print) {
-            return \PDF::loadView('ret_fun.print.beneficiaries_qualification', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+            return \PDF::loadView('ret_fun.print.beneficiaries_qualification', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
         }
         return $data;
     }
@@ -325,7 +322,7 @@ class RetirementFundCertificationController extends Controller
         ];
         $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable());
         if ($only_print) {
-            return \PDF::loadView('ret_fun.print.qualification_average_salary_quotable', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("SalarioPromedioCotizable.pdf");
+            return \PDF::loadView('ret_fun.print.qualification_average_salary_quotable', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("SalarioPromedioCotizable.pdf");
         }
         return $data;
     }
@@ -440,7 +437,7 @@ class RetirementFundCertificationController extends Controller
         ];
 
         if ($only_print) {
-            return \PDF::loadView('ret_fun.print.qualification_step_data', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+            return \PDF::loadView('ret_fun.print.qualification_step_data', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
         }
         return $data;
     }
@@ -523,7 +520,7 @@ class RetirementFundCertificationController extends Controller
             'current_procedure' => $current_procedure,
         ];
         if($only_print){
-            return \PDF::loadView('ret_fun.print.qualification_data_availability', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+            return \PDF::loadView('ret_fun.print.qualification_data_availability', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
         }
         return $data;
     }
@@ -590,7 +587,7 @@ class RetirementFundCertificationController extends Controller
             'retirement_fund' => $retirement_fund,
         ];
         if ($only_print) {
-            return \PDF::loadView('ret_fun.print.qualification_data_ret_fun_availability', $data)->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+            return \PDF::loadView('ret_fun.print.qualification_data_ret_fun_availability', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
         }
         return $data;
     }
@@ -619,7 +616,6 @@ class RetirementFundCertificationController extends Controller
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf
-            ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '15mm')
             // ->setOption('footer-html', $footerHtml)
@@ -666,7 +662,6 @@ class RetirementFundCertificationController extends Controller
                 'commitment'
             )
         )
-            ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
@@ -713,7 +708,6 @@ class RetirementFundCertificationController extends Controller
                 'name_user_complet'
             )
         )
-            ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
@@ -753,7 +747,6 @@ class RetirementFundCertificationController extends Controller
                 'name_beneficiary_complet'
             )
         )
-            ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
@@ -808,7 +801,7 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate); 
         $total = Util::formatMoney($retirement_fund->subtotal_ret_fun);   
-        return \PDF::loadView('contribution.print.certification_contribution', compact('num','subtitle','place','retirement_fund','total','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        return \PDF::loadView('contribution.print.certification_contribution', compact('num','subtitle','place','retirement_fund','total','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date', 'header', 'number'))->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     public function printCertificationAvailability($id)
     {
@@ -841,7 +834,7 @@ class RetirementFundCertificationController extends Controller
         //total de los aportes
         $aporte=$retirement_fund->subtotal_availability;
        
-        return \PDF::loadView('contribution.print.certification_availability', compact('num','disponibilidad','aporte','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        return \PDF::loadView('contribution.print.certification_availability', compact('num','disponibilidad','aporte','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
     public function printCertificationItem0($id)
     {
@@ -873,7 +866,7 @@ class RetirementFundCertificationController extends Controller
         $item0_type = 2;
         $total = Util::formatMoney(Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$item0_type)->sum('total'));
         
-        return \PDF::loadView('contribution.print.certification_item0', compact('itemcero','itemcero_sin_aporte','total','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        return \PDF::loadView('contribution.print.certification_item0', compact('itemcero','itemcero_sin_aporte','total','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     } 
 
     public function printCertificationSecurity($id){
@@ -937,7 +930,6 @@ class RetirementFundCertificationController extends Controller
                     'number',
                     'user',                    
                     'contributions_number'))
-                ->setPaper('letter')
                 ->setOption('encoding', 'utf-8')
                 ->setOption('margin-bottom', '15mm')
                 ->setOption('footer-right', 'Pagina [page] de [toPage]')                
@@ -1007,7 +999,6 @@ class RetirementFundCertificationController extends Controller
                     'user',
                     'certification_contribution',
                     'contributions_number'))
-                ->setPaper('letter')
                 ->setOption('encoding', 'utf-8')
                 ->setOption('margin-bottom', '15mm')
                 ->setOption('footer-right', 'Pagina [page] de [toPage]')                
@@ -1209,7 +1200,6 @@ class RetirementFundCertificationController extends Controller
         ];
 
         return \PDF::loadView('ret_fun.print.legal_dictum', $data)
-        ->setPaper('letter')
         ->setOption('encoding', 'utf-8')
         ->setOption('footer-html', $footerHtml)
         ->setOption('header-html', $headerHtml)
@@ -1394,7 +1384,6 @@ class RetirementFundCertificationController extends Controller
             ];
             
             return \PDF::loadView('ret_fun.print.headship_review', $data)
-            ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->setOption('header-html', $headerHtml)
             ->setOption('footer-html', $footerHtml)
@@ -1555,7 +1544,6 @@ class RetirementFundCertificationController extends Controller
             'actual_date'  =>  Util::getStringDate(date('Y-m-d')), 
         ];
         return \PDF::loadView('ret_fun.print.legal_resolution', $data)
-            ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->stream("jefaturaRevision.pdf");
     }

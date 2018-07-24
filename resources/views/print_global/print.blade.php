@@ -56,7 +56,7 @@
                 @endif
             </th>
         </tr>
-        <tr class="no-border"><td colspan="3" class="no-border" style="border-bottom: 1px solid #22292f;"></td></tr>
+        <tr><td colspan="3" style="border-bottom: 1px solid #22292f;"></td></tr>
         <tr>
             <td colspan="3" class="font-bold text-center text-xl uppercase">
                 {{ $title }}
