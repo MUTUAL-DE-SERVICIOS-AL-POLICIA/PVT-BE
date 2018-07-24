@@ -273,7 +273,7 @@ class RetirementFundCertificationController extends Controller
     public function printBeneficiariesQualification($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
-        $date = date('d/m/Y');
+        $date = Util::getStringDate($retirement_fund->reception_date);
         $title = $retirement_fund->procedure_modality->procedure_type->module->name;
         $user = Auth::user();
         $username = Auth::user()->username;//agregar cuando haya roles
@@ -308,7 +308,7 @@ class RetirementFundCertificationController extends Controller
         $retirement_fund = RetirementFund::find($id);
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
         $affiliate = $retirement_fund->affiliate;
-        $date = date('d/m/Y');
+        $date = Util::getStringDate($retirement_fund->reception_date);
         $title = "SALARIO PROMEDIO COTIZABLE";
         $user = Auth::user();
         $username = Auth::user()->username;//agregar cuando haya roles
@@ -332,7 +332,7 @@ class RetirementFundCertificationController extends Controller
     public function printDataQualification($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
-        $date = date('d/m/Y');
+        $date = Util::getStringDate($retirement_fund->reception_date);
         $title = $retirement_fund->procedure_modality->procedure_type->module->name;
         $user = Auth::user();
         $username = Auth::user()->username;//agregar cuando haya roles
@@ -447,7 +447,7 @@ class RetirementFundCertificationController extends Controller
     public function printDataQualificationAvailability($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
-        $date = date('d/m/Y');
+        $date = Util::getStringDate($retirement_fund->reception_date);
         // $title = $retirement_fund->procedure_modality->procedure_type->module->name;
 
         $current_procedure = Util::getRetFunCurrentProcedure();
@@ -530,7 +530,7 @@ class RetirementFundCertificationController extends Controller
     public function printDataQualificationRetFunAvailability($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
-        $date = date('d/m/Y');
+        $date = Util::getStringDate($retirement_fund->reception_date);
         // $title = $retirement_fund->procedure_modality->procedure_type->module->name;
         $title = "fondo de retiro y disponibilidad ";
         $user = Auth::user();
@@ -618,7 +618,8 @@ class RetirementFundCertificationController extends Controller
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
-        return $pdf->setPaper('letter')
+        return $pdf
+            ->setPaper('letter')
             ->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '15mm')
             // ->setOption('footer-html', $footerHtml)

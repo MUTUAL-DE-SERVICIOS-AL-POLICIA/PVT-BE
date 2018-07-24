@@ -10,7 +10,9 @@ return array(
         'footer-font-size' => 9,
         'margin-top'=> 5,
         'margin-left'=> 10,
-        'margin-right'=> 5
+        'margin-right'=> 5,
+        'page-width' => 216,
+        'page-height'=> 330,
         ),
     ),
     'image' => array(
