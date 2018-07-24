@@ -424,21 +424,26 @@ class ContributionController extends Controller
             $quotaaid = $contribution->mortuary_quota + $quotaaid;
         }        
         $total = $fondoret + $quotaaid;
-        $dateentry = Util::getStringDate($affiliate->date_entry);
-        $categories = Category::get();
-        $end = explode('-', $affiliate->date_entry);
-        $newcontributions = [];
-        $month_end = $end[1];
-        $year_end = $end[0];
-        $month_start = (date('m') - 1);
-        $year_start = date('Y');
-        $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();        
+        $dateentry = Util::getStringDate($affiliate->date_entry);        
         $summary = array(
             'fondoret' => $fondoret,
             'quotaaid' => $quotaaid,
             'total' => $total,
             'dateentry' => $dateentry
         );
+
+        $categories = Category::get();
+        $end = explode('-', $affiliate->date_entry);
+        $newcontributions = [];
+        //$month_end = $end[1];
+        $year_end = $end[0];
+
+        $init = explode('-', $affiliate->date_derelict);
+        //$month_start = (date('m') - 1);
+        $year_start = $init[0];
+
+        $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();        
+        
         $cities = City::all()->pluck('first_shortened', 'id');
         $cities_objects = City::all();
         $birth_cities = City::all()->pluck('name', 'id');
