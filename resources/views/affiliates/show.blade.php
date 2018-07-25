@@ -36,7 +36,14 @@
         @endcan
     </div>
 </div>
+@if(Session::has('message'))
+    <br>
+    <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        {{Session::get('message')}}
+    </div>
 
+@endif
 <div class="row">
            
     <div class="col-md-3" style="padding-right: 3px">
