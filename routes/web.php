@@ -113,6 +113,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
 		Route::patch('/update_information_rf', 'RetirementFundController@updateInformation')->name('update_information_rf');
+	// tags
+		Route::get('/tag_wf_state', "TagController@wfState")->name('tag_wf_state');
+		Route::get('/tag_ret_fun/{ret_fun_id}', "TagController@retFun")->name('tag_ret_fun');
+		Route::post('/update_tag_ret_fun/{ret_fun_id}', "TagController@updateRetFun")->name('update_tag_ret_fun');
 
 	//QuotaAidMortuory
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');

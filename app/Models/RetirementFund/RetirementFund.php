@@ -65,6 +65,10 @@ class RetirementFund extends Model
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetFunRecord');
     }
+    public function tags()
+    {
+        return $this->belongsToMany('Muserpol\Models\Tag');
+    }
     public function getBasicInfoCode()
     {
         $code = $this->id." ".($this->affiliate->id ?? null) ."\n". "Trámite Nro: ".$this->code."\nModalidad: ".$this->procedure_modality->name."\nSolicitante: ".($this->ret_fun_beneficiaries()->where('type', 'S')->first()->fullName() ?? null);
