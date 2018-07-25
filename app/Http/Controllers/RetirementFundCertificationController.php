@@ -165,6 +165,7 @@ class RetirementFundCertificationController extends Controller
             'affiliate'=> $affiliate,
             'degree'=> $degree,
             'submitted_documents'=> $submitted_documents,
+            'retirement_fund'=> $retirement_fund,
         ];
         $pages = [];
         for ($i = 1; $i <= 2; $i++) {
@@ -873,7 +874,6 @@ class RetirementFundCertificationController extends Controller
             'institution'=>$institution,
             'direction'=>$direction,
             'unit'=>$unit,
-            'header'=>$header,
         ];
         return \PDF::loadView('contribution.print.certification_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
@@ -935,7 +935,6 @@ class RetirementFundCertificationController extends Controller
             'institution'=>$institution,
             'direction'=>$direction,
             'unit'=>$unit,
-            'header'=>$header,
         ];
 
         return \PDF::loadView('contribution.print.certification_availability', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
@@ -997,7 +996,6 @@ class RetirementFundCertificationController extends Controller
             'institution'=>$institution,
             'direction'=>$direction,
             'unit'=>$unit,
-            'header'=>$header,
         ];
         return \PDF::loadView('contribution.print.certification_item0', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     } 
@@ -1065,8 +1063,8 @@ class RetirementFundCertificationController extends Controller
             'institution'=>$institution,
             'direction'=>$direction,
             'unit'=>$unit,
-            'header'=>$header,
             'contributions_number'=>$contributions_number,
+            'security_contributions'=>$security_contributions,
         ];
         return \PDF::loadView('contribution.print.security_certification',$data)
                 ->setOption('encoding', 'utf-8')
@@ -1139,7 +1137,6 @@ class RetirementFundCertificationController extends Controller
             'institution'=>$institution,
             'direction'=>$direction,
             'unit'=>$unit,
-            'header'=>$header,
             'certification_contribution'=>$certification_contribution,
             'contributions_number'=>$contributions_number,
         ];

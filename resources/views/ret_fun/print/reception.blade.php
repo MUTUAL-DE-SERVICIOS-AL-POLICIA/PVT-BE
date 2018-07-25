@@ -2,9 +2,17 @@
 @section('content')
 <div>
     <div style="min-height:900px;height:900px; max-height:900px;">
-        <div class="font-bold uppercase m-b-5">1.- Datos del solicitante</div>
+        <div class="font-bold uppercase m-b-5 counter">
+            Datos del Trámite
+        </div>
+        @include('ret_fun.print.info',['retirement_fund'=>$retirement_fund])
+        <div class="font-bold uppercase m-b-5 counter">
+            Datos del solicitante
+        </div>
         @include('print_global.applicant_info', ['applicant'=>$applicant])
-        <div class="font-bold uppercase m-b-5">2.- Datos Policiales del Titular</div>
+        <div class="font-bold uppercase m-b-5 counter">
+            Datos Policiales del Titular
+        </div>
             @include('print_global.only_police_info', ['affiliate'=>$affiliate])
         <div>
             <div class="text-left block">
@@ -20,7 +28,7 @@
             <div class="m-b-5">Distinguido Director:</div>
             <div class="m-b-10">Para tal efecto, adjunto folder con los requisitos exigidos de acuerdo al siguiente detalle:</div>
         </div>
-        <div class="font-bold uppercase m-b-5">3.- DOCUMENTOS RECEPCIONADOS</div>
+        <div class="font-bold uppercase m-b-5 counter">DOCUMENTOS RECEPCIONADOS</div>
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm">
@@ -76,6 +84,7 @@
                 </td>
             </tr>
         </table>
+        </ol>
     </div>
 </div>
 @endsection

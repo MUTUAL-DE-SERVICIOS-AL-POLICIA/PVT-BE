@@ -661,3 +661,10 @@ tr {
 .table-striped tr:nth-child(even) {
 	background: $color_catskill_white_approx;
 }
+body {
+	counter-reset: number 0;
+}
+.counter:before {
+	counter-increment: number;
+	content: counter(number) ".- ";
+}
