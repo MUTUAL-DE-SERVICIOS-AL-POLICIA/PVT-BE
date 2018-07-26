@@ -20,7 +20,11 @@ Breadcrumbs::register('edit_affiliate_contributions', function($breadcrumbs, $af
 	$breadcrumbs->parent('show_affiliate_contributions', $affiliate);
 	$breadcrumbs->push("Edición de Aportes", route('edit_contribution', $affiliate->id));
 });
-
+Breadcrumbs::register('affiliate_direct_contributions', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('show_affiliate_contributions', $affiliate);
+	$breadcrumbs->push("Pago de aportes directos", route('direct_contribution', $affiliate->id));
+});
 Breadcrumbs::register('retirement_fund', function($breadcrumbs)
 {
 	$breadcrumbs->push('Fondo de Retiro', URL::to('ret_fun'));

@@ -68,7 +68,13 @@ class ReimbursementController extends Controller
         $reim->affiliate_id = $request->affiliate_id;
         $reim->month_year = $request->year.'-'.$request->month.'-01';
         $reim->type = "Planilla";        
-       $reim->base_wage = $request->salary;
+        
+        if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
+            $contribution->base_wage = 0;
+        else
+            $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
+
+        $reim->base_wage = $request->salary;        
         $reim->seniority_bonus = $category->percentage*$reim->base_wage;
         $reim->study_bonus = 0;
         $reim->position_bonus = 0;

@@ -23,13 +23,21 @@
         </div>
     </div> --}}
     <div class="row">
+        @if(Session::has('message'))
+            <br>
+            <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{Session::get('message')}}
+            </div>        
+        @endif
         <div class="col-md-12 no-padding no-margins">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="pull-left">Aportes </h3>
                     <div class="text-right">
                         @can('update',new Muserpol\Models\Contribution\Contribution)
-                        <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i>
+                            <a href="{{route('direct_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes directos" ><i class="fa fa-paste"> </i> Aportes Directos </a>
+                            <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar Aportes" ><i class="fa fa-paste"></i> Gestionar Aportes </a>
                         </a>
                         @else
                         <br>
@@ -46,7 +54,7 @@
                                 <th>Grado</th>
                                 <th>Unidad</th>
                                 <th>Ítem</th>
-                                <th>Sueldo</th>
+                                <th>Sueldo</th>:ok
                                 <th>Antigüedad</th>
                                 <th>Estudio</th>
                                 <th>Cargo</th>
