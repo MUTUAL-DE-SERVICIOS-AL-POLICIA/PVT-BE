@@ -120,7 +120,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('/update_tag_ret_fun/{ret_fun_id}', "TagController@updateRetFun")->name('update_tag_ret_fun');
 		Route::get('get_tags', 'TagController@getTags')->name('tag_list');
 		Route::get('/get_tag/{tag_id}', 'TagController@getTag');
-		Route::get('/tag_wf_state', 'TagController@tagWfState');
+		Route::get('/tag_wf_state_list', 'TagController@tagWfState');
 		Route::get('/get_tag_wf_state', 'TagController@getTagWfState');
 		Route::post('/update_tag_wf_state', 'TagController@updateTagWfState');
 

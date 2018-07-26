@@ -9,6 +9,7 @@ use Muserpol\Models\RetirementFund\RetirementFund;
 use Log;
 use Muserpol\Models\Tag;
 use Yajra\Datatables\Datatables;
+use Carbon\Carbon;
 class TagController extends Controller
 {
     public function wfState()
@@ -33,7 +34,7 @@ class TagController extends Controller
                 if ($retirement_fund->tags->contains($tag_wf_state->id)) {
                     // $retirement_fund->tags()->updateExistingPivot($tag_wf_state->id);
                 }else{
-                    $retirement_fund->tags()->attach($tag_wf_state);
+                    $retirement_fund->tags()->save($tag_wf_state, ['date'=>Carbon::now(), 'user_id'=>Util::getAuthUser()->id]);
                 }
             }else{
                 if ($retirement_fund->tags->contains($tag_wf_state->id)) {
