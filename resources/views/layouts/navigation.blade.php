@@ -15,7 +15,9 @@
                             <li><a href="{{ url('user')}}"><i class="fa fa-users"></i> Usuarios</a></li>
                             <li class="divider"></li>
                             <li><a href="{{ url('permission/create')}}"><i class="fa fa-sitemap"></i> Permisos</a></li>
-                        @endif                       
+                            <li class="divider"></li>
+                            <li><a href="{{ url('tag')}}"><i class="fa fa-tag"></i> Etiquetas</a></li>
+                        @endif
 
                         <li class="divider"></li>
                         <li><a href="{{ url('logout')}}"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>

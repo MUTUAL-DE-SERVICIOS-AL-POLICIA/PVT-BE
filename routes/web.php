@@ -114,9 +114,15 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::patch('/update_information_rf', 'RetirementFundController@updateInformation')->name('update_information_rf');
 	// tags
+		Route::resource('/tag', "TagController");
 		Route::get('/tag_wf_state', "TagController@wfState")->name('tag_wf_state');
 		Route::get('/tag_ret_fun/{ret_fun_id}', "TagController@retFun")->name('tag_ret_fun');
 		Route::post('/update_tag_ret_fun/{ret_fun_id}', "TagController@updateRetFun")->name('update_tag_ret_fun');
+		Route::get('get_tags', 'TagController@getTags')->name('tag_list');
+		Route::get('/get_tag/{tag_id}', 'TagController@getTag');
+		Route::get('/tag_wf_state', 'TagController@tagWfState');
+		Route::get('/get_tag_wf_state', 'TagController@getTagWfState');
+		Route::post('/update_tag_wf_state', 'TagController@updateTagWfState');
 
 	//QuotaAidMortuory
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
