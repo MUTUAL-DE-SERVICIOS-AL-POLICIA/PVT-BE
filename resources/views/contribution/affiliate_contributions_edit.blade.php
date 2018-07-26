@@ -157,7 +157,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td id="reim{{$period}}">
+                                                    <td class="numberformat" id="reim{{$period}}">
                                                         {{$reims[$period]->total ?? '-'}}
                                                     </td>
                                                 </tr>
