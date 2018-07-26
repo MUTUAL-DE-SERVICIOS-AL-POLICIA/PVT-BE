@@ -23,20 +23,24 @@
                 </span>
             </th>
             <th class="w-20 no-padding no-margins align-top">
-                @if(isset($number))
+                @if(isset($code))
                     <table class="table-code no-padding no-margins">
                         <tbody>
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
-                                <td class="text-bold text-base">{!! $number ?? 'ERROR' !!}</td>
+                                <td class="text-bold text-base">{!! $code !!}</td>
                             </tr>
                             <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Fecha de Emisión</td>
-                                <td class="text-xs">{!! $date !!}</td>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Área</td>
+                                <td class="text-xs">{!! $area !!}</td>
                             </tr>
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
-                                <td class="text-xs">{!! $username !!}</td>
+                                <td class="text-xs">{!! $user->username !!}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Fecha</td>
+                                <td class="text-xs uppercase">{!! $date !!}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -44,12 +48,16 @@
                     <table class="table-code align-top no-padding no-margins">
                         <tbody>
                             <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Fecha de Emisión</td>
-                                <td class="text-xs">{{ $date }}</td>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Área</td>
+                                <td class="text-xs">{!! $area !!}</td>
                             </tr>
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
-                                <td class="text-xs">{!! $username !!}</td>
+                                <td class="text-xs">{!! $user->username !!}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Fecha</td>
+                                <td class="text-xs uppercase">{{ $date }}</td>
                             </tr>
                         </tbody>
                     </table>

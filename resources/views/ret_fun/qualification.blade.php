@@ -193,7 +193,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="info">
                                     <td>Sub Total fondo de retiro</td>
                                     <td>@{{ subTotalRetFun | currency }}</td>
                                 </tr>
@@ -295,14 +295,22 @@
                 <div v-if="showPercentagesRetFun" id="showPercentagesRetFun">
                     <div class="ibox" class="fadeInRight">
                         <div class="ibox-title">
-                            <h5>Calculo de las cuotas partes para los derechohabientes (Fondo de Retiro)</h5>
+                            @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                                <h5>Calculo de las cuotas partes para los derechohabientes (Fondo de Retiro) </h5>
+                            @else
+                                <h5>Calculo de del total (Fondo de Retiro) </h5>
+                            @endif
                             <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="saveTotalRetFun(true)" ><i class="fa fa-refresh"></i></button>
                         </div>
                         <div class="ibox-content">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                        @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                                            <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                        @else
+                                            <th>NOMBRE DEL TITULAR</th>
+                                        @endif
                                         <th>% DE ASIGNACION</th>
                                         <th>MONTO</th>
                                         <th>PARENTESCO</th>
@@ -385,14 +393,22 @@
                         </div>
                         <div class="ibox" class="fadeInRight">
                             <div class="ibox-title">
-                                <h5>Calculo de las cuotas partes para los derechohabientes</h5>
+                                @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                                    <h5>Calculo de las cuotas partes para los derechohabientes</h5>
+                                @else
+                                    <h5>Calculo de del total</h5>
+                                @endif
                                 <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="savePercentages(true)"><i class="fa fa-refresh"></i></button>
                             </div>
                             <div class="ibox-content">
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                            @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                                                <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                            @else
+                                                <th>NOMBRE DEL TITULAR</th>
+                                            @endif
                                             <th>% DE ASIGNACION</th>
                                             <th>MONTO</th>
                                             <th>PARENTESCO</th>
@@ -431,14 +447,22 @@
                         <div v-if="showPercentagesRetFunAvailability" id="showPercentagesRetFunAvailability">
                             <div class="ibox" class="fadeInRight">
                                 <div class="ibox-title">
-                                    <h5>Calculo de las cuotas partes para los derechohabientes Total</h5>
+                                    @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                                        <h5>Calculo de las cuotas partes para los derechohabientes (TOTAL) </h5>
+                                    @else
+                                        <h5>Calculo de del total (TOTAL) </h5>
+                                    @endif
                                     <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="savePercentagesAvailability(true)"><i class="fa fa-refresh"></i></button>
                                 </div>
                                 <div class="ibox-content">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                                @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
+                                                @else
+                                                    <th>NOMBRE DEL TITULAR</th>
+                                                @endif
                                                 <th>% DE ASIGNACION</th>
                                                 <th>MONTO</th>
                                                 <th>PARENTESCO</th>

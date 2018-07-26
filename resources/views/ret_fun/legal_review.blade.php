@@ -20,16 +20,16 @@
                 <div class="row">
                   <div class="col-md-1"></div>
                   <div class="col-md-1">
-                    <strong>N°</strong>
+                    N°
                   </div>
                   <div class="col-md-5">
-                    <strong>Documentaci&oacute;n Presentada</strong>
+                    Documentaci&oacute;n Presentada
                   </div>
                   <div class="col-md-2">
-                    <strong> Observaciones:</strong>
+                    Observaciones:
                   </div>
                   <div class="col-md-3">
-                    <strong>V°B°</strong>
+                    V°B°
                   </div>
                 </div>
                 <br> @foreach($documents as $document)

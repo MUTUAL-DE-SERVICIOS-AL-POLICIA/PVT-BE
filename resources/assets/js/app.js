@@ -172,6 +172,8 @@ Vue.component('ret-fun-qualification-group', require('./components/ret_fun/Quali
 Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));
 Vue.component('inbox-content', require('./components/inbox/Content.vue'));
 
+//tags
+Vue.component('tag-list', require('./components/TagList.vue'));
 
 
 // Quota Aid Mortuaries
