@@ -23,7 +23,10 @@ class CreateTagsTable extends Migration
         Schema::create('retirement_fund_tag', function (Blueprint $table) {
             $table->bigInteger('retirement_fund_id')->unsigned();
             $table->bigInteger('tag_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->unique(['retirement_fund_id','tag_id']);
+            $table->dateTime('date');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
             $table->foreign('tag_id')->references('id')->on('tags');
         });

@@ -67,7 +67,7 @@ class RetirementFund extends Model
     }
     public function tags()
     {
-        return $this->belongsToMany('Muserpol\Models\Tag');
+        return $this->belongsToMany('Muserpol\Models\Tag')->withPivot(['date', 'user_id']);
     }
     public function getBasicInfoCode()
     {

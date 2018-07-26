@@ -173,7 +173,9 @@ Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));
 Vue.component('inbox-content', require('./components/inbox/Content.vue'));
 
 //tags
-Vue.component('tag-list', require('./components/TagList.vue'));
+Vue.component('tag-list', require('./components/tag/TagList.vue'));
+Vue.component('tag-create', require('./components/tag/Create.vue'));
+Vue.component('tag-wf-state', require('./components/tag/WfState.vue'));
 
 
 // Quota Aid Mortuaries

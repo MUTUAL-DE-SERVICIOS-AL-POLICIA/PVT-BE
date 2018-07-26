@@ -11,6 +11,7 @@ use DB;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\Workflow;
 use Auth;
+use Log;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Workflow\WorkflowSequence;
 class DocumentController extends Controller
@@ -72,7 +73,7 @@ class DocumentController extends Controller
                 break;
             case 3:
                 # ret fun
-                $documents = RetirementFund::select(
+                $documents = RetirementFund::with('tags')->select(
                     DB::raw(
                         "
                         retirement_funds.id as id,
@@ -186,7 +187,7 @@ class DocumentController extends Controller
                 break;
             case 3:
                 # ret fun
-                $documents = RetirementFund::select(
+                $documents = RetirementFund::with('tags')->select(
                     DB::raw(
                         "
                         retirement_funds.id as id,
