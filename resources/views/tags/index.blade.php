@@ -11,6 +11,7 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Etiquetas</h3>
                     <div class="text-right">
+                        <a href="{{url('/tag_wf_state_list')}}" class="btn btn-primary"><i class="fa fa-gears" ></i> Configuracion</a>
                         <a href="{{url('tag/create')}}" class="btn btn-primary"><i class="fa fa-plus" ></i></a>
                     </div>
                 </div>
