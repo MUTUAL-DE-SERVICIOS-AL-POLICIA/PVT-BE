@@ -182,10 +182,10 @@
                                                 <tr>
                                                     <td>
                                                         <select class="" name="category[{{$period}}]">
-                                                                        @foreach($categories as $category)
-                                                                            <option value="{{$category->id}}">{{$category->percentage}}</option>
-                                                                        @endforeach
-                                                                    </select>
+                                                            @foreach($categories as $category)
+                                                                <option value="{{$category->id}}">{{$category->percentage}}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </td>
                                                 </tr>
                                                 <tr>

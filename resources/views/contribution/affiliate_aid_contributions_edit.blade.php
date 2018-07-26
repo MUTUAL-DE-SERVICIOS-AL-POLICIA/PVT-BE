@@ -182,7 +182,8 @@
                                                     <td></td>
                                                 @endif
                                             @endfor
-                                            <td>                                                
+                                            <td>     
+                                                <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" onclick="createReimbursement({{$year_start}})"><i class="fa fa-dollar"></i></button> 
                                                 <button class="btn btn-default" data-toggle="tooltip" data-placement="left" type="button" title="Guardar" onclick="storeData(this)"><i class="fa fa-save"></i></button>
                                             </td>
                                         </tr>
@@ -195,6 +196,49 @@
         </div>
     </div>
 </div>
+
+<div class="modal inmodal" id="reimbursement_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+                <h4 class="modal-title">Reintegro</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Mes</label>
+                    <select class="form-control" name="month" id="month">
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                        </select>
+                </div>
+                <div class="form-group">
+                    <label>Renta</label>
+                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
+                    <label>Aporte</label>
+                    <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                <!--<button type="submit" class="btn btn-primary">Guardar</button>-->
+                <button class="btn btn-default" type="button" title="Guardar" onclick="storeReimbursement(this)">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    
 <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
 @endsection
 
@@ -262,6 +306,13 @@ function setPeriodData(period,amount){
     alert(period+' - '+amount);
     $('#main'+period).html(amount);
 }
+function createReimbursement(year){
+    //alert(year);
+    this.actual_year = year;
+    $('#reimbursement_modal').modal('show');
+}
+
+
 //function enableDirectContribution(){
 //    $(".directContribution").removeClass('disableddiv');
 //}
