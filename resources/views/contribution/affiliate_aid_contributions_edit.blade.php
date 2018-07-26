@@ -19,32 +19,19 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        
+            {{ Breadcrumbs::render('edit_affiliate_aid_contributions', $affiliate) }}            
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-6">
-                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{ $cities_objects }}" inline-template>
-                    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                </affiliate-show> 
-                @if(isset($spouse->id))
-                    <spouse-show :spouse="{{ $spouse }}" :cities="{{ $cities_objects }}" inline-template>
-                        @include('spouses.spouse_personal_information',['spouse'=>$spouse,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                    </spouse-show>
-                @endif
-            </div>
-            <div class="col-md-6">
                 @include('contribution.aid_aditional_info',['summary',$summary])
             </div>            
             <div class="col-md-6">
                 @include('contribution.aid_commitment',['aid_commitment'=>$aid_commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
             </div>
-        </div>
-        <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
-            {{--  <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>  --}}
-        </div> 
+        </div>        
     </div>
     <div class = "col-md-12">
         <aid-contribution-create :aid-contributions="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate->id }}" ></aid-contribution-create>

@@ -9,19 +9,6 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row text-center">
     </div>
-    {{--
-    <div class="row">
-        <div class="col-md-6">
-            <affiliate-show :affiliate="{{ $affiliate }}" inline-template>
-    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
-            </affiliate-show>
-        </div>
-        <div class="col-md-6">
-            <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
-    @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
-            </affiliate-police>
-        </div>
-    </div> --}}
     <div class="row">
         @if(Session::has('message'))
             <br>

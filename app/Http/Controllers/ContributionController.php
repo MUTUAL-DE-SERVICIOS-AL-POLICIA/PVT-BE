@@ -438,6 +438,7 @@ class ContributionController extends Controller
 
         return view('contribution.affiliate_direct_contributions', $data);        
     }
+    
     public function getAffiliateContributions(Affiliate $affiliate = null)
     {                
         //codigo para obtener totales para el resument        

@@ -17,6 +17,7 @@ use Muserpol\Models\Spouse;
 use Auth;
 use Muserpol\Models\Contribution\AidCommitment;
 use Muserpol\Models\Contribution\ContributionRate;
+use Session;
 
 class AidContributionController extends Controller
 {
@@ -155,8 +156,46 @@ class AidContributionController extends Controller
         //
     }
 
+    public function directContributions(Affiliate $affiliate = null){
+
+        $commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+        if(!isset($commitment->id))
+        {            
+            Session::flash('message','No se encontró compromiso de pago');
+            return redirect('affiliate/'.$affiliate->id);    
+        }        
+        $contributions = AidContribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();        
+        //$last_contribution = AidContribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();
+        $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();        
+
+        $summary = array(
+            'aid' => $contributions->sum('total'),
+            'total' => $contributions->sum('total'),
+            'interest'  =>  $contributions->sum('interest'),
+            'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
+        );
+
+        $data = [
+            'new_contributions' => $this->getContributionDebt($affiliate->id,4),            
+            'commitment'    =>  $commitment,
+            'affiliate' =>  $affiliate,
+            'summary'   =>  $summary,
+            'last_quotable' =>  $last_contribution->quotable ?? 0,
+            'today_date'    =>  date('Y-m-d'),
+            'rate'  =>  $rate,
+        ];
+
+        return view('contribution.affiliate_direct_aid_contribution', $data);        
+    }
+
     public function getAffiliateContributions(Affiliate $affiliate)
     {                
+        $date_derelict = $affiliate->date_derelict;                
+        if(!$date_derelict){
+            Session::flash('message','Verifique la fecha desvinculación del afiliado antes de continuar');
+            return redirect('affiliate/'.$affiliate->id);
+        }
+
         $affiliate_id = $affiliate->id;
         $affiliate = Affiliate::find($affiliate_id);
         // dd($affiliate);
@@ -169,7 +208,8 @@ class AidContributionController extends Controller
         }
         $total = $aid;
         //$dateentry = Util::getStringDate($affiliate->date_derelict);
-        $dateentry = $affiliate->date_derelict;
+        $dateentry = Util::parseMonthYearDate($affiliate->date_derelict);
+        //return $dateentry;
         if($dateentry == NULL || $dateentry == "")
         $dateentry = "2017-01-01";
         $end = explode('-', $dateentry);
@@ -424,7 +464,7 @@ class AidContributionController extends Controller
         ];
         return $data;
     }
-    
+   
     private function getContributionDebt($affiliate_id,$number){        
         $contributions = [];
         $month = date('m');
