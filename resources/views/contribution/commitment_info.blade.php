@@ -33,7 +33,7 @@
                                                     Fecha de Compromiso
                                                 </div>
                                                 <div class="col-md-6">
-                                                    {{ $commitment->commitment_date }}
+                                                    {{  Util::getStringDate($commitment->commitment_date) }}
                                                 </div>
                                             </div>
                                         </td>
@@ -73,7 +73,7 @@
                                                     Fecha
                                                 </div>
                                                 <div class="col-md-6">
-                                                    {{ $commitment->commision_date }}
+                                                    {{  Util::getStringDate($commitment->commision_date) }}
                                                 </div>
                                                 </div>
                                             </td>

@@ -36,8 +36,8 @@
                     <h3 class="pull-left">Aportes </h3>
                     <div class="text-right">
                         @can('update',new Muserpol\Models\Contribution\Contribution)
-                            <a href="{{route('direct_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes directos" ><i class="fa fa-paste"> Aportes Directos</i>
-                            <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar Aportes" ><i class="fa fa-paste"> Gestionar Aportes</i>
+                            <a href="{{route('direct_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes directos" ><i class="fa fa-paste"> </i> Aportes Directos </a>
+                            <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar Aportes" ><i class="fa fa-paste"></i> Gestionar Aportes </a>
                         </a>
                         @else
                         <br>
