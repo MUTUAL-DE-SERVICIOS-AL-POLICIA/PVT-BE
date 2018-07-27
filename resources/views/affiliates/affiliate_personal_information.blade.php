@@ -45,7 +45,7 @@
                     <div class="row" v-show="affiliate.gender === 'F'">
                         
                         <div class="col-md-2"><strong>Apellido de Casada:</strong></div>
-                        <div class="col-md-4"><input type="text" class="form-control" :disabled="!editing"></div>
+                        <div class="col-md-4"><input type="text" class="form-control" v-model="form.surname_husband" :disabled="!editing"></div>
                         <div class="col-md-2"></div>
                         <div class="col-md-4"></div>
                         
