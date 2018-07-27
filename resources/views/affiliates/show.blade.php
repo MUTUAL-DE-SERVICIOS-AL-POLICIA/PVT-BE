@@ -16,7 +16,7 @@
             @else
                 <a href="{{route('create_ret_fun', $affiliate->id)}}">
                     <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO"><i class="fa fa-paste"></i> </button>
-                </a>f
+                </a>
             @endif
         @endcan
         <a href="{{route('create_quota_aid', $affiliate->id)}}">
