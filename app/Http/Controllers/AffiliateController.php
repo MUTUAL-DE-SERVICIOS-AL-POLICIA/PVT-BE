@@ -17,6 +17,7 @@ use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\AffiliateRecord;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\AffiliatePoliceRecord;
 
 class AffiliateController extends Controller
 {
@@ -128,6 +129,9 @@ class AffiliateController extends Controller
         $affiliate_records = AffiliateRecord::where('affiliate_id', $affiliate->id)
         ->orderBy('id','desc')
         ->get();
+        $affiliate_police_records = AffiliatePoliceRecord::where('affiliate_id', $affiliate->id)
+        ->orderByDesc('date')
+        ->get();
         // $quota_mortuaries = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get();
         /*$records_message=[];
         foreach($affiliate_records as $key=>$affiliate_record){
@@ -180,6 +184,7 @@ class AffiliateController extends Controller
             'states' => $states,
             'auxilio'=>$auxilio,
             'affiliate_records'=>$affiliate_records,
+            'affiliate_police_records'=>$affiliate_police_records,
             'nextcode'  =>  $nextcode,
             'has_ret_fun'   =>  isset($active_ret_fun->id)?true:false,
             //'records_message'=>$records_message

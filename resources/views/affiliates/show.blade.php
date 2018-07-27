@@ -190,6 +190,7 @@ $(document).ready(function() {
     // $('.file-box').each(function() {
     //     animationHover(this, 'pulse');
     // });
+    $('#record-table').DataTable();
 } );
 </script>
 @endsection
