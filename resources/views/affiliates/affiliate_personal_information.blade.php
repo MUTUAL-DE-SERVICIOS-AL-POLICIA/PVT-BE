@@ -77,8 +77,8 @@
                         
                         <div class="col-md-2"><strong>Edad:</strong></div>
                         <div class="col-md-4"><input v-model="age" type="text" class="form-control" disabled></div>
-                        <div class="col-md-2"><strong>Telefono:</strong></div>
-                        <div class="col-md-4"><input type="text" v-model="form.phone_number" class="form-control" :disabled="!editing"></div>
+                        <div class="col-md-2"><strong>Matricula:</strong></div>
+                        <div class="col-md-4"><input type="text" v-model="form.registration" class="form-control" :disabled="!editing"></div>
                         
                     </div>
                     <br>
@@ -86,8 +86,8 @@
                         
                         <div class="col-md-2"><strong>Celular:</strong></div>
                         <div class="col-md-4"><input type="text" v-model="form.cell_phone_number" class="form-control" :disabled="!editing"></div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-4"></div>
+                        <div class="col-md-2"><strong>Telefono:</strong></div>
+                        <div class="col-md-4"><input type="text" v-model="form.phone_number" class="form-control" :disabled="!editing"></div>
                         
                     </div>
                     <div class="hr-line-dashed"></div>

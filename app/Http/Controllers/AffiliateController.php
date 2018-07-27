@@ -226,6 +226,7 @@ class AffiliateController extends Controller
         $affiliate->city_birth_id = $request->city_birth_id;
         $affiliate->city_identity_card_id =$request->city_identity_card_id;
         $affiliate->surname_husband = $request->surname_husband;
+        $affiliate->registration = $request->registration;
 
         if (sizeOf($affiliate->address) > 0) {
             $address_id = $affiliate->address()->first()->id;
