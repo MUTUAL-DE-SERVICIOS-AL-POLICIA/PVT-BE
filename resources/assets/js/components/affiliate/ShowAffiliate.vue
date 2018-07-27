@@ -124,7 +124,7 @@
                 }
             },
             update () {
-                let uri = `/update_affiliate/${this. .id}`;
+                let uri = `/update_affiliate/${this.affiliate.id}`;
                 this.show_spinner=true;
                 axios.patch(uri,this.form)
                     .then(response=>{

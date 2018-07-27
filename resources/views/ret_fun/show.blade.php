@@ -8,7 +8,7 @@
 }
 
 .progressbar-container{
-    
+
     /* height: 100px; */
   width: 100%;
   position: realtive;
@@ -95,21 +95,21 @@
     <div class="col-md-5 text-center" style="margin-top:12px;">
             <div class="pull-left">
                 @if(Muserpol\Helpers\Util::getRol()->id == 10)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button> 
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
-            
+
             @if(Muserpol\Helpers\Util::getRol()->id == 15)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
-            
+
             @if(Muserpol\Helpers\Util::getRol()->id == 14)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Dictamen Legal" onclick="printJS({printable:'{!! route('ret_fun_print_legal_dictum', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
-            
+
             @if(Muserpol\Helpers\Util::getRol()->id == 28)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Revisi&oacute;n de Jefatura" onclick="printJS({printable:'{!! route('ret_fun_print_headship_review', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
-            
+
             @if(Muserpol\Helpers\Util::getRol()->id == 29)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Resoluci&oacute;n Legal" onclick="printJS({printable:'{!! route('ret_fun_print_legal_resolution', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
@@ -117,7 +117,7 @@
             @if(Muserpol\Helpers\Util::getRol()->id == 11)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
-            @can('view', new Muserpol\Models\Contribution\Contribution)   
+            @can('view', new Muserpol\Models\Contribution\Contribution)
             <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
                 <button class="btn btn-primary dim"  data-toggle="tooltip" data-placement="top" title=" Clasificar Aportes " >
                 <i class="fa fa-list-alt"></i>
@@ -178,12 +178,12 @@
 
 
     <div class="row">
-           
+
             <div class="col-md-3" style="padding-right: 3px">
                     <div class="widget-head-color-box yellow-bg p-lg text-center">
                         <div class="m-b-md">
                         <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado ">
-                        <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullName() }}</a>    
+                        <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullName() }}</a>
                         </h2>
                             <h4><strong>{{  $retirement_fund->affiliate->degree->name }}</strong></h4>
                         </div>
@@ -201,33 +201,33 @@
             </div>
             <br>
             <div class="col-md-9" style="padding-left: 6px">
-                
+
                     <div class="tab-content">
                             <div id="tab-ret-fun" class="tab-pane active">
-                                
+
                                         @can('update',$retirement_fund)
                                             <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" inline-template>
                                                 @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
                                             </ret-fun-info>
                                         @endcan
-                                
+
                             </div>
                             <div id="tab-affiliate" class="tab-pane">
-                                
-                                    <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template> 
+
+                                    <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
                                         @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities])
-                                    </affiliate-show>  
-                                
+                                    </affiliate-show>
+
                             </div>
                             <div id="tab-beneficiaries" class="tab-pane">
-                                    
+
                                     @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
                                         @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
                                     @endcan
-                                
+
                             </div>
                             <div id="tab-summited-document" class="tab-pane">
-                                
+
                                     @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
                                         {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}
                             <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}"
@@ -235,24 +235,24 @@
                                             @include('ret_fun.step1_requirements_edit')
                                         </ret-fun-step1-requirements-edit>
                                     @endcan
-                                
+
                             </div>
-                            
+
                             <div id="tab-folder" class="tab-pane">
-                                
+
                                     @can('view',new Muserpol\Models\AffiliateFolder)
                                         @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
                                     @endcan
-                                
-                            </div>                          
+
+                            </div>
                             <div id="tab-observations" class="tab-pane">
                                     @include('ret_fun.observation')
                             </div>
-    
+
                         </div>
-                   
+
             </div>
-         
+
     </div>
     <br>
 
@@ -299,10 +299,10 @@
             var folder_id = button.data('elim')
             // console.log($('#cod_file_eli').val(cod_folder))
             modal.find('.modal-header #folder_id').val(folder_id)
-        });        
+        });
         // console.log( "del show... " );
         $('#example').DataTable().column('1:visible').order('desc').draw();
         $('#workflow-table').DataTable().column('1:visible').order('desc').draw();
     });
 </script>
-@endsection 
+@endsection
