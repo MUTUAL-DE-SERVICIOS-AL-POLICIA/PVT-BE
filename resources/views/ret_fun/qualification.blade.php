@@ -296,7 +296,7 @@
                     <div class="ibox" class="fadeInRight">
                         <div class="ibox-title">
                             <h5>Calculo de las cuotas partes para los derechohabientes (Fondo de Retiro)</h5>
-                            <button class="btn btn-danger btn-xs" @click="saveTotalRetFun(true)"><i class="fa fa-refresh"></i></button>
+                            <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="saveTotalRetFun(true)" ><i class="fa fa-refresh"></i></button>
                         </div>
                         <div class="ibox-content">
                             <table class="table table-bordered">
@@ -386,7 +386,7 @@
                         <div class="ibox" class="fadeInRight">
                             <div class="ibox-title">
                                 <h5>Calculo de las cuotas partes para los derechohabientes</h5>
-                                <button class="btn btn-danger btn-xs" @click="savePercentages(true)"><i class="fa fa-refresh"></i></button>
+                                <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="savePercentages(true)"><i class="fa fa-refresh"></i></button>
                             </div>
                             <div class="ibox-content">
                                 <table class="table table-bordered">
@@ -432,7 +432,7 @@
                             <div class="ibox" class="fadeInRight">
                                 <div class="ibox-title">
                                     <h5>Calculo de las cuotas partes para los derechohabientes Total</h5>
-                                    <button class="btn btn-danger btn-xs" @click="savePercentagesAvailability(true)"><i class="fa fa-refresh"></i></button>
+                                    <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="savePercentagesAvailability(true)"><i class="fa fa-refresh"></i></button>
                                 </div>
                                 <div class="ibox-content">
                                     <table class="table table-bordered">
