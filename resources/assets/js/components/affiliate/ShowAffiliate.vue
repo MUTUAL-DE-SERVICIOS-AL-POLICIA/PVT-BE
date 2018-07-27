@@ -94,10 +94,7 @@
                         st= 'Casado(a)';
                         break;
 
-                }<<<<<<< HEAD
-=======
-affiliates
->>>>>>> fe88de4d94b2f846a4d8771e4c50a9ac6fd0fa82
+                }
                 return st;
             }
 
@@ -114,10 +111,7 @@ affiliates
                     this.form.second_name =  this.values.second_name;
                     this.form.last_name =  this.values.last_name;
                     this.form.mothers_last_name =  this.values.mothers_last_name;
-                    this.form.b<<<<<<< HEAD
-=======
-affiliates
->>>>>>> fe88de4d94b2f846a4d8771e4c50a9ac6fd0fa82irth_date =  this.values.birth_date;
+                    this.form.birth_date =  this.values.birth_date;
                     this.form.phone_number =  this.values.phone_number;
                     this.form.cell_phone_number =  this.values.cell_phone_numbe;
                     this.form.gender = this.values.gender;
