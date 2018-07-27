@@ -3,36 +3,32 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
+            {{ Breadcrumbs::render('show_affiliate_aid_contributions', $affiliate) }}
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row text-center">
     </div>
     <div class="row">
+            @if(Session::has('message'))
+            <br>
+            <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{Session::get('message')}}
+            </div>        
+        @endif
         <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="pull-left">Aportes de Auxilio Mortuorio</h3>
                     <div class="text-right">
-                        @can('update',new Muserpol\Models\Contribution\Contribution)
-                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
-                        <a href="{{route('edit_aid_contribution', $affiliate->id)}}">
-                            <button class="btn btn-info btn-sm" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
-                        </a>
+                        @can('update',new Muserpol\Models\Contribution\Contribution)             
+                            <a href="{{route('direct_aid_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes directos pasivo" ><i class="fa fa-paste"> </i> Aportes Directos Pasivo</a>
+                            <a href="{{route('edit_aid_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar Aportes" ><i class="fa fa-paste"></i> Gestionar Aportes Pasivos</a>
                         @else
                         <br>
                         @endcan
-                    </div>
-                    <div class="text-right">
-                        @can('update',new Muserpol\Models\Contribution\AidCommitment)
-                        <button data-animation="flip" class="btn btn-primary" ><i class="fa" class="fa-lock" ></i> </button>
-                        <a href="{{route('edit_contribution', $affiliate->id)}}">
-                            <button class="btn btn-info btn-sm" type="button" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i></button>
-                        </a>
-                        @else
-                        <br>
-                        @endcan
-                    </div>
+                    </div>                   
                 </div>
                 <div class="panel-body">
                     <table class="table table-striped table-bordered table-hover display" id="datatables-aid-contributions" cellspacing="0"

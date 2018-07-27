@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth']], function () {
         //Contributions
 		Route::resource('contribution', 'ContributionController');
 		Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions')->name('edit_contribution');
+		Route::get('affiliate/{affiliate}/contribution/direct', 'ContributionController@directContributions')->name('direct_contribution');
 		Route::post('store_contributions', 'ContributionController@storeContributions');
 
 		Route::resource('reimbursement', 'ReimbursementController');
@@ -161,6 +162,7 @@ Route::group(['middleware' => ['auth']], function () {
         //AidContributions
 		Route::resource('aid_contribution', 'AidContributionController');
 		Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
+		Route::get('affiliate/{affiliate}/aid_contribution/direct', 'AidContributionController@directContributions')->name('direct_aid_contribution');		
 		Route::post('store_aid_contributions', 'AidContributionController@storeContributions');
 		Route::get('affiliate/{affiliate}/aid_contribution', 'AidContributionController@show')->name('show_aid_contribution');
         //Route::get('get_affiliate_aid_contributions/{affiliate}', 'AidContributionController@getAffiliateAidContributionsDatatables')->name('affiliate_aid_contributions');

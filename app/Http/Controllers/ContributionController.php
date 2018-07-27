@@ -406,43 +406,83 @@ class ContributionController extends Controller
     {
         //
     }
+    public function directContributions(Affiliate $affiliate = null){
+
+        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+        if(!isset($commitment->id))
+        {            
+            Session::flash('message','No se encontró compromiso de pago');
+            return redirect('affiliate/'.$affiliate->id.'/contribution');    
+        }        
+        $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();        
+        $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();
+        $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();
+        
+        $summary = array(
+           'fondoret' => $contributions->sum('retirement_fund'),
+           'quotaaid' => $contributions->sum('mortuary_quota'),
+           'total' => $contributions->sum('total'),
+           'interest'  =>  $contributions->sum('interest'),
+           'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
+        ); 
+
+        $data = [
+            'new_contributions' => $this->getMonthContributions($affiliate->id),            
+            'commitment'    =>  $commitment,
+            'affiliate' =>  $affiliate,
+            'summary'   =>  $summary,
+            'last_quotable' =>  $last_contribution->quotable ?? 0,
+            'today_date'    =>  date('Y-m-d'),
+            'rate'  =>  $rate,
+        ];
+
+        return view('contribution.affiliate_direct_contributions', $data);        
+    }
+    
     public function getAffiliateContributions(Affiliate $affiliate = null)
     {                
         //codigo para obtener totales para el resument        
         $this->authorize('update',new Contribution);
+        $date_entry =$affiliate->date_entry;
+        $date_derelict = $affiliate->date_derelict;                
+        if(!$date_entry || !$date_derelict){
+            Session::flash('message','Verifique la fecha de entrada y desvinculación del afiliado antes de continuar');
+            return redirect('affiliate/'.$affiliate->id);
+        }
+        
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
+        
         $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
         $group = [];
         $group_reim = [];
-        foreach ($reims as $reim)
-            $group_reim[$reim->month_year] = $reim;
-        $fondoret = 0;
-        $quotaaid = 0;
+        foreach ($reims as $reim){
+            $group_reim[$reim->month_year] = $reim;        
+        }
         foreach ($contributions as $contribution) {
-            $group[$contribution->month_year] = $contribution;
-            $fondoret = $contribution->retirement_fund + $fondoret;
-            $quotaaid = $contribution->mortuary_quota + $quotaaid;
-        }        
-        $total = $fondoret + $quotaaid;
-        $dateentry = Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry));
-        $categories = Category::get();
-        $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
-        $newcontributions = [];
-        $month_end = $end[1];
-        $year_end = $end[0];
-        $month_start = (date('m') - 1);
-        $year_start = date('Y');
-        $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();        
+            $group[$contribution->month_year] = $contribution;            
+        }    
         $summary = array(
-            'fondoret' => $fondoret,
-            'quotaaid' => $quotaaid,
-            'total' => $total,
-            'dateentry' => $dateentry
-        );
+            'fondoret' => $contributions->sum('retirement_fund'),
+            'quotaaid' => $contributions->sum('mortuary_quota'),
+            'total' => $contributions->sum('total'),
+            'interest'  =>  $contributions->sum('interest'),
+            'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
+        );        
+            
+        $categories = Category::get();
         $cities = City::all()->pluck('first_shortened', 'id');
         $cities_objects = City::all();
-        $birth_cities = City::all()->pluck('name', 'id');
-        //get Commitment data
+        $birth_cities = City::all()->pluck('name', 'id');                
+        
+
+        $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
+        $month_end = $end[1];
+        $year_end = $end[0];
+
+        $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));        
+        $month_start = $start[1];
+        $year_start = $start[0];                
+
         $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
         if(!isset($commitment->id))
         {
@@ -450,8 +490,6 @@ class ContributionController extends Controller
             $commitment->id = 0;
             $commitment->affiliate_id = $affiliate->id;
         }
-        //RATES
-        $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();
 
         //direccion del afiliado
         if (! sizeOf($affiliate->address) > 0) {
@@ -469,15 +507,10 @@ class ContributionController extends Controller
             'affiliate' => $affiliate,
             'cities' => $cities,
             'cities_objects' => $cities_objects,
-            'birth_cities' => $birth_cities,
-            'new_contributions' => $this->getMonthContributions($affiliate->id),
-            'last_quotable' =>  $last_contribution->quotable ?? 0,
+            'birth_cities' => $birth_cities,                      
             'commitment'    =>  $commitment,
-            'today_date'         =>  date('Y-m-d'),
-            'rate'  =>  $rate,
-        ];
-        //return  date('Y-m-d');
-        //return $affiliate;
+            'today_date'         =>  date('Y-m-d'),            
+        ];        
          return view('contribution.affiliate_contributions_edit', $data);
     }
     public function storeContributions(Request $request)
@@ -628,8 +661,8 @@ class ContributionController extends Controller
         
        
         $contribution_types = DB::table('contribution_types')->select('id','name')->get();
-        $date_entry = Util::parseMonthYearDate($ret_fun->affiliate->date_entry);
-        $date_derelict = Util::parseMonthYearDate($ret_fun->affiliate->date_derelict);
+        $date_entry = $ret_fun->affiliate->date_entry;
+        $date_derelict = $ret_fun->affiliate->date_derelict;
         // return $date_derelict;
         // return $contribution_types;
         //return $contributions;

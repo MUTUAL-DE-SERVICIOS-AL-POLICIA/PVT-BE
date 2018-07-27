@@ -17,26 +17,35 @@
                 <a href="{{route('create_ret_fun', $affiliate->id)}}">
                     <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO"><i class="fa fa-paste"></i> </button>
                 </a>
+                <a href="{{route('create_quota_aid', $affiliate->id)}}">
+                    <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-paste"></i> </button>
+                </a>
             @endif
         @endcan
-        <a href="{{route('create_quota_aid', $affiliate->id)}}">
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-paste"></i> </button>
-        </a>
-        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
-            <i class="fa fa-history"></i>
-        </button>
-        @include('affiliates.affiliate_record', ['affiliate_records'=>$affiliate_records])
+              
         @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"></i> </button>
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
         </a>
         <a href="{{route('show_aid_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"></i> </button>
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"> </i> APORTES PASIVO </button>
         </a>
         @endcan
+
+        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
+            <i class="fa fa-history"> </i> HISTORIAL
+        </button>
+        @include('affiliates.affiliate_record', ['affiliate_records'=>$affiliate_records])
     </div>
 </div>
+@if(Session::has('message'))
+    <br>
+    <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        {{Session::get('message')}}
+    </div>
 
+@endif
 <div class="row">
            
     <div class="col-md-3" style="padding-right: 3px">
