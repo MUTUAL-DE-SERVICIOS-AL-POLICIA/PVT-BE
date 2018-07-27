@@ -73,6 +73,10 @@ class AffiliateFolderController extends Controller
     {
         //
     }
+<<<<<<< HEAD
+=======
+affiliates
+>>>>>>> fe88de4d94b2f846a4d8771e4c50a9ac6fd0fa82
     /**
      * Update the specified resource in storage.
      *
