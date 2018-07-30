@@ -31,10 +31,11 @@
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"> </i> APORTES PASIVO </button>
         </a>
         @endcan
-
-        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
-            <i class="fa fa-history"> </i> HISTORIAL
-        </button>
+        <span data-toggle="modal" data-target="#ModalRecord">
+            <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Afiliado">
+                <i class="fa fa-history" style="font-size:15px;"></i> HISTORIAL
+            </button>
+        </span>
         @include('affiliates.affiliate_record', ['affiliate_records'=>$affiliate_records])
     </div>
 </div>

@@ -119,17 +119,19 @@
             @endif
             @can('view', new Muserpol\Models\Contribution\Contribution)   
             <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
-                <button class="btn btn-primary dim"  data-toggle="tooltip" data-placement="top" title=" Clasificar Aportes " >
-                <i class="fa fa-list-alt"></i>
+                <button class="btn btn-primary btn-sm dim"  data-toggle="tooltip" data-placement="top" title="Clasificar Aportes">
+                <i class="fa fa-list-alt" style="font-size:15px"></i> Clasificar Aportes
                 </button>
             </a>
             <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
-                <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar"></i></button>
+                <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
             </a>
             @endcan
-            <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecordRetFun" data-placement="top" title="Historial del Trámite">
-                <i class="fa fa-history"></i>
-            </button>
+            <span data-toggle="modal" data-target="#ModalRecordRetFun">
+                <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
+                    <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
+                </button>
+            </span>
             @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
         </div>
         <div class="pull-right">
