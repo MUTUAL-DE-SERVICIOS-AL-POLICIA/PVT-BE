@@ -222,15 +222,14 @@
                         </select>
                 </div>
                 <div class="form-group">
-                    <label>Renta</label>
-                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
+                    <label>Monto</label>
+                    <input id="reim_rent" name="reim_rent" type="text" placeholder="Monto" class="form-control numberformat">
                     <label>Aporte</label>
                     <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                <!--<button type="submit" class="btn btn-primary">Guardar</button>-->
                 <button class="btn btn-default" type="button" title="Guardar" onclick="storeReimbursement(this)">
                     Guardar
                 </button>
@@ -310,6 +309,35 @@ function createReimbursement(year){
     //alert(year);
     this.actual_year = year;
     $('#reimbursement_modal').modal('show');
+}
+
+
+function storeReimbursement(){
+    year = this.actual_year;
+    month = $('#month').val();
+    rent = $('#reim_rent').val();        
+    total =  $('#reim_amount').val();
+    affiliate_id = $("#affiliate_id").val();
+    $.ajax({
+        url: "{{asset('aid_reimbursement')}}",
+        method: "POST",
+        data: {affiliate_id:affiliate_id,year:year,month:month,rent:rent,total:total},
+        beforeSend: function (xhr, settings) {
+            if (settings.url.indexOf(document.domain) >= 0) {
+                xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
+            }
+            //console.log($(button).closest('form').serialize());
+        },
+        success: function(result){
+            $("#reim"+result.month_year).html(result.total);
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+        }
+    });
+
+    $('#reimbursement_modal').modal('hide');
+
 }
 
 

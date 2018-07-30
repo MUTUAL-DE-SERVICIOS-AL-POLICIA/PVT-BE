@@ -28,17 +28,17 @@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-md-12">            
             <div class="col-md-6">
-    @include('contribution.aditional_info',['summary',$summary])
+                @include('contribution.aditional_info',['summary',$summary])
             </div>
 
             <div class="col-md-6">
                 @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
             </div>
         </div>        
-    </div>
+    </div> --}}
     @if(Muserpol\Helpers\Util::getRol()->id != 36)
     <div class="row">
         <div class="col-md-12">
@@ -48,7 +48,7 @@
                     <div class="ibox-title">
                         <h5>Aportes</h5>
                         <div class="ibox-tools">
-                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            {{-- <a class="collapse-link"><i class="fa fa-chevron-up"></i></a> --}}
                             <a class="fullscreen-link" data-toggle="tooltip" data-placement="bottom" title="Pantalla completa"><i class="fa fa-expand"></i></a>
                         </div>
                     </div>

@@ -438,7 +438,29 @@ class ContributionController extends Controller
 
         return view('contribution.affiliate_direct_contributions', $data);        
     }
-    
+    public function getContributionsByMonth(Affiliate $affiliate = null){
+        $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
+        $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
+        $month_end = $end[1];
+        $year_end = $end[0];
+        if($affiliate->date_derelict)
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));  
+        else
+            $start = explode('-', date('Y-m-d'));  
+        $month_start = $start[1];
+        $year_start = $start[0];
+        $data = [
+            'contributions' =>  $contributions,
+            'month_end' =>  $month_end,
+            'month_start'  =>   $month_start,
+            'year_end'  =>  $year_end,
+            'year_start'    =>  $year_start,
+        ];
+        return $data;
+        //return view('contribution.affiliate_contribution_show', $data);
+//return $affiliate->id;
+  //      return 334;
+    }
     public function getAffiliateContributions(Affiliate $affiliate = null)
     {                
         //codigo para obtener totales para el resument        

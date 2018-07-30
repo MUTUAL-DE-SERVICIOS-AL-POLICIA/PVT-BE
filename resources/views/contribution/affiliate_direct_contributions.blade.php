@@ -11,7 +11,11 @@
     <div class="row">
         <div class="col-md-12">           
             <div class="col-md-6">
-                @include('contribution.commitment_info',['commitment',$commitment])                
+                @if(Auth::user()->hasRole(12))
+                    @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate->id,'today_date'=>$today_date])                    
+                @else
+                    @include('contribution.commitment_info',['commitment',$commitment])                                
+                @endif                
             </div>
 
             <div class="col-md-6">                                

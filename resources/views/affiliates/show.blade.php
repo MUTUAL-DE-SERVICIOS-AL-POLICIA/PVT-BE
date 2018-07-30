@@ -62,6 +62,7 @@
                     <ul class="list-group elements-list">
                         <li class="list-group-item active" data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-address-book"></i> Información Personal </a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-contributions"><a href="#" ><i class="fa fa-money "></i> Aportes</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-documents-scanned"><a href="#" ><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(2)}}"></i> Complemento</a></li>
@@ -91,10 +92,19 @@
                         </affiliate-police>
 
                     </div>
-                    <div id="tab-documents-scanned" class="tab-pane">
-                        
-                        @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents])
+                    <div id="tab-contributions" class="tab-pane">                                                
+                        @include('contribution.affiliate_contribution_show',
+                        [
+                        'contributions' =>  $contributions,
+                        'month_end' =>  $month_end,
+                        'month_start'  =>   $month_start,
+                        'year_end'  =>  $year_end,
+                        'year_start'    =>  $year_start
+                        ])
+                    </div>
 
+                    <div id="tab-documents-scanned" class="tab-pane">                        
+                        @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents])
                     </div>
                     <div id="tab-ret-fun" class="tab-pane">
                         @can('update',$retirement_fund)
@@ -186,6 +196,21 @@
 <script>
 $(document).ready(function() {
     $('#example').DataTable();
+
+    function moneyInputMask() {    
+            return {
+                alias: "numeric",
+                groupSeparator: ",",
+                autoGroup: true,
+                digits: 2,
+                digitsOptional: false,        
+                placeholder: "0"
+            };
+        }
+        $('.numberformat').each(function(i, obj) {
+            Inputmask(moneyInputMask()).mask(obj);        
+        }); 
+        
     //revisar dependecias XD 
     // $('.file-box').each(function() {
     //     animationHover(this, 'pulse');
