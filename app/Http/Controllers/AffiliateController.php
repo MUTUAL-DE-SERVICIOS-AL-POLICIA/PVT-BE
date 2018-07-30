@@ -267,11 +267,11 @@ class AffiliateController extends Controller
             }
         }
 
-        $affiliate->identity_card = strtoupper($affiliate->identity_card);
-        $affiliate->first_name = strtoupper($affiliate->first_name);
-        $affiliate->second_name = strtoupper($affiliate->second_name);
-        $affiliate->last_name = strtoupper($affiliate->last_name);
-        $affiliate->mothers_last_name = strtoupper($affiliate->mothers_last_name);
+        $affiliate->identity_card = mb_strtoupper($affiliate->identity_card);
+        $affiliate->first_name = mb_strtoupper($affiliate->first_name);
+        $affiliate->second_name = mb_strtoupper($affiliate->second_name);
+        $affiliate->last_name = mb_strtoupper($affiliate->last_name);
+        $affiliate->mothers_last_name = mb_strtoupper($affiliate->mothers_last_name);
 
         $affiliate->save();
         $affiliate = Affiliate::with('address')->find($affiliate->id);
