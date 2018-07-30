@@ -218,7 +218,7 @@ class AffiliateController extends Controller
 
         $this->authorize('update', $affiliate);
 
-          $affiliate->identity_card = $request->identity_card;
+        $affiliate->identity_card = $request->identity_card;
         $affiliate->first_name = $request->first_name;
         $affiliate->second_name = $request->second_name;
         $affiliate->last_name = $request->last_name;
@@ -267,7 +267,11 @@ class AffiliateController extends Controller
             }
         }
 
-
+        $affiliate->identity_card = strtoupper($affiliate->identity_card);
+        $affiliate->first_name = strtoupper($affiliate->first_name);
+        $affiliate->second_name = strtoupper($affiliate->second_name);
+        $affiliate->last_name = strtoupper($affiliate->last_name);
+        $affiliate->mothers_last_name = strtoupper($affiliate->mothers_last_name);
 
         $affiliate->save();
         $affiliate = Affiliate::with('address')->find($affiliate->id);
