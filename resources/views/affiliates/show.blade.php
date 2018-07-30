@@ -50,13 +50,16 @@
 <div class="row">
            
     <div class="col-md-3" style="padding-right: 3px">
-            <div class="widget-head-color-box navy-bg p-lg text-center">
+            <div class="widget-head-color-box navy-bg p-sm text-center">
                 <div class="m-b-md">
-                        <h3 class="pull-left"><strong>ID: {{  $affiliate->id }}</strong></h3><br>
-                        <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado "><br>
-                            <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $affiliate->fullName() }}</a>    
+                        <div class="row m-l-sm">
+                            <h3 class="pull-left" data-toggle="tooltip" data-placement="top" title="Codigo único de Afiliado"><strong>{{  $affiliate->id }}</strong></h3>
+                        </div>
+                        <h2 class="font-bold no-margins link-affiliate" data-toggle="tooltip" data-placement="top" title="Ir al afiliado ">
+                            <a  href="{{route('affiliate.show', $affiliate->id)}}" class="link-affiliate"> {{ $affiliate->fullNameWithDegree() }}</a>
                         </h2>
-                        <h4 class="text-center"><strong>CI: {{  $affiliate->identity_card }}</strong></h4>
+                        <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cedula de Identidad"><strong>{{  $affiliate->ciWithExt() }}</strong></h3>
+                        <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $affiliate->registration }}</strong></h4>
                 </div>
             </div>
             <div class="widget-text-box">

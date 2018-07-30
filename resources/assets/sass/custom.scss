@@ -581,3 +581,12 @@ input.largerCheckbox {
 	box-shadow: 0px 0px 11px 3px #394a70;
 	transition: all .45s ease-in-out;
 }
+.link-affiliate{
+	color: #fff;
+}
+.link-affiliate:hover, .link-affiliate:focus{
+	color: #EFEFC8;
+}
+.link-affiliate:active{
+	color: #ddddad;
+}

@@ -24,6 +24,13 @@ export function dateInputMask() {
         inputFormat: "dd/mm/yyyy",
     };
 }
+export function dateInputMaskAll() {
+    document.querySelectorAll('input').forEach(element => {
+        if (element.getAttribute('data-date') == "true") {
+            Inputmask(dateInputMask()).mask(element);
+        }
+    });
+}
 export function dateMonthYearInputMask() {
     return {
         alias: "mm/yyyy"
@@ -32,7 +39,6 @@ export function dateMonthYearInputMask() {
 export function monthYearInputMaskAll() {
     document.querySelectorAll('input').forEach(element => {
         if (element.getAttribute('data-month-year') == "true") {
-            console.log(element)
             Inputmask(dateMonthYearInputMask()).mask(element);
         }
     });

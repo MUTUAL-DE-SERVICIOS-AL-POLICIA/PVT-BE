@@ -1,4 +1,5 @@
 <script>
+import { dateInputMaskAll } from "../../helper.js";
 	export default{
 		props:[
             'affiliate',
@@ -6,6 +7,7 @@
 		],
         data(){
             return{
+                vDate:null,
                 editing: false,
                 show_spinner: false,
                 form:this.affiliate,
@@ -44,6 +46,14 @@
             //     return city.id==city_id;
             // })[0];
             // }
+            console.log(moment().subtract(100, 'years').format("DD/MM/YYYY"));
+            console.log(moment().format("DD/MM/YYYY"));
+            this.vDate={
+
+                date_format:'DD/MM/YYYY',
+                // date_between: `${moment().subtract(100, 'years').format("DD/MM/YYYY")},${moment().format("DD/MM/YYYY")}`
+                date_between: "01/04/2000,10/10/2018"
+            }
 
         },
         computed:{
@@ -97,14 +107,27 @@
 
                 }   
                 return st;
+            },
+            validAll(){
+                if (this.$validator.errors.collect() == {}) {
+                    return false;
+                }
+                return Object.keys(this.$validator.errors.collect()).length > 0;
             }
-
         },
         methods:{
+             async validateBeforeSubmit() {
+                try {
+                    await this.$validator.validateAll();
+                } catch (error) {
+                    console.log("some error");
+                }
+            },
             edit_first_name: function(){
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
+                dateInputMaskAll();
                 if(this.editing==false)
                 {
                     this.form.identity_card = this.values.identity_card;
@@ -118,14 +141,21 @@
                     this.form.gender = this.values.gender;
                     this.form.civil_status = this.values.civil_status;
                     this.form.city_birth_id = this.city_birth.id;
-                    this.form.city_identity_card_id = this.city_identity_card.id;
+                    // this.form.city_identity_card_id = this.city_identity_card.id;
                     this.form.surname_husband = this.values.surname_husband;
                     this.form.address = this.values.address;
                     this.form.registration = this.values.registration;
 
+                }else{
+                    this.validateBeforeSubmit();
                 }
             },
             update () {
+                this.validateBeforeSubmit();
+                if (this.validAll) {
+                    flash("Debe completar el formulario", 'error')
+                    return;
+                }
                 let uri = `/update_affiliate/${this.affiliate.id}`;
                 this.show_spinner=true;
                 axios.patch(uri,this.form)
@@ -155,6 +185,6 @@
                         flash('Error al actualizar el afiliado: '+response.message,'error');
                     })
             }
-        }
+        },
 	}
 </script>

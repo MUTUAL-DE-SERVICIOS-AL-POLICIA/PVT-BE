@@ -56,6 +56,13 @@ class Affiliate extends Model
         }
         return Carbon::parse($value)->format('m/Y');
     }
+    public function getBirthDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     public function getDateDerelictAttribute($value)
     {
         if(!$value){
@@ -181,7 +188,7 @@ class Affiliate extends Model
     }
     public function ciWithExt()
     {
-        return Util::removeSpaces($this->identity_card . ' ' .$this->city_identity_card->first_shortened);
+        return Util::removeSpaces($this->identity_card . ' ' .($this->city_identity_card->first_shortened ?? ''));
     }
     public function calcAge($text = false, $date_death = true)
     {

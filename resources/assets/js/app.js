@@ -51,21 +51,41 @@ Vue.use(VeeValidate, {
         ret_fun_modality: {
           required: "Debe seleccionar la modalidad del Trámite."
         },
-		accountType: {
+        accountType: {
           required: "Debe seleccionar el tipo de solicitante."
         },
-		applicant_identity_card: {
+        applicant_identity_card: {
           required: "Debe escribir el ci del solicitante."
         },
-    date_derelict: {
+        date_derelict: {
           required: "Debe ingresar fecha de desvinculación."
-     },   
-		applicant_city_identity_card: {
-          required: "Debe seleccionar la ciudad de expedición del ci del solicitante."
         },
-		applicant_kinship: {
+        applicant_city_identity_card: {
+          required:
+            "Debe seleccionar la ciudad de expedición del ci del solicitante."
+        },
+        applicant_kinship: {
           required: "Debe seleccionar el parentesco del solicitante."
         },
+        identity_card: {
+          required: "Debe ingresar la Cedula de identidad."
+        },
+        city_identity_card_id: {
+          required: "Debe seleccionar la ciudad de expedición."
+        },
+        first_name: {
+          required: "Debe ingresar el primer nombre.",
+          alpha: "El campo primer nombre solo puede contener caracteres alfabéticos."
+        },
+        last_name:{
+          required: "Debe escribir el apellido paterno."
+        },
+        gender:{
+          required: "Debe seleccionar el genero."
+        },
+        birth_date:{
+          required: "Debe escribir la fecha de Nacimiento."
+        }
       }
     }
   }
