@@ -198,6 +198,8 @@
                                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                             </ul>
                     </div>
+                    <br>
+                <tag-list :ret-fun-id="{{ $retirement_fund->id }}"></tag-list>
             </div>
             <br>
             <div class="col-md-9" style="padding-left: 6px">

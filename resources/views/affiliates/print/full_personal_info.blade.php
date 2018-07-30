@@ -108,7 +108,7 @@
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">motivo de baja</td>
-                    <td class="uppercase font-bold px-5 py-3 text-left">{{ $affiliate->affiliate_state->name}} (REVISAR) </td>
+                    <td class="uppercase font-bold px-5 py-3 text-left">{{ $ret_fun->procedure_modality->name}}</td>
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">regional de registro</td>

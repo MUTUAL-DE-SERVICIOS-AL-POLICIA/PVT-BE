@@ -76,7 +76,7 @@
       </tr>
     </template>
     <template slot="items" slot-scope="props">
-      <tr :active="props.selected" @click="props.selected = !props.selected">
+      <tr>
         <td v-if="inboxState == 'edited'">
             <input class="iCheck-helper" type="checkbox" :checked="false" :id="props.item.id" v-model="props.item.status" @change="checkChange(props.item.id, props.item.status)">            
         </td>
@@ -94,6 +94,17 @@
             <a :href="`${props.item.path}`">
                 {{ props.item.name }}
             </a>
+            <ul class="tag-list"
+                style="padding: 0"
+                v-if="props.item.tags.length"
+                key="saved">
+                <li v-for="(tag, tagIndex) in props.item.tags"
+                    :key="`tag-${tagIndex}`">
+                    <a href="#"
+                        style="">
+                        <i class="fa fa-tag"></i> {{tag.name}}</a>
+                </li>
+            </ul>
         </td>
         <td>
             <a :href="`${props.item.path}`">
@@ -126,7 +137,6 @@ import { mapState, mapMutations } from 'vuex';
             return{
                 checkedAllStatus: false,
                 search: '',
-                selected: [],
                 headers: [
                     { text: '# Trámite', value: 'code' },
                     { text: 'CI', align: 'left', value: 'ci' },

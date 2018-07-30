@@ -113,6 +113,16 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
 		Route::patch('/update_information_rf', 'RetirementFundController@updateInformation')->name('update_information_rf');
+	// tags
+		Route::resource('/tag', "TagController");
+		Route::get('/tag_wf_state', "TagController@wfState")->name('tag_wf_state');
+		Route::get('/tag_ret_fun/{ret_fun_id}', "TagController@retFun")->name('tag_ret_fun');
+		Route::post('/update_tag_ret_fun/{ret_fun_id}', "TagController@updateRetFun")->name('update_tag_ret_fun');
+		Route::get('get_tags', 'TagController@getTags')->name('tag_list');
+		Route::get('/get_tag/{tag_id}', 'TagController@getTag');
+		Route::get('/tag_wf_state_list', 'TagController@tagWfState');
+		Route::get('/get_tag_wf_state', 'TagController@getTagWfState');
+		Route::post('/update_tag_wf_state', 'TagController@updateTagWfState');
 
 	//QuotaAidMortuory
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
@@ -129,6 +139,7 @@ Route::group(['middleware' => ['auth']], function () {
         //Contributions
 		Route::resource('contribution', 'ContributionController');
 		Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions')->name('edit_contribution');
+		Route::get('affiliate/{affiliate}/contribution/direct', 'ContributionController@directContributions')->name('direct_contribution');
 		Route::post('store_contributions', 'ContributionController@storeContributions');
 
 		Route::resource('reimbursement', 'ReimbursementController');
@@ -151,6 +162,7 @@ Route::group(['middleware' => ['auth']], function () {
         //AidContributions
 		Route::resource('aid_contribution', 'AidContributionController');
 		Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
+		Route::get('affiliate/{affiliate}/aid_contribution/direct', 'AidContributionController@directContributions')->name('direct_aid_contribution');		
 		Route::post('store_aid_contributions', 'AidContributionController@storeContributions');
 		Route::get('affiliate/{affiliate}/aid_contribution', 'AidContributionController@show')->name('show_aid_contribution');
         //Route::get('get_affiliate_aid_contributions/{affiliate}', 'AidContributionController@getAffiliateAidContributionsDatatables')->name('affiliate_aid_contributions');

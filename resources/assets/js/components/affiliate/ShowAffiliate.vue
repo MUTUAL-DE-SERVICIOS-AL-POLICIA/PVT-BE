@@ -27,7 +27,8 @@
                     gender: this.affiliate.gender,
                     civil_status: this.affiliate.civil_status,
                     surname_husband: this.affiliate.surname_husband,
-                    address: this.affiliate.address
+                    address: this.affiliate.address,
+                    registration: this.affiliate.registration
                 }
             }
         },
@@ -118,6 +119,7 @@
                     this.form.civil_status = this.values.civil_status;
                     this.form.city_birth_id = this.city_birth.id;
                     this.form.address = this.values.address;
+                    this.form.registration = this.values.registration;
 
                 }
             },
