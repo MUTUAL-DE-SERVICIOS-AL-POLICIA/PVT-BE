@@ -107,7 +107,7 @@
                             </div>
                             <div class="row m-b-md">
                                 <div class="col-md-3"><label class="control-label">Lugar de Nacimiento:</label></div>
-                                <div class="col-md-9">{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control','v-model'=>'form.city_birth_id',':disabled'=>'!editing', 'v-validate.initial'=> "'required'"])
+                                <div class="col-md-9">{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control','v-model'=>'form.city_birth_id',':disabled'=>'!editing'])
                                     !!} </div>
                             </div>
                             <div class="row m-b-md">

@@ -123,7 +123,7 @@ instance = new Validator();
 instance.extend('alpha_space_quote', {
   getMessage: (field) => `El dato ingresado es incorrecto.`,
   validate: (value) => {
-    let regex = /^[A-ZÁÉÍÑÓÚÜ\s\']*$/i;
+    let regex = /^[A-ZÁÉÍÑÓÚÜ\s\'\.]*$/i;
     return regex.exec(value) !== null;
   }
 });

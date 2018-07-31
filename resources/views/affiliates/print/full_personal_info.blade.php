@@ -68,7 +68,7 @@
             </thead>
             <tbody>
                 <tr class="text-sm">
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->address()->first() ? $affiliate->address()->first()->city->name : '-' }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->address()->first() ? $affiliate->address()->first()->city->name ?? '-' : '-' }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->address()->first() ? $affiliate->address()->first()->zone : '-' }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->address()->first() ? $affiliate->address()->first()->street : '-' }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->address()->first() ? $affiliate->address()->first()->number_address : '-' }}</td>

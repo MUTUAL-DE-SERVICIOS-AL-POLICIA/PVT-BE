@@ -156,6 +156,7 @@ class Util
         $correlative->retirement_fund_id = $retirement_fund_id;
         $correlative->code = $role->correlative;
         $correlative->date = Carbon::now();
+        $correlative->user_id = self::getAuthUser()->id;
         $correlative->save();
 
         return $correlative;
