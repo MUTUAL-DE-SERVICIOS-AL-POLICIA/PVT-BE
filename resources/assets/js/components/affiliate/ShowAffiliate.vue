@@ -118,6 +118,7 @@
                     this.form.gender = this.values.gender;
                     this.form.civil_status = this.values.civil_status;
                     this.form.city_birth_id = this.city_birth.id;
+										this.form.surname_husband = this.values.surname_husband;
                     this.form.address = this.values.address;
                     this.form.registration = this.values.registration;
 
