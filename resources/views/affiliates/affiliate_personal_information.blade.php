@@ -64,7 +64,7 @@
                                 <div class="col-md-4"><label class="control-label">Apellido Materno:</label></div>
                                 <div class="col-md-8"><input type="text" v-model="form.mothers_last_name" class="form-control" :disabled="!editing"></div>
                             </div>
-                            <div class="row m-b-md" v-show="affiliate.gender === 'F'">
+                            <div class="row m-b-md" v-show="form.gender === 'F'">
                                 <div class="col-md-4"><label class="control-label">Apellido de Casada:</label></div>
                                 <div class="col-md-8"><input type="text" class="form-control" v-model="form.surname_husband" :disabled="!editing"></div>
                             </div>
@@ -82,14 +82,14 @@
                         <div class="col-md-6">
                             <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('birth_date') && editing }">
                                 <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
-                                <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" data-date="true" type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:DD/MM/YYYY'">
+                                <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" data-date="true" type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:DD/MM/YYYY|max_date'">
                                     <div v-show="errors.has('birth_date') && editing">
                                         <i class="fa fa-warning text-danger"></i>
                                         <span class="text-danger">@{{ errors.first('birth_date') }}</span>
                                     </div>
                                 </div>
-                                <div class="col-md-2"><input v-model="age" type="text" class="form-control" disabled></div>
-                                <div class="col-md-1">Años</div>
+                                <div class="col-md-4"><input v-model="age" type="text" class="form-control" disabled></div>
+                                {{-- <div class="col-md-1">Años</div> --}}
                             </div>
                             <div class="row m-b-md">
                                 <div class="col-md-3"><label class="control-label">Lugar de Nacimiento:</label></div>

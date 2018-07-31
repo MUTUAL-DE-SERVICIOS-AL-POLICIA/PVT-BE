@@ -84,14 +84,27 @@ Vue.use(VeeValidate, {
           required: "Debe seleccionar el genero."
         },
         birth_date:{
-          required: "Debe escribir la fecha de Nacimiento."
+          required: "Debe escribir la fecha de Nacimiento.",
+          date_format: "Debe escribir la fecha de en el formato dia/mes/año."
         }
       }
     }
   }
 });
 
-
+//custom rules
+import { Validator } from 'vee-validate';
+let instance = new Validator();
+instance.extend('max_date',{
+  getMessage: (field) => `La fecha ingresada no es valida.`,
+  validate: (value) =>{
+    return moment().subtract(18,'years').diff(moment(value, "DD/MM/YYYY"), "days") >  0;
+  }
+});
+instance.attach({
+  name: 'falseField',
+  rules: 'falsy'
+});
 
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)

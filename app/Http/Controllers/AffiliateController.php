@@ -225,7 +225,7 @@ class AffiliateController extends Controller
         $affiliate->mothers_last_name = $request->mothers_last_name;
         $affiliate->gender = $request->gender;
         $affiliate->civil_status = $request->civil_status;
-        $affiliate->birth_date = $request->birth_date;
+        $affiliate->birth_date = Util::verifyBarDate($request->birth_date) ? Util::parseBarDate($request->birth_date) : $request->birth_date;
         $affiliate->phone_number = $request->phone_number;
         $affiliate->cell_phone_number = $request->cell_phone_number;
         $affiliate->city_birth_id = $request->city_birth_id;

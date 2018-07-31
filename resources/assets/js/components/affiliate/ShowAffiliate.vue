@@ -7,7 +7,6 @@ import { dateInputMaskAll } from "../../helper.js";
 		],
         data(){
             return{
-                vDate:null,
                 editing: false,
                 show_spinner: false,
                 form:this.affiliate,
@@ -46,21 +45,15 @@ import { dateInputMaskAll } from "../../helper.js";
             //     return city.id==city_id;
             // })[0];
             // }
-            console.log(moment().subtract(100, 'years').format("DD/MM/YYYY"));
-            console.log(moment().format("DD/MM/YYYY"));
-            this.vDate={
-
-                date_format:'DD/MM/YYYY',
-                // date_between: `${moment().subtract(100, 'years').format("DD/MM/YYYY")},${moment().format("DD/MM/YYYY")}`
-                date_between: "01/04/2000,10/10/2018"
-            }
-
         },
         computed:{
             age: function(){
+                if (this.form.birth_date.includes('y') || this.form.birth_date.includes('m') || this.form.birth_date.includes('d') ) {
+                    return ''
+                }
+
                 if(this.form.birth_date){
-                    var birthday = +new Date(this.form.birth_date); 
-                    return~~ ((Date.now() - birthday) / (31557600000));
+                    return moment(this.form.birth_date, "DD/MM/YYYY").fromNow(true)
                 }else
                 {
                     return '';
