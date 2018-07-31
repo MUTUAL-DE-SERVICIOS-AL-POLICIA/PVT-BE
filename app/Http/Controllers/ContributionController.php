@@ -408,12 +408,18 @@ class ContributionController extends Controller
     }
     public function directContributions(Affiliate $affiliate = null){
 
-        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
-        if(!isset($commitment->id))
-        {            
-            Session::flash('message','No se encontró compromiso de pago');
-            return redirect('affiliate/'.$affiliate->id.'/contribution');    
-        }        
+         $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+         if(!isset($commitment->id))
+        {
+            $commitment = new ContributionCommitment();
+            $commitment->id = 0;
+            $commitment->affiliate_id = $affiliate->id;
+        }
+        // if(!isset($commitment->id))
+        // {            
+        //     Session::flash('message','No se encontró compromiso de pago');
+        //     return redirect('affiliate/'.$affiliate->id.'/contribution');    
+        // }        
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();        
         $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();
         $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();

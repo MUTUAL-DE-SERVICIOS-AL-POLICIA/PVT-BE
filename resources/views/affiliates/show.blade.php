@@ -1,7 +1,33 @@
 @extends('layouts.app')
 
 @section('title', 'Afiliados')
+@section('styles')
+<style>
+#fixedheight {
+    table-layout: fixed;
+}
 
+#fixedheight td {
+    width: 25%;
+}
+
+#fixedheight td div {
+    height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+
+}
+th.ellipsis-text {
+    white-space: nowrap;     
+    overflow: hidden;
+    text-overflow: ellipsis;     
+}
+.table-hover>tbody>tr:hover {
+        background-color: #DBDBDB
+    }
+/* .table-striped-1>tbody>tr:nth-child(2n+1){background-color:#f2f2f2} */
+</style>
+@endsection
 @section('content')
 <div class="row  wrapper border-bottom white-bg page-heading">
     <div class="col-lg-7">
@@ -22,16 +48,6 @@
                 </a>
             @endif
         @endcan
-              
-        @can('view',new Muserpol\Models\Contribution\Contribution)
-        <a href="{{route('show_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
-        </a>
-        <a href="{{route('show_aid_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"> </i> APORTES PASIVO </button>
-        </a>
-        @endcan
-
         <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
             <i class="fa fa-history"> </i> HISTORIAL
         </button>
@@ -210,7 +226,6 @@ $(document).ready(function() {
         $('.numberformat').each(function(i, obj) {
             Inputmask(moneyInputMask()).mask(obj);        
         }); 
-        
     //revisar dependecias XD 
     // $('.file-box').each(function() {
     //     animationHover(this, 'pulse');

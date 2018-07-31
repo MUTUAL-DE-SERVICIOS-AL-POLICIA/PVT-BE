@@ -9,6 +9,7 @@ use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
 use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\Reimbursement;
 use Illuminate\Http\Request;
 use Log;
 use Muserpol\Models\RetirementFund\RetFunState;
@@ -169,6 +170,7 @@ class AffiliateController extends Controller
 
         //GETTIN CONTRIBUTIONS
         $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
+        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
         $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
         $month_end = $end[1];
         $year_end = $end[0];
@@ -200,6 +202,7 @@ class AffiliateController extends Controller
             'month_start'  =>   $month_start,
             'year_end'  =>  $year_end,
             'year_start'    =>  $year_start,
+            'reimbursements'    =>  $reimbursements,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);
