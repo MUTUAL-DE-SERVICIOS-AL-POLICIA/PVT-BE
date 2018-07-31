@@ -63,13 +63,13 @@ th.ellipsis-text {
 
 @endif
 <div class="row">
-           
+
     <div class="col-md-3" style="padding-right: 3px">
             <div class="widget-head-color-box navy-bg p-lg text-center">
                 <div class="m-b-md">
                         <h3 class="pull-left"><strong>ID: {{  $affiliate->id }}</strong></h3><br>
                         <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado "><br>
-                            <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $affiliate->fullName() }}</a>    
+                            <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $affiliate->fullName() }}</a>
                         </h2>
                         <h4 class="text-center"><strong>CI: {{  $affiliate->identity_card }}</strong></h4>
                 </div>
@@ -85,24 +85,24 @@ th.ellipsis-text {
                         {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-cuot-mortuory"><i class="{{ Muserpol\Helpers\Util::IconModule(4)}}"></i> Cuota Mortuorio </a></li>
                         <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Muserpol\Helpers\Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
-                        
+
                     </ul>
             </div>
     </div>
     <br>
     <div class="col-md-9" style="padding-left: 6px">
-        
+
             <div class="tab-content">
-                   
+
                     <div id="tab-affiliate" class="tab-pane active">
-                        
-                        <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template> 
+
+                        <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template>
                             @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
                         </affiliate-show>
-                        
+
                     </div>
                     <div id="tab-police-info" class="tab-pane">
-                            
+
                         <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
                             @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
                         </affiliate-police>
@@ -117,8 +117,7 @@ th.ellipsis-text {
                         'year_end'  =>  $year_end,
                         'year_start'    =>  $year_start
                         ])
-                    </div>
-
+                    </div>                    
                     <div id="tab-documents-scanned" class="tab-pane">                        
                         @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents])
                     </div>
@@ -130,9 +129,9 @@ th.ellipsis-text {
                         @endcan
                     </div>
                     <div id="tab-eco-com" class="tab-pane">
-                        
+
                             <div class="ibox">
-    
+
                                 <div class="ibox-content">
                                         <table class="table table-bordered table-hover" id="economic_complements-table">
                                             <thead>
@@ -144,46 +143,46 @@ th.ellipsis-text {
                                                     <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Estado">Estado</div></th>
                                                     <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Total">Total</div></th>
                                                     <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Opciones">Opciones</div></th>
-                                            
+
                                                 </tr>
                                             </thead>
                                         </table>
                                 </div>
                             </div>
-                           
-                        
+
+
                     </div>
                     {{-- <div id="tab-cuot-mortuory" class="tab-pane"> //cuota mortuoria
-                        
-                        
+
+
 
                     </div>
-                    
+
                     <div id="tab-aid-mortuory" class="tab-pane"> //auxilio mortuorio
-                        
-                          
-    
+
+
+
                     </div> --}}
-                   
+
                     <div id="tab-observations" class="tab-pane">
-                         
+
                     </div>
-                    
-                    
+
+
 
                 </div>
-           
+
     </div>
- 
+
 </div>
 
 
 
 {{-- <div class="wrapper wrapper-content animated fadeInRight">
-   
+
     <div class="row">
         <div class="col-md-6">
-            <affiliate-show  :affiliate="{{ $affiliate }}" inline-template> 
+            <affiliate-show  :affiliate="{{ $affiliate }}" inline-template>
                    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
             </affiliate-show>
         </div>
@@ -212,6 +211,7 @@ th.ellipsis-text {
 <script>
 $(document).ready(function() {
     $('#example').DataTable();
+<<<<<<< HEAD
 
     function moneyInputMask() {    
             return {
@@ -227,9 +227,13 @@ $(document).ready(function() {
             Inputmask(moneyInputMask()).mask(obj);        
         }); 
     //revisar dependecias XD 
+=======
+    //revisar dependecias XD
+>>>>>>> upstream/master
     // $('.file-box').each(function() {
     //     animationHover(this, 'pulse');
     // });
+    $('#record-table').DataTable();
 } );
 </script>
 @endsection

@@ -18,6 +18,7 @@ use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\AffiliateRecord;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\AffiliatePoliceRecord;
 
 class AffiliateController extends Controller
 {
@@ -27,7 +28,7 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {                
+    {
         return view('affiliates.index');
     }
     public function getAllAffiliates(Request $request)
@@ -40,16 +41,16 @@ class AffiliateController extends Controller
         $offset = $request->offset ?? 0;
         $limit = $request->limit ?? 10;
         $sort = $request->sort ?? 'id';
-        $order = $request->order ?? 'asc';  
+        $order = $request->order ?? 'asc';
         $last_name = strtoupper($request->last_name) ?? '';
         $first_name = strtoupper($request->first_name) ?? '';
         $second_name = strtoupper($request->second_name) ?? '';
         $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
         $surname_husband = strtoupper($request->surname_husband) ?? '';
         $identity_card = strtoupper($request->identity_card) ?? '';
-        //$total=Affiliate::where('identity_card','LIKE',$identity_card.'%')->where('last_name','LIKE',$last_name.'%')->count();        
+        //$total=Affiliate::where('identity_card','LIKE',$identity_card.'%')->where('last_name','LIKE',$last_name.'%')->count();
         //$total=6669783;
-        //$affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->where('last_name','LIKE',$last_name.'%')->get();                
+        //$affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->where('last_name','LIKE',$last_name.'%')->get();
 
         $total = Affiliate::select('affiliates.id')//,'identity_card','registration','degrees.name as degree','first_name','second_name','last_name','mothers_last_name','civil_status')->
                                 ->leftJoin('degrees', 'affiliates.id', '=', 'degrees.id')
@@ -90,7 +91,7 @@ class AffiliateController extends Controller
         return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
     }
 
-    /** 
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -107,11 +108,11 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {        
+    {
         //
     }
 
-    /**
+    /**telefono
      * Display the specified resource.
      *
      * @param  \Muserpol\Affiliate  $affiliate
@@ -128,6 +129,9 @@ class AffiliateController extends Controller
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
         $affiliate_records = AffiliateRecord::where('affiliate_id', $affiliate->id)
         ->orderBy('id','desc')
+        ->get();
+        $affiliate_police_records = AffiliatePoliceRecord::where('affiliate_id', $affiliate->id)
+        ->orderByDesc('date')
         ->get();
         // $quota_mortuaries = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get();
         /*$records_message=[];
@@ -146,14 +150,14 @@ class AffiliateController extends Controller
                       $auxilio = $quota_mortuary;
                     }
             }
-        
+
         $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->first();
         $states = RetFunState::get();
         $nextcode = RetirementFund::where('affiliate_id', $affiliate->id)->where('code','LIKE','%A')->first();
         if(isset($nextcode))
             $nextcode = $nextcode->code;
-        else 
-            $nextcode = "";        
+        else
+            $nextcode = "";
         $active_ret_fun = RetirementFund::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
         $affiliate->load([
             'city_identity_card:id,first_shortened',
@@ -190,11 +194,12 @@ class AffiliateController extends Controller
             'categories'=>$categories,
             'degrees'=>$degrees,
             'pension_entities' =>$pension_entities,
-            'affiliate_states'=>$affiliate_states, 
+            'affiliate_states'=>$affiliate_states,
             'cuota'=>$cuota,
             'states' => $states,
             'auxilio'=>$auxilio,
             'affiliate_records'=>$affiliate_records,
+            'affiliate_police_records'=>$affiliate_police_records,
             'nextcode'  =>  $nextcode,
             'has_ret_fun'   =>  isset($active_ret_fun->id)?true:false,
             'contributions' =>  $contributions,
@@ -207,7 +212,7 @@ class AffiliateController extends Controller
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
-        
+
     }
 
     /**
@@ -229,7 +234,7 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Affiliate $affiliate)
-    { 
+    {
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
 
         $this->authorize('update', $affiliate);
@@ -247,11 +252,12 @@ class AffiliateController extends Controller
         $affiliate->city_birth_id = $request->city_birth_id;
         $affiliate->city_identity_card_id =$request->city_identity_card_id;
         $affiliate->surname_husband = $request->surname_husband;
+        $affiliate->registration = $request->registration;
 
         if (sizeOf($affiliate->address) > 0) {
             $address_id = $affiliate->address()->first()->id;
             $address = Address::find($address_id);
-        
+
             foreach ($request->address as $value) {
                 if ($value['zone'] || $value['street'] || $value['number_address']) {
                     $address->city_address_id = $value['city_address_id'];
@@ -264,7 +270,7 @@ class AffiliateController extends Controller
                     $address->delete();
                 }
             }
-        
+
         }else{
             if (sizeOf($request->address) > 0) {
                 foreach ($request->address as $value) {
@@ -281,6 +287,14 @@ class AffiliateController extends Controller
                 }
             }
         }
+
+        $affiliate->identity_card = mb_strtoupper($affiliate->identity_card);
+        $affiliate->first_name = mb_strtoupper($affiliate->first_name);
+        $affiliate->second_name = mb_strtoupper($affiliate->second_name);
+        $affiliate->last_name = mb_strtoupper($affiliate->last_name);
+        $affiliate->mothers_last_name = mb_strtoupper($affiliate->mothers_last_name);
+        $affiliate->surname_husband = mb_strtoupper($affiliate->surname_husband);
+
         $affiliate->save();
         $affiliate = Affiliate::with('address')->find($affiliate->id);
         if (!sizeOf($affiliate->address) > 0) {
@@ -303,7 +317,7 @@ class AffiliateController extends Controller
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
         $affiliate->save();
-        
+
         $datos = array('affiliate'=>$affiliate,'state'=>$affiliate->affiliate_state,'category'=>$affiliate->category,'degree'=>$affiliate->degree,'pension_entity'=>$affiliate->pension_entity);
         return $datos;
     }
