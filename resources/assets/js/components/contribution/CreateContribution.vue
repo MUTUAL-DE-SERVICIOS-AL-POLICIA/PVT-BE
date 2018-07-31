@@ -19,7 +19,7 @@
                     </div>
                     <div class="row" >
                         
-                        <div class="col-md-6" style="margin-bottom:20px">
+                        <!-- <div class="col-md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>   
                             <select v-model="tipo" class="form-control" v-on:change="changeType">
                                 <option value="2">Comisión</option>
@@ -27,12 +27,17 @@
                                 <option value="9">Baja Temporal</option>
                            </select>
                             <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
-                        </div>
+                        </div> -->
+                        <!-- <label>Repetir sueldo:</label> -->
                         <div class="col-md-3" >
-                            <label>Repetir sueldo:</label>
-                            <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_salary" >                            
+                            
+                            <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_salary">
+                        </div>                    
+                        <div class="col-md-3" >
+                            <button class="btn btn-primary " type="button" @click="repeatSalary()"><i class="fa fa-money"></i>&nbsp;Repetir Sueldo</button>
                         </div>
                     </div>
+                    <hr>
                     <table class="table table-striped" data-page-size="15">
                         <thead>
                         <tr>
@@ -72,7 +77,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
-                                <td colspan="3"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>
+                                <td colspan="4"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>
                                 <!--<td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>-->
                             </tr>                            
                         </tbody>

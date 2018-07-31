@@ -11,13 +11,13 @@
     <div class="row">
         <div class="col-md-12">           
             <div class="col-md-6">
-                @if(Auth::user()->hasRole(12))
+                
+                @can('update',new Muserpol\Models\Contribution\ContributionCommitment)
                     @include('contribution.commitment',['commitment'=>$commitment,'affiliate_id'=>$affiliate->id,'today_date'=>$today_date])                    
                 @else
                     @include('contribution.commitment_info',['commitment',$commitment])                                
-                @endif                
-            </div>
-
+                @endcan
+            </div>            
             <div class="col-md-6">                                
                 @include('contribution.aditional_info',['summary',$summary])
             </div>
