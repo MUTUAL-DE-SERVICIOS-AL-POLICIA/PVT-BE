@@ -272,6 +272,7 @@ class AffiliateController extends Controller
         $affiliate->second_name = mb_strtoupper($affiliate->second_name);
         $affiliate->last_name = mb_strtoupper($affiliate->last_name);
         $affiliate->mothers_last_name = mb_strtoupper($affiliate->mothers_last_name);
+        $affiliate->surname_husband = mb_strtoupper($affiliate->surname_husband);
 
         $affiliate->save();
         $affiliate = Affiliate::with('address')->find($affiliate->id);
