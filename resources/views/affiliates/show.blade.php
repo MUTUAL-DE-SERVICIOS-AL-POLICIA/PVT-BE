@@ -14,13 +14,13 @@
 #fixedheight td div {
     height: 20px;
     overflow: hidden;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
 
 }
 th.ellipsis-text {
-    white-space: nowrap;     
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;     
+    text-overflow: ellipsis;
 }
 .table-hover>tbody>tr:hover {
         background-color: #DBDBDB
@@ -108,7 +108,7 @@ th.ellipsis-text {
                         </affiliate-police>
 
                     </div>
-                    <div id="tab-contributions" class="tab-pane">                                                
+                    <div id="tab-contributions" class="tab-pane">
                         @include('contribution.affiliate_contribution_show',
                         [
                         'contributions' =>  $contributions,
@@ -117,8 +117,8 @@ th.ellipsis-text {
                         'year_end'  =>  $year_end,
                         'year_start'    =>  $year_start
                         ])
-                    </div>                    
-                    <div id="tab-documents-scanned" class="tab-pane">                        
+                    </div>
+                    <div id="tab-documents-scanned" class="tab-pane">
                         @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents])
                     </div>
                     <div id="tab-ret-fun" class="tab-pane">
@@ -211,25 +211,21 @@ th.ellipsis-text {
 <script>
 $(document).ready(function() {
     $('#example').DataTable();
-<<<<<<< HEAD
-
-    function moneyInputMask() {    
+    function moneyInputMask() {
             return {
                 alias: "numeric",
                 groupSeparator: ",",
                 autoGroup: true,
                 digits: 2,
-                digitsOptional: false,        
+                digitsOptional: false,
                 placeholder: "0"
             };
         }
         $('.numberformat').each(function(i, obj) {
-            Inputmask(moneyInputMask()).mask(obj);        
-        }); 
-    //revisar dependecias XD 
-=======
+            Inputmask(moneyInputMask()).mask(obj);
+        });
     //revisar dependecias XD
->>>>>>> upstream/master
+    //revisar dependecias XD
     // $('.file-box').each(function() {
     //     animationHover(this, 'pulse');
     // });

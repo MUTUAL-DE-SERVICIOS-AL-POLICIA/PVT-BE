@@ -1,5 +1,5 @@
-@extends('layouts.app') 
-@section('title', 'Afiliados') 
+@extends('layouts.app')
+@section('title', 'Afiliados')
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
@@ -15,7 +15,7 @@
             <div class="alert alert-danger alert-dismissable">
                 <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
                 {{Session::get('message')}}
-            </div>        
+            </div>
         @endif
         <div class="col-md-12 no-padding no-margins">
             <div class="panel panel-primary">
@@ -67,7 +67,7 @@
     </div>
 </div>
 @endsection
- 
+
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 <style>
@@ -80,20 +80,40 @@
     }
     .yellow-row {
         background-color:#ffe6b3 !important;
-        
+
     }
 </style>
 @endsection
- 
+
 @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
-    $(document).ready(function () {                   
+    $(document).ready(function () {
         $('body').addClass("mini-navbar");
         var datatable_contri = $('#datatables-affiliate-contributions').DataTable({
+          language: {
+         "decimal": "",
+         "emptyTable": "No hay información",
+         "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+         "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+         "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+         "infoPostFix": "",
+         "thousands": ",",
+         "lengthMenu": "Mostrar _MENU_ Entradas",
+         "loadingRecords": "Cargando...",
+         "processing": "Procesando...",
+         "search": "Buscar:",
+         "zeroRecords": "Sin resultados encontrados",
+         "paginate": {
+             "first": "Primero",
+             "last": "Ultimo",
+             "next": "Siguiente",
+             "previous": "Anterior"
+         }
+     },
             responsive: true,
-            createdRow: function(row, data,dataIndex){                
-                if(data['type'] == 'Directo')                
+            createdRow: function(row, data,dataIndex){
+                if(data['type'] == 'Directo')
                     $(row).addClass('yellow-row');
             },
             fixedHeader: {
@@ -101,6 +121,7 @@
                 footer: true,
                 headerOffset: $('#navbar-fixed-top').outerHeight()
             },
+
             order: [],
             /* para personalizar el orden
              columnDefs: [
@@ -143,6 +164,7 @@
                 { targets: 0, orderData: 1 },
                 { targets: 1, visible: false }
             ],
+
             "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 if ( aData.type == " RE " )
                 {
@@ -175,9 +197,9 @@
         $('.btn.btn-default.buttons-collection.buttons-colvis').on('click', function () {
             $('div.dt-button-background').remove()
         });
-       
+
     })
-  
+
 </script>
 
 @endsection
