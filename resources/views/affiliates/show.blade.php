@@ -1,7 +1,33 @@
 @extends('layouts.app')
 
 @section('title', 'Afiliados')
+@section('styles')
+<style>
+#fixedheight {
+    table-layout: fixed;
+}
 
+#fixedheight td {
+    width: 25%;
+}
+
+#fixedheight td div {
+    height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+
+}
+th.ellipsis-text {
+    white-space: nowrap;     
+    overflow: hidden;
+    text-overflow: ellipsis;     
+}
+.table-hover>tbody>tr:hover {
+        background-color: #DBDBDB
+    }
+/* .table-striped-1>tbody>tr:nth-child(2n+1){background-color:#f2f2f2} */
+</style>
+@endsection
 @section('content')
 <div class="row  wrapper border-bottom white-bg page-heading">
     <div class="col-lg-7">
@@ -22,16 +48,6 @@
                 </a>
             @endif
         @endcan
-              
-        @can('view',new Muserpol\Models\Contribution\Contribution)
-        <a href="{{route('show_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
-        </a>
-        <a href="{{route('show_aid_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"> </i> APORTES PASIVO </button>
-        </a>
-        @endcan
-
         <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
             <i class="fa fa-history"> </i> HISTORIAL
         </button>
@@ -62,6 +78,7 @@
                     <ul class="list-group elements-list">
                         <li class="list-group-item active" data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-address-book"></i> Información Personal </a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-contributions"><a href="#" ><i class="fa fa-money "></i> Aportes</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-documents-scanned"><a href="#" ><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(2)}}"></i> Complemento</a></li>
@@ -91,10 +108,18 @@
                         </affiliate-police>
 
                     </div>
-                    <div id="tab-documents-scanned" class="tab-pane">
-
+                    <div id="tab-contributions" class="tab-pane">                                                
+                        @include('contribution.affiliate_contribution_show',
+                        [
+                        'contributions' =>  $contributions,
+                        'month_end' =>  $month_end,
+                        'month_start'  =>   $month_start,
+                        'year_end'  =>  $year_end,
+                        'year_start'    =>  $year_start
+                        ])
+                    </div>                    
+                    <div id="tab-documents-scanned" class="tab-pane">                        
                         @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents])
-
                     </div>
                     <div id="tab-ret-fun" class="tab-pane">
                         @can('update',$retirement_fund)
@@ -186,7 +211,25 @@
 <script>
 $(document).ready(function() {
     $('#example').DataTable();
+<<<<<<< HEAD
+
+    function moneyInputMask() {    
+            return {
+                alias: "numeric",
+                groupSeparator: ",",
+                autoGroup: true,
+                digits: 2,
+                digitsOptional: false,        
+                placeholder: "0"
+            };
+        }
+        $('.numberformat').each(function(i, obj) {
+            Inputmask(moneyInputMask()).mask(obj);        
+        }); 
+    //revisar dependecias XD 
+=======
     //revisar dependecias XD
+>>>>>>> upstream/master
     // $('.file-box').each(function() {
     //     animationHover(this, 'pulse');
     // });

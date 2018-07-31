@@ -9,6 +9,7 @@ use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
 use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\Reimbursement;
 use Illuminate\Http\Request;
 use Log;
 use Muserpol\Models\RetirementFund\RetFunState;
@@ -171,6 +172,20 @@ class AffiliateController extends Controller
             $affiliate->address[] = new Address();
         }
 
+        //GETTIN CONTRIBUTIONS
+        $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
+        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
+        $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
+        $month_end = $end[1];
+        $year_end = $end[0];
+        if($affiliate->date_derelict)
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));  
+        else
+            $start = explode('-', date('Y-m-d'));  
+        $month_start = $start[1];
+        $year_start = $start[0];
+
+
         $data = array(
             'retirement_fund'=>$retirement_fund,
             'affiliate'=>$affiliate,
@@ -187,6 +202,12 @@ class AffiliateController extends Controller
             'affiliate_police_records'=>$affiliate_police_records,
             'nextcode'  =>  $nextcode,
             'has_ret_fun'   =>  isset($active_ret_fun->id)?true:false,
+            'contributions' =>  $contributions,
+            'month_end' =>  $month_end,
+            'month_start'  =>   $month_start,
+            'year_end'  =>  $year_end,
+            'year_start'    =>  $year_start,
+            'reimbursements'    =>  $reimbursements,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);
