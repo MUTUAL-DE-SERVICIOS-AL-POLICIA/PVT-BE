@@ -111,7 +111,7 @@ class AffiliateController extends Controller
         //
     }
 
-    /**
+    /**telefono
      * Display the specified resource.
      *
      * @param  \Muserpol\Affiliate  $affiliate
@@ -280,7 +280,6 @@ class AffiliateController extends Controller
         }
         $datos=array('affiliate' => $affiliate ,'city_birth' => $affiliate->city_birth,'city_identity_card' => $affiliate->city_identity_card);
         return $datos;
-        //return strtoupper($first_name);
 
     }
     public function update_affiliate_police(Request $request, Affiliate $affiliate)

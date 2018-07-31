@@ -53,7 +53,7 @@
                     <br>
                     <div class="row">
 
-                        <div class="col-md-2"><strong>Genero:</strong></div>
+                        <div class="col-md-2"><strong>Género:</strong></div>
                         <div class="col-md-4">{!! Form::select('gender', ['F'=>'Femenino','M'=>'Masculino'], null, ['placeholder' => 'Seleccione genero', 'class' => 'form-control','v-model'=> 'form.gender',':disabled'=>'!editing']) !!}</div>
                         <div class="col-md-2"><strong>Estado Civil:</strong></div>
                         <div class="col-md-4"> {!! Form::select('civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'], null, ['placeholder'=> 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'form.civil_status',':disabled'=>'!editing' ]) !!}</div>
@@ -77,7 +77,7 @@
 
                         <div class="col-md-2"><strong>Edad:</strong></div>
                         <div class="col-md-4"><input v-model="age" type="text" class="form-control" disabled></div>
-                        <div class="col-md-2"><strong>Telefono:</strong></div>
+                        <div class="col-md-2"><strong>Teléfono:</strong></div>
                         <div class="col-md-4"><input type="text" v-model="form.phone_number" class="form-control" :disabled="!editing"></div>
 
                     </div>
