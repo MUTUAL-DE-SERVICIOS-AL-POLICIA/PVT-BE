@@ -39,33 +39,48 @@
                             </div>
                             <div class="row m-b-md" :class="{ 'has-error': errors.has('first_name') && editing }">
                                 <div class="col-md-4"><label class="control-label">Primer Nombre:</label></div>
-                                <div class="col-md-8"><input type="text" name="first_name" v-model="form.first_name" class="form-control" :disabled="!editing" v-validate.initial="'required|alpha'">
+                                <div class="col-md-8"><input type="text" name="first_name" v-model="form.first_name" class="form-control" :disabled="!editing" v-validate.initial="'required|alpha_space_quote'">
                                     <div v-show="errors.has('first_name') && editing">
                                         <i class="fa fa-warning text-danger"></i>
                                         <span class="text-danger">@{{ errors.first('first_name') }}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row m-b-md">
+                            <div class="row m-b-md" :class="{ 'has-error': errors.has('second_name') && editing }">
                                 <div class="col-md-4"><label class="control-label">Segundo Nombre:</label></div>
-                                <div class="col-md-8"><input type="text" v-model="form.second_name" class="form-control" :disabled="!editing"></div>
+                                <div class="col-md-8"><input type="text" name="second_name" v-model="form.second_name" class="form-control" :disabled="!editing" v-validate.initial="'alpha_space_quote'">
+                                    <div v-show="errors.has('second_name') && editing">
+                                        <i class="fa fa-warning text-danger"></i>
+                                        <span class="text-danger">@{{ errors.first('second_name') }}</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row m-b-md" :class="{ 'has-error': errors.has('last_name') && editing }">
                                 <div class="col-md-4"><label class="control-label">Apellido Paterno:</label></div>
-                                <div class="col-md-8"><input type="text" name="last_name" v-model="form.last_name" class="form-control" :disabled="!editing" v-validate.initial="'required'">
+                                <div class="col-md-8"><input type="text" name="last_name" v-model="form.last_name" class="form-control" :disabled="!editing" v-validate.initial="'required|alpha_space_quote'">
                                     <div v-show="errors.has('last_name') && editing">
                                         <i class="fa fa-warning text-danger"></i>
                                         <span class="text-danger">@{{ errors.first('last_name') }}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row m-b-md">
+                            <div class="row m-b-md" :class="{ 'has-error': errors.has('mothers_last_name') && editing }">
                                 <div class="col-md-4"><label class="control-label">Apellido Materno:</label></div>
-                                <div class="col-md-8"><input type="text" v-model="form.mothers_last_name" class="form-control" :disabled="!editing"></div>
+                                <div class="col-md-8"><input name="mothers_last_name" type="text" v-model="form.mothers_last_name" class="form-control" :disabled="!editing" v-validate.initial="'alpha_space_quote'">
+                                    <div v-show="errors.has('mothers_last_name') && editing">
+                                        <i class="fa fa-warning text-danger"></i>
+                                        <span class="text-danger">@{{ errors.first('mothers_last_name') }}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="row m-b-md" v-show="form.gender === 'F'">
+                            <div class="row m-b-md" v-show="form.gender === 'F'" :class="{ 'has-error': errors.has('surname_husband') && editing }">
                                 <div class="col-md-4"><label class="control-label">Apellido de Casada:</label></div>
-                                <div class="col-md-8"><input type="text" class="form-control" v-model="form.surname_husband" :disabled="!editing"></div>
+                                <div class="col-md-8"><input name="surname_husband" type="text" class="form-control" v-model="form.surname_husband" :disabled="!editing" v-validate.initial="'alpha_space_quote'">
+                                    <div v-show="errors.has('surname_husband') && editing">
+                                        <i class="fa fa-warning text-danger"></i>
+                                        <span class="text-danger">@{{ errors.first('surname_husband') }}</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row m-b-md" :class="{ 'has-error': errors.has('gender') && editing }">
                                 <div class="col-md-4"><label class="control-label">Genero:</label></div>

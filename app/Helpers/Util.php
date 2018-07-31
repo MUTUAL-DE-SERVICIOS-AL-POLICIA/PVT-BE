@@ -348,7 +348,7 @@ class Util
     }
     public static function calculateAge($birth_date, $death_date)
     {
-        $birth_date =  Carbon::parse($birth_date);
+        $birth_date =  Carbon::createFromFormat('d/m/Y',$birth_date );
         if ($death_date) {
             $death_date = Carbon::parse($death_date);
             $age = $birth_date->diff($death_date)->format('%y años %m meses');
@@ -359,7 +359,7 @@ class Util
     }
     public static function calculateAgeYears($birth_date, $death_date)
     {
-        $birth_date = Carbon::parse($birth_date);
+        $birth_date = Carbon::createFromFormat('d/m/Y',$birth_date);
         if ($death_date) {
             $death_date = Carbon::parse($death_date);
             $age = $birth_date->diffInYears($death_date);
