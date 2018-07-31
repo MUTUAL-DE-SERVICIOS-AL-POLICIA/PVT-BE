@@ -1,8 +1,8 @@
 
 <div class="col-lg-12">
-   
+
     <div class="ibox">
-    
+
         <div class="ibox-content">
 
                     <div class="pull-left"> <legend > Información Personal</legend></div>
@@ -16,7 +16,6 @@
                     <br>
 
                     <div class="row">
-                        
                         {{-- left --}}
                         <div class="col-md-6">
                             <div class="row m-b-md" :class="{ 'has-error': errors.has('identity_card') && editing }">
@@ -109,7 +108,6 @@
                                 <div class="col-md-9"><input type="text" v-model="form.phone_number" class="form-control" :disabled="!editing"></div>
                             </div>
                         </div>
-
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="row">
@@ -154,10 +152,10 @@
                             <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
                             <button class="btn btn-primary" type="button" @click="update" :disabled="validAll"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
                         </div>
-                    </div> 
+                    </div>
                     <br>
         </div>
     </div>
-    
-     
+
+
 </div>

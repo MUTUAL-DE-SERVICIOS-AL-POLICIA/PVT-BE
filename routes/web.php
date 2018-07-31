@@ -139,10 +139,12 @@ Route::group(['middleware' => ['auth']], function () {
         //Contributions
 		Route::resource('contribution', 'ContributionController');
 		Route::get('affiliate/{affiliate}/contribution/edit', 'ContributionController@getAffiliateContributions')->name('edit_contribution');
+		Route::get('affiliate/{affiliate}/contribution/detail', 'ContributionController@getContributionsByMonth')->name('detail_contribution');		
 		Route::get('affiliate/{affiliate}/contribution/direct', 'ContributionController@directContributions')->name('direct_contribution');
 		Route::post('store_contributions', 'ContributionController@storeContributions');
 
 		Route::resource('reimbursement', 'ReimbursementController');
+		Route::resource('aid_reimbursement', 'AidReimbursementController');
 
 		//selectContributions
 		Route::get('ret_fun/{ret_fun_id}/selectcontributions', 'ContributionController@selectContributions')->name('select_contributions');
@@ -154,11 +156,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/print/cer_availability', 'RetirementFundCertificationController@printCertificationAvailability')->name('ret_fun_print_certification_availability');
 		Route::get('ret_fun/{retirement_fund}/print/cer_itemcero', 'RetirementFundCertificationController@printCertificationItem0')->name('ret_fun_print_certification_item0');
 		Route::get('ret_fun/{retirement_fund}/print/security_certification', 'RetirementFundCertificationController@printCertificationSecurity')->name('ret_fun_print_security_certification');
-		Route::get('ret_fun/{retirement_fund}/print/contributions_certification', 'RetirementFundCertificationController@printCertificationContributions')->name('ret_fun_print_contributions_certification');
-
-
-		Route::resource('reimbursement', 'ReimbursementController');
-
+		Route::get('ret_fun/{retirement_fund}/print/contributions_certification', 'RetirementFundCertificationController@printCertificationContributions')->name('ret_fun_print_contributions_certification');		
         //AidContributions
 		Route::resource('aid_contribution', 'AidContributionController');
 		Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');

@@ -23,8 +23,9 @@
                     <h3 class="pull-left">Aportes </h3>
                     <div class="text-right">
                         @can('update',new Muserpol\Models\Contribution\Contribution)
-                            <a href="{{route('direct_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes directos" ><i class="fa fa-paste"> </i> Aportes Directos </a>
-                            <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar Aportes" ><i class="fa fa-paste"></i> Gestionar Aportes </a>
+                            {{-- <a href="{{route('direct_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes directos" ><i class="fa fa-paste"> </i> Aportes Directos </a>
+                            <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar Aportes" ><i class="fa fa-paste"></i> Gestionar Aportes </a> --}}
+                            <br>
                         </a>
                         @else
                         <br>
@@ -41,7 +42,7 @@
                                 <th>Grado</th>
                                 <th>Unidad</th>
                                 <th>Ítem</th>
-                                <th>Sueldo</th>:ok
+                                <th>Sueldo</th>
                                 <th>Antigüedad</th>
                                 <th>Estudio</th>
                                 <th>Cargo</th>
@@ -87,7 +88,7 @@
 @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function () {                   
         $('body').addClass("mini-navbar");
         var datatable_contri = $('#datatables-affiliate-contributions').DataTable({
             responsive: true,
@@ -174,6 +175,9 @@
         $('.btn.btn-default.buttons-collection.buttons-colvis').on('click', function () {
             $('div.dt-button-background').remove()
         });
+       
     })
+  
 </script>
+
 @endsection

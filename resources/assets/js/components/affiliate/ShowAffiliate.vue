@@ -3,7 +3,7 @@ import { dateInputMaskAll } from "../../helper.js";
 	export default{
 		props:[
             'affiliate',
-            'cities'    
+            'cities'
 		],
         data(){
             return{
@@ -35,7 +35,7 @@ import { dateInputMaskAll } from "../../helper.js";
         },
         created:function(){
             // if(!this.city_birth){
-            //     
+            //
             // let city_id =this.affiliate.city_birth_id;
             // this.city_birth=this.cities.filter(function(city) {
             //     return city.id==city_id;
@@ -59,10 +59,10 @@ import { dateInputMaskAll } from "../../helper.js";
                     return '';
                 }
             },
-            city_birth_name: function(){                
+            city_birth_name: function(){
                 return !!this.city_birth?this.city_birth.name:'';
             },
-            city_identity_card_name: function(){                
+            city_identity_card_name: function(){
                 return !!this.city_identity_card?this.city_identity_card.first_shortened:'';
             },
             gender_name: function(){
@@ -71,12 +71,12 @@ import { dateInputMaskAll } from "../../helper.js";
                     {
                         g ='Femenino';
                     }
-                    if(this.form.gender=="M") 
+                    if(this.form.gender=="M")
                     {
                        g = 'Masculino';
                     }
                     return g;
-                // return !!this.form.gender==='F'?'Femenino':'Masculino'; 
+                // return !!this.form.gender==='F'?'Femenino':'Masculino';
             },
             civil_status_name:function(){
                 var st = '';
@@ -85,11 +85,11 @@ import { dateInputMaskAll } from "../../helper.js";
                     case "S":
                         st= 'Soltero(a)';
                         break;
-                    
+
                     case "D":
                         st= 'Divorciado(a)';
                         break;
-                    
+
                     case "V":
                         st= 'Viudo(a)';
                         break;
@@ -98,7 +98,7 @@ import { dateInputMaskAll } from "../../helper.js";
                         st= 'Casado(a)';
                         break;
 
-                }   
+                }
                 return st;
             },
             validAll(){
@@ -157,7 +157,7 @@ import { dateInputMaskAll } from "../../helper.js";
                         this.show_spinner=false;
                         this.form = response.data.affiliate;
                         this.city_birth = response.data.city_birth;
-                        this.city_identity_card = response.data.city_identity_card; 
+                        this.city_identity_card = response.data.city_identity_card;
                         this.values.identity_card = response.data.affiliate.identity_card;
                         this.values.first_name =  response.data.affiliate.first_name;
                         this.values.second_name =  response.data.affiliate.second_name;
