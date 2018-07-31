@@ -1,7 +1,7 @@
 <div class="col-lg-12">
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <h3 class="pull-left">Informaci&oacuten Policial</h3>
+            <h3 class="pull-left">Informaci&oacute;n Policial</h3>
             @can('update',$affiliate)
             <div class="text-right">
                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
@@ -18,7 +18,7 @@
                             <tr>
                                 <td class="font-bold">Cedula de identidad:</td>
                                 <td>{{ $affiliate->identity_card }} {{-- {{ !!$affiliate->city_identity_card ? $affiliate->city_identity_card->first_shortened                                     : '' }} --}}</td>
-                                <td class="font-bold">Matr&iacutecula:</td>
+                                <td class="font-bold">Matr&iacute;cula:</td>
                                 <td>{{ $affiliate->registration }}</td>
                                 <td class="font-bold">Primer Nombre:</td>
                                 <td>{{ $affiliate->first_name }}</td>
