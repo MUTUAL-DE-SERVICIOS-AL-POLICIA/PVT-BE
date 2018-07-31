@@ -93,7 +93,7 @@ class AffiliateFolderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
-    {                
+    {
         $folder=AffiliateFolder::find($request->folder_id);
         $this->authorize('delete', $folder);
         $folder->delete();
