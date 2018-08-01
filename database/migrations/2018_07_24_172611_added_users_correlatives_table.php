@@ -15,7 +15,7 @@ class AddedUsersCorrelativesTable extends Migration
     {
         Schema::table('ret_fun_correlatives', function (Blueprint $table) {
             $table->bigInteger('user_id')->unsigned()->nullable();
-            $table->date('date');
+            $table->date('date')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
         });
     }
