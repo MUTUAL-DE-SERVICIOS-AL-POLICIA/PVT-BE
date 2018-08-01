@@ -288,20 +288,39 @@ class RetirementFundController extends Controller
                 
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_fund->id;
-        $beneficiary->city_identity_card_id = strtoupper(trim($request->applicant_city_identity_card));
+        $beneficiary->city_identity_card_id = mb_strtoupper(trim($request->applicant_city_identity_card));
         $beneficiary->kinship_id = $request->applicant_kinship;
-        $beneficiary->identity_card = strtoupper($request->applicant_identity_card);
-        $beneficiary->last_name = strtoupper(trim($request->applicant_last_name));
-        $beneficiary->mothers_last_name = strtoupper(trim($request->applicant_mothers_last_name));
-        $beneficiary->first_name = strtoupper(trim($request->applicant_first_name));
-        $beneficiary->second_name = strtoupper(trim($request->applicant_second_name));
-        $beneficiary->surname_husband = strtoupper(trim($request->applicant_surname_husband));        
+        $beneficiary->identity_card = mb_strtoupper($request->applicant_identity_card);
+        $beneficiary->last_name = mb_strtoupper(trim($request->applicant_last_name));
+        $beneficiary->mothers_last_name = mb_strtoupper(trim($request->applicant_mothers_last_name));
+        $beneficiary->first_name = mb_strtoupper(trim($request->applicant_first_name));
+        $beneficiary->second_name = mb_strtoupper(trim($request->applicant_second_name));
+        $beneficiary->surname_husband = mb_strtoupper(trim($request->applicant_surname_husband));        
         $beneficiary->birth_date = $request->applicant_birth_date;        
         $beneficiary->gender = $request->applicant_gender;        
         $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));        
         $beneficiary->type = "S";
         $beneficiary->save();
+        if($account_type == '1')
+        {
+            $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
+            $update_affilaite->identity_card = $beneficiary->identity_card;
+            $update_affilaite->first_name = $beneficiary->first_name;
+            $update_affilaite->second_name = $beneficiary->second_name;
+            $update_affilaite->last_name = $beneficiary->last_name;
+            $update_affilaite->mothers_last_name = $request->mothers_last_name;
+            $update_affilaite->gender = $beneficiary->gender;            
+            $update_affilaite->birth_date = $beneficiary->birth_date;
+            $update_affilaite->phone_number = $beneficiary->phone_number;
+            $update_affilaite->cell_phone_number = $beneficiary->cell_phone_number;
+            $update_affilaite->city_birth_id = $beneficiary->city_birth_id;
+            $update_affilaite->city_identity_card_id =$beneficiary->city_identity_card_id;
+            $update_affilaite->surname_husband = $beneficiary->surname_husband;            
+            $update_affilaite->save();
+
+        }
+
         if($account_type == '2')
         {
             $advisor = new RetFunAdvisor();
