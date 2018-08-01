@@ -54,6 +54,19 @@ class Util
         }
         return 'invalid Month year';
     }
+    public static function parseBarDate($value)
+    {
+        if (self::verifyBarDate($value) ) {
+            return Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        }
+        return 'invalid Month year';
+    }
+    public static function verifyBarDate($value)
+    {
+        $re = $re = '/^\d{1,2}\/\d{1,2}\/\d{4}$/m';
+        preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
+        return (sizeOf($matches) > 0);
+    }
     public static function verifyMonthYearDate($value)
     {
         $re = $re = '/^\d{1,2}\/\d{4}$/m';
@@ -143,6 +156,7 @@ class Util
         $correlative->retirement_fund_id = $retirement_fund_id;
         $correlative->code = $role->correlative;
         $correlative->date = Carbon::now();
+        $correlative->user_id = self::getAuthUser()->id;
         $correlative->save();
 
         return $correlative;
@@ -335,7 +349,7 @@ class Util
     }
     public static function calculateAge($birth_date, $death_date)
     {
-        $birth_date =  Carbon::parse($birth_date);
+        $birth_date =  Carbon::createFromFormat('d/m/Y',$birth_date );
         if ($death_date) {
             $death_date = Carbon::parse($death_date);
             $age = $birth_date->diff($death_date)->format('%y años %m meses');
@@ -346,7 +360,7 @@ class Util
     }
     public static function calculateAgeYears($birth_date, $death_date)
     {
-        $birth_date = Carbon::parse($birth_date);
+        $birth_date = Carbon::createFromFormat('d/m/Y',$birth_date);
         if ($death_date) {
             $death_date = Carbon::parse($death_date);
             $age = $birth_date->diffInYears($death_date);
