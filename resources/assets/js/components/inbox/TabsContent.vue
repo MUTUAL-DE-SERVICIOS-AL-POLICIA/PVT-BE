@@ -13,8 +13,8 @@ export default {
             wfSequenceBack:null,
             wfCurrentState:null,
             showLoading:true,
-            documentsReceivedTotal:0,
-            documentsEditedTotal:0,
+            documentsReceivedTotal:null,
+            documentsEditedTotal:null,
         }
     },
     mounted(){
@@ -85,7 +85,7 @@ export default {
             });
             if (found) {
                 if (!this.wfSequenceNextL.find(w=> w.wf_state_id == this.wfSequenceNext)) {
-                    flash("Debe seleccionar el destino al donde enviara los Trámites.", "error")
+                    flash("Debe seleccionar el destino al donde enviará los Trámites.", "error")
                     return;
                 }
                 let wfSequenceNextName = this.wfSequenceNextL.find(w=> w.wf_state_id == this.wfSequenceNext).wf_state_name;
@@ -133,7 +133,7 @@ export default {
             });
             if (found) {
                 if (!this.wfSequenceBackL.find(w=> w.wf_state_id == this.wfSequenceBack)) {
-                    flash("Debe seleccionar el destino al donde enviara los Trámites.", "error");
+                    flash("Debe seleccionar el destino al donde enviará los Trámites.", "error");
                     return;
                 }
                 let wfSequenceBackName = this.wfSequenceBackL.find(w=> w.wf_state_id == this.wfSequenceBack).wf_state_name;
@@ -197,6 +197,9 @@ export default {
             return 0;
         },
         totalDocs(){
+            if(this.workflows.length == 0){
+                return null;
+            }
             return this.workflows.reduce((accu, curr)=>{
                 return accu + this.classification(curr.id).length;
             }, 0)

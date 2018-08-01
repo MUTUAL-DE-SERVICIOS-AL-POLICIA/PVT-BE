@@ -5,6 +5,8 @@ namespace Muserpol\Models\RetirementFund;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Muserpol\Models\RetirementFund\RetFunBeneficiary;
+use Muserpol\Helpers\Util;
 
 class RetirementFund extends Model
 {
@@ -54,7 +56,7 @@ class RetirementFund extends Model
     }
     public function discount_types()
     {
-        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot('amount');
+        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount','date','code','note_code']);
     }    
     public function ret_fun_state(){
         return $this->belongsTo('Muserpol\Models\RetirementFund\RetFunState','ret_fun_state_id');
@@ -62,6 +64,10 @@ class RetirementFund extends Model
     public function ret_fun_records()
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetFunRecord');
+    }
+    public function tags()
+    {
+        return $this->belongsToMany('Muserpol\Models\Tag')->withPivot(['date', 'user_id']);
     }
     public function getBasicInfoCode()
     {
@@ -73,5 +79,31 @@ class RetirementFund extends Model
     public function wf_state()
     {
         return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_state_current_id', 'id');
+    }
+
+
+    public function getReceptionSummary(){
+        
+        $beneficiary = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$this->id)->first();
+        $data = [
+            0   =>  $this->affiliate->fullName(),
+            1   =>  Util::fullName($beneficiary),
+        ];
+        return $data;
+    }
+
+    public function getFileSummary(){
+        $folders = Affiliate::where('affiliate_id',$this->affiliate_id)->get();
+        if($folders->count() > 0)
+        {
+            $result = "";
+            foreach($folders as $folder){
+                $restul.= $folder->procedure_modality->name."<br>";
+            }
+        }
+        {
+            return "El afiliado no tiene documentos referidos";
+        }
+        
     }
 }

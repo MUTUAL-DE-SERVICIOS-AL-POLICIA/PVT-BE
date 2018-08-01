@@ -12,7 +12,7 @@
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <table class="table table-responsive" style="width:100%;">
                                 <tr>
                                     <td>

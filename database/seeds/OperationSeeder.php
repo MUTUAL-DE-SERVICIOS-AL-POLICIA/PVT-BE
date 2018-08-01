@@ -44,8 +44,7 @@ class OperationSeeder extends Seeder
             ['module_id' => '3', 'name' => 'DirectContribution', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'IpcRate', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'Reimbursement', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
-            
-            ['module_id' => '3', 'name' => 'RetFunAddressBeneficiary', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
+
             ['module_id' => '3', 'name' => 'RetFunAdvisor', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'RetFunAdvisorBeneficiary', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'RetFunApplicant', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],

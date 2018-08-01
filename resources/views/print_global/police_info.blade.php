@@ -27,7 +27,7 @@
     </thead>  
     <tbody> 
         <tr class="text-sm">
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $degree->name }}</td>
+            <td class="text-center uppercase font-bold px-5 py-3">{{ $degree->shortened }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->first_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->second_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->last_name }}</td>

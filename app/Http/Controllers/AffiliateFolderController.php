@@ -94,8 +94,7 @@ class AffiliateFolderController extends Controller
      */
     public function destroy(Request $request)
     {
-        //
-        $folder=AffiliateFolder::find($request->code_file);
+        $folder=AffiliateFolder::find($request->folder_id);
         $this->authorize('delete', $folder);
         $folder->delete();
         return back()->withInput();

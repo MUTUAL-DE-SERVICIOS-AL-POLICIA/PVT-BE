@@ -5,9 +5,14 @@
                     <legend>Fondo de Retiro</legend>
                 </div>
                 @can('update',new Muserpol\Models\RetirementFund\RetirementFund)
-                <div class="text-right">
+                <div class="text-right" v-if="!read">
                     <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
                 </div>
+                <div class="text-right" v-if="read">
+                <a href="{{ url('ret_fun/'.$retirement_fund->id)}}" class="btn btn-primary"> <i class="fa fa-eye"></i> Ver</a>
+                    {{-- <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button> --}}
+                </div>
+
                 @else
                 <br>
                     @endcan
@@ -78,6 +83,121 @@
                     </div>
                 </div>
                 <br>
-        </div>
+        </div>        
     </div>
+
+    <div class="ibox">
+            <div class="ibox-content">
+                    <div  class="pull-left col-md-12">
+                        <legend>Resumen</legend>
+                    </div>                                        
+                    <br>
+                    <div class="row">                        
+                        <div class="col-md-2">
+                            <strong> Titular:</strong>&nbsp;
+                        </div>
+                        <div class="col-md-4">                            
+                                <input type="text" class="form-control" disabled>                             
+                        </div>
+                        <div class="col-md-2">
+                            <strong> Apoderado:</strong>&nbsp;
+                        </div>
+                        <div class="col-md-4">
+                                <input type="text" class="form-control" disabled>
+                        </div>                        
+                    </div>
+                    <br>
+                    <div class="row">                        
+                        <div class="col-md-2">
+                            <strong>Archivos referidos:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Fecha:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>                        
+                    </div>
+                    <br>                    
+                    <div class="row">                        
+                        <div class="col-md-2">
+                            <strong>Pr&eacute;stamos y deudas:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Fecha:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>                        
+                    </div>
+                    <br>  
+                    <div class="row">                        
+                        <div class="col-md-2">
+                            <strong>Revisi&oacute;n Legal:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Fecha:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>                        
+                    </div>   
+                    <br>
+                    <div class="row">                        
+                        <div class="col-md-2">
+                            <strong>Cuentas individuales:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Fecha:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">                        
+                        <div class="col-md-2">
+                            <strong>Calificaci&oacute;n:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Fecha:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>                        
+                    </div>
+                    <br>
+                    <div class="row">                        
+                        <div class="col-md-2">
+                            <strong>TOTAL PAGO:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>TOTAL DESCUENTOS:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" disabled>
+                        </div>                        
+                    </div>
+
+                    <br>
+            </div>        
+        </div>
 </div>

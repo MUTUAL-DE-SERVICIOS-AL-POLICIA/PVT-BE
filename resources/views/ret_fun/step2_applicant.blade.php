@@ -1,5 +1,4 @@
 <div class="col-lg-12">
-
     <div class="ibox float-e-margins">
         <div class="ibox-content">
             <legend>Datos del afiliado</legend>
@@ -9,7 +8,7 @@
                         <label class="col-sm-4 control-label">
                             Fecha de desvinculaci&oacute;n</label>
                         <div class="col-sm-8">
-                            <input type="date" name="date_derelict" v-model="date_derelict" value="date_derelict" class="form-control" v-validate.initial="'required'">
+                            <input type="text" name="date_derelict" v-model="date_derelict" data-month-year="true" class="form-control" v-validate.initial="'required'">
                             <i v-show="errors.has('date_derelict')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('date_derelict')" class="text-danger">@{{ errors.first('date_derelict') }}</span>
                         </div>
@@ -36,7 +35,7 @@
                                 <label class="control-label">Tipo de Solicitante</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control" autofocus name="accountType" @change="change_applicant()" v-model.trim="applicant_type" v-validate.initial="'required'">
+                                <select class="form-control" name="accountType" @change="change_applicant()" v-model.trim="applicant_type" v-validate.initial="'required'">
                                     <option :value="null"></option>
                                     <option v-for="(type,index) in applicant_types" :value="index+1">@{{type}}</option>
                                 </select>
@@ -152,10 +151,10 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-4">
-                                <label class="control-label">Fechad de Nacimiento</label>
+                                <label class="control-label">Fecha de Nacimiento</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="date" class="form-control" v-model.trim="applicant_birth_date">
+                                <input type="date" class="form-control" v-model.trim="applicant_birth_date" name="applicant_birth_date">
                             </div>
                         </div>
                         <div class="col-md-6" :class="{'has-error': errors.has('applicant_gender') }">

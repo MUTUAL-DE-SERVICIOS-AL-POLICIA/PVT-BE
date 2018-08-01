@@ -19,7 +19,7 @@
                     </div>
                     <div class="row" >
                         
-                        <div class="col-md-6" style="margin-bottom:20px">
+                        <!-- <div class="col-md-6" style="margin-bottom:20px">
                             <label>Tipo de Aporte:</label>   
                             <select v-model="tipo" class="form-control" v-on:change="changeType">
                                 <option value="2">Comisión</option>
@@ -27,12 +27,31 @@
                                 <option value="9">Baja Temporal</option>
                            </select>
                             <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
-                        </div>
+                        </div> -->
+                        <!-- <label>Repetir sueldo:</label> -->
+                        <div class="col-md-3" >                            
+                            <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_salary">
+                        </div>                    
                         <div class="col-md-3" >
-                            <label>Repetir sueldo:</label>
-                            <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_salary" >                            
+                            <button class="btn btn-primary " type="button" @click="repeatSalary()"><i class="fa fa-money"></i>&nbsp;Repetir Sueldo</button>                            
+                             <select class="form-control"  v-model = "month" name="month" id="month">
+                                <option value="01">Enero</option>
+                                <option value="02">Febrero</option>
+                                <option value="03">Marzo</option>
+                                <option value="04">Abril</option>
+                                <option value="05">Mayo</option>
+                                <option value="06">Junio</option>
+                                <option value="07">Julio</option>
+                                <option value="08">Agosto</option>
+                                <option value="09">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" @click="createReimbursement()"><i class="fa fa-dollar"></i></button>
                         </div>
                     </div>
+                    <hr>
                     <table class="table table-striped" data-page-size="15">
                         <thead>
                         <tr>
@@ -48,7 +67,7 @@
                         <tbody>
                             <tr style="" v-for="(con, index) in contributions" :key="index" id="form">
                                 <td>                                    
-                                    <input type="text"  v-model="con.monthyear" disabled class="form-control">
+                                    <input type="text"  v-model = "con.monthyear" disabled class="form-control">
                                 </td>
                                 <td>
                                     <input type="text" v-model = "con.sueldo" data-money="true" @keyup.enter="CalcularAporte(con, index)"  ref="s1"  class="form-control" >
@@ -72,7 +91,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
-                                <td colspan="3"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>
+                                <td colspan="4"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>
                                 <!--<td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>-->
                             </tr>                            
                         </tbody>
@@ -84,8 +103,59 @@
             </div>
         </div>
     </div>
+    <div class="modal inmodal" id="reimbursement_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+                <h4 class="modal-title">Reintegro</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Mes</label>
+                    <select class="form-control" name="month" id="month">
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Sueldo</label>
+                    <!-- <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
+                    <label>Categor&iacute;a</label>
+                    <select class="form-control" name="reim_category" id="reim_category">
+                        @foreach($categories as $category)
+                            <option value="{{$category->id}}">{{$category->percentage}}</option>
+                        @endforeach
+                    </select>
+                    <label>Total Ganado</label>
+                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control numberformat">
+                    <label>Aporte</label>
+                    <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat"> -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                <!--<button type="submit" class="btn btn-primary">Guardar</button>-->
+                <button class="btn btn-default" type="button" title="Guardar" onclick="storeReimbursement(this)">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div> 
 </template>
+
 <script>
 import {
         dateInputMask,
@@ -113,9 +183,10 @@ export default {
       estado: true,
       afi_id:null,
       show_spinner:false,
-      count:3,
+      count:4,
       ufvs: [],
       general_salary: 0,
+      month: 0,
     };
   },
    
@@ -161,9 +232,10 @@ export default {
            console.log('contri..' + this.contributions);
         for(i=0;i<this.contributions.length;i++){
             this.contributions[i].sueldo = this.general_salary;
+            console.log(this.contributions[i].month);
             this.CalcularAporte(this.contributions[i],i);
         }              
-      },
+      },      
       CalcularAporte(con, index){        
         con.sueldo = parseMoney(con.sueldo);   
         if(parseFloat(con.sueldo) >0)
@@ -213,13 +285,48 @@ export default {
         else
         {
             this.show_spinner=false;
-            this.count = 3;
+            this.count = 4;
             return;
         }
         }
           
       },
+        createReimbursement:function(){
+        //alert(year);
+        //this.actual_year = year;
+            //let newcontribution =  this.contributions[0];
 
+            var newcontribution = 
+            {
+                id : 0,
+                monthyear : this.month+"-2018",
+                sueldo : 0,
+                fr : 0,
+                cm : 0,
+                interes : 0,
+                subtotal : 0,
+                month : '2018',
+                year : this.month,
+                affiliate_id : 1,
+            };
+
+            //let newcontribution = this.$data.contributions[0];
+           // n/ewcontribution.id = 0;
+            ///newcontribution.monthyear = this.month+"-2018";
+            this.contributions.push(newcontribution);
+            console.log(this.contributions);
+            console.log(this.month);                    
+        //$('#reimbursement_modal').modal('show');
+        },
+        addReimbursement:function(){
+            console.log(this.month);
+            // newcontribution.sueldo = 0;
+            // newcontribution.fr = 0;
+            // newcontribution.cm = 0;
+            // newcontribution.interes = 0;
+            // newcontribution.subtotal = 0;
+            //this.contributions.push(newcontribution);
+        },
       changeType:function(e){
           var i;
           if(e.target.value == 9){              

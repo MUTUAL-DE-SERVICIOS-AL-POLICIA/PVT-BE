@@ -34,6 +34,8 @@ class SearcherController
     }
     public function search($ci)
     {                
+        if($ci == '')
+            return new Person();
         $this->getDefaults();                
         foreach ($this->tables as $table){
             $person = $table->where('identity_card',$ci)->select($this->select)->first();

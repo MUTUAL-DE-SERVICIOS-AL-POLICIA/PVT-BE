@@ -17,7 +17,6 @@
 export default {
   props: ['row', 'nested'],
   mounted () {
-    // console.log(jQuery(this.$el).find('button[title]').tooltip());
     // jQuery(this.$el).find('button[title]').tooltip();
   },
   computed: {

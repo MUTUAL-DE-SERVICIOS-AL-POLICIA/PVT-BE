@@ -1,18 +1,25 @@
 @extends('print_global.print')
-{{--  @section('title2')
-
-@endsection  --}}
 @section('content')
 <div>
+    <div class="font-bold uppercase m-b-5 counter">
+        Datos del Trámite
+    </div>
+    @include('ret_fun.print.info',['retirement_fund'=>$retirement_fund])
+    <div class="font-bold uppercase m-b-5 counter">
+        Datos del titular
+    </div>
     <div>
         @include('affiliates.print.info', ['affiliate' => $affiliate ])
     </div>
     <p>
         <strong>MOTIVO: </strong>{{strtoupper($retirement_fund->procedure_modality->procedure_type->name." al ".$retirement_fund->procedure_modality->name)}}
     </p>
+    <div class="font-bold uppercase m-b-5 counter">
+        DOCUMENTACIÓN PRESENTADA
+    </div>
     <table class="w-100 table-info">
         <thead class="bg-grey-darker">
-            <tr class="font-medium text-white text-sm font-bold">
+            <tr class="font-medium text-white text-sm">
                 <td class="w-10 text-center">N°</td>
                 <td class="w-80 text-center">DOCUMENTACIÓN PRESENTADA</td>
                 <td class="w-10 text-center">V°B°</td>
@@ -41,5 +48,11 @@
         numeral 2 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, <strong>CERTIFICA</strong> que la documentación presentada
         es <strong>VALIDA</strong>.
     </p>
+    <div class="text-center w-100 m-t-50">
+            <span class="font-bold block">--------------------------------------------------</span>
+            <span class="font-bold block">{!! strtoupper($user->fullName()) !!}</span>
+            <div class="text-xs text-center" style="width: 350px; margin:0 auto">{!! $user->position !!}</div>
+        </div>
+    </div>
 </div>
 @endsection

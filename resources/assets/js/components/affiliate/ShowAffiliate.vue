@@ -1,8 +1,9 @@
 <script>
+import { dateInputMaskAll } from "../../helper.js";
 	export default{
 		props:[
             'affiliate',
-                        'cities'
+            'cities'
 		],
         data(){
             return{
@@ -26,42 +27,44 @@
                     cell_phone_number: this.affiliate.cell_phone_number,
                     gender: this.affiliate.gender,
                     civil_status: this.affiliate.civil_status,
-                    surname_husband: this.affiliate.surname_husband
+                    surname_husband: this.affiliate.surname_husband,
+                    address: this.affiliate.address,
+                    registration: this.affiliate.registration
                 }
             }
         },
         created:function(){
-            console.log(this.affiliate);
-            console.log(this.cities);
-            if(!this.city_birth){
-                // console.log('no tiene');
-            let city_id =this.affiliate.city_birth_id;
-            this.city_birth=this.cities.filter(function(city) {
-                return city.id==city_id;
-            })[0];
-            city_id =this.affiliate.city_identity_card_id;
-            this.city_identity_card=this.cities.filter(function(city) {
-                return city.id==city_id;
-            })[0];
-            }
-            
+            // if(!this.city_birth){
+            //
+            // let city_id =this.affiliate.city_birth_id;
+            // this.city_birth=this.cities.filter(function(city) {
+            //     return city.id==city_id;
+            // })[0];
+            // city_id =this.affiliate.city_identity_card_id;
+            // this.city_identity_card=this.cities.filter(function(city) {
+            //     return city.id==city_id;
+            // })[0];
+            // }
         },
         computed:{
             age: function(){
-                if(this.form.birth_date){
-                    var birthday = +new Date(this.form.birth_date); 
-                    return~~ ((Date.now() - birthday) / (31557600000));
-                }else
-                {
-                    return '';
+                if(this.form.birth_date!=null){
+                    if (this.form.birth_date.includes('y') || this.form.birth_date.includes('m') || this.form.birth_date.includes('d') ) {
+                        return ''
+                    }
+
+                    if(this.form.birth_date){
+                        return moment(this.form.birth_date, "DD/MM/YYYY").fromNow(true)
+                    }else
+                    {
+                        return '';
+                    }
                 }
             },
             city_birth_name: function(){
-                console.log("reactividad hdp 0");
                 return !!this.city_birth?this.city_birth.name:'';
             },
             city_identity_card_name: function(){
-                console.log('reactividad hdp 1');
                 return !!this.city_identity_card?this.city_identity_card.first_shortened:'';
             },
             gender_name: function(){
@@ -70,12 +73,12 @@
                     {
                         g ='Femenino';
                     }
-                    if(this.form.gender=="M") 
+                    if(this.form.gender=="M")
                     {
                        g = 'Masculino';
                     }
                     return g;
-                // return !!this.form.gender==='F'?'Femenino':'Masculino'; 
+                // return !!this.form.gender==='F'?'Femenino':'Masculino';
             },
             civil_status_name:function(){
                 var st = '';
@@ -84,11 +87,11 @@
                     case "S":
                         st= 'Soltero(a)';
                         break;
-                    
+
                     case "D":
                         st= 'Divorciado(a)';
                         break;
-                    
+
                     case "V":
                         st= 'Viudo(a)';
                         break;
@@ -97,16 +100,29 @@
                         st= 'Casado(a)';
                         break;
 
-                }   
+                }
                 return st;
+            },
+            validAll(){
+                if (this.$validator.errors.collect() == {}) {
+                    return false;
+                }
+                return Object.keys(this.$validator.errors.collect()).length > 0;
             }
-
         },
         methods:{
+             async validateBeforeSubmit() {
+                try {
+                    await this.$validator.validateAll();
+                } catch (error) {
+                    console.log("some error");
+                }
+            },
             edit_first_name: function(){
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
+                dateInputMaskAll();
                 if(this.editing==false)
                 {
                     this.form.identity_card = this.values.identity_card;
@@ -120,13 +136,21 @@
                     this.form.gender = this.values.gender;
                     this.form.civil_status = this.values.civil_status;
                     this.form.city_birth_id = this.city_birth.id;
-                    this.form.city_identity_card_id = this.city_identity_card.id;
+                    // this.form.city_identity_card_id = this.city_identity_card.id;
                     this.form.surname_husband = this.values.surname_husband;
+                    this.form.address = this.values.address;
+                    this.form.registration = this.values.registration;
 
+                }else{
+                    this.validateBeforeSubmit();
                 }
-                // console.log(this.form);
             },
             update () {
+                this.validateBeforeSubmit();
+                if (this.validAll) {
+                    flash("Debe completar el formulario", 'error')
+                    return;
+                }
                 let uri = `/update_affiliate/${this.affiliate.id}`;
                 this.show_spinner=true;
                 axios.patch(uri,this.form)
@@ -135,8 +159,7 @@
                         this.show_spinner=false;
                         this.form = response.data.affiliate;
                         this.city_birth = response.data.city_birth;
-                        this.city_identity_card = response.data.city_identity_card; 
-                        console.log(response);
+                        this.city_identity_card = response.data.city_identity_card;
                         this.values.identity_card = response.data.affiliate.identity_card;
                         this.values.first_name =  response.data.affiliate.first_name;
                         this.values.second_name =  response.data.affiliate.second_name;
@@ -148,6 +171,7 @@
                         this.values.gender = response.data.affiliate.gender;
                         this.values.civil_status = response.data.affiliate.civil_status;
                         this.values.surname_husband = response.data.affiliate.surname_husband;
+                        this.values.address = response.data.affiliate.address;
 
                         flash('Informacion del Afiliado Actualizada');
                     }).catch((response)=>{
@@ -156,6 +180,6 @@
                         flash('Error al actualizar el afiliado: '+response.message,'error');
                     })
             }
-        }
+        },
 	}
 </script>

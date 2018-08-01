@@ -13,12 +13,13 @@
                              :cities="cities"
                              :kinships="kinships"
                              :editable="true"
+                             :index="index"
                              v-on:remove="removeBeneficiary(index)">
         </ret-fun-beneficiary>
         <div class="row">
             <div class="col-md-5"></div>
             <div class="col-md-1" v-if="possibleAddBeneficiary">
-                <button class="btn btn-success" @click="addBeneficiary()" type="button" ><i class="fa fa-plus"></i></button>
+                <button class="btn btn-success add-beneficiary-button" @click="addBeneficiary()" type="button" ><i class="fa fa-plus"></i></button>
             </div>
             <div class="col-md-6"></div>
         </div>
@@ -26,6 +27,7 @@
 </template>
 
 <script>
+import {scroller} from 'vue-scrollto/src/scrollTo'
 import RetFunBeneficiary from './Beneficiary.vue'
 import {mapGetters} from 'vuex';
 export default {
@@ -74,6 +76,13 @@ export default {
         }else{
                 this.beneficiaries.push(beneficiary);
         }
+        setTimeout(() => {
+            if (this.$children[this.$children.length-1].$refs.identitycard) {
+                this.$children[this.$children.length-1].$refs.identitycard.focus()
+            }
+            const scrollToFooterCreateBeneficiaries = scroller();
+            scrollToFooterCreateBeneficiaries(`#footerCreateBeneficiaries${this.beneficiaries.length-1}`);
+        }, 100);
       },
     removeBeneficiary(index){
         this.beneficiaries.splice(index,1);

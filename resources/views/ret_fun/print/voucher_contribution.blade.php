@@ -44,7 +44,7 @@
                                 <td class='text-right p-5'>{{ $util::formatMoney($contribution->base_wage) }} </td>
                                 <td class='text-right p-5'>{{ $util::formatMoney($contribution->retirement_fund) }} </td>
                                 <td class='text-right p-5'>{{ $util::formatMoney($contribution->mortuary_quota) }} </td>
-                                <td class='text-right p-5'>{{ $util::formatMoney($contribution->interest) }} </td>    
+                                <td class='text-right p-5'>{{ $util::formatMoney($contribution->interest)??'0.00' }} </td>    
                                 <td class='text-right p-5'>{{ $util::formatMoney($contribution->total) }} </td>
                             </tr>
                         @endforeach

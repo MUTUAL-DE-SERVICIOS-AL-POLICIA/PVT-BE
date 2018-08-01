@@ -64,8 +64,6 @@ use Muserpol\Models\Contribution\IpcRate;
 use Muserpol\Policies\IpcRatePolicy;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Policies\ReimbursementPolicy;
-use Muserpol\Models\RetirementFund\RetFunAddressBeneficiary;
-use Muserpol\Policies\RetFunAddressBeneficiaryPolicy;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Muserpol\Policies\RetFunAdvisorPolicy;
 use Muserpol\Models\RetirementFund\RetFunAdvisorBeneficiary;
@@ -130,8 +128,6 @@ class AuthServiceProvider extends ServiceProvider
          IpcRate::class => IpcRatePolicy::class,
          Reimbursement::class => ReimbursementPolicy::class,
 
-         RetFunAddressBeneficiary::class => RetFunAddressBeneficiaryPolicy::class,
-         RetFunAdvisor::class => RetFunAdvisorPolicy::class,
          RetFunAdvisorBeneficiary::class => RetFunAdvisorBeneficiaryPolicy::class,
          RetFunApplicant::class => RetFunApplicantPolicy::class,
          RetFunBeneficiary::class => RetFunBeneficiaryPolicy::class,

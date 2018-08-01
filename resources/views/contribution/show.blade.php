@@ -1,5 +1,5 @@
-@extends('layouts.app') 
-@section('title', 'Afiliados') 
+@extends('layouts.app')
+@section('title', 'Afiliados')
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
@@ -9,27 +9,23 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row text-center">
     </div>
-    {{--
     <div class="row">
-        <div class="col-md-6">
-            <affiliate-show :affiliate="{{ $affiliate }}" inline-template>
-    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
-            </affiliate-show>
-        </div>
-        <div class="col-md-6">
-            <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
-    @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
-            </affiliate-police>
-        </div>
-    </div> --}}
-    <div class="row">
+        @if(Session::has('message'))
+            <br>
+            <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{Session::get('message')}}
+            </div>
+        @endif
         <div class="col-md-12 no-padding no-margins">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="pull-left">Aportes </h3>
                     <div class="text-right">
                         @can('update',new Muserpol\Models\Contribution\Contribution)
-                        <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar" ><i class="fa fa-paste"></i>
+                            {{-- <a href="{{route('direct_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes directos" ><i class="fa fa-paste"> </i> Aportes Directos </a>
+                            <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar Aportes" ><i class="fa fa-paste"></i> Gestionar Aportes </a> --}}
+                            <br>
                         </a>
                         @else
                         <br>
@@ -38,7 +34,7 @@
                 </div>
                 <div class="panel-body">
                     <table class="table table-striped table-bordered table-hover display" id="datatables-affiliate-contributions" cellspacing="0"
-                        width="100%" style="font-size: 10px">
+                        width="100%" style="font-size: 12px">
                         <thead>
                             <tr>
                                 <th>Gestión</th>
@@ -71,7 +67,7 @@
     </div>
 </div>
 @endsection
- 
+
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 <style>
@@ -84,20 +80,40 @@
     }
     .yellow-row {
         background-color:#ffe6b3 !important;
-        
+
     }
 </style>
 @endsection
- 
+
 @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
     $(document).ready(function () {
         $('body').addClass("mini-navbar");
         var datatable_contri = $('#datatables-affiliate-contributions').DataTable({
+          language: {
+         "decimal": "",
+         "emptyTable": "No hay información",
+         "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+         "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+         "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+         "infoPostFix": "",
+         "thousands": ",",
+         "lengthMenu": "Mostrar _MENU_ Entradas",
+         "loadingRecords": "Cargando...",
+         "processing": "Procesando...",
+         "search": "Buscar:",
+         "zeroRecords": "Sin resultados encontrados",
+         "paginate": {
+             "first": "Primero",
+             "last": "Ultimo",
+             "next": "Siguiente",
+             "previous": "Anterior"
+         }
+     },
             responsive: true,
-            createdRow: function(row, data,dataIndex){                
-                if(data['type'] == 'Directo')                
+            createdRow: function(row, data,dataIndex){
+                if(data['type'] == 'Directo')
                     $(row).addClass('yellow-row');
             },
             fixedHeader: {
@@ -105,6 +121,7 @@
                 footer: true,
                 headerOffset: $('#navbar-fixed-top').outerHeight()
             },
+
             order: [],
             /* para personalizar el orden
              columnDefs: [
@@ -147,6 +164,7 @@
                 { targets: 0, orderData: 1 },
                 { targets: 1, visible: false }
             ],
+
             "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 if ( aData.type == " RE " )
                 {
@@ -179,6 +197,9 @@
         $('.btn.btn-default.buttons-collection.buttons-colvis').on('click', function () {
             $('div.dt-button-background').remove()
         });
+
     })
+
 </script>
+
 @endsection

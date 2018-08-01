@@ -1,4 +1,5 @@
 <script>
+import {scroller} from 'vue-scrollto/src/scrollTo'
 	export default{
 		props:[
             'beneficiaries2',
@@ -6,7 +7,8 @@
 			'originalBeneficiariesBackend',
             'cities',
             'kinships',
-            'retFunId'
+            'retFunId',
+            'procedureModalityId',
 		],
         data(){
             return{
@@ -31,7 +33,6 @@
         methods:{
             toggle_editing () {
 			this.editing = !this.editing;
-            console.log(this.editing);
                 if(this.editing==false)
                 {
                     this.beneficiaries =  this.beneficiaries2;
@@ -40,7 +41,6 @@
             cancel(){
                 this.beneficiaries =  this.originalBeneficiariesBackend;
                 this.originalBeneficiariesBackend = this.beneficiaries;
-                
                 this.toggle_editing();
             },
             getCity (id){
@@ -60,11 +60,10 @@
             update () {
                 let uri = `/update_beneficiaries/${this.retFunId}`;
                 this.show_spinner=true;
-
+                console.log(this.beneficiaries);
+                
                 axios.patch(uri,this.beneficiaries)
                 .then((response)=>{
-                    console.log(response.data);
-                    
                     this.editing = false;
                     this.show_spinner=false;
                     this.beneficiaries = response.data.beneficiaries;
@@ -83,9 +82,10 @@
                         mothers_last_name: null,
                         surname_husband: null,
                         identity_card: null,
-                        city_identity_card: null,
+                        city_identity_card_id: null,
                         birth_date: null,
                         kinship: null,
+                        state: false,
                 }
                 if(this.beneficiaries.length >= 0){
                     let last_beneficiary=this.beneficiaries[this.beneficiaries.length-1];
@@ -95,10 +95,20 @@
                 }else{
                         this.beneficiaries.push(beneficiary);
                 }
+                setTimeout(() => {
+                    if (this.$children[this.$children.length-1].$refs.identitycard) {
+                        this.$children[this.$children.length-1].$refs.identitycard.focus();
+                        const scrollToFooterCreateBeneficiaries = scroller();
+                        scrollToFooterCreateBeneficiaries(`#footerCreateBeneficiaries${this.beneficiaries.length-1}`);
+                    }
+                }, 100);
+            },
+            canAddBeneficiary(){
+                return this.procedureModalityId == 1 || this.procedureModalityId == 4;
             },
             removeBeneficiary(index){
                 this.beneficiaries.splice(index,1);
-            }
+            },
         }
 	}
 </script>

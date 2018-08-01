@@ -11,6 +11,8 @@ use Muserpol\Models\RetirementFund\RetFunProcedure;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Role;
+use Muserpol\Models\DiscountType;
+use Muserpol\Models\RetirementFund\RetirementFund;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -28,16 +30,60 @@ class Util
             return "sin fecha";
     }
 
-    public static function formatMoney($value)
+    public static function formatMoney($value, $prefix = false)
     {
         if ($value) {
             $value = number_format($value, 2, '.', ',');
+            if ($prefix) {
+                return 'Bs'.$value;
+            }
             return $value;
         }
         return null;
     }
-
-    
+    public static function parseMoney($value)
+    {
+        $value = str_replace("Bs", "", $value);
+        $value = str_replace(",", "", $value);
+        return floatval(self::removeSpaces($value));
+    }
+    public static function parseMonthYearDate($value)
+    {
+        if (self::verifyMonthYearDate($value) ) {
+            return Carbon::createFromFormat('d/m/Y', '01/'.$value)->toDateString();
+        }
+        return 'invalid Month year';
+    }
+    public static function parseBarDate($value)
+    {
+        if (self::verifyBarDate($value) ) {
+            return Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        }
+        return 'invalid Month year';
+    }
+    public static function verifyBarDate($value)
+    {
+        $re = $re = '/^\d{1,2}\/\d{1,2}\/\d{4}$/m';
+        preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
+        return (sizeOf($matches) > 0);
+    }
+    public static function verifyMonthYearDate($value)
+    {
+        $re = $re = '/^\d{1,2}\/\d{4}$/m';
+        preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
+        return (sizeOf($matches) > 0);
+    }
+    public static function formatMonthYear($date)
+    {
+        setlocale(LC_TIME, 'es_ES.utf8');
+        if ($date) {
+            if (self::verifyMonthYearDate($date)) {
+                $date = Carbon::createFromFormat('d/m/Y', '01/' . $date)->toDateString();
+            }
+            return Carbon::parse($date)->formatLocalized('%b. %Y');
+        }
+        return null;
+    }
     public static function ucw($string)
 	{
 		if ($string) {
@@ -85,7 +131,11 @@ class Util
     }
 
     public static function getNextAreaCode($retirement_fund_id){
-        $wf_state = WorkflowState::where('role_id', Session::get('rol_id'))->first();        
+        
+        $wf_state = WorkflowState::where('module_id',3)->where('role_id', Session::get('rol_id'))->first();        
+        $reprint = RetFunCorrelative::where('retirement_fund_id',$retirement_fund_id)->where('wf_state_id',$wf_state->id)->first();
+        if(isset($reprint->id))
+            return $reprint;
         $year =  date('Y');
         $role = Role::find($wf_state->role_id);
         if($role->correlative == ""){
@@ -105,9 +155,11 @@ class Util
         $correlative->wf_state_id = $wf_state->id;
         $correlative->retirement_fund_id = $retirement_fund_id;
         $correlative->code = $role->correlative;
+        $correlative->date = Carbon::now();
+        $correlative->user_id = self::getAuthUser()->id;
         $correlative->save();
 
-        return $role->correlative;
+        return $correlative;
     }
     private static $UNIDADES = [
         '',
@@ -297,7 +349,7 @@ class Util
     }
     public static function calculateAge($birth_date, $death_date)
     {
-        $birth_date =  Carbon::parse($birth_date);
+        $birth_date =  Carbon::createFromFormat('d/m/Y',$birth_date );
         if ($death_date) {
             $death_date = Carbon::parse($death_date);
             $age = $birth_date->diff($death_date)->format('%y años %m meses');
@@ -308,7 +360,7 @@ class Util
     }
     public static function calculateAgeYears($birth_date, $death_date)
     {
-        $birth_date = Carbon::parse($birth_date);
+        $birth_date = Carbon::createFromFormat('d/m/Y',$birth_date);
         if ($death_date) {
             $death_date = Carbon::parse($death_date);
             $age = $birth_date->diffInYears($death_date);
@@ -340,13 +392,17 @@ class Util
                 break;
         }
     }
-    public function extractMonth($date)
+    public static function extractMonth($date, $short=true)
     {
         if($date){
+            if($short){
+
+                return Carbon::parse($date)->formatLocalized("%b");
+            }
             return Carbon::parse($date)->formatLocalized("%B");
         }
     }
-    public function extractYear($date)
+    public static function extractYear($date)
     {
         if($date){
             return Carbon::parse($date)->formatLocalized("%Y");
@@ -356,6 +412,9 @@ class Util
     {
         setlocale(LC_TIME, 'es_ES.utf8');
         if ($date) {
+            if (self::verifyMonthYearDate($date) ) {
+                $date = Carbon::createFromFormat('d/m/Y', '01/'.$date)->toDateString();
+            }
             if ($size == 'short') {
                 // return 05 MAY. 1983 // change %d-> %e for 5 MAY. 1983
                 return Carbon::parse($date)->formatLocalized('%d %b. %Y'); //
@@ -363,6 +422,7 @@ class Util
                 return Carbon::parse($date)->formatLocalized('%d %B. %Y'); //
             }
         }
+        return 'sin fecha';
     }
     public static function getRetFunCurrentProcedure()
     {
@@ -382,7 +442,7 @@ class Util
                     // $value = json_encode($value);
                     $diff = Carbon::parse($value['start'])->diffInMonths(Carbon::parse($value['end'])) + 1;
                 } else {
-                    $diff = Carbon::parse($value->start)->diffInMonths(Carbon::parse($value->end)) + 1;
+                    $diff = (Carbon::parse($value->end)->diffInMonths(Carbon::parse($value->start)) + 1);
                 }
                 if ($diff < 0) {
                     dd("error");
@@ -405,5 +465,49 @@ class Util
                 break;
         }
         return $label;
+    }
+    /*for legal opinion print*/
+    public static function getDiscountCombinations($ret_fun_id)
+    {
+        $retirement_fund = RetirementFund::find($ret_fun_id);
+        $array_discounts = array();
+        $array_discounts_text = array();
+
+        $array = DiscountType::all()->pluck('id');
+        $results = array(array());
+        foreach ($array as $element) {
+            foreach ($results as $combination) {
+                array_push($results, array_merge(array($element), $combination));
+            }
+        }
+        foreach ($results as $value) {
+            $sw = true;
+            foreach ($value as $id) {
+                if (!$retirement_fund->discount_types()->find($id)) {
+                    $sw = false;
+                }
+            }
+            if ($sw) {
+                $temp_total_discount = 0;
+                $array_discounts_text = array();
+                foreach ($value as $id) {
+                    $amount = $retirement_fund->discount_types()->find($id)->pivot->amount;
+                    $temp_total_discount = $temp_total_discount + $amount;
+                    array_push($array_discounts_text, "que descontado el monto ".self::formatMoney($amount,true).' ('.self::convertir($amount). " BOLIVIANOS) por concepto de ". $retirement_fund->discount_types()->find($id)->name);
+                }
+                $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
+                array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+            }
+        }
+        $name = join(' - ', $array_discounts_text);
+        $pos = strrpos($name, ' - que ');
+        if ($pos !== false) {
+            $name = substr_replace($name, ' y ', $pos, strlen(' - que '));
+        }
+        $name = str_replace(" -", ",", $name);
+        if (sizeOf($array_discounts_text) > 0) {
+            $name = ', '. $name.", queda un saldo de ".self::formatMoney($array_discounts[sizeOf($array_discounts)-1]['amount'], true).' ('.self::convertir($array_discounts[sizeOf($array_discounts) - 1]['amount']) .' BOLIVIANOS).';
+        }
+        return $name;
     }
 }

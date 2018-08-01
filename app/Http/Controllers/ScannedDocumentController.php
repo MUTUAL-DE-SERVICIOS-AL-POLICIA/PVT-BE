@@ -3,7 +3,12 @@
 namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Muserpol\Models\Affiliate;
+use Muserpol\Models\ScannedDocument;
+use Muserpol\Models\ProcedureDocument;
+use Storage;
+use Response;
+use File;
 class ScannedDocumentController extends Controller
 {
     /**
@@ -26,6 +31,14 @@ class ScannedDocumentController extends Controller
         //
     }
 
+    public function create_document($affiliate_id){
+        $affililate =Affiliate::find($affiliate_id);
+        $procedure_documents = ProcedureDocument::all();
+        
+        $data = array('affiliate'=>$affililate,'procedure_documents'=>$procedure_documents);
+        return view('affiliates.create_scanned_document',$data);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -35,6 +48,18 @@ class ScannedDocumentController extends Controller
     public function store(Request $request)
     {
         //
+        // return $request->all();
+        $path = $request->file('archivo')->store('pdfs');
+        // return $path;
+        $document = new ScannedDocument;
+        $document->affiliate_id = $request->affiliate_id;
+        $document->url_file = $path;
+        $document->procedure_document_id = $request->procedure_document_id;
+        $document->comment = $request->comment;
+        $document->due_date = $request->due_date;
+        $document->save();
+       
+        return redirect('affiliate/'.$request->affiliate_id);
     }
 
     /**
@@ -45,7 +70,17 @@ class ScannedDocumentController extends Controller
      */
     public function show($id)
     {
-        //
+        $document = ScannedDocument::find($id);
+
+        if(isset($document->id))
+        {
+            $response = Response::make( Storage::get($document->url_file), 200); 
+            $response->header('Content-Type', 'application/pdf'); 
+            return $response; 
+        }
+
+        return 'no existe el archivo con el id '.$id;
+    
     }
 
     /**

@@ -60,11 +60,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="form-group">
-                        {!! Form::open(array('route' => ['save_average_quotable', $retirement_fund->id],'method'=>'PATCH')) !!}
-                        <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar</button>
-                        {!! Form::close() !!}
-                    </div>
                 </div>
             </div>
         </div>

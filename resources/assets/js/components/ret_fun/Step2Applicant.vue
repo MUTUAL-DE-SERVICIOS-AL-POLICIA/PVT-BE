@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from 'vuex';
-import { cellPhoneInputMaskAll, phoneInputMaskAll }  from "../../helper.js";
+import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll }  from "../../helper.js";
 export default {
   props:[
 
@@ -61,6 +61,7 @@ export default {
     console.log(this.affiliate.date_derelict);
     this.addPhoneNumber();
     this.addCellPhoneNumber();
+    monthYearInputMaskAll();
   },
   computed:{
     ...mapGetters({

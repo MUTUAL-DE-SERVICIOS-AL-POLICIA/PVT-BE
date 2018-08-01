@@ -571,3 +571,22 @@ input.largerCheckbox {
 	font-size:19px;
 	font-weight: 500;
 }
+.widget-head-color-box {
+    margin-top: 17px;
+}
+.tab-content {
+    padding: 0px;
+}
+.add-beneficiary-button:focus{
+	box-shadow: 0px 0px 11px 3px #394a70;
+	transition: all .45s ease-in-out;
+}
+.link-affiliate{
+	color: #fff;
+}
+.link-affiliate:hover, .link-affiliate:focus{
+	color: #EFEFC8;
+}
+.link-affiliate:active{
+	color: #ddddad;
+}

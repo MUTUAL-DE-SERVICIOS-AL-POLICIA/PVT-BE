@@ -28,6 +28,10 @@ class RetFunBeneficiary extends Model
     {
         return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunAdvisor','ret_fun_advisor_beneficiary','ret_fun_beneficiary_id','ret_fun_advisor_id');
     }
+    public function address()
+    {
+        return $this->belongsToMany('\Muserpol\Models\Address', 'ret_fun_address_beneficiary');
+    }
 
     /**
      * Methods
@@ -46,5 +50,13 @@ class RetFunBeneficiary extends Model
     public function getCivilStatus()
     {
         return Util::getCivilStatus($this->civil_status, $this->gender);
+    }
+    public function getAddress()
+    {
+        $address= $this->address[0];
+        if (isset($address->id)) {
+            return 'Calle '.$address->street.' Nº '.$address->number_address . ' '.$address->zone;
+        }
+        return 'Sin dirección';
     }
 }

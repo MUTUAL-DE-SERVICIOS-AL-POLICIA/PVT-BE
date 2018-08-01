@@ -11,19 +11,19 @@
             @foreach ($beneficiaries as $beneficiary)
             <tr class="text-sm">
                 <td class="w-40 text-left px-10 py-3 uppercase">nombres y apellidos</td>
-                <td class="text-center uppercase font-bold px-5 py-3"> {{ $beneficiary->fullName() }} </td>
+                <td class="text-left uppercase font-bold px-5 py-3"> {{ $beneficiary->fullName() }} </td>
             </tr>
             <tr class="text-sm">
                 <td class="text-left px-10 py-3 uppercase">Carnet de identidad</td>
-                <td class="text-center uppercase font-bold px-5 py-3">{!! $beneficiary->identity_card !!} {{$beneficiary->city_identity_card->name ?? ''}}</td>
+                <td class="text-left uppercase font-bold px-5 py-3">{!! $beneficiary->identity_card !!} {{$beneficiary->city_identity_card->first_shortened ?? ''}}</td>
             </tr>
             <tr class="text-sm">
                 <td class="text-left px-10 py-3 uppercase">fecha de Nacimiento</td>
-                <td class="text-center uppercase font-bold px-5 py-3">{{ $beneficiary->birth_date }}</td>
+                <td class="text-left uppercase font-bold px-5 py-3">{{ $beneficiary->birth_date }}</td>
             </tr>
             <tr class="text-sm">
                 <td class="text-left px-10 py-3 uppercase" style="border-bottom:2px solid #22292f">parentesco con el titular</td>
-                <td class="text-center uppercase font-bold px-5 py-3" style="border-bottom:2px solid #22292f">{{ $beneficiary->kinship->name ?? 'error' }}</td>
+                <td class="text-left uppercase font-bold px-5 py-3" style="border-bottom:2px solid #22292f">{{ $beneficiary->kinship->name ?? 'error' }}</td>
             </tr>
             @endforeach
         </tbody>

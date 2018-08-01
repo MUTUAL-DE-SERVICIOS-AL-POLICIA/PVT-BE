@@ -11,4 +11,8 @@ class WorkflowState extends Model
     {
         return $this->hasMany(RetirementFund::class, 'wf_state_current_id', 'id');
     }
+    public function tags()
+    {
+        return $this->belongsToMany('Muserpol\Models\Tag', 'tag_wf_state','wf_state_id');
+    }
 }

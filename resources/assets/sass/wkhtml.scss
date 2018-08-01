@@ -18,7 +18,7 @@ $font_0: 'Noto sans';
 //original selectors
 //html, body
 %extend_1 {
-	padding: 10px 10px 15px 10px;
+	padding: 10px 10px 3px 10px;
 	margin: 0;
 	font-family: $font_0;
 	height: 100%;
@@ -31,7 +31,7 @@ body {
 	@extend %extend_1;
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 	border-radius: 0.75em;
-	border: 1px solid $black;
+	border: 1px solid $color_shark_approx;
 	// page-break-after: avoid;
 }
 table {
@@ -166,6 +166,9 @@ tr {
 	border-style: solid;
 	border-width: 1px;
 }
+.no-border {
+	border: none!important;
+}
 .border-solid	{border-style: solid;}
 .border-dashed	{border-style: dashed;}
 .border-dotted	{border-style: dotted;}
@@ -289,6 +292,26 @@ tr {
 .p-5 {
 	padding: 5px;
 }
+.py-100 {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+.py-50 {
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+.py-15 {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+.py-10 {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.py-5 {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
 .py-4 {
 	padding-top: 4px;
 	padding-bottom: 4px;
@@ -300,6 +323,18 @@ tr {
 .py-2 {
 	padding-top: 2px;
 	padding-bottom: 2px;
+}
+.px-100 {
+	padding-left: 100px;
+	padding-right: 100px;
+}
+.px-75 {
+	padding-left: 75px;
+	padding-right: 75px;
+}
+.px-50 {
+	padding-left: 50px;
+	padding-right: 50px;
 }
 .px-15 {
 	padding-left: 15px;
@@ -325,6 +360,7 @@ tr {
 	padding-left: 2px;
 	padding-right: 2px;
 }
+
 .mx-10 {
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -377,6 +413,60 @@ tr {
 }
 .m-t-50 {
 	margin-top: 50px;
+}
+.m-t-75 {
+	margin-top: 75px;
+}
+.m-t-100 {
+	margin-top: 100px;
+}
+.m-r-5 {
+	margin-right: 5px;
+}
+.m-r-10 {
+	margin-right: 10px;
+}
+.m-r-15 {
+	margin-right: 15px;
+}
+.m-r-20 {
+	margin-right: 20px;
+}
+.m-r-25 {
+	margin-right: 25px;
+}
+.m-r-30 {
+	margin-right: 30px;
+}
+.m-r-35 {
+	margin-right: 35px;
+}
+.m-r-50 {
+	margin-right: 50px;
+}
+.mlr-5 {
+	margin-left: 5px;
+}
+.m-l-10 {
+	margin-left: 10px;
+}
+.m-l-15 {
+	margin-left: 15px;
+}
+.m-l-20 {
+	margin-left: 20px;
+}
+.m-l-25 {
+	margin-left: 25px;
+}
+.m-l-30 {
+	margin-left: 30px;
+}
+.m-l-35 {
+	margin-left: 35px;
+}
+.m-l-50 {
+	margin-left: 50px;
 }
 .no-paddings{
 	padding: 0px;
@@ -570,4 +660,11 @@ tr {
 }
 .table-striped tr:nth-child(even) {
 	background: $color_catskill_white_approx;
+}
+body {
+	counter-reset: number 0;
+}
+.counter:before {
+	counter-increment: number;
+	content: counter(number) ".- ";
 }

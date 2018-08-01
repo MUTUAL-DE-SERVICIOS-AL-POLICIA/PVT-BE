@@ -10,15 +10,42 @@ Breadcrumbs::register('show_affiliate', function($breadcrumbs, $affiliate)
 	$breadcrumbs->parent('affiliate');
 	$breadcrumbs->push(ucwords(strtolower($affiliate->fullName())), URL::to('affiliate/'.$affiliate->id));
 });
+Breadcrumbs::register('show_aid_affiliate', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('affiliate');
+	$breadcrumbs->push(ucwords(strtolower($affiliate->fullName())), URL::to('affiliate/'.$affiliate->id));
+});
 Breadcrumbs::register('show_affiliate_contributions', function($breadcrumbs, $affiliate)
 {
 	$breadcrumbs->parent('show_affiliate', $affiliate);
-	$breadcrumbs->push("Aportes", route('show_contribution', $affiliate->id));
+	$breadcrumbs->push("Detalle de Aportes", route('show_contribution', $affiliate->id));
 });
 Breadcrumbs::register('edit_affiliate_contributions', function($breadcrumbs, $affiliate)
 {
-	$breadcrumbs->parent('show_affiliate_contributions', $affiliate);
+	// $breadcrumbs->parent('show_affiliate_contributions', $affiliate);
+	$breadcrumbs->parent('show_affiliate', $affiliate);
 	$breadcrumbs->push("Edición de Aportes", route('edit_contribution', $affiliate->id));
+});
+Breadcrumbs::register('affiliate_direct_contributions', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('show_affiliate', $affiliate);
+	$breadcrumbs->push("Pago de aportes directos", route('direct_contribution', $affiliate->id));
+});
+Breadcrumbs::register('affiliate_direct_aid_contributions', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('show_affiliate_aid_contributions', $affiliate);
+	$breadcrumbs->push("Pago de aportes directos de Pasivos", route('direct_aid_contribution', $affiliate->id));
+});
+Breadcrumbs::register('edit_affiliate_aid_contributions', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('show_affiliate_aid_contributions', $affiliate);
+	$breadcrumbs->push("Edición de Aportes Pasivo", route('edit_aid_contribution', $affiliate->id));
+});
+
+Breadcrumbs::register('show_affiliate_aid_contributions', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('show_aid_affiliate', $affiliate);
+	$breadcrumbs->push("Aportes Pasivo", route('show_aid_contribution', $affiliate->id));
 });
 
 Breadcrumbs::register('retirement_fund', function($breadcrumbs)
@@ -63,6 +90,12 @@ Breadcrumbs::register('classify_contributions', function($breadcrumbs,$retiremen
 {	
 	$breadcrumbs->parent('show_retirement_fund',$retirement_fund);
 	$breadcrumbs->push('Clasificacion de Aportes');
+});
+
+Breadcrumbs::register('document_scanned', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
+	$breadcrumbs->push('Escanear Documento');
 });
 
 //	PAGO DE CONTRIBUCIONES

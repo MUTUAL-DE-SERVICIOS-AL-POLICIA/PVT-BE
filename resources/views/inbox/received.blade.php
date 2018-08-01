@@ -21,12 +21,26 @@
                                 <ul class="folder-list m-b-md" style="padding: 0">
                                     <li>
                                         <a href="{{ url('inbox/received') }}" class="btn-outline" style="border-left:5px solid #59B75C; padding-left:10px; color: #3c3c3c; background:#F8F8F9;font-weight: bold;"> <i class="fa fa-envelope-o "></i> Recibidos
-                                            <span class="label label-warning pull-right">@{{totalDocs}}</span>
+                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">    
+                                                    <span class="label label-warning pull-right" v-if="totalDocs != null" key="value">
+                                                        @{{totalDocs}}
+                                                    </span>    
+                                                    <span v-else class="label label-warning pull-right" key="icon" style="padding-left:15px">
+                                                        <i  class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i>
+                                                    </span>
+                                            </transition>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ url('inbox/edited') }}" class="btn-outline"> <i class="fa fa-check"></i> Revisados
-                                            <span class="label label-default pull-right">@{{documentsEditedTotal}}</span>
+                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">    
+                                                    <span class="label label-default pull-right" v-if="documentsEditedTotal != null" key="value">
+                                                        @{{documentsEditedTotal}}
+                                                    </span>    
+                                                    <span v-else class="label label-default pull-right" key="icon" style="padding-left:15px">
+                                                        <i  class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i>
+                                                    </span>
+                                                </transition>
                                         </a>
                                     </li>
                                 </ul>

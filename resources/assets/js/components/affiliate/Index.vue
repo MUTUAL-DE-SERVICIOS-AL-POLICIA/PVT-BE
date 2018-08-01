@@ -60,7 +60,7 @@ export default {
       })(),
       data: [],
       total: 0,
-      selection: [],
+      // selection: [],
       summary: {},
       // `query` will be initialized to `{ limit: 10, offset: 0, sort: '', order: '' }` by default
       // other query conditions should be either declared explicitly in the following or set with `Vue.set / $vm.$set` manually later
@@ -89,15 +89,13 @@ export default {
         this.total = response.data.total
         // this.summary = summary
       }).catch(function (error) {
-        console.log(error)
+        alert(error)
       });/*
       mockData(this.query).then(({ rows, total, summary }) => {
-        console.log(rows)
         // this.data = rows
       })*/
     },
     alertSelectedUids () {
-      console.log(this.selection);
       alert(this.selection.map(({ id }) => id))
     }
   }

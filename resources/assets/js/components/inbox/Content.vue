@@ -62,8 +62,9 @@
     >
     <template slot="headers" slot-scope="props">
       <tr>
-        <th v-if="inboxState == 'edited'">
+        <th v-if="inboxState == 'edited'">            
             <input type="checkbox" :checked="false" v-model="checkedAllStatus" @change="checkedAll()">
+            PARA ENVIAR
         </th>
         <th
           v-for="header in props.headers"
@@ -75,9 +76,9 @@
       </tr>
     </template>
     <template slot="items" slot-scope="props">
-      <tr :active="props.selected" @click="props.selected = !props.selected">
+      <tr>
         <td v-if="inboxState == 'edited'">
-            <input class="iCheck-helper" type="checkbox" :checked="false" :id="props.item.id" v-model="props.item.status" @change="checkChange(props.item.id, props.item.status)">
+            <input class="iCheck-helper" type="checkbox" :checked="false" :id="props.item.id" v-model="props.item.status" @change="checkChange(props.item.id, props.item.status)">            
         </td>
         <td>
             <a :href="`${props.item.path}`">
@@ -93,6 +94,17 @@
             <a :href="`${props.item.path}`">
                 {{ props.item.name }}
             </a>
+            <ul class="tag-list"
+                style="padding: 0"
+                v-if="props.item.tags.length"
+                key="saved">
+                <li v-for="(tag, tagIndex) in props.item.tags"
+                    :key="`tag-${tagIndex}`">
+                    <a href="#"
+                        style="">
+                        <i class="fa fa-tag"></i> {{tag.name}}</a>
+                </li>
+            </ul>
         </td>
         <td>
             <a :href="`${props.item.path}`">
@@ -100,7 +112,7 @@
             </a>
         </td>
         <td>
-            {{ props.item.reception_date}}
+            {{ props.item.reception_date | formatDateInbox | uppercase}}
         </td>
       </tr>
     </template>
@@ -124,17 +136,13 @@ import { mapState, mapMutations } from 'vuex';
         data(){
             return{
                 checkedAllStatus: false,
-                pagination: {
-                    sortBy: 'code'
-                },
                 search: '',
-                selected: [],
                 headers: [
-                    { text: '# Tramite', value: 'code' },
+                    { text: '# Trámite', value: 'code' },
                     { text: 'CI', align: 'left', value: 'ci' },
                     { text: 'Nombre', value: 'name' },
                     { text: 'Regional', value: 'city' },
-                    { text: 'Fecha de Recepcion', value: 'date_reception' },
+                    { text: 'Fecha de Recepción', value: 'date_reception' },
                 ],
             }
         },
@@ -145,6 +153,7 @@ import { mapState, mapMutations } from 'vuex';
                 $(obj).addClass('table table-hover table-mail');
                 $('.datatable__progress').remove();
             });
+            $('.table__overflow').addClass('table-responsive');
         },
         methods:{
             /* TODO

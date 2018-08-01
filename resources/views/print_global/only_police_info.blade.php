@@ -17,8 +17,8 @@
     </thead>
     <tbody>
         <tr class="text-sm">
-            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::getDateFormat($affiliate->date_entry) }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::getDateFormat($affiliate->date_derelict) }}</td>
+            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMonthYear($affiliate->date_entry) }}</td>
+            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMonthYear($affiliate->date_derelict) }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened ?? null }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->category->name ?? null }}</td>
         </tr>

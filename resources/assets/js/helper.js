@@ -24,13 +24,35 @@ export function dateInputMask() {
         inputFormat: "dd/mm/yyyy",
     };
 }
+export function dateInputMaskAll() {
+    document.querySelectorAll('input').forEach(element => {
+        if (element.getAttribute('data-date') == "true") {
+            Inputmask(dateInputMask()).mask(element);
+        }
+    });
+}
+export function dateMonthYearInputMask() {
+    return {
+        alias: "mm/yyyy"
+    };
+}
+export function monthYearInputMaskAll() {
+    document.querySelectorAll('input').forEach(element => {
+        if (element.getAttribute('data-month-year') == "true") {
+            Inputmask(dateMonthYearInputMask()).mask(element);
+        }
+    });
+}
 export function parseMoney(value) {
     if (!value) {
         return 0;
     }
-    let result = value.replace(/(Bs|\s+)/ig, ``);
-    result = result.replace(/,/g, ``);
-    return result;
+    if (typeof value === 'string'){
+        let result = value.replace(/(Bs|\s+)/ig, ``);
+        result = result.replace(/,/g, ``);
+        return result;
+    }
+    return (typeof value === 'number') ? value : alert('error: parseMoney');
 }
 
 export function cellPhoneInputMaskAll() {
@@ -67,13 +89,4 @@ export function getGender(value) {
         break;
     }
     return gender;
-}
-export function getCurrentDate() {
-    axios.get("/get_current_date")
-    .then(response =>{
-        console.log(response);
-    }).catch(error =>{
-        console.log(error);
-    })
-    ;
 }

@@ -19,32 +19,19 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        
+            {{ Breadcrumbs::render('edit_affiliate_aid_contributions', $affiliate) }}            
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-6">
-                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{ $cities_objects }}" inline-template>
-                    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                </affiliate-show> 
-                @if(isset($spouse->id))
-                    <spouse-show :spouse="{{ $spouse }}" :cities="{{ $cities_objects }}" inline-template>
-                        @include('spouses.spouse_personal_information',['spouse'=>$spouse,'cities'=>$cities,'birth_cities'=>$birth_cities])
-                    </spouse-show>
-                @endif
-            </div>
-            <div class="col-md-6">
                 @include('contribution.aid_aditional_info',['summary',$summary])
             </div>            
             <div class="col-md-6">
                 @include('contribution.aid_commitment',['aid_commitment'=>$aid_commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
             </div>
-        </div>
-        <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">
-            {{--  <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate_id}}" :last_quotable="{{$last_quotable}}"></contribution-create>  --}}
-        </div> 
+        </div>        
     </div>
     <div class = "col-md-12">
         <aid-contribution-create :aid-contributions="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate->id }}" ></aid-contribution-create>
@@ -195,7 +182,8 @@
                                                     <td></td>
                                                 @endif
                                             @endfor
-                                            <td>                                                
+                                            <td>     
+                                                <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" onclick="createReimbursement({{$year_start}})"><i class="fa fa-dollar"></i></button> 
                                                 <button class="btn btn-default" data-toggle="tooltip" data-placement="left" type="button" title="Guardar" onclick="storeData(this)"><i class="fa fa-save"></i></button>
                                             </td>
                                         </tr>
@@ -208,6 +196,48 @@
         </div>
     </div>
 </div>
+
+<div class="modal inmodal" id="reimbursement_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+                <h4 class="modal-title">Reintegro</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Mes</label>
+                    <select class="form-control" name="month" id="month">
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                        </select>
+                </div>
+                <div class="form-group">
+                    <label>Monto</label>
+                    <input id="reim_rent" name="reim_rent" type="text" placeholder="Monto" class="form-control numberformat">
+                    <label>Aporte</label>
+                    <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-default" type="button" title="Guardar" onclick="storeReimbursement(this)">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    
 <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
 @endsection
 
@@ -275,6 +305,42 @@ function setPeriodData(period,amount){
     alert(period+' - '+amount);
     $('#main'+period).html(amount);
 }
+function createReimbursement(year){
+    //alert(year);
+    this.actual_year = year;
+    $('#reimbursement_modal').modal('show');
+}
+
+
+function storeReimbursement(){
+    year = this.actual_year;
+    month = $('#month').val();
+    rent = $('#reim_rent').val();        
+    total =  $('#reim_amount').val();
+    affiliate_id = $("#affiliate_id").val();
+    $.ajax({
+        url: "{{asset('aid_reimbursement')}}",
+        method: "POST",
+        data: {affiliate_id:affiliate_id,year:year,month:month,rent:rent,total:total},
+        beforeSend: function (xhr, settings) {
+            if (settings.url.indexOf(document.domain) >= 0) {
+                xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
+            }
+            //console.log($(button).closest('form').serialize());
+        },
+        success: function(result){
+            $("#reim"+result.month_year).html(result.total);
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+        }
+    });
+
+    $('#reimbursement_modal').modal('hide');
+
+}
+
+
 //function enableDirectContribution(){
 //    $(".directContribution").removeClass('disableddiv');
 //}

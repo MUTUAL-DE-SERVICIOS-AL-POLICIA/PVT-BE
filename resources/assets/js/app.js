@@ -36,11 +36,13 @@ import Vuetify from 'vuetify'
 
 Vue.use(Vuetify)
 
-import VeeValidate from 'vee-validate';
+import VeeValidate, { Validator } from 'vee-validate';
+import es from "vee-validate/dist/locale/es";
 Vue.use(VeeValidate, {
+  locale: "es",
   fieldsBagName: "vFields",
   dictionary: {
-    en: {
+    es: {
       custom: {
         procedure_type_id: {
           required: "Debe seleccionar el tipo de Pago para el Trámite."
@@ -51,27 +53,80 @@ Vue.use(VeeValidate, {
         ret_fun_modality: {
           required: "Debe seleccionar la modalidad del Trámite."
         },
-		accountType: {
+        accountType: {
           required: "Debe seleccionar el tipo de solicitante."
         },
-		applicant_identity_card: {
+        applicant_identity_card: {
           required: "Debe escribir el ci del solicitante."
         },
-    date_derelict: {
+        date_derelict: {
           required: "Debe ingresar fecha de desvinculación."
-     },   
-		applicant_city_identity_card: {
-          required: "Debe seleccionar la ciudad de expedición del ci del solicitante."
         },
-		applicant_kinship: {
+        applicant_city_identity_card: {
+          required:
+            "Debe seleccionar la ciudad de expedición del ci del solicitante."
+        },
+        applicant_kinship: {
           required: "Debe seleccionar el parentesco del solicitante."
         },
+        identity_card: {
+          required: "Debe ingresar la Cedula de identidad."
+        },
+        city_identity_card_id: {
+          required: "Debe seleccionar la ciudad de expedición."
+        },
+        first_name: {
+          required: "Debe ingresar el primer nombre.",
+          alpha_space_quote:
+            "El campo primer nombre solo puede contener caracteres alfabéticos o '."
+        },
+        second_name: {
+          alpha_space_quote:
+            "El campo segundo nombre solo puede contener caracteres alfabéticos o '."
+        },
+        last_name: {
+          required: "Debe escribir el apellido paterno.",
+          alpha_space_quote:
+            "El campo primer nombre solo puede contener caracteres alfabéticos o '."
+        },
+        mothers_last_name: {
+          alpha_space_quote:
+            "El campo apellido materno solo puede contener caracteres alfabéticos o '."
+        },
+        surname_husband: {
+          alpha_space_quote:
+            "El campo apellido de casada solo puede contener caracteres alfabéticos o '."
+        },
+        gender: {
+          required: "Debe seleccionar el genero."
+        },
+        birth_date: {
+          required: "Debe escribir la fecha de Nacimiento.",
+          date_format:
+            "Debe escribir la fecha de Nacimiento en el formato dia/mes/año."
+        }
       }
     }
   }
 });
 
-
+//custom rules
+Validator.localize({es:es});
+let instance = new Validator();
+instance.extend('max_date', {
+  getMessage: (field) => `La fecha ingresada no es valida.`,
+  validate: (value) => {
+    return moment().subtract(18, 'years').diff(moment(value, "DD/MM/YYYY"), "days") > 0;
+  }
+});
+instance = new Validator();
+instance.extend('alpha_space_quote', {
+  getMessage: (field) => `El dato ingresado es incorrecto.`,
+  validate: (value) => {
+    let regex = /^[A-ZÁÉÍÑÓÚÜ\s\'\.]*$/i;
+    return regex.exec(value) !== null;
+  }
+});
 
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
@@ -89,9 +144,25 @@ Vue.use(VueCurrencyFilter,
 });
 
 Vue.filter('percentage', function (value) {
-	return `${value.toFixed(4)} %`;
+	return `${value.toFixed(2)} %`;
+});
+moment.locale("es");
+Vue.filter('month', function (value) {
+  return moment(value).format("MMMM").toString().toUpperCase();
+});
+Vue.filter('year', function (value) {
+  return moment(value).format("YYYY");
+});
+Vue.filter('formatDateInbox', function (value) {
+  return moment(value).format("DD MMMM YYYY");
+});
+Vue.filter('uppercase', function (value) {
+  return value.toUpperCase();
 });
 
+//vue mask hdp
+import VueTheMask from 'vue-the-mask'
+Vue.use(VueTheMask)
 
 /* tabs */
 import VueTabs from 'vue-nav-tabs'
@@ -104,8 +175,29 @@ Vue.use(VueTabs)
 // Vue.component('tabs', Tabs);
 // Vue.component('tab', Tab);
 
+import VueScrollTo from 'vue-scrollto';
+
+Vue.use(VueScrollTo, {
+  container: "body",
+  duration: 500,
+  easing: "ease",
+  offset: 0,
+  cancelable: true,
+  onStart: false,
+  onDone: false,
+  onCancel: false,
+  x: false,
+  y: true
+})
+
+
+
+
+
+/* Components */
 
 Vue.component('flash', require('./components/Flash.vue'));
+Vue.component('check-svg', require('./components/CheckSvg.vue'));
 
 //setting files
 Vue.component('ret-fun-procedure', require('./components/setting/RetFunProcedure.vue'));
@@ -135,6 +227,10 @@ Vue.component('ret-fun-qualification-group', require('./components/ret_fun/Quali
 Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));
 Vue.component('inbox-content', require('./components/inbox/Content.vue'));
 
+//tags
+Vue.component('tag-list', require('./components/tag/TagList.vue'));
+Vue.component('tag-create', require('./components/tag/Create.vue'));
+Vue.component('tag-wf-state', require('./components/tag/WfState.vue'));
 
 
 // Quota Aid Mortuaries
@@ -166,7 +262,7 @@ Vue.component('swal-modal', require('./components/utils/SweetAlertModal.vue'));
 
 
 const app = new Vue({
-	el: '#app',
+  el: '#app',
 	store
     
 });

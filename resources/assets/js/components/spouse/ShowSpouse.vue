@@ -50,11 +50,9 @@
                 }
             },
             city_birth_name: function(){
-                console.log("reactividad hdp 0");
                 return !!this.city_birth?this.city_birth.name:'';
             },
             city_identity_card_name: function(){
-                console.log('reactividad hdp 1');
                 return !!this.city_identity_card?this.city_identity_card.first_shortened:'';
             },
             civil_status_name:function(){
@@ -85,10 +83,8 @@
         methods:{
             get_city_birth_name:function(city_birth){
                 var name='';
-                console.log(this.city_birth);
                 let city_birth_id =city_birth;
                 this.cities.forEach(function(city) {
-                    console.log(city);
                     if(city.id==city_birth_id){
                         name = city.name;
                     }
@@ -97,10 +93,8 @@
             },
             get_city_first_shortened:function(){
                 var name='';
-                console.log(this.city_identity_card);
                 let city_identity_card =this.city_identity_card;
                 this.cities.forEach(function(city) {
-                    console.log(city);
                     if(city.id==city_identity_card){
                         name = city.first_shortened;
                     }
@@ -126,7 +120,6 @@
                     this.form.city_identity_card_id = this.city_identity_card.id;
 
                 }
-                // console.log(this.form);
             },
             update () {
                 let uri = `/update_spouse/${this.spouse.id}`;
@@ -138,7 +131,6 @@
                         this.form = response.data.spouse;
                         this.city_birth = response.data.city_birth;
                         this.city_identity_card = response.data.city_identity_card; 
-                        console.log(response);
                         this.values.identity_card = response.data.spouse.identity_card;
                         this.values.resgistration = response.data.spouse.resgistration;
                         this.values.first_name =  response.data.spouse.first_name;
