@@ -40,7 +40,7 @@ use Muserpol\Models\Contribution\ContributionType;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
 use Muserpol\Models\DiscountType;
-
+use Muserpol\Models\Role;
 class RetirementFundCertificationController extends Controller
 {
     /**
@@ -731,6 +731,12 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);
         $util = new Util();
+
+        $area = Util::getRol()->name;
+        $user = Auth::user();
+        $date = date('d/m/Y');
+        
+
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
         return \PDF::loadView(
             'ret_fun.print.voucher_contribution',
@@ -749,7 +755,10 @@ class RetirementFundCertificationController extends Controller
                 'descripcion',
                 'payment_date',
                 'total_literal',
-                'name_user_complet'
+                'name_user_complet',
+                'area',
+                'user',
+                'date'
             )
         )
             ->setOption('encoding', 'utf-8')
@@ -772,24 +781,35 @@ class RetirementFundCertificationController extends Controller
         $beneficiary = $affiliate;
         $name_beneficiary_complet = Util::fullName($beneficiary);
         $pdftitle = "Comprobante";
-        $namepdf = Util::getPDFName($pdftitle, $beneficiary);
+        $namepdf = Util::getPDFName($pdftitle, $beneficiary);        
         $util = new Util();
+        $area = Util::getRol()->name;
+        $user = Auth::user();
+        $date = date('d/m/Y');
+        $number = 1;
+
+        $data = [            
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'date'  =>  $date,
+            'username'  =>  $username,
+            'title' =>  $title,            
+            'beneficiary'   =>  $beneficiary,
+            'contributions' =>  $contributions,
+            'total' =>  $total,
+            'total_literal' =>  $total_literal,
+            'detail'    =>  $detail,
+            'util'  =>  $util,
+            'name_user_complet' =>  $name_user_complet,
+            'name_beneficiary_complet'  =>  $name_beneficiary_complet,
+        ];
+        
+
         return \PDF::loadView(
             'ret_fun.print.affiliate_contribution',
-            compact(
-                'date',
-                'username',
-                'title',
-                'number',
-                'beneficiary',
-                'contributions',
-                'total',
-                'total_literal',
-                'detail',
-                'util',
-                'name_user_complet',
-                'name_beneficiary_complet'
-            )
+           $data
         )
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-right', 'Pagina [page] de [toPage]')

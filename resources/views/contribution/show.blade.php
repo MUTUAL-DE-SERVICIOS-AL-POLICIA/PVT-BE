@@ -34,7 +34,7 @@
                 </div>
                 <div class="panel-body">
                     <table class="table table-striped table-bordered table-hover display" id="datatables-affiliate-contributions" cellspacing="0"
-                        width="100%" style="font-size: 10px">
+                        width="100%" style="font-size: 12px">
                         <thead>
                             <tr>
                                 <th>Gestión</th>

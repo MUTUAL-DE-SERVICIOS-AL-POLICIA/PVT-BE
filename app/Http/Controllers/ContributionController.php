@@ -41,12 +41,13 @@ class ContributionController extends Controller
     {
         //Obtiene el interes a partir del subsiguiente mes que debe pagar. Ej. de enero corre el interes desde marzo
         $contribution_rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')
-                                                ->first();        
-        $c_start_date =  Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2);
-        $c_end_date = Carbon::parse(Carbon::now()->toDateString());
+                                                ->first();                                                       
+        $c_start_date =  Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2);        
+        $c_end_date = Carbon::parse(Carbon::now()->toDateString());        
         $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
         $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
        $mount = ($contribution_rate['retirement_fund']+$contribution_rate['mortuary_quota'])/100*$request->con['sueldo'];
+       
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
         $foo = file_get_contents($uri);
         //return $foo;
@@ -408,18 +409,19 @@ class ContributionController extends Controller
     }
     public function directContributions(Affiliate $affiliate = null){
 
-         $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
-         if(!isset($commitment->id))
+         $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();                                            
+         if(!isset($commitment->id) && Util::getRol()->pivot->role_id != 12)
+        {            
+            Session::flash('message','No se encontró compromiso de pago');
+            return redirect('affiliate/'.$affiliate->id);    
+        }
+        if(!isset($commitment->id))
         {
             $commitment = new ContributionCommitment();
             $commitment->id = 0;
             $commitment->affiliate_id = $affiliate->id;
         }
-        // if(!isset($commitment->id))
-        // {            
-        //     Session::flash('message','No se encontró compromiso de pago');
-        //     return redirect('affiliate/'.$affiliate->id.'/contribution');    
-        // }        
+        
         $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();        
         $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();
         $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();
@@ -431,7 +433,7 @@ class ContributionController extends Controller
            'interest'  =>  $contributions->sum('interest'),
            'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
         ); 
-
+        
         $data = [
             'new_contributions' => $this->getMonthContributions($affiliate->id),            
             'commitment'    =>  $commitment,
@@ -439,7 +441,7 @@ class ContributionController extends Controller
             'summary'   =>  $summary,
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
-            'rate'  =>  $rate,
+            'rate'  =>  $rate,        
         ];
 
         return view('contribution.affiliate_direct_contributions', $data);        
@@ -472,7 +474,9 @@ class ContributionController extends Controller
         //codigo para obtener totales para el resument        
         $this->authorize('update',new Contribution);
         $date_entry =$affiliate->date_entry;
-        $date_derelict = $affiliate->date_derelict;                
+        $date_derelict = $affiliate->date_derelict;     
+        if(!$affiliate->date_derelict)
+            $date_derelict  =   date('Y-m-d');
         if(!$date_entry || !$date_derelict){
             Session::flash('message','Verifique la fecha de entrada y desvinculación del afiliado antes de continuar');
             return redirect('affiliate/'.$affiliate->id);
@@ -506,11 +510,12 @@ class ContributionController extends Controller
         $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
         $month_end = $end[1];
         $year_end = $end[0];
-
-        $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));        
+        
+        $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));      
+        if(!$affiliate->date_derelict)
+        $start = explode('-', date('Y-m-d'));              
         $month_start = $start[1];
         $year_start = $start[0];                
-
         $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
         if(!isset($commitment->id))
         {
@@ -518,7 +523,6 @@ class ContributionController extends Controller
             $commitment->id = 0;
             $commitment->affiliate_id = $affiliate->id;
         }
-
         //direccion del afiliado
         if (! sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();

@@ -48,9 +48,19 @@ th.ellipsis-text {
                 </a>
             @endif
         @endcan
-        <button type="button" class="btn btn-info btn-sm dim" data-toggle="modal" data-target="#ModalRecord" data-placement="top" title="Historial del afiliado">
-            <i class="fa fa-history"> </i> HISTORIAL
-        </button>
+        @can('view',new Muserpol\Models\Contribution\Contribution)
+        <a href="{{route('show_contribution', $affiliate->id)}}" >
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
+        </a>
+        <a href="{{route('show_aid_contribution', $affiliate->id)}}" >
+            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"> </i> APORTES PASIVO </button>
+        </a>
+        @endcan
+        <span data-toggle="modal" data-target="#ModalRecord">
+            <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Afiliado">
+                <i class="fa fa-history" style="font-size:15px;"></i> HISTORIAL
+            </button>
+        </span>
         @include('affiliates.affiliate_record', ['affiliate_records'=>$affiliate_records])
     </div>
 </div>
@@ -65,13 +75,16 @@ th.ellipsis-text {
 <div class="row">
 
     <div class="col-md-3" style="padding-right: 3px">
-            <div class="widget-head-color-box navy-bg p-lg text-center">
+            <div class="widget-head-color-box navy-bg p-sm text-center">
                 <div class="m-b-md">
-                        <h3 class="pull-left"><strong>ID: {{  $affiliate->id }}</strong></h3><br>
-                        <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado "><br>
-                            <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $affiliate->fullName() }}</a>
-                        </h2>
-                        <h4 class="text-center"><strong>CI: {{  $affiliate->identity_card }}</strong></h4>
+                    <div class="row m-l-sm">
+                        <h3 class="pull-left" data-toggle="tooltip" data-placement="top" title="Codigo único de Afiliado"><strong>{{  $affiliate->id }}</strong></h3>
+                    </div>
+                    <h2 class="font-bold no-margins link-affiliate" data-toggle="tooltip" data-placement="top" title="Ir al afiliado ">
+                        <a  href="{{route('affiliate.show', $affiliate->id)}}" class="link-affiliate"> {{ $affiliate->fullNameWithDegree() }}</a>
+                    </h2>
+                    <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cedula de Identidad"><strong>{{  $affiliate->ciWithExt() }}</strong></h3>
+                    <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $affiliate->registration }}</strong></h4>
                 </div>
             </div>
             <div class="widget-text-box">
@@ -211,7 +224,9 @@ th.ellipsis-text {
 <script>
 $(document).ready(function() {
     $('#example').DataTable();
+
     function moneyInputMask() {
+
             return {
                 alias: "numeric",
                 groupSeparator: ",",

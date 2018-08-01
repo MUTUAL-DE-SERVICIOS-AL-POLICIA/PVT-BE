@@ -49,7 +49,7 @@
                         <h5>Aportes</h5>
                         <div class="ibox-tools">
                             {{-- <a class="collapse-link"><i class="fa fa-chevron-up"></i></a> --}}
-                            <a class="fullscreen-link" data-toggle="tooltip" data-placement="bottom" title="Pantalla completa"><i class="fa fa-expand"></i></a>
+                            <a class="fullscreen-link" data-toggle="tooltip" data-placement="bottom" title="Pantalla completa">Pantalla Completa <i class="fa fa-expand"></i></a>
                         </div>
                     </div>
                     <div class="ibox-content table-responsive">
