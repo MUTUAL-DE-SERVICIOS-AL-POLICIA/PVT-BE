@@ -309,7 +309,7 @@ class RetirementFundController extends Controller
             $update_affilaite->first_name = $beneficiary->first_name;
             $update_affilaite->second_name = $beneficiary->second_name;
             $update_affilaite->last_name = $beneficiary->last_name;
-            $update_affilaite->mothers_last_name = $request->mothers_last_name;
+            $update_affilaite->mothers_last_name = $beneficiary->mothers_last_name;
             $update_affilaite->gender = $beneficiary->gender;
             $update_affilaite->birth_date = $beneficiary->birth_date;
             $update_affilaite->phone_number = $beneficiary->phone_number;
@@ -821,7 +821,7 @@ class RetirementFundController extends Controller
                 $ben->delete();
             }
         }
-
+        $retirement_fund = RetirementFund::find($id);
         /*update info beneficiaries*/
         $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries->toArray();
         foreach ($request->all() as $key => $new_ben) {
@@ -846,11 +846,24 @@ class RetirementFundController extends Controller
                 $old_ben->birth_date = $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
                 $old_ben->state = $new_ben['state'] ?? false;
+                if($old_ben->type == 'S' && $retirement_fund->procedure_modality_id !=  4){
+                    $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
+                    $update_affilaite->identity_card = $old_ben->identity_card;
+                    $update_affilaite->first_name = $old_ben->first_name;
+                    $update_affilaite->second_name = $old_ben->second_name;
+                    $update_affilaite->last_name = $old_ben->last_name;
+                    $update_affilaite->mothers_last_name = $old_ben->mothers_last_name;
+                    $update_affilaite->gender = $old_ben->gender;
+                    $update_affilaite->birth_date = $old_ben->birth_date;                    
+                    $update_affilaite->city_identity_card_id =$old_ben->city_identity_card_id;
+                    $update_affilaite->surname_husband = $old_ben->surname_husband;                    
+                    $update_affilaite->save();                    
+                }
                 if ($old_ben->type == 'S') {
                     $old_ben->phone_number = trim(implode(",", $new_ben['phone_number']));
                     $old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
 
-                    $old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
+                    //$old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
                     /*Actualizar direccion  */
                     if (sizeOf($old_ben->address) > 0) {
                         $address_id = $old_ben->address()->first()->id;

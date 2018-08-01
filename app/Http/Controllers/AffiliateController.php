@@ -175,7 +175,10 @@ class AffiliateController extends Controller
         //GETTIN CONTRIBUTIONS
         $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
         $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
-        $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
+        if($affiliate->date_entry)
+            $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
+        else
+            $end = explode('-', '1976-05-01');
         $month_end = $end[1];
         $year_end = $end[0];
         if($affiliate->date_derelict)

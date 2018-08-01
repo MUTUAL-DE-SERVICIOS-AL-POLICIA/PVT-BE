@@ -48,15 +48,17 @@ import { dateInputMaskAll } from "../../helper.js";
         },
         computed:{
             age: function(){
-                if (this.form.birth_date.includes('y') || this.form.birth_date.includes('m') || this.form.birth_date.includes('d') ) {
-                    return ''
-                }
+                if(this.form.birth_date!=null){
+                    if (this.form.birth_date.includes('y') || this.form.birth_date.includes('m') || this.form.birth_date.includes('d') ) {
+                        return ''
+                    }
 
-                if(this.form.birth_date){
-                    return moment(this.form.birth_date, "DD/MM/YYYY").fromNow(true)
-                }else
-                {
-                    return '';
+                    if(this.form.birth_date){
+                        return moment(this.form.birth_date, "DD/MM/YYYY").fromNow(true)
+                    }else
+                    {
+                        return '';
+                    }
                 }
             },
             city_birth_name: function(){
