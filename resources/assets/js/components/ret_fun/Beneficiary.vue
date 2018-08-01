@@ -1,6 +1,6 @@
 <template>
     <div >
-            
+
         <div class="row" :id="`footerCreateBeneficiaries${index}`">
             <div class="col-md-12">
                 <div  class="pull-left">
@@ -164,7 +164,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>    
+                    </div>
                 </div>
             </div>
         </div>
@@ -202,18 +202,18 @@
             </div>
         </div>
         <div class="hr-line-dashed"></div>
-            <div class="row"> 
+            <div class="row">
                 <div class="col-md-6">
                     <div class="col-md-4">
                         <strong>Documentos Completos:</strong>
                     </div>
                     <div class="col-md-2">
-                        <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" :checked="beneficiary.state" class="form-control mediumCheckBox" :disabled="!editable">     
+                        <input type="checkbox" v-model.trim="beneficiary.state" name="beneficiary_state[]" :value="beneficiary.state" :checked="beneficiary.state" class="form-control mediumCheckBox" :disabled="!editable">
                     </div>
                     <div class="col-md-6"></div>
                 </div>
                 <div class="col-md-6">
-                    
+
                 </div>
             </div>
         <div class="hr-line-dashed"></div>
@@ -303,7 +303,7 @@ export default {
     //   if(data.city_identity_card_id!=null){
     //     this.beneficiary.city_identity_card_id = data.city_identity_card_id;
     //   }
-    //   else 
+    //   else
       this.beneficiary.city_identity_card_id = data.city_identity_card_id;
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
@@ -332,4 +332,3 @@ height: 20px;
 }
 
 </style>
-
