@@ -196,7 +196,7 @@ th.ellipsis-text {
     <div class="row">
         <div class="col-md-6">
             <affiliate-show  :affiliate="{{ $affiliate }}" inline-template>
-                   @include('>>>>>> upstream/masteraffiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
+                   @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
             </affiliate-show>
         </div>
         <div class="col-md-6">
