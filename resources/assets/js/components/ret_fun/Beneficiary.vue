@@ -315,12 +315,12 @@ export default {
     }
   },
   computed:{
-    //   beneficiaryAge(){          
-    //       if (this.beneficiary.birth_date) {
-    //           return moment().diff(this.beneficiary.birth_date, 'years');
-    //       }
-    //       return null;
-    //   }
+      beneficiaryAge(){          
+          if (this.beneficiary.birth_date) {
+              return moment().diff(this.beneficiary.birth_date, 'years');
+          }
+          return null;
+      }
   }
 };
 </script>
