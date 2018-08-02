@@ -108,9 +108,9 @@ th.ellipsis-text {
             <div class="tab-content">
 
                     <div id="tab-affiliate" class="tab-pane active">
-
+                        {{ $is_editable }}
                         <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template>
-                            @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities])
+                            @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
                         </affiliate-show>
 
                     </div>

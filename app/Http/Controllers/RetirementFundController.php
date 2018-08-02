@@ -585,6 +585,9 @@ class RetirementFundController extends Controller
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
+        $is_editable = "1";
+        if(isset($retirement_fund->id))
+            $is_editable = "0";
         //return $data;
         //return $correlatives;
         $data = [
@@ -615,6 +618,7 @@ class RetirementFundController extends Controller
             'workflow_records' =>  $workflow_records,
             'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
+            'is_editable'  =>  $is_editable
         ];
         // return $data;
 
@@ -732,7 +736,7 @@ class RetirementFundController extends Controller
         $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_derelict')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-                                ->find($affiliate->id);
+                                ->find($affiliate->id);                                
         # 3 id of ret_fun
         $procedure_types = ProcedureType::where('module_id', 3)->get();
         $procedure_requirements = ProcedureRequirement::

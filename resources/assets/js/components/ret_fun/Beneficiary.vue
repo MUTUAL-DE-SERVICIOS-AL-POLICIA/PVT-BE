@@ -304,7 +304,7 @@ export default {
     //     this.beneficiary.city_identity_card_id = data.city_identity_card_id;
     //   }
     //   else
-      this.beneficiary.city_identity_card_id = data.city_identity_card_id;
+      this.beneficiary.city_identity_card_id = data.city_identity_card_id;      
       this.beneficiary.birth_date = data.birth_date;
       this.beneficiary.kinship_id = data.kinship_id;
       this.beneficiary.gender = data.gender;
@@ -315,7 +315,7 @@ export default {
     }
   },
   computed:{
-      beneficiaryAge(){
+      beneficiaryAge(){          
           if (this.beneficiary.birth_date) {
               return moment().diff(this.beneficiary.birth_date, 'years');
           }
