@@ -154,7 +154,7 @@
                                 <label class="control-label">Fecha de Nacimiento</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="date" class="form-control" v-model.trim="applicant_birth_date" name="applicant_birth_date">
+                                <input type="text" data-date="true" class="form-control" v-model.trim="applicant_birth_date" name="applicant_birth_date">
                             </div>
                         </div>
                         <div class="col-md-6" :class="{'has-error': errors.has('applicant_gender') }">
