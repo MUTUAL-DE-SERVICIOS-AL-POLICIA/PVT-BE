@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from 'vuex';
-import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll }  from "../../helper.js";
+import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll, dateInputMask }  from "../../helper.js";
 export default {
   props:[
 
@@ -62,6 +62,7 @@ export default {
     this.addPhoneNumber();
     this.addCellPhoneNumber();
     monthYearInputMaskAll();
+    dateInputMask();
   },
   computed:{
     ...mapGetters({
@@ -147,6 +148,7 @@ export default {
       });
     },
     setDataApplicant(data){
+      
       this.applicant_first_name = data.first_name;
       this.applicant_second_name = data.second_name;
       this.applicant_last_name = data.last_name;
@@ -157,9 +159,11 @@ export default {
       this.applicant_city_identity_card_id = data.city_identity_card_id;
       this.applicant_gender = data.gender;
       this.applicant_kinship_id = data.kinship_id;
+      
       this.applicant_birth_date = data.birth_date;
       this.applicant_phone_numbers = data.phone_number;
       this.applicant_cell_phone_numbers = data.cell_phone_number;
+      console.log(this.applicant_birth_date+"<<<<this");
     },
     setDataLegalGuardian(data){
       this.legal_guardian_first_name = data.first_name;

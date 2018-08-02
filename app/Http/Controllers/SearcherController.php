@@ -8,6 +8,7 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
+use Muserpol\Helpers\Util;
 class SearcherController
 {
     private $tables;
@@ -83,7 +84,7 @@ class Person{
          $this->class = get_class($obj) ?? 'desconocido';
          $this->type = $this->getClassObject();
          $this->city_identity_card_id = $obj->city_identity_card_id ?? null;
-         $this->gender = $obj->gender ?? '';         
+         $this->gender = $obj->gender ?? '';                 
          $this->birth_date = $obj->birth_date ?? '';
      }
      function __toString() {

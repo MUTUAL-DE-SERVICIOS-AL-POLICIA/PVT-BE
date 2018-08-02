@@ -119,7 +119,7 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Affiliate $affiliate)
-    {
+    {        
         $this->authorize('view',$affiliate);
         $cities = City::all()->pluck('name', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
@@ -165,7 +165,7 @@ class AffiliateController extends Controller
             'affiliate_state',
             'pension_entity',
             'category',
-            'degree',
+            'degree'            
         ]);
 
         if (! sizeOf($affiliate->address) > 0) {
@@ -188,7 +188,12 @@ class AffiliateController extends Controller
         $month_start = $start[1];
         $year_start = $start[0];
 
-
+        $is_editable = "1";
+        if(isset($retirement_fund->id))
+        {
+            $is_editable = "0";
+        }
+        
         $data = array(
             'retirement_fund'=>$retirement_fund,
             'affiliate'=>$affiliate,
@@ -211,6 +216,7 @@ class AffiliateController extends Controller
             'year_end'  =>  $year_end,
             'year_start'    =>  $year_start,
             'reimbursements'    =>  $reimbursements,
+            'is_editable'   =>  $is_editable,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);

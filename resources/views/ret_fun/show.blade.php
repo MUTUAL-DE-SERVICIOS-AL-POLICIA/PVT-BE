@@ -193,7 +193,7 @@
                     <div class="widget-text-box">
                             <ul class="list-group elements-list">
                                 <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Fondo de Retiro</a></li>
-                                @if($retirement_fund->moda_id == 4)
+                                @if($retirement_fund->procedure_modality_id == 4)
                                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate" ><a href="#"><i class="fa fa-user"></i> Affiliado </a></li>
                                 @endif
                                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
@@ -221,7 +221,7 @@
                             <div id="tab-affiliate" class="tab-pane">
 
                                     <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
-                                        @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities])
+                                        @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
                                     </affiliate-show>
 
                             </div>
