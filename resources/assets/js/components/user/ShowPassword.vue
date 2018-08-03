@@ -2,7 +2,7 @@
 export default {
     data(){
         return {
-            contra:false
+            contra:true
         }
     }
 }
