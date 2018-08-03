@@ -185,6 +185,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::post('get-interest', 'ContributionController@getInterest');
 		Route::post('get-interest-aid', 'AidContributionController@getInterest');
+		Route::get('calculate_reimbursement/{affiliate}/{amount}/{month}','ReimbursementController@caculateContribution');
 		Route::post('contribution_save', 'ContributionController@storeDirectContribution');
 		Route::post('aid_contribution_save', 'AidContributionController@storeDirectContribution');
 		Route::post('print_contributions_quote', 'RetirementFundCertificationController@printDirectContributionQuote');
