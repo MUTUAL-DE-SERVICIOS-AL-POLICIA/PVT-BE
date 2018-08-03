@@ -48,7 +48,7 @@
                                 <option value="11">Noviembre</option>
                                 <option value="12">Diciembre</option>
                             </select> -->
-                            <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" @click="createReimbursement()"><i class="fa fa-dollar"></i> Reintegro</button>
+                            <!-- <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" @click="createReimbursement()"><i class="fa fa-dollar"></i> Reintegro</button> -->
                         </div>
                     </div>
                     <hr>
@@ -86,6 +86,7 @@
                                 </td>
                                 <td>
                                     <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
+                                    <button class="btn btn-warning btn-circle" @click="createReimbursement(index)" type="button"><i class=""></i> R </button>
                                 </td>
                                 
                             </tr>
@@ -122,7 +123,7 @@
                                 </td>
                             </tr>
                     </table>
-                    <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+                    <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
 
                 </div>
                
@@ -445,12 +446,32 @@ export default {
                 subtotal : parseFloat(quotable*0.0586).toFixed(2),
                 affiliate_id : this.afi_id,
             };
-            this.reimbursements.push(new_reimbursement);
+            //this.reimbursements.push(new_reimbursement);
             let update_contributions = [];
-            for(i=0;i<this.contributions.length;i++){
-                update_contributions[i] = this.contributions[i];
-                if(parseInt(this.reimbursement_month)==this.contributions[i].month){
-                    new 
+            console.log('inicio');
+            var i;
+            for(i=0;i<this.contributions.length;i++){                    
+                update_contributions.push(this.contributions[i]);                
+                if(parseInt(this.reimbursement_month) == this.contributions[i].month){
+                    console.log('adding new contribution');
+                    //let newcontribution =  this.contributions[0];
+                    var newcontribution = 
+                    {
+                        id : 0,
+                        monthyear : this.reimbursement_month+"-2018",
+                        sueldo : parseFloat(quotable).toFixed(2),
+                        fr : parseFloat(quotable*0.0477).toFixed(2),
+                        cm : parseFloat(quotable*0.0109).toFixed(2),
+                        interes : 0,
+                        subtotal : parseFloat(quotable*0.0586).toFixed(2),
+                        month : this.reimbursement_month,
+                        year : '2018',
+                        affiliate_id : 1,
+                    };
+                    //let newcontribution = this.$data.contributions[0];
+                // n/ewcontribution.id = 0;
+                    ///newcontribution.monthyear = this.month+"-2018";
+                    update_contributions.push(newcontribution);                                
                 }
             }
             this.contributions = update_contributions;
