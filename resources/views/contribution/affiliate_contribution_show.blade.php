@@ -9,7 +9,7 @@
     </div>
     <div class="ibox-content table-responsive">
         <div class="text-right">
-            @can('update',new Muserpol\Models\Contribution\ContributionCommitment)
+            @can('update',new Muserpol\Models\Contribution\Contribution)
                 <a href="{{route('show_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Detalle de Aportes"><i class="fa fa-eye"></i> Detalle </a>
                 <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edici&oacute;n de aportes"><i class="fa fa-key"></i> Editar </a>
             @endcan

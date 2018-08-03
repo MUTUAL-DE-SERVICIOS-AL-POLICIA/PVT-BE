@@ -5,6 +5,7 @@ use Muserpol\Models\Contribution\Reimbursement;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\Category;
+use Muserpol\Models\Contribution\Contribution;
 use Auth;
 use Validator;
 
@@ -135,4 +136,28 @@ class ReimbursementController extends Controller
     {
         //
     }    
+
+    /**
+     * Calculates reimbursement amount.
+     * 
+     * @param \Muserpol\Affiliate $affiliate
+     * @param double $amount
+     * @param int   $month
+     * @return Object obj
+     */
+    public function caculateContribution(Affiliate $affiliate = null, $amount = 0, $month= 0){
+        $date_end = date('Y')."-".$month."-01";
+        $date_start = date('Y')."-01-01";
+        $contributions = Contribution::where('affiliate_id',$affiliate->id)->whereDate('month_year','>=',$date_start)->whereDate('month_year','<',$date_end)->orderBy('month_year')->pluck('month_year');
+        $number = $contributions->count();
+        $quotable = $amount*$number/($month-1);
+
+                
+        $data = [
+            'quotable'  =>  $quotable,
+            'number'    =>  $number,
+            'contributions' =>  $contributions
+        ];
+        return $data;        
+    }
 }
