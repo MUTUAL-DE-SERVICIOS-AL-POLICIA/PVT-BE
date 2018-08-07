@@ -86,7 +86,18 @@ class ContributionController extends Controller
         $contributions = [];
         while($iterator_date->format('Y-m') >= $end_date->format('Y-m') ){
             if(!in_array($iterator_date->format('Y-m')."-01",$contributions_array)){                
-                $contribution = array('year' => $iterator_date->format('Y'), 'month' => $iterator_date->format('m'), 'monthyear' => $iterator_date->format('m-Y'), 'sueldo' => 0, 'fr' => 0, 'cm' => 0, 'interes' => 0, 'subtotal' => 0, 'affiliate_id' => $id);
+                $contribution = array(
+                    'year' => $iterator_date->format('Y'), 
+                    'month' => $iterator_date->format('m'), 
+                    'monthyear' => $iterator_date->format('m-Y'), 
+                    'sueldo' => 0, 
+                    'fr' => 0, 
+                    'cm' => 0, 
+                    'interes' => 0, 
+                    'subtotal' => 0, 
+                    'affiliate_id' => $id,
+                    'type'  =>  'N'
+                    );
                 array_push($contributions,$contribution);
             }                                    
             $iterator_date->subMonth();                
@@ -195,8 +206,7 @@ class ContributionController extends Controller
         // return $data;
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
-            $aporte=(object)$ap;
-            //sreturn $aporte->affiliate_id;
+            $aporte=(object)$ap;            
             $affiliate = Affiliate::find($request->afid);
             $contribution = new Contribution();
             $contribution->user_id = Auth::user()->id;
@@ -204,8 +214,7 @@ class ContributionController extends Controller
             $contribution->degree_id = $affiliate->degree_id;
             $contribution->unit_id = $affiliate->unit_id;
             $contribution->breakdown_id = $affiliate->breakdown_id;
-            $contribution->category_id = $affiliate->category_id;
-            // $contribution->month_year = Carbon::createFromDate($aporte->year, $aporte->month,1)."";
+            $contribution->category_id = $affiliate->category_id;            
             $contribution->month_year = $aporte->year.'-'.$aporte->month.'-01';
             $contribution->type='Directo';     
             $contribution->base_wage = $aporte->sueldo;            
@@ -233,9 +242,7 @@ class ContributionController extends Controller
                 'total'=>$contribution->total,
                 'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
                     ]);
-            array_push($stored_contributions,$contribution);
-            //Log::info(json_encode($contribution));
-            //return $contribution;
+            array_push($stored_contributions,$contribution);            
         }
         
         $data = [
