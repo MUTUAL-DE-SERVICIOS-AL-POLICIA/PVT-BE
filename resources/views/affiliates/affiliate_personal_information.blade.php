@@ -57,7 +57,7 @@
                             </div>
                             <div class="row m-b-md" :class="{ 'has-error': errors.has('last_name') && editing }">
                                 <div class="col-md-4"><label class="control-label">Apellido Paterno:</label></div>
-                                <div class="col-md-8"><input type="text" name="last_name" v-model="form.last_name" class="form-control" :disabled="!editing" v-validate.initial="'required|alpha_space_quote'">
+                                <div class="col-md-8"><input type="text" name="last_name" v-model="form.last_name" class="form-control" :disabled="!editing" v-validate.initial="'alpha_space_quote'">
                                     <div v-show="errors.has('last_name') && editing">
                                         <i class="fa fa-warning text-danger"></i>
                                         <span class="text-danger">@{{ errors.first('last_name') }}</span>
@@ -88,7 +88,7 @@
                                     <div v-show="errors.has('gender') && editing">
                                         <i class="fa fa-warning text-danger"></i>
                                         <span class="text-danger">@{{ errors.first('gender') }}</span>
-                                    </div>
+                                     </div>
                                 </div>
                             </div>
                         </div>

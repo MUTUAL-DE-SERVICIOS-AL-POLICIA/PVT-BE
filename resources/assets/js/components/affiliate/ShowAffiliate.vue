@@ -1,5 +1,5 @@
 <script>
-import { dateInputMaskAll } from "../../helper.js";
+import { dateInputMaskAll, flashErrors } from "../../helper.js";
 	export default{
 		props:[
             'affiliate',
@@ -135,8 +135,8 @@ import { dateInputMaskAll } from "../../helper.js";
                     this.form.cell_phone_number =  this.values.cell_phone_numbe;
                     this.form.gender = this.values.gender;
                     this.form.civil_status = this.values.civil_status;
-                    this.form.city_birth_id = this.city_birth.id;
-                    // this.form.city_identity_card_id = this.city_identity_card.id;
+                    this.form.city_birth_id = !!this.city_birth ? this.city_birth.id : null;
+                    this.form.city_identity_card_id = !!this.city_identity_card ? this.city_identity_card.id : null;
                     this.form.surname_husband = this.values.surname_husband;
                     this.form.address = this.values.address;
                     this.form.registration = this.values.registration;
@@ -174,10 +174,12 @@ import { dateInputMaskAll } from "../../helper.js";
                         this.values.address = response.data.affiliate.address;
 
                         flash('Informacion del Afiliado Actualizada');
-                    }).catch((response)=>{
+                    }).catch((error)=>{
                         this.show_spinner=false;
                         this.toggle_editing();
-                        flash('Error al actualizar el afiliado: '+response.message,'error');
+                        console.log(error.response.data.errors);
+                        flashErrors('Error al actualizar el afiliado',error.response.data.errors)
+                        // flash(`Error al actualizar el afiliado: ${error.response.data.errors}`,'error');
                     })
             }
         },
