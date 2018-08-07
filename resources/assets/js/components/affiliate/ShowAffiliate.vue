@@ -1,5 +1,5 @@
 <script>
-import { dateInputMaskAll, flashErrors } from "../../helper.js";
+import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors } from "../../helper.js";
 	export default{
 		props:[
             'affiliate',
@@ -132,7 +132,7 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                     this.form.mothers_last_name =  this.values.mothers_last_name;
                     this.form.birth_date =  this.values.birth_date;
                     this.form.phone_number =  this.values.phone_number;
-                    this.form.cell_phone_number =  this.values.cell_phone_numbe;
+                    this.form.cell_phone_number =  this.values.cell_phone_number;
                     this.form.gender = this.values.gender;
                     this.form.civil_status = this.values.civil_status;
                     this.form.city_birth_id = !!this.city_birth ? this.city_birth.id : null;
@@ -140,7 +140,6 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                     this.form.surname_husband = this.values.surname_husband;
                     this.form.address = this.values.address;
                     this.form.registration = this.values.registration;
-
                 }else{
                     this.validateBeforeSubmit();
                 }
@@ -167,7 +166,7 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                         this.values.mothers_last_name =  response.data.affiliate.mothers_last_name;
                         this.values.birth_date =  response.data.affiliate.birth_date;
                         this.values.phone_number =  response.data.affiliate.phone_number;
-                        this.values.cell_phone_number =  response.data.affiliate.cell_phone_numbe;
+                        this.values.cell_phone_number =  response.data.affiliate.cell_phone_number;
                         this.values.gender = response.data.affiliate.gender;
                         this.values.civil_status = response.data.affiliate.civil_status;
                         this.values.surname_husband = response.data.affiliate.surname_husband;
@@ -181,7 +180,43 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                         flashErrors('Error al actualizar el afiliado',error.response.data.errors)
                         // flash(`Error al actualizar el afiliado: ${error.response.data.errors}`,'error');
                     })
-            }
+            },
+            addPhoneNumber(){
+                if (this.form.phone_number.length > 0) {
+                    let last_phone = this.form.phone_number[this.form.phone_number.length-1];
+                    if (last_phone && !last_phone.includes('_')) {
+                        this.form.phone_number.push(null);
+                    }
+                }else{
+                    this.form.phone_number.push(null);
+                }
+                setTimeout(() => {
+                    phoneInputMaskAll();
+                }, 500);
+            },
+            deletePhoneNumber(index){
+                this.form.phone_number.splice(index,1);
+                if(this.form.phone_number.length < 1)
+                    this.addPhoneNumber()
+            },
+            addCellPhoneNumber(){
+                if (this.form.cell_phone_number.length > 0) {
+                    let last_phone = this.form.cell_phone_number[this.form.cell_phone_number.length-1];
+                    if (last_phone && !last_phone.includes('_')) {
+                    this.form.cell_phone_number.push(null);
+                    }
+                }else{
+                    this.form.cell_phone_number.push(null);
+                }
+                setTimeout(() => {
+                    cellPhoneInputMaskAll();
+                }, 500);
+            },
+            deleteCellPhoneNumber(index){
+                this.form.cell_phone_number.splice(index,1);
+                if(this.form.cell_phone_number.length < 1)
+                    this.addCellPhoneNumber()
+            },
         },
 	}
 </script>

@@ -172,6 +172,8 @@ class AffiliateController extends Controller
         if (! sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
         }
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
 
         //GETTIN CONTRIBUTIONS
         $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
@@ -288,8 +290,8 @@ class AffiliateController extends Controller
         $affiliate->gender = $request->gender;
         $affiliate->civil_status = $request->civil_status;
         $affiliate->birth_date = Util::verifyBarDate($request->birth_date) ? Util::parseBarDate($request->birth_date) : $request->birth_date;
-        $affiliate->phone_number = $request->phone_number;
-        $affiliate->cell_phone_number = $request->cell_phone_number;
+        $affiliate->phone_number = trim(implode(",", $request->phone_number));
+        $affiliate->cell_phone_number = trim(implode(",", $request->cell_phone_number));
         $affiliate->city_birth_id = $request->city_birth_id;
         $affiliate->city_identity_card_id =$request->city_identity_card_id;
         $affiliate->surname_husband = $request->surname_husband;
@@ -340,6 +342,8 @@ class AffiliateController extends Controller
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
         }
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
         $datos=array('affiliate' => $affiliate ,'city_birth' => $affiliate->city_birth,'city_identity_card' => $affiliate->city_identity_card);
         return $datos;
 

@@ -116,11 +116,39 @@
                             </div>
                             <div class="row m-b-md">
                                 <div class="col-md-3"><label class="control-label">Celular:</label></div>
-                                <div class="col-md-9"><input type="text" v-model="form.cell_phone_number" class="form-control" :disabled="!editing"></div>
+                                <div class="col-md-9">
+                                    <div class="col-md-2">
+                                        <button v-if="editing" class="btn btn-success" type="button" @click="addCellPhoneNumber"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div v-for="(cell_phone,index) in form.cell_phone_number" :key=`cell_phone-${index}`>
+                                            <div class="input-group">
+                                                <input type="text" name="cell_phone_number[]" v-model.trim="form.cell_phone_number[index]" class="form-control" data-cell-phone="true" :disabled="!editing">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-danger" v-if="form.cell_phone_number.length > 1 && editing" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row m-b-md">
                                 <div class="col-md-3"><label class="control-label">Telefono:</label></div>
-                                <div class="col-md-9"><input type="text" v-model="form.phone_number" class="form-control" :disabled="!editing"></div>
+                                <div class="col-md-9">
+                                    <div class="col-md-2">
+                                        <button v-if="editing" class="btn btn-success" type="button" @click="addPhoneNumber"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div v-for="(phone,index) in form.phone_number" :key=`phone-${index}`>
+                                            <div class="input-group">
+                                                <input type="text" name="phone_number" v-model.trim="form.phone_number[index]" class="form-control" data-phone="true" :disabled="!editing">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-danger" v-if="form.phone_number.length > 1 && editing" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
