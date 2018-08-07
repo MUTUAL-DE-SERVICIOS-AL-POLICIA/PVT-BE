@@ -309,7 +309,7 @@ class RetirementFundController extends Controller
             $update_affilaite->first_name = $beneficiary->first_name;
             $update_affilaite->second_name = $beneficiary->second_name;
             $update_affilaite->last_name = $beneficiary->last_name;
-            $update_affilaite->mothers_last_name = $request->mothers_last_name;
+            $update_affilaite->mothers_last_name = $beneficiary->mothers_last_name;
             $update_affilaite->gender = $beneficiary->gender;
             $update_affilaite->birth_date = $beneficiary->birth_date;
             $update_affilaite->phone_number = $beneficiary->phone_number;
@@ -585,6 +585,9 @@ class RetirementFundController extends Controller
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
+        $is_editable = "1";
+        if(isset($retirement_fund->id))
+            $is_editable = "0";
         //return $data;
         //return $correlatives;
         $data = [
@@ -615,6 +618,7 @@ class RetirementFundController extends Controller
             'workflow_records' =>  $workflow_records,
             'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
+            'is_editable'  =>  $is_editable
         ];
         // return $data;
 
@@ -732,7 +736,7 @@ class RetirementFundController extends Controller
         $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_derelict')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-                                ->find($affiliate->id);
+                                ->find($affiliate->id);                                
         # 3 id of ret_fun
         $procedure_types = ProcedureType::where('module_id', 3)->get();
         $procedure_requirements = ProcedureRequirement::
@@ -821,7 +825,7 @@ class RetirementFundController extends Controller
                 $ben->delete();
             }
         }
-
+        $retirement_fund = RetirementFund::find($id);
         /*update info beneficiaries*/
         $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries->toArray();
         foreach ($request->all() as $key => $new_ben) {
@@ -846,11 +850,24 @@ class RetirementFundController extends Controller
                 $old_ben->birth_date = $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
                 $old_ben->state = $new_ben['state'] ?? false;
+                if($old_ben->type == 'S' && $retirement_fund->procedure_modality_id !=  4){
+                    $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
+                    $update_affilaite->identity_card = $old_ben->identity_card;
+                    $update_affilaite->first_name = $old_ben->first_name;
+                    $update_affilaite->second_name = $old_ben->second_name;
+                    $update_affilaite->last_name = $old_ben->last_name;
+                    $update_affilaite->mothers_last_name = $old_ben->mothers_last_name;
+                    $update_affilaite->gender = $old_ben->gender;
+                    $update_affilaite->birth_date = $old_ben->birth_date;                    
+                    $update_affilaite->city_identity_card_id =$old_ben->city_identity_card_id;
+                    $update_affilaite->surname_husband = $old_ben->surname_husband;                    
+                    $update_affilaite->save();                    
+                }
                 if ($old_ben->type == 'S') {
                     $old_ben->phone_number = trim(implode(",", $new_ben['phone_number']));
                     $old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
 
-                    $old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
+                    //$old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
                     /*Actualizar direccion  */
                     if (sizeOf($old_ben->address) > 0) {
                         $address_id = $old_ben->address()->first()->id;
