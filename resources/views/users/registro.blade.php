@@ -98,7 +98,7 @@
                             <div class="col-md-6 col-md-offset-3">
                                 <div class="form-group">
                                     <div class="togglebutton">
-                                        <label> <input type="checkbox" class="i-checks" v-model="contra" name="contra"> Modificar Contraseña </label>
+                                        <label> <input type="checkbox" v-model="contra" name="contra"> Modificar Contraseña </label>
                                     </div>
                                 </div>
                             </div>
