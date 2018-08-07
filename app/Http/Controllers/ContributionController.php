@@ -709,8 +709,8 @@ class ContributionController extends Controller
             $data =   array('contributions' => $contributions,
                             'con_type'=>$con_type ,
                             'contribution_types'=> $contribution_types,
-                            'date_entry' => $date_entry,
-                            'date_derelict' => $date_derelict,
+                            'date_entry' => Util::parseMonthYearDate($date_entry),
+                            'date_derelict' => Util::parseMonthYearDate($date_derelict),
                             'ret_fun'=>$ret_fun);
             return view('contribution.select',$data);
         }
