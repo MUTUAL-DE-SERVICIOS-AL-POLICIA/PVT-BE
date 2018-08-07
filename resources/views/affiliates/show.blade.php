@@ -48,14 +48,14 @@ th.ellipsis-text {
                 </a>
             @endif
         @endcan
-        @can('view',new Muserpol\Models\Contribution\Contribution)
+        {{-- @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
         </a>
         <a href="{{route('show_aid_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"> </i> APORTES PASIVO </button>
         </a>
-        @endcan
+        @endcan --}}
         <span data-toggle="modal" data-target="#ModalRecord">
             <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Afiliado">
                 <i class="fa fa-history" style="font-size:15px;"></i> HISTORIAL
@@ -108,7 +108,6 @@ th.ellipsis-text {
             <div class="tab-content">
 
                     <div id="tab-affiliate" class="tab-pane active">
-                        {{ $is_editable }}
                         <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template>
                             @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
                         </affiliate-show>
