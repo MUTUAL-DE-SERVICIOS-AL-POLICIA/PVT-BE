@@ -1,4 +1,4 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
@@ -43,18 +43,18 @@ var user_tables = $('#users-table').DataTable({
 processing: true,
 serverSide: true,
 ajax: "{!! route('user_list') !!}",
-columns: [ 
+columns: [
 {"className":      'details-control',
  "orderable":      false,
  "searchable":      false,
  "data":           'button-roles',
  "name":            'button-roles',
- }, 
+ },
 { data: 'username', name: 'username', orderable: true },
 { data: 'first_name', name: 'first_name' },
 { data: 'phone', name: 'phone', orderable: true },
 { data: 'city_id', name: 'city_id' },
-{ data: 'status', name: 'status' }, 
+{ data: 'status', name: 'status' },
 {data: 'action', name: 'action', orderable: false, searchable: false},
 {"className":      'details-control',
  "name":         'state',
@@ -78,13 +78,13 @@ $('#users-table tbody').on('click', 'td.details-control', function () {
             tr.addClass('shown');
         }
     });
-}); 
+});
 function format (d) {
     var table = $('<table>').addClass('table-bordered');
         table.append($('<th>').text('Unidad')).append($('<th>').text('Role'));
         d.roles.forEach(element => {
             var tr = $('<tr>');
-                
+
             var td = $('<td>');
         switch(element.module_id) {
         case '1':
@@ -119,7 +119,7 @@ function format (d) {
         break;
         default:
                 td.text('');
-        }               
+        }
             tr.append(td);
             var td = $('<td>');
                 td.text(element.name);
