@@ -40,7 +40,7 @@
                     </tr>
                         @foreach($contributions as $contribution)
                             <tr>
-                                <td class='text-left p-5'>{{ strtoupper($util::getStringDate($contribution->month_year,true)) }}</td>
+                                <td class='text-left p-5'> @if($contribution->type == 'R') R. @endif {{ strtoupper($util::getStringDate($contribution->month_year,true)) }}</td>
                                 <td class='text-right p-5'>{{ $util::formatMoney($contribution->base_wage) }} </td>
                                 <td class='text-right p-5'>{{ $util::formatMoney($contribution->retirement_fund) }} </td>
                                 <td class='text-right p-5'>{{ $util::formatMoney($contribution->mortuary_quota) }} </td>
@@ -50,8 +50,8 @@
                         @endforeach
                         <tr>
                             {{-- <td colspan="4" style="border:none!important"></td> --}}
-                            <td colspan="5" class="font-medium text-white text-sm font-bold text-center p-5 bg-grey-darker rounded-bl">TOTAL</td>
-                            <td class="text-right p-5">{!! $voucher->total !!}</td>
+                            <td colspan="5" class="font-medium text-sm font-bold text-center p-5  rounded-bl">TOTAL</td>
+                            <td class="text-right p-5 bg-grey-darker">{!! $voucher->total !!}</td>
                         </tr>
                 </tbody>
             </table>

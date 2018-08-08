@@ -100,7 +100,7 @@ class AffiliateObserver
 
         if($affiliate->affiliate_state_id != $old->affiliate_state_id)
         {   
-            $message = $message . ' estado '.$old->affiliate_state->name.' a '.$affiliate->affiliate_state->name.', ';
+            $message = $message . ' estado '.$old->affiliate_state->name ?? 'Sin Estado'.' a '.$affiliate->affiliate_state->name ?? 'Sin Estado'.', ';
 
         }
 

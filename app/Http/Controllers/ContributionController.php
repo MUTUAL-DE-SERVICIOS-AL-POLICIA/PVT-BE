@@ -181,6 +181,7 @@ class ContributionController extends Controller
             $code = Util::getNextCode(""); 
         else
             $code = Util::getNextCode($voucher_code->code);
+
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $request->afid;
@@ -193,51 +194,73 @@ class ContributionController extends Controller
         $affiliate = Affiliate::find($request->afid);
         $affiliate->affiliate_state_id = $request->tipo;
         $affiliate->save();
-       // return $voucher;
-        //return $request->aportes;
+       
         $result = [];
-        $stored_contributions = [];
-        // $data = [
-        //     'contribution'  =>  '',
-        //     'contributions'  =>  $request->aportes,
-        //     'voucher_id'    => '',
-        //     'affiliate_id'  =>  '',
-        // ];
-        // return $data;
+        $stored_contributions = [];        
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;            
             $affiliate = Affiliate::find($request->afid);
-            $contribution = new Contribution();
-            $contribution->user_id = Auth::user()->id;
-            $contribution->affiliate_id = $affiliate->id;
-            $contribution->degree_id = $affiliate->degree_id;
-            $contribution->unit_id = $affiliate->unit_id;
-            $contribution->breakdown_id = $affiliate->breakdown_id;
-            $contribution->category_id = $affiliate->category_id;            
-            $contribution->month_year = $aporte->year.'-'.$aporte->month.'-01';
-            $contribution->type='Directo';     
-            $contribution->base_wage = $aporte->sueldo;            
-            $contribution->seniority_bonus = 0;
-            $contribution->study_bonus = 0;
-            $contribution->position_bonus = 0;
-            $contribution->border_bonus = 0;
-            $contribution->east_bonus = 0;
-            $contribution->public_security_bonus = 0;
-            $contribution->deceased = 0;
-            $contribution->natality = 0;
-            $contribution->lactation = 0;
-            $contribution->prenatal = 0;
-            $contribution->subsidy = 0;
-            $contribution->gain = $aporte->sueldo;
-            $contribution->payable_liquid = 0;
-            $contribution->quotable = $aporte->sueldo;
-            $contribution->retirement_fund = $aporte->fr;
-            $contribution->mortuary_quota = $aporte->cm;
-            $contribution->total = $aporte->subtotal;
-            $contribution->interest = $aporte->interes;        
-            $contribution->breakdown_id = 3;    
-            $contribution->save();
+            if($aporte->type == 'R'){
+                $category = Category::find($request->category);    
+                               
+                $contribution = new Reimbursement();
+                $contribution->user_id = Auth::user()->id;
+                $contribution->affiliate_id = $affiliate->id;
+                $contribution->month_year = $aporte->year.'-'.$aporte->month.'-01';
+                $contribution->type = "Directo";                
+                $contribution->base_wage = $aporte->sueldo;                
+                        
+                $contribution->seniority_bonus = 0;
+                $contribution->study_bonus = 0;
+                $contribution->position_bonus = 0;
+                $contribution->border_bonus = 0;
+                $contribution->east_bonus = 0;
+                $contribution->public_security_bonus = 0;
+                $contribution->gain = $aporte->sueldo;
+                $contribution->payable_liquid = 0;
+                $contribution->quotable = $aporte->sueldo;
+                $contribution->retirement_fund = $aporte->fr;
+                $contribution->mortuary_quota = $aporte->cm;
+                $contribution->total = $aporte->subtotal;
+                $contribution->interest = $aporte->interes;
+                $contribution->subtotal = 0;
+                $contribution->save();
+                $contribution->type = "R";
+            }
+            else{
+                $contribution = new Contribution();
+                $contribution->user_id = Auth::user()->id;
+                $contribution->affiliate_id = $affiliate->id;
+                $contribution->degree_id = $affiliate->degree_id;
+                $contribution->unit_id = $affiliate->unit_id;
+                $contribution->breakdown_id = $affiliate->breakdown_id;
+                $contribution->category_id = $affiliate->category_id;            
+                $contribution->month_year = $aporte->year.'-'.$aporte->month.'-01';
+                $contribution->type='Directo';     
+                $contribution->base_wage = $aporte->sueldo;            
+                $contribution->seniority_bonus = 0;
+                $contribution->study_bonus = 0;
+                $contribution->position_bonus = 0;
+                $contribution->border_bonus = 0;
+                $contribution->east_bonus = 0;
+                $contribution->public_security_bonus = 0;
+                $contribution->deceased = 0;
+                $contribution->natality = 0;
+                $contribution->lactation = 0;
+                $contribution->prenatal = 0;
+                $contribution->subsidy = 0;
+                $contribution->gain = $aporte->sueldo;
+                $contribution->payable_liquid = 0;
+                $contribution->quotable = $aporte->sueldo;
+                $contribution->retirement_fund = $aporte->fr;
+                $contribution->mortuary_quota = $aporte->cm;
+                $contribution->total = $aporte->subtotal;
+                $contribution->interest = $aporte->interes;        
+                $contribution->breakdown_id = 3;
+                $contribution->save();
+            }
+
             array_push($result, [
                 'total'=>$contribution->total,
                 'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
