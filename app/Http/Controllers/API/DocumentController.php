@@ -83,6 +83,7 @@ class DocumentController extends Controller
                         ret_fun_cities.second_shortened as city,
                         retirement_funds.reception_date as reception_date,
                         retirement_funds.workflow_id as workflow_id,
+                        procedure_modalities.name as modality,
                         concat('/ret_fun/', retirement_funds.id) as path
                         "
                         )
@@ -90,6 +91,7 @@ class DocumentController extends Controller
                     ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')
                     ->leftJoin('cities as ret_fun_cities', 'retirement_funds.city_end_id', '=', 'ret_fun_cities.id')
                     ->leftJoin('wf_states', 'retirement_funds.wf_state_current_id', '=', 'wf_states.id')
+                    ->leftJoin('procedure_modalities', 'retirement_funds.procedure_modality_id', '=', 'procedure_modalities.id')
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('retirement_funds.inbox_state', '=', false)
                     ->get();
@@ -195,6 +197,7 @@ class DocumentController extends Controller
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
                         retirement_funds.code as code,
                         ret_fun_cities.second_shortened as city,
+                        procedure_modalities.name as modality,
                         retirement_funds.reception_date as reception_date,
                         retirement_funds.workflow_id as workflow_id,
                         concat('/ret_fun/', retirement_funds.id) as path,
@@ -205,6 +208,7 @@ class DocumentController extends Controller
                     ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')
                     ->leftJoin('cities as ret_fun_cities', 'retirement_funds.city_end_id', '=', 'ret_fun_cities.id')
                     ->leftJoin('wf_states', 'retirement_funds.wf_state_current_id', '=', 'wf_states.id')
+                    ->leftJoin('procedure_modalities', 'retirement_funds.procedure_modality_id', '=', 'procedure_modalities.id')
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('retirement_funds.inbox_state', '=', true)
                     ->where('retirement_funds.user_id', '=', $user_id)

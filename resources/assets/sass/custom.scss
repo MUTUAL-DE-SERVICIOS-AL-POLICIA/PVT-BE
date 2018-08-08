@@ -590,3 +590,16 @@ input.largerCheckbox {
 .link-affiliate:active{
 	color: #ddddad;
 }
+.row-click{
+    border-left:5px solid transparent;
+}
+.row-click-first:hover{
+    cursor: default;
+}
+.row-click:hover{
+    transition: background .1s ease-in-out, border .1s ease, font-weight .45s ease-in-out;
+    cursor: pointer;
+    border-left:5px solid #59B75C;  
+    color: #3c3c3c;
+    font-weight: 600
+}

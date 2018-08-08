@@ -66,11 +66,11 @@
                                             <transition name="fade" enter-active-class="animated bounceInLeft" leave-active-class="animated bounceOutLeft">
                                                 <div class="input-group" >
                                                     <span class="input-group-btn">
-                                                        <button :disabled="! (docs > 0 && wfSequenceBack != null) " class="btn " :class="{'btn-primary': docs > 0  }" @click="sendBackward()" data-toggle="tooltip"
-                                                            data-placement="top" title="Enviar los Trámites seleccionados"><i class="fa fa-arrow-left"></i> Enviar <i class="fa fa-send"></i> <strong>(@{{docs}})</strong></button>
+                                                        <button :disabled="! (docs > 0 && wfSequenceBack != null) " class="btn " :class="{'btn-warning': docs > 0  }" @click="sendBackward()" data-toggle="tooltip"
+                                                            data-placement="top" title="Enviar los Trámites seleccionados"><i class="fa fa-arrow-left"></i> DEVOLVER <i class="fa fa-send"></i> <strong>(@{{docs}})</strong></button>
                                                     </span>
                                                     <select name="" v-model="wfSequenceBack" id="" class="form-control">
-                                                        <option :value="null"> Seleccione a donde enviará los Trámites </option>
+                                                        <option :value="null"> Seleccione a donde devolverá los Trámites </option>
                                                         <option :value="wfs.wf_state_id" v-for="(wfs, index) in wfSequenceBackList">@{{wfs.wf_state_name}}</option>
                                                     </select>
                                                 </div>
@@ -80,12 +80,12 @@
                                         <div class="col-md-6 text-center">
                                                 <div class="input-group" >
                                                     <select name="" v-model="wfSequenceNext" id="" class="form-control">
-                                                        <option :value="null"> Seleccione a donde enviará los Trámites </option>
+                                                        <option :value="null"> Seleccione a donde derivará los Trámites </option>
                                                         <option :value="wfs.wf_state_id"  v-for="(wfs, index) in wfSequenceNextList">@{{wfs.wf_state_name}}</option>
                                                     </select>
                                                     <span class="input-group-btn">
                                                         <button :disabled="! (docs > 0 && wfSequenceNext != null)" class="btn" :class="{'btn-primary': docs > 0  }" @click="sendForward" data-toggle="tooltip"
-                                                            data-placement="top" title="Enviar los Trámites seleccionados">Enviar <i class="fa fa-send"></i> <strong>(@{{docs}})</strong>  <i class="fa fa-arrow-right">  </i></button>
+                                                            data-placement="top" title="Enviar los Trámites seleccionados"> DERIVAR <i class="fa fa-send"></i> <strong>(@{{docs}})</strong>  <i class="fa fa-arrow-right">  </i></button>
                                                     </span>
                                                 </div>
                                             
