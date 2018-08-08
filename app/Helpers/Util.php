@@ -5,6 +5,7 @@ use DateTime;
 use Session;
 use Auth;
 use DB;
+use User;
 use Carbon\Carbon;
 use Log;
 use Muserpol\Models\RetirementFund\RetFunProcedure;

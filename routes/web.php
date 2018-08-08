@@ -16,6 +16,7 @@ use Muserpol\Models\Template;
 use Illuminate\Support\Facades\Blade;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
+use Muserpol\Helpers\Util;
 
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
@@ -211,11 +212,9 @@ Route::group(['middleware' => ['auth']], function () {
 		//dictamen legal routes
 		Route::get('ret_fun/{retirement_fund}/dictamen_legal', 'RetirementFundController@dictamenLegal')->name('ret_fun_dictamen_legal');		
 
+		//helpers route
+
 	});
-
-	
-
-
 });
 
 
