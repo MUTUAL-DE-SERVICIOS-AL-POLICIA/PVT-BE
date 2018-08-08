@@ -195,7 +195,8 @@ class RetirementFundCertificationController extends Controller
         $date = Util::getDateFormat($next_area_code->date);
         $number = $next_area_code->code;
 
-        $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
+        // $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
+        $title = "CERTIFICACIÓN DE ARCHIVO";
         $affiliate_folders = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
 
@@ -204,7 +205,6 @@ class RetirementFundCertificationController extends Controller
          *!!revisar
          */
         $cite = RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
-
 
         $subtitle = $cite;
         $pdftitle = "Certificación de Archivo";
@@ -224,6 +224,7 @@ class RetirementFundCertificationController extends Controller
             'affiliate'=>$affiliate,
             'affiliate_folders'=>$affiliate_folders,
             'applicant'=>$applicant,
+            'unit1'=>'archivo y gestión documental<br> beneficios económicos',
         ];
         $pages = [];
         for ($i = 1; $i <= 2; $i++) {

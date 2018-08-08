@@ -185,9 +185,10 @@
                     <div class="widget-head-color-box yellow-bg p-lg text-center">
                         <div class="m-b-md">
                         <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado ">
-                        <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullName() }}</a>
+                        <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullNameWithDegree() }}</a>
                         </h2>
-                            <h4><strong>{{  $retirement_fund->affiliate->degree->name }}</strong></h4>
+                            <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cedula de Identidad"><strong>{{  $retirement_fund->affiliate->ciWithExt() }}</strong></h3>
+                            <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $retirement_fund->affiliate->registration }}</strong></h4>
                         </div>
                     </div>
                     <div class="widget-text-box">
