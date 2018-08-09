@@ -19,13 +19,16 @@
                                         <tr>
                                             <th class="col-md-10 text-left">Detalle</th>
                                             <th class="col-md-2">Fecha</th>
+                                            <th class="col-md-2">Hora</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($affiliate_records as $affiliate_record)
                                         <tr>
                                             <td class="col-md-10 text-left">{{$affiliate_record->message}}</td>
-                                            <td class="col-md-2">{{$affiliate_record->created_at}}</td>
+                                            {{-- <td class="col-md-2">{{$affiliate_record->created_at}}</td> --}}
+                                            <td class="col-md-2">{{date("d/m/Y", strtotime($affiliate_record->created_at))}}</td>
+                                            <td class="col-md-2">{{date("H:i", strtotime($affiliate_record->created_at))}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -39,13 +42,16 @@
                                         <tr>
                                             <th class="col-md-9 text-left">Detalle</th>
                                             <th class="col-md-2">Fecha</th>
+                                            <th class="col-md-2">Hora</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($affiliate_police_records as $a)
                                         <tr>
                                             <td class="col-md-9 text-left">{{$a->message}}</td>
-                                            <td class="col-md-2">{{$a->date}}</td>
+                                            {{-- <td class="col-md-2">{{$a->date}}</td> --}}
+                                            <td class="col-md-2">{{date("d/m/Y", strtotime($a->date))}}</td>
+                                            <td class="col-md-2">{{date("H:i", strtotime($affiliate_record->created_at))}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -59,4 +65,3 @@
         </div>
     </div>
 </div>
-
