@@ -41,6 +41,7 @@ use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowState;
 class RetirementFundCertificationController extends Controller
 {
     /**
@@ -672,8 +673,8 @@ class RetirementFundCertificationController extends Controller
     {
         $affiliate = Affiliate::find($id);
         $commitment = ContributionCommitment::where('affiliate_id', $affiliate->id)->first();
-        $date = Util::getStringDate(date('Y-m-d'));        
-        $username = Auth::user()->username;//agregar cuando haya roles
+        $date = Util::getDateFormat(date('Y-m-d'));
+        $user = Auth::user();//agregar cuando haya roles
         $city = Auth::user()->city->name;
         $glosa = "No corresponde";
         if ($affiliate->affiliate_state->name == "Baja Temporal") {
@@ -693,19 +694,25 @@ class RetirementFundCertificationController extends Controller
         }
         $pdftitle = "Carta de Compromiso de Fondo de Retiro";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        $area = WorkflowState::find(22)->first_shortened;
+
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
+        $data = [
+            'area'=>$area,
+            'date'=>$date,
+            'user'=>$user,
+            'title'=>$title,
+            'affiliate'=>$affiliate,
+            'glosa'=>$glosa,
+            'city'=>$city,
+            'glosa_pago'=>$glosa_pago,
+            'commitment'=>$commitment,
+            
+
+        ];
         return \PDF::loadView(
-            'ret_fun.print.ret_fun_commitment_letter',
-            compact(
-                'date',
-                'username',
-                'title',
-                'affiliate',
-                'glosa',
-                'city',
-                'glosa_pago',
-                'commitment'
-            )
+            'ret_fun.print.ret_fun_commitment_letter', $data
         )
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-right', 'Pagina [page] de [toPage]')

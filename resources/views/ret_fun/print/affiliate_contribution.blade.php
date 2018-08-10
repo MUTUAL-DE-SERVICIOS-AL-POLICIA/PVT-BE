@@ -1,7 +1,7 @@
 @extends('print_global.print')
 @section('content')
     <div>
-         @include('print_global.applicant_info', ['applicant'=>$beneficiary]) 
+         @include('print_global.police_info', ['affiliate'=>$beneficiary, 'degree'=>$beneficiary->degree, 'exp'=>($beneficiary->city_identity_card->first_shortened ?? null)]) 
         <div>
             <p>Periodo: </p>
         </div>
