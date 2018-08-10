@@ -781,7 +781,7 @@ class ContributionController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $servicio = ContributionType::where('name','=','Período reconocido por comando')->first();
+        $servicio = ContributionType::where('name','=','Servicio Activo')->first();
         $item_cero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
         $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
         $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)

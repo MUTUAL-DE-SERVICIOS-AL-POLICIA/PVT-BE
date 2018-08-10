@@ -258,7 +258,7 @@ Vue.component('aid-contribution-create', require('./components/contribution/Crea
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
 
 // utils
-Vue.component('swal-modal', require('./components/utils/SweetAlertModal.vue'));
+Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 
 
 const app = new Vue({

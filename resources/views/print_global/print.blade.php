@@ -19,7 +19,7 @@
                 <span class="font-semibold uppercase leading-tight text-md" >
                     {{ $institution ?? 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"' }} <br>
                     {{ $direction ?? 'DIRECCIÓN DE BENEFICIOS ECONÓMICOS' }} <br>
-                    @if($unit1)
+                    @if(isset($unit1))
                         {!! $unit1 !!}
                     @endif
                     {{ $unit ?? 'UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO' }}
