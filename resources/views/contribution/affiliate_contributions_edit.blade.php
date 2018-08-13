@@ -114,7 +114,7 @@
                                                 <td>Categoria</td>
                                             </tr>
                                             <tr>
-                                                <td>Ganado</td>
+                                                <td>Cotizable</td>
                                             </tr>
                                             <tr>
                                                 <td>Aporte</td>

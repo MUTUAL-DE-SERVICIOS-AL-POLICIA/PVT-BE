@@ -52,7 +52,7 @@
                                 <th>Ganado</th>
                                 <th>Cotizable</th>
                                 <th>F.R.</th>
-                                <th>C.A.M.</th>
+                                <th>C.M.</th>
                                 <th>Aporte</th>
                                 <th>Desg.</th>
                                 <th>Tipo</th>
@@ -103,7 +103,7 @@
          "loadingRecords": "Cargando...",
          "processing": "Procesando...",
          "search": "Buscar:",
-         "zeroRecords": "Sin resultados encontrados",
+         "zeroRecords": "Sin resultados encontrados",         
          "paginate": {
              "first": "Primero",
              "last": "Ultimo",

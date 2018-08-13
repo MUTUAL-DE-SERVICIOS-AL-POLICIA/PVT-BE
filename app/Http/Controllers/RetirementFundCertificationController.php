@@ -826,7 +826,7 @@ class RetirementFundCertificationController extends Controller
         $total_literal = Util::convertir($total);
         $affiliate = Affiliate::find($request->affiliate_id);
         $date = Util::getStringDate(date('Y-m-d'));
-        $title = "PAGO DE APORTES VOLUNTARIOS APORTE DIRECTO VIUDAS EFECTIVO";
+        $title = "PAGO DE APORTE DIRECTO";
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
         $detail = "Pago de aporte directo";
@@ -839,7 +839,7 @@ class RetirementFundCertificationController extends Controller
         $user = Auth::user();
         $date = date('d/m/Y');
         $number = 1;
-
+        
         $data = [            
             'area' => $area,
             'user' => $user,

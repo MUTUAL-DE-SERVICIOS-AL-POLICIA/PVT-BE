@@ -138,7 +138,7 @@
                     Calcular
                 </button>
                 <div class="form-group">
-                    <label>Sueldo</label>
+                    <label>Monto Cotizable</label>
                     <input id="reimbursement_quotable" v-model="reimbursement_quotable" name="reimbursement_quotable" type="text" placeholder="Aporte Total" class="form-control numberformat">
                     
                     <table class="table table-striped" data-page-size="15">
@@ -297,50 +297,50 @@ export default {
       calculateReimbursement(){           
         axios.get('/calculate_reimbursement/'+this.afi_id+'/'+this.reimbursement_amount+'/'+this.reimbursement_month)
         .then(response => {
-            this.reimbursement_quotable = response.data.quotable;   
+            this.reimbursement_quotable = this.reimbursement_amount;// response.data.quotable;   
             var i;
-            let contributions_number = response.data.contributions.length;
-            for(i=0;i<this.contributions.length;i++)
-            {
-                if(parseInt(this.reimbursement_month)>this.contributions[i].month)
-                    contributions_number++;
-            }
-            this.reimbursement_quotable = this.reimbursement_amount/contributions_number;
+            let contributions_number = parseInt(this.reimbursement_month)-1;            
+            this.reimbursement_quotable = this.reimbursement_amount/contributions_number;            
+            let subtotal = this.reimbursement_amount/contributions_number;            
             for(i=0;i<response.data.contributions.length;i++)
             {
-                let date =moment(response.data.contributions[i],"YYYY-MM-DD");
-                let subtotal = this.reimbursement_quotable/contributions_number;
+                let date =moment(response.data.contributions[i],"YYYY-MM-DD");                
+                let retirement_fund_amount =  parseFloat(subtotal*this.rate.retirement_fund/100).toFixed(2);
+                let quota_amount = parseFloat(subtotal*this.rate.mortuary_quota/100).toFixed(2);
                 console.log(subtotal);
                 var new_info = {
                     'month_year' : date.format('MM-YYYY'),
                     'amount'    :   parseFloat(subtotal).toFixed(2),
-                    'retirement_fund'   :   parseFloat(subtotal*0.0477).toFixed(2),
-                    'quota' :   parseFloat(subtotal*0.0109).toFixed(2),
-                    'subtotal'  :   parseFloat(subtotal*0.0586).toFixed(2),
+                    'retirement_fund'   :   retirement_fund_amount,
+                    'quota' :   quota_amount,
+                    'subtotal'  :   parseFloat(retirement_fund_amount+quota_amount).toFixed(2),
                 };
                 this.reimbursement_pays.push(new_info);                                 
             }
             i=0;
             for(i=0;i<this.contributions.length;i++)
             {                                                
-                if(parseInt(this.reimbursement_month)>this.contributions[i].month && this.contributions[i].type != 'R' ){
-                    let subtotal = this.reimbursement_quotable/contributions_number;
+                let retirement_fund_amount =  parseFloat(subtotal*this.rate.retirement_fund/100).toFixed(2);
+                let quota_amount = parseFloat(subtotal*this.rate.mortuary_quota/100).toFixed(2);
+
+                if(parseInt(this.reimbursement_month)>this.contributions[i].month && this.contributions[i].type != 'R' ){                    
                     var new_info = {
                         'month_year' : this.contributions[i].monthyear,
                         'amount'    :   parseFloat(subtotal).toFixed(2),
-                        'retirement_fund'   :   parseFloat(subtotal*0.0477).toFixed(2),
-                        'quota' :   parseFloat(subtotal*0.0109).toFixed(2),
-                        'subtotal'  :   parseFloat(subtotal*0.0586).toFixed(2),
+                        'retirement_fund'   :   retirement_fund_amount,
+                        'quota' :   quota_amount,
+                        'subtotal'  :   parseFloat(retirement_fund_amount+quota_amount).toFixed(2),
                     };                
                     this.reimbursement_pays.push(new_info);                            
                 }     
             }
             
-            let quotable = this.reimbursement_quotable;
+            let quotable = subtotal*this.reimbursement_pays.length;
+            this.reimbursement_quotable = quotable;
             this.info_amount = parseFloat(quotable).toFixed(2);
-            this.info_retirement_fund = parseFloat(quotable*0.0477).toFixed(2);
-            this.info_quota = parseFloat(quotable*0.0109).toFixed(2);
-            this.info_total = parseFloat(quotable*0.0586).toFixed(2);
+            this.info_retirement_fund = parseFloat(quotable*this.rate.retirement_fund/100).toFixed(2);
+            this.info_quota = parseFloat(quotable*this.rate.mortuary_quota/100).toFixed(2);
+            this.info_total = parseFloat(this.info_retirement_fund+this.info_quota).toFixed(2);
             //moneyInputMaskAll();
         })
         .catch(e => {
@@ -405,7 +405,7 @@ export default {
         }
           
       },
-        createReimbursement:function(month){                        
+        createReimbursement:function(month){             
             this.reimbursement_amount = 0;
             this.reimbursement_month = '01';
             this.reimbursement_quotable = 0;
@@ -419,47 +419,37 @@ export default {
             $('#reimbursement_modal').modal('show');
         },
         addReimbursement:function(){
-            let quotable = this.reimbursement_quotable;
-            var new_reimbursement = 
-            {                
-                month_year : this.reimbursement_month+"-2018",
-                amount : parseFloat(quotable).toFixed(2),
-                retirement_fund : parseFloat(quotable*0.0477).toFixed(2),
-                quota : parseFloat(quotable*0.0109).toFixed(2),
-                interest : 0,
-                subtotal : parseFloat(quotable*0.0586).toFixed(2),
-                affiliate_id : this.afi_id,
-            };
-            //this.reimbursements.push(new_reimbursement);
+            let quotable = this.reimbursement_quotable;                           
             let update_contributions = [];
             console.log('inicio');
             var i;
+            var newcontribution;
+            var index=0;
             for(i=0;i<this.contributions.length;i++){                    
-                update_contributions.push(this.contributions[i]);                
-                if(parseInt(this.reimbursement_month) == this.contributions[i].month){
-                    console.log('adding new contribution');
-                    //let newcontribution =  this.contributions[0];
-                    var newcontribution = 
+                update_contributions.push(this.contributions[i]);
+                if(parseInt(this.reimbursement_month) == this.contributions[i].month && this.reimbursement_quotable > 0 ){
+                    index = i;
+                    let fr = parseFloat(quotable*this.rate.retirement_fund/100).toFixed(2);
+                    let cm = parseFloat(quotable*this.rate.mortuary_quota/100).toFixed(2);
+                    newcontribution = 
                     {
                         id : 0,
                         monthyear : this.reimbursement_month+"-2018",
                         sueldo : parseFloat(quotable).toFixed(2),
-                        fr : parseFloat(quotable*0.0477).toFixed(2),
-                        cm : parseFloat(quotable*0.0109).toFixed(2),
+                        fr : fr,
+                        cm : cm,
                         interes : 0,
-                        subtotal : parseFloat(quotable*0.0586).toFixed(2),
+                        subtotal : parseFloat(fr+cm).toFixed(2),
                         month : this.reimbursement_month,
                         year : '2018',
                         affiliate_id : 1,
                         type: 'R',
-                    };
-                    //let newcontribution = this.$data.contributions[0];
-                // n/ewcontribution.id = 0;
-                    ///newcontribution.monthyear = this.month+"-2018";
+                    };                                        
                     update_contributions.push(newcontribution);                                
                 }
             }
-            this.contributions = update_contributions;            
+            this.contributions = update_contributions;
+            this.CalcularAporte(newcontribution,index);          
              $('#reimbursement_modal').modal('toggle');            
              moneyInputMaskAll();
         },
@@ -508,61 +498,58 @@ export default {
       enableDC(){
           $(".directContribution").removeClass('disableddiv');
       },
-      Guardar(){                
-        if(this.tipo !== null) 
-        {
-            this.contributions =  this.contributions.filter((item)=> {                
-                return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
-            });       
-      
-            if(this.contributions.length > 0)
-            {   
+      Guardar(){                       
+        this.contributions =  this.contributions.filter((item)=> {                
+            return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+        });       
+    
+        if(this.contributions.length > 0)
+        {   
+            this.$swal({
+            title: 'Esta usted seguro de guardar?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {    
+                if (result.value) {                    
+                var aportes = this.contributions;                    
+                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
+                .then(response => {                  
+                this.enableDC();
+                var i;
+                for(i=0;i<response.data.contribution.length;i++){                        
+                    this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
+                }
                 this.$swal({
-                title: 'Esta usted seguro de guardar?',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar'
-                }).then((result) => {    
-                    if (result.value) {                    
-                    var aportes = this.contributions;                    
-                    axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
-                    .then(response => {                  
-                    this.enableDC();
-                    var i;
-                    for(i=0;i<response.data.contribution.length;i++){                        
-                        this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
-                    }
-                    this.$swal({
-                    title: 'Pago realizado',
-                    showConfirmButton: false,
-                    timer: 6000,
-                    type: 'success'
-                    })
-                    var json_contribution= JSON.stringify(response.data.contributions);                    
-                    printJS({printable:
-                            '/ret_fun/'+
-                            response.data.affiliate_id+
-                            '/print/voucher/'+
-                            response.data.voucher_id + "?contributions="+json_contribution, 
-                            type:'pdf', showModal:true});
-                    })                    
-                    .catch(error => {
-                    this.show_spinner = false;                                    
-                        console.log(error.response.data);
+                title: 'Pago realizado',
+                showConfirmButton: false,
+                timer: 6000,
+                type: 'success'
+                })
+                var json_contribution= JSON.stringify(response.data.contributions);                    
+                printJS({printable:
+                        '/ret_fun/'+
+                        response.data.affiliate_id+
+                        '/print/voucher/'+
+                        response.data.voucher_id + "?contributions="+json_contribution, 
+                        type:'pdf', showModal:true});
+                })                    
+                .catch(error => {
+                this.show_spinner = false;                                    
+                    console.log(error.response.data);
 //                        console.log(xhr.responseText);
 //                        var resp = jQuery.parseJSON(xhr.responseText);
-                        var resp = error.response.data;
-                        $.each(resp, function(index, value)
-                        {
-                            flash(value,'error',6000);
-                        });                        
-                    })
-                }
-                })            
+                    var resp = error.response.data;
+                    $.each(resp, function(index, value)
+                    {
+                        flash(value,'error',6000);
+                    });                        
+                })
             }
+            })
         } 
     },
   },

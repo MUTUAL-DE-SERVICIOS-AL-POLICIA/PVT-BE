@@ -311,8 +311,7 @@
             modal.find('.modal-header #folder_id').val(folder_id)
         });
         // console.log( "del show... " );
-        $('#example').DataTable().column('1:visible').order('desc').draw();
-        $('#workflow-table').DataTable().column('1:visible').order('desc').draw();
+        
     });
 </script>
 @endsection
