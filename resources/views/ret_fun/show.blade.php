@@ -308,12 +308,10 @@
             modal.find('.modal-header #folder_id').val(folder_id)
         });
         // console.log( "del show... " );
-        $('.tabledatos').DataTable({
+        $('.tabledatosflujos').DataTable({
           language: {"url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
      }}).column('1:visible').order('desc').draw();
-        $('tableflujo').DataTable({
-          language: {"url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-     }}).column('1:visible').order('desc').draw();
+
     });
 </script>
 @endsection
