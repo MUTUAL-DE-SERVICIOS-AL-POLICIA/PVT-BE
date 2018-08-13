@@ -15,4 +15,8 @@ class WorkflowState extends Model
     {
         return $this->belongsToMany('Muserpol\Models\Tag', 'tag_wf_state','wf_state_id');
     }
+    public function rol()
+    {
+        return $this->belongsTo('Muserpol\Models\Role', 'role_id');
+    }
 }

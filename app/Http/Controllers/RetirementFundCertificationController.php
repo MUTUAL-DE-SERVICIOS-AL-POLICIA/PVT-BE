@@ -384,11 +384,20 @@ class RetirementFundCertificationController extends Controller
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
         $dates = array(
+            'dates' => $affiliate->getDatesGlobal(),
+            'name' => "Años de servicio segun certificacion del comando general de la Policia",
+            'operator' => '**',
+            'description' => "Años de servicio segun certificacion del comando general de la Policia",
+            'years' => $affiliate->service_years,
+            'months' => $affiliate->service_months,
+        );
+        $group_dates[] = $dates;
+        $dates = array(
             'id' => 0,
             'dates' => $affiliate->getDatesGlobal(),
-            'name' => "perii",
+            'name' => "Alta y Baja de la Policía Nacional Boliviana",
             'operator' => '**',
-            'description' => "dsds",
+            'description' => "Fechas de Alta y Baja de la Policía Nacional Boliviana",
             'years' => intval($total_dates / 12),
             'months' => $total_dates % 12,
         );
@@ -690,9 +699,9 @@ class RetirementFundCertificationController extends Controller
             if ($retirement_fund->total_availability > 0) {
                 $pages[] =\View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
             }
-            if ($retirement_fund->total > 0) {
-                $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
-            }
+            // if ($retirement_fund->total > 0) {
+            //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
+            // }
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
