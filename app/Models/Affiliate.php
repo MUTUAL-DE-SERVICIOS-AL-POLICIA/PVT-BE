@@ -290,7 +290,7 @@ class Affiliate extends Model
     public function getTotalQuotes()
     {
         // $total_global_backed = Util::sumTotalContributions($this->getDatesGlobal());
-        // $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Período reconocido por comando'));
+        // $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Servicio Activo'));
         // $total_item_zero_backed = Util::sumTotalContributions($this->getContributionsWithType('Período en item 0 Con Aporte'));
         // $total_availability_backed = Util::sumTotalContributions($this->getContributionsWithType('Disponibilidad'));
         // $total_security_battalion_backed = Util::sumTotalContributions($this->getContributionsWithType('Período de Batallón de Seguridad Física Con Aporte'));

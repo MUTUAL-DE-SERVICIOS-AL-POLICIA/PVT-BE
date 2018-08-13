@@ -16,7 +16,6 @@ use Muserpol\Models\Template;
 use Illuminate\Support\Facades\Blade;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
-use Muserpol\Helpers\Util;
 
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
@@ -207,6 +206,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('inbox_send_forward', 'InboxController@sendForward')->name('inbox_send_forward');
 		Route::post('inbox_send_backward', 'InboxController@sendBackward')->name('inbox_send_backward');
 		Route::patch('inbox_validate_doc/{doc_id}', 'InboxController@validateDoc')->name('inbox_validate_doc');
+		Route::patch('inbox_invalidate_doc/{doc_id}', 'InboxController@invalidateDoc')->name('inbox_validate_doc');
 
 
 		//dictamen legal routes

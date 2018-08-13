@@ -298,8 +298,8 @@ class RetirementFundController extends Controller
         $beneficiary->surname_husband = mb_strtoupper(trim($request->applicant_surname_husband));
         $beneficiary->birth_date = $request->applicant_birth_date;
         $beneficiary->gender = $request->applicant_gender;
-        $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
-        $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+        $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+        $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
         $beneficiary->type = "S";
         $beneficiary->save();
         if($account_type == '1')
@@ -334,8 +334,8 @@ class RetirementFundController extends Controller
             $advisor->second_name = strtoupper(trim($request->applicant_second_name));
             $advisor->surname_husband = strtoupper(trim($request->applicant_surname_husband));
             //$advisor->gender = "M";
-            $advisor->phone_number = trim(implode(",", $request->applicant_phone_number));
-            $advisor->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+            $advisor->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+            $advisor->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
             $advisor->name_court = $request->advisor_name_court;
             $advisor->resolution_number = $request->advisor_resolution_number;
             $advisor->resolution_date = $request->advisor_resolution_date;
@@ -360,8 +360,8 @@ class RetirementFundController extends Controller
             $legal_guardian->second_name = strtoupper(trim($request->legal_guardian_second_name));
             $legal_guardian->surname_husband = strtoupper(trim($request->legal_guardian_surname_husband));
             //$legal_guardian->gender = "M";
-            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));
-            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
@@ -562,7 +562,8 @@ class RetirementFundController extends Controller
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
         $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
-        $has_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
+        $can_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
+        $can_cancel = ($retirement_fund->user_id == $user->id && $retirement_fund->inbox_state == true);
 
         //workflow record
         $workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
@@ -573,10 +574,10 @@ class RetirementFundController extends Controller
             $str = $first_wf_state->message;
             preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
             $user_name = $matches[0][0];
-            $user = User::where('username','=', $user_name)->first();
-            $rol = $user->roles->first();
+            $rol = User::where('username','=', $user_name)->first()->roles->first();
             $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
         }
+
 
         // dd($first_wf_state);
 
@@ -614,7 +615,8 @@ class RetirementFundController extends Controller
             'observations' => $retirement_fund->ret_fun_observations,
             'submitted' =>  $submitted->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'),
             'submit_documents' => $submitted->get(),
-            'has_validate' =>  $has_validate,
+            'can_validate' =>  $can_validate,
+            'can_cancel' =>  $can_cancel,
             'workflow_records' =>  $workflow_records,
             'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
@@ -963,9 +965,9 @@ class RetirementFundController extends Controller
         $dates = array(
             'id' => 0,
             'dates' => $affiliate->getDatesGlobal(),
-            'name' => "perii",
+            'name' => "Alta y Baja de la Policía Nacional Boliviana",
             'operator' => '**',
-            'description' => "dsds",
+            'description' => "Fechas de Alta y Baja de la Policía Nacional Boliviana",
             'years' => intval($total_dates / 12),
             'months' => $total_dates % 12,
         );
@@ -1008,8 +1010,26 @@ class RetirementFundController extends Controller
 
     public function getAverageQuotable(Request $request, $id)
     {
+        $rules = [
+            'service_years' => 'required|numeric|min:0|max:100',
+            'service_months' => 'required|numeric|min:0|max:12',
+        ];
+        $messages = [];
+
+        try {
+            $validator = Validator::make($request->all(), $rules, $messages)->validate();
+        } catch (ValidationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => $exception->errors(),
+            ], 403);
+        }
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
+        $affiliate->service_years = $request->service_years;
+        $affiliate->service_months = $request->service_months;
+        $affiliate->save();
         $total_quotes = $affiliate->getTotalQuotes();
         $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable();
         $data = [

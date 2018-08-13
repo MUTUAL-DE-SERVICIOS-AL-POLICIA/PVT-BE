@@ -27,6 +27,7 @@ th.ellipsis-text {
     }
 /* .table-striped-1>tbody>tr:nth-child(2n+1){background-color:#f2f2f2} */
 </style>
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
 @section('content')
 <div class="row  wrapper border-bottom white-bg page-heading">
@@ -223,7 +224,20 @@ th.ellipsis-text {
 <script>
 $(document).ready(function() {
     $('#example').DataTable();
-
+    $('#fixedheight').DataTable({
+        fixedHeader: {
+            header: true,
+            footer: true,
+            headerOffset: $('#navbar-fixed-top').outerHeight()
+        },
+        lengthMenu: [[15, 25, 50,100, -1], [15, 25, 50,100, "Todos"]],
+        dom: '< "html5buttons"B>lTfgitp',
+        buttons:[
+            { extend: 'copy'},
+            { extend: 'csv'},
+            { extend: 'excel', title: "{!! $affiliate->fullName() !!}"},
+        ],
+    });
     function moneyInputMask() {
 
             return {
@@ -244,6 +258,6 @@ $(document).ready(function() {
     //     animationHover(this, 'pulse');
     // });
     $('#record-table').DataTable();
-} );
+} );        
 </script>
 @endsection

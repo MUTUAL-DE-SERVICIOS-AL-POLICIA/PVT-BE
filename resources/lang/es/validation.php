@@ -547,6 +547,8 @@ return [
         'identity_card'         => 'cedula de identidad',
         'city_identity_card_id' => 'ciudad de expedición cedula de identidad',
         'birth_date'            => 'fecha de nacimiento',
+        'service_years'         => 'años de servicio',
+        'service_months'        => 'meses de servicio',
         'password'              => 'contraseña',
         'password_confirmation' => 'confirmación de la contraseña',
         'city'                  => 'ciudad',
