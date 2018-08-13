@@ -123,6 +123,8 @@
                 <i class="fa fa-list-alt" style="font-size:15px"></i> Clasificar Aportes
                 </button>
             </a>
+            @endcan
+            @can('qualify', $retirement_fund)
             <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
                 <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
             </a>
