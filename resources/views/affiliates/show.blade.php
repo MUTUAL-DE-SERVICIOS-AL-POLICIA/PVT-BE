@@ -223,21 +223,7 @@ th.ellipsis-text {
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
 $(document).ready(function() {
-    $('#example').DataTable();
-    $('#fixedheight').DataTable({
-        fixedHeader: {
-            header: true,
-            footer: true,
-            headerOffset: $('#navbar-fixed-top').outerHeight()
-        },
-        lengthMenu: [[15, 25, 50,100, -1], [15, 25, 50,100, "Todos"]],
-        dom: '< "html5buttons"B>lTfgitp',
-        buttons:[
-            { extend: 'copy'},
-            { extend: 'csv'},
-            { extend: 'excel', title: "{!! $affiliate->fullName() !!}"},
-        ],
-    });
+
     function moneyInputMask() {
 
             return {
@@ -257,7 +243,6 @@ $(document).ready(function() {
     // $('.file-box').each(function() {
     //     animationHover(this, 'pulse');
     // });
-    $('#record-table').DataTable();
-} );        
+} );
 </script>
 @endsection
