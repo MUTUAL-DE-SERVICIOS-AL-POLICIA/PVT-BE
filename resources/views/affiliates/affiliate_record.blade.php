@@ -35,7 +35,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div id="record-tab" class="tab-pane">
+                        <div id="record-tab" class="tab-pane table">
                             <div class="panel-body">
                                 <table id="record-table" class="table table-striped table-bordered">
                                     <thead>
