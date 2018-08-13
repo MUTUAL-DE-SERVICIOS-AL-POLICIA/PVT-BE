@@ -104,6 +104,18 @@ Vue.use(VeeValidate, {
           required: "Debe escribir la fecha de Nacimiento.",
           date_format:
             "Debe escribir la fecha de Nacimiento en el formato dia/mes/año."
+        },
+        service_years: {
+          required: "Debe ingresar los años de servicio",
+          numeric: "El campo años de servicio debe ser un numero",
+          max_value: "El campo años servicio debe ser menor o igual a 12.",
+          min_value: "El campo años de servicio debe ser mayor o igual a 0."
+        },
+        service_months: {
+          required: "Debe ingresar los meses de servicio",
+          numeric: "El campo meses de servicio debe ser un numero",
+          max_value: "El campo meses servicio debe ser menor o igual a 12.",
+          min_value: "El campo meses servicio debe ser mayor o igual a 0."
         }
       }
     }

@@ -99,10 +99,21 @@
                 </tr>
         </tbody>
     </table>
-    <div class="w-50 text-center">
-        <p class="uppercase">Total de aporte FRPS: <span class="font-bold">{{Util::formatMoney($total_retirement_fund) }}</span></p>
-        <p class="uppercase">Salario Total: <span class="font-bold">{{Util::formatMoney($sub_total_average_salary_quotable) }}</span></p>
-        <p class="uppercase">Salario Promedio: <span class="font-bold">{{Util::formatMoney($total_average_salary_quotable) }}</span></p>
+    <div class="w-50 text-center m-l-50">
+        <table class="uppercase no-border">
+            <tr>
+                <td class="text-left">Total de aporte FRPS:</td>
+                <td class="font-bold text-right">{{Util::formatMoney($total_retirement_fund) }}</td>
+            </tr>
+            <tr>
+                <td class="text-left">Salario Total:</td>
+                <td class="font-bold text-right">{{Util::formatMoney($sub_total_average_salary_quotable) }}</td>
+            </tr>
+            <tr>
+                <td class="text-left">Salario Promedio:</td>
+                <td class="font-bold text-right">{{Util::formatMoney($total_average_salary_quotable) }}</td>
+            </tr>
+        </table>
     </div>
     <p class="text-left">Es cuanto se certifica los ultimos {{ $number_contributions }} salarios efectivamenete percibidos previos al destino a la disponibilidad de las letras, para fines consiguientes.</p>
     @include('ret_fun.print.signature_footer',['user'=>$user])

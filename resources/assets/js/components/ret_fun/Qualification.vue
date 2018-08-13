@@ -1,6 +1,6 @@
 <script>
 import {scroller} from 'vue-scrollto/src/scrollTo'
-import { dateInputMask, moneyInputMask, parseMoney, moneyInputMaskAll }  from "../../helper.js";
+import { dateInputMask, moneyInputMask, parseMoney, moneyInputMaskAll, flashErrors }  from "../../helper.js";
 export default {
   props: [
     'contributions',
@@ -15,7 +15,8 @@ export default {
     'datesCertificationPeriodWithoutContribution',
     'datesNotWorked',
     'datesAvailability',
-    "retirementFundId"
+    "retirementFundId",
+    'affiliate'
   ],
   mounted() {
     // moneyInputMaskAll();
@@ -83,7 +84,9 @@ export default {
       totalQuotes:0,
       guarantors:[],
 
-      maxPercentage: 100.00
+      maxPercentage: 100.00,
+      serviceYears:this.affiliate.service_years,
+      serviceMonths:this.affiliate.service_months,
 
     };
   },
@@ -164,17 +167,28 @@ export default {
         months: (date%12),
       }
     },
+    async validateBeforeSubmit() {
+      try {
+          await this.$validator.validateAll();
+      } catch (error) {
+          console.log("some error");
+      }
+    },
+    validAll(){
+      return Object.keys(this.$validator.errors.collect()).length > 0;
+    },
     firstContinue(){
+      this.validateBeforeSubmit();
+      if (this.validAll() === true) {
+        flash("Debe completar el formulario", 'error')
+        return;
+      }
       let uri = `/ret_fun/${this.retirementFundId}/get_average_quotable`;
-      axios.get(uri,
+      axios.get(uri, {params:
         {
-          datesAvailability: this.datesAvailability,
-          datesItemZero: this.datesItemZero,
-          datesContributions: this.datesContributions,
-          datesSecurityBattalion: this.datesSecurityBattalion,
-          datesCas: this.datesCas,
-          datesNoRecords: this.datesNoRecords,
-        }
+          service_years: this.serviceYears,
+          service_months: this.serviceMonths,
+        }}
       ).then(response =>{
           flash("Verificacion Correcta");
           this.showEconomicData = true
@@ -183,7 +197,7 @@ export default {
             this.$scrollTo('#showEconomicData');
           }, 800);
       }).catch(error =>{
-          flash("Error", "error");
+          flashErrors('Error al procesar los datos: ',error.response.data.errors)
           this.showEconomicData = false;
       });
     },

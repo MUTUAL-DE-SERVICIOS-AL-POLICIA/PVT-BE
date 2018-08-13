@@ -1,7 +1,7 @@
 @extends('layouts.app') 
 @section('title', 'Fondo de Retiro') 
 @section('content')
-<ret-fun-qualification inline-template :retirement-fund-id="{{$retirement_fund->id}}" :contributions="{{$all_contributions}}">
+<ret-fun-qualification inline-template :retirement-fund-id="{{$retirement_fund->id}}" :contributions="{{$all_contributions}}" :affiliate="{{$retirement_fund->affiliate}}">
     <div>
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-7">
@@ -77,6 +77,47 @@
                         </div>
                         <ret-fun-qualification-group :dates-child="contributionType.dates">
                         </ret-fun-qualification-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-content forum-container">
+                        <div class="forum-title">
+                            <h3>Años de servicio segun certificacion del comando general de la Policia</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-offset-3 col-md-9">
+                                <div class="form-inline">
+                                    <div :class="{'has-error': errors.has('service_years') }">
+                                        <div class="col-md-1">
+                                            <label class="control-label">Años</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="number" class="form-control" v-model="serviceYears" name="service_years" v-validate.initial="'required|numeric|max_value:100|min_value:0'">
+                                            <div v-show="errors.has('service_years')">
+                                                <i class="fa fa-warning text-danger"></i>
+                                                <span class="text-danger">@{{ errors.first('service_years') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div :class="{'has-error': errors.has('service_months') }">
+                                        <div class="col-md-1">
+                                            <label class="control-label">Meses</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="number" class="form-control" v-model="serviceMonths" name="service_months" v-validate.initial="'required|numeric|max_value:12|min_value:0'">
+                                            <div v-show="errors.has('service_months')">
+                                                <i class="fa fa-warning text-danger"></i>
+                                                <span class="text-danger">@{{ errors.first('service_months') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

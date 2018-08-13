@@ -1010,8 +1010,26 @@ class RetirementFundController extends Controller
 
     public function getAverageQuotable(Request $request, $id)
     {
+        $rules = [
+            'service_years' => 'required|numeric|min:0|max:100',
+            'service_months' => 'required|numeric|min:0|max:12',
+        ];
+        $messages = [];
+
+        try {
+            $validator = Validator::make($request->all(), $rules, $messages)->validate();
+        } catch (ValidationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => $exception->errors(),
+            ], 403);
+        }
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
+        $affiliate->service_years = $request->service_years;
+        $affiliate->service_months = $request->service_months;
+        $affiliate->save();
         $total_quotes = $affiliate->getTotalQuotes();
         $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable();
         $data = [
