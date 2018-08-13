@@ -14,7 +14,7 @@
                     <div class="tab-content">
                         <div id="ret-fun-tab" class="tab-pane active">
                             <div class="panel-body">
-                                <table id="example" class="table table-striped table-bordered tabledatosflujos">
+                                <table id="example" class="table table-striped table-bordered datatablespanish">
                                     <thead>
                                         <tr>
                                             <th class="col-md-9 text-left">Detalle</th>
@@ -36,7 +36,7 @@
                         </div>
                         <div id="workflow-tab" class="tab-pane">
                             <div class="panel-body">
-                                <table id="workflow-table" class="table table-striped table-bordered tabledatosflujos">
+                                <table id="workflow-table" class="table table-striped table-bordered datatablespanish">
                                     <thead>
                                         <tr>
                                             <th class="col-md-9 text-left">Detalle</th>

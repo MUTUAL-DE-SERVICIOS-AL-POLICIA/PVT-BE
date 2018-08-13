@@ -14,7 +14,7 @@
                     <div class="tab-content">
                         <div id="affiliate-tab" class="tab-pane active">
                             <div class="panel-body">
-                                <table id="example" class="table table-striped table-bordered tablepolvida" >
+                                <table id="example" class="table table-striped table-bordered datatablespanish" >
                                     <thead>
                                         <tr>
                                             <th class="col-md-10 text-left">Detalle</th>
@@ -37,7 +37,7 @@
                         </div>
                         <div id="record-tab" class="tab-pane table">
                             <div class="panel-body">
-                                <table id="record-table" class="table table-striped table-bordered tablepolvida  ">
+                                <table id="record-table" class="table table-striped table-bordered datatablespanish">
                                     <thead>
                                         <tr>
                                             <th class="col-md-9 text-left">Detalle</th>

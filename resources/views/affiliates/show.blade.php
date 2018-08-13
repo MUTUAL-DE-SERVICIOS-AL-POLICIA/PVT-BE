@@ -222,9 +222,7 @@ th.ellipsis-text {
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
 $(document).ready(function() {
-    $('.tablepolvida').DataTable({
-      language: {"url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
- }});
+
 
     function moneyInputMask() {
 
