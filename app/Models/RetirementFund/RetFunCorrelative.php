@@ -16,4 +16,8 @@ class RetFunCorrelative extends Model
     {
         return $this->belongsTo('Muserpol\User');
     }
+    public function retirement_fund()
+    {
+        return $this->belongsTo('Muserpol\Models\RetirementFund\RetirementFund');
+    }
 }

@@ -135,17 +135,18 @@
             @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
         </div>
         <div class="pull-right">
-            @if ($has_validate)
-                <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
-                    <div>
-                        <div v-if="status == true" data-toggle="tooltip" data-placement="top" title="Trámite ya procesado">
-                            <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+            @if ($can_validate)
+        <sweet-alert-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}" :doc-user-id="{{$retirement_fund->user_id}}" :auth-id="{{ $user->id}}"  >
+                    <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
+                        <div v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
+                            {{-- <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button> --}}
+                            <button  class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
                         </div>
-                        <div v-else>
-                            <button data-toggle="tooltip" data-placement="top" title="Procesar Trámite" class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="showModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                        <div v-else key="two" data-toggle="tooltip" data-placement="top" title="Procesar Trámite">
+                            <button class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="confirmModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
                         </div>
-                    </div>
-                </swal-modal>
+                    </transition>
+                </sweet-alert-modal>
             @endif
         </div>
     </div>
