@@ -28,19 +28,29 @@
     </div>
     <p> Lugar y Fecha: {!! ucwords(strtolower($city)).", ".$date !!} </p>
     <br><br>
-    <table class="w-100">
+    <table class="m-t-35">
         <tr>
-            <th class="no-border text-center">
-                <p class="font-bold">----------------------------------------------------<br>
-                    AFILIADO<br>
-                {!! $affiliate->fullName() !!}<br/>
-                </p>
-            </th>
-            <th class="no-border text-center">
-                <p class="font-bold">----------------------------------------------------<br>
-                    MUSERPOL<br>
-                </p>
-            </th>
+            <td class="no-border text-center text-base w-50 align-bottom">
+                <span class="font-bold">
+                    ----------------------------------------------------
+                </span>
+            </td>
+            <td class="no-border text-center text-base w-50 align-bottom">
+                <span class="font-bold">
+                    ----------------------------------------------------
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td class="no-border text-center text-base w-50 align-top">
+                <span class="font-bold">{!! strtoupper($affiliate->fullName()) !!}</span>
+                <br/>
+                <span class="font-bold">C.I. {!! $affiliate->identity_card !!} {!! strtoupper($affiliate->city_identity_card->first_shortened)!!}</span>
+            </td>
+            <td class="no-border text-center text-base w-50">
+                <span class="font-bold block">{!! strtoupper($user->fullName()) !!}</span>
+                <div class="text-xs text-center" style="width: 350px; margin:0 auto; font-weight:100">{!! $user->position !!}</div>
+            </td>
         </tr>
     </table>
 

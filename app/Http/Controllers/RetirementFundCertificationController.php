@@ -692,6 +692,11 @@ class RetirementFundCertificationController extends Controller
         }
         $pdftitle = "Carta de Compromiso de Fondo de Retiro";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        $area = Util::getRol()->name;
+        $user = Auth::user();
+        $date = date('d/m/Y');
+
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
         return \PDF::loadView(
             'ret_fun.print.ret_fun_commitment_letter',
@@ -703,7 +708,9 @@ class RetirementFundCertificationController extends Controller
                 'glosa',
                 'city',
                 'glosa_pago',
-                'commitment'
+                'commitment',
+                'area',
+                'user'                
             )
         )
             ->setOption('encoding', 'utf-8')

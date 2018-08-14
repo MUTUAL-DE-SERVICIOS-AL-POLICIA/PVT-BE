@@ -159,11 +159,11 @@ class AidContributionController extends Controller
     public function directContributions(Affiliate $affiliate = null){
 
         $commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
-        if(!isset($commitment->id))
-        {            
-            Session::flash('message','No se encontró compromiso de pago');
-            return redirect('affiliate/'.$affiliate->id);    
-        }        
+        // if(!isset($commitment->id))
+        // {            
+        //     Session::flash('message','No se encontró compromiso de pago');
+        //     return redirect('affiliate/'.$affiliate->id);    
+        // }        
         $contributions = AidContribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();        
         //$last_contribution = AidContribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();
         $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();        

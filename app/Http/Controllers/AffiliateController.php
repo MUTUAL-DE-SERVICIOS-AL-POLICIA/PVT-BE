@@ -9,7 +9,9 @@ use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
 use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Contribution\Reimbursement;
+use Muserpol\Models\Contribution\AidReimbursement;
 use Illuminate\Http\Request;
 use Log;
 use Muserpol\Models\RetirementFund\RetFunState;
@@ -175,18 +177,29 @@ class AffiliateController extends Controller
         //GETTIN CONTRIBUTIONS
         $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
         $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
+
         if($affiliate->date_entry)
             $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
         else
             $end = explode('-', '1976-05-01');
         $month_end = $end[1];
         $year_end = $end[0];
+
         if($affiliate->date_derelict)
             $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));  
         else
             $start = explode('-', date('Y-m-d'));  
         $month_start = $start[1];
         $year_start = $start[0];
+
+        $aid_contributions = AidContribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        $aid_reimbursement = AidReimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        if($affiliate->date_death)
+            $death = explode('-', Util::parseMonthYearDate($affiliate->date_death));
+        else
+            $death = explode('-', date('Y-m-d'));  
+        $month_death = $death[1];
+        $year_death = $death[0];
 
         $is_editable = "1";
         if(isset($retirement_fund->id))
@@ -211,11 +224,15 @@ class AffiliateController extends Controller
             'nextcode'  =>  $nextcode,
             'has_ret_fun'   =>  isset($active_ret_fun->id)?true:false,
             'contributions' =>  $contributions,
+            'aid_contributions' =>  $aid_contributions,
             'month_end' =>  $month_end,
             'month_start'  =>   $month_start,
             'year_end'  =>  $year_end,
             'year_start'    =>  $year_start,
+            'month_death'   =>  $month_death,
+            'year_death'    =>  $year_death,
             'reimbursements'    =>  $reimbursements,
+            'aid_reimbursements'    =>  $aid_reimbursement,
             'is_editable'   =>  $is_editable,
             //'records_message'=>$records_message
         );
