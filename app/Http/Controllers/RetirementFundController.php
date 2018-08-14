@@ -302,23 +302,13 @@ class RetirementFundController extends Controller
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
         $beneficiary->type = "S";
         $beneficiary->save();
-        if($account_type == '1')
+        if($account_type == '1' && $request->ret_fun_modality != 4 && $request->ret_fun_modality != 1 )
         {
-            $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
-            $update_affilaite->identity_card = $beneficiary->identity_card;
-            $update_affilaite->first_name = $beneficiary->first_name;
-            $update_affilaite->second_name = $beneficiary->second_name;
-            $update_affilaite->last_name = $beneficiary->last_name;
-            $update_affilaite->mothers_last_name = $beneficiary->mothers_last_name;
-            $update_affilaite->gender = $beneficiary->gender;
-            $update_affilaite->birth_date = $beneficiary->birth_date;
-            $update_affilaite->phone_number = $beneficiary->phone_number;
-            $update_affilaite->cell_phone_number = $beneficiary->cell_phone_number;
-            $update_affilaite->city_birth_id = $beneficiary->city_birth_id;
-            $update_affilaite->city_identity_card_id =$beneficiary->city_identity_card_id;
-            $update_affilaite->surname_husband = $beneficiary->surname_husband;
-            $update_affilaite->save();
-
+            Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
+        }
+        if ($account_type == '1' && ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
+            Log::info("updating spouse 1");
+            Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
 
         if($account_type == '2')
@@ -371,6 +361,13 @@ class RetirementFundController extends Controller
             $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
             //$beneficiary->type = "N";
+            if ($request->ret_fun_modality != 4 && $request->ret_fun_modality != 1) {
+                Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
+            }
+            if (($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
+                Log::info("updating spouse 2");
+                Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
+            }
         }
         if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
             $address = new Address();

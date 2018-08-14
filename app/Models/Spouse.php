@@ -4,6 +4,7 @@ namespace Muserpol\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Muserpol\Helpers\Util;
+use Carbon\Carbon;
 
 class Spouse extends Model
 {
@@ -16,7 +17,13 @@ class Spouse extends Model
     {
         return $this->belongsTo(City::class, 'city_birth_id', 'id');
     }
-
+    public function getBirthDateAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     /**
      * Methods
      */

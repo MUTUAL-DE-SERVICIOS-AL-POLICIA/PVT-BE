@@ -14,6 +14,8 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Role;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\RetirementFund\RetirementFund;
+use Muserpol\Models\Affiliate;
+use Muserpol\Models\Spouse;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -510,5 +512,42 @@ class Util
             $name = ', '. $name.", queda un saldo de ".self::formatMoney($array_discounts[sizeOf($array_discounts)-1]['amount'], true).' ('.self::convertir($array_discounts[sizeOf($array_discounts) - 1]['amount']) .' BOLIVIANOS).';
         }
         return $name;
+    }
+    public static function updateAffiliatePersonalInfo($affiliate_id, $object)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        $affiliate->identity_card = $object->identity_card;
+        $affiliate->first_name = $object->first_name;
+        $affiliate->second_name = $object->second_name;
+        $affiliate->last_name = $object->last_name;
+        $affiliate->mothers_last_name = $object->mothers_last_name;
+        $affiliate->surname_husband = $object->surname_husband;
+        $affiliate->gender = $object->gender;
+        $affiliate->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
+        $affiliate->phone_number = $object->phone_number;
+        $affiliate->cell_phone_number = $object->cell_phone_number;
+        $affiliate->city_birth_id = $object->city_birth_id;
+        $affiliate->city_identity_card_id = $object->city_identity_card_id;
+        $affiliate->save();
+    }
+    public static function updateCreateSpousePersonalInfo($affiliate_id, $object)
+    {
+        $spouse = Spouse::where('affiliate_id',$affiliate_id)->first();
+        if (!$spouse) {
+            $spouse = new Spouse();
+            $spouse->affiliate_id = $affiliate_id;
+            $spouse->user_id = self::getAuthUser()->id;
+            $spouse->registration = 0;
+        }
+        $spouse->identity_card = $object->identity_card;
+        $spouse->first_name = $object->first_name;
+        $spouse->second_name = $object->second_name;
+        $spouse->last_name = $object->last_name;
+        $spouse->mothers_last_name = $object->mothers_last_name;
+        $spouse->surname_husband = $object->surname_husband;
+        $spouse->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
+        $spouse->city_birth_id = $object->city_birth_id;
+        $spouse->city_identity_card_id = $object->city_identity_card_id;
+        $spouse->save();
     }
 }
