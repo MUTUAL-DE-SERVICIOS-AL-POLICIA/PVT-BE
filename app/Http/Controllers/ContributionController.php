@@ -665,15 +665,14 @@ class ContributionController extends Controller
                 $contribution->east_bonus = 0;
                 $contribution->quotable = 0;
                 $contribution->month_year = $key;
-                
+
                 if(!isset($request->gain[$key]))
                     $contribution->gain = 1;
                 else
                     $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
                 $contribution->retirement_fund = 0;
                 $contribution->mortuary_quota = 0;
-                $contribution->total = strip_tags($request->total[$key]) ?? 0;
-                //$contribution->interes = 0;
+                $contribution->total = strip_tags($request->total[$key]) ?? 0;                
                 $contribution->type = 'Planilla';
                 $contribution->save();
                 array_push($contributions, $contribution);
