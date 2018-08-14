@@ -123,6 +123,8 @@
                 <i class="fa fa-list-alt" style="font-size:15px"></i> Clasificar Aportes
                 </button>
             </a>
+            @endcan
+            @can('qualify', $retirement_fund)
             <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
                 <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
             </a>
@@ -135,17 +137,18 @@
             @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
         </div>
         <div class="pull-right">
-            @if ($has_validate)
-                <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
-                    <div>
-                        <div v-if="status == true" data-toggle="tooltip" data-placement="top" title="Trámite ya procesado">
-                            <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+            @if ($can_validate)
+        <sweet-alert-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}" :doc-user-id="{{$retirement_fund->user_id}}" :auth-id="{{ $user->id}}"  >
+                    <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
+                        <div v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
+                            {{-- <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button> --}}
+                            <button  class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
                         </div>
-                        <div v-else>
-                            <button data-toggle="tooltip" data-placement="top" title="Procesar Trámite" class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="showModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                        <div v-else key="two" data-toggle="tooltip" data-placement="top" title="Procesar Trámite">
+                            <button class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="confirmModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
                         </div>
-                    </div>
-                </swal-modal>
+                    </transition>
+                </sweet-alert-modal>
             @endif
         </div>
     </div>
@@ -185,9 +188,10 @@
                     <div class="widget-head-color-box yellow-bg p-lg text-center">
                         <div class="m-b-md">
                         <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado ">
-                        <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullName() }}</a>
+                        <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullNameWithDegree() }}</a>
                         </h2>
-                            <h4><strong>{{  $retirement_fund->affiliate->degree->name }}</strong></h4>
+                            <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cedula de Identidad"><strong>{{  $retirement_fund->affiliate->ciWithExt() }}</strong></h3>
+                            <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $retirement_fund->affiliate->registration }}</strong></h4>
                         </div>
                     </div>
                     <div class="widget-text-box">
@@ -307,8 +311,7 @@
             modal.find('.modal-header #folder_id').val(folder_id)
         });
         // console.log( "del show... " );
-        $('#example').DataTable().column('1:visible').order('desc').draw();
-        $('#workflow-table').DataTable().column('1:visible').order('desc').draw();
+        
     });
 </script>
 @endsection

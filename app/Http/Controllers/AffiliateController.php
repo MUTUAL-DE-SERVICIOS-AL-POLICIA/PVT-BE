@@ -21,6 +21,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\AffiliateRecord;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\AffiliatePoliceRecord;
+use Validator;
 
 class AffiliateController extends Controller
 {
@@ -173,6 +174,8 @@ class AffiliateController extends Controller
         if (! sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
         }
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
 
         //GETTIN CONTRIBUTIONS
         $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
@@ -262,8 +265,39 @@ class AffiliateController extends Controller
     public function update(Request $request, Affiliate $affiliate)
     {
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
-
         $this->authorize('update', $affiliate);
+        /*
+        TODO
+        add regex into identity_card validate: 51561 and 4451-1L
+        */
+        $rules = [
+            'identity_card' => 'required|min:1',
+            'city_identity_card_id' => 'required|min:1',
+            'first_name' => 'required|min:1',
+            'last_name' => '',
+            'mothers_last_name' => '',
+            'gender' => 'required',
+            'birth_date' => 'required',
+        ];
+        $messages = [
+        ];
+
+        if (! $request->last_name && !$request->mothers_last_name) {
+            //only for flash message
+            $rules['last_name'] .='required';
+            $messages =[
+                'last_name.required' => 'El campo Apellido Paterno o Materno es requerido.',
+            ];
+        }
+        try {
+            $validator = Validator::make($request->all(), $rules, $messages)->validate();
+        } catch (ValidationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => $exception->errors(),
+            ], 403);
+        }
 
         $affiliate->identity_card = $request->identity_card;
         $affiliate->first_name = $request->first_name;
@@ -273,8 +307,8 @@ class AffiliateController extends Controller
         $affiliate->gender = $request->gender;
         $affiliate->civil_status = $request->civil_status;
         $affiliate->birth_date = Util::verifyBarDate($request->birth_date) ? Util::parseBarDate($request->birth_date) : $request->birth_date;
-        $affiliate->phone_number = $request->phone_number;
-        $affiliate->cell_phone_number = $request->cell_phone_number;
+        $affiliate->phone_number = trim(implode(",", $request->phone_number));
+        $affiliate->cell_phone_number = trim(implode(",", $request->cell_phone_number));
         $affiliate->city_birth_id = $request->city_birth_id;
         $affiliate->city_identity_card_id =$request->city_identity_card_id;
         $affiliate->surname_husband = $request->surname_husband;
@@ -325,6 +359,8 @@ class AffiliateController extends Controller
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
         }
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
         $datos=array('affiliate' => $affiliate ,'city_birth' => $affiliate->city_birth,'city_identity_card' => $affiliate->city_identity_card);
         return $datos;
 

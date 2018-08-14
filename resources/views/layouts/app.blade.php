@@ -6,7 +6,7 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Muserpol - @yield('title') </title>
-   
+
     <link rel="stylesheet" href="{!! asset('css/vendor.css') !!}" />
     <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
     <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
@@ -29,7 +29,7 @@
 
             <!-- Main view  -->
             <div id="app">
-                
+
             @yield('content')
             <flash message="{{ session('flash') }}"></flash>
             </div>
@@ -50,6 +50,9 @@
             checkboxClass: 'icheckbox_square-green',
             radioClass: 'iradio_square-green',
         });
+        $('.datatablespanish').DataTable({
+          language: {"url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+        }}).column('1:visible').order('desc').draw();
 
     });
 </script>

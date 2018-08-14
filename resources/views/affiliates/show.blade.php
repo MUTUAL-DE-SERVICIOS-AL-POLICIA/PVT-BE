@@ -27,6 +27,7 @@ th.ellipsis-text {
     }
 /* .table-striped-1>tbody>tr:nth-child(2n+1){background-color:#f2f2f2} */
 </style>
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
 @section('content')
 <div class="row  wrapper border-bottom white-bg page-heading">
@@ -231,7 +232,6 @@ th.ellipsis-text {
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
 $(document).ready(function() {
-    $('#example').DataTable();
 
     function moneyInputMask() {
 
@@ -252,7 +252,6 @@ $(document).ready(function() {
     // $('.file-box').each(function() {
     //     animationHover(this, 'pulse');
     // });
-    $('#record-table').DataTable();
 } );
 </script>
 @endsection

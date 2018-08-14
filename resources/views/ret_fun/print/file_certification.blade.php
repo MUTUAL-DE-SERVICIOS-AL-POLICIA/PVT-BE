@@ -53,14 +53,6 @@
 <span>
     Es cuanto certifico para fines consiguientes.
 </span>
-<table class="m-t-35">
-        <tr>            
-            <th class="no-border text-center" style=" width:50%">
-                <p class="font-bold">----------------------------------------------------<br> {!! strtoupper($user->fullName()) !!}<br/> {!! $user->position !!}
-                </p>
-            </th>
-        </tr>
-    </table>
-
+@include('ret_fun.print.signature_footer',['user'=>$user])
 </div>
 @endsection

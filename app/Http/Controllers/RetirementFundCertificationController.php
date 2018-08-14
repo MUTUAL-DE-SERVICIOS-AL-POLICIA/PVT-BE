@@ -41,6 +41,7 @@ use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowState;
 class RetirementFundCertificationController extends Controller
 {
     /**
@@ -195,7 +196,8 @@ class RetirementFundCertificationController extends Controller
         $date = Util::getDateFormat($next_area_code->date);
         $number = $next_area_code->code;
 
-        $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
+        // $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
+        $title = "CERTIFICACIÓN DE ARCHIVO";
         $affiliate_folders = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
 
@@ -204,7 +206,6 @@ class RetirementFundCertificationController extends Controller
          *!!revisar
          */
         $cite = RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
-
 
         $subtitle = $cite;
         $pdftitle = "Certificación de Archivo";
@@ -224,6 +225,7 @@ class RetirementFundCertificationController extends Controller
             'affiliate'=>$affiliate,
             'affiliate_folders'=>$affiliate_folders,
             'applicant'=>$applicant,
+            'unit1'=>'archivo y gestión documental<br> beneficios económicos',
         ];
         $pages = [];
         for ($i = 1; $i <= 2; $i++) {
@@ -382,11 +384,20 @@ class RetirementFundCertificationController extends Controller
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
         $dates = array(
+            'dates' => $affiliate->getDatesGlobal(),
+            'name' => "Años de servicio segun certificacion del comando general de la Policia",
+            'operator' => '**',
+            'description' => "Años de servicio segun certificacion del comando general de la Policia",
+            'years' => $affiliate->service_years,
+            'months' => $affiliate->service_months,
+        );
+        $group_dates[] = $dates;
+        $dates = array(
             'id' => 0,
             'dates' => $affiliate->getDatesGlobal(),
-            'name' => "perii",
+            'name' => "Alta y Baja de la Policía Nacional Boliviana",
             'operator' => '**',
-            'description' => "dsds",
+            'description' => "Fechas de Alta y Baja de la Policía Nacional Boliviana",
             'years' => intval($total_dates / 12),
             'months' => $total_dates % 12,
         );
@@ -541,6 +552,39 @@ class RetirementFundCertificationController extends Controller
 
         $has_availability = sizeOf($affiliate->getContributionsWithType(10)) > 0;
 
+        /*  discount combinations*/
+        $array_discounts = array();
+        $array = DiscountType::all()->pluck('id');
+        $results = array(array());
+        foreach ($array as $element) {
+            foreach ($results as $combination) {
+                array_push($results, array_merge(array($element), $combination));
+            }
+        }
+        foreach ($results as $value) {
+            $sw = true;
+            foreach ($value as $id) {
+                if (!$retirement_fund->discount_types()->find($id)) {
+                    $sw = false;
+                }
+            }
+            if ($sw) {
+                $temp_total_discount = 0;
+                foreach ($value as $id) {
+                    $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
+                }
+                $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
+                array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+            }
+        }
+        if ($affiliate->hasAvailability()) {
+            $array_discounts_availability = [];
+            foreach ($array_discounts as $value) {
+                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + Disponibilidad ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun + $retirement_fund->total_availability - $value['amount'])));
+            }
+        }
+        /*  discount combinations*/
+
         $data = [
             'code' => $code,
             'area' => $area,
@@ -553,6 +597,8 @@ class RetirementFundCertificationController extends Controller
             'total_quotes' => $total_quotes,
             'discounts' => $discounts,
             'has_availability' => $has_availability,
+
+            'array_discounts_availability' => $array_discounts_availability,
 
             'affiliate' => $affiliate,
             'applicant' => $applicant,
@@ -653,9 +699,9 @@ class RetirementFundCertificationController extends Controller
             if ($retirement_fund->total_availability > 0) {
                 $pages[] =\View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
             }
-            if ($retirement_fund->total > 0) {
-                $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
-            }
+            // if ($retirement_fund->total > 0) {
+            //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
+            // }
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
@@ -671,8 +717,8 @@ class RetirementFundCertificationController extends Controller
     {
         $affiliate = Affiliate::find($id);
         $commitment = ContributionCommitment::where('affiliate_id', $affiliate->id)->first();
-        $date = Util::getStringDate(date('Y-m-d'));        
-        $username = Auth::user()->username;//agregar cuando haya roles
+        $date = Util::getDateFormat(date('Y-m-d'));
+        $user = Auth::user();//agregar cuando haya roles
         $city = Auth::user()->city->name;
         $glosa = "No corresponde";
         if ($affiliate->affiliate_state->name == "Baja Temporal") {
@@ -692,26 +738,27 @@ class RetirementFundCertificationController extends Controller
         }
         $pdftitle = "Carta de Compromiso de Fondo de Retiro";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-
-        $area = Util::getRol()->name;
+        //$area = Util::getRol()->name;
         $user = Auth::user();
         $date = date('d/m/Y');
+        $area = WorkflowState::find(22)->first_shortened;
 
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
+        $data = [
+            'area'=>$area,
+            'date'=>$date,
+            'user'=>$user,
+            'title'=>$title,
+            'affiliate'=>$affiliate,
+            'glosa'=>$glosa,
+            'city'=>$city,
+            'glosa_pago'=>$glosa_pago,
+            'commitment'=>$commitment,
+            
+
+        ];
         return \PDF::loadView(
-            'ret_fun.print.ret_fun_commitment_letter',
-            compact(
-                'date',
-                'username',
-                'title',
-                'affiliate',
-                'glosa',
-                'city',
-                'glosa_pago',
-                'commitment',
-                'area',
-                'user'                
-            )
+            'ret_fun.print.ret_fun_commitment_letter', $data
         )
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-right', 'Pagina [page] de [toPage]')
@@ -839,7 +886,7 @@ class RetirementFundCertificationController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $servicio = ContributionType::where('name','=','Período reconocido por comando')->first();
+        $servicio = ContributionType::where('name','=','Servicio Activo')->first();
         $item_cero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
         $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
         $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)

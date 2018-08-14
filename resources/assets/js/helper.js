@@ -90,3 +90,14 @@ export function getGender(value) {
     }
     return gender;
 }
+
+export function flashErrors(prefix, errors, level) {
+    for (const key in errors) {
+        let value = errors[key];
+
+        if (errors.hasOwnProperty(key)) {
+            flash(`${prefix}: ${value}`, level || "error");
+        } else {
+        }
+    }
+}
