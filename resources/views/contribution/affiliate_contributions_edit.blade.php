@@ -111,7 +111,10 @@
                                                 <td>Sueldo</td>
                                             </tr>
                                             <tr>
-                                                <td>Categoria</td>
+                                                <td>Antiguidad</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Categor&iacute;a</td>
                                             </tr>
                                             <tr>
                                                 <td>Cotizable</td>
@@ -150,13 +153,22 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <select class="" name="category[{{$period}}]">
-                                                                                @foreach($categories as $category)
-                                                                                    <option value="{{$category->id}}" @if($category->id == $contributions[$period]->category_id) SELECTED @endif >{{$category->percentage}}</option>
-                                                                                @endforeach
-                                                                            </select>
+                                                                <div contenteditable="true" class="editcontent numberformat seniority_bonus">{{$contributions[$period]->seniority_bonus}} </div>
+                                                                <input type="hidden" disabled name="seniority_bonus[{{$period}}]" value="{{$contributions[$period]->seniority_bonus}}">
                                                             </td>
                                                         </tr>
+                                                        <tr>
+                                                            <td>
+                                                                {{-- <select class="" name="category[{{$period}}]">
+                                                                    @foreach($categories as $category)
+                                                                        <option value="{{$category->id}}" @if($category->id == $contributions[$period]->category_id) SELECTED @endif >{{$category->percentage}}</option>
+                                                                    @endforeach
+                                                                </select> --}}
+
+                                                                <div contenteditable="false" class="numberformat">{{$contributions[$period]->category->percentage}} </div>
+                                                                <input type="hidden" disabled name="category[{{$period}}]" value="{{$contributions[$period]->percentage}}">
+                                                            </td>
+                                                        </tr>                                                        
                                                         <tr>
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->gain}} </div>
@@ -194,13 +206,23 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
+                                                                <div contenteditable="true" class="editcontent numberformat seniority_bonus">0</div>
+                                                                <input type="hidden" disabled name="seniority_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            {{-- <td>
                                                                 <select class="" name="category[{{$period}}]">
                                                                     @foreach($categories as $category)
                                                                         <option value="{{$category->id}}">{{$category->percentage}}</option>
                                                                     @endforeach
                                                                 </select>
+                                                            </td> --}}
+                                                            <td>
+                                                                <div contenteditable="false" class="numberformat">0</div>
+                                                                <input type="hidden" disabled name="category[{{$period}}]" value="0">
                                                             </td>
-                                                        </tr>
+                                                        </tr>                                                        
                                                         <tr>
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat">0</div>
@@ -319,6 +341,7 @@
         $(button).closest('tr').toggleClass('warning');
         $(button).closest('tr').prev().toggleClass('warning');
         var formdata = $('form').serialize();
+        console.log(formdata);
         $.ajax({
             url: "{{asset('store_contributions')}}",
             method: "POST",
@@ -350,7 +373,7 @@ function rei(){
 
 }
 $('.editcontent').blur(function() {
-    $(this).next('input').val($(this).html());
+    $(this).next('input').val(parseFloat($(this).html().replace(/,/g , '')));
     $(this).next('input').removeAttr('disabled');
     $(this).closest('table').find('tr:first').find('td:first').find('input').removeAttr('disabled');
 });
@@ -392,7 +415,18 @@ function setPeriodData(period,amount){
     alert(period+' - '+amount);
     $('#main'+period).html(amount);
 }
-
+$('.seniority_bonus').blur(function() {
+    console.log("im here"+$(this).html());    
+    //$(this).closest('td').prev().html('3333');
+    base_wage = parseFloat($(this).parent().parent().prev().find('td:first').find('div:first').text().replace(/,/g , ''));
+    extra = parseFloat($(this).text().replace(/,/g , ''));
+    console.log(base_wage+" "+extra);
+    total = (extra*100)/base_wage/100;    
+    //$(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').text();
+    $(this).closest('td').closest('tr').next('tr').find('td:first').find('input:first').removeAttr('disabled');
+    $(this).closest('td').closest('tr').next('tr').find('td:first').find('input:first').val(total);
+    $(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').val(total);
+});
 $(document).ready(function() {
     $('.sk-folding-cube').hide();
     $('.my-content').removeClass('sk-loading')
