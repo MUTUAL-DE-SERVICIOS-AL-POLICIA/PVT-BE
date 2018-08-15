@@ -92,6 +92,7 @@ th.ellipsis-text {
                     <ul class="list-group elements-list">
                         <li class="list-group-item active" data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-address-book"></i> Información Personal </a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-spouse-info"><a href="#"><i class="fa fa-user"></i> Información de Conyuge </a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-contributions"><a href="#" ><i class="fa fa-money "></i> Aportes</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-documents-scanned"><a href="#" ><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
@@ -119,6 +120,13 @@ th.ellipsis-text {
                         <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
                             @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
                         </affiliate-police>
+
+                    </div>
+                    <div id="tab-spouse-info" class="tab-pane">
+
+                        <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $cities }}" inline-template>
+                            @include('spouses.spouse_personal_information', ['spouse'=>$spouse])
+                        </spouse-show>
 
                     </div>
                     <div id="tab-contributions" class="tab-pane">

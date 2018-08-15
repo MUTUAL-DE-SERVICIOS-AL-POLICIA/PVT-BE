@@ -20,6 +20,7 @@ use Muserpol\Models\AffiliateRecord;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\AffiliatePoliceRecord;
 use Validator;
+use Muserpol\Models\Spouse;
 
 class AffiliateController extends Controller
 {
@@ -175,6 +176,16 @@ class AffiliateController extends Controller
         $affiliate->phone_number = explode(',', $affiliate->phone_number);
         $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
 
+        $spouse = $affiliate->spouse->first();
+        if (!$spouse) {
+            $spouse = new Spouse();
+        }else{
+            $spouse->load([
+                'city_identity_card:id,first_shortened',
+                'city_birth:id,name',
+            ]);
+        }
+
         //GETTIN CONTRIBUTIONS
         $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
         $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
@@ -200,6 +211,7 @@ class AffiliateController extends Controller
         $data = array(
             'retirement_fund'=>$retirement_fund,
             'affiliate'=>$affiliate,
+            'spouse'=>$spouse,
             'cities'=>$cities,
             'birth_cities'=>$birth_cities,
             'categories'=>$categories,
@@ -247,7 +259,7 @@ class AffiliateController extends Controller
      */
     public function update(Request $request, Affiliate $affiliate)
     {
-        $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
+        $affiliate =  Affiliate::where('id','=', $affiliate->id)->first();
         $this->authorize('update', $affiliate);
         /*
         TODO
