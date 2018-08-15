@@ -61,12 +61,6 @@ import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors
                     }
                 }
             },
-            city_birth_name: function(){
-                return !!this.city_birth?this.city_birth.name:'';
-            },
-            city_identity_card_name: function(){
-                return !!this.city_identity_card?this.city_identity_card.first_shortened:'';
-            },
             gender_name: function(){
                     var g = '';
                     if(this.form.gender=="F")
@@ -111,14 +105,12 @@ import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors
             }
         },
         methods:{
-             async validateBeforeSubmit() {
+            async validateBeforeSubmit() {
                 try {
                     await this.$validator.validateAll();
                 } catch (error) {
                     console.log("some error");
                 }
-            },
-            edit_first_name: function(){
             },
             toggle_editing:function () {
                 this.editing = !this.editing;

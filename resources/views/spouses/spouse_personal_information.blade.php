@@ -1,103 +1,129 @@
 <div class="col-lg-12">
-    <div class="panel panel-primary" :class="show_spinner ? 'sk-loading' : ''">
-        <div class="panel-heading">
-            <h3 class="pull-left">Información Esposa</h3>
-            {{-- @can('update',$affiliate) --}}
-            <div class="text-right">
-                <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-unlock':'fa-lock'" ></i> </button>
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="pull-left">
+                    <legend> Información Esposa</legend>
+                </div>
+                @can('update',$spouse)
+                <div class="text-right">
+                    <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'"></i> Editar </button>
+                </div>
+                @endcan
             </div>
-            {{-- @else
-            <br>
-            @endcan --}}
-        </div>
-        <div class="panel-body " v-if="! editing " >
-            <div class="col-md-6">
-                <dl class="dl-">
-                    <dt>Cedula de identidad:</dt> <dd>@{{ form.identity_card }}  @{{ city_identity_card_name }}</dd>
-                    <dt>Registro:</dt> <dd>@{{ form.registration}}</dd>
-                    <dt>Primer Nombre:</dt> <dd>@{{ form.first_name}}</dd>
-                    <input type="text" class="form-control" v-model="first_name.value" v-show="first_name.edit ==  true">
-                    <dt>Segundo Nombre:</dt> <dd> @{{ form.second_name }}</dd>
-                    <dt>Apellido Paterno:</dt> <dd>@{{ form.last_name }}</dd>
-                    <dt>Apellido Materno:</dt> <dd>@{{ form.mothers_last_name }}</dd>
-                    <dt>Apellido Casada(o):</dt> <dd>@{{ form.surname_husband }}</dd>
-                    {{-- <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'">@{{ form.surname_husband }}</dd> --}}
-                </dl>
-            </div>
-            <div class="col-md-6">
-                <dl class="dl-">
-                    
-                    <dt>Estado Civil:</dt> <dd>@{{ civil_status_name }}</dd>
-                    <dt>Fecha de Nacimiento:</dt> <dd>@{{ form.birth_date }}</dd>
-                    <dt>Edad:</dt> <dd> @{{ age  }} </dd>
-                    <dt>Lugar de Nacimiento:</dt> <dd> @{{ city_birth_name}}</dd>
-                </dl>
-            </div>
-        </div>
-        {{-- @can('update',$spouse) --}}
-        <div class="panel-body" v-else>
-            <div class="sk-folding-cube" v-show="show_spinner" >
-                <div class="sk-cube1 sk-cube"></div>
-                <div class="sk-cube2 sk-cube"></div>
-                <div class="sk-cube4 sk-cube"></div>
-                <div class="sk-cube3 sk-cube"></div>
-            </div>
-            {{-- <div class="sk-fading-circle" v-show="show_spinner" >
-              <div class="sk-circle1 sk-circle"></div>
-              <div class="sk-circle2 sk-circle"></div>
-              <div class="sk-circle3 sk-circle"></div>
-              <div class="sk-circle4 sk-circle"></div>
-              <div class="sk-circle5 sk-circle"></div>
-              <div class="sk-circle6 sk-circle"></div>
-              <div class="sk-circle7 sk-circle"></div>
-              <div class="sk-circle8 sk-circle"></div>
-              <div class="sk-circle9 sk-circle"></div>
-              <div class="sk-circle10 sk-circle"></div>
-              <div class="sk-circle11 sk-circle"></div>
-              <div class="sk-circle12 sk-circle"></div>
-            </div> --}}
-            <div class="col-md-6">
-                <dl class="dl-">
-                    <dt>Cedula de identidad:</dt> <dd><input type="text" v-model="form.identity_card" class="form-control">
-                        {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control','v-model' => 'form.city_identity_card_id']) !!}
-                    </dd>
-                    <dt><label>Registro:</label></dt> <dd><input type="text" v-model="form.registration" class="form-control"></dd>
-                    <dt><label>Primer Nombre:</label></dt> <dd><input type="text" v-model="form.first_name" class="form-control"></dd>
-                    <dt>Segundo Nombre:</dt> <dd><input type="text" v-model="form.second_name" class="form-control"></dd>
-                    <dt>Apellido Paterno:</dt> <dd><input type="text" v-model="form.last_name" class="form-control"></dd>
-                    <dt>Apellido Materno:</dt> <dd><input type="text" v-model="form.mothers_last_name" class="form-control"></dd>
-                    <dt>Apellido Casada(o):</dt> <dd><input type="text" v-model="form.surname_husband" class="form-control"></dd>
-                    {{-- <dt v-show="affiliate.gender === 'F'">Apellido de Casada:</dt> <dd v-show="affiliate.gender === 'F'"><input type="text" class="form-control"></dd> --}}
-                </dl>
-            </div>
-            <div class="col-md-6">
-                <dl class="dl-">
-                    {{-- <dt>Genero:</dt> <dd>
-                        {!! Form::select('gender', ['F'=>'Femenino','M'=>'Masculino'], null, ['placeholder' => 'Seleccione genero', 'class' => 'form-control','v-model' => 'form.gender']) !!}
-                                    </dd> --}}
-                    <dt>Estado Civil:</dt> <dd>
-                        {!! Form::select('civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'], null, ['placeholder' => 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'form.civil_status']) !!}
-                          
-                                           </dd>
-
-                    <dt>Fecha de Nacimiento:</dt> <dd>
-                        <div class="input-group date" >
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input  v-model="form.birth_date" type="text" class="form-control">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('identity_card') && editing }">
+                        <div class="col-md-4"><label class="control-label">Cedula de identidad:</label></div>
+                        <div class="col-md-8"><input name="identity_card" type="text" v-model="form.identity_card" class="form-control" :disabled="!editing" v-validate.initial="'required'">
+                            <div v-show="errors.has('identity_card') && editing">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('identity_card') }}</span>
+                            </div>
                         </div>
-                        </dd>
-                    <dt>Edad:</dt> <dd><input v-model="age" type="text" class="form-control" disabled></dd>
-                    <dt>Lugar de Nacimiento:</dt> <dd>{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control','v-model'=>'form.city_birth_id']) !!}</dd>
-                    {{-- <dt>Telefono:</dt> <dd><input type="text" v-model="form.phone_number" class="form-control"></dd>
-                    <dt>Celular:</dt> <dd><input type="text" v-model="form.cell_phone_number" class="form-control"></dd> --}}
-                </dl>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('city_identity_card_id') && editing }">
+                        <div class="col-md-4"><label class="control-label">Lugar de expedición:</label></div>
+                        <div class="col-md-8">
+                            {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedición del ci', 'class' =>
+                            'form-control','v-model'=> 'form.city_identity_card_id',':disabled'=>'!editing', 'v-validate.initial'=>"'required'"
+                            ]) !!}
+                            <div v-show="errors.has('city_identity_card_id') && editing">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('city_identity_card_id') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('first_name') && editing }">
+                        <div class="col-md-4"><label class="control-label">Primer Nombre:</label></div>
+                        <div class="col-md-8"><input type="text" name="first_name" v-model="form.first_name" class="form-control" :disabled="!editing" v-validate.initial="'required|alpha_space_quote'">
+                            <div v-show="errors.has('first_name') && editing">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('first_name') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('second_name') && editing }">
+                        <div class="col-md-4"><label class="control-label">Segundo Nombre:</label></div>
+                        <div class="col-md-8"><input type="text" name="second_name" v-model="form.second_name" class="form-control" :disabled="!editing" v-validate.initial="'alpha_space_quote'">
+                            <div v-show="errors.has('second_name') && editing">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('second_name') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('last_name') && editing }">
+                        <div class="col-md-4"><label class="control-label">Apellido Paterno:</label></div>
+                        <div class="col-md-8"><input type="text" name="last_name" v-model="form.last_name" class="form-control" :disabled="!editing" v-validate.initial="'alpha_space_quote'">
+                            <div v-show="errors.has('last_name') && editing">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('last_name') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('mothers_last_name') && editing }">
+                        <div class="col-md-4"><label class="control-label">Apellido Materno:</label></div>
+                        <div class="col-md-8"><input name="mothers_last_name" type="text" v-model="form.mothers_last_name" class="form-control" :disabled="!editing"
+                                v-validate.initial="'alpha_space_quote'">
+                            <div v-show="errors.has('mothers_last_name') && editing">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('mothers_last_name') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('surname_husband') && editing }">
+                        <div class="col-md-4"><label class="control-label">Apellido de Casada:</label></div>
+                        <div class="col-md-8"><input name="surname_husband" type="text" class="form-control" v-model="form.surname_husband" :disabled="!editing" v-validate.initial="'alpha_space_quote'">
+                            <div v-show="errors.has('surname_husband') && editing">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('surname_husband') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- <div class="row m-b-md" :class="{ 'has-error': errors.has('gender') && editing }">
+                        <div class="col-md-4"><label class="control-label">Genero:</label></div>
+                        <div class="col-md-8">{!! Form::select('gender', ['F'=>'Femenino','M'=>'Masculino'], null, ['placeholder' => 'Seleccione genero', 'class' =>
+                            'form-control','v-model' => 'form.gender',':disabled' => '!editing', 'v-validate.initial'=>"'required'"]) !!}
+                            <div v-show="errors.has('gender') && editing">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('gender') }}</span>
+                            </div>
+                        </div>
+                    </div> --}}
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('birth_date') && editing }">
+                        <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
+                        <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" data-date="true" type="text" class="form-control" :disabled="!editing"
+                                v-validate="'required|date_format:DD/MM/YYYY|max_date'">
+                            <div v-show="errors.has('birth_date') && editing">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('birth_date') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4"><input v-model="age" type="text" class="form-control" disabled></div>
+                        {{--
+                        <div class="col-md-1">Años</div> --}}
+                    </div>
+                    <div class="row m-b-md">
+                        <div class="col-md-3"><label class="control-label">Lugar de Nacimiento:</label></div>
+                        <div class="col-md-9">{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la expedición del ci', 'class'
+                            => 'form-control','v-model'=>'form.city_birth_id',':disabled'=>'!editing']) !!} </div>
+                    </div>
+                    <div class="row m-b-md">
+                        <div class="col-md-3"><label class="control-label">Estado Civil:</label></div>
+                        <div class="col-md-9"> {!! Form::select('civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'], null, ['placeholder'=>
+                            'Seleccione estado civil', 'class' => 'form-control','v-model' => 'form.civil_status',':disabled'=>'!editing' ])
+                            !!}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" v-show="editing">
+                <div class="text-center">
+                    <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
+                    <button class="btn btn-primary" type="button" @click="update" :disabled="validAll"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+                </div>
             </div>
         </div>
-        <div v-show="editing" class="panel-footer">
-            <div class="text-center">
-                <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
-                <button class="btn btn-primary" type="button" @click="update"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
-            </div>
-        </div>
-        {{-- @endcan --}}
     </div>
 </div>

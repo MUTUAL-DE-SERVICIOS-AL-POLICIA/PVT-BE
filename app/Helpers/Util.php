@@ -545,6 +545,7 @@ class Util
         $spouse->last_name = $object->last_name;
         $spouse->mothers_last_name = $object->mothers_last_name;
         $spouse->surname_husband = $object->surname_husband;
+        $spouse->civil_status = $object->civil_status;
         $spouse->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
         $spouse->city_birth_id = $object->city_birth_id;
         $spouse->city_identity_card_id = $object->city_identity_card_id;
