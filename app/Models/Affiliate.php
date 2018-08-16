@@ -387,7 +387,7 @@ class Affiliate extends Model
                 reimbursements.subtotal,
                 reimbursements.total
                     FROM reimbursements
-                    WHERE affiliate_id = ".$this->id."
+                    WHERE affiliate_id = ".$this->id." and month_year <= '". $this->contributions()->leftJoin('contribution_types', 'contributions.contribution_type_id', '=', 'contribution_types.id')->where('contribution_types.operator', '=', '+')->orderBy('contributions.month_year')->get()->last()->month_year ."'
                     UNION ALL
                     SELECT
                     contributions.id,
@@ -436,6 +436,89 @@ class Affiliate extends Model
             ->get();
             return $contributions;
             /* TODO verificar reverse order*/
+        }
+    }
+    public function getContributionsAvailability($with_reimbursements = true){
+        $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+        if ($with_reimbursements) {
+            $contributions = DB::select("
+        SELECT
+            contributions_reimburements.month_year,
+            contributions_reimburements.affiliate_id,
+            sum(contributions_reimburements.base_wage) as base_wage,
+            sum(contributions_reimburements.seniority_bonus) as seniority_bonus,
+            sum(contributions_reimburements.total) as total,
+            sum(contributions_reimburements.retirement_fund) as retirement_fund
+            FROM(
+            SELECT
+                reimbursements.id,
+            reimbursements.affiliate_id,
+            reimbursements.degree_id,
+            reimbursements.unit_id,
+            reimbursements.breakdown_id,
+            reimbursements.month_year,
+            reimbursements.item,
+            reimbursements.type,
+            reimbursements.base_wage,
+            reimbursements.seniority_bonus,
+            reimbursements.study_bonus,
+            reimbursements.position_bonus,
+            reimbursements.border_bonus,
+            reimbursements.east_bonus,
+            reimbursements.public_security_bonus,
+            reimbursements.deceased,
+            reimbursements.natality,
+            reimbursements.lactation,
+            reimbursements.prenatal,
+            reimbursements.subsidy,
+            reimbursements.gain,
+            reimbursements.payable_liquid,
+            reimbursements.quotable,
+            reimbursements.retirement_fund,
+            reimbursements.mortuary_quota,
+            reimbursements.subtotal,
+            reimbursements.total
+                FROM reimbursements
+                WHERE affiliate_id = " .$this->id. " and month_year in (SELECT contributions.month_year
+                                                FROM contributions where contributions.affiliate_id = ". $this->id ." and contribution_type_id = 10)
+                UNION ALL
+                SELECT
+                contributions.id,
+            contributions.affiliate_id,
+            contributions.degree_id,
+            contributions.unit_id,
+            contributions.breakdown_id,
+            contributions.month_year,
+            contributions.item,
+            contributions.type,
+            contributions.base_wage,
+            contributions.seniority_bonus,
+            contributions.study_bonus,
+            contributions.position_bonus,
+            contributions.border_bonus,
+            contributions.east_bonus,
+            contributions.public_security_bonus,
+            contributions.deceased,
+            contributions.natality,
+            contributions.lactation,
+            contributions.prenatal,
+            contributions.subsidy,
+            contributions.gain,
+            contributions.payable_liquid,
+            contributions.quotable,
+            contributions.retirement_fund,
+            contributions.mortuary_quota,
+            contributions.subtotal,
+            contributions.total
+                FROM contributions
+                LEFT JOIN contribution_types ON contributions.contribution_type_id = contribution_types.id
+                WHERE affiliate_id = " . $this->id . " and contribution_types.id = 10
+        ) as contributions_reimburements
+            GROUP BY month_year, affiliate_id
+            ORDER BY month_year DESC");
+            return array_reverse($contributions);
+        } else {
+            return "error.... working........";
         }
     }
     public function getTotalAverageSalaryQuotable($with_reimbursements = true)

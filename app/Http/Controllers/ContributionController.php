@@ -791,9 +791,10 @@ class ContributionController extends Controller
             $i++;
             Log::info('i: '.$i.' id:'.$contribution->id);
         }
-        $total = $affiliate->getTotalContributionsAmount(Affiliate::DISPONIBILIDAD);
+        // $total = $affiliate->getTotalContributionsAmount(Affiliate::DISPONIBILIDAD);
         // return $total;
-        $ret_fun->subtotal_availability =number_format((float)$total, 2, '.', ''); 
+        $availability = $affiliate->getContributionsAvailability();
+        $ret_fun->subtotal_availability = array_sum(array_column($availability, 'total'));
         $ret_fun->save();
         return  $ret_fun;
         return $request->all();
