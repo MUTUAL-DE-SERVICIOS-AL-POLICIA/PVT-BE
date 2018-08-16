@@ -287,7 +287,7 @@
                 </div>
                 <div class="form-group">
                     <label>Sueldo</label>
-                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
+                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control">
                     <label>Categor&iacute;a</label>
                     <select class="form-control" name="reim_category" id="reim_category">
                         @foreach($categories as $category)
@@ -295,7 +295,7 @@
                         @endforeach
                     </select>
                     <label>Total Ganado</label>
-                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control numberformat">
+                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control">
                     <label>Aporte</label>
                     <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat">
                 </div>

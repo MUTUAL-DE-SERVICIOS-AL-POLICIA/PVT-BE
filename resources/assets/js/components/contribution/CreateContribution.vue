@@ -31,6 +31,7 @@
                         <tr>
                             <th class="footable-visible footable-first-column footable-sortable">Mes/Año<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado Bs.<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Tipo de cambio.<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">F.R.P. (4.77 %)<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">Cuota Mortuoria (1.09 %)<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV Bs.<span class="footable-sort-indicator"></span></th>
@@ -45,6 +46,9 @@
                                 </td>                                
                                 <td>
                                     <input type="text" v-model = "con.sueldo" data-money="true" @keyup.enter="CalcularAporte(con, index)"  ref="s1"  class="form-control" >
+                                </td>
+                                <td>
+                                    <input type="text"  v-model = "con.fr" data-money='true' disabled class="form-control">
                                 </td>
                                 <td>
                                     <input type="text"  v-model = "con.fr" data-money='true' disabled class="form-control">
