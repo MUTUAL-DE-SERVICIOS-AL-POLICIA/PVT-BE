@@ -247,7 +247,8 @@ class Affiliate extends Model
         $date_start = Util::verifyMonthYearDate($this->date_entry) ? Util::parseMonthYearDate($this->date_entry) : $this->date_entry;
         $date_end = Util::verifyMonthYearDate( $this->date_derelict) ? Util::parseMonthYearDate( $this->date_derelict) :  $this->date_derelict;
         $dates[] = (object)array(
-            'start' => ($date_start < '1976-05-01') ? "1976-05-01" : $date_start,
+            // 'start' => ($date_start < '1976-05-01' && ) ? "1976-05-01" : $date_start,
+            'start' => $date_start,
             'end' => $date_end
         );
         return $dates;
