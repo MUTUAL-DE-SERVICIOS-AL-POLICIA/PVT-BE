@@ -132,11 +132,20 @@ th.ellipsis-text {
                     <div id="tab-contributions" class="tab-pane">
                         @include('contribution.affiliate_contribution_show',
                         [
-                        'contributions' =>  $contributions,
-                        'month_end' =>  $month_end,
-                        'month_start'  =>   $month_start,
-                        'year_end'  =>  $year_end,
-                        'year_start'    =>  $year_start
+                            'contributions' =>  $contributions,
+                            'month_end' =>  $month_end,
+                            'month_start'  =>   $month_start,
+                            'year_end'  =>  $year_end,
+                            'year_start'    =>  $year_start
+                        ])
+                        
+                        @include('contribution.affiliate_aid_contribution_show',
+                        [
+                            'contributions' =>  $aid_contributions,
+                            'month_end' =>  $month_death,
+                            'month_start'  =>   $month_end,
+                            'year_end'  =>  $year_death,
+                            'year_start'    =>  $year_end
                         ])
                     </div>
                     <div id="tab-documents-scanned" class="tab-pane">
