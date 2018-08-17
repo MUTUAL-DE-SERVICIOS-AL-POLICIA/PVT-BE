@@ -6,6 +6,7 @@ use Muserpol\User;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Muserpol\Helpers\Util;
+use Log;
 class QuotaAidMortuaryPolicy
 {
     use HandlesAuthorization;
