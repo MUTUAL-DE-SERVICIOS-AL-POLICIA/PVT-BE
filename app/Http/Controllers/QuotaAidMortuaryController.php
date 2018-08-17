@@ -114,7 +114,6 @@ class QuotaAidMortuaryController extends Controller
             $code = Util::getNextCode ($quota_aid->code);
         $modality = ProcedureModality::find($request->quota_aid_modality);
         
-        
         $quota_aid = new QuotaAidMortuary();
         $quota_aid->user_id = Auth::user()->id;
         $quota_aid->affiliate_id = $request->affiliate_id;
@@ -124,8 +123,8 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->city_end_id = Auth::user()->city_id;
         $quota_aid->code = $code;
         $quota_aid->reception_date = date('Y-m-d');
-        $quota_aid->workflow_id = $modality->procedure_type_id;
-        $quota_aid->wf_state_current_id = 1;
+        $quota_aid->workflow_id = 5;
+        $quota_aid->wf_state_current_id = 33;
         $quota_aid->subtotal = 0;
         $quota_aid->total = 0;
         $quota_aid->save();
