@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateQuotaAidTables extends Migration
+class CreateAidMortuaryTables extends Migration
 {
     /**
      * Run the migrations.
@@ -173,7 +173,7 @@ class CreateQuotaAidTables extends Migration
             $table->bigInteger('quota_aid_legal_guardian_id')->unsigned(); //identificador del tutor
             $table->foreign('quota_aid_beneficiary_id')->references('id')->on('quota_aid_beneficiaries');
             $table->foreign('quota_aid_legal_guardian_id')->references('id')->on('quota_aid_legal_guardians');
-        });       
+        });   
     }
 
     /**

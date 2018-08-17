@@ -53,4 +53,8 @@ class QuotaAidMortuary extends Model
     {
         return $this->belongsTo('Muserpol\WfState', 'wf_state_current_id');
     }
+    // public function address()
+    // {
+    //     return $this->belongsToMany('\Muserpol\Models\QuotaAidMortuary\Address', 'ret_fun_address_beneficiary');
+    // }
 }
