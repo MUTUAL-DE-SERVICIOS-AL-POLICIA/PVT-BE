@@ -7,7 +7,7 @@
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
                     <td colspan='3' class="px-15 text-center">
-                        RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD
+                        {{ $availability->display_name }}
                     </td>
                 </tr>
             </thead>
@@ -23,7 +23,7 @@
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
                 <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD</td>
+                    <td class="text-left px-10 py-3 uppercase">{{ $availability->display_name }}</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_availability) }} </td>
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
@@ -36,7 +36,7 @@
         </table>
     </div>
     @include('ret_fun.print.qualification_beneficiaries_fair_share', ['beneficiaries'=>$beneficiaries, 'type'=>'availability'])
-    <h3 class="uppercase text-center">fondo de retiro y disponibilidad</h3>
+    <h3 class="uppercase text-center">fondo de retiro y {{ $availability->display_name }}</h3>
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
@@ -55,7 +55,7 @@
                 </tr>
                 @endforeach
                 <tr>
-                    <td class="text-left px-10 py-3 uppercase font-bold">total fondo de retiro + devolucion</td>
+                    <td class="text-left px-10 py-3 uppercase font-bold">total fondo de retiro + {{ $availability->display_name }}</td>
                     <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->total) }} </td>
                     <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                 </tr>

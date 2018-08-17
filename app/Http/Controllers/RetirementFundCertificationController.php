@@ -551,6 +551,7 @@ class RetirementFundCertificationController extends Controller
         $discounts = $retirement_fund->discount_types()->where('amount', '>', 0)->get();
 
         $has_availability = sizeOf($affiliate->getContributionsWithType(10)) > 0;
+        $availability = ContributionType::find(10);
 
         /*  discount combinations*/
         $array_discounts = array();
@@ -580,7 +581,7 @@ class RetirementFundCertificationController extends Controller
         if ($affiliate->hasAvailability()) {
             $array_discounts_availability = [];
             foreach ($array_discounts as $value) {
-                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + Disponibilidad ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun + $retirement_fund->total_availability - $value['amount'])));
+                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + '. ($availability->display_name ?? 'error') .' ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun + $retirement_fund->total_availability - $value['amount'])));
             }
         }
         /*  discount combinations*/
@@ -597,6 +598,7 @@ class RetirementFundCertificationController extends Controller
             'total_quotes' => $total_quotes,
             'discounts' => $discounts,
             'has_availability' => $has_availability,
+            'availability' => $availability,
 
             'array_discounts_availability' => $array_discounts_availability,
 
@@ -657,7 +659,7 @@ class RetirementFundCertificationController extends Controller
         if ($affiliate->hasAvailability()) {
             $array_discounts_availability = [];
             foreach ($array_discounts as $value) {
-                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + Disponibilidad ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun + $retirement_fund->total_availability - $value['amount'])));
+                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + reconocimiento de aportes en disponibilidad ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun + $retirement_fund->total_availability - $value['amount'])));
             }
         }
         /*  discount combinations*/
