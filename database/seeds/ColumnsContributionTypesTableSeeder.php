@@ -13,7 +13,7 @@ class ColumnsContributionTypesTableSeeder extends Seeder
     public function run()
     {
         $c = ContributionType::find(10);
-        $c->display_name = 'reconocimiento de aportes en disponibilidad';
+        $c->display_name = 'Reconocimiento de aportes en disponibilidad';
         $c->save();
     }
 }

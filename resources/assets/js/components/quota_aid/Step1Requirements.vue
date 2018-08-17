@@ -18,7 +18,7 @@ import { mapState, mapMutations } from 'vuex';
                 modality_id: 3,
                 actual_target: 1,
                 city_end_id:this.user.city_id,
-                procedure_type_id:2,
+                procedure_type_id:3,
                 my_index: 1,
                 modalitiesFilter: [],
             }

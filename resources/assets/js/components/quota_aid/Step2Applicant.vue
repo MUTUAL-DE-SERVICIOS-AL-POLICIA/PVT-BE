@@ -1,12 +1,13 @@
 <script>
 import {mapGetters} from 'vuex';
-import { cellPhoneInputMaskAll, phoneInputMaskAll }  from "../../helper.js";
+import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll, dateInputMask }  from "../../helper.js";
 export default {
   props:[
     'cities',
     'kinships',
     'spouse',
     'affiliate',
+    'degrees'
   ],
   data(){
     return{
@@ -47,7 +48,7 @@ export default {
       show_advisor_form: false,
       show_apoderado_form: false,
       applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
-
+      date_derelict: this.affiliate.date_derelict,
       error:{
         applicant_identity_card: false,
       }
@@ -57,6 +58,8 @@ export default {
     //this or define initial value  => [{ value:null }]
     this.addPhoneNumber();
     this.addCellPhoneNumber();
+    monthYearInputMaskAll();
+    dateInputMask();
   },
   computed:{
     ...mapGetters({
