@@ -22,7 +22,7 @@ class QuotaAidBeneficiary extends Model
     }
     public function address() //aca
     {
-        return $this->belongToMany('Muserpol\Models\Address', 'address_quota_aid_beneficiary', 'quota_aid_beneficiary_id', 'address_id');
+        return $this->belongsToMany('Muserpol\Models\Address', 'address_quota_aid_beneficiary');
     }
     public function quota_aid_advisors()
     {

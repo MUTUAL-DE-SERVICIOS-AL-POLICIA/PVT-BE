@@ -145,7 +145,7 @@ class QuotaAidCertificationController extends Controller
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $modality = $quota_aid->procedure_modality->name;
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-        $title = "REQUISITOS DEL BENEFICIO DE ". $quota_aid->procedure_modality->procedure_type->name . ' '. mb_strtoupper($modality);
+        $title = "REQUISITOS DEL BENEFICIO DE ". $quota_aid->procedure_modality->procedure_type->name . ' - '. mb_strtoupper($modality);
 
         // $next_area_code = Util::getNextAreaCode($quota_aid->id);
         $next_area_code = Util::getNextAreaCodeQuotaAid($quota_aid->id);
@@ -164,7 +164,7 @@ class QuotaAidCertificationController extends Controller
         $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
         $pdftitle = "RECEPCIÓN - " . $title;
         $namepdf = Util::getPDFName($pdftitle, $applicant);
-        $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
+        $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
 
         $data = [
             'code' => $code,
@@ -183,11 +183,11 @@ class QuotaAidCertificationController extends Controller
             'affiliate' => $affiliate,
             'degree' => $degree,
             'submitted_documents' => $submitted_documents,
-            'retirement_fund' => $quota_aid,
+            'quota_aid' => $quota_aid,
         ];
         $pages = [];
         for ($i = 1; $i <= 2; $i++) {
-            $pages[] = \View::make('ret_fun.print.reception', $data)->render();
+            $pages[] = \View::make('quota_aid.print.reception', $data)->render();
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
