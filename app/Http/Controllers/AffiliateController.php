@@ -208,10 +208,12 @@ class AffiliateController extends Controller
 
         $aid_contributions = AidContribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
         $aid_reimbursement = AidReimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        
         if($affiliate->date_death)
-            $death = explode('-', Util::parseMonthYearDate($affiliate->date_death));
+            $death = explode('-', $affiliate->date_death);
         else
-            $death = explode('-', date('Y-m-d'));  
+            $death = explode('-', date('Y-m-d'));                          
+
         $month_death = $death[1];
         $year_death = $death[0];
 
