@@ -3,11 +3,10 @@ import {mapGetters} from 'vuex';
 import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll, dateInputMask }  from "../../helper.js";
 export default {
   props:[
-
     'cities',
     'kinships',
     'spouse',
-    'affiliate',    
+    'affiliate',
   ],
   data(){
     return{
