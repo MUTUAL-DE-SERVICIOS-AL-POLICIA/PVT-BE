@@ -273,7 +273,7 @@ class QuotaAidMortuaryController extends Controller
         $data = [
             
         ];        
-        return redirect('quoata_aid',$quota_aid->id);           
+        return redirect('quoata_aid/'.$quota_aid->id);           
     }
 
     /**
