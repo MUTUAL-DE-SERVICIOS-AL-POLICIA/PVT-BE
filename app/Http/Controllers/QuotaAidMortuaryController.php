@@ -7,6 +7,7 @@ use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\ProcedureModality;
 use Muserpol\Models\Kinship;
 use Muserpol\Models\City;
+use Muserpol\Models\Degree;
 use Auth;
 use Validator;
 use Muserpol\Models\Address;
@@ -420,14 +421,15 @@ class QuotaAidMortuaryController extends Controller
         
         $kinships = Kinship::get();
         
-        $cities = City::get();         
-         
+        $cities = City::get();
+        $degrees = Degree::all();
         $data = [
             'requirements' => $procedure_requirements,
             'modalities'    => $modalities,
             'affiliate'  => $affiliate,
             'kinships'  =>  $kinships,
             'cities'    =>  $cities,
+            'degrees'    =>  $degrees,
             'ret'    =>  $cities,
             'spouse' =>  $spouse,
             'procedure_types'    =>  $procedure_types,            

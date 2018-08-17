@@ -376,7 +376,10 @@ class RetirementFundController extends Controller
             $address->street = $request->beneficiary_street;
             $address->number_address = $request->beneficiary_number_address;
             $address->save();
-
+            if ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) {
+            }else{
+                $retirement_fund->affiliate->address()->save($address);
+            }
             $beneficiary->address()->save($address);
         }
 
@@ -1308,6 +1311,7 @@ class RetirementFundController extends Controller
 
 
         if ($has_availability) {
+            $availability = ContributionType::find(10);
             $subtotal_availability = ($retirement_fund->subtotal_availability );
             $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield)/100;
             $total_availability = $subtotal_availability + $total_annual_yield;
@@ -1350,7 +1354,7 @@ class RetirementFundController extends Controller
             /* added availability */
             $array_discounts_availability = [];
             foreach($array_discounts as $value) {
-                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + Disponibilidad '.($value['name'] ? ' - '.$value['name'] : '' )), 'amount' => ($retirement_fund->subtotal_ret_fun + $total_availability - $value['amount'])));
+                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + '. $availability->display_name .' ' .($value['name'] ? ' - '.$value['name'] : '' )), 'amount' => ($retirement_fund->subtotal_ret_fun + $total_availability - $value['amount'])));
             }
 
         }else{

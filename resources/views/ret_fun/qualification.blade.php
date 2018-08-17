@@ -228,8 +228,8 @@
                                 <tr>
                                     <th>Tipo</th>
                                     <th>Monto</th>
-                                    <th>Codigo</th>
-                                    <th>Nota</th>
+                                    <th>Cite</th>
+                                    <th># Nota</th>
                                     <th>Fecha</th>
                                 </tr>
                             </thead>
@@ -244,10 +244,10 @@
                                         <input class="form-control" type="text" v-model="advancePayment" data-money='true' style="width:130px">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Codigo" v-model="advancePaymentCode">
+                                        <input class="form-control" type="text" placeholder="Cite" v-model="advancePaymentCode">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Nota" v-model="advancePaymentNoteCode">
+                                        <input class="form-control" type="text" placeholder="# Nota" v-model="advancePaymentNoteCode">
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="advancePaymentDate">
@@ -263,10 +263,10 @@
                                         <input class="form-control" type="text" v-model="retentionLoanPayment" data-money='true' style="width:130px">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Codigo" v-model="retentionLoanPaymentCode">
+                                        <input class="form-control" type="text" placeholder="Cite" v-model="retentionLoanPaymentCode">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Nota" v-model="retentionLoanPaymentNoteCode">
+                                        <input class="form-control" type="text" placeholder="# Nota" v-model="retentionLoanPaymentNoteCode">
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
@@ -305,10 +305,10 @@
                                         <input class="form-control" type="text" :value="retentionGuarantor" disabled>
                                     </td>
                                     <td v-if="retentionGuarantor > 0">
-                                        <input class="form-control" type="text" placeholder="Codigo" v-model="retentionGuarantorCode">
+                                        <input class="form-control" type="text" placeholder="Cite" v-model="retentionGuarantorCode">
                                     </td>
                                     <td v-if="retentionGuarantor > 0">
-                                        <input class="form-control" type="text" placeholder="Nota" v-model="retentionGuarantorNoteCode">
+                                        <input class="form-control" type="text" placeholder="# Nota" v-model="retentionGuarantorNoteCode">
                                     </td>
                                     <td v-if="retentionGuarantor > 0">
                                         <input class="form-control" type="date" v-model="retentionGuarantorDate">
