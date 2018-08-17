@@ -188,7 +188,7 @@ export default {
       if(this.applicant_type  == '3'){
         this.show_apoderado_form = !this.show_apoderado_form;
         this.show_advisor_form = false;
-        if(modality_id == 4){
+        if(modality_id == 4 || modality_id == 1){
           this.setDataSpouse();
         }else{
           this.setDataAffilate();
@@ -198,7 +198,7 @@ export default {
       if(this.applicant_type  == '1'){
         this.show_apoderado_form = false;
         this.show_advisor_form = false;
-        if(modality_id == 4){
+        if(modality_id == 4 || modality_id == 1){
           this.setDataSpouse();
         }else{
           this.setDataAffilate();

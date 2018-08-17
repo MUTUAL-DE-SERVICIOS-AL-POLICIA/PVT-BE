@@ -625,10 +625,12 @@ class ContributionController extends Controller
                     $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
                 
                 if ($request->category[$key] != $contribution->category_id) {
-                    $category = Category::find($request->category[$key]);
+                    //$category = Category::find($request->category[$key]);
+                    $category = Category::where('percentage',$request->category[$key])->first();
                     $contribution->category_id = $category->id;
                     //return $category->percentage." ".$contribution->base_wage;
-                    $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
+                    //$contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
+                   $contribution->seniority_bonus = $request->seniority_bonus[$key];
                 }
                 
                 if(!isset($request->gain[$key]) || $contribution->gain == "")
@@ -649,29 +651,28 @@ class ContributionController extends Controller
                 $contribution->unit_id = $affiliate->unit_id;
                 $contribution->breakdown_id = $affiliate->breakdown_id;
                 
-                if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
-                    $contribution->base_wage = 0;
+                if(!isset($request->base_wage[$key]))
+                    $contribution->base_wage = 1;
                 else
                     $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
-                $category = Category::find($request->category[$key]);
+                $category = Category::where('percentage',$request->category[$key])->first();
                 $contribution->category_id = $category->id;
                 //$data = $contribution->base_wage * 123;
-                $contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
+                $contribution->seniority_bonus = $request->seniority_bonus[$key];
                 $contribution->study_bonus = 0;
                 $contribution->position_bonus = 0;
                 $contribution->border_bonus = 0;
                 $contribution->east_bonus = 0;
                 $contribution->quotable = 0;
                 $contribution->month_year = $key;
-                
-                if(!isset($request->gain[$key]) || $contribution->gain == "")
-                    $contribution->gain = 0;
+
+                if(!isset($request->gain[$key]))
+                    $contribution->gain = 1;
                 else
                     $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
                 $contribution->retirement_fund = 0;
                 $contribution->mortuary_quota = 0;
-                $contribution->total = strip_tags($request->total[$key]) ?? 0;
-                //$contribution->interes = 0;
+                $contribution->total = strip_tags($request->total[$key]) ?? 0;                
                 $contribution->type = 'Planilla';
                 $contribution->save();
                 array_push($contributions, $contribution);
@@ -791,9 +792,10 @@ class ContributionController extends Controller
             $i++;
             Log::info('i: '.$i.' id:'.$contribution->id);
         }
-        $total = $affiliate->getTotalContributionsAmount(Affiliate::DISPONIBILIDAD);
+        // $total = $affiliate->getTotalContributionsAmount(Affiliate::DISPONIBILIDAD);
         // return $total;
-        $ret_fun->subtotal_availability =number_format((float)$total, 2, '.', ''); 
+        $availability = $affiliate->getContributionsAvailability();
+        $ret_fun->subtotal_availability = array_sum(array_column($availability, 'total'));
         $ret_fun->save();
         return  $ret_fun;
         return $request->all();

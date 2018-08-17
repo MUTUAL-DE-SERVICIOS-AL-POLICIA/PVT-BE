@@ -49,8 +49,6 @@ class AffiliateController extends Controller
         $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
         $surname_husband = strtoupper($request->surname_husband) ?? '';
         $identity_card = strtoupper($request->identity_card) ?? '';
-        $degree = strtoupper($request->degree) ?? '';
-        $affiliate_state = strtoupper($request->affiliate_state) ?? '';
         //$total=Affiliate::where('identity_card','LIKE',$identity_card.'%')->where('last_name','LIKE',$last_name.'%')->count();
         //$total=6669783;
         //$affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->where('last_name','LIKE',$last_name.'%')->get();
@@ -64,8 +62,6 @@ class AffiliateController extends Controller
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
                                 ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
-                                ->whereRaw("coalesce(upper(affiliate_states.name), '') LIKE '$affiliate_state%'")
-                                ->whereRaw("coalesce(upper(degrees.name), '') LIKE '$degree%'")
                                 ->count();
 
         $affiliates = Affiliate::select(
@@ -92,8 +88,6 @@ class AffiliateController extends Controller
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
                                 ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
-                                //->whereRaw("coalesce(upper(affiliate_states).name, '') LIKE '$affiliate_state%'")
-                                //->whereRaw("coalesce(upper(degrees).name, '') LIKE '$degree%'")
                                 ->get();
         return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
     }

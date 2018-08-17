@@ -1,52 +1,44 @@
 <script>
+import { dateInputMaskAll, flashErrors } from "../../helper.js";
 	export default{
 		props:[
             'spouse',
-                    'cities'
+            'cities',
+            'affiliateId'
         ],
         data(){
             return{
                 editing: false,
                 show_spinner: false,
                 form:this.spouse,
-                city_birth: null,
-                city_identity_card: null,
-                first_name:{
-                    value: this.spouse.first_name,
-                    edit: false,
-                },
+                city_birth: !!this.spouse.city_birth?this.spouse.city_birth:null,
+                city_identity_card: !!this.spouse.city_identity_card?this.spouse.city_identity_card:null,
                 values:{
-                    identity_card:this.spouse.identity_card,
-                    resgistration:this.spouse.resgistration,
-                    first_name: this.spouse.first_name,
-                    second_name: this.spouse.second_name,
-                    last_name: this.spouse.last_name,
-                    mothers_last_name: this.spouse.mothers_last_name,
-                    surname_husband: this.spouse.surname_husband,
-                    civil_status: this.spouse.civil_status,
-                    birth_date: this.spouse.birth_date                    
+                    identity_card:!! this.spouse.identity_card ? this.spouse.identity_card :null ,
+                    resgistration:!! this.spouse.resgistration ? this.spouse.resgistration :null ,
+                    first_name: !! this.spouse.first_name ? this.spouse.first_name :null ,
+                    second_name: !! this.spouse.second_name ? this.spouse.second_name :null ,
+                    last_name: !! this.spouse.last_name ? this.spouse.last_name :null ,
+                    mothers_last_name: !! this.spouse.mothers_last_name ? this.spouse.mothers_last_name :null ,
+                    surname_husband: !! this.spouse.surname_husband ? this.spouse.surname_husband :null ,
+                    civil_status: !! this.spouse.civil_status ? this.spouse.civil_status :null ,
+                    birth_date: !! this.spouse.birth_date ? this.spouse.birth_date :null ,
                 }
             }
         },
-        created:function(){
-            let city_id =this.spouse.city_birth_id;
-            this.city_birth=this.cities.filter(function(city) {
-                return city.id==city_id;
-            })[0];
-            
-            city_id =this.spouse.city_identity_card_id;
-            this.city_identity_card=this.cities.filter(function(city) {
-                return city.id==city_id;
-            })[0];
-        },
         computed:{
             age: function(){
-                if(this.form.birth_date){
-                    var birthday = +new Date(this.form.birth_date); 
-                    return~~ ((Date.now() - birthday) / (31557600000));
-                }else
-                {
-                    return '';
+                if(this.form.birth_date!=null){
+                    if (this.form.birth_date.includes('y') || this.form.birth_date.includes('m') || this.form.birth_date.includes('d') ) {
+                        return ''
+                    }
+
+                    if(this.form.birth_date){
+                        return moment(this.form.birth_date, "DD/MM/YYYY").fromNow(true)
+                    }else
+                    {
+                        return '';
+                    }
                 }
             },
             city_birth_name: function(){
@@ -62,25 +54,35 @@
                     case "S":
                         st= 'Soltero(a)';
                         break;
-                    
                     case "D":
                         st= 'Divorciado(a)';
                         break;
-                    
                     case "V":
                         st= 'Viudo(a)';
                         break;
 
                     case "C":
                         st= 'Casado(a)';
-                        break;
-
-                }   
+                        break;  
+                }
                 return st;
+            },
+            validAll(){
+                if (this.$validator.errors.collect() == {}) {
+                    return false;
+                }
+                return Object.keys(this.$validator.errors.collect()).length > 0;
             }
 
         },
         methods:{
+            async validateBeforeSubmit() {
+                try {
+                    await this.$validator.validateAll();
+                } catch (error) {
+                    console.log("some error");
+                }
+            },
             get_city_birth_name:function(city_birth){
                 var name='';
                 let city_birth_id =city_birth;
@@ -101,14 +103,12 @@
                 });
                 return name;
             },
-            edit_first_name: function(){
-            },
             toggle_editing:function () {
                 this.editing = !this.editing;
+                dateInputMaskAll();
                 if(this.editing==false)
-                {     
+                {
                     this.form.identity_card = this.values.identity_card;
-                    this.form.resgistration = this.values.resgistration;
                     this.form.first_name =  this.values.first_name;
                     this.form.second_name =  this.values.second_name;
                     this.form.last_name =  this.values.last_name;
@@ -116,13 +116,20 @@
                     this.form.surname_husband = this.values.surname_husband;
                     this.form.civil_status = this.values.civil_status;
                     this.form.birth_date =  this.values.birth_date;
-                    this.form.city_birth_id = this.city_birth.id;
-                    this.form.city_identity_card_id = this.city_identity_card.id;
-
+                    this.form.city_birth_id = !!this.city_birth ? this.city_birth.id : null;
+                    this.form.city_identity_card_id = !!this.city_identity_card ? this.city_identity_card.id : null;
+                    this.form.registration = this.values.registration;
+                }else{
+                    this.validateBeforeSubmit();
                 }
             },
             update () {
-                let uri = `/update_spouse/${this.spouse.id}`;
+                this.validateBeforeSubmit();
+                if (this.validAll) {
+                    flash("Debe completar el formulario", 'error')
+                    return;
+                }
+                let uri = `/update_spouse/${this.affiliateId}`;
                 this.show_spinner=true;
                 axios.patch(uri,this.form)
                     .then(response=>{
@@ -142,10 +149,10 @@
                         this.values.civil_status = response.data.spouse.civil_status;
 
                         flash('Informacion de Esposa(o) Actualizada');
-                    }).catch((response)=>{
+                    }).catch((error)=>{
                         this.show_spinner=false;
                         this.toggle_editing();
-                        flash('Error al actualizar ala esposa(o): '+response.message,'error');
+                        flashErrors('Error al actualizar el afiliado',error.response.data.errors)
                     })
             }
         }
