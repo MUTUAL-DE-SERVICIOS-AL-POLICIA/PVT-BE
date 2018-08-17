@@ -44,11 +44,14 @@ th.ellipsis-text {
                 <a href="{{route('create_ret_fun', $affiliate->id)}}">
                     <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO"><i class="fa fa-paste"></i> </button>
                 </a>
-                <a href="{{route('create_quota_aid', $affiliate->id)}}">
-                    <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-paste"></i> </button>
-                </a>
             @endif
         @endcan
+        @can('create', new Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary)
+            <a href="{{route('create_quota_aid', $affiliate->id)}}">
+                <button class="btn btn-warning btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-heartbeat" style="font-size:15px;"></i> </button>
+            </a>
+        @endcan
+
         {{-- @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
