@@ -96,7 +96,24 @@ class QuotaAidMortuaryController extends Controller
         $kinship = $request->beneficiary_kinship;
 
         $requirements = ProcedureRequirement::select('id')->get();
-        $affiliate = Affiliate::find($request->affiliate_id);                
+        $affiliate = Affiliate::find($request->affiliate_id);
+        $af->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        switch ($request->quota_aid_modality) {
+            case 8:
+            case 8:
+            case 13:
+                $af->affiliate_state_id = 4;
+                break;
+            case 14:
+            case 15:
+                $af->affiliate_state_id = 5;
+                break;
+            default:
+                $this->info("error");
+                break;
+        }
+        $af->save();
+
         $procedure = QuotaAidProcedure::where('hierarchy_id',$affiliate->degree->hierarchy_id)->where('procedure_modality_id',$request->quota_aid_modality)->select('id')->first();        
         $validator = Validator::make($request->all(), [
             //'applicant_first_name' => 'required|max:5',            
