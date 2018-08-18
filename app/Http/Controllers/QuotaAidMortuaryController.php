@@ -23,6 +23,8 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\AidCommitment;
+use Muserpol\User;
+use Muserpol\Models\ObservationType;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -320,8 +322,7 @@ class QuotaAidMortuaryController extends Controller
 //        
 //        return view('ret_fun.show',$data);
 
-
-        return redirect('quota_aid');           
+        
         $quota_aid = QuotaAidMortuary::find($id);
 
         //$this->authorize('view', $retirement_fund);
@@ -341,64 +342,68 @@ class QuotaAidMortuaryController extends Controller
         //     }
         // }
         
-        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
+        $applicant = QuotaAidBeneficiary::where('type','S')->where('quota_aid_mortuary_id',$quota_aid->id)->first();        
         
-        $beneficiary_avdisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
-        return $applicant;
+        $beneficiary_avdisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$applicant->id)->first();
+        
         if(isset($beneficiary_avdisor->id))
-            $advisor= RetFunAdvisor::find($beneficiary_avdisor->ret_fun_advisor_id);
+            $advisor= QuotaAidAdvisor::find($beneficiary_avdisor->ret_fun_advisor_id);
         else
-            $advisor = new RetFunAdvisor();
+            $advisor = new QuotaAidAdvisor();
 
-        $beneficiary_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
-
+        
+        $beneficiary_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
+        
         if(isset($beneficiary_guardian->id))
-            $guardian = RetFunLegalGuardian::find($beneficiary_guardian->ret_fun_legal_guardian_id);
+            $guardian = QuotaAidLegalGuardian::find($beneficiary_guardian->quota_aid_legal_guardian_id);
         else
-            $guardian = new RetFunLegalGuardian();
-
-        $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
+            $guardian = new QuotaAidLegalGuardian();            
+        $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro        
         //return $procedures_modalities_ids;
-        $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();
+        $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();        
         $file_modalities = ProcedureModality::get();
-        $requirements = ProcedureRequirement::where('procedure_modality_id',$retirement_fund->procedure_modality_id)->get();
-        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
+
+        $requirements = ProcedureRequirement::where('procedure_modality_id',$quota_aid->procedure_modality_id)->get();
+        
+        $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id',$id)->orderBy('procedure_requirement_id','ASC')->get();        
         $cities = City::get();
         $kinships = Kinship::get();
 
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
 
-        $states = RetFunState::get();
+        //$states = RetFunState::get();
+        
 
-        $ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
-        //return $retirement_fund->ret_fun_state->name;
-
+        //$ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
+        
         ///proof
         $user = User::find(Auth::user()->id);
-        $procedure_types = ProcedureType::where('module_id', 3)->get();
+        $procedure_types = ProcedureType::where('module_id', 4)->get();
         $procedure_requirements = ProcedureRequirement::
                                     select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
                                     ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
-        $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();
-
-        $observation_types = ObservationType::where('module_id',3)->get();
-
+                                    
+        $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();            
+        
+        $observation_types = ObservationType::where('module_id',4)->get();
+        
         //selected documents
-        $submitted = RetFunSubmittedDocument::
-            select('ret_fun_submitted_documents.id','procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id','ret_fun_submitted_documents.comment','ret_fun_submitted_documents.is_valid')
+        $submitted = QuotaAidSubmittedDocument::
+            select('quota_aid_submitted_documents.id','procedure_requirements.number','quota_aid_submitted_documents.procedure_requirement_id','quota_aid_submitted_documents.comment','quota_aid_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
             ->where('ret_fun_submitted_documents.retirement_fund_id',$id);
-        // return $submitted->get();
+         return $submitted->get();
             // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
         $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
+        return $wf_current_state;
         $can_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
         $can_cancel = ($retirement_fund->user_id == $user->id && $retirement_fund->inbox_state == true);
 
