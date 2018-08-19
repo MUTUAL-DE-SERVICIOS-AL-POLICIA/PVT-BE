@@ -133,6 +133,15 @@ class Util
             return "675/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
+    public static function getNextCodeQuota($actual){
+        $year =  date('Y');
+        if($actual == "")
+            return "179/".$year;
+        $data = explode('/', $actual);
+        if(!isset($data[1]))
+            return "179/".$year;
+        return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+    }
 
     public static function getNextAreaCode($retirement_fund_id){
         

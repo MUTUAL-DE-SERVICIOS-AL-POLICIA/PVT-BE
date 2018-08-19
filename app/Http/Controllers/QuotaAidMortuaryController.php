@@ -97,6 +97,7 @@ class QuotaAidMortuaryController extends Controller
         $city_id = $request->beneficiary_city_identity_card;
         $birth_date = $request->beneficiary_birth_date;
         $kinship = $request->beneficiary_kinship;
+        $gender = $request->beneficiary_gender;
 
         $requirements = ProcedureRequirement::select('id')->get();
         $affiliate = Affiliate::find($request->affiliate_id);
@@ -117,7 +118,7 @@ class QuotaAidMortuaryController extends Controller
         }
         $affiliate->save();
 
-        $procedure = QuotaAidProcedure::where('hierarchy_id',$affiliate->degree->hierarchy_id)->where('procedure_modality_id',$request->quota_aid_modality)->select('id')->first();        
+        $procedure = QuotaAidProcedure::where('hierarchy_id',$affiliate->degree->hierarchy_id)->where('procedure_modality_id',$request->quota_aid_modality)->select('id')->first();
         $validator = Validator::make($request->all(), [
             //'applicant_first_name' => 'required|max:5',            
         ]);                
@@ -133,21 +134,40 @@ class QuotaAidMortuaryController extends Controller
         $rules = [];
         $biz_rules = [];
         
-        $has_quota_aid = false;
-        $quota_aid = QuotaAidMortuary::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
-        if(isset($quota_aid->id)) {
-            $has_quota_aid = true;
-            return $quota_aid;
-            return "ya tiene un tramite";
-            // $biz_rules = [
-            //     'quota_aid_double'
-            // ];
-            // $code = Util::getNextCode ("");
+        // $has_quota_aid = false;
+        // $quota_aid = QuotaAidMortuary::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
+        // if(isset($quota_aid->id)) {
+        //     $has_quota_aid = true;
+        //     return $quota_aid;
+        //     return "ya tiene un tramite";
+        //     // $biz_rules = [
+        //     //     'quota_aid_double'
+        //     // ];
+        //     // $code = Util::getNextCode ("");
+        // }
+        // else {
+        //     $quota_aid = QuotaAidMortuary::select('id','code')->orderBy('id','desc')->first();
+        //     $code = Util::getNextCode ($quota_aid->code);
+        // }
+
+        $nextcode = QuotaAidMortuary::where('affiliate_id', $request->affiliate_id)->where('code','like','%A')->first();
+
+        if (isset($nextcode->id)) {
+            $code = str_replace("A", "", $nextcode->code);
+        }else{
+            $quota_aid = QuotaAidMortuary::select('id', 'code')->limit(10)->orderBy('id', 'desc')->get();
+            /*
+            * agregar para cuota y  auxilio
+            */
+            // if($typeeee){
+
+            // }else{
+
+            // }
+            $quota_aid_code = $this->getLastCodeQuota($quota_aid);
+            $code = Util::getNextCodeQuota($quota_aid_code);
         }
-        else {
-            $quota_aid = QuotaAidMortuary::select('id','code')->orderBy('id','desc')->first();
-            $code = Util::getNextCode ($quota_aid->code);
-        }
+
             
         $modality = ProcedureModality::find($request->quota_aid_modality);
         
@@ -274,7 +294,7 @@ class QuotaAidMortuaryController extends Controller
         for($i=0;is_array($first_name) &&  $i<sizeof($first_name);$i++){
             if($first_name[$i] != "" && $last_name[$i] != ""){
                 $beneficiary = new QuotaAidBeneficiary();
-                $beneficiary->retirement_fund_id = $retirement_found->id;
+                $beneficiary->quota_aid_mortuary_id = $quota_aid->id;
                 $beneficiary->city_identity_card_id = $city_id[$i];
                 $beneficiary->kinship_id = $kinship[$i];
                 $beneficiary->identity_card = strtoupper($identity_card[$i]);
@@ -600,6 +620,25 @@ class QuotaAidMortuaryController extends Controller
             'hierarchy' => $hierarchy,
         ];        
         return view('quota_aid.create',$data);        
+    }
+    private function getLastCodeQuota($quotas){
+        $num = 0;
+        $year = 0;
+        if(count($quotas) == 0)
+        return "";
+        foreach($quotas as $quota)
+        {
+            $code = str_replace('A','',$quota->code);
+            if( $code != "")
+            {
+                $code = explode('/',$code);
+                if($code[1]>$year)
+                    $year = $code[1];
+                if($code[0]>$num)
+                    $num = $code[0];
+            }
+        }
+        return $num."/".$year;
     }
 
 //    public function destroy($id)
