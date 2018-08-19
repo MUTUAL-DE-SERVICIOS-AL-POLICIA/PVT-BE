@@ -39,4 +39,5 @@ export default {
     state,
     mutations,
     getters,
+    namespaced: true,
 }
