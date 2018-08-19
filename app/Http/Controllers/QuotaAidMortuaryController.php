@@ -546,7 +546,7 @@ class QuotaAidMortuaryController extends Controller
         $hierarchy = $affiliate->degree->hierarchy;
         $procedure_types = ProcedureType::where('id','3')->orWhere('id','4')->get();
         
-        $affiliate = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','degree_id')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender','degree_id','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_death')
                                 ->leftJoin('degrees','affiliates.degree_id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);

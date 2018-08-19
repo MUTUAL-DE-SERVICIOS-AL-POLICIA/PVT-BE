@@ -6,7 +6,7 @@
             </div>
         </div>
         <div class="ibox-content">
-            <ret-fun-beneficiary-list :items="{{ $ret }}" :kinships="{{ $kinships }}" :cities="{{ $cities }}"></ret-fun-beneficiary-list>
+            <quota-aid-beneficiary-list :items="{{ $ret }}" :kinships="{{ $kinships }}" :cities="{{ $cities }}"></quota-aid-beneficiary-list>
         </div>
     </div>
 </div>

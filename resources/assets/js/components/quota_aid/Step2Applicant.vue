@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from 'vuex';
-import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll, dateInputMask }  from "../../helper.js";
+import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll, dateInputMask, dateInputMaskAll }  from "../../helper.js";
 export default {
   props:[
     'cities',
@@ -48,7 +48,7 @@ export default {
       show_advisor_form: false,
       show_apoderado_form: false,
       applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
-      date_derelict: this.affiliate.date_derelict,
+      date_death: this.affiliate.date_death,
       error:{
         applicant_identity_card: false,
       }
@@ -60,17 +60,18 @@ export default {
     this.addCellPhoneNumber();
     monthYearInputMaskAll();
     dateInputMask();
+    dateInputMaskAll();
   },
   computed:{
-    ...mapGetters({
-        retfun: 'getData'
+    ...mapGetters('quotaAidForm', {
+        quotaAid: 'getData'
     }),
     applicantIsMale(){
       return this.applicant_gender == 'M';
     },
     kinshipsFilter(){
       return this.kinships.filter((k) => {
-        return !(this.retfun.modality_id == 4 && k.id == 1);
+        return !(this.quotaAid.modality_id == 4 && k.id == 1);
       })
     }
   },
@@ -172,7 +173,7 @@ export default {
       // let modality_id_ = 
       cellPhoneInputMaskAll();
     phoneInputMaskAll();
-      let modality_id=this.retfun.modality_id;
+      let modality_id=this.quotaAid.modality_id;
       if(this.applicant_type  == '2'){
         this.show_advisor_form = !this.show_advisor_form;
         this.show_apoderado_form = false;

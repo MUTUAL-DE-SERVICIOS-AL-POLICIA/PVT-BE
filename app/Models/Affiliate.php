@@ -49,19 +49,26 @@ class Affiliate extends Model
         'nua',
         'item'
     ];
-    public function getDateEntryAttribute($value)
-    {
-        if(!$value){
-            return null;
-        }
-        return Carbon::parse($value)->format('m/Y');
-    }
     public function getBirthDateAttribute($value)
     {
         if(!$value){
             return null;
         }
         return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getDateDeathAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getDateEntryAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('m/Y');
     }
     public function getDateDerelictAttribute($value)
     {

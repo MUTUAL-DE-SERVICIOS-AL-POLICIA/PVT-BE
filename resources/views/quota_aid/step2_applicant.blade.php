@@ -3,14 +3,14 @@
         <div class="ibox-content">
             <legend>Datos del afiliado</legend>
             <div class="row">
-                <div class="col-md-6" :class="{'has-error': errors.has('date_derelict') }">
+                <div class="col-md-6" :class="{'has-error': errors.has('date_death') }">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">
-                                Fecha de desvinculaci&oacute;n</label>
+                                Fecha de Fallecimiento</label>
                         <div class="col-sm-8">
-                            <input type="text" name="date_derelict" v-model="date_derelict" data-month-year="true" class="form-control" v-validate.initial="'required'">
-                            <i v-show="errors.has('date_derelict')" class="fa fa-warning text-danger"></i>
-                            <span v-show="errors.has('date_derelict')" class="text-danger">@{{ errors.first('date_derelict') }}</span>
+                            <input type="text" name="date_death" v-model="date_death" data-date="true" class="form-control" v-validate.initial="'required'">
+                            <i v-show="errors.has('date_death')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('date_death')" class="text-danger">@{{ errors.first('date_death') }}</span>
                         </div>
                     </div>
                 </div>
@@ -161,7 +161,7 @@
                                 <label class="control-label">Fecha de Nacimiento</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="date" class="form-control" name="applicant_birth_date" v-model.trim="applicant_birth_date" v-validate.initial="'required'">
+                                <input type="text" class="form-control" data-date="true" name="applicant_birth_date" v-model.trim="applicant_birth_date" v-validate.initial="'required|date_format:DD/MM/YYYY'">
                                 <i v-show="errors.has('applicant_birth_date')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('applicant_birth_date')" class="text-danger">@{{ errors.first('applicant_birth_date') }}</span>
                             </div>
