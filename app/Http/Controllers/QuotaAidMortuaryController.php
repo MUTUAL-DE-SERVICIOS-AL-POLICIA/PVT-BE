@@ -96,7 +96,24 @@ class QuotaAidMortuaryController extends Controller
         $kinship = $request->beneficiary_kinship;
 
         $requirements = ProcedureRequirement::select('id')->get();
-        $affiliate = Affiliate::find($request->affiliate_id);                
+        $affiliate = Affiliate::find($request->affiliate_id);
+        $af->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        switch ($request->quota_aid_modality) {
+            case 8:
+            case 8:
+            case 13:
+                $af->affiliate_state_id = 4;
+                break;
+            case 14:
+            case 15:
+                $af->affiliate_state_id = 5;
+                break;
+            default:
+                $this->info("error");
+                break;
+        }
+        $af->save();
+
         $procedure = QuotaAidProcedure::where('hierarchy_id',$affiliate->degree->hierarchy_id)->where('procedure_modality_id',$request->quota_aid_modality)->select('id')->first();        
         $validator = Validator::make($request->all(), [
             //'applicant_first_name' => 'required|max:5',            
@@ -131,7 +148,6 @@ class QuotaAidMortuaryController extends Controller
             
         $modality = ProcedureModality::find($request->quota_aid_modality);
         
-        
         $quota_aid = new QuotaAidMortuary();
         //$this->authoriza('create', $quota_aid);
         $quota_aid->user_id = Auth::user()->id;
@@ -142,8 +158,8 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->city_end_id = Auth::user()->city_id;        
         $quota_aid->code = $code;
         $quota_aid->reception_date = date('Y-m-d');
-        $quota_aid->workflow_id = $modality->procedure_type_id;
-        $quota_aid->wf_state_current_id = 19;
+        $quota_aid->workflow_id = 5;
+        $quota_aid->wf_state_current_id = 33;
         $quota_aid->subtotal = 0;
         $quota_aid->total = 0;
         $quota_aid->save();

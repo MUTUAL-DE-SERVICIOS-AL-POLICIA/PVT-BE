@@ -3,6 +3,7 @@
 namespace Muserpol\Models\QuotaAidMortuary;
 
 use Illuminate\Database\Eloquent\Model;
+use Muserpol\Helpers\Util;
 
 class QuotaAidBeneficiary extends Model
 {
@@ -21,7 +22,7 @@ class QuotaAidBeneficiary extends Model
     }
     public function address() //aca
     {
-        return $this->belongToMany('Muserpol\Models\Address', 'address_quota_aid_beneficiary', 'quota_aid_beneficiary_id', 'address_id');
+        return $this->belongsToMany('Muserpol\Models\Address', 'address_quota_aid_beneficiary');
     }
     public function quota_aid_advisors()
     {
@@ -30,5 +31,9 @@ class QuotaAidBeneficiary extends Model
     public function quota_aid_legal_guardians()
     {
         return $this->belongsToMany('Muserpol\Models\QuotaAidMortuary\QuotaAidLegalGuardian', 'quota_aid_beneficiary_legal_guardian', 'quota_aid_beneficiary_id', 'quota_aid_legal_guardian_id');
+    }
+    public function fullName($style = "uppercase")
+    {
+        return Util::fullName($this, $style);
     }
 }
