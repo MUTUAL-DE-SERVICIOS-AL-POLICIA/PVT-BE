@@ -9,6 +9,7 @@ use Muserpol\Models\Kinship;
 use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Auth;
+use Log;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
@@ -84,7 +85,9 @@ class QuotaAidMortuaryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {        
+    {
+        Log::info($request->all());
+        Log::info($request->date_death);
         $first_name = $request->beneficiary_first_name;
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
@@ -97,22 +100,22 @@ class QuotaAidMortuaryController extends Controller
 
         $requirements = ProcedureRequirement::select('id')->get();
         $affiliate = Affiliate::find($request->affiliate_id);
-        $af->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        $affiliate->date_death = Util::verifyMonthYearDate($request->date_death) ? Util::parseMonthYearDate($request->date_death) : $request->date_death;
         switch ($request->quota_aid_modality) {
             case 8:
-            case 8:
+            case 9:
             case 13:
-                $af->affiliate_state_id = 4;
+                $affiliate->affiliate_state_id = 4;
                 break;
             case 14:
             case 15:
-                $af->affiliate_state_id = 5;
+                $affiliate->affiliate_state_id = 5;
                 break;
             default:
-                $this->info("error");
+                return "error modality not found";
                 break;
         }
-        $af->save();
+        $affiliate->save();
 
         $procedure = QuotaAidProcedure::where('hierarchy_id',$affiliate->degree->hierarchy_id)->where('procedure_modality_id',$request->quota_aid_modality)->select('id')->first();        
         $validator = Validator::make($request->all(), [
