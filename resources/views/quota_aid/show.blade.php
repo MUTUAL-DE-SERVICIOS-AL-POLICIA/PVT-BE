@@ -222,16 +222,16 @@
                             </div>
                             <div id="tab-affiliate" class="tab-pane">
 
-                                    {{-- <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
+                                    <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
                                         @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
-                                    </affiliate-show> --}}
+                                    </affiliate-show>
 
                             </div>
                             <div id="tab-beneficiaries" class="tab-pane">
 
-                                    {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
-                                        @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
-                                    @endcan --}}
+                                    {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary) --}}
+                                        @include('quota_aid.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
+                                    {{-- @endcan --}}
 
                             </div>
                             <div id="tab-summited-document" class="tab-pane">

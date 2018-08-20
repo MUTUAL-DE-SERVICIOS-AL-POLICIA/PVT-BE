@@ -214,14 +214,15 @@ class AffiliateController extends Controller
 
         $aid_contributions = AidContribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
         $aid_reimbursement = AidReimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
-
+        //return  $affiliate->date_death;//Util::parseMonthYearDate($affiliate->date_death);
+        
         if($affiliate->date_death)
-            $death = explode('-', $affiliate->date_death);
+            $death = explode('/', $affiliate->date_death);
         else
-            $death = explode('-', date('Y-m-d'));
-
+            $death = explode('/', date('d/m/Y'));
+        
         $month_death = $death[1];
-        $year_death = $death[0];
+        $year_death = $death[2];
 
         $is_editable = "1";
         if(isset($retirement_fund->id))
