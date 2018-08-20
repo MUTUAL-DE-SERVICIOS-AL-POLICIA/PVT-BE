@@ -17,6 +17,9 @@ use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
 use Muserpol\Models\Spouse;
 use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
 
 class QuotaAidCertificationController extends Controller
 {
@@ -132,5 +135,70 @@ class QuotaAidCertificationController extends Controller
                 ->setOption('footer-right', 'Pagina [page] de [toPage]')
                 ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
                 ->stream("$namepdf");
+    }
+    public function printReception($id)
+    {
+        $quota_aid = QuotaAidMortuary::find($id);
+        $affiliate = $quota_aid->affiliate;
+        $degree = $affiliate->degree;
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $modality = $quota_aid->procedure_modality->name;
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+        $title = "REQUISITOS DEL BENEFICIO DE ". $quota_aid->procedure_modality->procedure_type->name . ' - '. mb_strtoupper($modality);
+
+        // $next_area_code = Util::getNextAreaCode($quota_aid->id);
+        $next_area_code = Util::getNextAreaCodeQuotaAid($quota_aid->id);
+        $code = $quota_aid->code;
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+        $submitted_documents = QuotaAidSubmittedDocument::leftJoin('procedure_requirements', 'procedure_requirements.id', '=', 'quota_aid_submitted_documents.procedure_requirement_id')->where('quota_aid_mortuary_id', $quota_aid->id)->orderBy('procedure_requirements.number', 'asc')->get();
+
+        /*
+            !!todo
+            add support utf-8
+         */
+        $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
+        $pdftitle = "RECEPCIÓN - " . $title;
+        $namepdf = Util::getPDFName($pdftitle, $applicant);
+        $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
+
+        $data = [
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+
+            'bar_code' => $bar_code,
+            'title' => $title,
+            'institution' => $institution,
+            'direction' => $direction,
+            'unit' => $unit,
+            'modality' => $modality,
+            'applicant' => $applicant,
+            'affiliate' => $affiliate,
+            'degree' => $degree,
+            'submitted_documents' => $submitted_documents,
+            'quota_aid' => $quota_aid,
+        ];
+        $pages = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $pages[] = \View::make('quota_aid.print.reception', $data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+                //    ->setOption('margin-top', '20mm')
+            ->setOption('margin-bottom', '15mm')
+                //    ->setOption('margin-left', '25mm')
+                //    ->setOption('margin-right', '15mm')
+                    //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
+                //    ->setOption('footer-right', 'Pagina [page] de [toPage]')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("$namepdf");
     }
 }

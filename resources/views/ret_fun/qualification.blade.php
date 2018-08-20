@@ -1,7 +1,7 @@
 @extends('layouts.app') 
 @section('title', 'Fondo de Retiro') 
 @section('content')
-<ret-fun-qualification inline-template :retirement-fund-id="{{$retirement_fund->id}}" :contributions="{{$all_contributions}}">
+<ret-fun-qualification inline-template :retirement-fund-id="{{$retirement_fund->id}}" :contributions="{{$all_contributions}}" :affiliate="{{$retirement_fund->affiliate}}">
     <div>
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-7">
@@ -14,24 +14,24 @@
                     <button class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Salario Promedio Cotizable" onclick="printJS({printable:'{!! route('ret_fun_print_qualification_average_salary_quotable', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Salario Promedio Cotizable</button>
                 @endif
                 @if ($retirement_fund->total_ret_fun > 0)
-                    <button class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Datos de la Calificacion" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Calificacion</button>
+                    <button class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Datos de la Calificacion" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Información técnica</button>
                 @else
                     <button v-if="totalRetFun > 0" class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Datos de la Calificacion" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Calificacion</button>
                 @endif
                 @if ($affiliate->hasAvailability())
                     @if ($retirement_fund->total_availability > 0)
-                        <button class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad1</button>
+                        <button class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad</button>
                     @else
-                        <button v-if="totalAvailability > 0" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad1</button>
+                        <button v-if="totalAvailability > 0" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad</button>
                     @endif
                     @if($retirement_fund->total > 0)
-                        <button class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad2</button>
+                        {{-- <button class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad2</button> --}}
                     @else
-                        <button v-if="total > 0" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad2</button>
+                        {{-- <button v-if="total > 0" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad2</button> --}}
                     @endif
                 @else
-                    <button v-if="hasAvailability" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad 1</button>
-                    <button v-if="hasAvailability" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad 2</button>
+                    <button v-if="hasAvailability" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad </button>
+                    {{-- <button v-if="hasAvailability" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Disponibilidad y Fondo de Retiro" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_ret_fun_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad 2</button> --}}
                 @endif
                 <button class="btn btn-danger btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir todos los documentos de Calificacion"
                     onclick="printJS({printable:'{!! route('ret_fun_print_all_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Completo</button>
@@ -77,6 +77,47 @@
                         </div>
                         <ret-fun-qualification-group :dates-child="contributionType.dates">
                         </ret-fun-qualification-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-content forum-container">
+                        <div class="forum-title">
+                            <h3>Años de servicio segun certificacion del comando general de la Policia</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-offset-3 col-md-9">
+                                <div class="form-inline">
+                                    <div :class="{'has-error': errors.has('service_years') }">
+                                        <div class="col-md-1">
+                                            <label class="control-label">Años</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="number" class="form-control" v-model="serviceYears" name="service_years" v-validate.initial="'required|numeric|max_value:100|min_value:0'">
+                                            <div v-show="errors.has('service_years')">
+                                                <i class="fa fa-warning text-danger"></i>
+                                                <span class="text-danger">@{{ errors.first('service_years') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div :class="{'has-error': errors.has('service_months') }">
+                                        <div class="col-md-1">
+                                            <label class="control-label">Meses</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="number" class="form-control" v-model="serviceMonths" name="service_months" v-validate.initial="'required|numeric|max_value:12|min_value:0'">
+                                            <div v-show="errors.has('service_months')">
+                                                <i class="fa fa-warning text-danger"></i>
+                                                <span class="text-danger">@{{ errors.first('service_months') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -187,8 +228,8 @@
                                 <tr>
                                     <th>Tipo</th>
                                     <th>Monto</th>
-                                    <th>Codigo</th>
-                                    <th>Nota</th>
+                                    <th>Cite</th>
+                                    <th># Nota</th>
                                     <th>Fecha</th>
                                 </tr>
                             </thead>
@@ -203,10 +244,10 @@
                                         <input class="form-control" type="text" v-model="advancePayment" data-money='true' style="width:130px">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Codigo" v-model="advancePaymentCode">
+                                        <input class="form-control" type="text" placeholder="Cite" v-model="advancePaymentCode">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Nota" v-model="advancePaymentNoteCode">
+                                        <input class="form-control" type="text" placeholder="# Nota" v-model="advancePaymentNoteCode">
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="advancePaymentDate">
@@ -222,10 +263,10 @@
                                         <input class="form-control" type="text" v-model="retentionLoanPayment" data-money='true' style="width:130px">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Codigo" v-model="retentionLoanPaymentCode">
+                                        <input class="form-control" type="text" placeholder="Cite" v-model="retentionLoanPaymentCode">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Nota" v-model="retentionLoanPaymentNoteCode">
+                                        <input class="form-control" type="text" placeholder="# Nota" v-model="retentionLoanPaymentNoteCode">
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
@@ -264,10 +305,10 @@
                                         <input class="form-control" type="text" :value="retentionGuarantor" disabled>
                                     </td>
                                     <td v-if="retentionGuarantor > 0">
-                                        <input class="form-control" type="text" placeholder="Codigo" v-model="retentionGuarantorCode">
+                                        <input class="form-control" type="text" placeholder="Cite" v-model="retentionGuarantorCode">
                                     </td>
                                     <td v-if="retentionGuarantor > 0">
-                                        <input class="form-control" type="text" placeholder="Nota" v-model="retentionGuarantorNoteCode">
+                                        <input class="form-control" type="text" placeholder="# Nota" v-model="retentionGuarantorNoteCode">
                                     </td>
                                     <td v-if="retentionGuarantor > 0">
                                         <input class="form-control" type="date" v-model="retentionGuarantorDate">

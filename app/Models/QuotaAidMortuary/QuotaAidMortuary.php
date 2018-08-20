@@ -41,7 +41,7 @@ class QuotaAidMortuary extends Model
     {
         return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
     }
-    public function quota_aid_beneficiary()
+    public function quota_aid_beneficiaries()
     {
         return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary');
     }
@@ -52,5 +52,12 @@ class QuotaAidMortuary extends Model
     public function wf_state()
     {
         return $this->belongsTo('Muserpol\WfState', 'wf_state_current_id');
+    }
+
+    public function getBasicInfoCode()
+    {
+        $code = $this->id . " " . ($this->affiliate->id ?? null) . "\n" . "Trámite Nro: " . $this->code . "\nModalidad: " . $this->procedure_modality->name . "\nSolicitante: " . ($this->quota_aid_beneficiaries()->where('type', 'S')->first()->fullName() ?? null);
+        $hash = crypt($code, 100);
+        return array('code' => $code, 'hash' => $hash);;
     }
 }

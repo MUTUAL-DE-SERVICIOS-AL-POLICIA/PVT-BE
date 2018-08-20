@@ -25,7 +25,7 @@ import { mapState, mapMutations } from 'vuex';
             }
         },
         mounted(){
-            this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
+            this.$store.commit('retFunForm/setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
             this.onChooseProcedureType();
         },
         methods:{
@@ -34,6 +34,7 @@ import { mapState, mapMutations } from 'vuex';
                     return m.procedure_type_id == this.procedure_type_id;
                 })
                 this.modality = null;
+                this.getRequirements();
             },
             onChooseModality(event){
                 const options = event.target.options;
@@ -44,11 +45,12 @@ import { mapState, mapMutations } from 'vuex';
                         name:selectedText,
                         id: this.modality
                     }
-                    this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
+                    this.$store.commit('retFunForm/setModality',object);//solo se puede enviar un(1) argumento 
                 }
                 this.getRequirements();
             },
             getRequirements(){
+                if(!this.modality){this.requirementList = []}
                 this.requirementList = this.requirements.filter((r) => {
                     if (r.modality_id == this.modality) {
                         r['status'] = false;
@@ -97,7 +99,7 @@ import { mapState, mapMutations } from 'vuex';
                 const options = event.target.options;
                 const selectedOption = options[options.selectedIndex];
                 const selectedText = selectedOption.textContent;
-                this.$store.commit('setCity',selectedText)
+                this.$store.commit('retFunForm/setCity',selectedText)
             },
             groupNumbers(number){
                 // return (parseInt(number) % 2) == 0;

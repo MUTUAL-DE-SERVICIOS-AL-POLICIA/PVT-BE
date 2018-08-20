@@ -18,37 +18,11 @@
                         <div class="sk-cube3 sk-cube"></div>
                     </div>
                     <div class="row" >
-                        
-                        <!-- <div class="col-md-6" style="margin-bottom:20px">
-                            <label>Tipo de Aporte:</label>   
-                            <select v-model="tipo" class="form-control" v-on:change="changeType">
-                                <option value="2">Comisión</option>
-                                <option value="10">Agregado Policial</option>
-                                <option value="9">Baja Temporal</option>
-                           </select>
-                            <span v-show="errors.has('tipo')" class="text-danger">{{ errors.first('tipo') }}</span>
-                        </div> -->
-                        <!-- <label>Repetir sueldo:</label> -->
                         <div class="col-md-3" >                            
                             <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_salary">
                         </div>                    
                         <div class="col-md-3" >
-                            <button class="btn btn-primary " type="button" @click="repeatSalary()"><i class="fa fa-money"></i>&nbsp;Repetir Sueldo</button>                            
-                             <select class="form-control"  v-model = "month" name="month" id="month">
-                                <option value="01">Enero</option>
-                                <option value="02">Febrero</option>
-                                <option value="03">Marzo</option>
-                                <option value="04">Abril</option>
-                                <option value="05">Mayo</option>
-                                <option value="06">Junio</option>
-                                <option value="07">Julio</option>
-                                <option value="08">Agosto</option>
-                                <option value="09">Septiembre</option>
-                                <option value="10">Octubre</option>
-                                <option value="11">Noviembre</option>
-                                <option value="12">Diciembre</option>
-                            </select>
-                            <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" @click="createReimbursement()"><i class="fa fa-dollar"></i></button>
+                            <button class="btn btn-primary " type="button" @click="repeatSalary()"><i class="fa fa-money"></i>&nbsp;Repetir Sueldo</button>
                         </div>
                     </div>
                     <hr>
@@ -57,6 +31,7 @@
                         <tr>
                             <th class="footable-visible footable-first-column footable-sortable">Mes/Año<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado Bs.<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Tipo de cambio.<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">F.R.P. (4.77 %)<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">Cuota Mortuoria (1.09 %)<span class="footable-sort-indicator"></span></th>
                             <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV Bs.<span class="footable-sort-indicator"></span></th>
@@ -65,12 +40,15 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr style="" v-for="(con, index) in contributions" :key="index" id="form">
-                                <td>                                    
+                            <tr v-for="(con, index) in contributions" :key="index" id="form" v-bind:style="getStyleColor(index)">
+                                <td>
                                     <input type="text"  v-model = "con.monthyear" disabled class="form-control">
-                                </td>
+                                </td>                                
                                 <td>
                                     <input type="text" v-model = "con.sueldo" data-money="true" @keyup.enter="CalcularAporte(con, index)"  ref="s1"  class="form-control" >
+                                </td>
+                                <td>
+                                    <input type="text"  v-model = "con.fr" data-money='true' disabled class="form-control">
                                 </td>
                                 <td>
                                     <input type="text"  v-model = "con.fr" data-money='true' disabled class="form-control">
@@ -84,19 +62,49 @@
                                 <td>
                                     <input type="text"  v-model = "con.subtotal" data-money="true" disabled class="form-control">
                                 </td>
-                                <td>
-                                    <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
-                                </td>
-                                
+                                <td class="row">                                    
+                                    <div class="col-md-6">
+                                        <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>                                    
+                                    </div>
+                                    <div class="col-md-6" v-if="con.sueldo>0 && con.type!='R'">
+                                        <button class="btn btn-warning btn-circle" @click="createReimbursement(con.month)" type="button"><i class=""></i> R </button>
+                                    </div>
+                                </td>                                                                
                             </tr>
-                            <tr>
+                            
+                            <tr>                                
                                 <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
                                 <td colspan="4"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>
                                 <!--<td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>-->
                             </tr>                            
                         </tbody>
-                    </table>
-                    <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+                    </table> 
+                    <!-- <table>
+                        <tr style="" v-for="(reim, index) in reimbursements" :key="index" id="reimbursement_form">                                
+                                 <td>                                    
+                                    <input type="text"  v-model = "reim.month_year" disabled class="form-control">
+                                </td>
+                                <td>
+                                    <input type="text" v-model = "reim.amount" data-money="true" class="form-control" >
+                                </td>
+                                <td>
+                                    <input type="text"  v-model = "reim.retirement_fund" data-money='true' disabled class="form-control">
+                                </td>
+                                <td>
+                                    <input type="text" v-model = "reim.quota" data-money="true" disabled class="form-control">
+                                </td>
+                                <td>
+                                    <input type="text" v-model = "reim.interest" disabled data-money="true" class="form-control">
+                                </td>
+                                <td>
+                                    <input type="text"  v-model = "reim.subtotal" data-money="true" disabled class="form-control">
+                                </td>
+                                <td>
+                                    <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button> 
+                                </td>
+                            </tr>
+                    </table> -->
+                    <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
 
                 </div>
                
@@ -111,8 +119,11 @@
                 <h4 class="modal-title">Reintegro</h4>
             </div>
             <div class="modal-body">
-                <div class="form-group"><label>Mes</label>
-                    <select class="form-control" name="month" id="month">
+                <div class="form-group">
+                    <label>Monto</label>
+                    <input id="reimbursement_amount" v-model="reimbursement_amount" name="reimbursement_amount" type="text" placeholder="Monto" class="form-control numberformat">
+                    <label>Mes</label>
+                    <select class="form-control" name="month" id="month" v-model="reimbursement_month">
                         <option value="01">Enero</option>
                         <option value="02">Febrero</option>
                         <option value="03">Marzo</option>
@@ -127,8 +138,49 @@
                         <option value="12">Diciembre</option>
                      </select>
                 </div>
+                <button class="btn btn-default" type="button" title="Guardar" @click="calculateReimbursement()">
+                    Calcular
+                </button>
                 <div class="form-group">
-                    <label>Sueldo</label>
+                    <label>Monto Cotizable</label>
+                    <input id="reimbursement_quotable" v-model="reimbursement_quotable" name="reimbursement_quotable" type="text" placeholder="Aporte Total" class="form-control numberformat">
+                    
+                    <table class="table table-striped" data-page-size="15">
+                        <thead>
+                            <tr>
+                            <th class="footable-visible footable-first-column footable-sortable">Mes<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Monto<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">F.R.P. (4.77 %)<span class="footable-sort-indicator"></span></th>
+                            <th data-hide="phone" class="footable-visible footable-sortable">Cuota Mortuoria (1.09 %)<span class="footable-sort-indicator"></span></th>                            
+                            <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte<span class="footable-sort-indicator"></span></th>                                                     
+                            </tr>
+                        </thead>
+                        <tr style="" v-for="(reim_pay, index3) in reimbursement_pays" :key="index3" id="reimbursement_pays">
+                            <td>
+                                <input type="text"  v-model = "reim_pay.month_year" disabled class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" v-model = "reim_pay.amount" data-money="true" disabled class="form-control" >
+                            </td>
+                            <td>
+                                <input type="text"  v-model = "reim_pay.retirement_fund" data-money='true' disabled class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" v-model = "reim_pay.quota" data-money="true" disabled class="form-control">
+                            </td>                            
+                            <td>
+                                <input type="text"  v-model = "reim_pay.subtotal" data-money="true" disabled class="form-control">
+                            </td>                            
+                        </tr>
+                        <tr>
+                            <td><label for="total">Total:</label></td>
+                            <td><input type="text" v-model="info_amount" data-money="true" disabled class="form-control"></td>
+                            <td><input type="text" v-model="info_retirement_fund" data-money="true" disabled class="form-control"></td>
+                            <td><input type="text" v-model="info_quota" data-money="true" disabled class="form-control"></td>
+                            <td><input type="text" v-model="info_total" data-money="true" disabled class="form-control"></td>
+                        </tr>
+
+                    </table>
                     <!-- <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
                     <label>Categor&iacute;a</label>
                     <select class="form-control" name="reim_category" id="reim_category">
@@ -145,7 +197,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                 <!--<button type="submit" class="btn btn-primary">Guardar</button>-->
-                <button class="btn btn-default" type="button" title="Guardar" onclick="storeReimbursement(this)">
+                <button class="btn btn-default" type="button" title="Guardar" @click="addReimbursement()">
                     Guardar
                 </button>
             </div>
@@ -186,14 +238,22 @@ export default {
       count:4,
       ufvs: [],
       general_salary: 0,
-      month: 0,
+      month: 0,      
+      reimbursement_amount: 0,
+      reimbursement_month: '01',
+      reimbursement_quotable: 0,
+      reimbursements: [],
+      reimbursement_pays: [],
+      info_amount: 0,
+      info_retirement_fund : 0,
+      info_quota : 0,
+      info_total : 0,      
     };
   },
    
   mounted() {
     this.contributions = this.contributions1;  
     this.afi_id = this.afid;    
-    //alert('making time');    
     window.addEventListener("load", function(event) {
         moneyInputMaskAll();
     });
@@ -219,23 +279,83 @@ export default {
   },
   created(){    
   },
-  methods: {      
+  methods: {            
       RemoveRow(index) {
         this.contributions.splice(index,1);
         this.SumTotal();
+      },
+      getStyleColor(index){          
+          if(this.contributions[index].type == 'R')
+            return "background-color:#ffe6b3";
       },
       Refresh() {
         this.contributions = this.contributions1;
       },
       repeatSalary(){
-          var i;
-           console.log('contri..' + this.contributions);
+        var i;           
         for(i=0;i<this.contributions.length;i++){
-            this.contributions[i].sueldo = this.general_salary;
-            console.log(this.contributions[i].month);
+            this.contributions[i].sueldo = this.general_salary;            
             this.CalcularAporte(this.contributions[i],i);
         }              
       },      
+      calculateReimbursement(){           
+        axios.get('/calculate_reimbursement/'+this.afi_id+'/'+this.reimbursement_amount+'/'+this.reimbursement_month)
+        .then(response => {
+            this.reimbursement_quotable = this.reimbursement_amount;// response.data.quotable;   
+            var i;
+            let contributions_number = parseInt(this.reimbursement_month)-1;            
+            this.reimbursement_quotable = this.reimbursement_amount/contributions_number;            
+            let subtotal = this.reimbursement_amount/contributions_number;            
+            for(i=0;i<response.data.contributions.length;i++)
+            {
+                let date =moment(response.data.contributions[i],"YYYY-MM-DD");                
+                let retirement_fund_amount =  parseFloat(subtotal*this.rate.retirement_fund/100).toFixed(2);
+                let quota_amount = parseFloat(subtotal*this.rate.mortuary_quota/100).toFixed(2);
+                console.log(subtotal);
+                var new_info = {
+                    'month_year' : date.format('MM-YYYY'),
+                    'amount'    :   parseFloat(subtotal).toFixed(2),
+                    'retirement_fund'   :   retirement_fund_amount,
+                    'quota' :   quota_amount,
+                    'subtotal'  :   parseFloat(retirement_fund_amount+quota_amount).toFixed(2),
+                };
+                this.reimbursement_pays.push(new_info);                                 
+            }
+            i=0;
+            for(i=0;i<this.contributions.length;i++)
+            {                                                
+                let retirement_fund_amount =  parseFloat(subtotal*this.rate.retirement_fund/100).toFixed(2);
+                let quota_amount = parseFloat(subtotal*this.rate.mortuary_quota/100).toFixed(2);
+
+                if(parseInt(this.reimbursement_month)>this.contributions[i].month && this.contributions[i].type != 'R' ){                    
+                    var new_info = {
+                        'month_year' : this.contributions[i].monthyear,
+                        'amount'    :   parseFloat(subtotal).toFixed(2),
+                        'retirement_fund'   :   retirement_fund_amount,
+                        'quota' :   quota_amount,
+                        'subtotal'  :   parseFloat(retirement_fund_amount+quota_amount).toFixed(2),
+                    };                
+                    this.reimbursement_pays.push(new_info);                            
+                }     
+            }
+            
+            let quotable = subtotal*this.reimbursement_pays.length;
+            this.reimbursement_quotable = quotable;
+            this.info_amount = parseFloat(quotable).toFixed(2);
+            this.info_retirement_fund = parseFloat(quotable*this.rate.retirement_fund/100).toFixed(2);
+            this.info_quota = parseFloat(quotable*this.rate.mortuary_quota/100).toFixed(2);
+            this.info_total = parseFloat(this.info_retirement_fund+this.info_quota).toFixed(2);
+            //moneyInputMaskAll();
+        })
+        .catch(e => {
+            
+             console.log(--this.count);
+            // console.log("40004");
+            
+            // this.show_spinner=false;
+            // this.CalcularAporte(con, index);
+        });
+      },
       CalcularAporte(con, index){        
         con.sueldo = parseMoney(con.sueldo);   
         if(parseFloat(con.sueldo) >0)
@@ -273,11 +393,9 @@ export default {
                 if(index +1 < this.contributions.length)
                 this.$refs.s1[index +1].focus();    
             })
-            .catch(e => {
-                
+            .catch(e => {                
                 console.log(--this.count);
-                console.log("40004");
-                
+                console.log("40004");                
                 this.show_spinner=false;
                 this.CalcularAporte(con, index);
             })}
@@ -291,41 +409,53 @@ export default {
         }
           
       },
-        createReimbursement:function(){
-        //alert(year);
-        //this.actual_year = year;
-            //let newcontribution =  this.contributions[0];
-
-            var newcontribution = 
-            {
-                id : 0,
-                monthyear : this.month+"-2018",
-                sueldo : 0,
-                fr : 0,
-                cm : 0,
-                interes : 0,
-                subtotal : 0,
-                month : '2018',
-                year : this.month,
-                affiliate_id : 1,
-            };
-
-            //let newcontribution = this.$data.contributions[0];
-           // n/ewcontribution.id = 0;
-            ///newcontribution.monthyear = this.month+"-2018";
-            this.contributions.push(newcontribution);
-            console.log(this.contributions);
-            console.log(this.month);                    
-        //$('#reimbursement_modal').modal('show');
+        createReimbursement:function(month){             
+            this.reimbursement_amount = 0;
+            this.reimbursement_month = '01';
+            this.reimbursement_quotable = 0;
+            this.reimbursements = [];
+            this.reimbursement_pays = [];
+            this.info_amount = 0;
+            this.info_retirement_fund = 0;
+            this.info_quota = 0;
+            this.info_total = 0;  
+            this.reimbursement_month = month;
+            $('#reimbursement_modal').modal('show');
         },
         addReimbursement:function(){
-            console.log(this.month);
-            // newcontribution.sueldo = 0;
-            // newcontribution.fr = 0;
-            // newcontribution.cm = 0;
-            // newcontribution.interes = 0;
-            // newcontribution.subtotal = 0;
-            //this.contributions.push(newcontribution);
+            let quotable = this.reimbursement_quotable;                           
+            let update_contributions = [];
+            console.log('inicio');
+            var i;
+            var newcontribution;
+            var index=0;
+            for(i=0;i<this.contributions.length;i++){                    
+                update_contributions.push(this.contributions[i]);
+                if(parseInt(this.reimbursement_month) == this.contributions[i].month && this.reimbursement_quotable > 0 ){
+                    index = i;
+                    let fr = parseFloat(quotable*this.rate.retirement_fund/100).toFixed(2);
+                    let cm = parseFloat(quotable*this.rate.mortuary_quota/100).toFixed(2);
+                    newcontribution = 
+                    {
+                        id : 0,
+                        monthyear : this.reimbursement_month+"-2018",
+                        sueldo : parseFloat(quotable).toFixed(2),
+                        fr : fr,
+                        cm : cm,
+                        interes : 0,
+                        subtotal : parseFloat(fr+cm).toFixed(2),
+                        month : this.reimbursement_month,
+                        year : '2018',
+                        affiliate_id : 1,
+                        type: 'R',
+                    };                                        
+                    update_contributions.push(newcontribution);                                
+                }
+            }
+            this.contributions = update_contributions;
+            this.CalcularAporte(newcontribution,index);          
+             $('#reimbursement_modal').modal('toggle');            
+             moneyInputMaskAll();
         },
       changeType:function(e){
           var i;
@@ -353,6 +483,7 @@ export default {
                 total1 += parseFloat(con.subtotal) ;                
            });
         this.total = total1.toFixed(2);
+        moneyInputMaskAll();
 
       },
       PrintQuote(){                              
@@ -371,61 +502,58 @@ export default {
       enableDC(){
           $(".directContribution").removeClass('disableddiv');
       },
-      Guardar(){                
-        if(this.tipo !== null) 
-        {
-            this.contributions =  this.contributions.filter((item)=> {                
-                return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
-            });       
-      
-            if(this.contributions.length > 0)
-            {   
+      Guardar(){                       
+        this.contributions =  this.contributions.filter((item)=> {                
+            return (item.sueldo != 0 && item.fr != 0 && item.cm !=0 && item.subtotal != 0);
+        });       
+    
+        if(this.contributions.length > 0)
+        {   
+            this.$swal({
+            title: 'Esta usted seguro de guardar?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {    
+                if (result.value) {                    
+                var aportes = this.contributions;                    
+                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
+                .then(response => {                  
+                this.enableDC();
+                var i;
+                for(i=0;i<response.data.contribution.length;i++){                        
+                    this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
+                }
                 this.$swal({
-                title: 'Esta usted seguro de guardar?',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar'
-                }).then((result) => {    
-                    if (result.value) {                    
-                    var aportes = this.contributions;                    
-                    axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
-                    .then(response => {                  
-                    this.enableDC();
-                    var i;
-                    for(i=0;i<response.data.contribution.length;i++){                        
-                        this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
-                    }
-                    this.$swal({
-                    title: 'Pago realizado',
-                    showConfirmButton: false,
-                    timer: 6000,
-                    type: 'success'
-                    })
-                    var json_contribution= JSON.stringify(response.data.contributions);                    
-                    printJS({printable:
-                            '/ret_fun/'+
-                            response.data.affiliate_id+
-                            '/print/voucher/'+
-                            response.data.voucher_id + "?contributions="+json_contribution, 
-                            type:'pdf', showModal:true});
-                    })                    
-                    .catch(error => {
-                    this.show_spinner = false;                                    
-                        console.log(error.response.data);
+                title: 'Pago realizado',
+                showConfirmButton: false,
+                timer: 6000,
+                type: 'success'
+                })
+                var json_contribution= JSON.stringify(response.data.contributions);                    
+                printJS({printable:
+                        '/ret_fun/'+
+                        response.data.affiliate_id+
+                        '/print/voucher/'+
+                        response.data.voucher_id + "?contributions="+json_contribution, 
+                        type:'pdf', showModal:true});
+                })                    
+                .catch(error => {
+                this.show_spinner = false;                                    
+                    console.log(error.response.data);
 //                        console.log(xhr.responseText);
 //                        var resp = jQuery.parseJSON(xhr.responseText);
-                        var resp = error.response.data;
-                        $.each(resp, function(index, value)
-                        {
-                            flash(value,'error',6000);
-                        });                        
-                    })
-                }
-                })            
+                    var resp = error.response.data;
+                    $.each(resp, function(index, value)
+                    {
+                        flash(value,'error',6000);
+                    });                        
+                })
             }
+            })
         } 
     },
   },

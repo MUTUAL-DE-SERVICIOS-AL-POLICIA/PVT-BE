@@ -3,11 +3,10 @@ import {mapGetters} from 'vuex';
 import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll, dateInputMask }  from "../../helper.js";
 export default {
   props:[
-
     'cities',
     'kinships',
     'spouse',
-    'affiliate',    
+    'affiliate',
   ],
   data(){
     return{
@@ -65,15 +64,15 @@ export default {
     dateInputMask();
   },
   computed:{
-    ...mapGetters({
-        retfun: 'getData'
+    ...mapGetters('retFunForm',{
+        retFun: 'getData'
     }),
     applicantIsMale(){
       return this.applicant_gender == 'M';
     },
     kinshipsFilter(){
       return this.kinships.filter((k) => {
-        return !(this.retfun.modality_id == 4 && k.id == 1);
+        return !(this.retFun.modality_id == 4 && k.id == 1);
       })
     }
   },
@@ -178,7 +177,7 @@ export default {
       // let modality_id_ = 
       cellPhoneInputMaskAll();
     phoneInputMaskAll();
-      let modality_id=this.retfun.modality_id;
+      let modality_id=this.retFun.modality_id;
       if(this.applicant_type  == '2'){
         this.show_advisor_form = !this.show_advisor_form;
         this.show_apoderado_form = false;
@@ -188,7 +187,7 @@ export default {
       if(this.applicant_type  == '3'){
         this.show_apoderado_form = !this.show_apoderado_form;
         this.show_advisor_form = false;
-        if(modality_id == 4){
+        if(modality_id == 4 || modality_id == 1){
           this.setDataSpouse();
         }else{
           this.setDataAffilate();
@@ -198,7 +197,7 @@ export default {
       if(this.applicant_type  == '1'){
         this.show_apoderado_form = false;
         this.show_advisor_form = false;
-        if(modality_id == 4){
+        if(modality_id == 4 || modality_id == 1){
           this.setDataSpouse();
         }else{
           this.setDataAffilate();

@@ -104,6 +104,18 @@ Vue.use(VeeValidate, {
           required: "Debe escribir la fecha de Nacimiento.",
           date_format:
             "Debe escribir la fecha de Nacimiento en el formato dia/mes/año."
+        },
+        service_years: {
+          required: "Debe ingresar los años de servicio",
+          numeric: "El campo años de servicio debe ser un numero",
+          max_value: "El campo años servicio debe ser menor o igual a 12.",
+          min_value: "El campo años de servicio debe ser mayor o igual a 0."
+        },
+        service_months: {
+          required: "Debe ingresar los meses de servicio",
+          numeric: "El campo meses de servicio debe ser un numero",
+          max_value: "El campo meses servicio debe ser menor o igual a 12.",
+          min_value: "El campo meses servicio debe ser mayor o igual a 0."
         }
       }
     }
@@ -242,7 +254,9 @@ Vue.component('quota-aid-create-info', require('./components/quota_aid/CreateInf
 Vue.component('quota-aid-step1-requirements', require('./components/quota_aid/Step1Requirements.vue'));
 Vue.component('quota-aid-step2-applicant', require('./components/quota_aid/Step2Applicant.vue'));
 Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/Step3Beneficiaries.vue'));
-
+Vue.component('quota-aid-beneficiary-list', require('./components/quota_aid/BeneficiaryList.vue'));
+Vue.component('quota-aid-beneficiary', require('./components/quota_aid/Beneficiary.vue'));
+// Vue.component('quota-aid-info', require('./components/a_fun/Info.vue'));
 //user
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
 //permission
@@ -258,7 +272,7 @@ Vue.component('aid-contribution-create', require('./components/contribution/Crea
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
 
 // utils
-Vue.component('swal-modal', require('./components/utils/SweetAlertModal.vue'));
+Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 
 
 const app = new Vue({

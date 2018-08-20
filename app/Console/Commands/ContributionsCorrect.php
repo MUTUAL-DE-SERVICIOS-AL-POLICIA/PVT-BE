@@ -46,7 +46,7 @@ class ContributionsCorrect extends Command
         $this->info('hola ');
         $registros=ContributionType::all();
         $nuevosnombres=array(
-         'Período reconocido por comando',
+         'Servicio Activo',
         'Período en item 0 Con Aporte',
         'Período en item 0 Sin Aporte',
         'Período de Batallón de Seguridad Física Con Aporte',
@@ -102,7 +102,7 @@ class ContributionsCorrect extends Command
 
             $this->info('se registraran nuevos');
             DB::table('contribution_types')->insert([
-                ['name' => 'Período reconocido por comando', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
+                ['name' => 'Servicio Activo', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
                 ['name' => 'Período en item 0 Con Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
                 ['name' => 'Período en item 0 Sin Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],
                 ['name' => 'Período de Batallón de Seguridad Física Con Aporte', 'shortened' => ' ', 'created_at' => '2018/03/27', 'updated_at' => '2018/03/27'],

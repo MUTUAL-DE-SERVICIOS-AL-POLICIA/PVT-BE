@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('/update_beneficiaries/{retirement_fund}', 'RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
 
 	//SpouseControler
-		Route::patch('/update_spouse/{spouse}', 'SpouseController@update')->name('update_spouse');
+		Route::patch('/update_spouse/{affiliate_id}', 'SpouseController@update')->name('update_spouse');
 
 		Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
 
@@ -108,6 +108,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
 		Route::get('quota_aid/{affiliate}/print/quota_aid_voucher/{voucher}', 'QuotaAidCertificationController@printVoucherQuoteAid')->name('quota_aid_print_voucher');
 		Route::get('print_contributions_quote_aid', 'QuotaAidCertificationController@printDirectContributionQuoteAid');
+
+		Route::get('quota_aid/{quota_aid}/print/reception', 'QuotaAidCertificationController@printReception')->name('quota_aid_print_reception');
 
 		Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->middleware('affiliate_has_ret_fun')->name('create_ret_fun');
 		Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
@@ -185,6 +187,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::post('get-interest', 'ContributionController@getInterest');
 		Route::post('get-interest-aid', 'AidContributionController@getInterest');
+		Route::get('calculate_reimbursement/{affiliate}/{amount}/{month}','ReimbursementController@caculateContribution');
 		Route::post('contribution_save', 'ContributionController@storeDirectContribution');
 		Route::post('aid_contribution_save', 'AidContributionController@storeDirectContribution');
 		Route::post('print_contributions_quote', 'RetirementFundCertificationController@printDirectContributionQuote');
@@ -205,16 +208,15 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('inbox_send_forward', 'InboxController@sendForward')->name('inbox_send_forward');
 		Route::post('inbox_send_backward', 'InboxController@sendBackward')->name('inbox_send_backward');
 		Route::patch('inbox_validate_doc/{doc_id}', 'InboxController@validateDoc')->name('inbox_validate_doc');
+		Route::patch('inbox_invalidate_doc/{doc_id}', 'InboxController@invalidateDoc')->name('inbox_validate_doc');
 
 
 		//dictamen legal routes
 		Route::get('ret_fun/{retirement_fund}/dictamen_legal', 'RetirementFundController@dictamenLegal')->name('ret_fun_dictamen_legal');		
 
+		//helpers route
+
 	});
-
-	
-
-
 });
 
 

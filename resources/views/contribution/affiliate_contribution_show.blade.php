@@ -9,14 +9,14 @@
     </div>
     <div class="ibox-content table-responsive">
         <div class="text-right">
-            @can('update',new Muserpol\Models\Contribution\ContributionCommitment)
+            @can('update',new Muserpol\Models\Contribution\Contribution)
                 <a href="{{route('show_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Detalle de Aportes"><i class="fa fa-eye"></i> Detalle </a>
                 <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edici&oacute;n de aportes"><i class="fa fa-key"></i> Editar </a>
             @endcan
             <a href="{{route('direct_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes Directos"><i class="fa fa-pencil"></i> Aporte Directo </a>
         </div>
         <br>
-        <table class="table table-striped-1 table-bordered table-hover size-13"  id="fixedheight">
+        <table class="table table-striped table-bordered table-hover size-13"  id="fixedheight">
             <thead>
                 <tr>
                     <th>A&ntilde;o</th>
@@ -37,12 +37,12 @@
             <tbody>                            
                 @while($year_start>=$year_end)
                     <tr>
-                        <th style="" class="alternativetext" >{{  $year_start   }}</th>
+                        <td style="" class="alternativetext" >{{  $year_start   }}</td>
                         @for($i=1;$i<=12;$i++)
                             @php
                                 $month = $i<10?'0'.$i:$i;
                             @endphp
-                            <th @if(isset($reimbursements[$year_start.'-'.$month.'-01'])) bgcolor="#ffe6b3" @endif class="numberformat"> {{ $contributions[$year_start.'-'.$month.'-01']??0 }} </th>
+                            <td @if(isset($reimbursements[$year_start.'-'.$month.'-01'])) bgcolor="#ffe6b3" @endif class="numberformat"> {{ $contributions[$year_start.'-'.$month.'-01']??0 }} </td>
                         @endfor
                         @php
                         $year_start--;

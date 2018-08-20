@@ -1,4 +1,36 @@
 <div class="col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <legend>Datos del afiliado</legend>
+            <div class="row">
+                <div class="col-md-6" :class="{'has-error': errors.has('date_death') }">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                                Fecha de Fallecimiento</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="date_death" v-model="date_death" data-date="true" class="form-control" v-validate.initial="'required'">
+                            <i v-show="errors.has('date_death')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('date_death')" class="text-danger">@{{ errors.first('date_death') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" :class="{'has-error': errors.has('degree') }">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                                Grado</label>
+                        <div class="col-sm-8">
+                            <select name="degree" class="form-control" v-model="affiliate.degree_id" v-validate.initial="'required'">
+                                <option :value="null"></option>
+                                <option v-for="(degree, index) in degrees" :value="degree.id">@{{ degree.name }}</option>
+                            </select>
+                            <i v-show="errors.has('degree')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('degree')" class="text-danger">@{{ errors.first('degree') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="ibox float-e-margins">    
         <div class="ibox-content">            
             <form method="get" class="form-horizontal">
@@ -124,12 +156,14 @@
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6" :class="{'has-error': errors.has('applicant_birth_date') }">
                             <div class="col-md-4">
-                                <label class="control-label">Fechad de Nacimiento</label>
+                                <label class="control-label">Fecha de Nacimiento</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="date" class="form-control" v-model.trim="applicant_birth_date">
+                                <input type="text" class="form-control" data-date="true" name="applicant_birth_date" v-model.trim="applicant_birth_date" v-validate.initial="'required|date_format:DD/MM/YYYY'">
+                                <i v-show="errors.has('applicant_birth_date')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('applicant_birth_date')" class="text-danger">@{{ errors.first('applicant_birth_date') }}</span>
                             </div>
                         </div>
                         <div class="col-md-6" :class="{'has-error': errors.has('applicant_gender') }">

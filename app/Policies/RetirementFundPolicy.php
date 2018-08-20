@@ -74,4 +74,8 @@ class RetirementFundPolicy
         // Log::info(json_encode($permission));
         return $permission?true:false;
     }
+    public function qualify(User $user, RetirementFund $retirementFund)
+    {
+        return $retirementFund->wf_state_current_id == 23 && Util::getRol()->id == 13 && $retirementFund->inbox_state == false;
+    }
 }

@@ -14,18 +14,20 @@
                     <div class="tab-content">
                         <div id="ret-fun-tab" class="tab-pane active">
                             <div class="panel-body">
-                                <table id="example" class="table table-striped table-bordered">
+                                <table id="example" class="table table-striped table-bordered datatablespanish">
                                     <thead>
                                         <tr>
                                             <th class="col-md-9 text-left">Detalle</th>
                                             <th class="col-md-2">Fecha</th>
+                                            <th class="col-md-2">Hora</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($ret_fun_records as $ret_fun_record)
                                         <tr>
                                             <td class="col-md-9 text-left">{{$ret_fun_record->message}}</td>
-                                            <td class="col-md-2">{{$ret_fun_record->created_at}}</td>
+                                            <td class="col-md-2">{{date("d/m/Y", strtotime($ret_fun_record->created_at))}}</td>
+                                            <td class="col-md-2">{{date("H:i", strtotime($ret_fun_record->created_at))}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -34,18 +36,20 @@
                         </div>
                         <div id="workflow-tab" class="tab-pane">
                             <div class="panel-body">
-                                <table id="workflow-table" class="table table-striped table-bordered">
+                                <table id="workflow-table" class="table table-striped table-bordered datatablespanish">
                                     <thead>
                                         <tr>
                                             <th class="col-md-9 text-left">Detalle</th>
                                             <th class="col-md-2">Fecha</th>
+                                            <th class="col-md-2">Hora</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($workflow_records as $w)
                                         <tr>
                                             <td class="col-md-9 text-left">{{$w->message}}</td>
-                                            <td class="col-md-2">{{$w->created_at}}</td>
+                                            <td class="col-md-2">{{date("d/m/Y", strtotime($w->created_at))}}</td>
+                                            <td class="col-md-2">{{date("H:i", strtotime($w->created_at))}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>

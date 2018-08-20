@@ -298,27 +298,17 @@ class RetirementFundController extends Controller
         $beneficiary->surname_husband = mb_strtoupper(trim($request->applicant_surname_husband));
         $beneficiary->birth_date = $request->applicant_birth_date;
         $beneficiary->gender = $request->applicant_gender;
-        $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
-        $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+        $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+        $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
         $beneficiary->type = "S";
         $beneficiary->save();
-        if($account_type == '1')
+        if($account_type == '1' && $request->ret_fun_modality != 4 && $request->ret_fun_modality != 1 )
         {
-            $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
-            $update_affilaite->identity_card = $beneficiary->identity_card;
-            $update_affilaite->first_name = $beneficiary->first_name;
-            $update_affilaite->second_name = $beneficiary->second_name;
-            $update_affilaite->last_name = $beneficiary->last_name;
-            $update_affilaite->mothers_last_name = $beneficiary->mothers_last_name;
-            $update_affilaite->gender = $beneficiary->gender;
-            $update_affilaite->birth_date = $beneficiary->birth_date;
-            $update_affilaite->phone_number = $beneficiary->phone_number;
-            $update_affilaite->cell_phone_number = $beneficiary->cell_phone_number;
-            $update_affilaite->city_birth_id = $beneficiary->city_birth_id;
-            $update_affilaite->city_identity_card_id =$beneficiary->city_identity_card_id;
-            $update_affilaite->surname_husband = $beneficiary->surname_husband;
-            $update_affilaite->save();
-
+            Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
+        }
+        if ($account_type == '1' && ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
+            Log::info("updating spouse 1");
+            Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
 
         if($account_type == '2')
@@ -334,8 +324,8 @@ class RetirementFundController extends Controller
             $advisor->second_name = strtoupper(trim($request->applicant_second_name));
             $advisor->surname_husband = strtoupper(trim($request->applicant_surname_husband));
             //$advisor->gender = "M";
-            $advisor->phone_number = trim(implode(",", $request->applicant_phone_number));
-            $advisor->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+            $advisor->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+            $advisor->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
             $advisor->name_court = $request->advisor_name_court;
             $advisor->resolution_number = $request->advisor_resolution_number;
             $advisor->resolution_date = $request->advisor_resolution_date;
@@ -360,8 +350,8 @@ class RetirementFundController extends Controller
             $legal_guardian->second_name = strtoupper(trim($request->legal_guardian_second_name));
             $legal_guardian->surname_husband = strtoupper(trim($request->legal_guardian_surname_husband));
             //$legal_guardian->gender = "M";
-            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));
-            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
@@ -371,6 +361,13 @@ class RetirementFundController extends Controller
             $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
             //$beneficiary->type = "N";
+            if ($request->ret_fun_modality != 4 && $request->ret_fun_modality != 1) {
+                Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
+            }
+            if (($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
+                Log::info("updating spouse 2");
+                Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
+            }
         }
         if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
             $address = new Address();
@@ -379,7 +376,10 @@ class RetirementFundController extends Controller
             $address->street = $request->beneficiary_street;
             $address->number_address = $request->beneficiary_number_address;
             $address->save();
-
+            if ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) {
+            }else{
+                $retirement_fund->affiliate->address()->save($address);
+            }
             $beneficiary->address()->save($address);
         }
 
@@ -562,7 +562,8 @@ class RetirementFundController extends Controller
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
         $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
-        $has_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
+        $can_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
+        $can_cancel = ($retirement_fund->user_id == $user->id && $retirement_fund->inbox_state == true);
 
         //workflow record
         $workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
@@ -573,10 +574,10 @@ class RetirementFundController extends Controller
             $str = $first_wf_state->message;
             preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
             $user_name = $matches[0][0];
-            $user = User::where('username','=', $user_name)->first();
-            $rol = $user->roles->first();
+            $rol = User::where('username','=', $user_name)->first()->roles->first();
             $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
         }
+
 
         // dd($first_wf_state);
 
@@ -614,7 +615,8 @@ class RetirementFundController extends Controller
             'observations' => $retirement_fund->ret_fun_observations,
             'submitted' =>  $submitted->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'),
             'submit_documents' => $submitted->get(),
-            'has_validate' =>  $has_validate,
+            'can_validate' =>  $can_validate,
+            'can_cancel' =>  $can_cancel,
             'workflow_records' =>  $workflow_records,
             'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
@@ -670,56 +672,61 @@ class RetirementFundController extends Controller
         $limit = $request->limit ?? 10;
         $sort = $request->sort ?? 'id';
         $order = $request->order ?? 'desc';
+
+        $code = $request->code ?? '';
         $last_name = strtoupper($request->last_name) ?? '';
         $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
         $surname_husband = strtoupper($request->surname_husband) ?? '';
         $first_name = strtoupper($request->first_name) ?? '';
         $second_name = strtoupper($request->second_name) ?? '';
-        $state = $request->state ?? '';
-
-        $code = $request->code ?? '';
         $modality = strtoupper($request->modality) ?? '';
+        $workflow= strtoupper($request->workflow) ?? '';
+        $state = strtoupper($request->state) ?? '';
 
         $total = RetirementFund::select('retirement_funds.id')
                                 ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
-                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
+                                ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
-                                //->where('procedure_modalities.name','LIKE',$modality.'%')
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
                                 ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
                                 ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
-                                ->whereRaw("coalesce(ret_fun_states.name,'') iLIKE '$state%'")
+                                ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
+                                ->whereRaw("coalesce(ret_fun_states.name,'') LIKE '$state%'")
+                                ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
+
                                 ->count();
+
         $ret_funds = RetirementFund::select(
             'retirement_funds.id',
-            'affiliates.first_name as first_name',
-            'affiliates.second_name as second_name',
+            'retirement_funds.code',
             'affiliates.last_name as last_name',
             'affiliates.mothers_last_name as mothers_last_name',
             'affiliates.surname_husband as surname_husband',
+            'affiliates.first_name as first_name',
+            'affiliates.second_name as second_name',
             'procedure_modalities.name as modality',
-            'workflows.name as workflow',
-            'retirement_funds.code',
-            'retirement_funds.reception_date',
+            'wf_states.first_shortened as workflow',
+            'retirement_funds.reception_date as reception_date',
             'ret_fun_states.name as state',
-            'retirement_funds.total'
+            'retirement_funds.total as total'
         )
                                 ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
-                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
+                                ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
-                                //->where('procedure_modalities.name','LIKE',$modality.'%')
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
                                 ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
                                 ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
                                 ->whereRaw("coalesce(ret_fun_states.name,'') iLIKE '$state%'")
+                                ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
+                                ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
                                 ->skip($offset)
                                 ->take($limit)
                                 ->orderBy($sort,$order)
@@ -736,7 +743,7 @@ class RetirementFundController extends Controller
         $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_derelict')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-                                ->find($affiliate->id);                                
+                                ->find($affiliate->id);
         # 3 id of ret_fun
         $procedure_types = ProcedureType::where('module_id', 3)->get();
         $procedure_requirements = ProcedureRequirement::
@@ -858,10 +865,10 @@ class RetirementFundController extends Controller
                     $update_affilaite->last_name = $old_ben->last_name;
                     $update_affilaite->mothers_last_name = $old_ben->mothers_last_name;
                     $update_affilaite->gender = $old_ben->gender;
-                    $update_affilaite->birth_date = $old_ben->birth_date;                    
+                    $update_affilaite->birth_date = $old_ben->birth_date;
                     $update_affilaite->city_identity_card_id =$old_ben->city_identity_card_id;
-                    $update_affilaite->surname_husband = $old_ben->surname_husband;                    
-                    $update_affilaite->save();                    
+                    $update_affilaite->surname_husband = $old_ben->surname_husband;
+                    $update_affilaite->save();
                 }
                 if ($old_ben->type == 'S') {
                     $old_ben->phone_number = trim(implode(",", $new_ben['phone_number']));
@@ -950,6 +957,7 @@ class RetirementFundController extends Controller
     public function qualification($ret_fun_id)
     {
         $retirement_fund = RetirementFund::find($ret_fun_id);
+        $this->authorize('qualify', $retirement_fund);
         $affiliate = $retirement_fund->affiliate;
         $current_procedure = RetFunProcedure::where('is_enabled','=', true)->first();
         if (! $current_procedure) {
@@ -963,9 +971,9 @@ class RetirementFundController extends Controller
         $dates = array(
             'id' => 0,
             'dates' => $affiliate->getDatesGlobal(),
-            'name' => "perii",
+            'name' => "Alta y Baja de la Policía Nacional Boliviana",
             'operator' => '**',
-            'description' => "dsds",
+            'description' => "Fechas de Alta y Baja de la Policía Nacional Boliviana",
             'years' => intval($total_dates / 12),
             'months' => $total_dates % 12,
         );
@@ -1008,8 +1016,26 @@ class RetirementFundController extends Controller
 
     public function getAverageQuotable(Request $request, $id)
     {
+        $rules = [
+            'service_years' => 'required|numeric|min:0|max:100',
+            'service_months' => 'required|numeric|min:0|max:12',
+        ];
+        $messages = [];
+
+        try {
+            $validator = Validator::make($request->all(), $rules, $messages)->validate();
+        } catch (ValidationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => $exception->errors(),
+            ], 403);
+        }
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
+        $affiliate->service_years = $request->service_years;
+        $affiliate->service_months = $request->service_months;
+        $affiliate->save();
         $total_quotes = $affiliate->getTotalQuotes();
         $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable();
         $data = [
@@ -1285,6 +1311,7 @@ class RetirementFundController extends Controller
 
 
         if ($has_availability) {
+            $availability = ContributionType::find(10);
             $subtotal_availability = ($retirement_fund->subtotal_availability );
             $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield)/100;
             $total_availability = $subtotal_availability + $total_annual_yield;
@@ -1327,7 +1354,7 @@ class RetirementFundController extends Controller
             /* added availability */
             $array_discounts_availability = [];
             foreach($array_discounts as $value) {
-                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + Disponibilidad '.($value['name'] ? ' - '.$value['name'] : '' )), 'amount' => ($retirement_fund->subtotal_ret_fun + $total_availability - $value['amount'])));
+                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + '. $availability->display_name .' ' .($value['name'] ? ' - '.$value['name'] : '' )), 'amount' => ($retirement_fund->subtotal_ret_fun + $total_availability - $value['amount'])));
             }
 
         }else{

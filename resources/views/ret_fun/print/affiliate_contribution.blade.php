@@ -1,7 +1,7 @@
 @extends('print_global.print')
 @section('content')
     <div>
-         @include('print_global.applicant_info', ['applicant'=>$beneficiary]) 
+         @include('print_global.police_info', ['affiliate'=>$beneficiary, 'degree'=>$beneficiary->degree, 'exp'=>($beneficiary->city_identity_card->first_shortened ?? null)]) 
         <div>
             <p>Periodo: </p>
         </div>
@@ -20,12 +20,12 @@
             </tr>
         @foreach($contributions as $i=>$item)
             <tr>
-                <td class='text-left p-5'>{!! strtoupper($util::getStringDate($item->year."-".$item->month."-01",true)) !!}</td>
+                <td class='text-left p-5'>@if($item->type == 'R') R. @endif {!! strtoupper($util::getStringDate($item->year."-".$item->month."-01",true)) !!}</td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->sueldo) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->fr + $item->cm) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->fr) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->cm) !!} </td>
-                <td class='text-right p-5'>{!! $util::formatMoney($item->interes) !!} </td>
+                <td class='text-right p-5'>{!! $util::formatMoney($item->interes) ?? '0.00' !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->subtotal) !!} </td>
             </tr>
         @endforeach

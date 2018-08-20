@@ -5,6 +5,7 @@ use DateTime;
 use Session;
 use Auth;
 use DB;
+use User;
 use Carbon\Carbon;
 use Log;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
@@ -13,6 +14,9 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Role;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\RetirementFund\RetirementFund;
+use Muserpol\Models\Affiliate;
+use Muserpol\Models\Spouse;
+use Muserpol\QuotaAidCorrelative;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -120,16 +124,15 @@ class Util
         return ($title." - ".$affi->fullName()." - ".$date.".pdf");
     }
 
-    public static function getNextCode($actual){
+    public static function getNextCode($actual, $default = '675' ){
         $year =  date('Y');
         if($actual == "")
-            return "675/".$year;  
+            return $default."/".$year;  
         $data = explode('/', $actual);
         if(!isset($data[1]))
-            return "675/".$year;                
+            return $default."/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
-
     public static function getNextAreaCode($retirement_fund_id){
         
         $wf_state = WorkflowState::where('module_id',3)->where('role_id', Session::get('rol_id'))->first();        
@@ -154,6 +157,36 @@ class Util
         $correlative = new RetFunCorrelative();
         $correlative->wf_state_id = $wf_state->id;
         $correlative->retirement_fund_id = $retirement_fund_id;
+        $correlative->code = $role->correlative;
+        $correlative->date = Carbon::now();
+        $correlative->user_id = self::getAuthUser()->id;
+        $correlative->save();
+
+        return $correlative;
+    }
+    public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id){
+        $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();        
+        $reprint = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
+        if(isset($reprint->id))
+            return $reprint;
+        $year =  date('Y');
+        $role = Role::find($wf_state->role_id);
+        if($role->correlative == ""){
+            $role->correlative = "1/".$year;
+        }
+        else{
+            $data = explode('/', $role->correlative);
+            if(!isset($data[1]))
+                $role->correlative = "1/".$year;
+            else
+                $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+        }
+        $role->save();
+
+        //Correlative 
+        $correlative = new QuotaAidCorrelative();
+        $correlative->wf_state_id = $wf_state->id;
+        $correlative->quota_aid_mortuary_id = $quota_aid_mortuary_id;
         $correlative->code = $role->correlative;
         $correlative->date = Carbon::now();
         $correlative->user_id = self::getAuthUser()->id;
@@ -509,5 +542,43 @@ class Util
             $name = ', '. $name.", queda un saldo de ".self::formatMoney($array_discounts[sizeOf($array_discounts)-1]['amount'], true).' ('.self::convertir($array_discounts[sizeOf($array_discounts) - 1]['amount']) .' BOLIVIANOS).';
         }
         return $name;
+    }
+    public static function updateAffiliatePersonalInfo($affiliate_id, $object)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        $affiliate->identity_card = $object->identity_card;
+        $affiliate->first_name = $object->first_name;
+        $affiliate->second_name = $object->second_name;
+        $affiliate->last_name = $object->last_name;
+        $affiliate->mothers_last_name = $object->mothers_last_name;
+        $affiliate->surname_husband = $object->surname_husband;
+        $affiliate->gender = $object->gender;
+        $affiliate->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
+        $affiliate->phone_number = $object->phone_number;
+        $affiliate->cell_phone_number = $object->cell_phone_number;
+        $affiliate->city_birth_id = $object->city_birth_id;
+        $affiliate->city_identity_card_id = $object->city_identity_card_id;
+        $affiliate->save();
+    }
+    public static function updateCreateSpousePersonalInfo($affiliate_id, $object)
+    {
+        $spouse = Spouse::where('affiliate_id',$affiliate_id)->first();
+        if (!$spouse) {
+            $spouse = new Spouse();
+            $spouse->affiliate_id = $affiliate_id;
+            $spouse->user_id = self::getAuthUser()->id;
+            $spouse->registration = 0;
+        }
+        $spouse->identity_card = $object->identity_card;
+        $spouse->first_name = $object->first_name;
+        $spouse->second_name = $object->second_name;
+        $spouse->last_name = $object->last_name;
+        $spouse->mothers_last_name = $object->mothers_last_name;
+        $spouse->surname_husband = $object->surname_husband;
+        $spouse->civil_status = $object->civil_status;
+        $spouse->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
+        $spouse->city_birth_id = $object->city_birth_id;
+        $spouse->city_identity_card_id = $object->city_identity_card_id;
+        $spouse->save();
     }
 }

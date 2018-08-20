@@ -27,6 +27,7 @@ th.ellipsis-text {
     }
 /* .table-striped-1>tbody>tr:nth-child(2n+1){background-color:#f2f2f2} */
 </style>
+<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
 @section('content')
 <div class="row  wrapper border-bottom white-bg page-heading">
@@ -43,19 +44,21 @@ th.ellipsis-text {
                 <a href="{{route('create_ret_fun', $affiliate->id)}}">
                     <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de FONDO DE RETIRO"><i class="fa fa-paste"></i> </button>
                 </a>
-                <a href="{{route('create_quota_aid', $affiliate->id)}}">
-                    <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-paste"></i> </button>
-                </a>
             @endif
         @endcan
-        @can('view',new Muserpol\Models\Contribution\Contribution)
+        @can('create', new Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary)
+            <a href="{{route('create_quota_aid', $affiliate->id)}}">
+                <button class="btn btn-warning btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-heartbeat" style="font-size:15px;"></i> </button>
+            </a>
+        @endcan
+        {{-- @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
         </a>
         <a href="{{route('show_aid_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"> </i> APORTES PASIVO </button>
         </a>
-        @endcan
+        @endcan --}}
         <span data-toggle="modal" data-target="#ModalRecord">
             <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Afiliado">
                 <i class="fa fa-history" style="font-size:15px;"></i> HISTORIAL
@@ -91,6 +94,7 @@ th.ellipsis-text {
                     <ul class="list-group elements-list">
                         <li class="list-group-item active" data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-address-book"></i> Información Personal </a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-spouse-info"><a href="#"><i class="fa fa-user"></i> Información de Conyuge </a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-contributions"><a href="#" ><i class="fa fa-money "></i> Aportes</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-documents-scanned"><a href="#" ><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
@@ -108,7 +112,6 @@ th.ellipsis-text {
             <div class="tab-content">
 
                     <div id="tab-affiliate" class="tab-pane active">
-                        {{ $is_editable }}
                         <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template>
                             @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
                         </affiliate-show>
@@ -121,14 +124,30 @@ th.ellipsis-text {
                         </affiliate-police>
 
                     </div>
+                    <div id="tab-spouse-info" class="tab-pane">
+
+                        <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $cities }}" inline-template>
+                            @include('spouses.spouse_personal_information', ['spouse'=>$spouse])
+                        </spouse-show>
+
+                    </div>
                     <div id="tab-contributions" class="tab-pane">
                         @include('contribution.affiliate_contribution_show',
                         [
-                        'contributions' =>  $contributions,
-                        'month_end' =>  $month_end,
-                        'month_start'  =>   $month_start,
-                        'year_end'  =>  $year_end,
-                        'year_start'    =>  $year_start
+                            'contributions' =>  $contributions,
+                            'month_end' =>  $month_end,
+                            'month_start'  =>   $month_start,
+                            'year_end'  =>  $year_end,
+                            'year_start'    =>  $year_start
+                        ])
+                        
+                        @include('contribution.affiliate_aid_contribution_show',
+                        [
+                            'contributions' =>  $aid_contributions,
+                            'month_end' =>  $month_death,
+                            'month_start'  =>   $month_end,
+                            'year_end'  =>  $year_death,
+                            'year_start'    =>  $year_end
                         ])
                     </div>
                     <div id="tab-documents-scanned" class="tab-pane">
@@ -223,7 +242,6 @@ th.ellipsis-text {
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
 $(document).ready(function() {
-    $('#example').DataTable();
 
     function moneyInputMask() {
 
@@ -244,7 +262,6 @@ $(document).ready(function() {
     // $('.file-box').each(function() {
     //     animationHover(this, 'pulse');
     // });
-    $('#record-table').DataTable();
 } );
 </script>
 @endsection
