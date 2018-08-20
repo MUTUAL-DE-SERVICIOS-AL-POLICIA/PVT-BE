@@ -1,21 +1,30 @@
 
-<ret-fun-beneficiaries-show :beneficiaries2="{{ $beneficiaries }}" :beneficiaries-backend="{{ $beneficiaries }}" :ret-fun-id="{{ $retirement_fund->id }}" :procedure-modality-id="{{ $retirement_fund->procedure_modality_id }}" :original-beneficiaries-backend="{{ $beneficiaries }}" :cities="{{$cities}}" :kinships="{{$kinships}}" inline-template>
+<quota-aid-beneficiaries-show
+    :beneficiaries2="{{ $beneficiaries }}" 
+    :beneficiaries-backend="{{ $beneficiaries }}" 
+    :ret-fun-id="{{ $quota_aid->id }}" 
+    :procedure-modality-id="{{ $quota_aid->procedure_modality_id }}" 
+    :original-beneficiaries-backend="{{ $beneficiaries }}" 
+    :cities="{{$cities}}" 
+    :kinships="{{$kinships}}" 
+    inline-template>
+
     <div class="col-lg-12">
         <div class="ibox">
     
             <div class="ibox-content">
                 <div class="text-right">
-                    @can('update',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
+                    {{-- @can('update',new Muserpol\Models\QuotaAid\QuotaAidBeneficiary) --}}
                     <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar</button>
-                  
+{{--                   
                     @else
                     <br>
-                    @endcan
+                    @endcan --}}
                     <br><br>
                 </div>
                 
                 <div>
-                <ret-fun-beneficiary v-for="(beneficiary, index) in beneficiaries"
+                <quota-aid-beneficiary v-for="(beneficiary, index) in beneficiaries"
                     :key='index'
                     :beneficiary="beneficiary"
                     :cities="cities"
@@ -25,7 +34,7 @@
                     v-on:remove="removeBeneficiary(index)"
                     >
                 
-                </ret-fun-beneficiary>
+                </quota-aid-beneficiary>
                 </div>
                 <div class="row" v-if="editing && canAddBeneficiary() ">
                     <div class="col-md-5"></div>
@@ -45,4 +54,4 @@
         
        
     </div>
-</ret-fun-beneficiaries-show>
+</quota-aid-beneficiaries-show>
