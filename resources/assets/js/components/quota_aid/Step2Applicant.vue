@@ -51,7 +51,18 @@ export default {
       date_death: this.affiliate.date_death,
       error:{
         applicant_identity_card: false,
-      }
+      },
+      spouse_identity_card:null ,
+      spouse_city_identity_card_id:null ,
+      spouse_first_name: null ,
+      spouse_second_name: null ,
+      spouse_last_name: null ,
+      spouse_mothers_last_name: null ,
+      spouse_surname_husband: null ,
+      spouse_birth_date: null ,
+      spouse_city_birth_id: null ,
+      spouse_civil_status: null ,
+      spouse_date_death: null ,
     }
   },
   mounted(){
@@ -73,7 +84,30 @@ export default {
       return this.kinships.filter((k) => {
         return !(this.quotaAid.modality_id == 4 && k.id == 1);
       })
-    }
+    },
+    canAddDataSpouse(){
+      setTimeout(() => {
+        dateInputMaskAll();
+      }, 300);
+      return [14,15].includes(this.quotaAid.modality_id);
+    },
+    canAddDataAffiliate(){
+      return [8,9,13].includes(this.quotaAid.modality_id);
+    },
+    age: function(){
+        if(this.spouse_birth_date!=null){
+            if (this.spouse_birth_date.includes('y') || this.spouse_birth_date.includes('m') || this.spouse_birth_date.includes('d') ) {
+                return ''
+            }
+
+            if(this.spouse_birth_date){
+                return moment(this.spouse_birth_date, "DD/MM/YYYY").fromNow(true)
+            }else
+            {
+                return '';
+            }
+        }
+    },
   },
   methods: {
     addPhoneNumber(){

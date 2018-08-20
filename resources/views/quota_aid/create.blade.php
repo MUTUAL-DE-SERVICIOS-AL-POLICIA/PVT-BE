@@ -40,11 +40,11 @@
                                     inline-template>
                                 @include('quota_aid.step1_requirements')
                             </quota-aid-step1-requirements>
-                        </tab-content>
-                        <tab-content title="Datos del Solicitante" ref="two" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
                             <quota-aid-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" :degrees="{{ $degrees }}" inline-template>
                                 @include('quota_aid.step2_applicant')
                             </quota-aid-step2-applicant>
+                        </tab-content>
+                        <tab-content title="Datos del Solicitante" ref="two" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
                         </tab-content>
                         <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
                             <quota-aid-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>

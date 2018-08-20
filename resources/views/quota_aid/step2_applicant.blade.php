@@ -3,7 +3,7 @@
         <div class="ibox-content">
             <legend>Datos del afiliado</legend>
             <div class="row">
-                <div class="col-md-6" :class="{'has-error': errors.has('date_death') }">
+                <div class="col-md-6" :class="{'has-error': errors.has('date_death') }" v-if="canAddDataAffiliate">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">
                                 Fecha de Fallecimiento</label>
@@ -410,6 +410,138 @@
                 <div class="col-md-4">
                     <div class="form-group"><label class="col-sm-4 control-label">Nro</label>
                         <div class="col-sm-8"><input type="text" name="beneficiary_number_address" v-model.trim="beneficiary_number_address" class="form-control"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ibox float-e-margins" v-if="canAddDataSpouse">
+        <div class="ibox-content">
+            <legend>Datos del o de la Conyugue</legend>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_identity_card')  }">
+                        <div class="col-md-4"><label class="control-label">Cedula de identidad:</label></div>
+                        <div class="col-md-8"><input name="spouse_identity_card" type="text" v-model="spouse_identity_card" class="form-control" 
+                                v-validate.initial="'required'">
+                            <div v-show="errors.has('spouse_identity_card')">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('spouse_identity_card') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_city_identity_card_id')  }">
+                        <div class="col-md-4"><label class="control-label">Lugar de expedición:</label></div>
+                        <div class="col-md-8">
+                            <select class="form-control" name="spouse_city_identity_card_id" v-model.trim="spouse_city_identity_card_id" v-validate.initial="'required'">
+                                <option :value="null"></option>
+                                <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
+                            </select>
+                            <div v-show="errors.has('spouse_city_identity_card_id')">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('spouse_city_identity_card_id') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_first_name')  }">
+                        <div class="col-md-4"><label class="control-label">Primer Nombre:</label></div>
+                        <div class="col-md-8"><input type="text" name="spouse_first_name" v-model="spouse_first_name" class="form-control"  v-validate.initial="'required|alpha_space_quote'">
+                            <div v-show="errors.has('spouse_first_name')">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('spouse_first_name') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_second_name')  }">
+                        <div class="col-md-4"><label class="control-label">Segundo Nombre:</label></div>
+                        <div class="col-md-8"><input type="text" name="spouse_second_name" v-model="spouse_second_name" class="form-control"  v-validate.initial="'alpha_space_quote'">
+                            <div v-show="errors.has('spouse_second_name')">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('spouse_second_name') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_last_name')  }">
+                        <div class="col-md-4"><label class="control-label">Apellido Paterno:</label></div>
+                        <div class="col-md-8"><input type="text" name="spouse_last_name" v-model="spouse_last_name" class="form-control"  v-validate.initial="'alpha_space_quote'">
+                            <div v-show="errors.has('spouse_last_name') ">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('spouse_last_name') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_mothers_last_name')  }">
+                        <div class="col-md-4"><label class="control-label">Apellido Materno:</label></div>
+                        <div class="col-md-8"><input name="spouse_mothers_last_name" type="text" v-model="spouse_mothers_last_name" class="form-control" 
+                                v-validate.initial="'alpha_space_quote'">
+                            <div v-show="errors.has('spouse_mothers_last_name') ">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('spouse_mothers_last_name') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_surname_husband')  }">
+                        <div class="col-md-4"><label class="control-label">Apellido de Casada:</label></div>
+                        <div class="col-md-8"><input name="spouse_surname_husband" type="text" class="form-control" v-model="spouse_surname_husband" 
+                                v-validate.initial="'alpha_space_quote'">
+                            <div v-show="errors.has('spouse_surname_husband') ">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('spouse_surname_husband') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {{--
+                    <div class="row m-b-md" :class="{ 'has-error': errors.has('gender')  }">
+                        <div class="col-md-4"><label class="control-label">Genero:</label></div>
+                        <div class="col-md-8">{!! Form::select('gender', ['F'=>'Femenino','M'=>'Masculino'], null, ['placeholder' => 'Seleccione genero', 'class'
+                            => 'form-control','v-model' => 'spouse_gender',':disabled' => '!editing', 'v-validate.initial'=>"'required'"])
+                            !!}
+                            <div v-show="errors.has('gender') ">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('gender') }}</span>
+                            </div>
+                        </div>
+                    </div> --}}
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('spouse_birth_date')  }">
+                        <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
+                        <div class="col-md-5"><input name="spouse_birth_date" v-model="spouse_birth_date" data-date="true" type="text" class="form-control" v-validate.initial="'required|date_format:DD/MM/YYYY'">
+                            <div v-show="errors.has('spouse_birth_date') ">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('spouse_birth_date') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4"><input v-model="age" type="text" class="form-control" disabled></div>
+                        {{--
+                        <div class="col-md-1">Años</div> --}}
+                    </div>
+                    <div class="row m-b-md">
+                        <div class="col-md-3" :class="{'has-error': errors.has('spouse_city_birth_id') }"><label class="control-label">Lugar de Nacimiento:</label></div>
+                        <div class="col-md-9">
+                            <select class="form-control" name="spouse_city_birth_id" v-model.trim="spouse_city_birth_id" v-validate.initial="'required'">
+                                <option :value="null"></option>
+                                <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
+                            </select>
+                            <i v-show="errors.has('spouse_city_birth_id')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('spouse_city_birth_id')" class="text-danger">@{{ errors.first('spouse_city_birth_id') }}</span>
+                        </div>
+                    </div>
+                    <div class="row m-b-md">
+                        <div class="col-md-3"><label class="control-label">Estado Civil:</label></div>
+                        <div class="col-md-9"> {!! Form::select('spouse_civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'],
+                            null, ['placeholder'=> 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'spouse_civil_status'
+                            ]) !!}
+                        </div>
+                    </div>
+                    <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('spouse_date_death')  }">
+                        <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Fallecimiento:</label></div>
+                        <div class="col-md-5"><input name="spouse_date_death" v-model="spouse_date_death" data-date="true" type="text" class="form-control" v-validate.initial="'required|date_format:DD/MM/YYYY'">
+                            <div v-show="errors.has('spouse_date_death') ">
+                                <i class="fa fa-warning text-danger"></i>
+                                <span class="text-danger">@{{ errors.first('spouse_date_death') }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
