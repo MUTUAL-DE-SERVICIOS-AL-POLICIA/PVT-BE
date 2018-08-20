@@ -106,17 +106,34 @@ class QuotaAidMortuaryController extends Controller
         $gender = $request->beneficiary_gender;
 
         $requirements = ProcedureRequirement::select('id')->get();
-        $affiliate = Affiliate::find($request->affiliate_id);
-        $affiliate->date_death = Util::verifyMonthYearDate($request->date_death) ? Util::parseMonthYearDate($request->date_death) : $request->date_death;
+        $affiliate = Affiliate::find($request->affiliate_id);        
         switch ($request->quota_aid_modality) {
             case 8:
             case 9:
             case 13:
                 $affiliate->affiliate_state_id = 4;
+                $affiliate->date_death = Util::verifyMonthYearDate($request->date_death) ? Util::parseMonthYearDate($request->date_death) : $request->date_death;
                 break;
             case 14:
             case 15:
                 $affiliate->affiliate_state_id = 5;
+
+                $spouse = new Spouse();
+                $spouse->user_id = Auth::user()->id;
+                $spouse->affiliate_id = $request->affiliate_id;
+                $spouse->city_identity_card_id = $request->spouse_city_identity_card_id;
+                $spouse->identity_card = $request->spouse_identity_card;
+                $spouse->registration = '';//$request->spouse_registration;
+                $spouse->last_name = $request->spouse_last_name;
+                $spouse->mothers_last_name = $request->spouse_mother_last_namel;
+                $spouse->first_name = $request->spouse_first_name;
+                $spouse->second_name = $request->spouse_second_name;
+                $spouse->surname_husband = $request->spouse_surname_husband;
+                $spouse->civil_status = $request->spouse_civil_status;
+                $spouse->birth_date = $request->spouse_birth_date;
+                $spouse->date_death = $request->spouse_date_death;
+                $spouse->save();
+
                 break;
             default:
                 return "error modality not found";
