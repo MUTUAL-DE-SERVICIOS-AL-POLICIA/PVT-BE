@@ -41,6 +41,43 @@ class AidQuotaProcedureSeeder extends Seeder
             ['hierarchy_id' => '5', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '15','amount' => '14060', 'year'=>'2020-12-31'],
             ['hierarchy_id' => '5', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '15','amount' => '7733', 'year'=>'2020-12-31'],
             ['hierarchy_id' => '5', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '15','amount' => '11248', 'year'=>'2020-12-31'],
+            //procedures faltantes
+            ['hierarchy_id' => '1', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '14','amount' => '21210', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '1', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '14','amount' => '11248', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '1', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '14','amount' => '16872', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '2', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '14','amount' => '21210', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '2', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '14','amount' => '11248', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '2', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '14','amount' => '16872', 'year'=>'2020-12-31'],
+
+            ['hierarchy_id' => '1', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '15','amount' => '21210', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '1', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '15','amount' => '11248', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '1', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '15','amount' => '16872', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '2', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '15','amount' => '21210', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '2', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '15','amount' => '11248', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '2', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '15','amount' => '16872', 'year'=>'2020-12-31'],
+
+            ['hierarchy_id' => '4', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '13','amount' => '15466', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '4', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '13','amount' => '8436', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '4', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '13','amount' => '12303', 'year'=>'2020-12-31'],
+
+            ['hierarchy_id' => '4', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '15','amount' => '15466', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '4', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '15','amount' => '8436', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '4', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '15','amount' => '12303', 'year'=>'2020-12-31'],
+
+            ['hierarchy_id' => '3', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '13','amount' => '14060', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '3', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '13','amount' => '7733', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '3', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '13','amount' => '11248', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '5', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '13','amount' => '14060', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '5', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '13','amount' => '7733', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '5', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '13','amount' => '11248', 'year'=>'2020-12-31'],
+
+            ['hierarchy_id' => '3', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '14','amount' => '14060', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '3', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '14','amount' => '7733', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '3', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '14','amount' => '11248', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '5', 'type_mortuary' => 'Titular', 'procedure_modality_id' => '14','amount' => '14060', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '5', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => '14','amount' => '7733', 'year'=>'2020-12-31'],
+            ['hierarchy_id' => '5', 'type_mortuary' => 'Viuda', 'procedure_modality_id' => '14','amount' => '11248', 'year'=>'2020-12-31'],
+
         ]);
     }
 }

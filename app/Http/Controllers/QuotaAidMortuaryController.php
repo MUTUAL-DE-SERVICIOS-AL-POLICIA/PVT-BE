@@ -9,6 +9,7 @@ use Muserpol\Models\Kinship;
 use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Auth;
+use Log;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
@@ -84,7 +85,9 @@ class QuotaAidMortuaryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {        
+    {
+        Log::info($request->all());
+        Log::info($request->date_death);
         $first_name = $request->beneficiary_first_name;
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
@@ -94,27 +97,28 @@ class QuotaAidMortuaryController extends Controller
         $city_id = $request->beneficiary_city_identity_card;
         $birth_date = $request->beneficiary_birth_date;
         $kinship = $request->beneficiary_kinship;
+        $gender = $request->beneficiary_gender;
 
         $requirements = ProcedureRequirement::select('id')->get();
         $affiliate = Affiliate::find($request->affiliate_id);
-        $af->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        $affiliate->date_death = Util::verifyMonthYearDate($request->date_death) ? Util::parseMonthYearDate($request->date_death) : $request->date_death;
         switch ($request->quota_aid_modality) {
             case 8:
-            case 8:
+            case 9:
             case 13:
-                $af->affiliate_state_id = 4;
+                $affiliate->affiliate_state_id = 4;
                 break;
             case 14:
             case 15:
-                $af->affiliate_state_id = 5;
+                $affiliate->affiliate_state_id = 5;
                 break;
             default:
-                $this->info("error");
+                return "error modality not found";
                 break;
         }
-        $af->save();
+        $affiliate->save();
 
-        $procedure = QuotaAidProcedure::where('hierarchy_id',$affiliate->degree->hierarchy_id)->where('procedure_modality_id',$request->quota_aid_modality)->select('id')->first();        
+        $procedure = QuotaAidProcedure::where('hierarchy_id',$affiliate->degree->hierarchy_id)->where('procedure_modality_id',$request->quota_aid_modality)->select('id')->first();
         $validator = Validator::make($request->all(), [
             //'applicant_first_name' => 'required|max:5',            
         ]);                
@@ -130,22 +134,41 @@ class QuotaAidMortuaryController extends Controller
         $rules = [];
         $biz_rules = [];
         
-        $has_quota_aid = false;
-        $quota_aid = QuotaAidMortuary::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
-        if(isset($quota_aid->id)) {
-            $has_quota_aid = true;
-            return $quota_aid;
-            return "ya tiene un tramite";
-            // $biz_rules = [
-            //     'quota_aid_double'
-            // ];
-            // $code = Util::getNextCode ("");
+        // $has_quota_aid = false;
+        // $quota_aid = QuotaAidMortuary::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
+        // if(isset($quota_aid->id)) {
+        //     $has_quota_aid = true;
+        //     return $quota_aid;
+        //     return "ya tiene un tramite";
+        //     // $biz_rules = [
+        //     //     'quota_aid_double'
+        //     // ];
+        //     // $code = Util::getNextCode ("");
+        // }
+        // else {
+        //     $quota_aid = QuotaAidMortuary::select('id','code')->orderBy('id','desc')->first();
+        //     $code = Util::getNextCode ($quota_aid->code);
+        // }
+
+        $nextcode = QuotaAidMortuary::where('affiliate_id', $request->affiliate_id)->where('code','like','%A')->first();
+
+        if (isset($nextcode->id)) {
+            $code = str_replace("A", "", $nextcode->code);
+        }else{
+            if($request->procedure_type_id == 3){
+                //cuota
+                $quota_aid = QuotaAidMortuary::select('id', 'code')->whereIn('procedure_modality_id', [8,9])->limit(10)->orderBy('id', 'desc')->get();
+                $quota_aid_code = $this->getLastCode($quota_aid);
+                $code = Util::getNextCode($quota_aid_code, '179');
+            }elseif($request->procedure_type_id == 4){
+                //auxlio
+                $quota_aid = QuotaAidMortuary::select('id', 'code')->whereIn('procedure_modality_id', [13,14,15])->limit(10)->orderBy('id', 'desc')->get();
+                $quota_aid_code = $this->getLastCode($quota_aid);
+                $code = Util::getNextCode($quota_aid_code, '268');
+                Log::info('code: '.$code);
+            }
         }
-        else {
-            $quota_aid = QuotaAidMortuary::select('id','code')->orderBy('id','desc')->first();
-            $code = Util::getNextCode ($quota_aid->code);
-        }
-            
+
         $modality = ProcedureModality::find($request->quota_aid_modality);
         
         $quota_aid = new QuotaAidMortuary();
@@ -271,7 +294,7 @@ class QuotaAidMortuaryController extends Controller
         for($i=0;is_array($first_name) &&  $i<sizeof($first_name);$i++){
             if($first_name[$i] != "" && $last_name[$i] != ""){
                 $beneficiary = new QuotaAidBeneficiary();
-                $beneficiary->retirement_fund_id = $retirement_found->id;
+                $beneficiary->quota_aid_mortuary_id = $quota_aid->id;
                 $beneficiary->city_identity_card_id = $city_id[$i];
                 $beneficiary->kinship_id = $kinship[$i];
                 $beneficiary->identity_card = strtoupper($identity_card[$i]);
@@ -562,7 +585,7 @@ class QuotaAidMortuaryController extends Controller
         $hierarchy = $affiliate->degree->hierarchy;
         $procedure_types = ProcedureType::where('id','3')->orWhere('id','4')->get();
         
-        $affiliate = Affiliate::select('affiliates.id','identity_card','registration','first_name','second_name','last_name','mothers_last_name','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','degree_id')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender','degree_id','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_death')
                                 ->leftJoin('degrees','affiliates.degree_id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
@@ -597,6 +620,25 @@ class QuotaAidMortuaryController extends Controller
             'hierarchy' => $hierarchy,
         ];        
         return view('quota_aid.create',$data);        
+    }
+    private function getLastCodeQuota($quotas){
+        $num = 0;
+        $year = 0;
+        if(count($quotas) == 0)
+        return "";
+        foreach($quotas as $quota)
+        {
+            $code = str_replace('A','',$quota->code);
+            if( $code != "")
+            {
+                $code = explode('/',$code);
+                if($code[1]>$year)
+                    $year = $code[1];
+                if($code[0]>$num)
+                    $num = $code[0];
+            }
+        }
+        return $num."/".$year;
     }
 
 //    public function destroy($id)

@@ -139,7 +139,7 @@
               status: status
             }
           };
-          this.$store.commit("pushDoc", object);
+          this.$store.commit("inbox/pushDoc", object);
         },
         checkedAll() {
           if (this.checkedAllStatus) {

@@ -3,10 +3,10 @@
       <div class="alert alert-info">
           <div class="row">
             <div class="col-md-4">
-                <strong>Modalidad:</strong> {{ retfun.modality }}
+                <strong>Modalidad:</strong> {{ quotaAid.modality }}
             </div>
             <div class="col-md-4">
-                <strong>Parentesco:</strong> {{ retfun.applicant.kinship }}
+                <strong>Parentesco:</strong> {{ quotaAid.applicant.kinship }}
             </div>
             <div class="col-md-4">
                 <strong>Grado:</strong> {{ hierarchy.name+' - '+affiliate.degree }}
@@ -23,8 +23,8 @@ export default {
         'hierarchy',
 	],
     computed: {
-        ...mapGetters({
-            retfun: 'getData'
+        ...mapGetters('quotaAidForm',{
+            quotaAid: 'getData'
         }),
     },
     created()

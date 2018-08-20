@@ -177,7 +177,7 @@ export default {
         },
     },
     computed:{
-        ...mapGetters({
+        ...mapGetters('inbox',{
           dataInbox: 'getDataInbox',
         }),
         wfSequenceNextList(){

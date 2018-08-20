@@ -124,16 +124,15 @@ class Util
         return ($title." - ".$affi->fullName()." - ".$date.".pdf");
     }
 
-    public static function getNextCode($actual){
+    public static function getNextCode($actual, $default = '675' ){
         $year =  date('Y');
         if($actual == "")
-            return "675/".$year;  
+            return $default."/".$year;  
         $data = explode('/', $actual);
         if(!isset($data[1]))
-            return "675/".$year;                
+            return $default."/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
-
     public static function getNextAreaCode($retirement_fund_id){
         
         $wf_state = WorkflowState::where('module_id',3)->where('role_id', Session::get('rol_id'))->first();        

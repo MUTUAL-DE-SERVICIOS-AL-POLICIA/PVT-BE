@@ -46,11 +46,11 @@
                                 @include('quota_aid.step2_applicant')
                             </quota-aid-step2-applicant>
                         </tab-content>
-                    <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
-                        <quota-aid-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
-                            @include('ret_fun.step3_beneficiaries')
-                        </quota-aid-step3-beneficiaries>
-                    </tab-content>
+                        <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
+                            <quota-aid-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
+                                @include('quota_aid.step3_beneficiaries')
+                            </quota-aid-step3-beneficiaries>
+                        </tab-content>
                     </form-wizard>
                 </quota-aid-form>
                 {!! Form::close() !!}
