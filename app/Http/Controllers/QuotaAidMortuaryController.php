@@ -632,7 +632,7 @@ class QuotaAidMortuaryController extends Controller
         ];        
         return view('quota_aid.create',$data);        
     }
-    private function getLastCodeQuota($quotas){
+    private function getLastCode($quotas){
         $num = 0;
         $year = 0;
         if(count($quotas) == 0)
