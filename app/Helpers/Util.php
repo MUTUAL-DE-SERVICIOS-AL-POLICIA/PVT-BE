@@ -16,6 +16,7 @@ use Muserpol\Models\DiscountType;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\Spouse;
+use Muserpol\QuotaAidCorrelative;
 class Util
 {
     //cambia el formato de la fecha a cadena
@@ -123,16 +124,15 @@ class Util
         return ($title." - ".$affi->fullName()." - ".$date.".pdf");
     }
 
-    public static function getNextCode($actual){
+    public static function getNextCode($actual, $default = '675' ){
         $year =  date('Y');
         if($actual == "")
-            return "675/".$year;  
+            return $default."/".$year;  
         $data = explode('/', $actual);
         if(!isset($data[1]))
-            return "675/".$year;                
+            return $default."/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
-
     public static function getNextAreaCode($retirement_fund_id){
         
         $wf_state = WorkflowState::where('module_id',3)->where('role_id', Session::get('rol_id'))->first();        
@@ -157,6 +157,36 @@ class Util
         $correlative = new RetFunCorrelative();
         $correlative->wf_state_id = $wf_state->id;
         $correlative->retirement_fund_id = $retirement_fund_id;
+        $correlative->code = $role->correlative;
+        $correlative->date = Carbon::now();
+        $correlative->user_id = self::getAuthUser()->id;
+        $correlative->save();
+
+        return $correlative;
+    }
+    public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id){
+        $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();        
+        $reprint = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
+        if(isset($reprint->id))
+            return $reprint;
+        $year =  date('Y');
+        $role = Role::find($wf_state->role_id);
+        if($role->correlative == ""){
+            $role->correlative = "1/".$year;
+        }
+        else{
+            $data = explode('/', $role->correlative);
+            if(!isset($data[1]))
+                $role->correlative = "1/".$year;
+            else
+                $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+        }
+        $role->save();
+
+        //Correlative 
+        $correlative = new QuotaAidCorrelative();
+        $correlative->wf_state_id = $wf_state->id;
+        $correlative->quota_aid_mortuary_id = $quota_aid_mortuary_id;
         $correlative->code = $role->correlative;
         $correlative->date = Carbon::now();
         $correlative->user_id = self::getAuthUser()->id;

@@ -64,15 +64,15 @@ export default {
     dateInputMask();
   },
   computed:{
-    ...mapGetters({
-        retfun: 'getData'
+    ...mapGetters('retFunForm',{
+        retFun: 'getData'
     }),
     applicantIsMale(){
       return this.applicant_gender == 'M';
     },
     kinshipsFilter(){
       return this.kinships.filter((k) => {
-        return !(this.retfun.modality_id == 4 && k.id == 1);
+        return !(this.retFun.modality_id == 4 && k.id == 1);
       })
     }
   },
@@ -177,7 +177,7 @@ export default {
       // let modality_id_ = 
       cellPhoneInputMaskAll();
     phoneInputMaskAll();
-      let modality_id=this.retfun.modality_id;
+      let modality_id=this.retFun.modality_id;
       if(this.applicant_type  == '2'){
         this.show_advisor_form = !this.show_advisor_form;
         this.show_apoderado_form = false;

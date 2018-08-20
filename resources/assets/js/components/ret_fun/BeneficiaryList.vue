@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ret-fun-beneficiary :beneficiary="retfun.applicant"
+        <ret-fun-beneficiary :beneficiary="retFun.applicant"
                  :cities="cities"
                  :kinships="kinships"
                  :editable="false"
@@ -48,11 +48,11 @@ export default {
       RetFunBeneficiary
   },
   computed: {
-      ...mapGetters({
-          retfun: 'getData',
+      ...mapGetters('retFunForm',{
+          retFun: 'getData',
       }),
       possibleAddBeneficiary(){
-          return (this.retfun.modality_id == 1 || this.retfun.modality_id == 4)
+          return (this.retFun.modality_id == 1 || this.retFun.modality_id == 4)
       }
   },
   methods: {

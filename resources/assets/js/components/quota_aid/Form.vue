@@ -93,7 +93,7 @@ export default {
             phone_number: this.$refs.two.$children[0].applicant_phone_number,
             cell_phone_number: this.$refs.two.$children[0].applicant_cell_phone_number
         };
-        this.$store.commit("setApplicant", applicant);
+        this.$store.commit("quotaAidForm/setApplicant", applicant);
         return true;
         }
     },
