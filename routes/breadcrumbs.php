@@ -52,10 +52,19 @@ Breadcrumbs::register('retirement_fund', function($breadcrumbs)
 {
 	$breadcrumbs->push('Fondo de Retiro', URL::to('ret_fun'));
 });
+Breadcrumbs::register('quota_aid', function($breadcrumbs)
+{
+	$breadcrumbs->push('Cuota Mortuoria y Auxilio Mortuorio', URL::to('quota_aid'));
+});
 Breadcrumbs::register('show_retirement_fund', function($breadcrumbs, $retirement_fund)
 {
 	$breadcrumbs->parent('retirement_fund');
 	$breadcrumbs->push	("Trámite Nro. ".$retirement_fund->code, URL::to('ret_fun/'.$retirement_fund->id));
+});
+Breadcrumbs::register('show_quota_aid', function($breadcrumbs, $quota_aid)
+{
+	$breadcrumbs->parent('quota_aid');
+	$breadcrumbs->push	("Trámite Nro. ".$quota_aid->code, URL::to('quota_aid/'.$quota_aid->id));
 });
 Breadcrumbs::register('show_qualification_retirement_fund', function($breadcrumbs, $retirement_fund)
 {

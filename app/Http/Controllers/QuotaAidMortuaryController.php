@@ -26,6 +26,10 @@ use Muserpol\Models\ProcedureType;
 use Muserpol\Models\AidCommitment;
 use Muserpol\User;
 use Muserpol\Models\ObservationType;
+use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
+use Muserpol\Models\RetirementFund\RetFunState;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -411,7 +415,7 @@ class QuotaAidMortuaryController extends Controller
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
 
-        //$states = RetFunState::get();
+        $states = RetFunState::get();
         
 
         //$ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
@@ -432,48 +436,50 @@ class QuotaAidMortuaryController extends Controller
         
         //selected documents
         $submitted = QuotaAidSubmittedDocument::
-            select('quota_aid_submitted_documents.id','procedure_requirements.number','quota_aid_submitted_documents.procedure_requirement_id','quota_aid_submitted_documents.comment','quota_aid_submitted_documents.is_valid')
-            ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+            select('quota_aid_submitted_documents.id','procedure_requirements.number','quota_aid_submitted_documents.procedure_requirement_id','quota_aid_submitted_documents.comment')
+            ->leftJoin('procedure_requirements','quota_aid_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
-            ->where('ret_fun_submitted_documents.retirement_fund_id',$id);
-         return $submitted->get();
+            ->where('quota_aid_submitted_documents.quota_aid_mortuary_id',$id);
+         
             // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
         $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
-        return $wf_current_state;
-        $can_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
-        $can_cancel = ($retirement_fund->user_id == $user->id && $retirement_fund->inbox_state == true);
+        
+        $can_validate = $wf_current_state->id == $quota_aid->wf_state_current_id;
+        $can_cancel = ($quota_aid->user_id == $user->id && $quota_aid->inbox_state == true);
 
         //workflow record
-        $workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
-
-        $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
-        if ($first_wf_state) {
-            $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
-            $str = $first_wf_state->message;
-            preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-            $user_name = $matches[0][0];
-            $rol = User::where('username','=', $user_name)->first()->roles->first();
-            $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
-        }
+        //$workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
+        //return $workflow_records;
+        // $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
+        // return $first_wf_state;
+        // if ($first_wf_state) {
+        //     $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
+        //     $str = $first_wf_state->message;
+        //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+        //     $user_name = $matches[0][0];
+        //     $rol = User::where('username','=', $user_name)->first()->roles->first();
+        //     $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
+        // }
 
 
         // dd($first_wf_state);
 
         $wf_states = WorkflowState::where('module_id', '=', $module->id)->where('sequence_number','>',($first_wf_state->sequence_number ?? 1))->orderBy('sequence_number')->get();
-
-        $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
+        
+        //$correlatives = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->get();
+        
         $steps = [];
-        $data = $retirement_fund->getReceptionSummary();
+        //$data = $retirement_fund->getReceptionSummary();
         $is_editable = "1";
-        if(isset($retirement_fund->id))
+        if(isset($quota_aid->id))
             $is_editable = "0";
         //return $data;
         //return $correlatives;
         $data = [
-            'retirement_fund' => $retirement_fund,
+            'quota_aid' => $quota_aid,
             'affiliate' =>  $affiliate,
             'beneficiaries' =>  $beneficiaries,
             'applicant' => $applicant,
@@ -487,19 +493,19 @@ class QuotaAidMortuaryController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
-            'ret_fun_records' => $ret_fun_records,
+            //'ret_fun_records' => $ret_fun_records,
             'requirements'  =>  $procedure_requirements,
             'user'  =>  $user,
             'procedure_types'   =>  $procedure_types,
             'modalities'    =>  $modalities,
             'observation_types' => $observation_types,
-            'observations' => $retirement_fund->ret_fun_observations,
+            //'observations' => $retirement_fund->ret_fun_observations,
             'submitted' =>  $submitted->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'),
             'submit_documents' => $submitted->get(),
             'can_validate' =>  $can_validate,
             'can_cancel' =>  $can_cancel,
-            'workflow_records' =>  $workflow_records,
-            'first_wf_state' =>  $first_wf_state,
+            //'workflow_records' =>  $workflow_records,
+            //'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
             'is_editable'  =>  $is_editable
         ];
