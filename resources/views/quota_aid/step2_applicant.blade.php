@@ -8,7 +8,7 @@
                         <label class="col-sm-4 control-label">
                                 Fecha de Fallecimiento</label>
                         <div class="col-sm-8">
-                            <input type="text" name="date_death" v-model="date_death" data-date="true" class="form-control" v-validate.initial="'required'">
+                            <input type="text" name="date_death" v-model="date_death" data-date="true" class="form-control">
                             <i v-show="errors.has('date_death')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('date_death')" class="text-danger">@{{ errors.first('date_death') }}</span>
                         </div>
