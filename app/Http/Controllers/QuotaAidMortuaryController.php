@@ -155,19 +155,17 @@ class QuotaAidMortuaryController extends Controller
         if (isset($nextcode->id)) {
             $code = str_replace("A", "", $nextcode->code);
         }else{
-            $quota_aid = QuotaAidMortuary::select('id', 'code')->limit(10)->orderBy('id', 'desc')->get();
-            /*
-            * agregar para cuota y  auxilio
-            */
-            Log::info($request->procedure_type_id);
             if($request->procedure_type_id == 3){
                 //cuota
-                $quota_aid_code = $this->getLastCodeQuota($quota_aid);
-                $code = Util::getNextCodeQuota($quota_aid_code);
+                $quota_aid = QuotaAidMortuary::select('id', 'code')->whereIn('procedure_modality_id', [8,9])->limit(10)->orderBy('id', 'desc')->get();
+                $quota_aid_code = $this->getLastCode($quota_aid);
+                $code = Util::getNextCode($quota_aid_code, '179');
             }elseif($request->procedure_type_id == 4){
                 //auxlio
-                $quota_aid_code = $this->getLastCodeAid($quota_aid);
-                $code = Util::getNextCodeAid($quota_aid_code);
+                $quota_aid = QuotaAidMortuary::select('id', 'code')->whereIn('procedure_modality_id', [13,14,15])->limit(10)->orderBy('id', 'desc')->get();
+                $quota_aid_code = $this->getLastCode($quota_aid);
+                $code = Util::getNextCode($quota_aid_code, '268');
+                Log::info('code: '.$code);
             }
         }
 
@@ -624,25 +622,6 @@ class QuotaAidMortuaryController extends Controller
         return view('quota_aid.create',$data);        
     }
     private function getLastCodeQuota($quotas){
-        $num = 0;
-        $year = 0;
-        if(count($quotas) == 0)
-        return "";
-        foreach($quotas as $quota)
-        {
-            $code = str_replace('A','',$quota->code);
-            if( $code != "")
-            {
-                $code = explode('/',$code);
-                if($code[1]>$year)
-                    $year = $code[1];
-                if($code[0]>$num)
-                    $num = $code[0];
-            }
-        }
-        return $num."/".$year;
-    }
-    private function getLastCodeAid($quotas){
         $num = 0;
         $year = 0;
         if(count($quotas) == 0)
