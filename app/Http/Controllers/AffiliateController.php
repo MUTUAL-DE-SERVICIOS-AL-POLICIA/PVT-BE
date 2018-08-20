@@ -184,10 +184,6 @@ class AffiliateController extends Controller
         //GETTIN CONTRIBUTIONS
         $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
         $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
-<<<<<<< HEAD
-
-=======
->>>>>>> fa40b65893de7c75f2f9721661fea8a53507066d
         if($affiliate->date_entry)
             $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
         else
@@ -201,7 +197,6 @@ class AffiliateController extends Controller
         $month_start = $start[1];
         $year_start = $start[0];
 
-<<<<<<< HEAD
         $aid_contributions = AidContribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
         $aid_reimbursement = AidReimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
 
@@ -212,9 +207,6 @@ class AffiliateController extends Controller
 
         $month_death = $death[1];
         $year_death = $death[0];
-
-=======
->>>>>>> fa40b65893de7c75f2f9721661fea8a53507066d
         $is_editable = "1";
         if(isset($retirement_fund->id))
         {
