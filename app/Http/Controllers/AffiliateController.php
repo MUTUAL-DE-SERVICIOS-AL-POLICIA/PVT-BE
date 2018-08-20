@@ -64,8 +64,8 @@ class AffiliateController extends Controller
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
                                 ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
-                                ->whereRaw("coalesce(degrees.name, '') LIKE '$degree%'")
-                                ->whereRaw("coalesce(affiliate_states.name, '') LIKE '$affiliate_state%'")
+                                ->whereRaw("coalesce(upper(degrees.name), '') LIKE '$degree%'")
+                                ->whereRaw("coalesce(upper(affiliate_states.name), '') LIKE '$affiliate_state%'")
                                 ->count();
 
         $affiliates = Affiliate::select(
@@ -92,7 +92,7 @@ class AffiliateController extends Controller
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
                                 ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
-                                ->whereRaw("coalesce(degrees.name, '') LIKE '$degree%'")
+                                ->whereRaw("coalesce(upper(degrees.name), '') LIKE '$degree%'")
                                 ->whereRaw("coalesce(upper(affiliate_states.name), '') LIKE '$affiliate_state%'")
                                 ->get();
         return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
