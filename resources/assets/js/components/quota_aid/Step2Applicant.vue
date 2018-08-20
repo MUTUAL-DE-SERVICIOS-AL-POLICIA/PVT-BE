@@ -89,10 +89,10 @@ export default {
       setTimeout(() => {
         dateInputMaskAll();
       }, 300);
-      return this.quotaAid.modality_id == 14 || this.quotaAid.modality_id == 15;
+      return [14,15].includes(this.quotaAid.modality_id);
     },
     canAddDataAffiliate(){
-      return this.quotaAid.modality_id == 13;
+      return [8,9,13].includes(this.quotaAid.modality_id);
     },
     age: function(){
         if(this.spouse_birth_date!=null){
