@@ -94,7 +94,6 @@ class QuotaAidMortuaryController extends Controller
     {
         Log::info($request->all());
         Log::info($request->date_death);
-        dd($request->all());
         $first_name = $request->beneficiary_first_name;
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
