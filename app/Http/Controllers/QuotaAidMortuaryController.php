@@ -381,7 +381,12 @@ class QuotaAidMortuaryController extends Controller
             $guardian = QuotaAidLegalGuardian::find($beneficiary_guardian->quota_aid_legal_guardian_id);
         else
             $guardian = new QuotaAidLegalGuardian();            
-        $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro        
+        $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')
+                ->where('procedure_types.module_id','=',4)
+                ->orWhere('procedure_types.module_id','=',5)
+                ->get()
+                ->pluck('id'); //3 por el module 3 de fondo de retiro        
+                
         //return $procedures_modalities_ids;
         $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();        
         $file_modalities = ProcedureModality::get();
@@ -457,8 +462,7 @@ class QuotaAidMortuaryController extends Controller
         if(isset($quota_aid->id))
             $is_editable = "0";
         //return $data;
-        //return $correlatives;
-        
+        //return $correlatives;        
         $data = [
             'quota_aid' => $quota_aid,
             'affiliate' =>  $affiliate,
@@ -490,6 +494,7 @@ class QuotaAidMortuaryController extends Controller
             'wf_states' =>  $wf_states,
             'is_editable'  =>  $is_editable
         ];                
+        //return $procedures_modalities;
 
         return view('quota_aid.show',$data);
 
