@@ -16,7 +16,8 @@ const state ={
       gender: null,
       phone_number: null,
       cell_phone_number: null,
-    }
+    },
+    contributionTypes:[]
 }
 const mutations = {
     setModality(state, object){
@@ -40,6 +41,9 @@ const mutations = {
       state.applicant.gender =object.gender;
       state.applicant.phone_number =object.phone_number;
       state.applicant.cell_phone_number =object.cell_phone_number;
+    },
+    setContributionTypes(state, obj){
+        state.contributionTypes = obj.contributionTypes
     }
 }
 const getters = {

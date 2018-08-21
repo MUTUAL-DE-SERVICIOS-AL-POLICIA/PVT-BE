@@ -790,14 +790,20 @@ class ContributionController extends Controller
                     $contribution->save();
              }
             $i++;
-            Log::info('i: '.$i.' id:'.$contribution->id);
+            // Log::info('i: '.$i.' id:'.$contribution->id);
         }
         // $total = $affiliate->getTotalContributionsAmount(Affiliate::DISPONIBILIDAD);
         // return $total;
+        Log::info('saving subtotal availability retfun id: '. $ret_fun->id);
         $availability = $affiliate->getContributionsAvailability();
-        $ret_fun->subtotal_availability = array_sum(array_column($availability, 'total'));
+        $subtotal_availability = array_sum(array_column($availability, 'total'));
+        $ret_fun->subtotal_availability = $subtotal_availability;
         $ret_fun->save();
-        return  $ret_fun;
+        Log::info('saved subtotal availability: '. $subtotal_availability);
+        $contribution_types = ContributionType::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_id')->distinct()->get()->pluck('contribution_type_id'))->orderBy('sequence')->select('name','id')->get();
+        return response()->json([
+            'contribution_types' => $contribution_types
+        ]);
         return $request->all();
         // return redirect('/');     
     }
