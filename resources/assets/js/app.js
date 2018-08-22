@@ -257,6 +257,8 @@ Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/S
 Vue.component('quota-aid-beneficiary-list', require('./components/quota_aid/BeneficiaryList.vue'));
 Vue.component('quota-aid-beneficiary', require('./components/quota_aid/Beneficiary.vue'));
 Vue.component('quota-aid-info', require('./components/quota_aid/Info.vue'));
+Vue.component('quota-aid-beneficiaries-show', require('./components/quota_aid/ShowBeneficiaries.vue'));
+Vue.component('quota-aid-step1-requirements-edit', require('./components/quota_aid/Step1RequirementsEdit.vue'));
 //user
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
 //permission
