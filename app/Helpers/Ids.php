@@ -33,4 +33,24 @@ class Ids
 	{
 		return 3;
 	}
+
+	/**
+	* Retorna el is_editable true
+	*
+	* @return int 0
+	*/
+	public static function getEditableId()
+	{
+		return 0;
+	}
+
+	/**
+	* Retorna el is_editable false
+	*
+	* @return int 1
+	*/
+	public static function getNunEditableId()
+	{
+		return 1;
+	}
 }
