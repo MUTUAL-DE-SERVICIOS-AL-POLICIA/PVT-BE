@@ -73,7 +73,7 @@ class RetirementFundController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {        
         $first_name = $request->beneficiary_first_name;
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
@@ -119,12 +119,12 @@ class RetirementFundController extends Controller
         foreach($requirements as $requirement){
             if($request->input('document'.$requirement->id) == 'checked'){
                 $array_requirements[$requirement->number]++;
-            }
+            }            
         }
         //return $array_requirements;
         foreach($array_requirements as $key=>$requirement){
 
-            if($requirement == 0)
+            if($requirement == 0 && $key!=0)
             {
                 $biz_rules = [
                     'no_document'.$key   =>  'required'
@@ -285,6 +285,19 @@ class RetirementFundController extends Controller
                 $submit->save();
             }
         }
+
+        //storing aditional documents
+
+        foreach ($request->aditional_requirements  as  $requirement)
+        {
+            $submit = new RetFunSubmittedDocument();
+            $submit->retirement_fund_id = $retirement_fund->id;
+            $submit->procedure_requirement_id = $requirement;
+            $submit->reception_date = date('Y-m-d');
+            $submit->comment = "";
+            $submit->save();            
+        }        
+
 
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_fund->id;

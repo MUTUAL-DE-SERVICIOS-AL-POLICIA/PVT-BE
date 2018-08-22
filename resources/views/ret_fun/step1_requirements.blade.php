@@ -83,8 +83,8 @@
         <br>
         <div v-if="aditionalRequirements.length > 0"> 
             <h4>Documentos adicionales</h4>
-            <select data-placeholder="Documentos adicionales..." class="chosen-select" multiple="" style="width: 350px; display: none;" tabindex="-1">
-                <option v-for="(requirement, index) in aditionalRequirements" :value="requirement.document" :key="index">@{{ requirement.document }} </option>
+            <select data-placeholder="Documentos adicionales..." class="chosen-select" name="aditional_requirements[]" multiple="" style="width: 350px; display: none;" tabindex="-1">
+                <option v-for="(requirement, index) in aditionalRequirements"  :value="requirement.id" :key="index">@{{ requirement.document }} </option>
             </select>                    
         </div>
 
