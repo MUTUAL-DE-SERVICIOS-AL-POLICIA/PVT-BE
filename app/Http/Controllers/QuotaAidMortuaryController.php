@@ -24,6 +24,12 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\AidCommitment;
+use Muserpol\User;
+use Muserpol\Models\ObservationType;
+use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
+use Muserpol\Models\RetirementFund\RetFunState;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -100,17 +106,34 @@ class QuotaAidMortuaryController extends Controller
         $gender = $request->beneficiary_gender;
 
         $requirements = ProcedureRequirement::select('id')->get();
-        $affiliate = Affiliate::find($request->affiliate_id);
-        $affiliate->date_death = Util::verifyMonthYearDate($request->date_death) ? Util::parseMonthYearDate($request->date_death) : $request->date_death;
+        $affiliate = Affiliate::find($request->affiliate_id);        
         switch ($request->quota_aid_modality) {
             case 8:
             case 9:
             case 13:
                 $affiliate->affiliate_state_id = 4;
+                $affiliate->date_death = Util::verifyMonthYearDate($request->date_death) ? Util::parseMonthYearDate($request->date_death) : $request->date_death;
                 break;
             case 14:
             case 15:
                 $affiliate->affiliate_state_id = 5;
+
+                $spouse = new Spouse();
+                $spouse->user_id = Auth::user()->id;
+                $spouse->affiliate_id = $request->affiliate_id;
+                $spouse->city_identity_card_id = $request->spouse_city_identity_card_id;
+                $spouse->identity_card = $request->spouse_identity_card;
+                $spouse->registration = '';//$request->spouse_registration;
+                $spouse->last_name = $request->spouse_last_name;
+                $spouse->mothers_last_name = $request->spouse_mother_last_namel;
+                $spouse->first_name = $request->spouse_first_name;
+                $spouse->second_name = $request->spouse_second_name;
+                $spouse->surname_husband = $request->spouse_surname_husband;
+                $spouse->civil_status = $request->spouse_civil_status;
+                $spouse->birth_date = $request->spouse_birth_date;
+                $spouse->date_death = $request->spouse_date_death;
+                $spouse->save();
+
                 break;
             default:
                 return "error modality not found";
@@ -359,8 +382,7 @@ class QuotaAidMortuaryController extends Controller
 //        
 //        return view('ret_fun.show',$data);
 
-
-        return redirect('quota_aid');           
+        
         $quota_aid = QuotaAidMortuary::find($id);
 
         //$this->authorize('view', $retirement_fund);
@@ -380,28 +402,30 @@ class QuotaAidMortuaryController extends Controller
         //     }
         // }
         
-        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
+        $applicant = QuotaAidBeneficiary::where('type','S')->where('quota_aid_mortuary_id',$quota_aid->id)->first();        
         
-        $beneficiary_avdisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
-        return $applicant;
+        $beneficiary_avdisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$applicant->id)->first();
+        
         if(isset($beneficiary_avdisor->id))
-            $advisor= RetFunAdvisor::find($beneficiary_avdisor->ret_fun_advisor_id);
+            $advisor= QuotaAidAdvisor::find($beneficiary_avdisor->ret_fun_advisor_id);
         else
-            $advisor = new RetFunAdvisor();
+            $advisor = new QuotaAidAdvisor();
 
-        $beneficiary_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
-
+        
+        $beneficiary_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
+        
         if(isset($beneficiary_guardian->id))
-            $guardian = RetFunLegalGuardian::find($beneficiary_guardian->ret_fun_legal_guardian_id);
+            $guardian = QuotaAidLegalGuardian::find($beneficiary_guardian->quota_aid_legal_guardian_id);
         else
-            $guardian = new RetFunLegalGuardian();
-
-        $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
+            $guardian = new QuotaAidLegalGuardian();            
+        $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro        
         //return $procedures_modalities_ids;
-        $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();
+        $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();        
         $file_modalities = ProcedureModality::get();
-        $requirements = ProcedureRequirement::where('procedure_modality_id',$retirement_fund->procedure_modality_id)->get();
-        $documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
+
+        $requirements = ProcedureRequirement::where('procedure_modality_id',$quota_aid->procedure_modality_id)->get();
+        
+        $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id',$id)->orderBy('procedure_requirement_id','ASC')->get();        
         $cities = City::get();
         $kinships = Kinship::get();
 
@@ -409,66 +433,70 @@ class QuotaAidMortuaryController extends Controller
         $birth_cities = City::all()->pluck('name', 'id');
 
         $states = RetFunState::get();
+        
 
-        $ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
-        //return $retirement_fund->ret_fun_state->name;
-
+        //$ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
+        
         ///proof
         $user = User::find(Auth::user()->id);
-        $procedure_types = ProcedureType::where('module_id', 3)->get();
+        $procedure_types = ProcedureType::where('module_id', 4)->get();
         $procedure_requirements = ProcedureRequirement::
                                     select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
                                     ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
-        $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();
-
-        $observation_types = ObservationType::where('module_id',3)->get();
-
+                                    
+        $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();            
+        
+        $observation_types = ObservationType::where('module_id',4)->get();
+        
         //selected documents
-        $submitted = RetFunSubmittedDocument::
-            select('ret_fun_submitted_documents.id','procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id','ret_fun_submitted_documents.comment','ret_fun_submitted_documents.is_valid')
-            ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+        $submitted = QuotaAidSubmittedDocument::
+            select('quota_aid_submitted_documents.id','procedure_requirements.number','quota_aid_submitted_documents.procedure_requirement_id','quota_aid_submitted_documents.comment')
+            ->leftJoin('procedure_requirements','quota_aid_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
-            ->where('ret_fun_submitted_documents.retirement_fund_id',$id);
-        // return $submitted->get();
+            ->where('quota_aid_submitted_documents.quota_aid_mortuary_id',$id);
+         
             // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
         $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
-        $can_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
-        $can_cancel = ($retirement_fund->user_id == $user->id && $retirement_fund->inbox_state == true);
+        
+        $can_validate = $wf_current_state->id == $quota_aid->wf_state_current_id;
+        $can_cancel = ($quota_aid->user_id == $user->id && $quota_aid->inbox_state == true);
 
         //workflow record
-        $workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
-
-        $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
-        if ($first_wf_state) {
-            $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
-            $str = $first_wf_state->message;
-            preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-            $user_name = $matches[0][0];
-            $rol = User::where('username','=', $user_name)->first()->roles->first();
-            $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
-        }
+        //$workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
+        //return $workflow_records;
+        // $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
+        // return $first_wf_state;
+        // if ($first_wf_state) {
+        //     $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
+        //     $str = $first_wf_state->message;
+        //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+        //     $user_name = $matches[0][0];
+        //     $rol = User::where('username','=', $user_name)->first()->roles->first();
+        //     $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
+        // }
 
 
         // dd($first_wf_state);
 
         $wf_states = WorkflowState::where('module_id', '=', $module->id)->where('sequence_number','>',($first_wf_state->sequence_number ?? 1))->orderBy('sequence_number')->get();
-
-        $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
+        
+        //$correlatives = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->get();
+        
         $steps = [];
-        $data = $retirement_fund->getReceptionSummary();
+        //$data = $retirement_fund->getReceptionSummary();
         $is_editable = "1";
-        if(isset($retirement_fund->id))
+        if(isset($quota_aid->id))
             $is_editable = "0";
         //return $data;
         //return $correlatives;
         $data = [
-            'retirement_fund' => $retirement_fund,
+            'quota_aid' => $quota_aid,
             'affiliate' =>  $affiliate,
             'beneficiaries' =>  $beneficiaries,
             'applicant' => $applicant,
@@ -482,19 +510,19 @@ class QuotaAidMortuaryController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
-            'ret_fun_records' => $ret_fun_records,
+            //'ret_fun_records' => $ret_fun_records,
             'requirements'  =>  $procedure_requirements,
             'user'  =>  $user,
             'procedure_types'   =>  $procedure_types,
             'modalities'    =>  $modalities,
             'observation_types' => $observation_types,
-            'observations' => $retirement_fund->ret_fun_observations,
+            //'observations' => $retirement_fund->ret_fun_observations,
             'submitted' =>  $submitted->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'),
             'submit_documents' => $submitted->get(),
             'can_validate' =>  $can_validate,
             'can_cancel' =>  $can_cancel,
-            'workflow_records' =>  $workflow_records,
-            'first_wf_state' =>  $first_wf_state,
+            //'workflow_records' =>  $workflow_records,
+            //'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
             'is_editable'  =>  $is_editable
         ];
@@ -621,7 +649,7 @@ class QuotaAidMortuaryController extends Controller
         ];        
         return view('quota_aid.create',$data);        
     }
-    private function getLastCodeQuota($quotas){
+    private function getLastCode($quotas){
         $num = 0;
         $year = 0;
         if(count($quotas) == 0)

@@ -39,7 +39,22 @@ class SpouseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $spouse = new Spouse();
+        $spouse->user_id = Auth::user()->id;
+        $spouse->affiliate_id = $request->affiliate_id;
+        $spouse->city_identity_card_id = $request->city_identity_card_id;
+        $spouse->identity_card = $request->identity_card;
+        $spouse->registration = $request->registration;
+        $spouse->last_name = $request->last_name;
+        $spouse->mothers_last_name = $request->mother_last_namel;
+        $spouse->first_name = $request->first_name;
+        $spouse->second_name = $request->second_name;
+        $spouse->surname_husband = $request->surname_husband;
+        $spouse->civil_status = $request->civil_status;
+        $spouse->birth_date = $request->birth_date;
+        $spouse->date_death = $request->date_death;
+        $spouse->save();
     }
 
     /**

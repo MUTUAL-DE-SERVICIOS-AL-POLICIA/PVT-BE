@@ -52,6 +52,8 @@ class AffiliateController extends Controller
         $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
         $surname_husband = strtoupper($request->surname_husband) ?? '';
         $identity_card = strtoupper($request->identity_card) ?? '';
+        $degree = strtoupper($request->degree) ?? '';
+        $affiliate_state = strtoupper($request->affiliate_state) ?? '';
         //$total=Affiliate::where('identity_card','LIKE',$identity_card.'%')->where('last_name','LIKE',$last_name.'%')->count();
         //$total=6669783;
         //$affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->where('last_name','LIKE',$last_name.'%')->get();
@@ -65,6 +67,8 @@ class AffiliateController extends Controller
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
                                 ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
+                                ->whereRaw("coalesce(upper(degrees.name), '') LIKE '$degree%'")
+                                ->whereRaw("coalesce(upper(affiliate_states.name), '') LIKE '$affiliate_state%'")
                                 ->count();
 
         $affiliates = Affiliate::select(
@@ -91,6 +95,8 @@ class AffiliateController extends Controller
                                 ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
                                 ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
                                 ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
+                                ->whereRaw("coalesce(upper(degrees.name), '') LIKE '$degree%'")
+                                ->whereRaw("coalesce(upper(affiliate_states.name), '') LIKE '$affiliate_state%'")
                                 ->get();
         return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
     }
@@ -123,7 +129,7 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Affiliate $affiliate)
-    {        
+    {
         $this->authorize('view',$affiliate);
         $cities = City::all()->pluck('name', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
@@ -169,7 +175,7 @@ class AffiliateController extends Controller
             'affiliate_state',
             'pension_entity',
             'category',
-            'degree'            
+            'degree'
         ]);
 
         if (! sizeOf($affiliate->address) > 0) {
@@ -189,8 +195,8 @@ class AffiliateController extends Controller
         }
 
         //GETTIN CONTRIBUTIONS
-        $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
-        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();        
+        $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
 
         if($affiliate->date_entry)
             $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
@@ -200,29 +206,30 @@ class AffiliateController extends Controller
         $year_end = $end[0];
 
         if($affiliate->date_derelict)
-            $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));  
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));
         else
-            $start = explode('-', date('Y-m-d'));  
+            $start = explode('-', date('Y-m-d'));
         $month_start = $start[1];
         $year_start = $start[0];
 
         $aid_contributions = AidContribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
         $aid_reimbursement = AidReimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        //return  $affiliate->date_death;//Util::parseMonthYearDate($affiliate->date_death);
         
         if($affiliate->date_death)
-            $death = explode('-', $affiliate->date_death);
+            $death = explode('/', $affiliate->date_death);
         else
-            $death = explode('-', date('Y-m-d'));                          
-
+            $death = explode('/', date('d/m/Y'));
+        
         $month_death = $death[1];
-        $year_death = $death[0];
+        $year_death = $death[2];
 
         $is_editable = "1";
         if(isset($retirement_fund->id))
         {
             $is_editable = "0";
         }
-        
+
         $data = array(
             'retirement_fund'=>$retirement_fund,
             'affiliate'=>$affiliate,
