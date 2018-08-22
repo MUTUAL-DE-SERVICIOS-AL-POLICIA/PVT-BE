@@ -41,7 +41,7 @@ class Ids
 	*/
 	public static function getEditableId()
 	{
-		return 0;
+		return 1;
 	}
 
 	/**
@@ -51,6 +51,6 @@ class Ids
 	*/
 	public static function getNunEditableId()
 	{
-		return 1;
+		return 0;
 	}
 }

@@ -587,9 +587,9 @@ class RetirementFundController extends Controller
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
-        $is_editable = "1";
+        $is_editable = Ids::getEditableId();
         if(isset($retirement_fund->id))
-            $is_editable = "0";
+            $is_editable = Ids::getNunEditableId();
         //return $data;
         //return $correlatives;
         $data = [
