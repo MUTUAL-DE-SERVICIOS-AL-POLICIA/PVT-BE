@@ -42,6 +42,7 @@ use Muserpol\Models\Contribution\ContributionType;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
+use Muserpol\Helpers\Ids;
 
 class RetirementFundController extends Controller
 {
@@ -145,7 +146,7 @@ class RetirementFundController extends Controller
         $legal_has_lastname = false;
         if($request->applicant_last_name == '' && $request->applicant_mothers_last_name=='')
             $has_lastname = true;
-        if($account_type == '3')
+        if($account_type == Ids::getLegalGuardianId() )
         {
             if($request->legal_guardian_last_name == '' && $request->legal_guardian_mothers_last_name=='')
                 $legal_has_lastname = true;
@@ -302,16 +303,16 @@ class RetirementFundController extends Controller
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
         $beneficiary->type = "S";
         $beneficiary->save();
-        if($account_type == '1' && $request->ret_fun_modality != 4 && $request->ret_fun_modality != 1 )
+        if($account_type == Ids::getBeneficiaryId() && $request->ret_fun_modality != 4 && $request->ret_fun_modality != 1 )
         {
             Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
-        if ($account_type == '1' && ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
+        if ($account_type == Ids::getBeneficiaryId() && ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
             Log::info("updating spouse 1");
             Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
 
-        if($account_type == '2')
+        if($account_type == Ids::getAdvisorId())
         {
             $advisor = new RetFunAdvisor();
             //$advisor->retirement_fund_id = $retirement_fund->id;
@@ -338,7 +339,7 @@ class RetirementFundController extends Controller
             $advisor_beneficiary->save();
         }
 
-        if($account_type == '3')
+        if($account_type == Ids::getLegalGuardianId())
         {
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
@@ -586,9 +587,9 @@ class RetirementFundController extends Controller
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
-        $is_editable = "1";
+        $is_editable = Ids::getEditableId();
         if(isset($retirement_fund->id))
-            $is_editable = "0";
+            $is_editable = Ids::getNonEditableId();
         //return $data;
         //return $correlatives;
         $data = [
