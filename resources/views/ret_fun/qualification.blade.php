@@ -407,7 +407,10 @@
                                     <tbody>
                                         <tr>
                                             <td>Total aportes en disponibilidad</td>
-                                            <td>@{{ subTotalAvailability | currency }}</td>
+                                            <td>
+                                                @{{ subTotalAvailability | currency }}
+                                                <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Con rendimiento del {{ $current_procedure->annual_yield }}% Anual</td>
@@ -620,6 +623,63 @@
         </div>
     </div>
 </div>
+<div class="modal inmodal" id="availability-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+                <h4 class="modal-title">Reconocimiento de Aportes en Disponibilidad</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <table class="table table-striped" id="datatables-availability">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Periodo</th>
+                                <th>Haber Basico</th>
+                                <th>Categoria</th>
+                                <th>Salario Cotizable</th>
+                                <th>Total Aporte</th>
+                                <th>Aporte FRPS</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ $total_availability_aporte }}</td>
+                                <td>{{ $total_availability_aporte_frps }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    {{-- <table class="table table-bordered table-striped">
+                        <tbody>
+                            <tr>
+                                <td>Total Aportes Fondo de Retiro Policial Solidario</td>
+                                <td>{{ $total_retirement_fund }}</td>
+                            </tr>
+                            <tr>
+                                <td>Salario Total</td>
+                                <td>{{ $sub_total_average_salary_quotable }}</td>
+                            </tr>
+                            <tr>
+                                <td>Salario Promedio</td>
+                                <td>{{ $total_average_salary_quotable }}</td>
+                            </tr>
+                        </tbody>
+                    </table> --}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
@@ -629,32 +689,58 @@
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
     $(document).ready(function () {
-            var datatable_contri = $('#datatables-certification').DataTable({
-                responsive: true,
-                fixedHeader: {
-                header: true,
-                footer: true,
-                    headerOffset: $('#navbar-fixed-top').outerHeight()
-                },
-                order: [],
-                ajax: "{{ url('get_data_certification', $retirement_fund->id) }}",
-                lengthMenu: [[60, -1], [60, "Todos"]],
-                dom: '< "html5buttons"B>lTfgitp',
-                buttons:[
-                    { extend: 'copy'},
-                    { extend: 'csv'},
-                    { extend: 'excel', title: "{!! $retirement_fund->id.'-'.date('Y-m-d') !!}"},
-                ],
-                columns:[
-                    {data: 'DT_Row_Index' },
-                    {data: 'month_year' },
-                    {data: 'base_wage'},
-                    {data: 'seniority_bonus'},
-                    {data: 'quotable_salary'},
-                    {data: 'total'},
-                    {data: 'retirement_fund'},
-                ],
-            });
+        var datatable_contri = $('#datatables-certification').DataTable({
+            responsive: true,
+            fixedHeader: {
+            header: true,
+            footer: true,
+                headerOffset: $('#navbar-fixed-top').outerHeight()
+            },
+            order: [],
+            ajax: "{{ url('get_data_certification', $retirement_fund->id) }}",
+            lengthMenu: [[60, -1], [60, "Todos"]],
+            dom: '< "html5buttons"B>lTfgitp',
+            buttons:[
+                { extend: 'copy'},
+                { extend: 'csv'},
+                { extend: 'excel', title: "{!! $retirement_fund->id.'-'.date('Y-m-d') !!}"},
+            ],
+            columns:[
+                {data: 'DT_Row_Index' },
+                {data: 'month_year' },
+                {data: 'base_wage'},
+                {data: 'seniority_bonus'},
+                {data: 'quotable_salary'},
+                {data: 'total'},
+                {data: 'retirement_fund'},
+            ],
+        });
+        var datatable_availability = $('#datatables-availability').DataTable({
+            responsive: true,
+            fixedHeader: {
+            header: true,
+            footer: true,
+                headerOffset: $('#navbar-fixed-top').outerHeight()
+            },
+            order: [],
+            ajax: "{{ url('get_data_availability', $retirement_fund->id) }}",
+            lengthMenu: [[60, -1], [60, "Todos"]],
+            dom: '< "html5buttons"B>lTfgitp',
+            buttons:[
+                { extend: 'copy'},
+                { extend: 'csv'},
+                { extend: 'excel', title: "Dispobiblidad - {!! $retirement_fund->id.'-'.date('Y-m-d') !!}"},
+            ],
+            columns:[
+                {data: 'DT_Row_Index' },
+                {data: 'month_year' },
+                {data: 'base_wage'},
+                {data: 'seniority_bonus'},
+                {data: 'quotable_salary'},
+                {data: 'total'},
+                {data: 'retirement_fund'},
+            ],
+        });
     });
 </script>
 @endsection
