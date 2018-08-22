@@ -30,6 +30,7 @@
     "autoload": {
         "classmap": [
             "database/seeds",
+            "database",
             "database/factories"
         ],
         "psr-4": {
@@ -63,5 +64,6 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
-    }
+    },
+    "files": [ "app/Http/Helpers/Ids.php" ]
 }
