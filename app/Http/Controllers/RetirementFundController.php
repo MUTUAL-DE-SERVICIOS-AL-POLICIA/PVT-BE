@@ -587,7 +587,7 @@ class RetirementFundController extends Controller
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
-        $is_editable = Ids::getBeneficiaryId();
+        $is_editable = "1";
         if(isset($retirement_fund->id))
             $is_editable = "0";
         //return $data;
@@ -757,7 +757,7 @@ class RetirementFundController extends Controller
         $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
         if(!isset($spouse->id))
             $spouse = new Spouse();
-        $modalities = ProcedureModality::where('procedure_type_id','<=', Ids::getTutorId())->select('id','name', 'procedure_type_id')->get();
+        $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();
 
         $kinships = Kinship::get();
 
