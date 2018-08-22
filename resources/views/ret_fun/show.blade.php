@@ -125,9 +125,9 @@
             </a>
             @endcan
             @can('qualify', $retirement_fund)
-            <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
-                <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
-            </a>
+                <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
+                    <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
+                </a>
             @endcan
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">

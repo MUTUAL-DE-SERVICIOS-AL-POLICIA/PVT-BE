@@ -1,25 +1,26 @@
 <template>
-  <div class="col-md-12" style="padding-top: 5px;padding-left: 0px">
-        <div class="ibox float-e-margins ibox-primary">
-          
-            <div class="ibox-content">
+  <div class="col-md-12 " style="padding-top: 5px;padding-left: 0px" >
+        <div class="ibox float-e-margins ibox-primary my-content-select-contributions" :class="{'sk-loading': showLoading}">
+            <div class="ibox-content cont">
+                <div class="sk-folding-cube" v-show="showLoading">
+                    <div class="sk-cube1 sk-cube"></div>
+                    <div class="sk-cube2 sk-cube"></div>
+                    <div class="sk-cube4 sk-cube"></div>
+                    <div class="sk-cube3 sk-cube"></div>
+                </div>
                 <div class="row">
                     <div class="col-md-2">
                         <h3>
                         <button class="btn btn-sm btn-info"  @click="orderList" ><i :class="order_aportes?'fa fa-sort-amount-desc':'fa fa-sort-amount-asc'"></i></button>
                             Aportes
-
-                        </h3> 
-                        
+                        </h3>
                     </div>
                     <div class="pull-right" style="padding-right:10px">
                         <label>Seleci&oacute;n masiva</label> <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalcyk" @click="clear"><i class="fa fa-table"></i></button>
                     </div>
-                    
-                    
                 </div>
                 <div class="row">
-                    <div class="col-md-1">  
+                    <div class="col-md-1">
                             <label style="font-size:80%;" v-if="list_aportes.length>0" > {{ getFormatDate(list_aportes[0].month_year) }}</label>                           
                             <div style="border-style: solid; border-width: 1px; ">
                                 <div v-for="(contribution,index) in list_aportes" :key="index" >
@@ -32,7 +33,7 @@
                     <div class="col-md-9">
                         <table class="table " id="contribution_table">
                             <thead>
-                            <tr> 
+                            <tr>
                                 <th class="col-md-2">Fecha </th>
                                 <th class="col-md-2">Sueldo</th>
                                 <th class="col-md-2">Categoria</th>
@@ -104,7 +105,11 @@
                 </div>
             </div>
             <div class="ibox-footer">
-                <button class="btn btn-primary btn-sm" @click="save" ><i class="fa fa-arrow-right"></i> Guardar Clasificaci&oacute;n</button>
+                <button class="btn btn-primary btn-sm" @click="save" :disabled="loadingButton">
+                    <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw"></i>
+                    <i v-else class="fa fa-arrow-right"></i>
+                    {{ loadingButton ? 'Guardando Clasificaci&oacute;n...' :  'Guardar Clasificaci&oacute;n' }}
+                </button>
                 <span class="pull-right">
                 <strong>  Cantidad: {{list_aportes.length}} </strong>
                 </span>
@@ -163,6 +168,7 @@
 </template>
  
 <script>
+
 import {TheMask} from 'vue-the-mask'
 
 export default {
@@ -201,11 +207,14 @@ export default {
         order_aportes: true,
         show_certification: false,
         modal: { first_date: null, last_date: null,contribution_type_id: null},
-        row_higth: 0
+        row_higth: 0,
+        loadingButton: false,
+        showLoading: true,
+        contribution_types:[],
     }
   },
   created: function () {
-    
+    this.showLoading = false;
     let array_date = this.first_date.split('-'); 
     this.first_date = array_date[0]+'-'+array_date[1]+'-01';
     array_date = this.last_date.split('-'); 
@@ -356,17 +365,24 @@ export default {
     save(){
         if(this.checkList())
         {
+            this.loadingButton = true;
+            this.showLoading = true;
             console.log('guardando lista '+ this.affiliateid);
             var data = {'ret_fun_id':this.retfunid,'list_aportes':this.list_aportes};
             axios.post('/ret_fun/savecontributions', data )
-                        .then(function (resp) {
+                        .then((resp) =>{
                             // this.$router.push({path: '/'});
                             console.log(resp);
-                                
+                            this.$store.commit('retFunForm/setContributionTypes',{'contributionTypes':resp.data.contribution_types});
+                            this.loadingButton=false;
+                            this.showLoading = false;
                             flash('Informacion Clasificada');
+
                         })
-                        .catch(function (resp) {
+                        .catch((resp)=> {
                             console.log(resp);
+                            this.showLoading = false;
+                            this.loadingButton=false;
                             flash('Error: '+resp.message,'error');
                         });
         }else{
@@ -627,6 +643,7 @@ export default {
     }
   },
   computed: {
+
     list2String(cNormal){
       return JSON.stringify(this.list_aportes, null, 2);  
     }
