@@ -637,9 +637,40 @@ class QuotaAidMortuaryController extends Controller
         return $num."/".$year;
     }
 
-//    public function destroy($id)
-//    {
-//        //
-//    }
+    /**
+     * This function edit recepcioned documents
+     * 
+     * @param object Request, int id
+     * @return Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary
+     */
+    public function editRequirements(Request $request, $id) {        
+        $documents = QuotaAidSubmittedDocument::
+            select('procedure_requirements.number','quota_aid_submitted_documents.procedure_requirement_id')
+            ->leftJoin('procedure_requirements','quota_aid_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+            ->orderby('procedure_requirements.number','ASC')
+            ->where('quota_aid_submitted_documents.quota_aid_mortuary_id',$id)
+            ->pluck('quota_aid_submitted_documents.procedure_requirement_id','procedure_requirements.number');
+        
+        $num = $num2 = 0;
+
+        foreach($request->requirements as $requirement){
+                $from = $to = 0;
+                $comment = null;
+                for($i=0;$i<count($requirement);$i++){
+                    $from = $requirement[$i]['number'];
+                    if($requirement[$i]['status'] == true)
+                    {
+                        $to = $requirement[$i]['id'];
+                        $comment = $requirement[$i]['comment'];
+                        $doc = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id',$id)->where('procedure_requirement_id',$documents[$from])->first();
+                        $doc->procedure_requirement_id = $to;
+                        $doc->comment = $comment;
+                        $doc->save();
+                    }
+                }
+        }
+
+        return $num;
+    }
 
 }

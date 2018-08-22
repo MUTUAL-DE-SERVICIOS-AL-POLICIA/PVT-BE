@@ -130,6 +130,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
 		Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
 		Route::resource('quota_aid', 'QuotaAidMortuaryController');
+		Route::post('quota_aid/{quota_aid_id}/edit_requirements', 'QuotaAidMortuaryController@editRequirements')->name('edit_quota_aid_requirements');
 
 		Route::resource('affiliate_folder', 'AffiliateFolderController');
 		Route::post('editFolder', 'AffiliateFolderController@editFolder')->name('editFolder');

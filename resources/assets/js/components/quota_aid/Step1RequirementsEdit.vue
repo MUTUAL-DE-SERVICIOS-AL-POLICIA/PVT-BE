@@ -188,6 +188,7 @@
             store(quota_aid){
                 if(this.rol!=11){
                     let uri = `/quota_aid/${this.quota_aid.id}/edit_requirements`;                
+                    console.log(uri);
                     axios.post(uri,
                         {
                         requirements: this.requirementList
@@ -209,7 +210,7 @@
                             submit_documents: this.requirementList
                             }
                         ).then(response =>{
-                            flash("Verificacion Correcta");
+                            flash("Documentos actualizados correctamente.");
                             this.toggle_editing();
                         
                             //this.showEconomicData = true
