@@ -636,7 +636,7 @@ class QuotaAidMortuaryController extends Controller
         }
         return $num."/".$year;
     }
-
+    
     /**
      * This function edit recepcioned documents
      * 
