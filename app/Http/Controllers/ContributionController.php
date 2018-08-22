@@ -693,8 +693,17 @@ class ContributionController extends Controller
     {
         $ret_fun = RetirementFund::find($ret_fun_id);
         $affiliate = $ret_fun->affiliate;
-        $contributions = $affiliate->contributions()->orderBy('month_year')->get();
 
+        if (!(isset($affiliate->date_entry) && isset($affiliate->date_derelict))) {
+            Session::flash('message', 'Verifique la fecha de entrada y desvinculación del afiliado existan antes de continuar');
+            return redirect('ret_fun/' . $ret_fun_id);
+        }
+        if (Util::parseMonthYearDate($affiliate->date_derelict) < Util::parseMonthYearDate($affiliate->date_entry)) {
+            Session::flash('message', 'Verifique la fecha de entrada y desvinculación del afiliado estén correctas antes de continuar');
+            return redirect('ret_fun/' . $ret_fun_id);
+        }
+
+        $contributions = $affiliate->contributions()->orderBy('month_year')->get();
         $first_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->first()->month_year)->format('m/Y'));
         $last_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->last()->month_year)->format('m/Y'));
 
@@ -745,7 +754,8 @@ class ContributionController extends Controller
                     array_push($temp_ids, $value->id);
                 }
             }
-            DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
+            // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
+            dd("error: Se eliminaran Varias contribuciones porque no las fechas no coinciden.");
             Log::info("-------------  / end deleting ---------");
         }
 
@@ -797,7 +807,8 @@ class ContributionController extends Controller
                     array_push($temp_ids, $value->id);
                 }
             }
-            DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
+            dd("error: Se eliminaran Varias contribuciones porque no las fechas no coinciden.");
+            // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
             Log::info("-------------  / end deleting ---------");
         }
 

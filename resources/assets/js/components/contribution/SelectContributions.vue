@@ -9,15 +9,49 @@
                     <div class="sk-cube3 sk-cube"></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <h3>
                         <button class="btn btn-sm btn-info"  @click="orderList" ><i :class="order_aportes?'fa fa-sort-amount-desc':'fa fa-sort-amount-asc'"></i></button>
                             Aportes
                         </h3>
                     </div>
                     <div class="pull-right" style="padding-right:10px">
-                        <label>Seleci&oacute;n masiva</label> <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalcyk" @click="clear"><i class="fa fa-table"></i></button>
+                        <!-- <label>Seleci&oacute;n masiva</label> <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalcyk" @click="clear"><i class="fa fa-table"></i></button> -->
+                        <div class="form-inline">
+                            <div class="form-group" :class="{ 'has-error': errors.has('modal_contribution_type_id') }">
+                                <label class="label-control">Tipo de contribucion</label>
+                                <select class="form-control" name="modal_contribution_type_id" v-model="modal.contribution_type_id" v-validate="'required'">
+                                    <option :value="null"></option>
+                                    <option v-for="item in list_types" :value="item.id" :key="item.id"> {{item.name}}</option>
+                                </select>
+                            </div>
+                            <!-- <div class="form-group">
+                                <div class="col-md-4">
+                                    <input type="tel" v-mask="'##/####'" placeholder="mm/yyyy" class="form-control" v-model="modal.first_date">
+                                </div>
+                                <div class="col-md-1">
+                                    <label>Hasta:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="tel" v-mask="'##/####'" placeholder="mm/yyyy" class="form-control" v-model="modal.last_date">
+                                </div>
+                            </div> -->
+                            <div class="form-group">
+                                <!-- <label class="font-normal">Range select</label> -->
+                                <div class="input-daterange input-group" :class="{ 'has-error': errors.has('modal_first_date')||errors.has('modal_last_date') }">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" name="modal_first_date" class="form-control-sm form-control" placeholder="mm/yyyy" data-month-year="true" v-model="modal.first_date" v-validate="'required|date_format:MM/YYYY'">
+                                    <span class="input-group-addon"> <i class="fa fa-arrow-right"></i> </span>
+                                    <input type="text" name="modal_last_name" class="form-control-sm form-control" placeholder="mm/yyyy" data-month-year="true" v-model="modal.last_date" v-validate="'required|date_format:MM/YYYY'">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" @click="applyRangeDate" :disabled="validAll" > <i class="fa fa-save"></i> Guardar</button>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
                 <div class="row">
                     <div class="col-md-1">
@@ -169,13 +203,14 @@
  
 <script>
 
-import {TheMask} from 'vue-the-mask'
+// import {TheMask} from 'vue-the-mask'
+import { monthYearInputMaskAll }  from "../../helper.js";
 
 export default {
   name: 'clasificacion-aportes',
-  components: {
-    TheMask,
-  },
+//   components: {
+//     TheMask,
+//   },
    props: [
         'contributions',
         'contype',
@@ -214,6 +249,9 @@ export default {
     }
   },
   created: function () {
+      setTimeout(() => {
+          monthYearInputMaskAll();
+      }, 500);
     this.showLoading = false;
     let array_date = this.first_date.split('-'); 
     this.first_date = array_date[0]+'-'+array_date[1]+'-01';
@@ -348,6 +386,13 @@ export default {
     console.log(date);    
   },
   methods:{
+    async validateBeforeSubmit() {
+        try {
+            await this.$validator.validateAll();
+        } catch (error) {
+            console.log("some error");
+        }
+    },
     orderList () {
       console.log('ordenando aportes cyk');
       if(this.order_aportes){
@@ -567,6 +612,11 @@ export default {
     },
     applyRangeDate()
     {
+        this.validateBeforeSubmit();
+        if (this.validAll) {
+            flash("Debe completar el formulario", 'error')
+            return;
+        }
         if(this.isValid())
         {
             let fi =moment('01/'+this.modal.first_date,"DD/MM/YYYY").toDate();
@@ -585,17 +635,19 @@ export default {
             for (let i = 0; i < this.list_aportes.length; i++)
             {
                 let aporte = this.list_aportes[i];
-          
                 aporte_date = moment(aporte.month_year,"YYYY-MM-DD").toDate();
-               
                 if(aporte_date.getTime() >= fi.getTime() && aporte_date.getTime() <= ff.getTime()  )
-                {   
+                {
                     aporte.breakdown_id = c_type.id;
                     aporte.breakdown_name = c_type.name;
                     Vue.set(this.list_aportes,i,aporte);
                 }
             }
+            this.clear();
         }
+
+        
+
 
     },
     isValid()
@@ -643,7 +695,12 @@ export default {
     }
   },
   computed: {
-
+    validAll(){
+        if (this.$validator.errors.collect() == {}) {
+            return false;
+        }
+        return Object.keys(this.$validator.errors.collect()).length > 0;
+    },
     list2String(cNormal){
       return JSON.stringify(this.list_aportes, null, 2);  
     }
