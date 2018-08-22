@@ -35,7 +35,7 @@ class Ids
 	}
 
 	/**
-	* Retorna el is_editable true
+	* Retorna el id cuando es editable
 	*
 	* @return int 0
 	*/
@@ -45,11 +45,11 @@ class Ids
 	}
 
 	/**
-	* Retorna el is_editable false
+	* Retorna el id cuando no es editable
 	*
 	* @return int 1
 	*/
-	public static function getNunEditableId()
+	public static function getNonEditableId()
 	{
 		return 0;
 	}
