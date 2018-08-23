@@ -53,4 +53,25 @@ class Ids
 	{
 		return 0;
 	}
+
+	/**
+	* Retorna el id de fallecmiento en Pago Global
+	*
+	* @return int 1
+	*/
+	public static function getGlobalPay()
+	{
+		return 1;
+	}
+
+	/**
+	* Retorna el id de fallecimiento en Fondo de Retiro
+	*
+	* @return int 4
+	*/
+	public static function getRetFun()
+	{
+		return 4;
+	}
+
 }
