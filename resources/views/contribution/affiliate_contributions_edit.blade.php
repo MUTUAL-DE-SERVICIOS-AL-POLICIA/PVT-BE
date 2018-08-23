@@ -246,7 +246,7 @@
                                         @endif
                                     @endfor
                                         <td>
-                                            <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" onclick="createReimbursement({{$year_start}})"><i class="fa fa-dollar"></i></button>
+                                            <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" onclick="createReimbursement({{$year_start}})"><i class="fa fa-dollar"></i></button>                                            
                                             <button class="btn btn-default" data-toggle="tooltip" data-placement="left" type="button" title="Guardar" onclick="storeData(this)"><i class="fa fa-save"></i></button>
                                         </td>
                                 </tr>
@@ -268,8 +268,9 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
                 <h4 class="modal-title">Reintegro</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body">                
                 <div class="form-group"><label>Mes</label>
+                    <input id="modal_year" name="modal_year" type="hidden">
                     <select class="form-control" name="month" id="month">
                         <option value="01">Enero</option>
                         <option value="02">Febrero</option>
@@ -303,6 +304,9 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                 <!--<button type="submit" class="btn btn-primary">Guardar</button>-->
+                <button class="btn btn-red" style="display: none;" type="button" id="delete_reimbursement" title="Eliminar" onclick="deleteReimbursement(this)">
+                    Eliminar
+                </button>
                 <button class="btn btn-default" type="button" title="Guardar" onclick="storeReimbursement(this)">
                     Guardar
                 </button>
@@ -380,6 +384,7 @@ $('.editcontent').blur(function() {
 function createReimbursement(year){
     //alert(year);
     this.actual_year = year;
+    $('#modal_year').val(year);
     $('#reimbursement_modal').modal('show');
 }
 function storeReimbursement(){
@@ -431,6 +436,15 @@ $(document).ready(function() {
     $('.sk-folding-cube').hide();
     $('.my-content').removeClass('sk-loading')
 });
+    $('#month').change(function(){
 
+        //console.log($('#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html());
+        if(parseFloat($('#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()) > 0)
+            $('#delete_reimbursement').show();
+        else 
+            $('#delete_reimbursement').hide();
+        //if({{ $("#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()" == '0')
+          //  console.log('cero');    
+    });    
 </script>
 @endsection

@@ -89,7 +89,7 @@
                     <br>
                     <div class="text-center" v-if="editing" >     
                         <button class="btn btn-danger" type="button" @click="toggle_editing"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span cla   ss="bold">Cancelar</span></button>           
-                        <button type="button" class="btn btn-primary" type="button" @click="store(ret_fun_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+                        <button type="button" class="btn btn-primary" type="button" @click="store(quota_aid_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
                     </div>
                 </form>
             </div>
