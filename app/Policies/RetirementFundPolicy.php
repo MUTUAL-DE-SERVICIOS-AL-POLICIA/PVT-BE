@@ -76,6 +76,6 @@ class RetirementFundPolicy
     }
     public function qualify(User $user, RetirementFund $retirementFund)
     {
-        return $retirementFund->wf_state_current_id == 23 && Util::getRol()->id == 13 && $retirementFund->inbox_state == false;
+        return $retirementFund->wf_state_current_id == 23 && Util::getRol()->id == 13 && $retirementFund->inbox_state == false && ! $retirementFund->affiliate->selectedContributions() > 0;
     }
 }

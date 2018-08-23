@@ -61,6 +61,7 @@ class Affiliate extends Model
         if(!$value){
             return null;
         }
+        return $value;
         return Carbon::parse($value)->format('d/m/Y');
     }
     public function getDateEntryAttribute($value)

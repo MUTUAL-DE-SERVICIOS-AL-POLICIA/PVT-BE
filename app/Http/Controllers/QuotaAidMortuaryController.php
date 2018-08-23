@@ -348,45 +348,8 @@ class QuotaAidMortuaryController extends Controller
     //public function show(RetirementFund $retirementFund)
     public function show($id)
     {
-        
-//        $retirement_fund = RetirementFund::find($id);
-//        
-//        $affiliate = Affiliate::find($retirement_fund->affiliate_id);
-//        
-//        $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('type','desc')->get();
-//        
-//        $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
-//        
-//        $beneficiary_avdisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
-//        
-//        if(isset($beneficiary_avdisor->id))
-//            $advisor= RetFunAdvisor::find($beneficiary_avdisor->ret_fun_advisor_id);
-//        else
-//            $advisor = new RetFunAdvisor();
-//        
-//        $beneficiary_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
-//        
-//        if(isset($beneficiary_guardian->id))
-//            $guardian = RetFunLegalGuardian::find($beneficiary_guardian->ret_fun_legal_guardian_id);
-//        else 
-//            $guardian = new RetFunLegalGuardian();                
-//        
-//        $data = [
-//            'retirement_fund' => $retirement_fund,
-//            'affiliate' =>  $affiliate,
-//            'beneficiaries' =>  $beneficiaries,
-//            'applicant' => $applicant,
-//            'advisor'  =>  $advisor,
-//            'legal_guardian'    =>  $guardian,            
-//        ];
-//        
-//        return view('ret_fun.show',$data);
-
-        
         $quota_aid = QuotaAidMortuary::find($id);
-
         //$this->authorize('view', $retirement_fund);
-
         $affiliate = Affiliate::find($quota_aid->affiliate_id);
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
@@ -394,13 +357,13 @@ class QuotaAidMortuaryController extends Controller
 
         $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->with(['kinship', 'city_identity_card'])->orderByDesc('type')->orderBy('id')->get();
         
-        // foreach ($beneficiaries as $b) {
-        //     $b->phone_number=explode(',',$b->phone_number);
-        //     $b->cell_phone_number=explode(',',$b->cell_phone_number);
-        //     if(! sizeOf($b->address) > 0 && $b->type == 'S'){
-        //         $b->address[]= array('zone' => null, 'street'=>null, 'number_address'=>null);
-        //     }
-        // }
+        foreach ($beneficiaries as $b) {
+            $b->phone_number=explode(',',$b->phone_number);
+            $b->cell_phone_number=explode(',',$b->cell_phone_number);
+            if(! sizeOf($b->address) > 0 && $b->type == 'S'){
+                $b->address[]= array('zone' => null, 'street'=>null, 'number_address'=>null);
+            }
+        }
         
         $applicant = QuotaAidBeneficiary::where('type','S')->where('quota_aid_mortuary_id',$quota_aid->id)->first();        
         
@@ -418,7 +381,12 @@ class QuotaAidMortuaryController extends Controller
             $guardian = QuotaAidLegalGuardian::find($beneficiary_guardian->quota_aid_legal_guardian_id);
         else
             $guardian = new QuotaAidLegalGuardian();            
-        $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')->where('procedure_types.module_id','=',3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro        
+        $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')
+                ->where('procedure_types.module_id','=',4)
+                ->orWhere('procedure_types.module_id','=',5)
+                ->get()
+                ->pluck('id'); //3 por el module 3 de fondo de retiro        
+                
         //return $procedures_modalities_ids;
         $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();        
         $file_modalities = ProcedureModality::get();
@@ -446,7 +414,7 @@ class QuotaAidMortuaryController extends Controller
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
-                                    
+                                                                
         $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();            
         
         $observation_types = ObservationType::where('module_id',4)->get();
@@ -466,7 +434,7 @@ class QuotaAidMortuaryController extends Controller
         
         $can_validate = $wf_current_state->id == $quota_aid->wf_state_current_id;
         $can_cancel = ($quota_aid->user_id == $user->id && $quota_aid->inbox_state == true);
-
+        
         //workflow record
         //$workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
         //return $workflow_records;
@@ -494,7 +462,7 @@ class QuotaAidMortuaryController extends Controller
         if(isset($quota_aid->id))
             $is_editable = "0";
         //return $data;
-        //return $correlatives;
+        //return $correlatives;        
         $data = [
             'quota_aid' => $quota_aid,
             'affiliate' =>  $affiliate,
@@ -525,8 +493,8 @@ class QuotaAidMortuaryController extends Controller
             //'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
             'is_editable'  =>  $is_editable
-        ];
-        // return $data;
+        ];                
+        //return $procedures_modalities;
 
         return view('quota_aid.show',$data);
 
