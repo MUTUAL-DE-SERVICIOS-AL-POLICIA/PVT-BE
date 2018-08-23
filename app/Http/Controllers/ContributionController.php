@@ -845,37 +845,42 @@ class ContributionController extends Controller
             DB::table('contributions')->insert($months);
         }
 
-        // $contribution =DB::table('contributions')->where('affiliate_id',$ret_fun->affiliate_id)->whereNull('deleted_at')->get();
-        // return $contribution;
-        $con_type = false;
-        $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
-                                                ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
-                                                ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                ->where('contributions.month_year','>=', Util::parseMonthYearDate($affiliate->date_entry))
-                                                //   ->whereNull('contributions.deleted_at')
-                                                ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
-                                                //   ->take(10)
-                                                ->orderBy('contributions.month_year', 'desc')
-                                                ->get();
-                                                // $contributions = [];
-                                                //    return $contributions->count();
+
+        $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund', 'total', 'breakdown_id', 'contribution_type_id')->orderbyDesc('month_year')->get();
+
+        foreach ($contributions as $c) {
+            $c->contribution_type_id = Util::classificationContribution($c->contribution_type_id, $c->breakdown_id, $c->total);
+        }
+        // dd($contributions->first());
+        // $con_type = false;
+        // $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
+        //                                         ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
+        //                                         ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
+        //                                         ->where('contributions.month_year','>=', Util::parseMonthYearDate($affiliate->date_entry))
+        //                                         //   ->whereNull('contributions.deleted_at')
+        //                                         ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
+        //                                         //   ->take(10)
+        //                                         ->orderBy('contributions.month_year', 'desc')
+        //                                         ->get();
+        //                                         // $contributions = [];
+        //                                         //    return $contributions->count();
                                                 
-        if(sizeof($contributions) == 0){
-          $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
-                                                    ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
-                                                    ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                    ->where('contributions.month_year','>=',Util::parseMonthYearDate($affiliate->date_entry))
-                                                    // ->whereNull('contributions.deleted_at')
-                                                    ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
-                                                //   ->take(10)
-                                                    ->orderBy('contributions.month_year', 'desc')
-                                                    ->get();
-           $con_type=true;
-        }  
+        // if(sizeof($contributions) == 0){
+        //   $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
+        //                                             ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
+        //                                             ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
+        //                                             ->where('contributions.month_year','>=',Util::parseMonthYearDate($affiliate->date_entry))
+        //                                             // ->whereNull('contributions.deleted_at')
+        //                                             ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
+        //                                         //   ->take(10)
+        //                                             ->orderBy('contributions.month_year', 'desc')
+        //                                             ->get();
+        //    $con_type=true;
+        // }  
         
         
        
-        $contribution_types = DB::table('contribution_types')->select('id','name')->get();
+        $contribution_types = ContributionType::select('id', 'name')->get();
         $date_entry = $ret_fun->affiliate->date_entry;
         $date_derelict = $ret_fun->affiliate->date_derelict;
         // return $date_derelict;
@@ -883,7 +888,6 @@ class ContributionController extends Controller
         //return $contributions;
         if($date_entry && $date_derelict){
             $data =   array('contributions' => $contributions,
-                            'con_type'=>$con_type ,
                             'contribution_types'=> $contribution_types,
                             'date_entry' => Util::parseMonthYearDate($date_entry),
                             'date_derelict' => Util::parseMonthYearDate($date_derelict),
@@ -896,10 +900,20 @@ class ContributionController extends Controller
         }
     }
     public function saveContributions(Request $request)
-    {   
+    {
         // return $request->all();
+        Log::info("hola");
+        $request_contributions = $request->list_aportes;
         $ret_fun = RetirementFund::find($request->ret_fun_id);
-        $affiliate = Affiliate::find($ret_fun->affiliate_id);
+        $affiliate = $ret_fun->affiliate;
+        $contributions = $affiliate->contributions;
+        foreach ($contributions as $c) {
+            $index = array_search($c->id, $request_contributions[0]);
+            Log::info($index .' '. $request_contributions[$index]);
+            return;
+
+        }
+        return;
         // return $ret_fun;
 
         // $ret_fun->contributions()->attach($sixty_id);
@@ -944,8 +958,6 @@ class ContributionController extends Controller
             $i++;
             // Log::info('i: '.$i.' id:'.$contribution->id);
         }
-        // $total = $affiliate->getTotalContributionsAmount(Affiliate::DISPONIBILIDAD);
-        // return $total;
         Log::info('saving subtotal availability retfun id: '. $ret_fun->id);
         $availability = $affiliate->getContributionsAvailability();
         $subtotal_availability = array_sum(array_column($availability, 'total'));

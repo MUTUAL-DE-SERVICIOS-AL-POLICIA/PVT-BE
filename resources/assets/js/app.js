@@ -171,6 +171,9 @@ Vue.filter('formatDateInbox', function (value) {
 Vue.filter('uppercase', function (value) {
   return value.toUpperCase();
 });
+Vue.filter('monthYear', function (value) {
+  return moment(value).format("MM/Y");
+});
 
 //vue mask hdp
 import VueTheMask from 'vue-the-mask'
