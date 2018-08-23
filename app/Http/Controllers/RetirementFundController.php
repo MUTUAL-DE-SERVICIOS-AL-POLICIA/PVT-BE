@@ -1444,13 +1444,14 @@ class RetirementFundController extends Controller
     }
 
     public function editRequirements(Request $request, $id){
-
-        // return $request->requirements;
+        //return $request->ret_fun_modality;
+        //return $request->aditional_requirements;
         $documents = RetFunSubmittedDocument::
             select('procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id')
             ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
             ->where('ret_fun_submitted_documents.retirement_fund_id',$id)
+            ->where('procedure_requirements.number','>','0')
             ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         //return $documents;
         $num = $num2 = 0;
@@ -1470,6 +1471,40 @@ class RetirementFundController extends Controller
                         $doc->save();
                     }
                 }
+        }
+
+        $procedure_requirements = ProcedureRequirement::
+                                    select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
+                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
+                                    ->where('procedure_requirements.number','0')
+                                    ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+                                    ->orderBy('procedure_requirements.number','ASC')                                    
+                                    ->get();
+
+        $retirement_fund = RetirementFund::select('id','procedure_modality_id')->find($id);
+        $aditional =  $request->aditional_requirements;        
+        $num ="";        
+        foreach($procedure_requirements as $requirement){
+            $needle = RetFunSubmittedDocument::where('retirement_fund_id',$id)
+                        ->where('procedure_requirement_id',$requirement->id)
+                        ->first();
+            if(isset($needle)) {                
+                if(!in_array($requirement->id,$aditional)){                                        
+                    $num.=$requirement->id.' ';
+                    $needle->delete();       
+                    $needle->forceDelete();
+                }
+            } else {                                
+                if(in_array($requirement->id,$aditional)) {
+                    $submit = new RetFunSubmittedDocument();
+                    $submit->retirement_fund_id = $retirement_fund->id;
+                    $submit->procedure_requirement_id = $requirement->id;
+                    $submit->reception_date = date('Y-m-d');
+                    $submit->comment = "";
+                    $submit->save();    
+                }
+            }   
+            
         }
 
         return $num;

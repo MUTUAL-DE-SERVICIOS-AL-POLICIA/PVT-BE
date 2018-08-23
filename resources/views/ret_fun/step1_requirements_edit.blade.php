@@ -88,13 +88,22 @@
                         </div>
                     </div>
                     <br>
+                    <div> 
+                        <h4>Documentos adicionales</h4>
+                        <select data-placeholder="Documentos adicionales..." class="chosen-select" id="aditional_requirements" name="aditional_requirements[]" multiple="" style="width: 350px; display: none;" tabindex="-1" v-bind:disabled="!editing">
+                            <option v-for="(requirement, index) in aditionalRequirements"  :value="requirement.id" :key="`nonselected-${index}`">@{{ requirement.document }} </option>
+                            <option v-for="(requirement, index) in aditionalRequirementsSelected"  :value="requirement.id" :key="`selected-${index}`" selected>@{{ requirement.document }} </option>
+                        </select>
+                    </div>
+                    <br>
+                    <br>
                     <div class="text-center" v-if="editing" >     
                         <button class="btn btn-danger" type="button" @click="toggle_editing"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span cla   ss="bold">Cancelar</span></button>           
                         <button type="button" class="btn btn-primary" type="button" @click="store(ret_fun_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
-                    </div>
+                    </div>                    
                 </form>
-            </div>
+            </div>            
     </div>
-
+    
 
 </div>

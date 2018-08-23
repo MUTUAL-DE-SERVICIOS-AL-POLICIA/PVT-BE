@@ -16,6 +16,8 @@
         data(){
             return{
                 requirementList: [],
+                aditionalRequirements: [],
+                aditionalRequirementsSelected: [],
                 modality: null,
                 show_spinner: false,
                 modality_id: 3,
@@ -61,11 +63,14 @@
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
+                setTimeout(() => {
+                    $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+                }, 500);
             },
             getRequirements(){
 
                 this.requirementList = this.requirements.filter((r) => {
-                    if (r.modality_id == this.modality) {
+                    if (r.modality_id == this.modality  && r.number != 0) {
                         // if(this.submitted[r.number] == r.id){
                        
                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });
@@ -115,6 +120,7 @@
                 }
 
                 this.requirementList =  this.requirementList.groupBy('number')
+                this.getAditionalRequirements();
                 // this.requirementList = this.requirementList.reduce(function(r, v) {
                 //     r[v.number] = r[v.number] || [];
                 //     r[v.number].push(v);
@@ -122,6 +128,28 @@
                 // }, Object.create(null));
                 // console.log(this.requirementList);
             },
+            getAditionalRequirements(){
+                if(!this.modality){this.aditionalRequirements = []}
+                if(!this.modality){this.aditionalRequirementsSelected = []}
+                this.aditionalRequirements = this.requirements.filter((requirement) => {                    
+                    if (requirement.modality_id == this.modality && requirement.number == 0) {
+                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === requirement.id });
+                        if(!submit_document)
+                            return requirement;
+                    }
+                });
+                this.aditionalRequirementsSelected = this.requirements.filter((requirement) => {                    
+                    if (requirement.modality_id == this.modality && requirement.number == 0) {
+                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === requirement.id });
+                        if(submit_document)
+                            return requirement;
+                    }
+                });
+                
+                setTimeout(() => {
+                    $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+                }, 500);                
+            },            
             checked(index, i){
                 if(this.editing){
                     for(var k = 0; k < this.requirementList[index].length; k++ ){
@@ -176,10 +204,13 @@
             },
             store(ret_fun){
                 if(this.rol!=11){
-                    let uri = `/ret_fun/${this.ret_fun.id}/edit_requirements`;                
+                    let uri = `/ret_fun/${this.ret_fun.id}/edit_requirements`;   
+                    let req = $('#aditional_requirements').val();
+                    console.log(`items-> ${this.aditionalRequirementsSelected}`);
                     axios.post(uri,
                         {
-                        requirements: this.requirementList
+                        requirements: this.requirementList,
+                        aditional_requirements: req
                         }
                     ).then(response =>{
                         flash("Verificacion Correcta");

@@ -40,7 +40,12 @@
   text-align: center;
   font-weight: bold;
 }
-
+.chosen-container .chosen-drop {
+    border-bottom: 0;
+    border-top: 1px solid #aaa;
+    top: auto;
+    bottom: 40px;
+}
 .progressbar{
   counter-reset: step;
 }

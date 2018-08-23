@@ -80,7 +80,7 @@ import { mapState, mapMutations } from 'vuex';
             getAditionalRequirements(){
                 if(!this.modality){this.aditionalRequirements = []}                
                 this.aditionalRequirements = this.requirements.filter((requirement) => {                    
-                    if (requirement.modality_id == this.modality && requirement.number == 0) {                    
+                    if (requirement.modality_id == this.modality && requirement.number == 0) {
                         return requirement;
                     }
                 });                
