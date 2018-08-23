@@ -66,6 +66,7 @@
                 setTimeout(() => {
                     $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
                 }, 500);
+
             },
             getRequirements(){
 
