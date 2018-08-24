@@ -47,7 +47,7 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                     @else
                         @if ($contribution->contribution_type_id == 9)
-                            <td class="text-center uppercase font-bold px-5 py-3" colspan="4">PERIODO NO TRABAJDO</td>
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="4">PERÍODO NO TRABAJADO</td>
                         @else
                             <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
                         @endif
