@@ -52,7 +52,7 @@ class SpouseController extends Controller
         $spouse->second_name = $request->second_name;
         $spouse->surname_husband = $request->surname_husband;
         $spouse->civil_status = $request->civil_status;
-        $spouse->birth_date = $request->birth_date;
+        $spouse->birth_date = Util::verifyBarDate($request->birth_date) ? Util::parseBarDate($request->birth_date) : $request->birth_date;
         $spouse->date_death = $request->date_death;
         $spouse->save();
     }

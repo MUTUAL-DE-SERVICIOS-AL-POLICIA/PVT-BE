@@ -5,10 +5,18 @@ namespace Muserpol\Models\RetirementFund;
 use Illuminate\Database\Eloquent\Model;
 use Muserpol\Helpers\Util;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class RetFunBeneficiary extends Model
 {
     use SoftDeletes;
+    public function getBirthDateAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     public function kinship()
     {
         return $this->belongsTo('Muserpol\Models\Kinship');

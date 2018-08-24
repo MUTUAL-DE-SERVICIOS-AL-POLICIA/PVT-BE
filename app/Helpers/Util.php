@@ -581,4 +581,25 @@ class Util
         $spouse->city_identity_card_id = $object->city_identity_card_id;
         $spouse->save();
     }
+    public static function classificationContribution($contribution_type_id, $breakdown_id, $total)
+    {
+        if($contribution_type_id){
+            return $contribution_type_id;
+        }
+        switch ($breakdown_id) {
+            case 1:
+                return 10;
+                break;
+            case 3:
+                return $total == 0 || ! isset($total) ? 3 : 2;
+            case 5:
+                return $total == 0 || ! isset($total) ? 5 : 4;
+            case 10:
+                return 1;
+                break;
+            default:
+                return null;
+            break;
+        }
+    }
 }

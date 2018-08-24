@@ -326,7 +326,7 @@ class QuotaAidMortuaryController extends Controller
                 $beneficiary->first_name = strtoupper($first_name[$i]);
                 $beneficiary->second_name = strtoupper($second_name[$i]);
                 $beneficiary->surname_husband = strtoupper($surname_husband[$i]);
-                $beneficiary->birth_date = $birth_date[$i];
+                $beneficiary->birth_date = Util::verifyBarDate($birth_date[$i]) ? Util::parseBarDate($birth_date[$i]) : $birth_date[$i];
                 $beneficiary->gender = strtoupper(trim($gender[$i]));
                 $beneficiary->type = "N";
                 $beneficiary->save();                
