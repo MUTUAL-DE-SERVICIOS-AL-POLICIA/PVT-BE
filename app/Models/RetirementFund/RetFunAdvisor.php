@@ -4,6 +4,7 @@ namespace Muserpol\Models\RetirementFund;
 
 use Illuminate\Database\Eloquent\Model;
 use Muserpol\Helpers\Util;
+use Carbon\Carbon;
 
 class RetFunAdvisor extends Model
 {
@@ -22,6 +23,13 @@ class RetFunAdvisor extends Model
         return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunBeneficiary','ret_fun_advisor_beneficiary','ret_fun_advisor_id','ret_fun_beneficiary_id');
     }
 
+    public function getBirthDateAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     /**
      * Methods
      */
