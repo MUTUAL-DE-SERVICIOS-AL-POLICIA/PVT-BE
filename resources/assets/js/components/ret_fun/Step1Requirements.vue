@@ -14,6 +14,7 @@ import { mapState, mapMutations } from 'vuex';
             return{
                 editing: false,
                 requirementList: [],
+                aditionalRequirements: [],
                 modality: null,
                 show_spinner: false,
                 modality_id: 3,
@@ -26,7 +27,7 @@ import { mapState, mapMutations } from 'vuex';
         },
         mounted(){
             this.$store.commit('retFunForm/setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
-            this.onChooseProcedureType();
+            this.onChooseProcedureType();                        
         },
         methods:{
             onChooseProcedureType(){
@@ -48,11 +49,12 @@ import { mapState, mapMutations } from 'vuex';
                     this.$store.commit('retFunForm/setModality',object);//solo se puede enviar un(1) argumento 
                 }
                 this.getRequirements();
+                this.getAditionalRequirements();
             },
             getRequirements(){
                 if(!this.modality){this.requirementList = []}
                 this.requirementList = this.requirements.filter((r) => {
-                    if (r.modality_id == this.modality) {
+                    if (r.modality_id == this.modality && r.number != 0) {
                         r['status'] = false;
                         r['background'] = '';
                         return r;
@@ -67,13 +69,24 @@ import { mapState, mapMutations } from 'vuex';
                     }, {})
                 }
 
-                this.requirementList =  this.requirementList.groupBy('number')
+                this.requirementList =  this.requirementList.groupBy('number');
                 // this.requirementList = this.requirementList.reduce(function(r, v) {
                 //     r[v.number] = r[v.number] || [];
                 //     r[v.number].push(v);
                 //     return r;
                 // }, Object.create(null));
                 // console.log(this.requirementList);
+            },
+            getAditionalRequirements(){
+                if(!this.modality){this.aditionalRequirements = []}                
+                this.aditionalRequirements = this.requirements.filter((requirement) => {                    
+                    if (requirement.modality_id == this.modality && requirement.number == 0) {
+                        return requirement;
+                    }
+                });                
+                setTimeout(() => {
+                    $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+                }, 500);                
             },
             checked(index, i){
                 for(var k = 0; k < this.requirementList[index].length; k++ ){

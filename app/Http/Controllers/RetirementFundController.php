@@ -42,6 +42,7 @@ use Muserpol\Models\Contribution\ContributionType;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
+use Muserpol\Helpers\Ids;
 
 class RetirementFundController extends Controller
 {
@@ -73,7 +74,7 @@ class RetirementFundController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {        
         $first_name = $request->beneficiary_first_name;
         $second_name = $request->beneficiary_second_name;
         $last_name = $request->beneficiary_last_name;
@@ -119,12 +120,12 @@ class RetirementFundController extends Controller
         foreach($requirements as $requirement){
             if($request->input('document'.$requirement->id) == 'checked'){
                 $array_requirements[$requirement->number]++;
-            }
+            }            
         }
         //return $array_requirements;
         foreach($array_requirements as $key=>$requirement){
 
-            if($requirement == 0)
+            if($requirement == 0 && $key!=0)
             {
                 $biz_rules = [
                     'no_document'.$key   =>  'required'
@@ -145,7 +146,7 @@ class RetirementFundController extends Controller
         $legal_has_lastname = false;
         if($request->applicant_last_name == '' && $request->applicant_mothers_last_name=='')
             $has_lastname = true;
-        if($account_type == '3')
+        if($account_type == Ids::getLegalGuardianId() )
         {
             if($request->legal_guardian_last_name == '' && $request->legal_guardian_mothers_last_name=='')
                 $legal_has_lastname = true;
@@ -286,6 +287,19 @@ class RetirementFundController extends Controller
             }
         }
 
+        //storing aditional documents
+
+        foreach ($request->aditional_requirements  as  $requirement)
+        {
+            $submit = new RetFunSubmittedDocument();
+            $submit->retirement_fund_id = $retirement_fund->id;
+            $submit->procedure_requirement_id = $requirement;
+            $submit->reception_date = date('Y-m-d');
+            $submit->comment = "";
+            $submit->save();            
+        }        
+
+
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_fund->id;
         $beneficiary->city_identity_card_id = mb_strtoupper(trim($request->applicant_city_identity_card));
@@ -302,16 +316,16 @@ class RetirementFundController extends Controller
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
         $beneficiary->type = "S";
         $beneficiary->save();
-        if($account_type == '1' && $request->ret_fun_modality != 4 && $request->ret_fun_modality != 1 )
+        if($account_type == Ids::getBeneficiaryId() && $request->ret_fun_modality != 4 && $request->ret_fun_modality != 1 )
         {
             Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
-        if ($account_type == '1' && ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
+        if ($account_type == Ids::getBeneficiaryId() && ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
             Log::info("updating spouse 1");
             Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
 
-        if($account_type == '2')
+        if($account_type == Ids::getAdvisorId())
         {
             $advisor = new RetFunAdvisor();
             //$advisor->retirement_fund_id = $retirement_fund->id;
@@ -338,7 +352,7 @@ class RetirementFundController extends Controller
             $advisor_beneficiary->save();
         }
 
-        if($account_type == '3')
+        if($account_type == Ids::getLegalGuardianId())
         {
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
@@ -586,9 +600,9 @@ class RetirementFundController extends Controller
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
-        $is_editable = "1";
+        $is_editable = Ids::getEditableId();
         if(isset($retirement_fund->id))
-            $is_editable = "0";
+            $is_editable = Ids::getNonEditableId();
         //return $data;
         //return $correlatives;
         $data = [
@@ -1469,13 +1483,14 @@ class RetirementFundController extends Controller
     }
 
     public function editRequirements(Request $request, $id){
-
-        // return $request->requirements;
+        //return $request->ret_fun_modality;
+        //return $request->aditional_requirements;
         $documents = RetFunSubmittedDocument::
             select('procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id')
             ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
             ->where('ret_fun_submitted_documents.retirement_fund_id',$id)
+            ->where('procedure_requirements.number','>','0')
             ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         //return $documents;
         $num = $num2 = 0;
@@ -1495,6 +1510,40 @@ class RetirementFundController extends Controller
                         $doc->save();
                     }
                 }
+        }
+
+        $procedure_requirements = ProcedureRequirement::
+                                    select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
+                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
+                                    ->where('procedure_requirements.number','0')
+                                    ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+                                    ->orderBy('procedure_requirements.number','ASC')                                    
+                                    ->get();
+
+        $retirement_fund = RetirementFund::select('id','procedure_modality_id')->find($id);
+        $aditional =  $request->aditional_requirements;        
+        $num ="";        
+        foreach($procedure_requirements as $requirement){
+            $needle = RetFunSubmittedDocument::where('retirement_fund_id',$id)
+                        ->where('procedure_requirement_id',$requirement->id)
+                        ->first();
+            if(isset($needle)) {                
+                if(!in_array($requirement->id,$aditional)){                                        
+                    $num.=$requirement->id.' ';
+                    $needle->delete();       
+                    $needle->forceDelete();
+                }
+            } else {                                
+                if(in_array($requirement->id,$aditional)) {
+                    $submit = new RetFunSubmittedDocument();
+                    $submit->retirement_fund_id = $retirement_fund->id;
+                    $submit->procedure_requirement_id = $requirement->id;
+                    $submit->reception_date = date('Y-m-d');
+                    $submit->comment = "";
+                    $submit->save();    
+                }
+            }   
+            
         }
 
         return $num;
