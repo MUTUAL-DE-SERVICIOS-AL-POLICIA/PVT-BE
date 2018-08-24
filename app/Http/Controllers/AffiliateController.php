@@ -332,7 +332,7 @@ class AffiliateController extends Controller
         $affiliate->cell_phone_number = trim(implode(",", $request->cell_phone_number));
         $affiliate->city_birth_id = $request->city_birth_id;
         $affiliate->city_identity_card_id =$request->city_identity_card_id;
-        $affiliate->surname_husband = $request->surname_husband;
+        $affiliate->surname_husband = $request->surname_husband;        
 
         if (sizeOf($affiliate->address) > 0) {
             $address_id = $affiliate->address()->first()->id;
@@ -373,7 +373,7 @@ class AffiliateController extends Controller
         $affiliate->second_name = mb_strtoupper($affiliate->second_name);
         $affiliate->last_name = mb_strtoupper($affiliate->last_name);
         $affiliate->mothers_last_name = mb_strtoupper($affiliate->mothers_last_name);
-        $affiliate->surname_husband = mb_strtoupper($affiliate->surname_husband);
+        $affiliate->surname_husband = mb_strtoupper($affiliate->surname_husband);        
 
         $affiliate->save();
         $affiliate = Affiliate::with('address')->find($affiliate->id);
@@ -387,7 +387,7 @@ class AffiliateController extends Controller
 
     }
     public function update_affiliate_police(Request $request, Affiliate $affiliate)
-    {
+    {   
         $affiliate = Affiliate::where('id','=', $affiliate->id)->first();
         $this->authorize('update', $affiliate);
         $affiliate->affiliate_state_id = $request->affiliate_state_id;
@@ -398,9 +398,10 @@ class AffiliateController extends Controller
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        $affiliate->file_code = mb_strtoupper($request->file_code);
         $affiliate->save();
 
-        $datos = array('affiliate'=>$affiliate,'state'=>$affiliate->affiliate_state,'category'=>$affiliate->category,'degree'=>$affiliate->degree,'pension_entity'=>$affiliate->pension_entity);
+        $datos = array('affiliate'=>$affiliate,'state'=>$affiliate->affiliate_state,'category'=>$affiliate->category,'degree'=>$affiliate->degree,'pension_entity'=>$affiliate->pension_entity,'file_code'=>$affiliate->file_code);
         return $datos;
     }
 

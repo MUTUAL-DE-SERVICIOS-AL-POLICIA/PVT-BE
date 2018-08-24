@@ -55,6 +55,7 @@ import { monthYearInputMaskAll } from "../../helper.js";
 					this.form.pension_entity_id = this.pension_entity.id;
 					this.form.state_id = this.state.id;
 					this.form.type = this.values.type;
+					this.form.file_code = this.values.file_code;
 				}
 			},
 			update: function () {	
@@ -72,6 +73,7 @@ import { monthYearInputMaskAll } from "../../helper.js";
 						this.values.date_entry = response.data.affiliate.date_entry;
 						this.values.item = response.data.affiliate.item;
 						this.values.type = response.data.affiliate.type; 
+						this.values.file_code = response.data.affiliate.file_code;
 						flash('Informacion Policial Actualizada');
 					}).catch((response)=>{
 						flash('Error al actualizar Informacion Policial: '+response.message,'error');
