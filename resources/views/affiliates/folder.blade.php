@@ -1,4 +1,5 @@
 <div class="col-lg-12">
+    {!! Form::open(['action' => 'AffiliateFolderController@updateFileCode']) !!}
         <div class="ibox">
             <div class="ibox-content">
                
@@ -10,13 +11,20 @@
                 </div>
                
                 <div class="row">
+                    <input type="hidden" name ="affiliate_id" value="{{$affiliate_id}}">
                     <div class="ibox-content table-responsive">
-                      
+                        <div class="form-group"><label>C&oacute;digo de archivo</label>
+                        <input name="file_code" type="text" placeholder="C&oacute;odigo de folder" class="form-control" value="{{ $affiliate->file_code }}">
+                        </div>
                     </div>
+                </div>
+                <div>                    
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>    
-    </div>
+    {!!Form::close()!!}
+</div>
 <div class="col-lg-12">
     <div class="ibox">
         <div class="ibox-content">
@@ -102,7 +110,7 @@
                     </div>                    
                 </div>
                 
-                <div class="form-group"><label>Nota</label> <input name="note" type="text" placeholder="Nota adicionales" class="form-control"></div>                
+                <div class="form-group"><label>Nota</label> <input name="note" type="text" placeholder="Nota adicionales" class="form-control"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>

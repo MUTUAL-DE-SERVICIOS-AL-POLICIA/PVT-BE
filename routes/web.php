@@ -136,6 +136,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('affiliate_folder', 'AffiliateFolderController');
 		Route::post('editFolder', 'AffiliateFolderController@editFolder')->name('editFolder');
 		Route::post('deleteFolder', 'AffiliateFolderController@destroy')->name('deleteFolder');
+		Route::post('updateFileCode', 'AffiliateFolderController@updateFileCode')->name('updateFileCode');
+		
         //searcherController
 		Route::get('search/{ci}', 'SearcherController@search');
 		Route::get('search_ajax', 'SearcherController@searchAjax');
