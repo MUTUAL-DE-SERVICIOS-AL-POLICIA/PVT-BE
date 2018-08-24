@@ -106,7 +106,7 @@
                     <label class="control-label">Fecha de Nacimiento</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="date" v-model.trim="beneficiary.birth_date" name="beneficiary_birth_date[]" class="form-control" :disabled="!editable">
+                    <input type="text" data-date="true" v-model.trim="beneficiary.birth_date" name="beneficiary_birth_date[]" class="form-control" :disabled="!editable">
                 </div>
             </div>
             <div class="col-md-6">
@@ -221,7 +221,7 @@
 
 </template>
 <script>
-import { getGender, cellPhoneInputMaskAll, phoneInputMaskAll } from '../../helper.js'
+import { getGender, cellPhoneInputMaskAll, phoneInputMaskAll, dateInputMaskAll } from '../../helper.js'
 export default {
   props: ["kinships", "cities", "beneficiary", "editable", "removable","solicitante", "index"],
   data() {
@@ -236,6 +236,7 @@ export default {
     //this.$refs.identity_card.focus();
     phoneInputMaskAll();
     cellPhoneInputMaskAll();
+    dateInputMaskAll();
   },
   methods: {
     addPhoneNumber(){

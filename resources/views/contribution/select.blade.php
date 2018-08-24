@@ -17,7 +17,6 @@
          <button onclick="printJS({printable:'{!! url("ret_fun/".$ret_fun->id."/print/contributions_certification") !!}', type:'pdf', modalMessage: 'Generando documentos de impresión, por favor espere un momento.', showModal:true})" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> Batall&oacute;n de Seguridad F&iacute;sica</button>
     </div>
 </div>
-
-<contribution-select :contributions ="{{json_encode($contributions)}}" :retfunid="{{$ret_fun->id}}" :contype="{{json_encode($con_type)}}" :types="{{json_encode($contribution_types)}}" :start="{{json_encode($date_entry)}}"  :end="{{json_encode($date_derelict)}}" >
+<contribution-select :contributions ="{{json_encode($contributions)}}" :retfunid="{{$ret_fun->id}}" :contype="{{true}}" :types="{{json_encode($contribution_types)}}" :start="{{json_encode($date_entry)}}"  :end="{{json_encode($date_derelict)}}" >
 </contribution-select>
 @endsection

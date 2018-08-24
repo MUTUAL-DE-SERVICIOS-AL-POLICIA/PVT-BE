@@ -69,7 +69,7 @@ export default {
             //second method
             // if(this.dataInbox.workflows.length > 0){
             //     this.workflows.forEach(wf => {
-            //         this.$store.commit("clear", wf.id);
+            //         this.$store.commit("inbox/clear", wf.id);
             //     });
             // }
         },
@@ -117,7 +117,7 @@ export default {
                 }).then(result => {
                     if (result.value) {
                         flash('Trámites enviados correctamente');
-                        this.$store.commit("clear", this.activeWorkflowId);
+                        this.$store.commit("inbox/clear", this.activeWorkflowId);
                         this.$swal('Hecho!', 'Los Trámites fueron enviados correctamente.','success')
                         this.getData();
                         this.classification(this.activeWorkflowId);
@@ -165,7 +165,7 @@ export default {
                 }).then(result => {
                     if (result.value) {
                         flash('Trámites enviados correctamente');
-                        this.$store.commit("clear", this.activeWorkflowId);
+                        this.$store.commit("inbox/clear", this.activeWorkflowId);
                         this.$swal('Hecho!', 'Los Trámites fueron enviados correctamente.','success')
                         this.getData();
                         this.classification(this.activeWorkflowId);

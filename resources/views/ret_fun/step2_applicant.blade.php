@@ -37,7 +37,7 @@
                             <div class="col-md-8">
                                 <select class="form-control" name="accountType" @change="change_applicant()" v-model.trim="applicant_type" v-validate.initial="'required'">
                                     <option :value="null"></option>
-                                    <option v-for="(type,index) in applicant_types" :value="index+1">@{{type}}</option>
+                                    <option v-for="(type,index) in applicant_types_filter" :value="type.id">@{{type.name}}</option>
                                 </select>
                                 <i v-show="errors.has('accountType')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('accountType')" class="text-danger">@{{ errors.first('accountType') }}</span>
@@ -248,7 +248,7 @@
                                 <label class="control-label">Fecha de Resolucion</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="advisor_resolution_date" v-model.trim="advisor_resolution_date" class="form-control">
+                                <input type="date" name="advisor_resolution_date" v-model.trim="advisor_resolution_date" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-6">

@@ -288,16 +288,17 @@ class RetirementFundController extends Controller
         }
 
         //storing aditional documents
-
-        foreach ($request->aditional_requirements  as  $requirement)
-        {
-            $submit = new RetFunSubmittedDocument();
-            $submit->retirement_fund_id = $retirement_fund->id;
-            $submit->procedure_requirement_id = $requirement;
-            $submit->reception_date = date('Y-m-d');
-            $submit->comment = "";
-            $submit->save();            
-        }        
+        if($request->aditional_requirements){
+            foreach ($request->aditional_requirements  as  $requirement)
+            {
+                $submit = new RetFunSubmittedDocument();
+                $submit->retirement_fund_id = $retirement_fund->id;
+                $submit->procedure_requirement_id = $requirement;
+                $submit->reception_date = date('Y-m-d');
+                $submit->comment = "";
+                $submit->save();
+            }
+        }
 
 
         $beneficiary = new RetFunBeneficiary();
@@ -310,7 +311,7 @@ class RetirementFundController extends Controller
         $beneficiary->first_name = mb_strtoupper(trim($request->applicant_first_name));
         $beneficiary->second_name = mb_strtoupper(trim($request->applicant_second_name));
         $beneficiary->surname_husband = mb_strtoupper(trim($request->applicant_surname_husband));
-        $beneficiary->birth_date = $request->applicant_birth_date;
+        $beneficiary->birth_date = Util::verifyBarDate($request->applicant_birth_date) ? Util::parseBarDate($request->applicant_birth_date) : $request->applicant_birth_date;
         $beneficiary->gender = $request->applicant_gender;
         $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
@@ -409,8 +410,8 @@ class RetirementFundController extends Controller
                 $beneficiary->first_name = strtoupper(trim($first_name[$i]));
                 $beneficiary->second_name = strtoupper(trim($second_name[$i]));
                 $beneficiary->surname_husband = strtoupper(trim($surname_husband[$i]));
-                $beneficiary->birth_date = $birth_date[$i];
-                $beneficiary->gender = strtoupper(trim($gender[$i]));
+                $beneficiary->birth_date = Util::verifyBarDate($birth_date[$i]) ? Util::parseBarDate($birth_date[$i]) : $birth_date[$i]; ;
+                $beneficiary->gender = $gender[$i];
                 //$beneficiary->civil_status = $request->
                 //$beneficiary->phone_number = $request->;
                 //$beneficiary->cell_phone_number = $request->;
@@ -868,7 +869,7 @@ class RetirementFundController extends Controller
                 $old_ben->first_name = mb_strtoupper(trim($new_ben['first_name']));
                 $old_ben->second_name = mb_strtoupper(trim($new_ben['second_name']));
                 $old_ben->surname_husband = mb_strtoupper(trim($new_ben['surname_husband']));
-                $old_ben->birth_date = $new_ben['birth_date'];
+                $old_ben->birth_date = Util::verifyBarDate($new_ben['birth_date']) ? Util::parseBarDate($new_ben['birth_date']) : $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
                 $old_ben->state = $new_ben['state'] ?? false;
                 if($old_ben->type == 'S' && $retirement_fund->procedure_modality_id !=  4){
@@ -879,7 +880,7 @@ class RetirementFundController extends Controller
                     $update_affilaite->last_name = $old_ben->last_name;
                     $update_affilaite->mothers_last_name = $old_ben->mothers_last_name;
                     $update_affilaite->gender = $old_ben->gender;
-                    $update_affilaite->birth_date = $old_ben->birth_date;
+                    $update_affilaite->birth_date = Util::verifyBarDate($old_ben->birth_date) ? Util::parseBarDate($old_ben->birth_date) : $old_ben->birth_date;
                     $update_affilaite->city_identity_card_id =$old_ben->city_identity_card_id;
                     $update_affilaite->surname_husband = $old_ben->surname_husband;
                     $update_affilaite->save();
@@ -929,7 +930,7 @@ class RetirementFundController extends Controller
                 $beneficiary->first_name = mb_strtoupper(trim($new_ben['first_name']));
                 $beneficiary->second_name = mb_strtoupper(trim($new_ben['second_name']));
                 $beneficiary->surname_husband = mb_strtoupper(trim($new_ben['surname_husband']));
-                $beneficiary->birth_date = $new_ben['birth_date'];
+                $beneficiary->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date; ;
                 $beneficiary->gender = $new_ben['gender'];
                 $beneficiary->state = $new_ben['state'];
                 // $old_ben->state = $new_ben['state'];
