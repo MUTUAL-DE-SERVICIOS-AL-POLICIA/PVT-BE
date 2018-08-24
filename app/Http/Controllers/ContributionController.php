@@ -880,7 +880,7 @@ class ContributionController extends Controller
         
         
        
-        $contribution_types = ContributionType::select('id', 'name')->get();
+        $contribution_types = ContributionType::select('id', 'name')->orderBy('id')->get();
         $date_entry = $ret_fun->affiliate->date_entry;
         $date_derelict = $ret_fun->affiliate->date_derelict;
         // return $date_derelict;
@@ -902,63 +902,19 @@ class ContributionController extends Controller
     public function saveContributions(Request $request)
     {
         // return $request->all();
-        Log::info("hola");
-        $request_contributions = $request->list_aportes;
+        $request_contributions = $request->contributions;
         $ret_fun = RetirementFund::find($request->ret_fun_id);
         $affiliate = $ret_fun->affiliate;
-        $contributions = $affiliate->contributions;
+        $contributions = $affiliate->contributions()->orderBy('month_year')->get();
         foreach ($contributions as $c) {
-            $index = array_search($c->id, $request_contributions[0]);
-            Log::info($index .' '. $request_contributions[$index]);
-            return;
+            foreach($request_contributions as $rc){
+                if($rc['id'] == $c->id){
+                    $c->contribution_type_id = $rc['contribution_type_id'];
+                    $c->save();
+                }
+            }
 
         }
-        return;
-        // return $ret_fun;
-
-        // $ret_fun->contributions()->attach($sixty_id);
-        // Log::info('imprimiendo contribuciones');
-        $i=0;
-        foreach ($request->list_aportes as $obj) {
-            # code...
-             $aporte = (object) $obj;
-             if($aporte->id == 0)
-             {
-                    Log::info('intentando guardar objeto');
-                    Log::info(json_encode($aporte));
-                    //buscardor por mes
-                    
-
-                    $contribution = new Contribution;
-                    $contribution->user_id = Auth::user()->id;
-                    $contribution->affiliate_id = $ret_fun->affiliate_id;
-                    $contribution->type = 'Planilla';
-                    $contribution->base_wage =0;
-                    $contribution->month_year = $aporte->month_year;
-                    $contribution->seniority_bonus = 0;
-                    $contribution->study_bonus = 0;
-                    $contribution->position_bonus = 0;
-                    $contribution->border_bonus = 0;
-                    $contribution->east_bonus = 0;
-                    $contribution->gain = 0;
-                    $contribution->quotable = 0;
-                    $contribution->retirement_fund = 0;
-                    $contribution->mortuary_quota = 0;
-                    $contribution->total = 0;
-                    $contribution->contribution_type_id = $aporte->breakdown_id;
-                    $contribution->category_id =1;
-                    $contribution->save();
-
-             }else{
-                 # code...
-                    $contribution = Contribution::find($aporte->id);
-                    $contribution->contribution_type_id = $aporte->breakdown_id;
-                    $contribution->save();
-             }
-            $i++;
-            // Log::info('i: '.$i.' id:'.$contribution->id);
-        }
-        Log::info('saving subtotal availability retfun id: '. $ret_fun->id);
         $availability = $affiliate->getContributionsAvailability();
         $subtotal_availability = array_sum(array_column($availability, 'total'));
         $ret_fun->subtotal_availability = $subtotal_availability;
@@ -968,10 +924,7 @@ class ContributionController extends Controller
         return response()->json([
             'contribution_types' => $contribution_types
         ]);
-        return $request->all();
-        // return redirect('/');     
     }
-  
     public function printCertification($id)
     {
         $retirement_fund = RetirementFund::find($id);

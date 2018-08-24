@@ -76,7 +76,13 @@
                         <div class="col-md-2" style="padding-left:0px;padding-right: 2px">
                             <h3>Tipos de Aportes</h3>
                             <ul class="list-group">
-                                <li v-for="(ct, index) in types" :key="`ct-ul-${index}`" v-if="count1(ct.id)" class="list-group-item comando" :style="{background: getColor1(ct.id)}"><span class="badge">{{ count1(ct.id) }}</span> {{ ct.name }} </li>
+                                <transition-group
+                                    name="custom"
+                                    enter-active-class="animated bounceInRight"
+                                    leave-active-class="animated bounceOutRight"
+                                >
+                                    <li v-for="(ct, index) in types" :key="`ct-ul-${index}`" v-if="count1(ct.id)" class="list-group-item comando" :style="{background: getColor1(ct.id)}"><span class="badge">{{ count1(ct.id) }}</span> {{ ct.name }} </li>
+                                </transition-group>
                             </ul>
                         </div>
                     </div>
@@ -87,41 +93,24 @@
                             {{ loadingButton ? 'Guardando Clasificaci&oacute;n...' :  'Guardar Clasificaci&oacute;n' }}
                         </button>
                         <div class="pull-right">
-                            <strong class=" text-info"> Clasificados: {{ countTotal()}} </strong>
-                            <strong class=" text-danger"> Faltantes: {{ count1(null)}} </strong>
+                            <strong class=" text-info m-r-md"> Clasificados: {{ countTotal()}} </strong>
+                            <strong class=" text-danger m-r-md"> Faltantes: {{ count1(null)}} </strong>
                             <strong> Cantidad Total: {{contributions.length}} </strong>
                         </div>
                         <br>
                     </div>
                 </div>
             </div>
-        </div>
-        <ul class="col-md-6">
-            <li v-for="(c, index) in contributions" :key="index">
-                {{c.month_year | monthYear}} - {{ c.total }} -
-                    <select name="" id="" v-model="c.contribution_type_id">
-                        <option :value="null"></option>
-                        <option v-for="(ct, indexCt) in  types" :key="`ct-${indexCt}`" :value="ct.id">{{ct.name}}</option>
-                    </select> {{c.contribution_type_id}}
-            </li>
-        </ul>
-        <div class="col-md-6">
-            <ul>
-                <li v-for="(ct, index) in types" :key="`ct-ul-${index}`">{{ct.name}} <span class="badge">{{count1(ct.id)}}</span></li>
-            </ul>
-        </div>
+        </div>  
     </div>
 </template>
 <script>
 
-// import {TheMask} from 'vue-the-mask'
 import { monthYearInputMaskAll }  from "../../helper.js";
 
 export default {
   name: 'clasificacion-aportes',
-//   components: {
-//     TheMask,
-//   },
+
    props: [
         'contributions',
         'contype',
@@ -193,7 +182,6 @@ export default {
                             this.loadingButton=false;
                             this.showLoading = false;
                             flash('Informacion Clasificada');
-
                         })
                         .catch((resp)=> {
                             console.log(resp);
@@ -340,39 +328,6 @@ export default {
 .ghost {
   opacity: .5;
   background: #C8EBFB;
-}
-.disponibilidad {
- background: #aeda8a;   
-}
-.item0_con_aporte {
-    background: #f7f097fd;
-}
-.item0_sin_aporte{
-    background: #f7a197fd;
-}
-.comando {
-    background: #ffffff;
-}
-.bfs_con_aporte {
-    background: #a1a7fffd;
-}
-.bfs_sin_aporte {
-    background: #b1e7faca;
-}
-.mayo_1976 {
-    background: #e0ad7dfd;
-}
-.certificacion_con_aporte{
-    background: #80e9bdfd;
-}
-.certificacion_sin_aporte{
-    background: #50c1bdfa;
-}
-.perdiodo_no_trabajado{
-    background: #30c1edfb;
-}
-.cym{
-    background: #bbbaadfd;
 }
 
 tr {

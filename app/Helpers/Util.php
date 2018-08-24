@@ -583,6 +583,9 @@ class Util
     }
     public static function classificationContribution($contribution_type_id, $breakdown_id, $total)
     {
+        if($contribution_type_id){
+            return $contribution_type_id;
+        }
         switch ($breakdown_id) {
             case 1:
                 return 10;
