@@ -435,7 +435,7 @@ class ContributionController extends Controller
      */
     public function destroy(Contribution $contribution)
     {
-        //
+                
     }
     public function directContributions(Affiliate $affiliate = null){
 

@@ -286,17 +286,17 @@
                         <option value="12">Diciembre</option>
                      </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="on_deleted">
                     <label>Sueldo</label>
-                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control">
+                    <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
                     <label>Categor&iacute;a</label>
                     <select class="form-control" name="reim_category" id="reim_category">
                         @foreach($categories as $category)
                             <option value="{{$category->id}}">{{$category->percentage}}</option>
                         @endforeach
                     </select>
-                    <label>Total Ganado</label>
-                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control">
+                    <label>Cotizable</label>
+                    <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control numberformat">
                     <label>Aporte</label>
                     <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat">
                 </div>
@@ -304,10 +304,10 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                 <!--<button type="submit" class="btn btn-primary">Guardar</button>-->
-                <button class="btn btn-red" style="display: none;" type="button" id="delete_reimbursement" title="Eliminar" onclick="deleteReimbursement(this)">
+                <button class="btn btn-red delete_reimbursement" style="display: none;" type="button" id="delete_reimbursement" title="Eliminar" onclick="deleteReimbursement(this)">
                     Eliminar
                 </button>
-                <button class="btn btn-default" type="button" title="Guardar" onclick="storeReimbursement(this)">
+                <button class="btn btn-default" style="display: displayed;" type="button" title="Guardar" id="store_reimbursement" onclick="storeReimbursement(this)">
                     Guardar
                 </button>
             </div>
@@ -383,6 +383,7 @@ $('.editcontent').blur(function() {
 });
 function createReimbursement(year){
     //alert(year);
+    this.clearModal();
     this.actual_year = year;
     $('#modal_year').val(year);
     $('#reimbursement_modal').modal('show');
@@ -391,9 +392,15 @@ function storeReimbursement(){
     year = this.actual_year;
     month = $('#month').val();
     salary = $('#reim_salary').val();
+    salary = salary.replace(/,/g, "");
+
     category = $('#reim_category').val();
     gain = $('#reim_gain').val();
+    gain = gain.replace(/,/g, "");
+
     total =  $('#reim_amount').val();
+    total = total.replace(/,/g, "");
+
     affiliate_id = $("#affiliate_id").val();
     $.ajax({
         url: "{{asset('reimbursement')}}",
@@ -407,14 +414,36 @@ function storeReimbursement(){
         },
         success: function(result){
             $("#reim"+result.month_year).html(result.total);
+            clearModal
         },
         error: function(xhr, status, error) {
             console.log(xhr.responseText);
         }
     });
-
     $('#reimbursement_modal').modal('hide');
-
+}
+function deleteReimbursement(){
+    affiliate_id = $("#affiliate_id").val();
+    year = this.actual_year;
+    month = $('#month').val();
+    $.ajax({
+        url: `{{asset('reimbursement/${affiliate_id}')}}`,
+        method: "DELETE",
+        data: {affiliate_id:affiliate_id,year:year,month:month},
+        beforeSend: function (xhr, settings) {
+            if (settings.url.indexOf(document.domain) >= 0) {
+                xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
+            }            
+        },
+        success: function(result){
+            console.log(result);
+            $("#reim"+result.month_year).html('0.00');        
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+        }
+    });
+    $('#reimbursement_modal').modal('hide');
 }
 function setPeriodData(period,amount){
     alert(period+' - '+amount);
@@ -436,13 +465,25 @@ $(document).ready(function() {
     $('.sk-folding-cube').hide();
     $('.my-content').removeClass('sk-loading')
 });
+function clearModal(){    
+    month = $('#month').val('');
+    salary = $('#reim_salary').val('');
+    category = $('#reim_category').val('');
+    gain = $('#reim_gain').val('');    
+    total =  $('#reim_amount').val('');    
+}
     $('#month').change(function(){
 
         //console.log($('#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html());
-        if(parseFloat($('#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()) > 0)
-            $('#delete_reimbursement').show();
-        else 
-            $('#delete_reimbursement').hide();
+        if(parseFloat($('#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()) > 0) {
+            $('.delete_reimbursement').show();
+            $('#store_reimbursement').hide();
+            $('#on_deleted').hide();
+        } else {
+            $('#on_deleted').show();
+            $('.delete_reimbursement').hide();
+            $('#store_reimbursement').show();
+        }
         //if({{ $("#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()" == '0')
           //  console.log('cero');    
     });    
