@@ -1,4 +1,22 @@
-
+<div class="col-lg-12">
+        <div class="ibox">
+            <div class="ibox-content">
+               
+                <div class="pull-left">
+                    <legend> Folder de Afiliado</legend>
+                </div>
+                <div class="text-right">
+                    
+                </div>
+               
+                <div class="row">
+                    <div class="ibox-content table-responsive">
+                      
+                    </div>
+                </div>
+            </div>
+        </div>    
+    </div>
 <div class="col-lg-12">
     <div class="ibox">
         <div class="ibox-content">
@@ -20,20 +38,19 @@
                 <div class="ibox-content table-responsive">
                     <table class="table table-hover table-sprite">
                         <thead>
-                            <tr>
-                            <th> Número de Folder </th>
-                            <th> Modalidad </th>                                                        
-                            <th> Código </th>                            
+                            <tr>                            
+                            <th> Tr&aacute;mite </th>                            
                             <th> Pagado </th>
+                            <th> Nota </th>
+                            <th colspan="2"> Editar </th>                            
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($folders as $folder )
-                        <tr>
-                            <td> {{ $folder->folder_number }} </td>
-                            <td> {{ $folder->procedure_modality->name }} </td>
-                            <td> {{ $folder->code_file }} </td>             
+                        <tr>                            
+                            <td> {{ $folder->procedure_modality->name }} </td>                            
                             <td> @if($folder->is_paid === true) SI @endif @if($folder->is_paid === false)NO @endif </td>
+                            <td> {{ $folder->procedure_modality->note }} </td>
                             @can('update', new Muserpol\Models\Affiliatefolder)
                              <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog"
                                 data-modid="{{ $folder->procedure_modality_id }}"
@@ -42,11 +59,11 @@
                                 data-folnum="{{ $folder->folder_number }}"
                                 data-ispaid = "{{ $folder->is_paid }}"
                                 data-note="{{ $folder->note }}">
-                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                             @endcan
-                            @can('delete', new Muserpol\Models\Affiliatefolder)
-                                <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $folder->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button></td>
-                            @endcan
+                            {{-- @can('delete', new Muserpol\Models\Affiliatefolder) --}}
+                                <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#eliminar" data-elim="{{ $folder->id }}"><i class="fa fa-trash" aria-hidden="true" ></i></button></td>
+                            {{-- @endcan --}}
                         </tr>
                         @endforeach
                         </tbody>
@@ -54,8 +71,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    
+    </div>    
 </div>
 {{--@include(folderModal)--}}
 {!! Form::open(['action' => 'AffiliateFolderController@store']) !!}
@@ -69,16 +85,14 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" name ="affiliate_id" value="{{$affiliate_id}}">
-                <div class="form-group"><label>Modalidad</label>
+                <div class="form-group"><label>Tr&aacute;mite</label>
                      <select class="form-control" name="procedure_modality_id">
                         <option></option>
                          @foreach($file_modalities as $modality)                         
                          <option value={{$modality->id}}>{{$modality->procedure_type->name ." - " .$modality->name }}</option>
                          @endforeach
                      </select>
-                </div>                
-                <div class="form-group"><label>Numero de Folder</label> <input name="folder_number" type="text" placeholder="N&uacute;mero de Folder" class="form-control" id="num_folder"></div>
-                
+                </div>                                                
                 <div class="form-group"><label>Pago</label>                     
                     <div class="toggle">
                         <label><input type="radio" name="is_paid" value="paid"><span>Pagado</span></label>    
@@ -88,9 +102,7 @@
                     </div>                    
                 </div>
                 
-                <div class="form-group"><label>Nota</label> <input name="note" type="text" placeholder="Nota adicionales" class="form-control"></div>
-
-                <div class="form-group"><label>Codigo De Archivo</label> <input name="code_file" type="text" placeholder="Codigo generado por achivo" class="form-control"></div>                
+                <div class="form-group"><label>Nota</label> <input name="note" type="text" placeholder="Nota adicionales" class="form-control"></div>                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
@@ -115,14 +127,13 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" name ="affiliate_id" value="{{$affiliate_id}}">
-                <div class="form-group"><label>Modalidad</label>
+                <div class="form-group"><label>Tr&aacute;mite</label>
                     <select class="form-control" name="procedure_modality_id" id="mod_id">
                         @foreach($procedure_modalities as $modality)
                         <option value={{$modality->id}}>{{$modality->name}}</option>
                         @endforeach
                     </select>
-                </div>                
-                <div class="form-group"><label>N&uacute;mero de Folder</label> <input name="folder_number" type="text" placeholder="N&uacute;mero de Folder" class="form-control" id="num_folder"></div>
+                </div>                                
                 <div class="form-group"><label>Pago</label>                     
                     <div class="toggle">
                         <label><input type="radio" name="is_paid" id="paid" value="paid"><span>Pagado</span></label>    
@@ -131,8 +142,7 @@
                         <label><input type="radio" name="is_paid"  id="nopaid" value="nopaid"><span>No Pagado</span></label>
                     </div>                    
                 </div>
-                <div class="form-group"><label>Nota</label> <input name="note" id="note" type="text" placeholder="Nota adicionales" class="form-control"></div>
-                <div class="form-group"><label>Codigo De Archivo</label> <input name="code_file" type="text" placeholder="Codigo generado por achivo" class="form-control" id="cod_folder"></div>
+                <div class="form-group"><label>Nota</label> <input name="note" id="note" type="text" placeholder="Nota adicionales" class="form-control"></div>                
                 </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
@@ -156,7 +166,7 @@
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Eliminar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
                 </div>
             </div>
         </div>
