@@ -20,7 +20,7 @@
                             <div class="form-inline">
                                 <div class="form-group" :class="{ 'has-error': errors.has('modal_contribution_type_id') }">
                                     <label class="label-control">Tipo de contribucion</label>
-                                    <select class="form-control" name="modal_contribution_type_id" v-model="modal.contribution_type_id" v-validate="'required'">
+                                    <select class="form-control" name="modal_contribution_type_id" v-model="modal.contribution_type_id" v-validate="'required'" @change="resetPrintButton()">
                                         <option :value="null"></option>
                                         <option v-for="item in types" :value="item.id" :key="item.id"> {{item.name}}</option>
                                     </select>
@@ -64,7 +64,7 @@
                                         <td class="col-md-2">{{ contribution.month_year | monthYear }}</td>
                                         <td class="col-md-2">{{ contribution.total }}</td>
                                         <td class="col-md-4">
-                                            <select class="form-control" v-model="contribution.contribution_type_id" >
+                                            <select class="form-control" v-model="contribution.contribution_type_id" @change="resetPrintButton()">
                                                 <option :value="null"></option>
                                                 <option v-for="(ct, indexCt) in  types" :key="`ct-${indexCt}`" :value="ct.id">{{ct.name}}</option>
                                             </select>
@@ -178,7 +178,8 @@ export default {
             axios.post('/ret_fun/savecontributions', data )
                         .then((resp) =>{
                             console.log(resp);
-                            this.$store.commit('retFunForm/setContributionTypes',{'contributionTypes':resp.data.contribution_types});
+                            this.$store.commit('retFunForm/setContributionTypes',
+                            {'contributionTypes':resp.data.contribution_types,id:this.retfunid});
                             this.loadingButton=false;
                             this.showLoading = false;
                             flash('Informacion Clasificada');
@@ -303,6 +304,9 @@ export default {
             }
         }
         return response;
+    },
+    resetPrintButton(){
+        this.$store.commit('retFunForm/resetContributionTypes', []);
     }
   },
   computed: {

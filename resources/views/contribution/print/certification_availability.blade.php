@@ -44,7 +44,7 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->public_security_bonus }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>                        
                     {{--<td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->retirement_fund }}</td>--}}
-                </tr> 
+                </tr>
                 @foreach($reimbursements as $reimbursement)    
                     @if($contribution->month_year == $reimbursement->month_year)
                         <tr class="text-sm">
@@ -60,10 +60,10 @@
                 @endforeach
             @endif
         @endforeach
-        <tr>
+        {{-- <tr>
             <td colspan="5" class="text-center">TOTAL:</td>
             <td class="text-center uppercase font-bold px-5 py-3" >{{$aporte}}</td>   
-        </tr>                
+        </tr>                 --}}
     </tbody>
 </table>
 <br>
