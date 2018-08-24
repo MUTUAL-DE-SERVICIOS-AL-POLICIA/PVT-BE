@@ -30,7 +30,8 @@ import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors
                     surname_husband: this.affiliate.surname_husband,
                     address: this.affiliate.address,
                     registration: this.affiliate.registration
-                }
+                },
+                loadingButton: false,
             }
         },
         created:function(){
@@ -137,6 +138,7 @@ import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors
                 }
             },
             update () {
+                this.loadingButton = true;
                 this.validateBeforeSubmit();
                 if (this.validAll) {
                     flash("Debe completar el formulario", 'error')
@@ -163,15 +165,17 @@ import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors
                         this.values.civil_status = response.data.affiliate.civil_status;
                         this.values.surname_husband = response.data.affiliate.surname_husband;
                         this.values.address = response.data.affiliate.address;
-
                         flash('Informacion del Afiliado Actualizada');
+                        this.loadingButton=false;
                     }).catch((error)=>{
                         this.show_spinner=false;
                         this.toggle_editing();
                         console.log(error.response.data.errors);
                         flashErrors('Error al actualizar el afiliado',error.response.data.errors)
+                        this.loadingButton=false;
                         // flash(`Error al actualizar el afiliado: ${error.response.data.errors}`,'error');
                     })
+                    
             },
             addPhoneNumber(){
                 if (this.form.phone_number.length > 0) {

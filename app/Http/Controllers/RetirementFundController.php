@@ -42,6 +42,7 @@ use Muserpol\Models\Contribution\ContributionType;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
+use Muserpol\Helpers\Ids;
 
 class RetirementFundController extends Controller
 {
@@ -145,7 +146,7 @@ class RetirementFundController extends Controller
         $legal_has_lastname = false;
         if($request->applicant_last_name == '' && $request->applicant_mothers_last_name=='')
             $has_lastname = true;
-        if($account_type == '3')
+        if($account_type == Ids::getLegalGuardianId() )
         {
             if($request->legal_guardian_last_name == '' && $request->legal_guardian_mothers_last_name=='')
                 $legal_has_lastname = true;
@@ -315,16 +316,16 @@ class RetirementFundController extends Controller
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
         $beneficiary->type = "S";
         $beneficiary->save();
-        if($account_type == '1' && $request->ret_fun_modality != 4 && $request->ret_fun_modality != 1 )
+        if($account_type == Ids::getBeneficiaryId() && $request->ret_fun_modality != 4 && $request->ret_fun_modality != 1 )
         {
             Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
-        if ($account_type == '1' && ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
+        if ($account_type == Ids::getBeneficiaryId() && ($request->ret_fun_modality == 4 || $request->ret_fun_modality == 1) && $beneficiary->kinship_id == 2) {
             Log::info("updating spouse 1");
             Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
 
-        if($account_type == '2')
+        if($account_type == Ids::getAdvisorId())
         {
             $advisor = new RetFunAdvisor();
             //$advisor->retirement_fund_id = $retirement_fund->id;
@@ -351,7 +352,7 @@ class RetirementFundController extends Controller
             $advisor_beneficiary->save();
         }
 
-        if($account_type == '3')
+        if($account_type == Ids::getLegalGuardianId())
         {
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
@@ -599,9 +600,9 @@ class RetirementFundController extends Controller
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
-        $is_editable = "1";
+        $is_editable = Ids::getEditableId();
         if(isset($retirement_fund->id))
-            $is_editable = "0";
+            $is_editable = Ids::getNonEditableId();
         //return $data;
         //return $correlatives;
         $data = [
@@ -1017,11 +1018,23 @@ class RetirementFundController extends Controller
             'years' => intval($total_dates/12),
             'months' => $total_dates%12
         );
+
+        $total_availability_aporte = null;
+        $total_availability_aporte_frps = null;
+        if($affiliate->hasAvailability()){
+            $availability = $affiliate->getContributionsAvailability();
+            $total_availability_aporte = array_sum(array_column($availability, 'total'));
+            $total_availability_aporte_frps = array_sum(array_column($availability, 'retirement_fund'));
+        }
+
+
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
             'current_procedure' => $current_procedure,
             'all_contributions' => json_encode($contributions),
+            'total_availability_aporte'=>$total_availability_aporte,
+            'total_availability_aporte_frps'=>$total_availability_aporte_frps,
         ];
         $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable());
         return view('ret_fun.qualification', $data);
@@ -1085,8 +1098,34 @@ class RetirementFundController extends Controller
                 })
                 ->addIndexColumn()
                 ->make(true);
-
-
+    }
+    public function getDataQualificationAvailability(DataTables $datatables, $retirement_fund_id)
+    {
+        $retirement_fund = RetirementFund::find($retirement_fund_id);
+        $affiliate = $retirement_fund->affiliate;
+        $contributions = $affiliate->getContributionsAvailability();
+            return $datatables->of($contributions)
+                ->editColumn('month_year', function ($contribution) {
+                    return Util::getDateFormat($contribution->month_year);
+                })
+                ->editColumn('base_wage', function ($contribution) {
+                    return Util::formatMoney($contribution->base_wage);
+                })
+                ->editColumn('seniority_bonus', function ($contribution) {
+                    return Util::formatMoney($contribution->seniority_bonus);
+                })
+                ->editColumn('total', function ($contribution) {
+                    return Util::formatMoney($contribution->total);
+                })
+                ->editColumn('retirement_fund', function ($contribution) {
+                    return Util::formatMoney($contribution->retirement_fund);
+                })
+                ->editColumn('quotable_salary', function ($contribution) {
+                    $quotable_salary = $contribution->seniority_bonus + $contribution->base_wage;
+                    return Util::formatMoney($quotable_salary);
+                })
+                ->addIndexColumn()
+                ->make(true);
     }
     public function qualificationCertification($id)
     {

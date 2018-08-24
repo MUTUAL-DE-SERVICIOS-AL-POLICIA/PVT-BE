@@ -8,7 +8,9 @@
         {!!Breadcrumbs::render('classify_contributions',$ret_fun)!!}
     </div>
     <div class="col-lg-5" style="padding-top: 15px">
-        <button onclick="printJS({printable:'{!! url("ret_fun/".$ret_fun->id."/print/certification") !!}', type:'pdf', modalMessage: 'Generando documentos de impresión, por favor espere un momento.', showModal:true})" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> 60 Aportes</button>
+        <buttons-print-contributions>
+        </buttons-print-contributions>
+        <button v-for="" onclick="printJS({printable:'{!! url("ret_fun/".$ret_fun->id."/print/certification") !!}', type:'pdf', modalMessage: 'Generando documentos de impresión, por favor espere un momento.', showModal:true})" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> 60 Aportes</button>
         <button onclick="printJS({printable:'{!! url("ret_fun/".$ret_fun->id."/print/cer_availability") !!}', type:'pdf', modalMessage: 'Generando documentos de impresión, por favor espere un momento.', showModal:true})"  class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> Disponibilidad</button>
         <button onclick="printJS({printable:'{!! url("ret_fun/".$ret_fun->id."/print/cer_itemcero") !!}', type:'pdf', modalMessage: 'Generando documentos de impresión, por favor espere un momento.', showModal:true})" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> Item 0</button>
         <button onclick="printJS({printable:'{!! url("ret_fun/".$ret_fun->id."/print/security_certification") !!}', type:'pdf', modalMessage: 'Generando documentos de impresión, por favor espere un momento.', showModal:true})" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf-o"></i> Batall&oacute;n de Seguridad F&iacute;sica</button>
