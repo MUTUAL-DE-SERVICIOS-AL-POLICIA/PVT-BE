@@ -16,7 +16,7 @@
                     <table class="table">
                         <tbody>
                             <tr>
-                                <td class="font-bold">Cedula de identidad:</td>
+                                <td class="font-bold">Cédula de identidad:</td>
                                 <td>{{ $affiliate->identity_card }} {{-- {{ !!$affiliate->city_identity_card ? $affiliate->city_identity_card->first_shortened                                     : '' }} --}}</td>
                                 <td class="font-bold">Matr&iacute;cula:</td>
                                 <td>{{ $affiliate->registration }}</td>

@@ -13,13 +13,13 @@
                 <td class="text-left uppercase font-bold px-5 py-3"> {{ $legal_guardian->fullName() }} </td>
             </tr>
             <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">Carnet de identidad</td>
+                <td class="text-left px-10 py-3 uppercase">cédula de identidad</td>
                 <td class="text-left uppercase font-bold px-5 py-3">{!! $legal_guardian->identity_card !!} {{$legal_guardian->city_identity_card->first_shortened ?? ''}}</td>
             </tr>
             @if ($legal_guardian->phone_number)
             <tr class="text-sm">
                 {{-- TODO limite maximo de telefonos 4 por si acaso --}}
-                <td class="text-left px-10 py-3 uppercase">Telefono</td>
+                <td class="text-left px-10 py-3 uppercase">Teléfono</td>
                 <td class="text-left uppercase font-bold px-5 py-3">{{ $legal_guardian->phone_number }}</td>
             </tr>
             @endif @if ($legal_guardian->cell_phone_number)
@@ -33,7 +33,7 @@
                 <td class="text-left uppercase font-bold px-5 py-3">{!! $legal_guardian->number_authority !!} {{$legal_guardian->city_identity_card->first_shortened ?? ''}}</td>
             </tr>
             <tr class="text-sm">
-                <td class="text-left px-10 py-3 uppercase">Notaria de Fe Publica Nro</td>
+                <td class="text-left px-10 py-3 uppercase">Notaria de Fé Pública Nro</td>
                 <td class="text-left uppercase font-bold px-5 py-3">{!! $legal_guardian->notary_of_public_faith !!} {{$legal_guardian->city_identity_card->first_shortened ?? ''}}</td>
             </tr>
             <tr class="text-sm">
