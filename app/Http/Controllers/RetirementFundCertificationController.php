@@ -885,20 +885,27 @@ class RetirementFundCertificationController extends Controller
     }
 
     public function printCertification($id)
-    {
+    {        
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $servicio = ContributionType::where('name','=','Servicio Activo')->first();
-        $item_cero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
+        //$servicio = ContributionType::where('name','=','Servicio Activo')->first();
+        //$item_cero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
+        $valid_contributions = ContributionType::select('id')->where('operator','+')->pluck('id');
         $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
-        $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)
-                        ->where(function ($query) use ($servicio,$item_cero){
-                            $query->where('contribution_type_id',$servicio->id)
-                            ->orWhere('contribution_type_id',$item_cero->id);
-                        })
-                        ->orderBy('month_year','desc')
-                        ->take($quantity)
-                        ->get();                                          
+        // $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)
+        //                 ->where(function ($query) use ($servicio,$item_cero){
+        //                     $query->where('contribution_type_id',$servicio->id)
+        //                     ->orWhere('contribution_type_id',$item_cero->id);
+        //                 })
+        //                 ->orderBy('month_year','desc')
+        //                 ->take($quantity)
+        //                 ->get();        
+        $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)  
+                                ->whereIn('contribution_type_id',$valid_contributions)
+                                ->orderByDesc('month_year')
+                                ->take($quantity)
+                                ->get();
+        return $contributions_sixty;
         $contributions = $contributions_sixty->sortBy('month_year')->all();                           
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
