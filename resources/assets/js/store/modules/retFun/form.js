@@ -48,12 +48,14 @@ const mutations = {
     state.contributionTypes = [];
     if (obj.contributionTypes.some(item => item.id == 2 || item.id == 3)) {
       state.contributionTypes.push({
+        id: 2,
         name: "Item 0",
         path: "print/cer_itemcero"
       });
     }
     if (obj.contributionTypes.some(item => item.id == 4 || item.id == 5)) {
       state.contributionTypes.push({
+        id: 4,
         name: "Batallón de Seguridad Fisica",
         path: "print/security_certification"
       });
@@ -64,18 +66,21 @@ const mutations = {
       )
     ) {
       state.contributionTypes.push({
+        id: 7,
         name: "Certificación",
         path: "print/security_certification"
       });
     }
     if (obj.contributionTypes.some(item => item.id == 1)) {
       state.contributionTypes.push({
+        id: 1,
         name: "60 Aportes",
         path: "print/certification"
       });
     }
     if (obj.contributionTypes.some(item => item.id == 10)) {
       state.contributionTypes.push({
+        id: 10,
         name: "Disponibilidad",
         path: "print/cer_availability"
       });
