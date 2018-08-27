@@ -36,6 +36,10 @@ class RetFunBeneficiary extends Model
     {
         return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunAdvisor','ret_fun_advisor_beneficiary','ret_fun_beneficiary_id','ret_fun_advisor_id');
     }
+    public function legal_guardian()
+    {
+        return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunLegalGuardian', 'ret_fun_legal_guardian_beneficiary', 'ret_fun_beneficiary_id', 'ret_fun_legal_guardian_id');
+    }
     public function address()
     {
         return $this->belongsToMany('\Muserpol\Models\Address', 'ret_fun_address_beneficiary');
@@ -61,9 +65,11 @@ class RetFunBeneficiary extends Model
     }
     public function getAddress()
     {
-        $address= $this->address[0];
-        if (isset($address->id)) {
-            return 'Calle '.$address->street.' Nº '.$address->number_address . ' '.$address->zone;
+        if ($this->address()->count()) {
+            $address= $this->address()->first();
+            if (isset($address->id)) {
+                return 'Calle '.$address->street.' Nº '.$address->number_address . ' '.$address->zone;
+            }
         }
         return 'Sin dirección';
     }

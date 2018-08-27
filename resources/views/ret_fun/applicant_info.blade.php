@@ -10,7 +10,7 @@
         <div class="panel-body ">
             <div class="col-md-6">
                 <dl class="dl-">
-                    <dt>Cedula de identidad:</dt>
+                    <dt>Cédula de identidad:</dt>
                     <dd>{{ $affiliate->identity_card }} {{ !!$affiliate->city_identity_card ? $affiliate->city_identity_card->first_shortened : '' }}</dd>
                     <dt>Primer Nombre:</dt>
                     <dd>{{ $affiliate->first_name }}</dd>
@@ -36,7 +36,7 @@
                     <dd>{{ $affiliate->birth_date }}</dd>
                     <dt>Lugar de Nacimiento:</dt>
                     <dd>{{ !!$affiliate->city_birth ? $affiliate->city_birth->name : '' }}</dd>
-                    <dt>Telefono:</dt>
+                    <dt>Teléfono:</dt>
                     <dd>{{ $affiliate->phone_number }}</dd>
                     <dt>Celular:</dt>
                     <dd>{{ $affiliate->cell_phone_number }}</dd>
@@ -47,7 +47,7 @@
         <div class="panel-body ">
             <div class="col-md-6">
                 <dl class="dl-">
-                    <dt>Cedula de identidad:</dt>
+                    <dt>Cédula de identidad:</dt>
                     <dd>{{ $applicant->identity_card }} {{ !!$applicant->city_identity_card ? $applicant->city_identity_card->first_shortened : '' }}</dd>
                     <dt>Primer Nombre:</dt>
                     <dd>{{ $applicant->first_name }}</dd>
@@ -73,7 +73,7 @@
                     <dd>{{ $applicant->birth_date }}</dd>
                     <dt>Lugar de Nacimiento:</dt>
                     <dd>{{ !!$applicant->city_birth ? $applicant->city_birth->name : '' }}</dd>
-                    <dt>Telefono:</dt>
+                    <dt>Teléfono:</dt>
                     <dd>{{ $applicant->phone_number }}</dd>
                     <dt>Celular:</dt>
                     <dd>{{ $applicant->cell_phone_number }}</dd>
@@ -90,7 +90,7 @@
             </div>
             <div class="col-md-6">
                 <dl class="dl-">
-                    <dt>Cedula de identidad:</dt>
+                    <dt>Cédula de identidad:</dt>
                     <dd><input type="text" v-model="form.identity_card" class="form-control"> {!! Form::select('city_identity_card_id',
                         $cities, null, ['placeholder' => 'Seleccione la expedicion del ci', 'class' => 'form-control']) !!}
                     </dd>
@@ -118,7 +118,7 @@
                     <dd><input type="text" class="form-control"></dd>
                     <dt>Lugar de Nacimiento:</dt>
                     <dd><input type="text" class="form-control"></dd>
-                    <dt>Telefono:</dt>
+                    <dt>Teléfono:</dt>
                     <dd><input type="text" class="form-control"></dd>
                     <dt>Celular:</dt>
                     <dd><input type="text" class="form-control"></dd>

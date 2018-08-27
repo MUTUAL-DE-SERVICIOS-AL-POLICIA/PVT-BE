@@ -15,7 +15,7 @@
          <div class="row">
             <div class="col-md-6">
                 <div class="col-md-4">
-                    <label class="control-label">Carnet de Identidad</label>
+                    <label class="control-label">Cédula de Identidad</label>
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">
@@ -125,7 +125,7 @@
         <div class="row" v-if="beneficiary.type == 'S'">
             <div class="col-md-6">
                 <div class="col-md-4">
-                    <label class="control-label">Telefono del Solicitante</label>
+                    <label class="control-label">Teléfono del Solicitante</label>
                 </div>
                 <div class="col-md-8">
                     <div class="row">

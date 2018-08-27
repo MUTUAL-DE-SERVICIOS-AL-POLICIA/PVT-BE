@@ -70,7 +70,7 @@ Vue.use(VeeValidate, {
           required: "Debe seleccionar el parentesco del solicitante."
         },
         identity_card: {
-          required: "Debe ingresar la Cedula de identidad."
+          required: "Debe ingresar la Cédula de identidad."
         },
         city_identity_card_id: {
           required: "Debe seleccionar la ciudad de expedición."

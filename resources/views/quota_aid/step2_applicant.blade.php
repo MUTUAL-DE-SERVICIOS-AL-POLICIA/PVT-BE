@@ -69,7 +69,7 @@
                         <div class="col-md-6">
                             <div class="form-group" :class="{'has-error': errors.has('applicant_identity_card') }">
                                 <div class="col-md-4">
-                                    <label class="control-label">Carnet de Identidad</label>
+                                    <label class="control-label">cédula de identidad</label>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="input-group">
@@ -185,7 +185,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-4">
-                                <label class="control-label">Telefono del Solicitante</label>
+                                <label class="control-label">Teléfono del Solicitante</label>
                             </div>
                             <div class="col-md-8">
                                 <div class="row">
@@ -275,7 +275,7 @@
                     <div class="row" v-if="show_apoderado_form ">
                         <div class="col-md-6" :class="{'has-error': errors.has('legal_guardian_identity_card') }">
                             <div class="col-md-4">
-                                <label class="control-label">Carnet de Identidad</label>
+                                <label class="control-label">cédula de identidad</label>
                             </div>
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -421,7 +421,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_identity_card')  }">
-                        <div class="col-md-4"><label class="control-label">Cedula de identidad:</label></div>
+                        <div class="col-md-4"><label class="control-label">Cédula de identidad:</label></div>
                         <div class="col-md-8"><input name="spouse_identity_card" type="text" v-model="spouse_identity_card" class="form-control" 
                                 v-validate.initial="'required'">
                             <div v-show="errors.has('spouse_identity_card')">

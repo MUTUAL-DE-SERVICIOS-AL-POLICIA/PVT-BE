@@ -297,7 +297,6 @@ class RetirementFundCertificationController extends Controller
     public function printBeneficiariesQualification($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
-
         $next_area_code = Util::getNextAreaCode($retirement_fund->id);
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;

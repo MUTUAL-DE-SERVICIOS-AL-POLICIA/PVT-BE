@@ -104,6 +104,8 @@ class RetirementFund extends Model
         {
             return "El afiliado no tiene documentos referidos";
         }
-        
+    }
+    public function hasLegalGuardian(){
+        return $this->ret_fun_beneficiaries()->where('type', 'S')->first()->legal_guardian()->count();
     }
 }
