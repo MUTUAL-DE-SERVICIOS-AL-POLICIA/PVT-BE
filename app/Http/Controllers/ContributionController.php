@@ -973,7 +973,7 @@ class ContributionController extends Controller
                         ->get();
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
-                        ->get();                          
+                        ->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";

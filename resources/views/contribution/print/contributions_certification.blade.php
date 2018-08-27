@@ -46,9 +46,13 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                     @else
-                    <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
+                        @if ($contribution->contribution_type_id == 9)
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="4">PERÍODO NO TRABAJADO</td>
+                        @else
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
+                        @endif
                     @endif
-                </tr> 
+                </tr>
                 @foreach($reimbursements as $reimbursement)
                     @if($contribution->month_year == $reimbursement->month_year)       
                         <tr class="text-sm">

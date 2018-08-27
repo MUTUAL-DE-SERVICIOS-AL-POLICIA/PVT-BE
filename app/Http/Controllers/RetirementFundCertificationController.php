@@ -933,7 +933,7 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate); 
 
-        $total = Util::formatMoney($retirement_fund->subtotal_ret_fun);
+        
 
         $data = [
             'code' => $code,
@@ -946,7 +946,6 @@ class RetirementFundCertificationController extends Controller
             'subtitle'=>$subtitle,
             'place'=>$place,
             'retirement_fund'=>$retirement_fund,
-            'total'=>$total,
             'reimbursements'=>$reimbursements,
             'dateac'=>$dateac,
             'exp'=>$exp,
@@ -970,7 +969,7 @@ class RetirementFundCertificationController extends Controller
                         ->get();
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
-                        ->get();                          
+                        ->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
@@ -1055,7 +1054,7 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
         $item0_type = 2;
-        $total = Util::formatMoney(Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$item0_type)->sum('total'));
+        // $total = Util::formatMoney(Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$item0_type)->sum('total'));
         $data = [
             'code' => $code,
             'area' => $area,
@@ -1065,7 +1064,7 @@ class RetirementFundCertificationController extends Controller
 
             'itemcero'=>$itemcero,
             'itemcero_sin_aporte'=>$itemcero_sin_aporte,
-            'total'=>$total,
+            // 'total'=>$total,
             'subtitle'=>$subtitle,
             'place'=>$place,
             'retirement_fund'=>$retirement_fund,
@@ -1122,7 +1121,7 @@ class RetirementFundCertificationController extends Controller
         $num=0;       
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate); 
-        $total = Util::formatMoney($contributions_total);   
+        // $total = Util::formatMoney($contributions_total);   
 
         $data = [
             'code' => $code,
@@ -1135,7 +1134,7 @@ class RetirementFundCertificationController extends Controller
             'subtitle'=>$subtitle,
             'place'=>$place,
             'retirement_fund'=>$retirement_fund,
-            'total'=>$total,
+            // 'total'=>$total,
             'reimbursements'=>$reimbursements,
             'dateac'=>$dateac,
             'exp'=>$exp,
@@ -1166,12 +1165,14 @@ class RetirementFundCertificationController extends Controller
         $contributions = Contribution::where('affiliate_id', $affiliate->id)
                         ->where(function ($query) use ($certification_contribution,$certification_no_contribution){
                             $query->where('contribution_type_id',$certification_contribution->id)
-                            ->orWhere('contribution_type_id',$certification_no_contribution->id);
+                            ->orWhere('contribution_type_id',$certification_no_contribution->id)
+                            ->orWhere('contribution_type_id',9);
                         })
-                        ->orderBy('month_year','desc')                        
+                        ->orderByDesc('month_year')                        
                         ->get();
-        $contributions_number = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id',$certification_contribution->id)->count();
-        $contributions_total = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id',$certification_contribution->id)->sum('total');
+        // 9 id periodo no  trabajado
+        $contributions_number = Contribution::where('affiliate_id', $affiliate->id)->whereIn('contribution_type_id',[$certification_contribution->id,9])->count();
+        $contributions_total = Contribution::where('affiliate_id', $affiliate->id)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->sum('total');
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
                         ->get();
