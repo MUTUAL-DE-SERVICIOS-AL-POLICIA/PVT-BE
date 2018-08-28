@@ -153,7 +153,7 @@ class RetirementFundController extends Controller
         }
         $biz_rules = [
             'has_lastname'  =>  $has_lastname?'required':'',
-            'legal_guardian_first_name' => $account_type==3 ? 'required' : '',
+            'legal_guardian_first_name' => $account_type==ID::getLegalGuardianId() ? 'required' : '',
             'legal_has_lastname' => $legal_has_lastname ? 'required' : '',
             //'legal_guardian_identity_card'  =>  $account_type==3 ? 'required' : '',
             //'legal_guardian_number_authority'   => $account_type==3 ? 'required' : '',

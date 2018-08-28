@@ -4,8 +4,6 @@ namespace Muserpol\Helpers;
 
 class ID
 {
-	const FALLECIMIENTO = 3;
-	ID::FALLECIMIENTO
 	/**
 	* Retorna el id del beneficiario
 	*
@@ -56,4 +54,32 @@ class ID
 		return 0;
 	}
 
+	/**
+	* Retorna una opcion id
+	*
+	* @return  3 - 7 una opcion de estos
+	*/
+	public static function getRetFun()
+	{
+		$RetFun = [
+		'fallecimiento_id'=>3,
+		'jubilacion_id'=>4,
+		'retiroforzoso_id'=>5,
+		'retiroforzoso_invalidezpermanente_id'=>6,
+		'retirovoluntario_id'=>7
+		];
+	}
+
+	/**
+	* Retorna el id
+	*
+	* @return int 1 o 2
+	*/
+	public static function getGlobalPayContributions()
+	{
+		$GlobalPay = [
+		'fallecimiento_id'=>1,
+		'retiroforzoso_id'=>2
+		];
+	}
 }
