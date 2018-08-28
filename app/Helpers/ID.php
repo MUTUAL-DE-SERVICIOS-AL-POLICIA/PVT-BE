@@ -68,6 +68,7 @@ class ID
 		'retiroforzoso_invalidezpermanente_id'=>6,
 		'retirovoluntario_id'=>7
 		];
+		return((object)$RetFun);
 	}
 
 	/**
@@ -81,5 +82,6 @@ class ID
 		'fallecimiento_id'=>1,
 		'retiroforzoso_id'=>2
 		];
+		return((object)$GlobalPay);
 	}
 }
