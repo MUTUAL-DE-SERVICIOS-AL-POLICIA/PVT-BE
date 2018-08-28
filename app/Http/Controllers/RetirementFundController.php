@@ -972,7 +972,7 @@ class RetirementFundController extends Controller
     public function qualification($ret_fun_id)
     {
         $retirement_fund = RetirementFund::find($ret_fun_id);
-        $this->authorize('qualify', $retirement_fund);
+        // $this->authorize('qualify', $retirement_fund);
         $affiliate = $retirement_fund->affiliate;
         $current_procedure = RetFunProcedure::where('is_enabled','=', true)->first();
         if (! $current_procedure) {
