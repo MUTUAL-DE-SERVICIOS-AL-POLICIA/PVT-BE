@@ -91,9 +91,9 @@
             }).catch(error=>{
                 console.error(error);
             })
-          //setTimeout(() => {
-            $(".chosen-select").chosen({ width: "100%" }).trigger('liszt:updated');//.trigger('chosen:updated');
-          //}, 500);
+          setTimeout(() => {
+            $(".chosen-select").chosen({ width: "100%" });
+          }, 700);
         },
         verify(tagId){
             if(this.tagsRetFun.length){
