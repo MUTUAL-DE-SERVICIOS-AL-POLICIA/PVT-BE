@@ -71,7 +71,6 @@
     </tbody>
 </table>
 <br>
-<br>
 <div>
     <b>CONVENIO.-</b> Según Convenio el personal de Seguridad y Administrativo del Batallón de Seguridad Física Privada La Paz, efectuó un aporte laboral del 3% a la Mutual de Seguros del Policía "MUSEPOL", a partir de Junio del  2002.
 </div>
