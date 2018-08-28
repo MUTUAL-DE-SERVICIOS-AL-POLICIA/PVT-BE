@@ -162,7 +162,7 @@ class AffiliateController extends Controller
                     }
             }
 
-        $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->first();
+        $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->where('code', 'not like', '%A%')->first();
         $states = RetFunState::get();
         $nextcode = RetirementFund::where('affiliate_id', $affiliate->id)->where('code','LIKE','%A')->first();
         if(isset($nextcode))
