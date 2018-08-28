@@ -92,7 +92,7 @@
                                         @endphp
                                         @if($valid_period)
                                             @if(isset($contributions[$period]->id))
-                                                <td class="numberformat" id="main{{$period}}">{{$contributions[$period]->total}}</td>
+                                                <td class="numberformat" @if(isset($reims[$period])) bgcolor="#ffe6b3" @endif id="main{{$period}}">{{$contributions[$period]->total}}</td>
                                             @else
                                                 <td class="numberformat" id="main{{$period}}">0</td>
                                             @endif
@@ -414,9 +414,10 @@ function storeReimbursement(){
         },
         success: function(result){
             $("#reim"+result.month_year).html(result.total);
+            $("#main"+result.month_year).css('background-color', '#ffe6b3');
             clearModal
         },
-        error: function(xhr, status, error) {
+        error: function(xhr, status, error) {                        
             console.log(xhr.responseText);
         }
     });
@@ -437,7 +438,8 @@ function deleteReimbursement(){
         },
         success: function(result){
             console.log(result);
-            $("#reim"+result.month_year).html('0.00');        
+            $("#reim"+result.month_year).html('0.00');
+            $("#main"+result.month_year).css('background-color', '#f2f2f2');
         },
         error: function(xhr, status, error) {
             console.log(xhr.responseText);
