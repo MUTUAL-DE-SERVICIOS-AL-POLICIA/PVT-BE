@@ -68,10 +68,10 @@
                 @endforeach 
                
         @endforeach    
-        <tr>
+        {{-- <tr>
             <td colspan="6" class="text-center">TOTAL:</td>
             <td class="text-center uppercase font-bold px-5 py-3" >{{ $total }}</td>   
-        </tr>         
+        </tr>          --}}
     </tbody>
 </table>
 <br>
