@@ -624,13 +624,14 @@ class ContributionController extends Controller
                 else
                     $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
                 
-                if ($request->category[$key] != $contribution->category_id) {
-                    //$category = Category::find($request->category[$key]);
+                if ($request->category[$key] != $contribution->category_id) {                    
                     $category = Category::where('percentage',$request->category[$key])->first();
-                    $contribution->category_id = $category->id;
-                    //return $category->percentage." ".$contribution->base_wage;
-                    //$contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
-                   $contribution->seniority_bonus = $request->seniority_bonus[$key];
+                    if(!isset($category->id)) {
+                        $contribution->category_id = 11; //default non category found -0
+                    } else {
+                        $contribution->category_id = $category->id;
+                    }                    
+                   $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
                 }
                 
                 if(!isset($request->gain[$key]) || $contribution->gain == "")
