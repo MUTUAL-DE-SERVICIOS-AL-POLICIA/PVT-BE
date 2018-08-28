@@ -921,8 +921,34 @@ class ContributionController extends Controller
         $ret_fun->save();
         Log::info('saved subtotal availability: '. $subtotal_availability);
         $contribution_types = ContributionType::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_id')->distinct()->get()->pluck('contribution_type_id'))->orderBy('sequence')->select('name','id')->get();
+        foreach($contribution_types as $index =>$c){
+            switch ($c->id) {
+                case 2:
+                case 3:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 2)->first()->pivot->message ?? null;
+                    break;
+                case 4:
+                case 5:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 4)->first()->pivot->message ?? null;
+                    break;
+                case 7:
+                case 8:
+                case 9:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 7)->first()->pivot->message ?? null;
+                    break;
+                case 1:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 1)->first()->pivot->message ?? null;
+                    break;
+                case 10:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 10)->first()->pivot->message ?? null;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+        }
         return response()->json([
-            'contribution_types' => $contribution_types
+            'contribution_types' => $contribution_types,
         ]);
     }
     public function printCertification($id)

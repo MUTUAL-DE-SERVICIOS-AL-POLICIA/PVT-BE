@@ -1486,18 +1486,18 @@ class RetirementFundController extends Controller
     public function saveMessageContributionType(Request $request,$ret_fun_id)
     {
         $retirement_fund = RetirementFund::find($ret_fun_id);
-        Log::info($request->all());
-        $retirement_fund->contribution_types()->save($request->contributionTypeId);
-        // if ($request->message) {
-        //     if ($retirement_fund->contribution_types()->contains($request->contributionTypeId)) {
-        //         $retirement_fund->contribution_types()->updateExistingPivot($request->contributionTypeId, ['date' => Carbon::now(), 'message' => $request->message]);
-        //     } else {
-        //     }
-        // } else {
-        //     $retirement_fund->contribution_types()->detach($request->contributionTypeId);
-        // }
-        Log::info('saved');
-        return 'HOla';
+        $contribution_type = ContributionType::find($request->contributionTypeId);
+
+        if ($request->message) {
+            if ($retirement_fund->contribution_types->contains($contribution_type)) {
+                $retirement_fund->contribution_types()->updateExistingPivot($contribution_type->id, ['user_id'=>Auth::user()->id, 'date' => Carbon::now(), 'message' => $request->message]);
+            } else {
+                $retirement_fund->contribution_types()->save($contribution_type, ['user_id'=>Auth::user()->id, 'date' => Carbon::now(), 'message' => $request->message]);
+            }
+        } else {
+            $retirement_fund->contribution_types()->detach($contribution_type);
+        }
+        return $retirement_fund;
     }
 
     public function editRequirements(Request $request, $id){
