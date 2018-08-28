@@ -57,31 +57,31 @@ class ID
 	/**
 	* Retorna una opcion id
 	*
-	* @return  3 - 7 una opcion de estos
+	* @return  un objeto retfun
 	*/
 	public static function getRetFun()
 	{
-		$RetFun = [
-		'fallecimiento_id'=>3,
-		'jubilacion_id'=>4,
-		'retiroforzoso_id'=>5,
-		'retiroforzoso_invalidezpermanente_id'=>6,
-		'retirovoluntario_id'=>7
+		$Ret_Fun = [
+			'fallecimiento_id'=>3,
+			'jubilacion_id'=>4,
+			'retiroforzoso_id'=>5,
+			'invalidezpermanente_id'=>6,
+			'retirovoluntario_id'=>7
 		];
-		return((object)$RetFun);
+		return((object)$Ret_Fun);
 	}
 
 	/**
 	* Retorna el id
 	*
-	* @return int 1 o 2
+	* @return un objeto Global_pay
 	*/
-	public static function getGlobalPayContributions()
+	public static function getGlobalPay()
 	{
-		$GlobalPay = [
-		'fallecimiento_id'=>1,
-		'retiroforzoso_id'=>2
+		$Global_Pay = [
+			'fallecimiento_id'=>1,
+			'retiroforzoso_id'=>2
 		];
-		return((object)$GlobalPay);
+		return((object)$Global_Pay);
 	}
 }

@@ -321,7 +321,7 @@ class RetirementFundController extends Controller
         {
             Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
-        if ($account_type == ID::getBeneficiaryId() && ($request->ret_fun_modality == ID::getRetFun()->fallecimiento_id || $request->ret_fun_modality == ID::getGlobalPayContributions()->fallecimiento_id) && $beneficiary->kinship_id == 2) {
+        if ($account_type == ID::getBeneficiaryId() && ($request->ret_fun_modality == ID::getRetFun()->fallecimiento_id || $request->ret_fun_modality == ID::getGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == 2) {
             Log::info("updating spouse 1");
             Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
