@@ -77,7 +77,7 @@ const mutations = {
         message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
       });
     }
-    if (obj.contributionTypes.some(item => item.id == 1)) {
+    // if (obj.contributionTypes.some(item => item.id == 1)) {
       let message = obj.contributionTypes.filter(item => item.id == 1);
       state.contributionTypes.push({
         id: 1,
@@ -85,7 +85,7 @@ const mutations = {
         path: "print/certification",
         message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
       });
-    }
+    // }
     if (obj.contributionTypes.some(item => item.id == 10)) {
       let message = obj.contributionTypes.filter(item => item.id == 10);
       state.contributionTypes.push({
