@@ -46,7 +46,14 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                     @else
-                    <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
+                        @if($contribution->total > 0 )
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->gain) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->base_wage) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                        @else
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
+                        @endif
                     @endif
                 </tr> 
                 @foreach($reimbursements as $reimbursement)
