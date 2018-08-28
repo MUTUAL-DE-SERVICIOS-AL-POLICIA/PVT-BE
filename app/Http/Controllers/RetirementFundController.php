@@ -1490,9 +1490,9 @@ class RetirementFundController extends Controller
 
         if ($request->message) {
             if ($retirement_fund->contribution_types->contains($contribution_type)) {
-                $retirement_fund->contribution_types()->updateExistingPivot($contribution_type->id, ['user_id'=>Auth::user()->id, 'date' => Carbon::now(), 'message' => $request->message]);
+                $retirement_fund->contribution_types()->updateExistingPivot($contribution_type->id, ['user_id'=>Auth::user()->id, 'message' => $request->message]);
             } else {
-                $retirement_fund->contribution_types()->save($contribution_type, ['user_id'=>Auth::user()->id, 'date' => Carbon::now(), 'message' => $request->message]);
+                $retirement_fund->contribution_types()->save($contribution_type, ['user_id'=>Auth::user()->id, 'message' => $request->message]);
             }
         } else {
             $retirement_fund->contribution_types()->detach($contribution_type);

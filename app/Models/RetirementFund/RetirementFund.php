@@ -71,7 +71,7 @@ class RetirementFund extends Model
     }
     public function contribution_types()
     {
-        return $this->belongsToMany('Muserpol\Models\Contribution\ContributionType')->withPivot(['date', 'message']);
+        return $this->belongsToMany('Muserpol\Models\Contribution\ContributionType')->withPivot(['message'])->withTimestamps();
     }
     public function getBasicInfoCode()
     {

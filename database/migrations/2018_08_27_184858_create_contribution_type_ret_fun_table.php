@@ -18,10 +18,10 @@ class CreateContributionTypeRetFunTable extends Migration
             $table->bigInteger('contribution_type_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
             $table->text('message')->nullable();
-            $table->dateTime('date');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('retirement_fund_id')->references('id')->on('retirement_funds');
             $table->foreign('contribution_type_id')->references('id')->on('contribution_types');
+            $table->timestamps();
         });
     }
 
