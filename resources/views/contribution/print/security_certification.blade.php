@@ -70,6 +70,14 @@
         </tr>          --}}
     </tbody>
 </table>
+@if($retirement_fund->contribution_types()->where('contribution_type_id', 4)->first())
+    <div>
+        <strong>Nota:</strong>
+        <div class="text-justify">
+            {{ $retirement_fund->contribution_types()->where('contribution_type_id', 4)->first()->pivot->message }}
+        </div>
+    </div>
+@endif
 <br>
 <div>
     <b>Nota,-</b>  Los Aportes Laborales del personal de Seguridad y Administrativo del Batallón de Seguridad Física Privada La Paz, de 1996: Noviembre y Diciembre y de 1997: Enero a Abril ( 6 meses ), NO fueron emitidos ó cancelados al Ex. Fondo Complementario de Seguridad Social de la Policía Nacional, actual

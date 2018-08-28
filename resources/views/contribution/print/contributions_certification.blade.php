@@ -78,6 +78,14 @@
 <div>    
     Es cuanto se certifica para  fines consiguientes. 
 </div>
+@if($retirement_fund->contribution_types()->where('contribution_type_id', 7)->first())
+    <div>
+        <strong>Nota:</strong>
+        <div class="text-justify">
+            {{ $retirement_fund->contribution_types()->where('contribution_type_id', 7)->first()->pivot->message }}
+        </div>
+    </div>
+@endif
 <br>
 <div align="right">
     {{ "Lugar y fecha: ". $place->name.", ".$dateac }}

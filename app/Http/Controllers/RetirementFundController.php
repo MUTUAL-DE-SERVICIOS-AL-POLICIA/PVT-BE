@@ -1483,6 +1483,23 @@ class RetirementFundController extends Controller
         return $data;
     }
 
+    public function saveMessageContributionType(Request $request,$ret_fun_id)
+    {
+        $retirement_fund = RetirementFund::find($ret_fun_id);
+        $contribution_type = ContributionType::find($request->contributionTypeId);
+
+        if ($request->message) {
+            if ($retirement_fund->contribution_types->contains($contribution_type)) {
+                $retirement_fund->contribution_types()->updateExistingPivot($contribution_type->id, ['user_id'=>Auth::user()->id, 'message' => $request->message]);
+            } else {
+                $retirement_fund->contribution_types()->save($contribution_type, ['user_id'=>Auth::user()->id, 'message' => $request->message]);
+            }
+        } else {
+            $retirement_fund->contribution_types()->detach($contribution_type);
+        }
+        return $retirement_fund;
+    }
+
     public function editRequirements(Request $request, $id){
         //return $request->ret_fun_modality;
         //return $request->aditional_requirements;
