@@ -196,6 +196,7 @@ class AidContributionController extends Controller
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
             'rate'  =>  $rate,
+            'type'  =>  'N'
         ];        
         return view('contribution.affiliate_direct_aid_contribution', $data);        
     }
@@ -492,7 +493,7 @@ class AidContributionController extends Controller
             if(!isset($contribution->id))
                 array_push (
                     $contributions,
-                    array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'interes' => 0,'dignity_rent' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id)
+                    array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'interes' => 0,'dignity_rent' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id, 'type' => 'N')
                 );
         }
         $contributions = array_reverse($contributions);       
