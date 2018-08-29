@@ -146,14 +146,14 @@ class RetirementFundController extends Controller
         $legal_has_lastname = false;
         if($request->applicant_last_name == '' && $request->applicant_mothers_last_name=='')
             $has_lastname = true;
-        if($account_type == ID::getLegalGuardianId() )
+        if($account_type == ID::retFun()->legal_guardian_id )
         {
             if($request->legal_guardian_last_name == '' && $request->legal_guardian_mothers_last_name=='')
                 $legal_has_lastname = true;
         }
         $biz_rules = [
             'has_lastname'  =>  $has_lastname?'required':'',
-            'legal_guardian_first_name' => $account_type==ID::getLegalGuardianId() ? 'required' : '',
+            'legal_guardian_first_name' => $account_type==ID::retFun()->legal_guardian_id ? 'required' : '',
             'legal_has_lastname' => $legal_has_lastname ? 'required' : '',
             //'legal_guardian_identity_card'  =>  $account_type==3 ? 'required' : '',
             //'legal_guardian_number_authority'   => $account_type==3 ? 'required' : '',
@@ -317,16 +317,16 @@ class RetirementFundController extends Controller
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
         $beneficiary->type = "S";
         $beneficiary->save();
-        if($account_type == ID::getBeneficiaryId() && $request->ret_fun_modality != ID::getRetFun()->fallecimiento_id && $request->ret_fun_modality != ID::getGlobalPay()->fallecimiento_id )
+        if($account_type == ID::retFun()->beneficiary_id && $request->ret_fun_modality != ID::retFun()->fallecimiento_id && $request->ret_fun_modality != ID::retFunGlobalPay()->fallecimiento_id )
         {
             Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
-        if ($account_type == ID::getBeneficiaryId() && ($request->ret_fun_modality == ID::getRetFun()->fallecimiento_id || $request->ret_fun_modality == ID::getGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == 2) {
+        if ($account_type == ID::retFun()->beneficiary_id && ($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == 2) {
             Log::info("updating spouse 1");
             Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
 
-        if($account_type == ID::getAdvisorId())
+        if($account_type == ID::retFun()->advisor_id)
         {
             $advisor = new RetFunAdvisor();
             //$advisor->retirement_fund_id = $retirement_fund->id;
@@ -353,7 +353,7 @@ class RetirementFundController extends Controller
             $advisor_beneficiary->save();
         }
 
-        if($account_type == ID::getLegalGuardianId())
+        if($account_type == ID::retFun()->legal_guardian_id)
         {
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
@@ -376,10 +376,10 @@ class RetirementFundController extends Controller
             $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
             //$beneficiary->type = "N";
-            if ($request->ret_fun_modality != ID::getRetFun()->fallecimiento_id && $request->ret_fun_modality != ID::getGlobalPay()->fallecimiento_id) {
+            if ($request->ret_fun_modality != ID::retFun()->fallecimiento_id && $request->ret_fun_modality != ID::retFunGlobalPay()->fallecimiento_id) {
                 Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
             }
-            if (($request->ret_fun_modality == ID::getRetFun()->fallecimiento_id || $request->ret_fun_modality == ID::getGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == 2) {
+            if (($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == 2) {
                 Log::info("updating spouse 2");
                 Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
             }
@@ -391,7 +391,7 @@ class RetirementFundController extends Controller
             $address->street = $request->beneficiary_street;
             $address->number_address = $request->beneficiary_number_address;
             $address->save();
-            if ($request->ret_fun_modality == ID::getRetFun()->fallecimiento_id || $request->ret_fun_modality == ID::getGlobalPay()->fallecimiento_id) {
+            if ($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) {
             }else{
                 $retirement_fund->affiliate->address()->save($address);
             }
