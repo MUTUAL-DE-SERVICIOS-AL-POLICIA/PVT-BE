@@ -232,7 +232,7 @@ class RetirementFundController extends Controller
         $this->authorize('create', $retirement_fund);
         $retirement_fund->user_id = Auth::user()->id;
         $retirement_fund->affiliate_id = $request->affiliate_id;
-        $retirement_fund->procedure_modality_id = $request->;
+        $retirement_fund->procedure_modality_id = $request->ret_fun_modality;
         $retirement_fund->ret_fun_procedure_id = $procedure->id;
         $retirement_fund->city_start_id = Auth::user()->city_id;
         $retirement_fund->city_end_id = $request->city_end_id;
