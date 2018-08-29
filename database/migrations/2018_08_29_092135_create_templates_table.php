@@ -13,13 +13,13 @@ class CreateTemplatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('templates', function (Blueprint $table) {
+        Schema::create('ret_fun_templates', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedBigInteger('wf_state_id');
-            $table->unsignedBigInteger('procedure_modality_id');
+            $table->unsignedBigInteger('ret_fun_procedure_id');
             $table->text('template')->nullable();
             $table->foreign('wf_state_id')->references('id')->on('wf_states');
-            $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
+            $table->foreign('ret_fun_procedure_id')->references('id')->on('ret_fun_procedures');
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateTemplatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('templates');
+        Schema::dropIfExists('ret_fun_templates');
     }
 }
