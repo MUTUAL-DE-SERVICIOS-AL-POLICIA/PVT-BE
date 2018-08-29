@@ -451,18 +451,19 @@ function setPeriodData(period,amount){
     alert(period+' - '+amount);
     $('#main'+period).html(amount);
 }
+
 $('.seniority_bonus').blur(function() {
-    console.log("im here"+$(this).html());    
-    //$(this).closest('td').prev().html('3333');
     base_wage = parseFloat($(this).parent().parent().prev().find('td:first').find('div:first').text().replace(/,/g , ''));
     extra = parseFloat($(this).text().replace(/,/g , ''));
-    console.log(base_wage+" "+extra);
-    total = (extra*100)/base_wage/100;    
-    //$(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').text();
+    total = 0.00;
     $(this).closest('td').closest('tr').next('tr').find('td:first').find('input:first').removeAttr('disabled');
     $(this).closest('td').closest('tr').next('tr').find('td:first').find('input:first').val(total);
-    $(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').val(total);
+    if(base_wage>0) {
+        total = (extra*100)/base_wage/100;    
+        $(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').val(total+"");
+    }
 });
+
 $(document).ready(function() {
     $('.sk-folding-cube').hide();
     $('.my-content').removeClass('sk-loading')
