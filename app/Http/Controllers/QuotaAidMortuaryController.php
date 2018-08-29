@@ -112,7 +112,7 @@ class QuotaAidMortuaryController extends Controller
             case 9:
             case 13:
                 $affiliate->affiliate_state_id = 4;
-                $affiliate->date_death = Util::verifyMonthYearDate($request->date_death) ? Util::parseMonthYearDate($request->date_death) : $request->date_death;
+                $affiliate->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
                 break;
             case 14:
             case 15:
