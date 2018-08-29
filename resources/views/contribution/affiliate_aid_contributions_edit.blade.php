@@ -23,7 +23,7 @@
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-md-12">
             <div class="col-md-6">
                 @include('contribution.aid_aditional_info',['summary',$summary])
@@ -32,10 +32,10 @@
                 @include('contribution.aid_commitment',['aid_commitment'=>$aid_commitment,'affiliate_id'=>$affiliate_id,'today_date'=>$today_date])
             </div>
         </div>        
-    </div>
-    <div class = "col-md-12">
+    </div> --}}
+    {{-- <div class = "col-md-12">
         <aid-contribution-create :aid-contributions="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate->id }}" ></aid-contribution-create>
-    </div>
+    </div> --}}
     <div class="row">
         <div class="col-md-12">
             <form>
