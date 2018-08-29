@@ -62,8 +62,8 @@ class ID
 	public static function getRetFun()
 	{
 		$Ret_Fun = [
-			'fallecimiento_id'=>3,
-			'jubilacion_id'=>4,
+			'fallecimiento_id'=>4,
+			'jubilacion_id'=>3,
 			'retiroforzoso_id'=>5,
 			'invalidezpermanente_id'=>6,
 			'retirovoluntario_id'=>7
