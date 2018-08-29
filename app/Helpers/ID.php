@@ -76,4 +76,27 @@ class ID
 		];
 		return((object)$Ids);
 	}
+
+	/**
+	* Retorna el id
+	*
+	* @return un objeto city
+	*/
+	public static function cityId()
+	{
+		$Ids = [
+			'BN' => 1,
+			'CH' => 2,
+			'CB' => 3,
+			'LP' => 4,
+			'OR' => 5,
+			'PD' => 6,
+			'PT' => 7,
+			'SC' => 8,
+			'TJ' => 9,
+			'BO' => 10
+		];
+		return((object)$Ids);
+	}
+
 }
