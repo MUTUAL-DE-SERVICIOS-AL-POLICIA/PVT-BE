@@ -120,6 +120,10 @@ class QuotaAidCertificationController extends Controller
         }
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);
+
+        $area = Util::getRol()->name;
+        $user = Auth::user();
+        $date = date('d/m/Y');
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
         return \PDF::loadView('quota_aid.print.voucher_aid_contribution', 
                 compact('date', 
@@ -136,7 +140,10 @@ class QuotaAidCertificationController extends Controller
                         'descripcion', 
                         'payment_date', 
                         'total_literal', 
-                        'name_user_complet'))
+                        'name_user_complet',
+                        'area',
+                        'user',
+                        'date'))
                 ->setPaper('letter')
                 ->setOption('encoding', 'utf-8')
                 ->setOption('footer-right', 'Pagina [page] de [toPage]')
