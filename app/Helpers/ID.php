@@ -47,7 +47,7 @@ class ID
 	/**
 	* Retorna el id
 	*
-	* @return un objeto Global_pay
+	* @return un objeto ret_fun Global_pay
 	*/
 	public static function retFunGlobalPay()
 	{
@@ -56,5 +56,24 @@ class ID
 			'retiro_forzoso_id'=>2
 		];
 		return((object)$Global_Pay);
+	}
+
+	/**
+	* Retorna el id
+	*
+	* @return un objeto kinship
+	*/
+	public static function kinship()
+	{
+		$Ids = [
+			'titular'=>1,
+			'conyuge'=>2,
+			'hijo'=>3,
+			'padre'=>4,
+			'madre'=>5,
+			'hermano'=>6,
+			'otro'=>7
+		];
+		return((object)$Ids);
 	}
 }
