@@ -165,7 +165,7 @@
                                                                     @endforeach
                                                                 </select> --}}
 
-                                                                <div contenteditable="false" class="numberformat">{{$contributions[$period]->category->percentage ?? '-0'}} </div>
+                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->category->percentage ?? '-0'}} </div>
                                                                 <input type="hidden" disabled name="category[{{$period}}]" value="{{$contributions[$period]->percentage ?? 'null'}}">
                                                             </td>
                                                         </tr>                                                        
