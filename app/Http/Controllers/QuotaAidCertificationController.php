@@ -56,7 +56,7 @@ class QuotaAidCertificationController extends Controller
         $total_literal = Util::convertir($total);
         $affiliate = Affiliate::find($request->affiliate_id);                                
         $date = Util::getStringDate(date('Y-m-d'));
-        $title = "REVISAR";
+        $title = "APORTE DIRECTO";
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name." ".Auth::user()->last_name;        
         $detail = "Pago de aporte directo";
@@ -65,9 +65,16 @@ class QuotaAidCertificationController extends Controller
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);
         $util = new Util();
+        $area = Util::getRol()->name;
+        $user = Auth::user();
+        $date = date('d/m/Y');
+        $number = 1;
         return \PDF::loadView(
             'quota_aid.print.affiliate_aid_contribution', 
                 compact(
+                        'area',
+                        'user',
+                        'date',
                         'date', 
                         'username', 
                         'title', 

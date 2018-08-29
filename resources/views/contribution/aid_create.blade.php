@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="wrapper wrapper-content animated fadeInRight">        
-    <aid-contribution-create :contributions1="{{ json_encode($contributions) }}" :affiliate_id="{{ $affiliate->id }}" ></aid-contribution-create>
+<div class="wrapper wrapper-content animated fadeInRight">                
+    <aid-contribution-create :contributions1="{{ json_encode($contributions) }}" :affiliate_id="{{ $affiliate->id }}" :rate="{{ $$rate }}" ></aid-contribution-create>
 </div>
 @endsection
