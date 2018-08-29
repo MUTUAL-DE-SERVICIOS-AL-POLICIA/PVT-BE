@@ -42,7 +42,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr style="" v-for="(con, index) in contributions" :key="index" id="form">
+                            <tr v-for="(con, index) in contributions" :key="index" id="form" v-bind:style="getStyleColor(index)">
                                 <td>
                                     <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                 </td>
@@ -208,6 +208,11 @@ export default {
       this.contributions.splice(index, 1);
       this.SumTotal();
     },
+    getStyleColor(index){          
+        if(this.contributions[index].type == 'R') {_
+            return "background-color:#ffe6b3";
+        }
+    },
     Refresh() {
       this.contributions = this.aidContributions;
     },
@@ -239,10 +244,7 @@ export default {
                 };
                 this.reimbursement_pays.push(new_info);                                 
             }
-            i=0;
-            console.log("here");
-            console.log(this.rate);
-            console.log("end here");
+            i=0;            
             for(i=0;i<this.contributions.length;i++)
             {                                                                
                 let aid_amount =  parseFloat(subtotal*this.rate.mortuary_aid/100).toFixed(2);
