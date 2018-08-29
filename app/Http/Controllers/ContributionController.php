@@ -592,7 +592,7 @@ class ContributionController extends Controller
               $input_data['total'][$key]= strip_tags($request->total[$key]);
         $array_rules = [
             'base_wage.'.$key =>  'numeric|min:0',
-            'gain.'.$key =>  'numeric|min:1',
+            'gain.'.$key =>  'numeric|min:0',
             'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
