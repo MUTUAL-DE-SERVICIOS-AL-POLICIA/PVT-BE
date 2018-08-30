@@ -5,12 +5,15 @@
             <div class="panel panel-primary"  :class="show_spinner ? 'sk-loading' : ''" >
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
-                    <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> Imprimir </button>
+                    <div class="text-right" v-if="contributions.length > 0">
+                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()" :disabled="! total > 0" ><i class="fa fa-print" ></i> Imprimir </button>
+                    </div>
+                    <div v-else>
+                        <button data-animation="flip" class="btn btn-primary" > </button>
                     </div>
                 </div>
 
-                <div class="panel-body" id ="print">  
+                <div class="panel-body" id ="print" v-if="contributions.length > 0">  
                     <div class="sk-folding-cube" v-show="show_spinner">
                         <div class="sk-cube1 sk-cube"></div>
                         <div class="sk-cube2 sk-cube"></div>
@@ -106,6 +109,11 @@
                     </table> -->
                     <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
 
+                </div>
+                <div v-else >
+                    <div class="text-center">
+                        <h2>No tiene Pagos Pendientes</h2>
+                    </div>
                 </div>
                
             </div>
@@ -543,6 +551,7 @@ export default {
                         '/print/voucher/'+
                         response.data.voucher_id + "?contributions="+json_contribution, 
                         type:'pdf', showModal:true});
+                this.contributions = [];
                 })                    
                 .catch(error => {
                 this.show_spinner = false;                                    
