@@ -1,63 +1,71 @@
 <template>
-    <div class="widget-text-box">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="pull-left">
-                    <h5 class="tag-title"> Etiquetas</h5>
-                </div>
-                <button class="pull-right btn btn-primary btn-xs"
-                        @click="toggleEditing()">
-                    <i class="fa fa-pencil"></i> Editar
-                </button>
-            </div>
+
+        
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>Etiquetas del Trámite</h5>
+            <button class="pull-right btn btn-primary btn-xs"
+                    @click="toggleEditing()">
+                <i class="fa fa-plus"></i> Adicionar
+            </button>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <transition name="tag"
-                            enter-active-class="animated bounceInLeft"
-                            leave-active-class="animated bounceOutRight"
-                            :duration="{ enter: 400, leave: 400 }"
-                            mode="out-in">
-                    <ul class="tag-list"
+        <div class="ibox-content" :class="{'sk-loading': showSpinner}">
+            <div class="sk-spinner sk-spinner-circle" v-if="showSpinner">
+                <div class="sk-circle1 sk-circle"></div>
+                <div class="sk-circle2 sk-circle"></div>
+                <div class="sk-circle3 sk-circle"></div>
+                <div class="sk-circle4 sk-circle"></div>
+                <div class="sk-circle5 sk-circle"></div>
+                <div class="sk-circle6 sk-circle"></div>
+                <div class="sk-circle7 sk-circle"></div>
+                <div class="sk-circle8 sk-circle"></div>
+                <div class="sk-circle9 sk-circle"></div>
+                <div class="sk-circle10 sk-circle"></div>
+                <div class="sk-circle11 sk-circle"></div>
+                <div class="sk-circle12 sk-circle"></div>
+            </div>
+            <transition name="tag"
+                        enter-active-class="animated bounceInLeft"
+                        leave-active-class="animated bounceOutRight"
+                        :duration="{ enter: 400, leave: 400 }"
+                        mode="out-in">
+                <div key="saved" v-if="!editing" class="row">
+                        <ul class="tag-list"
                         style="padding: 0"
-                        v-if="!editing"
-                        key="saved">
+                        >
                         <li v-for="(tag, index) in tagsRetFun"
                             :key="index">
                             <a href="#"
-                               :style="colorClass()"
-                               style="">
+                                :style="colorClass()"
+                                style="">
                                 <i class="fa fa-tag"></i> {{tag.name}}</a>
                         </li>
                     </ul>
-                    <div v-else
-                         key="edit">
-                        <div class="form-group">
-                            <label class="font-normal">Seleccione las etiquetas</label>
-                            <div>
-                                <select data-placeholder="Escoge una etiqueta..."
-                                        class="chosen-select"
-                                        multiple
-                                        style="width:350px;"
-                                        tabindex="4"
-                                        >
-                                    <option v-for="(tag, index) in tagsWfState" :key="index" :value="tag.id" :selected="verify(tag.id)">{{ tag.name }}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group text-center">
-                            <button class="btn btn-danger btn-sm"
-                                    @click="cancel()">
-                                <i class="fa fa-times"></i> Cancelar
-                            </button>
-                            <button class="btn btn-primary btn-sm"
-                                    @click="save()">
-                                <i class="fa fa-save"></i> Guardar
-                            </button>
-                        </div>
+                </div>
+                <div v-else
+                        key="edit">
+                    <div class="form-group">
+                        <select data-placeholder="Haz clic para seleccionar una etiqueta..."
+                                class="chosen-select"
+                                multiple
+                                style="width:350px;"
+                                tabindex="4"
+                                >
+                            <option v-for="(tag, index) in tagsWfState" :key="index" :value="tag.id" :selected="verify(tag.id)">{{ tag.name }}</option>
+                        </select>
                     </div>
-                </transition>
-            </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-danger btn-sm"
+                                @click="cancel()">
+                            <i class="fa fa-times"></i> Cancelar
+                        </button>
+                        <button class="btn btn-primary btn-sm"
+                                @click="save()">
+                            <i class="fa fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </div>
+            </transition>
         </div>
     </div>
 </template>
@@ -67,6 +75,7 @@
       data() {
         return {
           editing: false,
+          showSpinner: false,
           tagsRetFun: [],
           tagsWfState: [],
         };
@@ -76,11 +85,14 @@
       },
       methods: {
         getCurrentTags(){
+            this.showSpinner = true;
             axios.get(`/tag_ret_fun/${this.retFunId}`)
             .then(response=>{
                 this.tagsRetFun = response.data
+                this.showSpinner = false;
             }).catch(error=>{
                 console.error(error);
+                this.showSpinner = false;
             })
         },
         toggleEditing() {
@@ -91,19 +103,13 @@
             }).catch(error=>{
                 console.error(error);
             })
-          //setTimeout(() => {
-            $(".chosen-select").chosen({ width: "100%" }).trigger('liszt:updated');//.trigger('chosen:updated');
-          //}, 500);
+          setTimeout(() => {
+            $(".chosen-select").chosen({ width: "100%" });
+          }, 700);
         },
         verify(tagId){
             if(this.tagsRetFun.length){
-                let sw = false;
-                this.tagsRetFun.forEach(element => {
-                    if (element.id == tagId){
-                        sw = true;
-                    }
-                });
-                return sw;
+                return this.tagsRetFun.some(element => element.id == tagId)
             }
             return false;
         },
@@ -112,6 +118,7 @@
           this.editing = false;
         },
         save() {
+          this.showSpinner = true;
           $(".chosen-select").val()
           axios.post(`/update_tag_ret_fun/${this.retFunId}`,{
               ids: $(".chosen-select").val()
@@ -120,7 +127,10 @@
           }).catch(error=>{
               flash('Error al actualizar las etiquetas.', 'error');
           })
-          this.getCurrentTags()
+          setTimeout(() => {
+              this.getCurrentTags()
+              this.showSpinner = false;
+          }, 5000);
           this.editing = false;
         },
         colorClass() {

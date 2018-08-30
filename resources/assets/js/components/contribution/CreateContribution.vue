@@ -6,7 +6,7 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
                     <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>
+                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> Imprimir </button>
                     </div>
                 </div>
 
@@ -40,7 +40,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(con, index) in contributions" :key="index" id="form" v-bind:style="getStyleColor(index)">
+                            <tr v-for="(con, index) in contributions" :key="index" id="form" v-bind:style="getStyleColor(index)" :class="{'danger': error(con.subtotal)}">
                                 <td>
                                     <input type="text"  v-model = "con.monthyear" disabled class="form-control">
                                 </td>                                
@@ -280,6 +280,9 @@ export default {
   created(){    
   },
   methods: {            
+      error(value){
+          return ! value >  0;
+      },
       RemoveRow(index) {
         this.contributions.splice(index,1);
         this.SumTotal();

@@ -46,7 +46,14 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                     @else
-                    <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
+                        @if($contribution->total > 0 )
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->gain) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->base_wage) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                        @else
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
+                        @endif
                     @endif
                 </tr> 
                 @foreach($reimbursements as $reimbursement)
@@ -97,13 +104,7 @@
 <div align="right">
     {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
 </div>
+@include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch
-<table class="m-t-35">
-    <tr>            
-        <th class="no-border text-center" style=" width:50%">
-            <p class="font-bold">----------------------------------------------------<br> {!! strtoupper($user->fullName()) !!}<br/> {!! $user->position !!}
-            </p>
-        </th>
-    </tr>
-</table>
+
 @endsection
