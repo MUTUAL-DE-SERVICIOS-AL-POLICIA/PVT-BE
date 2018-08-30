@@ -4,8 +4,8 @@ namespace Muserpol\Helpers;
 
 class ID
 {
-	const FALLECIMIENTO = 3;
-	ID::FALLECIMIENTO
+	// const FALLECIMIENTO = 3;
+	// ID::FALLECIMIENTO;
 	/**
 	* Retorna el id del beneficiario
 	*
