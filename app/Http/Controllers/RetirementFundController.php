@@ -245,7 +245,7 @@ class RetirementFundController extends Controller
         $retirement_fund->total_ret_fun = 0;
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->inbox_state = true;
-        $retirement_fund->ret_fun_state_id = ID::retFunState()->enproceso;
+        $retirement_fund->ret_fun_state_id = ID::state()->enproceso;
         $retirement_fund->save();
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
 
@@ -321,7 +321,7 @@ class RetirementFundController extends Controller
         {
             Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
-        if ($account_type == ID::retFun()->beneficiary_id && ($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == ID:kinship()->conyuge) {
+        if ($account_type == ID::retFun()->beneficiary_id && ($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == ID::kinship()->conyuge) {
             Log::info("updating spouse 1");
             Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
@@ -511,8 +511,7 @@ class RetirementFundController extends Controller
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
 
-        $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id',$retirement_fund->id)->with(['kinship', '
-        entity_card'])->orderByDesc('type')->orderBy('id')->get();
+        $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderByDesc('type')->orderBy('id')->get();
         foreach ($beneficiaries as $b) {
             $b->phone_number=explode(',',$b->phone_number);
             $b->cell_phone_number=explode(',',$b->cell_phone_number);
@@ -963,7 +962,7 @@ class RetirementFundController extends Controller
         $retirement_fund->city_start_id = $request->city_start_id;
         $retirement_fund->reception_date = $request->reception_date;
         $retirement_fund->ret_fun_state_id = $request->ret_fun_state_id;
-        if($retirement_fund->ret_fun_state_id == ID::retFunState()->eliminado){
+        if($retirement_fund->ret_fun_state_id == ID::state()->eliminado){
             $retirement_fund->code.="A";
         }
         $retirement_fund->save();

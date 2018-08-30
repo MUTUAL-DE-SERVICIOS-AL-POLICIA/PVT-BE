@@ -107,15 +107,15 @@ class ID
 	public static function affiliateState()
 	{
 		$Ids = [
-			'servicio'=1,
-			'comision'=2,
-			'disponib'=3,
-			'fallecido'=4,
-			'jubilado'=5,
-			'invalidez'=6,
-			'baja_forz'=7,
-			'baja_Volu'=8,
-			'baja_Temp'=9
+			'servicio'=>1,
+			'comision'=>2,
+			'disponib'=>3,
+			'fallecido'=>4,
+			'jubilado'=>5,
+			'invalidez'=>6,
+			'baja_forz'=>7,
+			'baja_Volu'=>8,
+			'baja_Temp'=>9
 		];
 		return((object)$Ids);
 	}
@@ -125,12 +125,12 @@ class ID
 	*
 	* @return un objeto retFunState
 	*/
-	public static function retFunState()
+	public static function state()
 	{
 		$Ids = [
-			'enproceso'=1,
-			'pendiente'=2,
-			'eliminado'=3
+			'enproceso'=>1,
+			'pendiente'=>2,
+			'eliminado'=>3
 			];
 		return((object)$Ids);
 	}
