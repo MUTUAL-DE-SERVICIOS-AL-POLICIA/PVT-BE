@@ -616,7 +616,7 @@ class ContributionController extends Controller
         $contributions = [];
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
-            if(isset($request->total[$key])) {
+            if(isset($request->total[$key]) && $request->total[$key]>0) {
                 if (isset($contribution->id)) {
                     $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
                     

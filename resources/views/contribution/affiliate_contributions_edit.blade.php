@@ -378,7 +378,10 @@ function rei(){
 }
 $('.editcontent').blur(function() {
     $(this).next('input').val(parseFloat($(this).html().replace(/,/g , '')));
-    $(this).next('input').removeAttr('disabled');
+    if(parserFloat($(this).next('input').val()) > 0 )
+    {
+        $(this).next('input').removeAttr('disabled');
+    }    
     $(this).closest('table').find('tr:first').find('td:first').find('input').removeAttr('disabled');
 });
 function createReimbursement(year){
