@@ -80,7 +80,7 @@ class ID
 	/**
 	* Retorna el id
 	*
-	* @return un objeto city
+	* @return un objeto cityId
 	*/
 	public static function cityId()
 	{
@@ -96,6 +96,42 @@ class ID
 			'TJ' => 9,
 			'BO' => 10
 		];
+		return((object)$Ids);
+	}
+
+	/**
+	* Retorna el id
+	*
+	* @return un objeto affiliateState
+	*/
+	public static function affiliateState()
+	{
+		$Ids = [
+			'servicio'=1,
+			'comision'=2,
+			'disponib'=3,
+			'fallecido'=4,
+			'jubilado'=5,
+			'invalidez'=6,
+			'baja_forz'=7,
+			'baja_Volu'=8,
+			'baja_Temp'=9
+		];
+		return((object)$Ids);
+	}
+
+	/**
+	* Retorna el id
+	*
+	* @return un objeto retFunState
+	*/
+	public static function retFunState()
+	{
+		$Ids = [
+			'enproceso'=1,
+			'pendiente'=2,
+			'eliminado'=3
+			];
 		return((object)$Ids);
 	}
 

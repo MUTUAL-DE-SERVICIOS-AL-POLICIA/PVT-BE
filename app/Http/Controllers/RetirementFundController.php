@@ -245,7 +245,7 @@ class RetirementFundController extends Controller
         $retirement_fund->total_ret_fun = 0;
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->inbox_state = true;
-        $retirement_fund->ret_fun_state_id = 1;
+        $retirement_fund->ret_fun_state_id = ID::retFunState()->enproceso;
         $retirement_fund->save();
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
 
@@ -257,14 +257,14 @@ class RetirementFundController extends Controller
         switch ($request->ret_fun_modality) {
             case 1:
             case 4:
-                $af->affiliate_state_id = 4;
+                $af->affiliate_state_id = ID::affiliateState()->fallecido;
                 break;
             case 2:
             case 3:
             case 5:
             case 6:
             case 7:
-                $af->affiliate_state_id = 5;
+                $af->affiliate_state_id = ID::affiliateState()->jubilado;
                 break;
             default:
                 $this->info("error");
@@ -386,7 +386,7 @@ class RetirementFundController extends Controller
         }
         if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
             $address = new Address();
-            $address->city_address_id = 1;
+            $address->city_address_id = ID::cityId()->BN;
             $address->zone = $request->beneficiary_zone;
             $address->street = $request->beneficiary_street;
             $address->number_address = $request->beneficiary_number_address;
@@ -511,7 +511,8 @@ class RetirementFundController extends Controller
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
 
-        $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id',$retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderByDesc('type')->orderBy('id')->get();
+        $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id',$retirement_fund->id)->with(['kinship', '
+        entity_card'])->orderByDesc('type')->orderBy('id')->get();
         foreach ($beneficiaries as $b) {
             $b->phone_number=explode(',',$b->phone_number);
             $b->cell_phone_number=explode(',',$b->cell_phone_number);
@@ -872,7 +873,7 @@ class RetirementFundController extends Controller
                 $old_ben->birth_date = Util::verifyBarDate($new_ben['birth_date']) ? Util::parseBarDate($new_ben['birth_date']) : $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
                 $old_ben->state = $new_ben['state'] ?? false;
-                if($old_ben->type == 'S' && $retirement_fund->procedure_modality_id !=  4){
+                if($old_ben->type == 'S' && $retirement_fund->procedure_modality_id !=  ID::retFun()->fallecimiento_id){
                     $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
                     $update_affilaite->identity_card = $old_ben->identity_card;
                     $update_affilaite->first_name = $old_ben->first_name;
@@ -895,7 +896,7 @@ class RetirementFundController extends Controller
                         $address_id = $old_ben->address()->first()->id;
                         $address = Address::find($address_id);
                         if($new_ben['address'][0]['zone'] || $new_ben['address'][0]['street'] || $new_ben['address'][0]['number_address'] ){
-                            $address->city_address_id = 1;
+                            $address->city_address_id = ID::cityId()->BN;
                             $address->zone = $new_ben['address'][0]['zone'];
                             $address->street = $new_ben['address'][0]['street'];
                             $address->number_address = $new_ben['address'][0]['number_address'];
@@ -907,7 +908,7 @@ class RetirementFundController extends Controller
                     }else{
                         if ($new_ben['address']) {
                             $address = new Address();
-                            $address->city_address_id = 1;
+                            $address->city_address_id = ID::cityId()->BN;
                             $address->zone = $new_ben['address'][0]['zone'];
                             $address->street = $new_ben['address'][0]['street'];
                             $address->number_address = $new_ben['address'][0]['number_address'];
@@ -962,7 +963,7 @@ class RetirementFundController extends Controller
         $retirement_fund->city_start_id = $request->city_start_id;
         $retirement_fund->reception_date = $request->reception_date;
         $retirement_fund->ret_fun_state_id = $request->ret_fun_state_id;
-        if($retirement_fund->ret_fun_state_id == 3){
+        if($retirement_fund->ret_fun_state_id == ID::retFunState()->eliminado){
             $retirement_fund->code.="A";
         }
         $retirement_fund->save();
@@ -1263,7 +1264,7 @@ class RetirementFundController extends Controller
         $retirement_fund->save();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
         //create function search spouse
-        $spouse_id = 2;
+        $spouse_id = ID::kinship()->conyuge;
         $spouse = $beneficiaries->filter(function ($item) use ($spouse_id)
         {
             return $item->kinship->id == $spouse_id;
@@ -1370,7 +1371,7 @@ class RetirementFundController extends Controller
             $total_availability = $subtotal_availability + $total_annual_yield;
             $total = $total + $total_availability;
 
-            $spouse_id = 2;
+            $spouse_id = ID::kinship()->conyuge;
             $spouse = $beneficiaries->filter(function ($item) use ($spouse_id) {
                 return $item->kinship->id == $spouse_id;
             });
