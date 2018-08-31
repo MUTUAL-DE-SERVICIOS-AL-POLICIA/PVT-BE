@@ -92,7 +92,7 @@
                                         @endphp
                                         @if($valid_period)
                                             @if(isset($contributions[$period]->id))
-                                                <td class="numberformat" id="main{{$period}}">{{$contributions[$period]->total}}</td>
+                                                <td class="numberformat" @if(isset($reims[$period])) bgcolor="#ffe6b3" @endif id="main{{$period}}">{{$contributions[$period]->total}}</td>
                                             @else
                                                 <td class="numberformat" id="main{{$period}}">0</td>
                                             @endif
@@ -165,7 +165,7 @@
                                                                     @endforeach
                                                                 </select> --}}
 
-                                                                <div contenteditable="false" class="numberformat">{{$contributions[$period]->category->percentage ?? '-0'}} </div>
+                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->category->percentage ?? '-0'}} </div>
                                                                 <input type="hidden" disabled name="category[{{$period}}]" value="{{$contributions[$period]->percentage ?? 'null'}}">
                                                             </td>
                                                         </tr>                                                        
@@ -414,9 +414,10 @@ function storeReimbursement(){
         },
         success: function(result){
             $("#reim"+result.month_year).html(result.total);
+            $("#main"+result.month_year).css('background-color', '#ffe6b3');
             clearModal
         },
-        error: function(xhr, status, error) {
+        error: function(xhr, status, error) {                        
             console.log(xhr.responseText);
         }
     });
@@ -437,7 +438,8 @@ function deleteReimbursement(){
         },
         success: function(result){
             console.log(result);
-            $("#reim"+result.month_year).html('0.00');        
+            $("#reim"+result.month_year).html('0.00');
+            $("#main"+result.month_year).css('background-color', '#f2f2f2');
         },
         error: function(xhr, status, error) {
             console.log(xhr.responseText);
@@ -449,18 +451,19 @@ function setPeriodData(period,amount){
     alert(period+' - '+amount);
     $('#main'+period).html(amount);
 }
+
 $('.seniority_bonus').blur(function() {
-    console.log("im here"+$(this).html());    
-    //$(this).closest('td').prev().html('3333');
     base_wage = parseFloat($(this).parent().parent().prev().find('td:first').find('div:first').text().replace(/,/g , ''));
     extra = parseFloat($(this).text().replace(/,/g , ''));
-    console.log(base_wage+" "+extra);
-    total = (extra*100)/base_wage/100;    
-    //$(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').text();
+    total = 0.00;
     $(this).closest('td').closest('tr').next('tr').find('td:first').find('input:first').removeAttr('disabled');
     $(this).closest('td').closest('tr').next('tr').find('td:first').find('input:first').val(total);
-    $(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').val(total);
+    if(base_wage>0) {
+        total = (extra*100)/base_wage/100;    
+        $(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').val(total+"");
+    }
 });
+
 $(document).ready(function() {
     $('.sk-folding-cube').hide();
     $('.my-content').removeClass('sk-loading')

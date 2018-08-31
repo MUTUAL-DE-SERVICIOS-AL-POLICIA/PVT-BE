@@ -68,27 +68,28 @@
                 @endforeach 
                
         @endforeach    
-        <tr>
+        {{-- <tr>
             <td colspan="6" class="text-center">TOTAL:</td>
             <td class="text-center uppercase font-bold px-5 py-3" >{{ $total }}</td>   
-        </tr>         
+        </tr>          --}}
     </tbody>
 </table>
 <br>
 <div>    
     Es cuanto se certifica para  fines consiguientes. 
 </div>
+@if($retirement_fund->contribution_types()->where('contribution_type_id', 7)->first())
+    <div>
+        <strong>Nota:</strong>
+        <div class="text-justify">
+            {{ $retirement_fund->contribution_types()->where('contribution_type_id', 7)->first()->pivot->message }}
+        </div>
+    </div>
+@endif
 <br>
 <div align="right">
     {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
 </div>
+@include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch
-<table class="m-t-35">
-    <tr>            
-        <th class="no-border text-center" style=" width:50%">
-            <p class="font-bold">----------------------------------------------------<br> {!! strtoupper($user->fullName()) !!}<br/> {!! $user->position !!}
-            </p>
-        </th>
-    </tr>
-</table>
 @endsection

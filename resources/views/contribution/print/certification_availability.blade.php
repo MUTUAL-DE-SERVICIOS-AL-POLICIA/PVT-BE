@@ -56,7 +56,7 @@
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->total }}</td>
                             {{--<td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->retirement_fund }}</td>--}}
                         </tr>
-                    @endif        
+                    @endif
                 @endforeach
             @endif
         @endforeach
@@ -70,9 +70,18 @@
 <div>
     Es cuanto se certifica los aportes al destino a la disponibilidad de las letras, para fines consiguientes.
 </div>
+@if($retirement_fund->contribution_types()->where('contribution_type_id', 10)->first())
+    <div>
+        <strong>Nota:</strong>
+        <div class="text-justify">
+            {{ $retirement_fund->contribution_types()->where('contribution_type_id', 10)->first()->pivot->message }}
+        </div>
+    </div>
+@endif
 <br>
 <div align="right">
     {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
 </div>
+@include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch
 @endsection

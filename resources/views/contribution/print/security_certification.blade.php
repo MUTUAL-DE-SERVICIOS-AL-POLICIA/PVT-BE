@@ -46,7 +46,14 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                     @else
-                    <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
+                        @if($contribution->total > 0 )
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->gain) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->base_wage) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                        @else
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
+                        @endif
                     @endif
                 </tr> 
                 @foreach($reimbursements as $reimbursement)
@@ -70,17 +77,21 @@
         </tr>          --}}
     </tbody>
 </table>
+@if($retirement_fund->contribution_types()->where('contribution_type_id', 4)->first())
+    <div>
+        <strong>Nota:</strong>
+        <div class="text-justify">
+            {{ $retirement_fund->contribution_types()->where('contribution_type_id', 4)->first()->pivot->message }}
+        </div>
+    </div>
+@endif
 <br>
 <div>
-    <b>Nota,-</b>  Los Aportes Laborales del personal de Seguridad y Administrativo del Batallón de Seguridad Física Privada La Paz, de 1996: Noviembre y Diciembre y de 1997: Enero a Abril ( 6 meses ), NO fueron emitidos ó cancelados al Ex. Fondo Complementario de Seguridad Social de la Policía Nacional, actual
+    <b>CONVENIO.-</b> Según Convenio el personal de Seguridad y Administrativo del Batallón de Seguridad Física Privada La Paz, efectuó un aporte laboral del 3% a la Mutual de Seguros del Policía "MUSEPOL", a partir de Junio del  2002.
 </div>
 <br>
 <div>
-    <b>CONVENIO,-</b> Según Convenio el personal de Seguridad y Administrativo del Batallón de Seguridad Física Privada La Paz, efectuó un aporte laboral del 3% a la Mutual de Seguros del Policía "MUSEPOL", a partir de Junio del  2002.
-</div>
-<br>
-<div>
-    <b>INCORPORACI&Oacute;N</b>  Por Resolución Suprema No. 227336 de fecha 21 de Mayo de 2007, los Batallones de Seguridad  Física  Privada La Paz  y  del  Interior  de la  República,són  incorporados al Escalafón Unico del Comando General de la Policía Boliviana, a partir de Diciembre del Año 2007.							
+    <b>INCORPORACI&Oacute;N</b>  Por Resolución Suprema No. 227336 de fecha 21 de Mayo de 2007, los Batallones de Seguridad  Física  Privada La Paz  y  del  Interior  de la  República,són  incorporados al Escalafón Unico del Comando General de la Policía Boliviana, a partir de Mayo del Año 2007.							
 
 </div>
 <br>
@@ -93,13 +104,7 @@
 <div align="right">
     {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
 </div>
+@include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch
-<table class="m-t-35">
-    <tr>            
-        <th class="no-border text-center" style=" width:50%">
-            <p class="font-bold">----------------------------------------------------<br> {!! strtoupper($user->fullName()) !!}<br/> {!! $user->position !!}
-            </p>
-        </th>
-    </tr>
-</table>
+
 @endsection

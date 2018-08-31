@@ -157,8 +157,21 @@ class AidContributionController extends Controller
     }
 
     public function directContributions(Affiliate $affiliate = null){
+        
+        $commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
+        if(!isset($commitment->id) && Util::getRol()->pivot->role_id !=39)
+        {            
+           Session::flash('message','No se encontró compromiso de pago');
+           return redirect('affiliate/'.$affiliate->id);    
+        }
+       if(!isset($commitment->id))
+       {
+           $commitment = new AidCommitment();
+           $commitment->id = 0;
+           $commitment->affiliate_id = $affiliate->id;
+       }
 
-        $commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+
         // if(!isset($commitment->id))
         // {            
         //     Session::flash('message','No se encontró compromiso de pago');
@@ -183,13 +196,13 @@ class AidContributionController extends Controller
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
             'rate'  =>  $rate,
-        ];
-
+            'type'  =>  'N'
+        ];        
         return view('contribution.affiliate_direct_aid_contribution', $data);        
     }
 
     public function getAffiliateContributions(Affiliate $affiliate)
-    {                
+    {                                
         $date_derelict = $affiliate->date_derelict;                
         if(!$date_derelict){
             Session::flash('message','Verifique la fecha desvinculación del afiliado antes de continuar');
@@ -480,7 +493,7 @@ class AidContributionController extends Controller
             if(!isset($contribution->id))
                 array_push (
                     $contributions,
-                    array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'interes' => 0,'dignity_rent' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id)
+                    array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'interes' => 0,'dignity_rent' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id, 'type' => 'N')
                 );
         }
         $contributions = array_reverse($contributions);       

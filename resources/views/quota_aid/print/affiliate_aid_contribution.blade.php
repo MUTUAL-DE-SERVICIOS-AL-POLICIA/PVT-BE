@@ -18,7 +18,7 @@
             </tr>
         @foreach($contributions as $i=>$item)
             <tr>
-                <td class='text-left p-5'>{!! strtoupper($util::getStringDate($item->year."-".$item->month."-01",true)) !!}</td>
+                <td class='text-left p-5'>@if($item->type == 'R') R. @endif {!! strtoupper($util::getStringDate($item->year."-".$item->month."-01",true)) !!}</td>
                 {{-- <td class='text-right p-5'>{!! $util::formatMoney($item->sueldo) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->auxilio_mortuorio) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->interes) !!} </td>

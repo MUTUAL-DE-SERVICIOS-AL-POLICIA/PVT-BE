@@ -592,7 +592,7 @@ class ContributionController extends Controller
               $input_data['total'][$key]= strip_tags($request->total[$key]);
         $array_rules = [
             'base_wage.'.$key =>  'numeric|min:0',
-            'gain.'.$key =>  'numeric|min:1',
+            'gain.'.$key =>  'numeric|min:0',
             'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
@@ -616,66 +616,76 @@ class ContributionController extends Controller
         $contributions = [];
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
-            if (isset($contribution->id)) {
-                $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
-                
-                if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
-                   $contribution->base_wage = 0;
-                else
-                    $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
-                
-                if ($request->category[$key] != $contribution->category_id) {
-                    //$category = Category::find($request->category[$key]);
-                    $category = Category::where('percentage',$request->category[$key])->first();
-                    $contribution->category_id = $category->id;
-                    //return $category->percentage." ".$contribution->base_wage;
-                    //$contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
-                   $contribution->seniority_bonus = $request->seniority_bonus[$key];
-                }
-                
-                if(!isset($request->gain[$key]) || $contribution->gain == "")
-                    $contribution->gain = 0;
-                else
-                    $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
-                $contribution->save();
-                array_push($contributions, $contribution);
-            } else {
-//                $contribution = new Contribution();
-//                $contribution->user_id = Auth::user()->id;
-//                $contribution->total = $total;
-                $affiliate = Affiliate::find($request->affiliate_id);
-                $contribution = new Contribution();
-                $contribution->user_id = Auth::user()->id;
-                $contribution->affiliate_id = $request->affiliate_id;
-                $contribution->degree_id = $affiliate->degree_id;
-                $contribution->unit_id = $affiliate->unit_id;
-                $contribution->breakdown_id = $affiliate->breakdown_id;
-                
-                if(!isset($request->base_wage[$key]))
-                    $contribution->base_wage = 1;
-                else
-                    $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
-                $category = Category::where('percentage',$request->category[$key])->first();
-                $contribution->category_id = $category->id;
-                //$data = $contribution->base_wage * 123;
-                $contribution->seniority_bonus = $request->seniority_bonus[$key];
-                $contribution->study_bonus = 0;
-                $contribution->position_bonus = 0;
-                $contribution->border_bonus = 0;
-                $contribution->east_bonus = 0;
-                $contribution->quotable = 0;
-                $contribution->month_year = $key;
+            if(isset($request->total[$key])) {
+                if (isset($contribution->id)) {
+                    $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
+                    
+                    if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
+                    $contribution->base_wage = 0;
+                    else
+                        $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
+                    
+                    if (isset($request->category[$key]) && $request->category[$key] != $contribution->category_id) {                    
+                        $category = Category::where('percentage',$request->category[$key])->first();
+                        if(!isset($category->id)) {
+                            $contribution->category_id = null; //default non category found -0
+                        } else {
+                            $contribution->category_id = $category->id;
+                        }                    
+                    $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
+                    }
+                    
+                    if(!isset($request->gain[$key]) || $contribution->gain == "")
+                        $contribution->gain = 0;
+                    else
+                        $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
+                    $contribution->save();
+                    array_push($contributions, $contribution);
+                } else {
+    //                $contribution = new Contribution();
+    //                $contribution->user_id = Auth::user()->id;
+    //                $contribution->total = $total;
+                    $affiliate = Affiliate::find($request->affiliate_id);
+                    $contribution = new Contribution();
+                    $contribution->user_id = Auth::user()->id;
+                    $contribution->affiliate_id = $request->affiliate_id;
+                    $contribution->degree_id = $affiliate->degree_id;
+                    $contribution->unit_id = $affiliate->unit_id;
+                    $contribution->breakdown_id = $affiliate->breakdown_id;
+                    
+                    if(!isset($request->base_wage[$key]))
+                        $contribution->base_wage = 0;
+                    else
+                        $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
+                    
+                    if(isset($request->category[$key])) {
+                        $category = Category::where('percentage',$request->category[$key])->first();
+                        if(!isset($category->id)) {
+                            $contribution->category_id = null; //default non category found -0
+                        } else {
+                            $contribution->category_id = $category->id;
+                        }                    
+                    }                    
+                    //$data = $contribution->base_wage * 123;                
+                    $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
+                    $contribution->study_bonus = 0;
+                    $contribution->position_bonus = 0;
+                    $contribution->border_bonus = 0;
+                    $contribution->east_bonus = 0;
+                    $contribution->quotable = 0;
+                    $contribution->month_year = $key;
 
-                if(!isset($request->gain[$key]))
-                    $contribution->gain = 1;
-                else
-                    $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
-                $contribution->retirement_fund = 0;
-                $contribution->mortuary_quota = 0;
-                $contribution->total = strip_tags($request->total[$key]) ?? 0;                
-                $contribution->type = 'Planilla';
-                $contribution->save();
-                array_push($contributions, $contribution);
+                    if(!isset($request->gain[$key]))
+                        $contribution->gain = 0;
+                    else
+                        $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
+                    $contribution->retirement_fund = 0;
+                    $contribution->mortuary_quota = 0;
+                    $contribution->total = strip_tags($request->total[$key]) ?? 0;                
+                    $contribution->type = 'Planilla';
+                    $contribution->save();
+                    array_push($contributions, $contribution);
+                }
             }
         }
         return $contributions;
@@ -921,8 +931,34 @@ class ContributionController extends Controller
         $ret_fun->save();
         Log::info('saved subtotal availability: '. $subtotal_availability);
         $contribution_types = ContributionType::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_id')->distinct()->get()->pluck('contribution_type_id'))->orderBy('sequence')->select('name','id')->get();
+        foreach($contribution_types as $index =>$c){
+            switch ($c->id) {
+                case 2:
+                case 3:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 2)->first()->pivot->message ?? null;
+                    break;
+                case 4:
+                case 5:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 4)->first()->pivot->message ?? null;
+                    break;
+                case 7:
+                case 8:
+                case 9:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 7)->first()->pivot->message ?? null;
+                    break;
+                case 1:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 1)->first()->pivot->message ?? null;
+                    break;
+                case 10:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 10)->first()->pivot->message ?? null;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+        }
         return response()->json([
-            'contribution_types' => $contribution_types
+            'contribution_types' => $contribution_types,
         ]);
     }
     public function printCertification($id)

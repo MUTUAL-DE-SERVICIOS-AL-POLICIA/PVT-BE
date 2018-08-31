@@ -25,9 +25,9 @@ class ID
 	}
 
 	/**
-	* Retorna una opcion id
+	* Retorna una modalidad para fondo de retiro
 	*
-	* @return  un objeto retfun
+	* @return un objeto retfun
 	*/
 	public static function retFun()
 	{
@@ -45,7 +45,7 @@ class ID
 	}
 
 	/**
-	* Retorna el id
+	* Retorna una modalidad en pago global  de fondo de retiro
 	*
 	* @return un objeto ret_fun Global_pay
 	*/
@@ -59,7 +59,7 @@ class ID
 	}
 
 	/**
-	* Retorna el id
+	* Retorna algun parentesco con el afiliado
 	*
 	* @return un objeto kinship
 	*/
@@ -78,7 +78,7 @@ class ID
 	}
 
 	/**
-	* Retorna el id
+	* Retorna el id de algun departamento
 	*
 	* @return un objeto cityId
 	*/
@@ -121,7 +121,7 @@ class ID
 	}
 
 	/**
-	* Retorna el id
+	* Retorna el estado en que se encuentra
 	*
 	* @return un objeto retFunState
 	*/

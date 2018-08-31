@@ -11,7 +11,7 @@
         <ul class="nav navbar-top-links navbar-right">
                 <li>
                     <h3 class="font-bold no-margins" style="color:white">
-                        {{ \Muserpol\Helpers\Util::getRol()->name }} 
+                        {{ \Muserpol\Helpers\Util::getRol()->name }} | {{ \Muserpol\Helpers\Util::getRol()->module->name }}
                     </h3>
                 </li>
             <li>
