@@ -19,14 +19,14 @@
         @foreach($contributions as $i=>$item)
             <tr>
                 <td class='text-left p-5'>@if($item->type == 'R') R. @endif {!! strtoupper($util::getStringDate($item->year."-".$item->month."-01",true)) !!}</td>
-                {{-- <td class='text-right p-5'>{!! $util::formatMoney($item->sueldo) !!} </td>
+                <td class='text-right p-5'>{!! $util::formatMoney($item->sueldo-$item->dignity_rent) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->auxilio_mortuorio) !!} </td>
                 <td class='text-right p-5'>{!! $util::formatMoney($item->interes) !!} </td>
-                <td class='text-right p-5'>{!! $util::formatMoney($item->subtotal) !!} </td> --}}
-                <td class='text-right p-5'>{!! ($item->sueldo) !!} </td>
+                <td class='text-right p-5'>{!! $util::formatMoney($item->subtotal) !!} </td>
+                {{-- <td class='text-right p-5'>{!! ($item->sueldo) !!} </td>
                 <td class='text-right p-5'>{!! ($item->auxilio_mortuorio) !!} </td>
                 <td class='text-right p-5'>{!! ($item->interes) !!} </td>
-                <td class='text-right p-5'>{!! ($item->subtotal) !!} </td>
+                <td class='text-right p-5'>{!! ($item->subtotal) !!} </td> --}}
             </tr>
         @endforeach
             <tr>

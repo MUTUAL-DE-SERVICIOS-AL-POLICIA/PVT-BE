@@ -17,6 +17,7 @@ use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
 use Muserpol\Models\Spouse;
 use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\Contribution\AidCommitment;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
@@ -55,10 +56,15 @@ class QuotaAidCertificationController extends Controller
         $total = $request->total;
         $total_literal = Util::convertir($total);
         $affiliate = Affiliate::find($request->affiliate_id);                                
-        $date = Util::getStringDate(date('Y-m-d'));
-        $title = "APORTE DIRECTO";
+        $date = Util::getStringDate(date('Y-m-d'));        
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name." ".Auth::user()->last_name;        
+        $commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+        $title = "APORTE DIRECTO";        
+        if(isset($commitment->id)) {
+            $title .= " - ".($commitment->contributor=='T'?'Titular':'Cónyuge');
+        }
+        
         $detail = "Pago de aporte directo";
         $beneficiary = $affiliate;
         $name_beneficiary_complet = Util::fullName($beneficiary);
