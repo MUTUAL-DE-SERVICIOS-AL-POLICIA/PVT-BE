@@ -120,9 +120,7 @@
                     }, {})
                 }
 
-                this.requirementList =  this.requirementList.groupBy('number')
-                console.log("documents");
-                console.log(this.requirementList.length);
+                this.requirementList =  this.requirementList.groupBy('number')                
                 this.getAditionalRequirements();
                 // this.requirementList = this.requirementList.reduce(function(r, v) {
                 //     r[v.number] = r[v.number] || [];
