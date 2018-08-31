@@ -4,6 +4,7 @@ namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Contribution\AidReimbursement;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
+use Muserpol\Models\Contribution\AidContribution;
 use Auth;
 use Validator;
 
@@ -122,7 +123,7 @@ class AidReimbursementController extends Controller
     public function caculateContribution(Affiliate $affiliate = null, $amount = 0, $month= 0){
         $date_end = date('Y')."-".$month."-01";
         $date_start = date('Y')."-01-01";
-        $contributions = AidContribution::where('affiliate_id',$affiliate->id)->whereDate('month_year','>=',$date_start)->whereDate('month_year','<',$date_end)->orderBy('month_year')->pluck('month_year');
+        $contributions = AidContribution::where('affiliate_id',$affiliate->id)->whereDate('month_year','>=',$date_start)->whereDate('month_year','<',$date_end)->orderBy('month_year')->pluck('month_year');        
         $number = $contributions->count();
         $quotable = $amount*$number/($month-1);
                 

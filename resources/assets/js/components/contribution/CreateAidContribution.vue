@@ -224,23 +224,25 @@ export default {
           this.CalcularAporte(this.contributions[i],i);
       }              
     },
-      calculateReimbursement(){           
+      calculateReimbursement(){                       
         axios.get('/calculate_aid_reimbursement/'+this.afi_id+'/'+this.reimbursement_amount+'/'+this.reimbursement_month)
-        .then(response => {
+        .then(response => {            
             this.reimbursement_quotable = this.reimbursement_amount;// response.data.quotable;   
             var i;
             let contributions_number = parseInt(this.reimbursement_month)-1;            
             this.reimbursement_quotable = this.reimbursement_amount/contributions_number;
-            let subtotal = this.reimbursement_amount/contributions_number;            
+            let subtotal = this.reimbursement_amount/contributions_number;     
+                        
             for(i=0;i<response.data.contributions.length;i++)
             {
                 let date =moment(response.data.contributions[i],"YYYY-MM-DD");                
                 let aid_amount =  parseFloat(subtotal*this.rate.mortuary_aid/100).toFixed(2);                                
+                console.log(response.data.contributions[i]);
                 var new_info = {
                     'month_year' : date.format('MM-YYYY'),
                     'amount'    :   parseFloat(subtotal).toFixed(2),
                     'auxilio_mortuorio'   :   aid_amount,                    
-                    'subtotal'  :   parseFloat(retirement_fund_amount+quota_amount).toFixed(2),
+                    'subtotal'  :   parseFloat(aid_amount).toFixed(2),
                 };
                 this.reimbursement_pays.push(new_info);                                 
             }
@@ -266,7 +268,7 @@ export default {
             this.info_total = parseFloat(this.info_aid).toFixed(2);            
         })
         .catch(e => {            
-             console.log(--this.count);
+             console.log("error "+this.count);
         });
       },
     CalcularAporte(con, index) {

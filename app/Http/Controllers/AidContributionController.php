@@ -285,7 +285,7 @@ class AidContributionController extends Controller
                 $input_data['total'][$key]= strip_tags($request->total[$key]);
                 $array_rules = [                       
                     'rent.'.$key =>  'numeric',
-                    'dignity_rent.'.$key =>  'numeric|min:1',
+                    'dignity_rent.'.$key =>  'numeric|min:0',
                     'total.'.$key =>  'required|numeric|min:1'
                 ];
                 $rules=array_merge($rules,$array_rules);
@@ -302,7 +302,7 @@ class AidContributionController extends Controller
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
                
-                if(!isset($request->rent[$key]) || $contribution->rent == "")
+                if(!isset($request->rent[$key]) || $request->rent[$key] == "")
                     $contribution->rent = 0;
                 else
                      $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
@@ -316,12 +316,12 @@ class AidContributionController extends Controller
             } else {
                 $contribution = new AidContribution();
                 $contribution->user_id = Auth::user()->id;
-                $contribution->affiliate_id = $request->affiliate_id;
-                
-                if(!isset($request->rent[$key]) || $contribution->rent == "")
+                $contribution->affiliate_id = $request->affiliate_id;                
+                if(!isset($request->rent[$key]) || $request->rent[$key] == "") {
                     $contribution->rent = 0;
-                else 
-                    $contribution->rent = strip_tags($request->rent[$key]) ?? 0;
+                } else {
+                    $contribution->rent = strip_tags($request->rent[$key]) ?? 0;                    
+                }                    
                 $contribution->month_year = $key;
                 
                 if(!(isset($request->dignity_rent[$key])) || $contribution->dignity_rent == "")
@@ -493,7 +493,9 @@ class AidContributionController extends Controller
             if(!isset($contribution->id))
                 array_push (
                     $contributions,
-                    array('year' => $year, 'month' => $month<10?'0'.$month:$month, 'monthyear' => $year_month, 'sueldo' => 0, 'auxilio_mortuorio' => 0, 'interes' => 0,'dignity_rent' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id, 'type' => 'N')
+                    array('year' => $year, 'month' => $month<10?'0'.$month:$month, 
+                    'monthyear' =>  ($month<10?'0'.$month:$month) .'-'. $year, 
+                    'sueldo' => 0, 'auxilio_mortuorio' => 0, 'interes' => 0,'dignity_rent' => 0, 'subtotal' => 0, 'affiliate_id' => $affiliate_id, 'type' => 'N')
                 );
         }
         $contributions = array_reverse($contributions);       
