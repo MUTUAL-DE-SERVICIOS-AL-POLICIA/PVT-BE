@@ -245,7 +245,7 @@ class RetirementFundController extends Controller
         $retirement_fund->total_ret_fun = 0;
         $retirement_fund->reception_date = date('Y-m-d');
         $retirement_fund->inbox_state = true;
-        $retirement_fund->ret_fun_state_id = ID::state()->enproceso;
+        $retirement_fund->ret_fun_state_id = ID::state()->en_proceso;
         $retirement_fund->save();
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
 
