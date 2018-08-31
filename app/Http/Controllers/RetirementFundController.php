@@ -315,7 +315,7 @@ class RetirementFundController extends Controller
         $beneficiary->gender = $request->applicant_gender;
         $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
-        $beneficiary->type = "S";
+        $beneficiary->type = ID::beneficiary()->solicitante;
         $beneficiary->save();
         if($account_type == ID::retFun()->beneficiary_id && $request->ret_fun_modality != ID::retFun()->fallecimiento_id && $request->ret_fun_modality != ID::retFunGlobalPay()->fallecimiento_id )
         {
@@ -415,7 +415,7 @@ class RetirementFundController extends Controller
                 //$beneficiary->civil_status = $request->
                 //$beneficiary->phone_number = $request->;
                 //$beneficiary->cell_phone_number = $request->;
-                $beneficiary->type = "N";
+                $beneficiary->type = ID::beneficiary()->normal;
                 $beneficiary->save();
             }
         }
@@ -936,7 +936,7 @@ class RetirementFundController extends Controller
                 // $old_ben->state = $new_ben['state'];
                 // $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
                 // $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
-                $beneficiary->type = "N";
+                $beneficiary->type = ID::beneficiary()->normal;
                 $beneficiary->save();
             }
         }

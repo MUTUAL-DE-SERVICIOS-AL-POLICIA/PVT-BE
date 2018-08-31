@@ -134,4 +134,19 @@ class ID
 			];
 		return((object)$Ids);
 	}
+
+	/**
+	* Retorna el tipo de beneficiario
+	*
+	* @return un objeto de beneficiario
+	*/
+	public static function beneficiary()
+	{
+		$Ids = [
+			'solicitante'	=>	"S",
+			'normal'	=>	"N"
+			];
+		return((object)$Ids);
+	}
+
 }
