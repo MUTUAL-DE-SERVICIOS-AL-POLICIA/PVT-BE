@@ -189,6 +189,7 @@ class ContributionController extends Controller
         $voucher->total = $request->total;
         $voucher->payment_date = Carbon::now();
         $voucher->code = $code;
+        $voucher->paid_amount = $request->paid;
         $voucher->save();      
         
         $affiliate = Affiliate::find($request->afid);
