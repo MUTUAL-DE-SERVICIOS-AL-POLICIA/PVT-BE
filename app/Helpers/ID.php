@@ -32,14 +32,14 @@ class ID
 	public static function retFun()
 	{
 		$Ret_Fun = [
-			'beneficiary_id' 					=>	1,
-			'advisor_id' 							=>	2,
-			'legal_guardian_id'				=>	3,
-			'jubilacion_id'						=>	3,
-			'fallecimiento_id'				=>	4,
-			'retiro_forzoso_id'				=>	5,
+			'beneficiary_id'	=>	1,
+			'advisor_id'	=>	2,
+			'legal_guardian_id'	=>	3,
+			'jubilacion_id'	=>	3,
+			'fallecimiento_id'	=>	4,
+			'retiro_forzoso_id'	=>	5,
 			'invalidez_permanente_id'	=>	6,
-			'retiro_voluntario_id'		=>	7
+			'retiro_voluntario_id'	=>	7
 		];
 		return((object)$Ret_Fun);
 	}
@@ -68,11 +68,11 @@ class ID
 		$Ids = [
 			'titular'	=>	1,
 			'conyuge'	=>	2,
-			'hijo'		=>	3,
-			'padre'		=>	4,
-			'madre'		=>	5,
+			'hijo'	=>	3,
+			'padre'	=>	4,
+			'madre'	=>	5,
 			'hermano'	=>	6,
-			'otro'		=>	7
+			'otro'	=>	7
 		];
 		return((object)$Ids);
 	}
@@ -107,15 +107,15 @@ class ID
 	public static function affiliateState()
 	{
 		$Ids = [
-			'servicio'				=>	1,
-			'comision'				=>	2,
-			'disponib'				=>	3,
-			'fallecido'				=>	4,
-			'jubilado'				=>	5,
-			'invalidez'				=>	6,
-			'baja_forzoso'		=>	7,
+			'servicio'	=>	1,
+			'comision'	=>	2,
+			'disponib'	=>	3,
+			'fallecido'	=>	4,
+			'jubilado'	=>	5,
+			'invalidez'	=>	6,
+			'baja_forzoso'	=>	7,
 			'baja_voluntario'	=>	8,
-			'baja_temporal'		=>	9
+			'baja_temporal'	=>	9
 		];
 		return((object)$Ids);
 	}
@@ -129,8 +129,8 @@ class ID
 	{
 		$Ids = [
 			'en_proceso'	=>	1,
-			'pendiente'		=>	2,
-			'eliminado'		=>	3
+			'pendiente'	=>	2,
+			'eliminado'	=>	3
 			];
 		return((object)$Ids);
 	}
