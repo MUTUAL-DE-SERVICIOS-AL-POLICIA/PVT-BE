@@ -433,7 +433,7 @@ class RetirementFundController extends Controller
      */
     //public function show(RetirementFund $retirementFund)
     public function show($id)
-    {
+    {        
 //         $data = [
 
 //         ];
@@ -570,7 +570,7 @@ class RetirementFundController extends Controller
             select('ret_fun_submitted_documents.id','procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id','ret_fun_submitted_documents.comment','ret_fun_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
-            ->where('ret_fun_submitted_documents.retirement_fund_id',$id);
+            ->where('ret_fun_submitted_documents.retirement_fund_id',$id);       
         // return $submitted->get();
             // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/

@@ -49,17 +49,17 @@
                 this.modality = null;
             },
             onChooseModality(event){
-                const options = event.target.options;
-                const selectedOption = options[options.selectedIndex];
-                if (selectedOption) {
-                    const selectedText = selectedOption.textContent;
-                    var object={
-                        name:selectedText,
-                        id: this.modality
-                    }
-                    //this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
-                }
-                this.getRequirements();
+                // const options = event.target.options;
+                // const selectedOption = options[options.selectedIndex];
+                // if (selectedOption) {
+                //     const selectedText = selectedOption.textContent;
+                //     var object={
+                //         name:selectedText,
+                //         id: this.modality
+                //     }
+                //     //this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
+                // }
+                // this.getRequirements();
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
@@ -75,7 +75,7 @@
                         // if(this.submitted[r.number] == r.id){
                        
                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });
-                        // console.log(submit_document);
+                         //console.log(submit_document);
                         if(this.rol!=11){ //revision legal
                             if(submit_document){
                                 r['status'] = true;
@@ -120,7 +120,7 @@
                     }, {})
                 }
 
-                this.requirementList =  this.requirementList.groupBy('number')
+                this.requirementList =  this.requirementList.groupBy('number')                
                 this.getAditionalRequirements();
                 // this.requirementList = this.requirementList.reduce(function(r, v) {
                 //     r[v.number] = r[v.number] || [];
