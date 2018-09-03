@@ -77,9 +77,12 @@
                             
                             <tr>                                
                                 <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
-                                <td colspan="4"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>
-                                <!--<td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>-->
-                            </tr>                            
+                                <td colspan="4"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>                                
+                            </tr>
+                            <tr>                                
+                                <td colspan="2"><label for="total">Total Pagado:</label></td>
+                                <td colspan="4"><input type="text" v-model="paid"  data-money="true" class="form-control"></td>                                
+                            </tr>
                         </tbody>
                     </table> 
                     <!-- <table>
@@ -237,7 +240,8 @@ export default {
 
     return {
       contributions: [],
-      total:0,
+      total: 0,
+      paid: 0,
       tipo:null,
       ufv:0,
       estado: true,
@@ -493,7 +497,8 @@ export default {
             this.contributions.forEach(con => {                            
                 total1 += parseFloat(con.subtotal) ;                
            });
-        this.total = total1.toFixed(2);
+        this.paid = this.total = total1.toFixed(2);
+        
         moneyInputMaskAll();
 
       },
@@ -531,7 +536,7 @@ export default {
             }).then((result) => {    
                 if (result.value) {                    
                 var aportes = this.contributions;                    
-                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
+                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid,paid:parseMoney(this.paid)})
                 .then(response => {                  
                 this.enableDC();
                 var i;
