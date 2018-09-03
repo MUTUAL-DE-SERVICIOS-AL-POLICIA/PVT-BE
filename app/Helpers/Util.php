@@ -88,6 +88,14 @@ class Util
         }
         return null;
     }
+    public static function printMonthYear($date)
+    {
+        setlocale(LC_TIME, 'es_ES.utf8');
+        if ($date) {
+            return Carbon::parse($date)->formatLocalized('%b/%Y');
+        }
+        return null;
+    }
     public static function ucw($string)
 	{
 		if ($string) {
