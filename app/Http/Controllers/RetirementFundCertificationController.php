@@ -739,7 +739,6 @@ class RetirementFundCertificationController extends Controller
         }
         $pdftitle = "Carta de Compromiso de Fondo de Retiro";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-        //$area = Util::getRol()->name;
         $user = Auth::user();
         $date = date('d/m/Y');
         $area = WorkflowState::find(22)->first_shortened;
@@ -776,7 +775,7 @@ class RetirementFundCertificationController extends Controller
         $payment_date = Util::getStringDate($voucher->payment_date);
         $date = Util::getStringDate(date('Y-m-d'));
         $title = "RECIBO";
-        $subtitle = "FONDO DE RETIRO Y CUOTA MORTUORIA";
+        $subtitle = "FONDO DE RETIRO Y CUOTA MORTUORIA <br> (Expresado en Bolivianos)";
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
         $number = $voucher->code;
@@ -787,7 +786,7 @@ class RetirementFundCertificationController extends Controller
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);
         $util = new Util();
 
-        $area = Util::getRol()->name;
+        $area = WorkflowState::find(22)->first_shortened;
         $user = Auth::user();
         $date = date('d/m/Y');
         
@@ -830,6 +829,7 @@ class RetirementFundCertificationController extends Controller
         $affiliate = Affiliate::find($request->affiliate_id);
         $date = Util::getStringDate(date('Y-m-d'));
         $title = "PAGO DE APORTE DIRECTO";
+        $subtitle = "(Expresado en Bolivianos)";
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
         $detail = "Pago de aporte directo";
@@ -838,7 +838,7 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);        
         $util = new Util();
-        $area = Util::getRol()->name;
+        $area = WorkflowState::find(22)->first_shortened;
         $user = Auth::user();
         $date = date('d/m/Y');
         $number = 1;
@@ -851,6 +851,7 @@ class RetirementFundCertificationController extends Controller
             'date'  =>  $date,
             'username'  =>  $username,
             'title' =>  $title,            
+            'subtitle' =>  $subtitle,            
             'beneficiary'   =>  $beneficiary,
             'contributions' =>  $contributions,
             'total' =>  $total,
