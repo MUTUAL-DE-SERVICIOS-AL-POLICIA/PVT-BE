@@ -9,31 +9,7 @@
 </head>
 
 <body style="padding:0 70px 0 60px; " class="no-border">
-    <div class="page-break">
-        {{-- <table class="w-100 ">
-            <tr>
-                <th class="w-20 text-left no-padding no-margins align-middle">
-                    <div class="text-center">
-                        <img src="{{asset('images/logo.jpg')}}" class="w-100">
-                    </div>
-                </th>
-                <th class="w-60 align-top">
-                    <span class="font-semibold uppercase leading-tight text-md">
-                            MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"
-                            <br> DIRECCIÓN DE BENEFICIOS ECONÓMICOS
-                            <br> UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO
-                          </span>
-                </th>
-                <th class="w-20 no-padding no-margins align-top">
-                    <div class="text-center">
-                        <img src="{{asset('images/escudo.jpg')}}" class="w-60">
-                    </div>
-                </th>
-            </tr>
-            <tr class="no-border">
-                <td colspan="3" class="no-border" style="border-bottom: 1px solid #22292f;"></td>
-            </tr>
-        </table> --}}
+    <div class="page-break">     
         <div class="block">
             <div class="text-right">
                 <span class="block">
@@ -56,8 +32,17 @@
                 <p class="text-justify">
                     {!! $person !!}
                 </p>
-                <p class="text-justify">
-                    {{$law}}
+                <p class="text-justify">                    
+                    Conforme normativa, el trámite N° {!! $ret_fun->code !!} de la Regional {!! $ret_fun->city_start->name !!} es ingresado por Ventanilla
+                    de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio
+                    Mortuorio; verificados los requisitos y la documentación presentada por la parte solicitante
+                    según lo señalado el Art. 41 inciso a) del Reglamento de Fondo de Retiro Policial Solidario
+                    aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y
+                    modificado mediante Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017,
+                    y conforme el Art. 45 de referido Reglamento, se detalla la documentación como resultado de
+                    la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y
+                    adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro
+                    Policial, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:
                 </p>
                 <ul class="m-l-30">
                     <li class="text-justify">

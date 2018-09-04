@@ -5,12 +5,15 @@
             <div class="panel panel-primary"  :class="show_spinner ? 'sk-loading' : ''" >
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
-                    <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>
+                    <div class="text-right" v-if="contributions.length > 0">
+                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()" :disabled="! total > 0" ><i class="fa fa-print" ></i> Imprimir </button>
+                    </div>
+                    <div v-else>
+                        <button data-animation="flip" class="btn btn-primary" > </button>
                     </div>
                 </div>
 
-                <div class="panel-body" id ="print">  
+                <div class="panel-body" id ="print" v-if="contributions.length > 0">  
                     <div class="sk-folding-cube" v-show="show_spinner">
                         <div class="sk-cube1 sk-cube"></div>
                         <div class="sk-cube2 sk-cube"></div>
@@ -40,7 +43,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(con, index) in contributions" :key="index" id="form" v-bind:style="getStyleColor(index)">
+                            <tr v-for="(con, index) in contributions" :key="index" id="form" v-bind:style="getStyleColor(index)" :class="{'danger': error(con.subtotal)}">
                                 <td>
                                     <input type="text"  v-model = "con.monthyear" disabled class="form-control">
                                 </td>                                
@@ -74,9 +77,12 @@
                             
                             <tr>                                
                                 <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
-                                <td colspan="4"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>
-                                <!--<td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>-->
-                            </tr>                            
+                                <td colspan="4"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>                                
+                            </tr>
+                            <tr>                                
+                                <td colspan="2"><label for="total">Total Pagado:</label></td>
+                                <td colspan="4"><input type="text" v-model="paid"  data-money="true" class="form-control"></td>                                
+                            </tr>
                         </tbody>
                     </table> 
                     <!-- <table>
@@ -106,6 +112,13 @@
                     </table> -->
                     <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
 
+                </div>
+                <div v-else class="row">
+                    <div class="text-center">
+                        <h2>No tiene Pagos Pendientes</h2>
+                        <button v-if="reprint" @click="reprintButton()" class="btn btn-primary"> <i class="fa fa-print"></i> Reimprimir </button>
+                    </div>
+                    <br>
                 </div>
                
             </div>
@@ -229,7 +242,8 @@ export default {
 
     return {
       contributions: [],
-      total:0,
+      total: 0,
+      paid: 0,
       tipo:null,
       ufv:0,
       estado: true,
@@ -247,7 +261,8 @@ export default {
       info_amount: 0,
       info_retirement_fund : 0,
       info_quota : 0,
-      info_total : 0,      
+      info_total : 0,
+      reprint: null
     };
   },
    
@@ -280,6 +295,9 @@ export default {
   created(){    
   },
   methods: {            
+      error(value){
+          return ! value >  0;
+      },
       RemoveRow(index) {
         this.contributions.splice(index,1);
         this.SumTotal();
@@ -482,7 +500,8 @@ export default {
             this.contributions.forEach(con => {                            
                 total1 += parseFloat(con.subtotal) ;                
            });
-        this.total = total1.toFixed(2);
+        this.paid = this.total = total1.toFixed(2);
+        
         moneyInputMaskAll();
 
       },
@@ -520,7 +539,7 @@ export default {
             }).then((result) => {    
                 if (result.value) {                    
                 var aportes = this.contributions;                    
-                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
+                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid,paid:parseMoney(this.paid)})
                 .then(response => {                  
                 this.enableDC();
                 var i;
@@ -533,13 +552,15 @@ export default {
                 timer: 6000,
                 type: 'success'
                 })
-                var json_contribution= JSON.stringify(response.data.contributions);                    
+                var json_contribution= JSON.stringify(response.data.contributions);
+                this.reprint = response.data;
                 printJS({printable:
                         '/ret_fun/'+
                         response.data.affiliate_id+
                         '/print/voucher/'+
                         response.data.voucher_id + "?contributions="+json_contribution, 
                         type:'pdf', showModal:true});
+                this.contributions = [];
                 })                    
                 .catch(error => {
                 this.show_spinner = false;                                    
@@ -556,6 +577,14 @@ export default {
             })
         } 
     },
+    reprintButton(){
+        var json_contribution= JSON.stringify(this.reprint.contributions);
+        printJS({
+            printable: '/ret_fun/'+ this.reprint.affiliate_id+ '/print/voucher/'+ this.reprint.voucher_id + "?contributions="+json_contribution,
+            type:'pdf',
+            showModal:true
+        });
+    }
   },
   computed: {
       disabledSaved(){

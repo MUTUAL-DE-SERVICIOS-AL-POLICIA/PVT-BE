@@ -7,10 +7,10 @@
     </div>
     <div class="ibox-content table-responsive">
         <div class="text-right">
-            @can('update',new Muserpol\Models\Contribution\AidContribution)
-                <a href="{{route('show_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Detalle de Aportes"><i class="fa fa-eye"></i> Detalle </a>
-                <a href="{{route('edit_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edici&oacute;n de aportes"><i class="fa fa-key"></i> Editar </a>
-            @endcan
+            {{-- @can('update',new Muserpol\Models\Contribution\AidContribution) --}}
+                <a href="{{route('show_aid_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Detalle de Aportes"><i class="fa fa-eye"></i> Detalle </a>
+                <a href="{{route('edit_aid_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edici&oacute;n de aportes"><i class="fa fa-key"></i> Editar </a>
+            {{-- @endcan --}}
             <a href="{{route('direct_aid_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes Directos"><i class="fa fa-pencil"></i> Aporte Directo </a>
         </div>
         <br>

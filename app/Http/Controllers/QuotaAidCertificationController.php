@@ -17,6 +17,7 @@ use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
 use Muserpol\Models\Spouse;
 use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\Contribution\AidCommitment;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
@@ -55,19 +56,31 @@ class QuotaAidCertificationController extends Controller
         $total = $request->total;
         $total_literal = Util::convertir($total);
         $affiliate = Affiliate::find($request->affiliate_id);                                
-        $date = Util::getStringDate(date('Y-m-d'));
-        $title = "REVISAR";
+        $date = Util::getStringDate(date('Y-m-d'));        
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name." ".Auth::user()->last_name;        
+        $commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+        $title = "APORTE DIRECTO";        
+        if(isset($commitment->id)) {
+            $title .= " - ".($commitment->contributor=='T'?'Titular':'Cónyuge');
+        }
+        
         $detail = "Pago de aporte directo";
         $beneficiary = $affiliate;
         $name_beneficiary_complet = Util::fullName($beneficiary);
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);
         $util = new Util();
+        $area = Util::getRol()->name;
+        $user = Auth::user();
+        $date = date('d/m/Y');
+        $number = 1;
         return \PDF::loadView(
             'quota_aid.print.affiliate_aid_contribution', 
                 compact(
+                        'area',
+                        'user',
+                        'date',
                         'date', 
                         'username', 
                         'title', 
@@ -113,6 +126,10 @@ class QuotaAidCertificationController extends Controller
         }
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);
+
+        $area = Util::getRol()->name;
+        $user = Auth::user();
+        $date = date('d/m/Y');
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
         return \PDF::loadView('quota_aid.print.voucher_aid_contribution', 
                 compact('date', 
@@ -129,7 +146,10 @@ class QuotaAidCertificationController extends Controller
                         'descripcion', 
                         'payment_date', 
                         'total_literal', 
-                        'name_user_complet'))
+                        'name_user_complet',
+                        'area',
+                        'user',
+                        'date'))
                 ->setPaper('letter')
                 ->setOption('encoding', 'utf-8')
                 ->setOption('footer-right', 'Pagina [page] de [toPage]')
