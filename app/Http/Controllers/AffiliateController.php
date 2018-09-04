@@ -33,7 +33,7 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {                
         return view('affiliates.index');
     }
     public function getAllAffiliates(Request $request)
@@ -130,7 +130,7 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Affiliate $affiliate)
-    {
+    {                
         $this->authorize('view',$affiliate);
         $cities = City::all()->pluck('name', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
