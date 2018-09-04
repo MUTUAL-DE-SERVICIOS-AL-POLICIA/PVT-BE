@@ -180,6 +180,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
 		Route::get('affiliate/{affiliate_id}/aid/contributions', 'AidContributionController@aidContributions');
 		Route::get('get_aid_contributions/{affiliate}', 'AidContributionController@getAllContributionsAid')->name('affiliate_aid_contributions');
+		Route::get('affiliate/{affiliate_id}/get_month_contributions/{date}', 'ContributionController@getMonthContributions')->name('get_month_contributions');
 
 	// Route::get('AidContribution', function(){
 	// 	return view('aid_contribution');
