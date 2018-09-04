@@ -8210,7 +8210,7 @@ body.md-skin {
 .md-skin .nav .open > a,
 .md-skin .nav .open > a:hover,
 .md-skin .nav .open > a:focus {
-  background: #d34a66;
+  background: #d8a15f;
 }
 .md-skin .navbar-top-links li {
   display: inline-table;
@@ -8281,7 +8281,7 @@ body.md-skin {
 }
 .md-skin .navbar-fixed-top,
 .md-skin .navbar-static-top {
-  background: #d34a66 url('/images/test.png') center center no-repeat;
+  background: #d8a15f url('/images/dev.png') center center no-repeat;
 
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
