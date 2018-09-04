@@ -378,7 +378,7 @@ function rei(){
 }
 $('.editcontent').blur(function() {
     $(this).next('input').val(parseFloat($(this).html().replace(/,/g , '')));
-    if(parserFloat($(this).next('input').val()) > 0 )
+    if(parseFloat($(this).next('input').val()) > 0 )
     {
         $(this).next('input').removeAttr('disabled');
     }    
