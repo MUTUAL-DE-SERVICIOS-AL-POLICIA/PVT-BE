@@ -113,10 +113,12 @@
                     <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
 
                 </div>
-                <div v-else >
+                <div v-else class="row">
                     <div class="text-center">
                         <h2>No tiene Pagos Pendientes</h2>
+                        <button v-if="reprint" @click="reprintButton()" class="btn btn-primary"> <i class="fa fa-print"></i> Reimprimir </button>
                     </div>
+                    <br>
                 </div>
                
             </div>
@@ -259,7 +261,8 @@ export default {
       info_amount: 0,
       info_retirement_fund : 0,
       info_quota : 0,
-      info_total : 0,      
+      info_total : 0,
+      reprint: null
     };
   },
    
@@ -549,7 +552,8 @@ export default {
                 timer: 6000,
                 type: 'success'
                 })
-                var json_contribution= JSON.stringify(response.data.contributions);                    
+                var json_contribution= JSON.stringify(response.data.contributions);
+                this.reprint = response.data;
                 printJS({printable:
                         '/ret_fun/'+
                         response.data.affiliate_id+
@@ -573,6 +577,14 @@ export default {
             })
         } 
     },
+    reprintButton(){
+        var json_contribution= JSON.stringify(this.reprint.contributions);
+        printJS({
+            printable: '/ret_fun/'+ this.reprint.affiliate_id+ '/print/voucher/'+ this.reprint.voucher_id + "?contributions="+json_contribution,
+            type:'pdf',
+            showModal:true
+        });
+    }
   },
   computed: {
       disabledSaved(){
