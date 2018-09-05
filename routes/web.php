@@ -170,6 +170,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('affiliate/{affiliate}/aid_contribution/direct', 'AidContributionController@directContributions')->name('direct_aid_contribution');		
 		Route::post('store_aid_contributions', 'AidContributionController@storeContributions');
 		Route::get('affiliate/{affiliate}/aid_contribution', 'AidContributionController@show')->name('show_aid_contribution');
+		Route::get('affiliate/{affiliate}/get_contribution_debt/{number}/{date}', 'AidContributionController@getContributionDebt')->name('get_contribution_debt');
+
         //Route::get('get_affiliate_aid_contributions/{affiliate}', 'AidContributionController@getAffiliateAidContributionsDatatables')->name('affiliate_aid_contributions');
 
 
@@ -180,6 +182,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
 		Route::get('affiliate/{affiliate_id}/aid/contributions', 'AidContributionController@aidContributions');
 		Route::get('get_aid_contributions/{affiliate}', 'AidContributionController@getAllContributionsAid')->name('affiliate_aid_contributions');
+		Route::get('affiliate/{affiliate_id}/get_month_contributions/{date}', 'ContributionController@getMonthContributions')->name('get_month_contributions');
+		Route::get('get_contribution_rate/{date}', 'ContributionController@getContributionRate')->name('get_contribution_rate');
 
 	// Route::get('AidContribution', function(){
 	// 	return view('aid_contribution');

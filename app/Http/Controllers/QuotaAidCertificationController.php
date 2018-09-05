@@ -21,6 +21,7 @@ use Muserpol\Models\Contribution\AidCommitment;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
+use Muserpol\Models\Workflow\WorkflowState;
 
 class QuotaAidCertificationController extends Controller
 {
@@ -110,7 +111,7 @@ class QuotaAidCertificationController extends Controller
         $payment_date = Util::getStringDate($voucher->payment_date);
         $date = Util::getStringDate(date('Y-m-d'));
         $title = "RECIBO";
-        $subtitle = "AUXILIO MORTUORIO";
+        $subtitle = "AUXILIO MORTUORIO <br> (Expresado en Bolivianos)";
         $username = Auth::user()->username;//agregar cuando haya roles
         $name_user_complet = Auth::user()->first_name . " " . Auth::user()->last_name;
         $number = $voucher->code;
@@ -127,7 +128,7 @@ class QuotaAidCertificationController extends Controller
         $pdftitle = "Comprobante";
         $namepdf = Util::getPDFName($pdftitle, $beneficiary);
 
-        $area = Util::getRol()->name;
+        $area = WorkflowState::find(22)->first_shortened;
         $user = Auth::user();
         $date = date('d/m/Y');
         // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));

@@ -24,7 +24,11 @@
             </div>
         </div>        
         <div class = "col-md-12">
-            <aid-contribution-create :aid-contributions="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate->id }}" :rate="{{ $rate }}"></aid-contribution-create>
+            <aid-contribution-create
+            {{-- :aid-contributions="{{ json_encode($new_contributions) }}" --}}
+             :afid="{{ $affiliate->id }}" 
+             {{-- :rate="{{ $rate }}" --}}
+             ></aid-contribution-create>
         </div>
     </div>
 </div>
