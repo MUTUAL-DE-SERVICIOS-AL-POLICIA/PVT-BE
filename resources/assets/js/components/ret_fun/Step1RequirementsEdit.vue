@@ -27,7 +27,8 @@
                 my_index: 1,
                 modalitiesFilter: [],
                 ret_fun_id: 428,
-                editing:false
+                editing:false,
+                counter_aditional_document: 1000
             }
         },
         created(){
@@ -71,7 +72,12 @@
             getRequirements(){
 
                 this.requirementList = this.requirements.filter((r) => {
-                    if (r.modality_id == this.modality  && r.number != 0) {
+                    if(r.number == 0 && this.rol == 11) {
+                        r.number = r.number+this.counter_aditional_document;
+                        this.counter_aditional_document++;
+                    }
+                    if (r.modality_id == this.modality && r.number != 0) {
+                        
                         // if(this.submitted[r.number] == r.id){
                        
                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });

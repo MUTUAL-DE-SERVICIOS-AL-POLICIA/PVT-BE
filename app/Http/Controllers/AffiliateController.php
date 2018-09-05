@@ -33,7 +33,8 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {                
+    {                                        
+        //$affiliate->registration = Util::getRegistration(Util::parseBarDate($affiliate->birth_date),$affiliate->last_name,$affiliate->mothers_last_name,$affiliate->first_name,$affiliate->gender);
         return view('affiliates.index');
     }
     public function getAllAffiliates(Request $request)

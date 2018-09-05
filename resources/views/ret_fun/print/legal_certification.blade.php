@@ -27,22 +27,54 @@
         </thead>
         <tbody>
             @foreach($submitted_documents as $i=>$item)
-            <tr>
-                <td class='text-center p-5'>{{$item->procedure_requirement->number}}</td>
-                <td class='text-justify p-5'>{{$item->procedure_requirement->procedure_document->name}} </td>
-                @if ($item->is_valid)
-                <td class="text-center">
-                    <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
-                </td>
-                @else
-                <td class="text-center">
-                        <i class="mdi mdi-close-box-outline mdi-24px"></i>
-                </td>
+                @if($item->procedure_requirement->number > 0)
+                    <tr>
+                        <td class='text-center p-5'>{{$item->procedure_requirement->number}}</td>
+                        <td class='text-justify p-5'>{{$item->procedure_requirement->procedure_document->name}} </td>
+                        @if ($item->is_valid)
+                        <td class="text-center">
+                            <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
+                        </td>
+                        @else
+                        <td class="text-center">
+                                <i class="mdi mdi-close-box-outline mdi-24px"></i>
+                        </td>
+                        @endif
+                    </tr>
                 @endif
-            </tr>
             @endforeach
         </tbody>
         </table>
+        @if($submitted_documents[0]->procedure_requirement->number != 1)
+            <table class="table-info w-100 m-b-5">
+                <thead class="bg-grey-darker">
+                    <tr class="font-medium text-white text-sm">
+                        {{-- <td class="text-center p-5">N°</td> --}}
+                        <td class="text-center p-5">ADICIONALES</td>
+                        <td class="text-center p-5">V°B°</td>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    @foreach($submitted_documents as $i=>$item)
+                        @if($item->procedure_requirement->number == 0)
+                            <tr>                                
+                                <td class='text-justify p-5'>{{$item->procedure_requirement->procedure_document->name}} </td>
+                                @if ($item->is_valid)
+                                <td class="text-center">
+                                    <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
+                                </td>
+                                @else
+                                <td class="text-center">
+                                        <i class="mdi mdi-close-box-outline mdi-24px"></i>
+                                </td>
+                                @endif
+                            </tr>
+                        @endif
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+
     <p class="text-justify rounded border p-10">
         El Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de acuerdo al
         numeral 2 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, <strong>CERTIFICA</strong> que la documentación presentada
