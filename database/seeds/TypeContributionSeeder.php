@@ -27,7 +27,8 @@ class TypeContributionSeeder extends Seeder
             ['name' => 'Período Certificación Con Aporte', 'shortened' => '', 'operator'=> '+' , 'description'=> 'Periodo que se certifica con los tomos de Planillas de Haberes del Área de Archivo que registran aportes'],
             ['name' => 'Período Certificación Sin Aporte', 'shortened' => '', 'operator'=> '-' , 'description'=> 'Periodo que se certifica con los tomos de Planillas de Haberes del Área de Archivo que no registran aportes'],
             ['name' => 'Período no Trabajado', 'shortened' => '', 'operator'=> '-' , 'description'=> 'Periodos que no figuran en el CAS del Comando'],
-            ['name' => 'Disponibilidad', 'shortened' => '', 'operator'=> '-' , 'description'=> 'Periodos que el funcionario del sector activo de la Policía Boliviana estuvo en situación de disponibilidad de la letra "A" o la letra "C"']
+            ['name' => 'Disponibilidad', 'shortened' => '', 'operator'=> '-' , 'description'=> 'Periodos que el funcionario del sector activo de la Policía Boliviana estuvo en situación de disponibilidad de la letra "A" o la letra "C"'],
+            ['name' => 'Periodo pagado con anterioridad', 'shortened' => '', 'operator'=> '-' , 'description'=> 'Periodo pagado con anterioridad']
 
         ];
         foreach ($statuses as $status) {
