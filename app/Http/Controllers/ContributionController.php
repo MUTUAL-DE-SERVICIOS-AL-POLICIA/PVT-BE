@@ -106,9 +106,19 @@ class ContributionController extends Controller
         $contributions = array_reverse($contributions);
         return $contributions;
     }
-
+    public function getContributionRate($date)
+    {
+        Log::info($date);
+        $date = Carbon::parse($date)->format('Y-m');
+        $rate = ContributionRate::where('month_year',$date.'-01')->first();
+        Log::info($rate);
+        if ($rate) {
+            return $rate;
+        }
+        return null;
+    }
     public function index()
-    {        
+    {
         return 0;
     }
     /**
@@ -473,7 +483,7 @@ class ContributionController extends Controller
             'summary'   =>  $summary,
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
-            'rate'  =>  $rate,        
+            // 'rate'  =>  $rate,        
         ];
 
         return view('contribution.affiliate_direct_contributions', $data);        

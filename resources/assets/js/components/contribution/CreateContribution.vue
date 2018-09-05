@@ -20,17 +20,22 @@
                         <div class="sk-cube4 sk-cube"></div>
                         <div class="sk-cube3 sk-cube"></div>
                     </div>
-                    <div class="row col-lg-12">
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <input type="text" data-date="true" v-model="dateEnd" @keypress.enter="refresh()" class="form-control">
+                    <transition
+                     enter-active-class="animated tada"
+                     leave-active-class="animated bounceOutRight"
+                    >
+                        <div class="row col-lg-12" v-if="toggle">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="text" data-date="true" v-model="dateEnd" @keypress.enter="refresh()" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <button @click="refresh()" class="btn btn-primary"> <i class="fa fa-arrow-right"></i> Continuar</button>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <button @click="refresh()" class="btn btn-primary"> <i class="fa fa-arrow-right"></i> Continuar</button>
-                            </div>
+                            <div class="hr-line-dashed"></div>
                         </div>
-                        <div class="hr-line-dashed"></div>
-                    </div>
+                    </transition>
                     <div v-if="showContributions" class="row col-lg-12">
                         <div v-if="contributions.length > 0">
                             <div class="row" >
@@ -123,7 +128,13 @@
                                         </td>
                                     </tr>
                             </table> -->
-                            <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
+                            <div class="text-center">
+                                <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
+                            </div>
+                            <div>
+                                <input type="checkbox" id="switch" v-model="toggle" >
+                                <label for="switch" class="label-control">Opciones avanzadas</label>
+                            </div>
                         </div>
                         <div v-else class="row">
                             <div class="text-center">
@@ -249,7 +260,6 @@ export default {
         // 'contributions1',
         'afid',
         'last_quotable',
-        'rate',
         'commitment'
     ],
     data() {   
@@ -278,8 +288,9 @@ export default {
       info_total : 0,
       reprint: null,
       dateEnd: moment().format('DD/MM/YYYY'),
-      showContributions:false
-
+      showContributions:true,
+      toggle:false,
+      rate:[]
     };
   },
    
@@ -308,11 +319,11 @@ export default {
                 }
             }        
         }
-
+    this.refresh();
   },
   created(){    
   },
-  methods: {            
+  methods: {
       error(value){
           return ! value >  0;
       },
@@ -330,7 +341,13 @@ export default {
               this.contributions = response.data
           }).catch(error =>{
               console.log(error)
-          })
+          });
+          axios.get(`/get_contribution_rate/${moment(this.dateEnd, 'DD/MM/YYYY').format('YYYY-MM-DD')}`)
+          .then(response =>{
+              this.rate = response.data
+          }).catch(error =>{
+              console.log(error)
+          });
             setTimeout(() => {
                 moneyInputMaskAll();
                 dateInputMaskAll();

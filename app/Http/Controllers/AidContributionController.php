@@ -179,6 +179,7 @@ class AidContributionController extends Controller
         // }        
         $contributions = AidContribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();        
         //$last_contribution = AidContribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();
+
         $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();        
 
         $summary = array(
@@ -189,13 +190,13 @@ class AidContributionController extends Controller
         );
 
         $data = [
-            'new_contributions' => $this->getContributionDebt($affiliate->id,4),            
+            // 'new_contributions' => $this->getContributionDebt($affiliate->id,4),            
             'commitment'    =>  $commitment,
             'affiliate' =>  $affiliate,
             'summary'   =>  $summary,
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
-            'rate'  =>  $rate,
+            // 'rate'  =>  $rate,
             'type'  =>  'N'
         ];        
         return view('contribution.affiliate_direct_aid_contribution', $data);        
@@ -478,10 +479,10 @@ class AidContributionController extends Controller
         return $data;
     }
    
-    private function getContributionDebt($affiliate_id,$number){        
+    public function getContributionDebt($affiliate_id,$number, $date){        
         $contributions = [];
-        $month = date('m');
-        $year = date('Y');
+        $month = Carbon::parse($date)->month;
+        $year = Carbon::parse($date)->year;
         while ($number--) {
             $month--;
             if ($month == 0) {
