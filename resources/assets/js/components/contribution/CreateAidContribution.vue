@@ -499,6 +499,7 @@ export default {
                   type: "pdf",
                   showModal: true
                 });
+                this.contributions = [];
             }).catch(error => {              
               console.log('with error message');
               
