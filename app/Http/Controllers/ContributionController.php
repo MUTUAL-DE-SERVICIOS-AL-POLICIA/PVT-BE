@@ -43,9 +43,9 @@ class ContributionController extends Controller
         $contribution_rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')
                                                 ->first();                                                       
         $c_start_date =  Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2);        
-        $c_end_date = Carbon::parse(Carbon::now()->toDateString());        
+        $c_end_date = Carbon::parse(Util::parseBarDate($request->dateEnd));        
         $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
-        $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
+        $dateEnd = $request->dateEnd;
        $mount = ($contribution_rate['retirement_fund']+$contribution_rate['mortuary_quota'])/100*$request->con['sueldo'];
        
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
@@ -71,8 +71,9 @@ class ContributionController extends Controller
             return $foo;
         }
     }
-    private function getMonthContributions($id){    
-        $today = date('Y-m-d');//'2018-05-01';//date('Y-m-d');
+    public function getMonthContributions($id, $date){    
+        // $today = date('Y-m-d');//'2018-05-01';//date('Y-m-d');
+        $today = $date;//'2018-05-01';//date('Y-m-d');
         Carbon::useMonthsOverflow(false);        
         $start_date = Carbon::parse($today);
         $start_date->subMonth(); //contributions are paid when month finishes                        
@@ -466,7 +467,7 @@ class ContributionController extends Controller
         ); 
         
         $data = [
-            'new_contributions' => $this->getMonthContributions($affiliate->id),            
+            // 'new_contributions' => $this->getMonthContributions($affiliate->id),            
             'commitment'    =>  $commitment,
             'affiliate' =>  $affiliate,
             'summary'   =>  $summary,
