@@ -82,16 +82,21 @@
                 
             @endif
         @endforeach
-        <tr>
-            <td colspan="7" class="text-center">TOTAL:</td>
-            <td class="text-center uppercase font-bold px-5 py-3" >{{ $total }}</td>   
-        </tr>  
     </tbody>
 </table>
 <br>
+@if($retirement_fund->contribution_types()->where('contribution_type_id', 2)->first())
+    <div>
+        <strong>Nota:</strong>
+        <div class="text-justify">
+            {{ $retirement_fund->contribution_types()->where('contribution_type_id', 2)->first()->pivot->message }}
+        </div>
+    </div>
+@endif
 
 <div align="right">
     {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
 </div>
+@include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch
 @endsection

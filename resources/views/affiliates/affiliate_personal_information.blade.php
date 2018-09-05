@@ -16,7 +16,7 @@
                         {{-- left --}}
                         <div class="col-md-6">
                             <div class="row m-b-md" :class="{ 'has-error': errors.has('identity_card') && editing }">
-                                <div class="col-md-4"><label class="control-label">Cedula de identidad:</label></div>
+                                <div class="col-md-4"><label class="control-label">Cédula de identidad:</label></div>
                                 <div class="col-md-8"><input name="identity_card" type="text" v-model="form.identity_card" class="form-control" :disabled="!editing" v-validate.initial="'required'">
                                     <div v-show="errors.has('identity_card') && editing">
                                         <i class="fa fa-warning text-danger"></i>
@@ -130,7 +130,7 @@
                                 </div>
                             </div>
                             <div class="row m-b-md">
-                                <div class="col-md-3"><label class="control-label">Telefono:</label></div>
+                                <div class="col-md-3"><label class="control-label">Teléfono:</label></div>
                                 <div class="col-md-9">
                                     <div class="col-md-2">
                                         <button v-if="editing" class="btn btn-success" type="button" @click="addPhoneNumber"><i class="fa fa-plus"></i></button>
@@ -190,12 +190,15 @@
                     <div class="row" v-show="editing">
                         <div class="text-center">
                             <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
-                            <button class="btn btn-primary" type="button" @click="update" :disabled="validAll"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+                            <button class="ladda-button ladda-button-demo btn btn-primary" type="button" @click="update" :disabled="validAll || loadingButton" data-style="expand-left">
+                                <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
+                                <i v-else class="fa fa-check-circle"></i>
+                                &nbsp;
+                                @{{ loadingButton ? 'Guardando...' : 'Guardar' }}
+                            </button>
                         </div>
                     </div>
                     <br>
         </div>
     </div>
-
-
 </div>

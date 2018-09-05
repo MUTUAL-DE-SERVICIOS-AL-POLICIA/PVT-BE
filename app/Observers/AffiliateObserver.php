@@ -88,7 +88,7 @@ class AffiliateObserver
 
         if($affiliate->phone_number != $old->phone_number)
         {
-            $message = $message . ' némero de teléfono '.$old->phone_number.' a '.$affiliate->phone_number.', ';
+            $message = $message . ' número de teléfono '.$old->phone_number.' a '.$affiliate->phone_number.', ';
 
         }
 
@@ -100,7 +100,7 @@ class AffiliateObserver
 
         if($affiliate->affiliate_state_id != $old->affiliate_state_id)
         {
-            $message = $message . ' estado '.$old->affiliate_state->name ?? 'Sin Estado'.' a '.$affiliate->affiliate_state->name ?? 'Sin Estado'.', ';
+            $message = $message . ' estado '.($old->affiliate_state->name ?? 'Sin Estado').' a '.($affiliate->affiliate_state->name ?? 'Sin Estado').', ';
 
         }
 
@@ -112,7 +112,7 @@ class AffiliateObserver
 
         if($affiliate->category_id != $old->category_id)
         {
-            $message = $message . ' categoría '.$old->category->name.' a '.$affiliate->category->name.', ';
+            $message = $message . ' categoría '.($old->category->name ?? 'sin categoría' ).' a '.($affiliate->category->name ?? 'sin categoría' ).', ';
 
         }
 
@@ -139,14 +139,15 @@ class AffiliateObserver
             $message = $message . ' número de ítem '.$old->item.' a '.$affiliate->item.', ';
         }
 
-        $message = $message . ' ';
-
         Log::info('updating');
-        $affiliate_record = new AffiliateRecord;
-        $affiliate_record->user_id = Auth::user()->id;
-        $affiliate_record->affiliate_id = $affiliate->id;
-        $affiliate_record->message = $message;
-        $affiliate_record->save();
+        if ('El usuario ' . Auth::user()->username . ' modificó ' != $message) {
+            $message = $message . ' ';
+            $affiliate_record = new AffiliateRecord;
+            $affiliate_record->user_id = Auth::user()->id;
+            $affiliate_record->affiliate_id = $affiliate->id;
+            $affiliate_record->message = $message;
+            $affiliate_record->save();
+        }
     }
 
 }

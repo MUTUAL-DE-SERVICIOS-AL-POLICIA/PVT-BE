@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from 'vuex';
-import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll, dateInputMask }  from "../../helper.js";
+import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll, dateInputMask, dateInputMaskAll }  from "../../helper.js";
 export default {
   props:[
     'cities',
@@ -46,7 +46,7 @@ export default {
       applicant_type: null,
       show_advisor_form: false,
       show_apoderado_form: false,
-      applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
+      applicant_types:[{name:'Beneficiario', id:1}, {name:'Tutor', id:2}, {name:'Apoderado', id:3}],
       date_derelict: this.affiliate.date_derelict,
 
       error:{
@@ -62,6 +62,7 @@ export default {
     this.addCellPhoneNumber();
     monthYearInputMaskAll();
     dateInputMask();
+    dateInputMaskAll();
   },
   computed:{
     ...mapGetters('retFunForm',{
@@ -73,6 +74,14 @@ export default {
     kinshipsFilter(){
       return this.kinships.filter((k) => {
         return !(this.retFun.modality_id == 4 && k.id == 1);
+      })
+    },
+    applicant_types_filter(){
+      if (this.retFun.modality_id == 4 || this.retFun.modality_id == 1) {
+        return this.applicant_types;
+      }
+      return this.applicant_types.filter(item=>{
+            return item.id  != 2;
       })
     }
   },

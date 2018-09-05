@@ -70,7 +70,7 @@ Vue.use(VeeValidate, {
           required: "Debe seleccionar el parentesco del solicitante."
         },
         identity_card: {
-          required: "Debe ingresar la Cedula de identidad."
+          required: "Debe ingresar la Cédula de identidad."
         },
         city_identity_card_id: {
           required: "Debe seleccionar la ciudad de expedición."
@@ -171,6 +171,9 @@ Vue.filter('formatDateInbox', function (value) {
 Vue.filter('uppercase', function (value) {
   return value.toUpperCase();
 });
+Vue.filter('monthYear', function (value) {
+  return moment(value).format("MM/Y");
+});
 
 //vue mask hdp
 import VueTheMask from 'vue-the-mask'
@@ -257,6 +260,8 @@ Vue.component('quota-aid-step3-beneficiaries', require('./components/quota_aid/S
 Vue.component('quota-aid-beneficiary-list', require('./components/quota_aid/BeneficiaryList.vue'));
 Vue.component('quota-aid-beneficiary', require('./components/quota_aid/Beneficiary.vue'));
 Vue.component('quota-aid-info', require('./components/quota_aid/Info.vue'));
+Vue.component('quota-aid-beneficiaries-show', require('./components/quota_aid/ShowBeneficiaries.vue'));
+Vue.component('quota-aid-step1-requirements-edit', require('./components/quota_aid/Step1RequirementsEdit.vue'));
 //user
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
 //permission
@@ -266,6 +271,7 @@ Vue.component('nom-module', require('./components/permission/NomModule.vue'));
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
 Vue.component('contribution-select', require('./components/contribution/SelectContributions.vue'));
+Vue.component('buttons-print-contributions', require('./components/contribution/ButtonsPrintContributions.vue'));
 
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));

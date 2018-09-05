@@ -5,109 +5,146 @@
             <div class="panel panel-primary"  :class="show_spinner ? 'sk-loading' : ''" >
                 <div class="panel-heading">
                     <h3 class="pull-left">Pago de Aportes</h3>
-                    <div class="text-right">
-                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()"><i class="fa fa-print" ></i> </button>
+                    <div class="text-right" v-if="contributions.length > 0">
+                        <button data-animation="flip" class="btn btn-primary" @click="PrintQuote()" :disabled="! total > 0" ><i class="fa fa-print" ></i> Imprimir </button>
+                    </div>
+                    <div v-else>
+                        <button data-animation="flip" class="btn btn-primary" > </button>
                     </div>
                 </div>
 
-                <div class="panel-body" id ="print">  
+                <div class="panel-body" id ="print" >  
                     <div class="sk-folding-cube" v-show="show_spinner">
                         <div class="sk-cube1 sk-cube"></div>
                         <div class="sk-cube2 sk-cube"></div>
                         <div class="sk-cube4 sk-cube"></div>
                         <div class="sk-cube3 sk-cube"></div>
                     </div>
-                    <div class="row" >
-                        <div class="col-md-3" >                            
-                            <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_salary">
-                        </div>                    
-                        <div class="col-md-3" >
-                            <button class="btn btn-primary " type="button" @click="repeatSalary()"><i class="fa fa-money"></i>&nbsp;Repetir Sueldo</button>
+                    <transition
+                     enter-active-class="animated tada"
+                     leave-active-class="animated bounceOutRight"
+                    >
+                        <div class="row col-lg-12" v-if="toggle">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="text" data-date="true" v-model="dateEnd" @keypress.enter="refresh()" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <button @click="refresh()" class="btn btn-primary"> <i class="fa fa-arrow-right"></i> Continuar</button>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                        </div>
+                    </transition>
+                    <div v-if="showContributions" class="row col-lg-12">
+                        <div v-if="contributions.length > 0">
+                            <div class="row" >
+                                <div class="col-md-3" >                            
+                                    <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_salary">
+                                </div>                    
+                                <div class="col-md-3" >
+                                    <button class="btn btn-primary " type="button" @click="repeatSalary()"><i class="fa fa-money"></i>&nbsp;Repetir Sueldo</button>
+                                </div>
+                            </div>
+                            <hr>
+                            <table class="table table-striped" data-page-size="15">
+                                <thead>
+                                <tr>
+                                    <th class="footable-visible footable-first-column footable-sortable">Mes/Año<span class="footable-sort-indicator"></span></th>
+                                    <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado Bs.<span class="footable-sort-indicator"></span></th>
+                                    <th data-hide="phone" class="footable-visible footable-sortable">Tipo de cambio.<span class="footable-sort-indicator"></span></th>
+                                    <th data-hide="phone" class="footable-visible footable-sortable">F.R.P. (4.77 %)<span class="footable-sort-indicator"></span></th>
+                                    <th data-hide="phone" class="footable-visible footable-sortable">Cuota Mortuoria (1.09 %)<span class="footable-sort-indicator"></span></th>
+                                    <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV Bs.<span class="footable-sort-indicator"></span></th>
+                                    <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte<span class="footable-sort-indicator"></span></th>
+                                    <th>Opciones</th>                                    
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(con, index) in contributions" :key="index" id="form" v-bind:style="getStyleColor(index)" :class="{'danger': error(con.subtotal)}">
+                                        <td>
+                                            <input type="text"  v-model = "con.monthyear" disabled class="form-control">
+                                        </td>                                
+                                        <td>
+                                            <input type="text" v-model = "con.sueldo" data-money="true" @keyup.enter="CalcularAporte(con, index)"  ref="s1"  class="form-control" >
+                                        </td>
+                                        <td>
+                                            <input type="text"  v-model = "con.fr" data-money='true' disabled class="form-control">
+                                        </td>
+                                        <td>
+                                            <input type="text"  v-model = "con.fr" data-money='true' disabled class="form-control">
+                                        </td>
+                                        <td>
+                                            <input type="text" v-model = "con.cm" data-money="true" disabled class="form-control">
+                                        </td>
+                                        <td>
+                                            <input type="text" v-model = "con.interes" disabled data-money="true" class="form-control">
+                                        </td>
+                                        <td>
+                                            <input type="text"  v-model = "con.subtotal" data-money="true" disabled class="form-control">
+                                        </td>
+                                        <td class="row">                                    
+                                            <div class="col-md-6">
+                                                <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>                                    
+                                            </div>
+                                            <div class="col-md-6" v-if="con.sueldo>0 && con.type!='R'">
+                                                <button class="btn btn-warning btn-circle" @click="createReimbursement(con.month)" type="button"><i class=""></i> R </button>
+                                            </div>
+                                        </td>                                                                
+                                    </tr>
+                                    
+                                    <tr>                                
+                                        <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
+                                        <td colspan="4"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>                                
+                                    </tr>
+                                    <tr>                                
+                                        <td colspan="2"><label for="total">Total Pagado:</label></td>
+                                        <td colspan="4"><input type="text" v-model="paid"  data-money="true" class="form-control"></td>                                
+                                    </tr>
+                                </tbody>
+                            </table> 
+                            <!-- <table>
+                                <tr style="" v-for="(reim, index) in reimbursements" :key="index" id="reimbursement_form">                                
+                                            <td>                                    
+                                            <input type="text"  v-model = "reim.month_year" disabled class="form-control">
+                                        </td>
+                                        <td>
+                                            <input type="text" v-model = "reim.amount" data-money="true" class="form-control" >
+                                        </td>
+                                        <td>
+                                            <input type="text"  v-model = "reim.retirement_fund" data-money='true' disabled class="form-control">
+                                        </td>
+                                        <td>
+                                            <input type="text" v-model = "reim.quota" data-money="true" disabled class="form-control">
+                                        </td>
+                                        <td>
+                                            <input type="text" v-model = "reim.interest" disabled data-money="true" class="form-control">
+                                        </td>
+                                        <td>
+                                            <input type="text"  v-model = "reim.subtotal" data-money="true" disabled class="form-control">
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button> 
+                                        </td>
+                                    </tr>
+                            </table> -->
+                            <div class="text-center">
+                                <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
+                            </div>
+                            <div>
+                                <input type="checkbox" id="switch" v-model="toggle" >
+                                <label for="switch" class="label-control">Opciones avanzadas</label>
+                            </div>
+                        </div>
+                        <div v-else class="row">
+                            <div class="text-center">
+                                <h2>No tiene Pagos Pendientes</h2>
+                                <button v-if="reprint" @click="reprintButton()" class="btn btn-primary"> <i class="fa fa-print"></i> Reimprimir </button>
+                            </div>
+                            <br>
                         </div>
                     </div>
-                    <hr>
-                    <table class="table table-striped" data-page-size="15">
-                        <thead>
-                        <tr>
-                            <th class="footable-visible footable-first-column footable-sortable">Mes/Año<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Total Ganado Bs.<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Tipo de cambio.<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">F.R.P. (4.77 %)<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Cuota Mortuoria (1.09 %)<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV Bs.<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte<span class="footable-sort-indicator"></span></th>
-                            <th>Opciones</th>                                    
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(con, index) in contributions" :key="index" id="form" v-bind:style="getStyleColor(index)">
-                                <td>
-                                    <input type="text"  v-model = "con.monthyear" disabled class="form-control">
-                                </td>                                
-                                <td>
-                                    <input type="text" v-model = "con.sueldo" data-money="true" @keyup.enter="CalcularAporte(con, index)"  ref="s1"  class="form-control" >
-                                </td>
-                                <td>
-                                    <input type="text"  v-model = "con.fr" data-money='true' disabled class="form-control">
-                                </td>
-                                <td>
-                                    <input type="text"  v-model = "con.fr" data-money='true' disabled class="form-control">
-                                </td>
-                                <td>
-                                    <input type="text" v-model = "con.cm" data-money="true" disabled class="form-control">
-                                </td>
-                                <td>
-                                    <input type="text" v-model = "con.interes" disabled data-money="true" class="form-control">
-                                </td>
-                                <td>
-                                    <input type="text"  v-model = "con.subtotal" data-money="true" disabled class="form-control">
-                                </td>
-                                <td class="row">                                    
-                                    <div class="col-md-6">
-                                        <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>                                    
-                                    </div>
-                                    <div class="col-md-6" v-if="con.sueldo>0 && con.type!='R'">
-                                        <button class="btn btn-warning btn-circle" @click="createReimbursement(con.month)" type="button"><i class=""></i> R </button>
-                                    </div>
-                                </td>                                                                
-                            </tr>
-                            
-                            <tr>                                
-                                <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes:</label></td>
-                                <td colspan="4"><input type="text" v-model="total" data-money="true" disabled class="form-control"></td>
-                                <!--<td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>-->
-                            </tr>                            
-                        </tbody>
-                    </table> 
-                    <!-- <table>
-                        <tr style="" v-for="(reim, index) in reimbursements" :key="index" id="reimbursement_form">                                
-                                 <td>                                    
-                                    <input type="text"  v-model = "reim.month_year" disabled class="form-control">
-                                </td>
-                                <td>
-                                    <input type="text" v-model = "reim.amount" data-money="true" class="form-control" >
-                                </td>
-                                <td>
-                                    <input type="text"  v-model = "reim.retirement_fund" data-money='true' disabled class="form-control">
-                                </td>
-                                <td>
-                                    <input type="text" v-model = "reim.quota" data-money="true" disabled class="form-control">
-                                </td>
-                                <td>
-                                    <input type="text" v-model = "reim.interest" disabled data-money="true" class="form-control">
-                                </td>
-                                <td>
-                                    <input type="text"  v-model = "reim.subtotal" data-money="true" disabled class="form-control">
-                                </td>
-                                <td>
-                                    <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button> 
-                                </td>
-                            </tr>
-                    </table> -->
-                    <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
-
                 </div>
-               
             </div>
         </div>
     </div>
@@ -213,23 +250,24 @@ import {
         dateInputMask,
         moneyInputMask,
         parseMoney,
-        moneyInputMaskAll
+        moneyInputMaskAll,
+        dateInputMaskAll
     }
     from "../../helper.js";
 export default {
     
     props: [
-        'contributions1',
+        // 'contributions1',
         'afid',
         'last_quotable',
-        'rate',
         'commitment'
     ],
     data() {   
 
     return {
       contributions: [],
-      total:0,
+      total: 0,
+      paid: 0,
       tipo:null,
       ufv:0,
       estado: true,
@@ -247,15 +285,21 @@ export default {
       info_amount: 0,
       info_retirement_fund : 0,
       info_quota : 0,
-      info_total : 0,      
+      info_total : 0,
+      reprint: null,
+      dateEnd: moment().format('DD/MM/YYYY'),
+      showContributions:true,
+      toggle:false,
+      rate:[]
     };
   },
    
   mounted() {
-    this.contributions = this.contributions1;  
+    // this.contributions = this.contributions1;  
     this.afi_id = this.afid;    
     window.addEventListener("load", function(event) {
         moneyInputMaskAll();
+        dateInputMaskAll();
     });
     if(this.commitment.id == 0){
           this.tipo=null;
@@ -275,11 +319,14 @@ export default {
                 }
             }        
         }
-
+    this.refresh();
   },
   created(){    
   },
-  methods: {            
+  methods: {
+      error(value){
+          return ! value >  0;
+      },
       RemoveRow(index) {
         this.contributions.splice(index,1);
         this.SumTotal();
@@ -288,8 +335,25 @@ export default {
           if(this.contributions[index].type == 'R')
             return "background-color:#ffe6b3";
       },
-      Refresh() {
-        this.contributions = this.contributions1;
+      refresh() {
+          axios.get(`/affiliate/${this.afid}/get_month_contributions/${moment(this.dateEnd, 'DD/MM/YYYY').format('YYYY-MM-DD')}`)
+          .then(response =>{
+              this.contributions = response.data
+          }).catch(error =>{
+              console.log(error)
+          });
+          axios.get(`/get_contribution_rate/${moment(this.dateEnd, 'DD/MM/YYYY').format('YYYY-MM-DD')}`)
+          .then(response =>{
+              this.rate = response.data
+          }).catch(error =>{
+              console.log(error)
+          });
+            setTimeout(() => {
+                moneyInputMaskAll();
+                dateInputMaskAll();
+            }, 300);
+        this.showContributions =  true;
+        // this.contributions = this.contributions1;
       },
       repeatSalary(){
         var i;           
@@ -376,7 +440,7 @@ export default {
             }
             else
             {                
-            axios.post('/get-interest',{con})
+            axios.post('/get-interest',{con, dateEnd:this.dateEnd})
             .then(response => {                
                 this.ufv = response.data.replace(',','.');                
                 con.interes = parseFloat(this.ufv);
@@ -482,7 +546,8 @@ export default {
             this.contributions.forEach(con => {                            
                 total1 += parseFloat(con.subtotal) ;                
            });
-        this.total = total1.toFixed(2);
+        this.paid = this.total = total1.toFixed(2);
+        
         moneyInputMaskAll();
 
       },
@@ -520,7 +585,7 @@ export default {
             }).then((result) => {    
                 if (result.value) {                    
                 var aportes = this.contributions;                    
-                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid})
+                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid,paid:parseMoney(this.paid)})
                 .then(response => {                  
                 this.enableDC();
                 var i;
@@ -533,13 +598,15 @@ export default {
                 timer: 6000,
                 type: 'success'
                 })
-                var json_contribution= JSON.stringify(response.data.contributions);                    
+                var json_contribution= JSON.stringify(response.data.contributions);
+                this.reprint = response.data;
                 printJS({printable:
                         '/ret_fun/'+
                         response.data.affiliate_id+
                         '/print/voucher/'+
                         response.data.voucher_id + "?contributions="+json_contribution, 
                         type:'pdf', showModal:true});
+                this.contributions = [];
                 })                    
                 .catch(error => {
                 this.show_spinner = false;                                    
@@ -556,6 +623,14 @@ export default {
             })
         } 
     },
+    reprintButton(){
+        var json_contribution= JSON.stringify(this.reprint.contributions);
+        printJS({
+            printable: '/ret_fun/'+ this.reprint.affiliate_id+ '/print/voucher/'+ this.reprint.voucher_id + "?contributions="+json_contribution,
+            type:'pdf',
+            showModal:true
+        });
+    }
   },
   computed: {
       disabledSaved(){

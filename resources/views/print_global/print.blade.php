@@ -72,7 +72,7 @@
             <td colspan="3" class="font-bold text-center text-xl uppercase">
                 {{ $title }}
                 @if (isset($subtitle))
-                <br><span class="font-medium">{{ $subtitle ?? '' }}</span>
+                <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span>
                 @endif
             </td>
         </tr>

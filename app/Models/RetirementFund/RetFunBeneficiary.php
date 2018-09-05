@@ -5,10 +5,18 @@ namespace Muserpol\Models\RetirementFund;
 use Illuminate\Database\Eloquent\Model;
 use Muserpol\Helpers\Util;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class RetFunBeneficiary extends Model
 {
     use SoftDeletes;
+    public function getBirthDateAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     public function kinship()
     {
         return $this->belongsTo('Muserpol\Models\Kinship');
@@ -27,6 +35,10 @@ class RetFunBeneficiary extends Model
     public function ret_fun_advisors()
     {
         return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunAdvisor','ret_fun_advisor_beneficiary','ret_fun_beneficiary_id','ret_fun_advisor_id');
+    }
+    public function legal_guardian()
+    {
+        return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunLegalGuardian', 'ret_fun_legal_guardian_beneficiary', 'ret_fun_beneficiary_id', 'ret_fun_legal_guardian_id');
     }
     public function address()
     {
@@ -53,9 +65,11 @@ class RetFunBeneficiary extends Model
     }
     public function getAddress()
     {
-        $address= $this->address[0];
-        if (isset($address->id)) {
-            return 'Calle '.$address->street.' Nº '.$address->number_address . ' '.$address->zone;
+        if ($this->address()->count()) {
+            $address= $this->address()->first();
+            if (isset($address->id)) {
+                return 'Calle '.$address->street.' Nº '.$address->number_address . ' '.$address->zone;
+            }
         }
         return 'Sin dirección';
     }

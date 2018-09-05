@@ -40,7 +40,12 @@
   text-align: center;
   font-weight: bold;
 }
-
+.chosen-container .chosen-drop {
+    border-bottom: 0;
+    border-top: 1px solid #aaa;
+    top: auto;
+    bottom: 40px;
+}
 .progressbar{
   counter-reset: step;
 }
@@ -125,9 +130,9 @@
             </a>
             @endcan
             @can('qualify', $retirement_fund)
-            <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
-                <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
-            </a>
+                <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
+                    <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
+                </a>
             @endcan
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
@@ -190,7 +195,7 @@
                         <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado ">
                         <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $retirement_fund->affiliate->fullNameWithDegree() }}</a>
                         </h2>
-                            <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cedula de Identidad"><strong>{{  $retirement_fund->affiliate->ciWithExt() }}</strong></h3>
+                            <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $retirement_fund->affiliate->ciWithExt() }}</strong></h3>
                             <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $retirement_fund->affiliate->registration }}</strong></h4>
                         </div>
                     </div>
@@ -238,13 +243,12 @@
                             </div>
                             <div id="tab-summited-document" class="tab-pane">
 
-                                    @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                        {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}
-                            <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}"
-                                            inline-template>
-                                            @include('ret_fun.step1_requirements_edit')
-                                        </ret-fun-step1-requirements-edit>
-                                    @endcan
+                                @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
+                                        {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}                                        
+                                    <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
+                                        @include('ret_fun.step1_requirements_edit')
+                                    </ret-fun-step1-requirements-edit>
+                                @endcan
 
                             </div>
 

@@ -83,6 +83,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('ret_fun/{ret_fun_id}/save_percentages_availability', 'RetirementFundController@savePercentagesAvailability')->name('save_percentages_availability');
 		Route::patch('ret_fun/{ret_fun_id}/save_total_ret_fun_availability', 'RetirementFundController@saveTotalRetFunAvailability')->name('save_total_ret_fun_availability');
 		Route::get('get_data_certification/{ret_fun_id}', 'RetirementFundController@getDataQualificationCertification')->name('get_data_certification');
+		Route::get('get_data_availability/{ret_fun_id}', 'RetirementFundController@getDataQualificationAvailability')->name('get_data_availability');
 		Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 		Route::resource('ret_fun_observation','RetirementFundObservationController');
 		Route::post('ret_fun/{ret_fun_id}/edit_requirements', 'RetirementFundController@editRequirements')->name('edit_requirements');
@@ -103,6 +104,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/print/legal_dictum', 'RetirementFundCertificationController@printLegalDictum')->name('ret_fun_print_legal_dictum');
 		Route::get('ret_fun/{retirement_fund}/print/headship_review', 'RetirementFundCertificationController@printHeadshipReview')->name('ret_fun_print_headship_review');
 		Route::get('ret_fun/{retirement_fund}/print/legal_resolution', 'RetirementFundCertificationController@printLegalResolution')->name('ret_fun_print_legal_resolution');
+		Route::post('ret_fun/{retirement_fund}/save_message', 'RetirementFundController@saveMessageContributionType')->name('save_message_contribution_type');
 
 	//Quota Aid Certification
 		Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
@@ -130,10 +132,13 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
 		Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
 		Route::resource('quota_aid', 'QuotaAidMortuaryController');
+		Route::post('quota_aid/{quota_aid_id}/edit_requirements', 'QuotaAidMortuaryController@editRequirements')->name('edit_quota_aid_requirements');
 
 		Route::resource('affiliate_folder', 'AffiliateFolderController');
 		Route::post('editFolder', 'AffiliateFolderController@editFolder')->name('editFolder');
 		Route::post('deleteFolder', 'AffiliateFolderController@destroy')->name('deleteFolder');
+		Route::post('updateFileCode', 'AffiliateFolderController@updateFileCode')->name('updateFileCode');
+		
         //searcherController
 		Route::get('search/{ci}', 'SearcherController@search');
 		Route::get('search_ajax', 'SearcherController@searchAjax');
@@ -165,6 +170,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('affiliate/{affiliate}/aid_contribution/direct', 'AidContributionController@directContributions')->name('direct_aid_contribution');		
 		Route::post('store_aid_contributions', 'AidContributionController@storeContributions');
 		Route::get('affiliate/{affiliate}/aid_contribution', 'AidContributionController@show')->name('show_aid_contribution');
+		Route::get('affiliate/{affiliate}/get_contribution_debt/{number}/{date}', 'AidContributionController@getContributionDebt')->name('get_contribution_debt');
+
         //Route::get('get_affiliate_aid_contributions/{affiliate}', 'AidContributionController@getAffiliateAidContributionsDatatables')->name('affiliate_aid_contributions');
 
 
@@ -175,6 +182,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
 		Route::get('affiliate/{affiliate_id}/aid/contributions', 'AidContributionController@aidContributions');
 		Route::get('get_aid_contributions/{affiliate}', 'AidContributionController@getAllContributionsAid')->name('affiliate_aid_contributions');
+		Route::get('affiliate/{affiliate_id}/get_month_contributions/{date}', 'ContributionController@getMonthContributions')->name('get_month_contributions');
+		Route::get('get_contribution_rate/{date}', 'ContributionController@getContributionRate')->name('get_contribution_rate');
 
 	// Route::get('AidContribution', function(){
 	// 	return view('aid_contribution');
@@ -197,6 +206,7 @@ Route::group(['middleware' => ['auth']], function () {
         //Commitments
 		Route::resource('commitment', 'ContributionCommitmentController');
 		Route::resource('aid_commitment', 'AidCommitmentController');
+		Route::get('calculate_aid_reimbursement/{affiliate}/{amount}/{month}','AidReimbursementController@caculateContribution');
 
 
 		//inbox
@@ -215,7 +225,66 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/dictamen_legal', 'RetirementFundController@dictamenLegal')->name('ret_fun_dictamen_legal');		
 
 		//helpers route
+		Route::get('legal_opinion', function (Request $request)  {
+			$ret_fun = RetirementFund::find(3);
+			$affiliate = $ret_fun->affiliate;
+			$args = array(
+				'ret_fun' => RetirementFund::find(3),
+				'affiliate' => $affiliate,
+				'has_poder' => true,
+				'poder_number' => '151/2017',
+				'poder_date' => Util::getStringDate('2014-11-06'),
+				'poder_full_name' => "uihsakdas",
+				'poder_ci_ext' => "65284 UI",
+				'file_code' => "15/2018",
+				'file_date' => Util::getStringDate('2018-10-10'),
+				'has_file' => false,
+				'admin_fin_cite' => '5151/21212',
+				'admin_fin_date' => Util::getStringDate('2018-1-10'),
+				'has_admin_file' => true,
+				'admin_fin_amount' => '5,152.58',
+				'legal_code' => '125/505',
+				'legal_date' => Util::getStringDate('2018-1-10'),
+				'aportes_code' => '5121/1055',
+				'aportes_date' => Util::getStringDate('2018-1-10'),
+				'number_contributions' => RetFunProcedure::current()->number_contributions,
+				'availability_code' => '215/5018',
+				'availability_date' => Util::getStringDate('2018-1-10'),
+				'availability_number_contributions' => 15,
+				'qualification_code' => '5121/5018',
+				'qualification_date' => Util::getStringDate('2018-1-10'),
+				'qualification_years' => 34,
+				'qualification_months' => 2,
+				'qualification_amount' => '515.45',
+				'reserva_date' => Util::getStringDate('2018-1-10'),
+				'annual_yield' => RetFunProcedure::current()->annual_yield,
+                'reserva_amount' => 84136.45,
+                       );
+                       return \PDF::loadView('ret_fun.legal_opinion.ret_fun_jubilacion', $args)
+                               ->setPaper('letter')
+                               ->setOption('encoding', 'utf-8')
+                               ->stream("dictamenLegal.pdf");
 
+                    /*
+                       foreach (Template::all() as $value) {
+                               $generated = \Blade::compileString($value->body);
+
+                               ob_start() and extract($args, EXTR_SKIP);
+                               try {
+                                       eval('?>' . $generated);
+                               }
+                               catch (\Exception $e) {
+                                       ob_get_clean();
+                                       throw $e;
+                               }
+                               $content = ob_get_clean();
+                               $pdf = \App::make('snappy.pdf.wrapper');
+                               $pdf->loadHTML($content);
+                               return $pdf->setPaper('letter')
+                                       ->setOption('encoding', 'utf-8')
+                                       ->stream($value->name.".pdf");
+                       }*/
+               });
 	});
 });
 

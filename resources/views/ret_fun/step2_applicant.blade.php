@@ -37,7 +37,7 @@
                             <div class="col-md-8">
                                 <select class="form-control" name="accountType" @change="change_applicant()" v-model.trim="applicant_type" v-validate.initial="'required'">
                                     <option :value="null"></option>
-                                    <option v-for="(type,index) in applicant_types" :value="index+1">@{{type}}</option>
+                                    <option v-for="(type,index) in applicant_types_filter" :value="type.id">@{{type.name}}</option>
                                 </select>
                                 <i v-show="errors.has('accountType')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('accountType')" class="text-danger">@{{ errors.first('accountType') }}</span>
@@ -62,7 +62,7 @@
                         <div class="col-md-6">
                             <div class="form-group" :class="{'has-error': errors.has('applicant_identity_card') }">
                                 <div class="col-md-4">
-                                    <label class="control-label">Carnet de Identidad</label>
+                                    <label class="control-label">Cédula de Identidad</label>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="input-group">
@@ -176,7 +176,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-4">
-                                <label class="control-label">Telefono del Solicitante</label>
+                                <label class="control-label">Teléfono del Solicitante</label>
                             </div>
                             <div class="col-md-8">
                                 <div class="row">
@@ -248,7 +248,7 @@
                                 <label class="control-label">Fecha de Resolucion</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="advisor_resolution_date" v-model.trim="advisor_resolution_date" class="form-control">
+                                <input type="date" name="advisor_resolution_date" v-model.trim="advisor_resolution_date" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -266,7 +266,7 @@
                     <div class="row" v-if="show_apoderado_form ">
                         <div class="col-md-6" :class="{'has-error': errors.has('legal_guardian_identity_card') }">
                             <div class="col-md-4">
-                                <label class="control-label">Carnet de Identidad</label>
+                                <label class="control-label">Cédula de Identidad</label>
                             </div>
                             <div class="col-md-8">
                                 <div class="input-group">

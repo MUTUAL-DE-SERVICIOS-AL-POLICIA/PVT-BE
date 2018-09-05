@@ -597,5 +597,5 @@ class Affiliate extends Model
     //     }
     //     Log::info('contributions not found');
     //     return 'error';
-    // }
+    // }    
 }

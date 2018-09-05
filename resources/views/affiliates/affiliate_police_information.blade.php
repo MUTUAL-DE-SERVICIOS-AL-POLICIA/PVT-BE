@@ -8,6 +8,7 @@
                 </div>
                 @else
                 <br>
+                <br>
                 @endcan
                 
                 <br>
@@ -41,8 +42,8 @@
                 <div class="row">
                     <div class="col-md-2"><strong>Fecha de Desvinculacion:</strong></div>
                     <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_derelict" data-month-year="true" :disabled="!editing"></div>
-                    <div class="col-md-2"></div>
-                    <div class="col-md-4"></div>
+                    <div class="col-md-2"><strong>C&oacute;digo de archivo:</strong></div>
+                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.file_code" :disabled="!editing"></div>                    
                 </div>
                 <br>
                 <div class="row">

@@ -5,6 +5,7 @@ namespace Muserpol\Http\Controllers;
 use Illuminate\Http\Request;
 use Muserpol\Models\AffiliateFolder;
 use Muserpol\Models\Module;
+use Muserpol\Models\Affiliate;
 
 class AffiliateFolderController extends Controller
 {
@@ -99,7 +100,17 @@ class AffiliateFolderController extends Controller
         $folder->delete();
         return back()->withInput();
     }
-    public function editFolder(Request $request){
+
+    public function updateFileCode(Request $request) {
+
+        //return $request->affiliate_id;
+        $affiliate = Affiliate::find($request->affiliate_id);
+        $affiliate->file_code = $request->file_code;
+        $affiliate->save();
+        return back()->withInput();
+    }
+    
+    public function editFolder(Request $request){        
         $folder=AffiliateFolder::find($request->folder_id);
         $this->authorize('update', $folder);
         $folder->affiliate_id = $request->affiliate_id;

@@ -132,9 +132,20 @@ class ReimbursementController extends Controller
      * @param  \Muserpol\Contribution  $contribution
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Contribution $contribution)
+    public function destroy(Request $request, Reimbursement $reimbursement)
     {
-        //
+        $reimbursement = Reimbursement::where('affiliate_id',$request->affiliate_id)
+                                        ->where('month_year',$request->year.'-'.$request->month.'-01')
+                                        ->first();
+        if($reimbursement) {
+            $reimbursement->delete();
+            $reimbursement->forceDelete();
+            $data = [
+                'month_year' => $request->year.'-'.$request->month.'-01',
+            ];
+            return $data;    
+        }
+        return 1;
     }    
 
     /**

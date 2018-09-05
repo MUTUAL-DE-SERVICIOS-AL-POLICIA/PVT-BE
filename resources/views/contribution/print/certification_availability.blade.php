@@ -44,7 +44,7 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->public_security_bonus }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>                        
                     {{--<td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->retirement_fund }}</td>--}}
-                </tr> 
+                </tr>
                 @foreach($reimbursements as $reimbursement)    
                     @if($contribution->month_year == $reimbursement->month_year)
                         <tr class="text-sm">
@@ -56,23 +56,32 @@
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->total }}</td>
                             {{--<td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->retirement_fund }}</td>--}}
                         </tr>
-                    @endif        
+                    @endif
                 @endforeach
             @endif
         @endforeach
-        <tr>
+        {{-- <tr>
             <td colspan="5" class="text-center">TOTAL:</td>
             <td class="text-center uppercase font-bold px-5 py-3" >{{$aporte}}</td>   
-        </tr>                
+        </tr>                 --}}
     </tbody>
 </table>
 <br>
 <div>
     Es cuanto se certifica los aportes al destino a la disponibilidad de las letras, para fines consiguientes.
 </div>
+@if($retirement_fund->contribution_types()->where('contribution_type_id', 10)->first())
+    <div>
+        <strong>Nota:</strong>
+        <div class="text-justify">
+            {{ $retirement_fund->contribution_types()->where('contribution_type_id', 10)->first()->pivot->message }}
+        </div>
+    </div>
+@endif
 <br>
 <div align="right">
     {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
 </div>
+@include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch
 @endsection

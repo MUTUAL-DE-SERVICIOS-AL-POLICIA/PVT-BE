@@ -43,9 +43,9 @@ class ContributionController extends Controller
         $contribution_rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')
                                                 ->first();                                                       
         $c_start_date =  Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2);        
-        $c_end_date = Carbon::parse(Carbon::now()->toDateString());        
+        $c_end_date = Carbon::parse(Util::parseBarDate($request->dateEnd));        
         $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
-        $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
+        $dateEnd = $request->dateEnd;
        $mount = ($contribution_rate['retirement_fund']+$contribution_rate['mortuary_quota'])/100*$request->con['sueldo'];
        
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
@@ -71,8 +71,9 @@ class ContributionController extends Controller
             return $foo;
         }
     }
-    private function getMonthContributions($id){    
-        $today = date('Y-m-d');//'2018-05-01';//date('Y-m-d');
+    public function getMonthContributions($id, $date){    
+        // $today = date('Y-m-d');//'2018-05-01';//date('Y-m-d');
+        $today = $date;//'2018-05-01';//date('Y-m-d');
         Carbon::useMonthsOverflow(false);        
         $start_date = Carbon::parse($today);
         $start_date->subMonth(); //contributions are paid when month finishes                        
@@ -105,9 +106,19 @@ class ContributionController extends Controller
         $contributions = array_reverse($contributions);
         return $contributions;
     }
-
+    public function getContributionRate($date)
+    {
+        Log::info($date);
+        $date = Carbon::parse($date)->format('Y-m');
+        $rate = ContributionRate::where('month_year',$date.'-01')->first();
+        Log::info($rate);
+        if ($rate) {
+            return $rate;
+        }
+        return null;
+    }
     public function index()
-    {        
+    {
         return 0;
     }
     /**
@@ -189,6 +200,7 @@ class ContributionController extends Controller
         $voucher->total = $request->total;
         $voucher->payment_date = Carbon::now();
         $voucher->code = $code;
+        $voucher->paid_amount = $request->paid;
         $voucher->save();      
         
         $affiliate = Affiliate::find($request->afid);
@@ -435,7 +447,7 @@ class ContributionController extends Controller
      */
     public function destroy(Contribution $contribution)
     {
-        //
+                
     }
     public function directContributions(Affiliate $affiliate = null){
 
@@ -465,13 +477,13 @@ class ContributionController extends Controller
         ); 
         
         $data = [
-            'new_contributions' => $this->getMonthContributions($affiliate->id),            
+            // 'new_contributions' => $this->getMonthContributions($affiliate->id),            
             'commitment'    =>  $commitment,
             'affiliate' =>  $affiliate,
             'summary'   =>  $summary,
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
-            'rate'  =>  $rate,        
+            // 'rate'  =>  $rate,        
         ];
 
         return view('contribution.affiliate_direct_contributions', $data);        
@@ -592,7 +604,7 @@ class ContributionController extends Controller
               $input_data['total'][$key]= strip_tags($request->total[$key]);
         $array_rules = [
             'base_wage.'.$key =>  'numeric|min:0',
-            'gain.'.$key =>  'numeric|min:1',
+            'gain.'.$key =>  'numeric|min:0',
             'total.'.$key =>  'required|numeric|min:1'
             ];
             $rules=array_merge($rules,$array_rules);
@@ -616,66 +628,76 @@ class ContributionController extends Controller
         $contributions = [];
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
-            if (isset($contribution->id)) {
-                $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
-                
-                if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
-                   $contribution->base_wage = 0;
-                else
-                    $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
-                
-                if ($request->category[$key] != $contribution->category_id) {
-                    //$category = Category::find($request->category[$key]);
-                    $category = Category::where('percentage',$request->category[$key])->first();
-                    $contribution->category_id = $category->id;
-                    //return $category->percentage." ".$contribution->base_wage;
-                    //$contribution->seniority_bonus = $category->percentage * $contribution->base_wage;
-                   $contribution->seniority_bonus = $request->seniority_bonus[$key];
-                }
-                
-                if(!isset($request->gain[$key]) || $contribution->gain == "")
-                    $contribution->gain = 0;
-                else
-                    $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
-                $contribution->save();
-                array_push($contributions, $contribution);
-            } else {
-//                $contribution = new Contribution();
-//                $contribution->user_id = Auth::user()->id;
-//                $contribution->total = $total;
-                $affiliate = Affiliate::find($request->affiliate_id);
-                $contribution = new Contribution();
-                $contribution->user_id = Auth::user()->id;
-                $contribution->affiliate_id = $request->affiliate_id;
-                $contribution->degree_id = $affiliate->degree_id;
-                $contribution->unit_id = $affiliate->unit_id;
-                $contribution->breakdown_id = $affiliate->breakdown_id;
-                
-                if(!isset($request->base_wage[$key]))
-                    $contribution->base_wage = 1;
-                else
-                    $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
-                $category = Category::where('percentage',$request->category[$key])->first();
-                $contribution->category_id = $category->id;
-                //$data = $contribution->base_wage * 123;
-                $contribution->seniority_bonus = $request->seniority_bonus[$key];
-                $contribution->study_bonus = 0;
-                $contribution->position_bonus = 0;
-                $contribution->border_bonus = 0;
-                $contribution->east_bonus = 0;
-                $contribution->quotable = 0;
-                $contribution->month_year = $key;
+            if(isset($request->total[$key]) && $request->total[$key]>0) {
+                if (isset($contribution->id)) {
+                    $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
+                    
+                    if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
+                    $contribution->base_wage = 0;
+                    else
+                        $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
+                    
+                    if (isset($request->category[$key]) && $request->category[$key] != $contribution->category_id) {                    
+                        $category = Category::where('percentage',$request->category[$key])->first();
+                        if(!isset($category->id)) {
+                            $contribution->category_id = null; //default non category found -0
+                        } else {
+                            $contribution->category_id = $category->id;
+                        }                    
+                    $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
+                    }
+                    
+                    if(!isset($request->gain[$key]) || $contribution->gain == "")
+                        $contribution->gain = 0;
+                    else
+                        $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
+                    $contribution->save();
+                    array_push($contributions, $contribution);
+                } else {
+    //                $contribution = new Contribution();
+    //                $contribution->user_id = Auth::user()->id;
+    //                $contribution->total = $total;
+                    $affiliate = Affiliate::find($request->affiliate_id);
+                    $contribution = new Contribution();
+                    $contribution->user_id = Auth::user()->id;
+                    $contribution->affiliate_id = $request->affiliate_id;
+                    $contribution->degree_id = $affiliate->degree_id;
+                    $contribution->unit_id = $affiliate->unit_id;
+                    $contribution->breakdown_id = $affiliate->breakdown_id;
+                    
+                    if(!isset($request->base_wage[$key]))
+                        $contribution->base_wage = 0;
+                    else
+                        $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
+                    
+                    if(isset($request->category[$key])) {
+                        $category = Category::where('percentage',$request->category[$key])->first();
+                        if(!isset($category->id)) {
+                            $contribution->category_id = null; //default non category found -0
+                        } else {
+                            $contribution->category_id = $category->id;
+                        }                    
+                    }                    
+                    //$data = $contribution->base_wage * 123;                
+                    $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
+                    $contribution->study_bonus = 0;
+                    $contribution->position_bonus = 0;
+                    $contribution->border_bonus = 0;
+                    $contribution->east_bonus = 0;
+                    $contribution->quotable = 0;
+                    $contribution->month_year = $key;
 
-                if(!isset($request->gain[$key]))
-                    $contribution->gain = 1;
-                else
-                    $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
-                $contribution->retirement_fund = 0;
-                $contribution->mortuary_quota = 0;
-                $contribution->total = strip_tags($request->total[$key]) ?? 0;                
-                $contribution->type = 'Planilla';
-                $contribution->save();
-                array_push($contributions, $contribution);
+                    if(!isset($request->gain[$key]))
+                        $contribution->gain = 0;
+                    else
+                        $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
+                    $contribution->retirement_fund = 0;
+                    $contribution->mortuary_quota = 0;
+                    $contribution->total = strip_tags($request->total[$key]) ?? 0;                
+                    $contribution->type = 'Planilla';
+                    $contribution->save();
+                    array_push($contributions, $contribution);
+                }
             }
         }
         return $contributions;
@@ -691,39 +713,196 @@ class ContributionController extends Controller
 
     public function selectContributions($ret_fun_id)
     {
-        // $contributions = Contribution::where('affiliate_id',$affiliate_id)->take(10)->get();
         $ret_fun = RetirementFund::find($ret_fun_id);
-        $affiliate = Affiliate::find($ret_fun->affiliate_id);
-        // $contribution =DB::table('contributions')->where('affiliate_id',$ret_fun->affiliate_id)->whereNull('deleted_at')->get();
-        // return $contribution;
-        $con_type = false;
-        $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
-                                                  ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
-                                                  ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                  ->where('contributions.month_year','>=', Util::parseMonthYearDate($affiliate->date_entry))
-                                                  //   ->whereNull('contributions.deleted_at')
-                                                  ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
-                                                  //   ->take(10)
-                                                  ->orderBy('contributions.month_year', 'desc')
-                                                  ->get();
-                                                  // $contributions = [];
-                                                  //    return $contributions->count();
-                                                  
-        if(sizeof($contributions) == 0){
-          $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
-                                                    ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
-                                                    ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-                                                    ->where('contributions.month_year','>=',Util::parseMonthYearDate($affiliate->date_entry))
-                                                    // ->whereNull('contributions.deleted_at')
-                                                    ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
-                                                //   ->take(10)
-                                                    ->orderBy('contributions.month_year', 'desc')
-                                                    ->get();
-           $con_type=true;
-        }  
+        $affiliate = $ret_fun->affiliate;
+
+        if (!(isset($affiliate->date_entry) && isset($affiliate->date_derelict))) {
+            Session::flash('message', 'Verifique la fecha de entrada y desvinculación del afiliado existan antes de continuar');
+            return redirect('ret_fun/' . $ret_fun_id);
+        }
+        if (Util::parseMonthYearDate($affiliate->date_derelict) < Util::parseMonthYearDate($affiliate->date_entry)) {
+            Session::flash('message', 'Verifique la fecha de entrada y desvinculación del afiliado estén correctas antes de continuar');
+            return redirect('ret_fun/' . $ret_fun_id);
+        }
+
+        $contributions = $affiliate->contributions()->orderBy('month_year')->get();
+        $first_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->first()->month_year)->format('m/Y'));
+        $last_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->last()->month_year)->format('m/Y'));
+
+        /* first contribution and date entry comparision */
+        if (Util::parseMonthYearDate($affiliate->date_entry) < $first_contribution) {
+            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_entry));
+            Log::info("++++++++++++ creating ++++++++++++");
+            Log::info($month);
+            Log::info($first_contribution);
+            $months = array();
+            while($month < $first_contribution){
+                Log::info('pending create: '.$month);
+                array_push($months, [
+                    'user_id' => Auth::user()->id,
+                    'affiliate_id' => $affiliate->id,
+                    'type' => 'Planilla',
+                    'base_wage' =>0,
+                    'month_year' => $month->toDateString(),
+                    'seniority_bonus' => 0,
+                    'study_bonus' => 0,
+                    'position_bonus' => 0,
+                    'border_bonus' => 0,
+                    'east_bonus' => 0,
+                    'gain' => 0,
+                    'quotable' => 0,
+                    'retirement_fund' => 0,
+                    'mortuary_quota' => 0,
+                    'total' => 0,
+                    'contribution_type_id' => null,
+                    'category_id' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                    ]
+                );
+                $month->addMonth();
+            }
+            DB::table('contributions')->insert($months);
+            Log::info("************ / end creating********");
+        }elseif(Util::parseMonthYearDate($affiliate->date_entry) > $first_contribution){
+            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_entry));
+            Log::info("-------------  deleting ---------");
+            Log::info($month);
+            Log::info($first_contribution);
+            $temp_ids = array();
+            foreach ($contributions as $value) {
+                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) < Util::parseMonthYearDate($affiliate->date_entry) ){
+                    Log::info('deleted '.$value->month_year);
+                    array_push($temp_ids, $value->id);
+                }
+            }
+            // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
+            dd("error: Se eliminaran Varias contribuciones porque no las fechas no coinciden.");
+            Log::info("-------------  / end deleting ---------");
+        }
+
+        /* last contributions and date derelict comparision */
+
+        if (Util::parseMonthYearDate($affiliate->date_derelict) > $last_contribution) {
+            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_derelict));
+            Log::info("++++++++++++ creating ++++++++++++");
+            Log::info($month);
+            Log::info($last_contribution);
+            $months = array();
+            while($month->toDateString() > $last_contribution){
+                Log::info('pending create: '.$month);
+                array_push($months, [
+                    'user_id' => Auth::user()->id,
+                    'affiliate_id' => $affiliate->id,
+                    'type' => 'Planilla',
+                    'base_wage' =>0,
+                    'month_year' => $month->toDateString(),
+                    'seniority_bonus' => 0,
+                    'study_bonus' => 0,
+                    'position_bonus' => 0,
+                    'border_bonus' => 0,
+                    'east_bonus' => 0,
+                    'gain' => 0,
+                    'quotable' => 0,
+                    'retirement_fund' => 0,
+                    'mortuary_quota' => 0,
+                    'total' => 0,
+                    'contribution_type_id' => null,
+                    'category_id' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                    ]
+                );
+                $month->subMonth();
+            }
+            DB::table('contributions')->insert($months);
+            Log::info("************ / end creating********");
+        }elseif(Util::parseMonthYearDate($affiliate->date_derelict) < $last_contribution){
+            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_derelict));
+            Log::info("-------------  deleting ---------");
+            Log::info($month);
+            Log::info($last_contribution);
+            $temp_ids = array();
+            foreach ($contributions->reverse() as $value) {
+                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) > Util::parseMonthYearDate($affiliate->date_derelict) ){
+                    Log::info('deleted '.$value->month_year);
+                    array_push($temp_ids, $value->id);
+                }
+            }
+            dd("error: Se eliminaran Varias contribuciones porque no las fechas no coinciden.");
+            // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
+            Log::info("-------------  / end deleting ---------");
+        }
+
+        $contributions = DB::table('contributions')->where('affiliate_id', $affiliate->id)->orderBy('month_year')->get()->pluck('month_year');
+        $months = array();
+        if(sizeof($contributions) != (1 + Carbon::parse($contributions->last())->diffInMonths(Carbon::parse($contributions->first()))) ){
+            for($month = Carbon::parse($contributions->first()); $month<=$contributions->last(); $month=Carbon::parse($month)->addMonth()){
+                if (in_array($month->toDateString(), $contributions->toArray())) {
+                }else{
+                    array_push($months, [
+                        'user_id' => Auth::user()->id,
+                        'affiliate_id' => $affiliate->id,
+                        'type' => 'Planilla',
+                        'base_wage' =>0,
+                        'month_year' => $month->toDateString(),
+                        'seniority_bonus' => 0,
+                        'study_bonus' => 0,
+                        'position_bonus' => 0,
+                        'border_bonus' => 0,
+                        'east_bonus' => 0,
+                        'gain' => 0,
+                        'quotable' => 0,
+                        'retirement_fund' => 0,
+                        'mortuary_quota' => 0,
+                        'total' => 0,
+                        'contribution_type_id' => null,
+                        'category_id' => 1,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                        ]
+                    );
+                }
+            }
+            DB::table('contributions')->insert($months);
+        }
+
+
+        $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund', 'total', 'breakdown_id', 'contribution_type_id')->orderbyDesc('month_year')->get();
+
+        foreach ($contributions as $c) {
+            $c->contribution_type_id = Util::classificationContribution($c->contribution_type_id, $c->breakdown_id, $c->total);
+        }
+        // dd($contributions->first());
+        // $con_type = false;
+        // $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
+        //                                         ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
+        //                                         ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
+        //                                         ->where('contributions.month_year','>=', Util::parseMonthYearDate($affiliate->date_entry))
+        //                                         //   ->whereNull('contributions.deleted_at')
+        //                                         ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
+        //                                         //   ->take(10)
+        //                                         ->orderBy('contributions.month_year', 'desc')
+        //                                         ->get();
+        //                                         // $contributions = [];
+        //                                         //    return $contributions->count();
+                                                
+        // if(sizeof($contributions) == 0){
+        //   $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
+        //                                             ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
+        //                                             ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
+        //                                             ->where('contributions.month_year','>=',Util::parseMonthYearDate($affiliate->date_entry))
+        //                                             // ->whereNull('contributions.deleted_at')
+        //                                             ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
+        //                                         //   ->take(10)
+        //                                             ->orderBy('contributions.month_year', 'desc')
+        //                                             ->get();
+        //    $con_type=true;
+        // }  
+        
         
        
-        $contribution_types = DB::table('contribution_types')->select('id','name')->get();
+        $contribution_types = ContributionType::select('id', 'name')->orderBy('id')->get();
         $date_entry = $ret_fun->affiliate->date_entry;
         $date_derelict = $ret_fun->affiliate->date_derelict;
         // return $date_derelict;
@@ -731,7 +910,6 @@ class ContributionController extends Controller
         //return $contributions;
         if($date_entry && $date_derelict){
             $data =   array('contributions' => $contributions,
-                            'con_type'=>$con_type ,
                             'contribution_types'=> $contribution_types,
                             'date_entry' => Util::parseMonthYearDate($date_entry),
                             'date_derelict' => Util::parseMonthYearDate($date_derelict),
@@ -744,64 +922,57 @@ class ContributionController extends Controller
         }
     }
     public function saveContributions(Request $request)
-    {   
+    {
         // return $request->all();
+        $request_contributions = $request->contributions;
         $ret_fun = RetirementFund::find($request->ret_fun_id);
-        $affiliate = Affiliate::find($ret_fun->affiliate_id);
-        // return $ret_fun;
+        $affiliate = $ret_fun->affiliate;
+        $contributions = $affiliate->contributions()->orderBy('month_year')->get();
+        foreach ($contributions as $c) {
+            foreach($request_contributions as $rc){
+                if($rc['id'] == $c->id){
+                    $c->contribution_type_id = $rc['contribution_type_id'];
+                    $c->save();
+                }
+            }
 
-        // $ret_fun->contributions()->attach($sixty_id);
-        // Log::info('imprimiendo contribuciones');
-        $i=0;
-        foreach ($request->list_aportes as $obj) {
-            # code...
-             $aporte = (object) $obj;
-             if($aporte->id == 0)
-             {
-                    Log::info('intentando guardar objeto');
-                    Log::info(json_encode($aporte));
-                    //buscardor por mes
-                    
-
-                    $contribution = new Contribution;
-                    $contribution->user_id = Auth::user()->id;
-                    $contribution->affiliate_id = $ret_fun->affiliate_id;
-                    $contribution->type = 'Planilla';
-                    $contribution->base_wage =0;
-                    $contribution->month_year = $aporte->month_year;
-                    $contribution->seniority_bonus = 0;
-                    $contribution->study_bonus = 0;
-                    $contribution->position_bonus = 0;
-                    $contribution->border_bonus = 0;
-                    $contribution->east_bonus = 0;
-                    $contribution->gain = 0;
-                    $contribution->quotable = 0;
-                    $contribution->retirement_fund = 0;
-                    $contribution->mortuary_quota = 0;
-                    $contribution->total = 0;
-                    $contribution->contribution_type_id = $aporte->breakdown_id;
-                    $contribution->category_id =1;
-                    $contribution->save();
-
-             }else{
-                 # code...
-                    $contribution = Contribution::find($aporte->id);
-                    $contribution->contribution_type_id = $aporte->breakdown_id;
-                    $contribution->save();
-             }
-            $i++;
-            Log::info('i: '.$i.' id:'.$contribution->id);
         }
-        // $total = $affiliate->getTotalContributionsAmount(Affiliate::DISPONIBILIDAD);
-        // return $total;
         $availability = $affiliate->getContributionsAvailability();
-        $ret_fun->subtotal_availability = array_sum(array_column($availability, 'total'));
+        $subtotal_availability = array_sum(array_column($availability, 'total'));
+        $ret_fun->subtotal_availability = $subtotal_availability;
         $ret_fun->save();
-        return  $ret_fun;
-        return $request->all();
-        // return redirect('/');     
+        Log::info('saved subtotal availability: '. $subtotal_availability);
+        $contribution_types = ContributionType::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_id')->distinct()->get()->pluck('contribution_type_id'))->orderBy('sequence')->select('name','id')->get();
+        foreach($contribution_types as $index =>$c){
+            switch ($c->id) {
+                case 2:
+                case 3:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 2)->first()->pivot->message ?? null;
+                    break;
+                case 4:
+                case 5:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 4)->first()->pivot->message ?? null;
+                    break;
+                case 7:
+                case 8:
+                case 9:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 7)->first()->pivot->message ?? null;
+                    break;
+                case 1:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 1)->first()->pivot->message ?? null;
+                    break;
+                case 10:
+                    $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 10)->first()->pivot->message ?? null;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+        }
+        return response()->json([
+            'contribution_types' => $contribution_types,
+        ]);
     }
-  
     public function printCertification($id)
     {
         $retirement_fund = RetirementFund::find($id);
@@ -850,7 +1021,7 @@ class ContributionController extends Controller
                         ->get();
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
-                        ->get();                          
+                        ->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";

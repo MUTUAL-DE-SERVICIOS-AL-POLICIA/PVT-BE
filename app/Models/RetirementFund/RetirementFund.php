@@ -69,6 +69,10 @@ class RetirementFund extends Model
     {
         return $this->belongsToMany('Muserpol\Models\Tag')->withPivot(['date', 'user_id']);
     }
+    public function contribution_types()
+    {
+        return $this->belongsToMany('Muserpol\Models\Contribution\ContributionType')->withPivot(['message'])->withTimestamps();
+    }
     public function getBasicInfoCode()
     {
         $code = $this->id." ".($this->affiliate->id ?? null) ."\n". "Trámite Nro: ".$this->code."\nModalidad: ".$this->procedure_modality->name."\nSolicitante: ".($this->ret_fun_beneficiaries()->where('type', 'S')->first()->fullName() ?? null);
@@ -104,6 +108,8 @@ class RetirementFund extends Model
         {
             return "El afiliado no tiene documentos referidos";
         }
-        
+    }
+    public function hasLegalGuardian(){
+        return $this->ret_fun_beneficiaries()->where('type', 'S')->first()->legal_guardian()->count();
     }
 }

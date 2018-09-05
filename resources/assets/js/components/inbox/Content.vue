@@ -22,10 +22,14 @@
                       slot-scope="props">
                 <tr>
                     <th v-if="inboxState == 'edited'">
-                        <input type="checkbox"
-                               :checked="false"
-                               v-model="checkedAllStatus"
-                               @change="checkedAll()"> Seleccionar Todos
+                        <input
+                            type="checkbox"
+                            :checked="false"
+                            v-model="checkedAllStatus"
+                            @change="checkedAll()"
+                            class="mediumCheckbox"
+                        >
+                            Seleccionar Todos
                     </th>
                     <th v-for="header in props.headers"
                         :key="header.text">
@@ -38,12 +42,14 @@
                       slot-scope="props">
                 <tr class="row-click" :class="{'success': props.item.status}">
                     <td v-if="inboxState == 'edited'" class="row-click-first">
-                        <input 
-                               type="checkbox"
-                               :checked="false"
-                               :id="props.item.id"
-                               v-model="props.item.status"
-                               @change="checkChange(props.item.id, props.item.status)">
+                        <input
+                            type="checkbox"
+                            :checked="false"
+                            :id="props.item.id"
+                            v-model="props.item.status"
+                            @change="checkChange(props.item.id, props.item.status)"
+                            class="mediumCheckbox"
+                        >
                     </td>
                     <td @click="rowClick(props.item.path)">
                         <!-- <a :href="`${props.item.path}`"> -->

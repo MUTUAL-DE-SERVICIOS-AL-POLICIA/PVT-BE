@@ -190,7 +190,7 @@
                         <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado ">
                         <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $quota_aid->affiliate->fullNameWithDegree() }}</a>
                         </h2>
-                            <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cedula de Identidad"><strong>{{  $quota_aid->affiliate->ciWithExt() }}</strong></h3>
+                            <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $quota_aid->affiliate->ciWithExt() }}</strong></h3>
                             <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $quota_aid->affiliate->registration }}</strong></h4>
                         </div>
                     </div>
@@ -222,27 +222,37 @@
                             </div>
                             <div id="tab-affiliate" class="tab-pane">
 
-                                    {{-- <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
+                                    <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
                                         @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
-                                    </affiliate-show> --}}
+                                    </affiliate-show>
 
                             </div>
                             <div id="tab-beneficiaries" class="tab-pane">
 
-                                    {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
-                                        @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
-                                    @endcan --}}
+                                    {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary) --}}
+                                        @include('quota_aid.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
+                                    {{-- @endcan --}}
 
                             </div>
                             <div id="tab-summited-document" class="tab-pane">
 
-                                    @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                        {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'quota_aid'=>$quota_aid,'documents'=>$documents]) --}}
-                            {{-- <ret-fun-step1-requirements-edit :ret_fun="{{ $quota_aid }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}"
-                                            inline-template>
-                                            @include('ret_fun.step1_requirements_edit')
-                                        </ret-fun-step1-requirements-edit> --}}
-                                    @endcan
+                                    {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
+                                        {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'quota_aid'=>$quota_aid,'documents'=>$documents])                                 --}}
+                                <quota-aid-step1-requirements-edit 
+                                    :quota_aid="{{ $quota_aid }}" 
+                                    :modalities="{{ $modalities }}" 
+                                    :requirements="{{ $requirements }}" 
+                                    :user="{{ $user }}" 
+                                    :cities="{{ $cities }}" 
+                                    :procedure-types="{{$procedure_types}}" 
+                                    :submitted="{{$submit_documents}}" 
+                                    :rol="{{Muserpol\Helpers\Util::getRol()->id}}"
+                                inline-template>
+
+                                    @include('quota_aid.step1_requirements_edit')
+
+                                </quota-aid-step1-requirements-edit>
+                                    {{-- @endcan --}}
 
                             </div>
 
