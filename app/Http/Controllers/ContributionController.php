@@ -43,9 +43,9 @@ class ContributionController extends Controller
         $contribution_rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')
                                                 ->first();                                                       
         $c_start_date =  Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2);        
-        $c_end_date = Carbon::parse(Carbon::now()->toDateString());        
+        $c_end_date = Carbon::parse(Util::parseBarDate($request->dateEnd));        
         $dateStart = Carbon::createFromDate($request->con['year'], $request->con['month'], '01')->addMonths(2)->format('d/m/Y');
-        $dateEnd = Carbon::parse(Carbon::now()->toDateString())->format('d/m/Y');
+        $dateEnd = $request->dateEnd;
        $mount = ($contribution_rate['retirement_fund']+$contribution_rate['mortuary_quota'])/100*$request->con['sueldo'];
        
         $uri = 'https://www.bcb.gob.bo/calculadora-ufv/frmCargaValores.php?txtFecha=' . $dateStart . '&txtFechaFin=' . $dateEnd . '&txtMonto=' . $mount . '&txtCalcula=2';
@@ -71,8 +71,9 @@ class ContributionController extends Controller
             return $foo;
         }
     }
-    private function getMonthContributions($id){    
-        $today = date('Y-m-d');//'2018-05-01';//date('Y-m-d');
+    public function getMonthContributions($id, $date){    
+        // $today = date('Y-m-d');//'2018-05-01';//date('Y-m-d');
+        $today = $date;//'2018-05-01';//date('Y-m-d');
         Carbon::useMonthsOverflow(false);        
         $start_date = Carbon::parse($today);
         $start_date->subMonth(); //contributions are paid when month finishes                        
@@ -105,9 +106,19 @@ class ContributionController extends Controller
         $contributions = array_reverse($contributions);
         return $contributions;
     }
-
+    public function getContributionRate($date)
+    {
+        Log::info($date);
+        $date = Carbon::parse($date)->format('Y-m');
+        $rate = ContributionRate::where('month_year',$date.'-01')->first();
+        Log::info($rate);
+        if ($rate) {
+            return $rate;
+        }
+        return null;
+    }
     public function index()
-    {        
+    {
         return 0;
     }
     /**
@@ -466,13 +477,13 @@ class ContributionController extends Controller
         ); 
         
         $data = [
-            'new_contributions' => $this->getMonthContributions($affiliate->id),            
+            // 'new_contributions' => $this->getMonthContributions($affiliate->id),            
             'commitment'    =>  $commitment,
             'affiliate' =>  $affiliate,
             'summary'   =>  $summary,
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
-            'rate'  =>  $rate,        
+            // 'rate'  =>  $rate,        
         ];
 
         return view('contribution.affiliate_direct_contributions', $data);        

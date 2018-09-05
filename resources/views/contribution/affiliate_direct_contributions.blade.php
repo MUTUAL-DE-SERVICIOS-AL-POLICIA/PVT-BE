@@ -23,7 +23,7 @@
             </div>
         </div>        
         <div class="col-md-12 directContribution wrapper wrapper-content animated fadeInRight ">                                                
-            <contribution-create :contributions1="{{ json_encode($new_contributions) }}" :afid="{{ $affiliate->id }}" :last_quotable="{{$last_quotable}}" :rate="{{$rate}}" :commitment="{{ $commitment }}"></contribution-create>
+            <contribution-create :afid="{{ $affiliate->id }}" :last_quotable="{{$last_quotable}}" :commitment="{{ $commitment }}"></contribution-create>
         </div>
     </div>
 </div>

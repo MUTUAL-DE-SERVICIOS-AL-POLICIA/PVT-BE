@@ -16,11 +16,7 @@
     <br><br><br>
     <div>
         <span><strong>Recibimos de:</strong>
-                {{ $beneficiary->first_name }}
-                {{ $beneficiary->second_name }}
-                {{ $beneficiary->last_name }}
-                {{ $beneficiary->mothers_last_name }}
-                {{ $beneficiary->surname_husband }}
+            {{ $beneficiary->fullName() }}
         </span>
     </div>
     <br>
@@ -30,60 +26,55 @@
         <table class="table-info w-100">
             <tbody>
                 <tr class="font-medium text-white text-sm font-bold bg-grey-darker">
-                    <td class="text-center p-5 w-20">MES/AÑO</td>
-                    <td class="text-center p-5 w-20">COTIZABLE (BS)</td>
-                    <td class="text-center p-5 w-20">AUXILIO MORTUORIO (2.03%) (BS)</td>
-                    <td class="text-center p-5 w-20">AJUSTE (BS)</td>
-                    <td class="text-center p-5 w-20">SUBTOTAL APORTE (BS)</td>
+                    <td class="text-center p-5 w-10">MES/AÑO</td>
+                    <td class="text-center p-5 w-20">COTIZABLE</td>
+                    <td class="text-center p-5 w-20">AUXILIO MORTUORIO (2.03%)</td>
+                    <td class="text-center p-5 w-10">AJUSTE</td>
+                    <td class="text-center p-5 w-20">SUBTOTAL APORTE</td>
                 </tr>
                     @foreach($aid_contributions as $aid_contribution)
                         <tr>
-                            <td class='text-left p-5'>{{ strtoupper($util::getStringDate($aid_contribution->month_year,true)) }}</td>
-                            <td class='text-right p-5'>{{ $util::formatMoney($aid_contribution->quotable) }} </td>
-                            <td class='text-right p-5'>{{ $util::formatMoney($aid_contribution->rent *(2.03/100)) }} </td>
-                            <td class='text-right p-5'>{{ $util::formatMoney($aid_contribution->interest) }} </td>    
-                            <td class='text-right p-5'>{{ $util::formatMoney($aid_contribution->total) }} </td>
+                            <td class='text-left px-15'>{{ strtoupper(Util::printMonthYear($aid_contribution->month_year)) }}</td>
+                            <td class='text-right px-15'>{{ $util::formatMoney($aid_contribution->quotable) }} </td>
+                            <td class='text-right px-15'>{{ $util::formatMoney($aid_contribution->rent *(2.03/100)) }} </td>
+                            <td class='text-right px-15'>{{ $util::formatMoney($aid_contribution->interest) }} </td>    
+                            <td class='text-right px-15'>{{ $util::formatMoney($aid_contribution->total) }} </td>
                         </tr>
                     @endforeach
-                    <tr>
-                        {{-- <td colspan="2"></td> --}}
-                        <td colspan="4" class="font-medium text-white text-sm font-bold text-center p-5 bg-grey-darker rounded-bl">TOTAL:</td>
-                        <td class="text-right p-5">{!! $voucher->total !!}</td>
+                    <tr class="font-bold text-lg bg-grey-lightest">
+                        <td colspan="4" class="text-left px-15  rounded-bl">TOTAL</td>
+                        <td class="text-right px-15">{!! $voucher->total !!}</td>
                     </tr>
             </tbody>
         </table>
     </div>
     <br>
-    <div>
-        <span>La suma de: {!! ucwords(strtolower($total_literal)) !!} Bolivianos.
-        </span>
+    <div class="border rounded p-5 px-15">
+        <span class="font-bold m-r-10">
+                    La suma de:
+                </span>
+        <span class="italic text-lg">{!! ucwords(strtolower($total_literal)) !!} Bolivianos.</span>
     </div>
-    <table class="table w-100">
+    <p class="font-bold m-r-10">
+        Forma de Pago:
+    </p>
+    <table class="table-info rounded m-5">
+        <thead class="bg-grey-darker">
+            <tr class="text-white text-base">
+                <td class="w-30 px-15">
+                    Nro:
+                </td>
+                <td class="px-15">
+                    Banco:
+                </td>
+            </tr>
+        </thead>
         <tbody>
             <tr>
-                <td class="p-5">Forma de Pago:</td>
-                {{--  <td class="text-center p-5">.......... {!! $item->procedure_requirement->number !!} ..........</td>  --}}
-                <td class="text-left py-4 bg-grey-darker">Nro.:</td>
-                {{--  <td class="text-center p-5">.......... {!! $item->procedure_requirement->number !!} ..........</td>  --}}
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
             </tr>
-            <tr>
-                <td colspan="2"></td>
-                <td class="text-left py-4 bg-grey-darker">Banco:</td>
-                    {{--  <td class="text-center p-5">.......... {!! $item->procedure_requirement->number !!} ..........</td>  --}}
-                </tr>
         </tbody>
     </table>
-    <p class="text-right"> {{ $date }} </p>
-    <table class="m-t-35">
-        <tr>
-            <th class="no-border text-center" style=" width:60%">
-                <p class="font-bold">----------------------------------------------------<br>
-                    COBRADO POR<br>
-                {!! $name_user_complet !!}<br/>
-                </p>
-            </th>
-        </tr>
-    </table>
-
-</div>
+    @include('ret_fun.print.signature_footer',['user'=>$user])
 @endsection
