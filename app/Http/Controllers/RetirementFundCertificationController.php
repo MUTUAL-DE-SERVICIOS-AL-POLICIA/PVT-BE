@@ -205,7 +205,7 @@ class RetirementFundCertificationController extends Controller
          * !!TODO
          *!!revisar
          */
-        $cite = RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
+        $cite = $number; // RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
 
         $subtitle = $cite;
         $pdftitle = "Certificación de Archivo";

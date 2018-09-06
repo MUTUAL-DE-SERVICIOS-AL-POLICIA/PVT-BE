@@ -12,7 +12,10 @@
         @include('affiliates.print.info', ['affiliate' => $affiliate ])
     </div>
     <p>
-        <strong>MOTIVO: </strong>{{strtoupper($retirement_fund->procedure_modality->procedure_type->name." al ".$retirement_fund->procedure_modality->name)}}
+        <strong>MOTIVO: </strong>
+        <span class="uppercase">
+            {{$retirement_fund->procedure_modality->procedure_type->name }} por  {{ $retirement_fund->procedure_modality->name }}
+        </span>
     </p>
     <div class="font-bold uppercase m-b-5 counter">
         DOCUMENTACIÓN PRESENTADA
