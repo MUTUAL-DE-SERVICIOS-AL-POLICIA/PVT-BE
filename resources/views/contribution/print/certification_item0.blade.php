@@ -42,7 +42,7 @@
                 <tr class="text-sm">
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->quotable }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->base_wage }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->retirement_fund }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->mortuary_quota }}</td>                        
@@ -56,7 +56,7 @@
                         <tr class="text-sm">
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->quotable }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->base_wage }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->total }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->retirement_fund }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->mortuary_quota }}</td>
@@ -70,7 +70,7 @@
                 <tr class="text-sm">
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->quotable }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->base_wage }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->retirement_fund }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->mortuary_quota }}</td>                        
