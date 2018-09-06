@@ -266,7 +266,7 @@
                                         <input class="form-control" type="text" placeholder="Cite" v-model="retentionLoanPaymentCode">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="# de Contrato de Prestamo" v-model="retentionLoanPaymentNoteCode">
+                                        <input class="form-control" type="text" placeholder="# de Contrato de Préstamo" v-model="retentionLoanPaymentNoteCode">
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
