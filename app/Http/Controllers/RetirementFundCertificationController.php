@@ -885,14 +885,14 @@ class RetirementFundCertificationController extends Controller
     }
 
     public function printCertification($id)
-    {        
+    {                
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;        
         $valid_contributions = ContributionType::select('id')->where('operator','+')->pluck('id');
         $quantity = Util::getRetFunCurrentProcedure()->contributions_number;        
         $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)  
                                 ->whereIn('contribution_type_id',$valid_contributions)
-                                ->orderBy('month_year')
+                                ->orderByDesc('month_year')
                                 ->take($quantity)
                                 ->get();                
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
