@@ -396,10 +396,10 @@
                 <div class="col-md-3">
                     <div class="form-group"><label class="col-sm-4 control-label">Ciudad</label>
                         <div class="col-md-8">
-                            {{--<select name="beneficiary_city_address_id" v-model="beneficiary_city_address_id" class="form-control">
+                            <select name="beneficiary_city_address_id" v-model="beneficiary_city_address_id" class="form-control">
                                 <option :value="null"></option>
                                 <option v-for="(city, index) in cities" :value="city.id" >@{{ city.name }}</option>
-                            </select> --}}
+                            </select>
                         </div>
                     </div>
                 </div>
