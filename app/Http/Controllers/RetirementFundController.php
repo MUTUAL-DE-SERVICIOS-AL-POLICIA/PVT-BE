@@ -384,9 +384,9 @@ class RetirementFundController extends Controller
                 Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
             }
         }
-        if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
+        if ($request->beneficiary_city_address_id || $request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
             $address = new Address();
-            $address->city_address_id = ID::cityId()->BN;
+            $address->city_address_id = $request->beneficiary_city_address_id ?? 1;
             $address->zone = $request->beneficiary_zone;
             $address->street = $request->beneficiary_street;
             $address->number_address = $request->beneficiary_number_address;
@@ -858,7 +858,7 @@ class RetirementFundController extends Controller
                     return ($var['id'] == $new_ben['id']);
                 });
             }
-            Log::info($new_ben);
+            // Log::info($new_ben);
             if($found){
                 $old_ben = RetFunBeneficiary::find($new_ben['id']);
                 $old_ben->city_identity_card_id = $new_ben['city_identity_card_id'];
@@ -893,26 +893,35 @@ class RetirementFundController extends Controller
                     /*Actualizar direccion  */
                     if (sizeOf($old_ben->address) > 0) {
                         $address_id = $old_ben->address()->first()->id;
-                        $address = Address::find($address_id);
+                            $address = Address::find($address_id);
                         if($new_ben['address'][0]['zone'] || $new_ben['address'][0]['street'] || $new_ben['address'][0]['number_address'] ){
-                            $address->city_address_id = ID::cityId()->BN;
+                            $address->city_address_id = $new_ben['address'][0]['city_address_id'] ?? 1;
                             $address->zone = $new_ben['address'][0]['zone'];
                             $address->street = $new_ben['address'][0]['street'];
                             $address->number_address = $new_ben['address'][0]['number_address'];
                             $address->save();
                         }else{
+                            if ($retirement_fund->procedure_modality_id != ID::retFun()->fallecimiento_id) {
+                                $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
+                                $old_ben->address()->detach($address->id);
+                            }
                             $old_ben->address()->detach($address->id);
                             $address->delete();
                         }
                     }else{
                         if ($new_ben['address']) {
+                            Log::info('new Address');
                             $address = new Address();
-                            $address->city_address_id = ID::cityId()->BN;
+                            $address->city_address_id = $new_ben['address'][0]['city_address_id'] ?? 1;
                             $address->zone = $new_ben['address'][0]['zone'];
                             $address->street = $new_ben['address'][0]['street'];
                             $address->number_address = $new_ben['address'][0]['number_address'];
                             $address->save();
                             $old_ben->address()->save($address);
+                            if ($retirement_fund->procedure_modality_id != ID::retFun()->fallecimiento_id) {
+                                $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
+                                $update_affilaite->address()->save($address);
+                            }
                         }
                     }
 
