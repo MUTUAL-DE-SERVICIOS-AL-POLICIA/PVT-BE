@@ -40,6 +40,7 @@ export default {
       legal_guardian_number_authority: '',
       legal_guardian_notary_of_public_faith: '',
       legal_guardian_notary: '',
+      beneficiary_city_id: '',
       beneficiary_zone: '',
       beneficiary_street: '',
       beneficiary_number_address: '',

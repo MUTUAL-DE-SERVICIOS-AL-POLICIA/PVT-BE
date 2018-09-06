@@ -595,30 +595,35 @@ class ContributionController extends Controller
         $input_data = $request->all();
         if(!empty($request->iterator))
         { 
-          foreach ($request->iterator as $key => $iterator) 
-        {              
-              if(isset($request->base_wage[$key]))
-                $input_data['base_wage'][$key]= strip_tags($request->base_wage[$key]);
-              if(isset($request->gain[$key]))
-                $input_data['gain'][$key]= strip_tags($request->gain[$key]);
-              $input_data['total'][$key]= strip_tags($request->total[$key]);
-        $array_rules = [
-            'base_wage.'.$key =>  'numeric|min:0',
-            'gain.'.$key =>  'numeric|min:0',
-            'total.'.$key =>  'required|numeric|min:1'
-            ];
-            $rules=array_merge($rules,$array_rules);
-        $array_messages = [
-//            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico.',
-//            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000.',
-//            'gain.'.$key.'.numeric' => 'El campo debe ser numero.',
-//            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0.', 
-//            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico.',
-//            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0.'
-        ];
-        $messages=array_merge($messages, $array_messages);
+            foreach ($request->iterator as $key => $iterator) 
+            {              
+                $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
+                if(!isset($contribution->id)) {
+                    if(isset($request->base_wage[$key])) {
+                        $input_data['base_wage'][$key]= strip_tags($request->base_wage[$key]);
+                    }
+                    if(isset($request->gain[$key])) {
+                        $input_data['gain'][$key]= strip_tags($request->gain[$key]);
+                    }
+                    $input_data['total'][$key]= strip_tags($request->total[$key]);
+                    $array_rules = [
+                        'base_wage.'.$key =>  'numeric|min:0',
+                        'gain.'.$key =>  'numeric|min:0',
+                        'total.'.$key =>  'required|numeric|min:1'
+                    ];
+                    $rules=array_merge($rules,$array_rules);
+                    $array_messages = [
+            //            'base_wage.'.$key.'.numeric' => 'El valor de Sueldo debe ser numerico.',
+            //            'base_wage.'.$key.'.min'  =>  'El salario minimo es 2000.',
+            //            'gain.'.$key.'.numeric' => 'El campo debe ser numero.',
+            //            'gain.'.$key.'.min'  =>  'La cantidad ganada debe ser mayor a 0.', 
+            //            'total.'.$key.'.numeric' => 'El valor del Aporte debe ser numerico.',
+            //            'total.'.$key.'.min'  =>  'El aporte debe ser mayor a 0.'
+                    ];
+                    $messages=array_merge($messages, $array_messages);
+                }
         }   
-            $validator = Validator::make($input_data,$rules,$messages);
+        $validator = Validator::make($input_data,$rules,$messages);
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
         }
@@ -628,12 +633,13 @@ class ContributionController extends Controller
         $contributions = [];
         foreach ($request->iterator as $key => $iterator) {
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
-            if(isset($request->total[$key]) && $request->total[$key]>0) {
+            //if(isset($request->total[$key]) && $request->total[$key]>0) {
                 if (isset($contribution->id)) {
-                    $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
+                    if(isset($request->total[$key]) && $request->total[$key] != "")
+                        $contribution->total = strip_tags($request->total[$key]);
                     
                     if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
-                    $contribution->base_wage = 0;
+                        $contribution->base_wage = 0;
                     else
                         $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
                     
@@ -644,7 +650,7 @@ class ContributionController extends Controller
                         } else {
                             $contribution->category_id = $category->id;
                         }                    
-                    $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
+                        $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
                     }
                     
                     if(!isset($request->gain[$key]) || $contribution->gain == "")
@@ -657,48 +663,50 @@ class ContributionController extends Controller
     //                $contribution = new Contribution();
     //                $contribution->user_id = Auth::user()->id;
     //                $contribution->total = $total;
-                    $affiliate = Affiliate::find($request->affiliate_id);
-                    $contribution = new Contribution();
-                    $contribution->user_id = Auth::user()->id;
-                    $contribution->affiliate_id = $request->affiliate_id;
-                    $contribution->degree_id = $affiliate->degree_id;
-                    $contribution->unit_id = $affiliate->unit_id;
-                    $contribution->breakdown_id = $affiliate->breakdown_id;
-                    
-                    if(!isset($request->base_wage[$key]))
-                        $contribution->base_wage = 0;
-                    else
-                        $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
-                    
-                    if(isset($request->category[$key])) {
-                        $category = Category::where('percentage',$request->category[$key])->first();
-                        if(!isset($category->id)) {
-                            $contribution->category_id = null; //default non category found -0
-                        } else {
-                            $contribution->category_id = $category->id;
+                    if(isset($request->total[$key]) && $request->total[$key]>0) {
+                        $affiliate = Affiliate::find($request->affiliate_id);
+                        $contribution = new Contribution();
+                        $contribution->user_id = Auth::user()->id;
+                        $contribution->affiliate_id = $request->affiliate_id;
+                        $contribution->degree_id = $affiliate->degree_id;
+                        $contribution->unit_id = $affiliate->unit_id;
+                        $contribution->breakdown_id = $affiliate->breakdown_id;
+                        
+                        if(!isset($request->base_wage[$key]))
+                            $contribution->base_wage = 0;
+                        else
+                            $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
+                        
+                        if(isset($request->category[$key])) {
+                            $category = Category::where('percentage',$request->category[$key])->first();
+                            if(!isset($category->id)) {
+                                $contribution->category_id = null; //default non category found -0
+                            } else {
+                                $contribution->category_id = $category->id;
+                            }                    
                         }                    
-                    }                    
-                    //$data = $contribution->base_wage * 123;                
-                    $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
-                    $contribution->study_bonus = 0;
-                    $contribution->position_bonus = 0;
-                    $contribution->border_bonus = 0;
-                    $contribution->east_bonus = 0;
-                    $contribution->quotable = 0;
-                    $contribution->month_year = $key;
+                        //$data = $contribution->base_wage * 123;                
+                        $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
+                        $contribution->study_bonus = 0;
+                        $contribution->position_bonus = 0;
+                        $contribution->border_bonus = 0;
+                        $contribution->east_bonus = 0;
+                        $contribution->quotable = 0;
+                        $contribution->month_year = $key;
 
-                    if(!isset($request->gain[$key]))
-                        $contribution->gain = 0;
-                    else
-                        $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
-                    $contribution->retirement_fund = 0;
-                    $contribution->mortuary_quota = 0;
-                    $contribution->total = strip_tags($request->total[$key]) ?? 0;                
-                    $contribution->type = 'Planilla';
-                    $contribution->save();
-                    array_push($contributions, $contribution);
+                        if(!isset($request->gain[$key]))
+                            $contribution->gain = 0;
+                        else
+                            $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
+                        $contribution->retirement_fund = 0;
+                        $contribution->mortuary_quota = 0;
+                        $contribution->total = strip_tags($request->total[$key]) ?? 0;                
+                        $contribution->type = 'Planilla';
+                        $contribution->save();
+                        array_push($contributions, $contribution);
+                    }
                 }
-            }
+            //}
         }
         return $contributions;
         //return json_encode($contribution);

@@ -94,6 +94,8 @@ class DocumentController extends Controller
                     ->leftJoin('procedure_modalities', 'retirement_funds.procedure_modality_id', '=', 'procedure_modalities.id')
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('retirement_funds.inbox_state', '=', false)
+                    ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
+                    ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
                     ->get();
                 $documents_edited_total = RetirementFund::select('retirement_funds.id as id')
                     ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')
@@ -212,6 +214,8 @@ class DocumentController extends Controller
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('retirement_funds.inbox_state', '=', true)
                     ->where('retirement_funds.user_id', '=', $user_id)
+                    ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
+                    ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
                     ->get();
                 $documents_received_total = RetirementFund::select('retirement_funds.id as id')
                     ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')

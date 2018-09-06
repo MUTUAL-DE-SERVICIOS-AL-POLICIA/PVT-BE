@@ -393,17 +393,27 @@
         <div class="ibox-content">
             <legend>Direccion del Solicitante (@{{ applicant_type }})</legend>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <div class="form-group"><label class="col-sm-4 control-label">Ciudad</label>
+                        <div class="col-md-8">
+                            <select name="beneficiary_city_address_id" v-model="beneficiary_city_address_id" class="form-control">
+                                <option :value="null"></option>
+                                <option v-for="(city, index) in cities" :value="city.id" >@{{ city.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="form-group"><label class="col-sm-4 control-label">Zona</label>
                         <div class="col-sm-8"><input type="text" name="beneficiary_zone" v-model.trim="beneficiary_zone" class="form-control"></div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group"><label class="col-sm-4 control-label">Calle</label>
                         <div class="col-sm-8"><input type="text" name="beneficiary_street" v-model.trim="beneficiary_street" class="form-control"></div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group"><label class="col-sm-4 control-label">Nro</label>
                         <div class="col-sm-8"><input type="text" name="beneficiary_number_address" v-model.trim="beneficiary_number_address" class="form-control"></div>
                     </div>

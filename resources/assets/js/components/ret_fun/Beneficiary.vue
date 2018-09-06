@@ -170,7 +170,18 @@
         </div>
         <div class="hr-line-dashed"></div>
         <div class="row" v-if="beneficiary.type == 'S'">
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <div class="col-md-4">
+                    <label class="control-label">Ciudad</label>
+                </div>
+                <div class="col-md-8">
+                    <select class="form-control" v-model.trim="beneficiary.address[0].city_address_id" name="beneficiary_city_address_id[]" :disabled="!editable">
+                        <option :value="null"></option>
+                        <option v-for="city in cities" :key="city.id" :value="city.id" >{{ city.name }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
                 <div class="col-md-4">
                     <label class="control-label">Zona</label>
                 </div>
@@ -180,7 +191,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="col-md-4">
                     <label class="control-label">Calle</label>
                 </div>
@@ -190,7 +201,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="col-md-4">
                     <label class="control-label">Numero</label>
                 </div>

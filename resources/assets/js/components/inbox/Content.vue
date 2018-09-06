@@ -17,6 +17,7 @@
                       hide-actions
                       select-all
                       item-key="ci"
+                      :disable-initial-sort="true"
                       class="elevation-1">
             <template slot="headers"
                       slot-scope="props">
@@ -117,8 +118,8 @@
             { text: "# Trámite", value: "code" },
             { text: "CI Titular", align: "left", value: "ci" },
             { text: "Nombre del titular", value: "name" },
-            { text: "Regional", value: "city" },
             { text: "Modalidad", value: "modality" },
+            { text: "Regional", value: "city" },
             { text: "Fecha de Recepción", value: "date_reception" }
           ]
         };
