@@ -308,7 +308,7 @@
                                         <input class="form-control" type="text" placeholder="Cite" v-model="retentionGuarantorCode">
                                     </td>
                                     <td v-if="retentionGuarantor > 0">
-                                        <input class="form-control" type="text" placeholder="# de Contrato de Prestamo" v-model="retentionGuarantorNoteCode">
+                                        <input class="form-control" type="text" placeholder="# de Contrato de Préstamo" v-model="retentionGuarantorNoteCode">
                                     </td>
                                     <td v-if="retentionGuarantor > 0">
                                         <input class="form-control" type="date" v-model="retentionGuarantorDate">
