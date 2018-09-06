@@ -39,11 +39,12 @@
             if (result.value) {
              this.status = true;
              this.docUserIdLocal = result.value.user_id;
-             this.$swal(
-                'Hecho!',
-                'El Trámite fue procesado correctamente.',
-                'success'
-                )
+             this.$swal({
+               type: 'success',
+               title: 'El Trámite fue procesado correctamente.',
+               showConfirmButton: false,
+               timer: 1500
+             })
             }
           });
         },
@@ -77,11 +78,12 @@
           }).then(result => {
             if (result.value) {
              this.status = false;
-             this.$swal(
-                'Hecho!',
-                'El Trámite fue enviado a la bandeja de recibidos.',
-                'success'
-                )
+             this.$swal({
+               type: 'success',
+               title: 'El Trámite fue procesado correctamente.',
+               showConfirmButton: false,
+               timer: 1500
+             })
             }
           });
         },
