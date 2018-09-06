@@ -1,5 +1,6 @@
 <script>
 import {mapGetters, mapMutations} from 'vuex';
+import { flashErrors } from "../../helper.js";
 export default {
     props:['rolId','user', 'inboxState'],
     data(){
@@ -140,25 +141,33 @@ export default {
                 this.$swal({
                     title: `¿Está seguro de enviar (${found.docs.length}) Trámite(s), de ${this.wfCurrentState.name} a ${wfSequenceBackName} ?`,
                     type: "warning",
+                    input: 'textarea',
+                    inputPlaceholder: 'Escriba una nota:',
                     showCancelButton: true,
                     confirmButtonColor: "#59B75C",
                     cancelButtonColor: "#EC4758",
                     confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
                     cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
                     showLoaderOnConfirm: true,
-                    preConfirm: () => {
+                    preConfirm: (message) => {
                         let uri=`/inbox_send_backward`;
                         return axios.post(uri,{
                             wfSequenceBack: this.wfSequenceBack,
-                            docs: found.docs
+                            docs: found.docs,
+                            message: message
                         }).then(response =>{
                             if (!response.data) {
                                 throw new Error(response.errors)
                             }
                             return response.data;
                         }).catch((error) => {
-                            this.$swal.showValidationError(`Solicitud fallida: ${error.response.data.errors}`);
-                            flash('Error al enviar los Trámites: '+error.message,'error');
+                            for (const key in error.response.data.errors) {
+                                let value = error.response.data.errors[key];
+                                if (error.response.data.errors.hasOwnProperty(key)) {
+                                    this.$swal.showValidationError(`Solicitud fallida: ${value}`);
+                                }
+                            }
+                            flashErrors('Error al enviar los Trámites',error.response.data.errors)
                         })
                     },
                     allowOutsideClick: () => !this.$swal.isLoading()
