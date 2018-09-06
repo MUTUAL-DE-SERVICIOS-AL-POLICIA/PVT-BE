@@ -13,6 +13,8 @@ use Auth;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowState;
 use Exception;
+use Muserpol\Models\Workflow\WorkflowRecord;
+use Carbon\Carbon;
 class InboxController extends Controller
 {
     public function received()
@@ -122,6 +124,7 @@ class InboxController extends Controller
             $this->validate($request, [
                 'docs' => 'required|min:1',
                 'wfSequenceBack' => 'required',
+                'message' => 'required',
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
@@ -156,6 +159,14 @@ class InboxController extends Controller
                     $ret_fun->wf_state_current_id = $wf_state_back_id;
                     $ret_fun->inbox_state = false;
                     $ret_fun->save();
+                    $wf_record = new WorkflowRecord() ;
+                    $wf_record->user_id = Auth::user()->id;
+                    $wf_record->wf_state_id = $wf_state_back_id;
+                    $wf_record->ret_fun_id = $ret_fun->id;
+                    $wf_record->date = Carbon::now();
+                    $wf_record->record_type_id = 2;
+                    $wf_record->message = "El usuario " . Auth::user()->username . " devolvio el trámite " . $ret_fun->code . " con nota: " . $request->message . ".";
+                    $wf_record->save();
                 }
                 break;
             default:
