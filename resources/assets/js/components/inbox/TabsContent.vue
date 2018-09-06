@@ -119,7 +119,12 @@ export default {
                     if (result.value) {
                         flash('Trámites enviados correctamente');
                         this.$store.commit("inbox/clear", this.activeWorkflowId);
-                        this.$swal('Hecho!', 'Los Trámites fueron enviados correctamente.','success')
+                        this.$swal({
+                            type: 'success',
+                            title: 'Los Trámites fueron enviados correctamente.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         this.getData();
                         this.classification(this.activeWorkflowId);
                     }
@@ -175,7 +180,12 @@ export default {
                     if (result.value) {
                         flash('Trámites enviados correctamente');
                         this.$store.commit("inbox/clear", this.activeWorkflowId);
-                        this.$swal('Hecho!', 'Los Trámites fueron enviados correctamente.','success')
+                        this.$swal({
+                            type: 'success',
+                            title: 'Los Trámites fueron enviados correctamente.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         this.getData();
                         this.classification(this.activeWorkflowId);
                     }
