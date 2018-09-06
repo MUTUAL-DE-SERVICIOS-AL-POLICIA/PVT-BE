@@ -892,7 +892,7 @@ class RetirementFundCertificationController extends Controller
         $quantity = Util::getRetFunCurrentProcedure()->contributions_number;        
         $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)  
                                 ->whereIn('contribution_type_id',$valid_contributions)
-                                ->orderBy('month_year')
+                                ->orderByDesc('month_year')
                                 ->take($quantity)
                                 ->get();                
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
@@ -1081,7 +1081,7 @@ class RetirementFundCertificationController extends Controller
                             $query->where('contribution_type_id',$security_contributions->id)
                             ->orWhere('contribution_type_id',$security_no_contributions->id);
                         })
-                        ->orderBy('month_year')                        
+                        ->orderBy('month_year', 'desc')                        
                         ->get();
         $contributions_number = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id',$security_contributions->id)->count();
         $contributions_total = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id',$security_contributions->id)->sum('total');
@@ -1156,7 +1156,7 @@ class RetirementFundCertificationController extends Controller
                             ->orWhere('contribution_type_id',$certification_no_contribution->id)
                             ->orWhere('contribution_type_id',9);
                         })
-                        ->orderBy('month_year')                        
+                        ->orderByDesc('month_year')                        
                         ->get();
         // 9 id periodo no  trabajado
         $contributions_number = Contribution::where('affiliate_id', $affiliate->id)->whereIn('contribution_type_id',[$certification_contribution->id,9])->count();
