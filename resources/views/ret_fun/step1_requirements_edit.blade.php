@@ -60,8 +60,11 @@
                                 <div class="row">
                                     <div :class="editing?'col-md-10':'col-md-10'">
                                         <div class="vote-actions">
-                                            <h1>
-                                                @{{rq.number}}
+                                            <h1 v-if="rq.number < 1000">
+                                                @{{rq.number}}                                                
+                                            </h1>
+                                            <h1 v-else>
+                                                A
                                             </h1>
                                         </div> 
                                         <span class="vote-title">@{{rq.document}}</span>
@@ -88,7 +91,7 @@
                         </div>
                     </div>
                     <br>
-                    <div> 
+                    <div v-if='rol != 11'> 
                         <h4>Documentos adicionales</h4>
                         <select data-placeholder="Documentos adicionales..." class="chosen-select" id="aditional_requirements" name="aditional_requirements[]" multiple="" style="width: 350px; display: none;" tabindex="-1" v-bind:disabled="!editing">
                             <option v-for="(requirement, index) in aditionalRequirements"  :value="requirement.id" :key="`nonselected-${index}`">@{{ requirement.document }} </option>

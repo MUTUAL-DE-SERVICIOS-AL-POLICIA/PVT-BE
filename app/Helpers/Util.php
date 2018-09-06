@@ -610,4 +610,50 @@ class Util
             break;
         }
     }
+
+    public static function getRegistration($birth_date = null, $last_name, $mothers_last_name, $first_name, $gender)
+	{        
+		if ($birth_date) {
+			$birth_date_exploded = explode("-", $birth_date);
+			$day = $birth_date_exploded[2];
+			$month = $birth_date_exploded[1];
+			$year = substr($birth_date_exploded[0], -2);
+			$month_first_digit = substr($month, 0, 1);
+            $month_second_digit = substr($month, 1, 1);
+            
+			if($last_name  != '') {
+				$last_name_code = mb_substr($last_name, 0, 1);
+			} else {
+				$last_name_code = '';
+            }
+            
+			if($mothers_last_name != '') {
+				$mothers_last_name_code = mb_substr($mothers_last_name, 0, 1);
+			} else {				
+				$mothers_last_name_code = mb_substr($last_name, 1, 1);
+            }
+            
+			if($first_name != '') {
+				$first_name_code = mb_substr($first_name, 0, 1);
+			} else {
+				$first_name_code = '';
+            }
+            
+			if($gender == "M") {
+				return $year . $month . $day . $last_name_code . $mothers_last_name_code . $first_name_code;
+            } elseif ($gender == "F") {
+				if($month_first_digit == 0) {
+					$month_second_digit = "5" .$month_second_digit;
+				} elseif ($month_first_digit == 1) {
+					$month_second_digit = "6" . $month_second_digit;
+				}
+				return $year . $month_second_digit . $day . $last_name_code . $mothers_last_name_code . $first_name_code;
+			}
+        }
+        else {
+            return null;
+        }
+    }
+
+
 }
