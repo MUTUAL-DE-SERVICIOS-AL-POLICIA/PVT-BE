@@ -331,7 +331,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 			return view('print_global.report', $data);
 			return $filter->all();
-		})->name('print_pre_qualification.pdf');
+		})->name('print_pre_qualification');
 	});
 });
 

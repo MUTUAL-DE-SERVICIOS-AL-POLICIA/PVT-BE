@@ -96,9 +96,9 @@
                     <tr class="font-medium text-white text-sm text-center">
                         <td>Nº</td>
                         <td>NOMBRES Y APELLIDOS</td>
-                        <td>C.I.</td>
+                        <td>CÉDULA DE IDENTIDAD</td>
                         <td>FRPS</td>
-                        <td>DEVOLUCIÓN</td>
+                        <td>RECONOCIMIENTO DISP.</td>
                         <td>TOTAL A PAGAR</td>
                     <tr></tr>
                 </thead>
