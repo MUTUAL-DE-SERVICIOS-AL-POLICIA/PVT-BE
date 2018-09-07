@@ -111,9 +111,9 @@
                             <td class="px-5 text-right">{{ $index++ }}</td>
                             <td class="px-15 text-left">{{ $item->affiliate->fullName() }}</td>
                             <td class="px-15 text-left">{{ $item->affiliate->ciWithExt() }}</td>
-                            <td class="px-15 text-right">{{ $item->total }}</td>
-                            <td class="px-15 text-right">0</td>
-                            <td class="px-15 text-right">{{ $item->total }}</td>
+                            <td class="px-15 text-right">{{ Util::formatMoney($item->total_ret_fun) }}</td>
+                            <td class="px-15 text-right">{{ Util::formatMoney($item->total_availability) ?? 0 }}</td>
+                            <td class="px-15 text-right">{{ Util::formatMoney($item->total) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
