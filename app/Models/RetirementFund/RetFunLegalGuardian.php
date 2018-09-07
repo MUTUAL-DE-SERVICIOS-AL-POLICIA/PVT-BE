@@ -14,4 +14,8 @@ class RetFunLegalGuardian extends Model
     {
         return Util::fullName($this, $style);
     }
+    public function city_identity_card()
+    {
+        return $this->belongsTo(\Muserpol\Models\City::class, 'city_identity_card_id', 'id');
+    }
 }

@@ -939,7 +939,7 @@ class RetirementFundController extends Controller
                 $beneficiary->first_name = mb_strtoupper(trim($new_ben['first_name']));
                 $beneficiary->second_name = mb_strtoupper(trim($new_ben['second_name']));
                 $beneficiary->surname_husband = mb_strtoupper(trim($new_ben['surname_husband']));
-                $beneficiary->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date; ;
+                $beneficiary->birth_date = Util::verifyBarDate($new_ben['birth_date']) ? Util::parseBarDate($new_ben['birth_date']) : $new_ben['birth_date'];
                 $beneficiary->gender = $new_ben['gender'];
                 $beneficiary->state = $new_ben['state'];
                 // $old_ben->state = $new_ben['state'];

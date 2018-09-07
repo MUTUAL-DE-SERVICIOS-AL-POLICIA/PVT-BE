@@ -16,7 +16,7 @@
                     {{ $actual_city }}, {{ $actual_date }}
                  </span>
                 <span class="block">
-                   DBE/UFRPSCAM/AL-DL N° {{ $correlative }}
+                   DBE/UFRPSCAM/AL-DL N° {{ $correlative->code }}
                  </span>
             </div>
             <div class="block">
