@@ -885,7 +885,7 @@ class RetirementFundCertificationController extends Controller
     }
 
     public function printCertification($id)
-    {        
+    {                
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;        
         $valid_contributions = ContributionType::select('id')->where('operator','+')->pluck('id');

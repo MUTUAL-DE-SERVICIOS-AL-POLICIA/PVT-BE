@@ -62,7 +62,7 @@ class ReimbursementController extends Controller
        }
          //*********END VALIDATOR************//
 
-        $category = Category::find($request->category);    
+        //$category = Category::find($request->category);    
          //return $request->affiliate_id;
         $reim = new Reimbursement();
         $reim->user_id = Auth::user()->id;
@@ -76,7 +76,7 @@ class ReimbursementController extends Controller
             $reim->base_wage = strip_tags($request->base_wage) ?? $reim->base_wage;
 
         $reim->base_wage = $request->salary;        
-        $reim->seniority_bonus = $category->percentage*$reim->base_wage;
+        $reim->seniority_bonus = strip_tags($request->seniority_bonus) ?? 0;
         $reim->study_bonus = 0;
         $reim->position_bonus = 0;
         $reim->border_bonus = 0;
