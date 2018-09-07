@@ -1389,7 +1389,22 @@ class RetirementFundCertificationController extends Controller
             $payment.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card." en la suma de Bs ".Util::formatMoney($loan->amount)." (".Util::convertir($discount->pivot->amount);
         }
         $payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->code??'sin nro')." y la nota ".($discount->pivot->note_code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones. Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".strtoupper($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>"; 
-        $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., el monto de Bs ".Util::formatMoney($retirement_fund->total_ret_fun)." (".Util::convertir($retirement_fund->total_ret_fun).").";
+        if($retirement_fund->procedure_modality_id == 4) {
+            $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->get();
+            foreach($beneficiaries as $beneficiary){
+                $birth_date = Carbon::createFromFormat('d/m/Y', $beneficiary->birth_date);                
+                if(date('Y') -$birth_date->format('Y') > 18) {
+                $payment .=$beneficiary->gender=='M'?'Sr.':'Sra. ';
+                } else {
+                    $payment .='Menor ';
+                }
+                $payment .= $beneficiary->fullName()." con C.I. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened.', en el monto de FORMAT MONEY '.'en calidad de '.$beneficiary->kinship->name."<br><br>";
+                //$years_old = date('y')-
+            }            
+        } else {
+            $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., el monto de Bs ".Util::formatMoney($retirement_fund->total_ret_fun)." (".Util::convertir($retirement_fund->total_ret_fun).").";
+        }        
+        
         ///------EN  PAYMENT ------///
         $number = Util::getNextAreaCode($retirement_fund->id);
 
