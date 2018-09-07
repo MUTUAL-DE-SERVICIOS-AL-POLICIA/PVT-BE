@@ -115,7 +115,8 @@ class ID
 			'invalidez'	=>	6,
 			'baja_forzoso'	=>	7,
 			'baja_voluntario'	=>	8,
-			'baja_temporal'	=>	9
+			'baja_temporal'	=>	9,
+			'agregado_policial'=>10
 		];
 		return((object)$Ids);
 	}

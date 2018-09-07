@@ -58,68 +58,68 @@ class ContributionCommitmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request 
+     * @param  \Illuminate\Http\Request  $request
      * @param  \Muserpol\ContributionCommitment  $contributionCommitment
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {        
+    {
        //*********START VALIDATOR************//
 
        $date_commision = $request->commision_date;
        $limit=Carbon::now()->subDays(121);
-       $rules = [           
+       $rules = [
           'number' => 'required',
           //'commision_date' => 'required|date|date_format:Y-m-d|after:'.$limit,
-          'destination' => 'required', 
-          'commitment_type' => 'required' 
+          'destination' => 'required',
+          'commitment_type' => 'required'
           ];
      //     return $rules;
         $messages = [
-          'number.required' => __('validation.memorandum'),    
-          'commision_date.after' => __('validation.limit_days'),        
-      ];  
+          'number.required' => __('validation.memorandum'),
+          'commision_date.after' => __('validation.limit_days'),
+      ];
       $validator = Validator::make($request->all(),$rules,$messages);
       if($validator->fails()){
           return response()->json($validator->errors(), 406);
       }
        //*********END VALIDATOR************//
-        
+
         if($id == -1){
             $commitment = ContributionCommitment::find($request->id);
             $this->authorize('update', $commitment);
             $commitment->state = 'BAJA';
             $commitment->save();
-            $commitment->delete();            
+            $commitment->delete();
             return $commitment;
-        }                
-        
-        if($request->id==0){            
-            $commitment = new ContributionCommitment();  
-            $this->authorize('update', $commitment);          
-            $commitment->affiliate_id = $request->affiliate_id;            
         }
-        else 
+
+        if($request->id==0){
+            $commitment = new ContributionCommitment();
+            $this->authorize('update', $commitment);
+            $commitment->affiliate_id = $request->affiliate_id;
+        }
+        else
             $commitment = ContributionCommitment::find($request->id);
-            $this->authorize('update', $commitment);                
+            $this->authorize('update', $commitment);
         $commitment->commitment_type = $request->commitment_type;
         $commitment->commitment_date = $request->commitment_date;
         $commitment->number = $request->number;
         $commitment->destination = $request->destination;
         $commitment->commision_date = $request->commision_date;
         $commitment->state = "ALTA";
-                
-        $commitment->save();    
+
+        $commitment->save();
         ///'COMISION', 'BAJA TEMPORAL','AGREGADO POLICIAL'
         $affiliate = Affiliate::find($commitment->affiliate_id);
         if($commitment->commitment_type == 'COMISION')
-            $affiliate->affiliate_state_id = 2;
+            $affiliate->affiliate_state_id = ID::affiliateState()->comision;
         if($commitment->commitment_type == 'BAJA TEMPORAL')
-            $affiliate->affiliate_state_id = 9;
+            $affiliate->affiliate_state_id = ID::affiliateState()->baja_temporal;
         if($commitment->commitment_type == 'AGREGADO POLICIAL')
-            $affiliate->affiliate_state_id = 10;
+            $affiliate->affiliate_state_id = ID::affiliateState()->agregado_policial;
         $affiliate->save();
-        return $commitment;     
+        return $commitment;
     }
     /**
      * Remove the specified resource from storage.
