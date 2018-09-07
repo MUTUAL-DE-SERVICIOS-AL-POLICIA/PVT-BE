@@ -294,7 +294,7 @@ class Util
             // $valor_convertido = $converted . strtoupper($moneda);
             $valor_convertido = $converted . '00/100';
         } else {
-            $valor_convertido = $converted . strtoupper($moneda)  . ($div_decimales[1]) . '/100 ';
+            $valor_convertido = $converted . strtoupper($moneda)  . ($div_decimales[1]) . '/100';
             // $valor_convertido = $converted . strtoupper($moneda) . ' CON ' . $decimales . ' ' . strtoupper($centimos);
         }
         return $valor_convertido;
@@ -653,6 +653,14 @@ class Util
         else {
             return null;
         }
+    }
+
+    // utils for prints
+
+    
+    public static function formatMoneyWithLiteral($value)
+    {
+        return self::formatMoney($value, true) .' ('. self::convertir($value).' BOLIVIANOS)';
     }
 
 
