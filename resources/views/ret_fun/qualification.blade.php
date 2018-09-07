@@ -86,7 +86,7 @@
                 <div class="ibox">
                     <div class="ibox-content forum-container">
                         <div class="forum-title">
-                            <h3>Años de servicio segun certificacion del comando general de la Policia</h3>
+                            <h3>Años de servicio según certificación del Comando General de la Policía</h3>
                         </div>
                         <div class="row">
                             <div class="col-xs-offset-3 col-md-9">
@@ -135,7 +135,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Tipo de contribucion</th>
+                                            <th>Tipo de contribución</th>
                                             <th class="text-center">Operacion</th>
                                             <th class="text-center">Años</th>
                                             <th class="text-center">Meses</th>
