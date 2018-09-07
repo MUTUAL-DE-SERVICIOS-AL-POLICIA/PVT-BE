@@ -289,6 +289,7 @@ Route::group(['middleware' => ['auth']], function () {
 								$view = View::make('ret_fun.legal_opinion.footer', ['title' => 'Arjun']);
 								$footer = $view->render();
 								$content = $header. ' '. $content .' '.$footer;
+
 								$pdf = \App::make('snappy.pdf.wrapper');
 								$pdf->loadHTML($content);
 								return $pdf->setPaper('letter')
