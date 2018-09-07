@@ -384,9 +384,9 @@ class RetirementFundCertificationController extends Controller
         $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
         $dates = array(
             'dates' => $affiliate->getDatesGlobal(),
-            'name' => "Años de servicio segun certificacion del comando general de la Policia",
+            'name' => "Años de servicio según certificación del Comando General de la Policía",
             'operator' => '**',
-            'description' => "Años de servicio segun certificacion del comando general de la Policia",
+            'description' => "Años de servicio según certificación del Comando General de la Policía",
             'years' => $affiliate->service_years,
             'months' => $affiliate->service_months,
         );
