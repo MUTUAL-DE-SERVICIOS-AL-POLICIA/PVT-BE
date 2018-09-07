@@ -5,6 +5,13 @@
     <div class="col-lg-9">
         {!!Breadcrumbs::render('inbox')!!}
     </div>
+    <div class="col-lg-5" style="padding-top: 15px">
+        @if(Util::getRol()->id == 13)
+            <button class="btn btn-warning dim"
+            onclick="printJS({printable:'{!! route('print_pre_qualification') !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"
+            > <i class="fa fa-print"></i> Imprimir Pre calificados </button>
+        @endif
+    </div>
 </div>
 <div class="wrapper wrapper-content">
     <div class="row">
