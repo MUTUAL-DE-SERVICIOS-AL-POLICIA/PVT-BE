@@ -657,7 +657,14 @@ class Util
 
     // utils for prints
 
-    
+    public static function formatMonthYearLiteral($number)
+    {
+        $years = intval($number/12);
+        $months = $number%12;
+        $years_literal = ($years > 0) ? ( $years == 1 ? 'año' :'años') : null;
+        $months_literal = ($months > 0) ? ( $months == 1 ? 'mes' :'meses') : null;
+        return self::removeSpaces(($years_literal ? $years. ' '. $years_literal : null). ' '. ($months_literal ? $months . ' ' . $months_literal : null) );
+    }
     public static function formatMoneyWithLiteral($value)
     {
         return self::formatMoney($value, true) .' ('. self::convertir($value).' BOLIVIANOS)';
