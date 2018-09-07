@@ -590,8 +590,9 @@ class QuotaAidMortuaryController extends Controller
         $procedure_requirements = ProcedureRequirement::
                                     select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
                                     ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')                                    
+                                    ->where('procedure_requirements.number','!=','0')
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
-                                    ->orderBy('procedure_requirements.number','ASC')
+                                    ->orderBy('procedure_requirements.number','ASC')                                    
                                     ->get();
         
         $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
