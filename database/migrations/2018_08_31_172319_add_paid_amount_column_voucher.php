@@ -27,6 +27,8 @@ class AddPaidAmountColumnVoucher extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('vouchers', function ($table) {
+            $table->dropColumn(['paid_amount','bank','bank_pay_number']);
+        });
     }
 }
