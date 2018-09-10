@@ -1221,7 +1221,7 @@ class RetirementFundCertificationController extends Controller
                 ->stream("$namepdf");
     }
     public function printLegalDictum($id) {
-
+        
         $retirement_fund = RetirementFund::find($id);
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
         $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderByDesc('type')->orderBy('id')->get();        
@@ -1240,7 +1240,15 @@ class RetirementFundCertificationController extends Controller
         /** END PERSON DATA */
 
         /** LAW DATA */
-        $law = "Conforme normativa, el trámite N° ".$retirement_fund->code." de la Regional ".$retirement_fund->city_start->name." es ingresado por Ventanilla
+        $art = [
+            '3' => 'a)',
+            '4' => 'b)',
+            '5' => 'c)',
+            '6' => 'c.1)',
+            '7' => 'd)',
+        ];
+
+        $law = "Conforme normativa, el trámite N° ".$retirement_fund->code." de la Regional ".ucwords($retirement_fund->city_start->name)." es ingresado por Ventanilla
         de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio
         Mortuorio; verificados los requisitos y la documentación presentada por la parte solicitante
         según lo señalado el Art. 41 inciso a) del Reglamento de Fondo de Retiro Policial Solidario
@@ -1258,7 +1266,7 @@ class RetirementFundCertificationController extends Controller
         $body_file = "";    
         $file_id = 20;
         $file = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$file_id)->first();
-        $body_file .= "Que, mediante Certificación ". $file->code .", de Archivo de la Dirección de Beneficios Económicos de fecha ". Util::getStringDate($file->date) .", se establece que el trámite signado con el N° ". $retirement_fund->code." ";
+        $body_file .= "Que, mediante Certificación N° ". $file->code .", de Archivo de la Dirección de Beneficios Económicos de fecha ". Util::getStringDate($file->date) .", se establece que el trámite signado con el N° ". $retirement_fund->code." ";
         $discount = $retirement_fund->discount_types();
         $finance = $discount->where('discount_type_id','1')->first();
         if(isset($finance->id) && $finance->amount > 0)        
@@ -1283,18 +1291,21 @@ class RetirementFundCertificationController extends Controller
         ////-----LEGAL REVIEW ----////      
         $body_legal_review   = "";
         $legal_review_id = 21;
-        $legal_review = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$file_id)->first();
-        $body_legal_review .= "Que, mediante Certificación N° ".$legal_review->code." del Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ".Util::getStringDate($legal_review->date).", fue verificada y validada la documentación presentada por el titular del trámite signado con el N° ".$retirement_fund->code.".";
+        $legal_review = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$legal_review_id)->first();
+        $body_legal_review .= "Que, mediante Certificación N° ".$legal_review->code." del Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ".Util::getStringDate($legal_review->date).", fue verificada y validada la documentación presentada por ".($retirement_fund->procedure_modality_id == 4?"los beneficiarios":"el titular") ." del trámite signado con el N° ".$retirement_fund->code.".";
         /////-----END LEGAL REVIEW----///
         
         ///------ INDIVIDUAL ACCCOUTNS ------////    
         $body_accounts = "";           
         $accounts_id = 22;
-        $accounts = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$file_id)->first();
+        $accounts = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$accounts_id)->first();
         $availability_code = 10;
         $availability_number_contributions = Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$availability_code)->count();
-        $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes de su destino a disponibilidad de la letra (reserva activa) del titular. Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad.";
+        $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes de su destino a disponibilidad de la letra (reserva activa) del titular.";
 
+        if($affiliate->hasAvailability()) {
+            $body_accounts .="Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad.";
+        }
         ////------- INDIVIDUAL ACCOUTNS ------////
 
         //----- QUALIFICATION -----////      
@@ -1427,6 +1438,7 @@ class RetirementFundCertificationController extends Controller
             'body_qualification'  =>  $body_qualification,
             'body_due'  =>  $body_due,
             'payment'   =>  $payment,
+            'art'   =>  $art,
         ];
 
         return \PDF::loadView('ret_fun.print.legal_dictum', $data)
