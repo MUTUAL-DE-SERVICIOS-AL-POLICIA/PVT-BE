@@ -65,6 +65,18 @@
                     <div >
                         <b>CONSIDERANDO:   </b>
                     </div>
+                    <div>
+                        {!! $body_finance !!} 
+                        <br>
+                    </div>
+                    <div>
+                        {!! $reception !!}
+                        <br>
+                    </div>
+                    <div>
+                        {!! $body_qualification !!}
+                        <br>
+                    </div>
                 <div >
 
         </div>
