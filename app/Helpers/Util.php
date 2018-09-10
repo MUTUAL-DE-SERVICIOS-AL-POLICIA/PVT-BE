@@ -663,7 +663,7 @@ class Util
         $months = $number%12;
         $years_literal = ($years > 0) ? ( $years == 1 ? 'año' :'años') : null;
         $months_literal = ($months > 0) ? ( $months == 1 ? 'mes' :'meses') : null;
-        return self::removeSpaces(($years_literal ? $years. ' '. $years_literal : null). ' '. ($months_literal ? $months . ' ' . $months_literal : null) );
+        return self::removeSpaces(($years_literal ? $years. ' '. $years_literal : null). ' '.($years_literal && $months_literal ? 'y ':''). ($months_literal ? $months . ' ' . $months_literal : null) );
     }
     public static function formatMoneyWithLiteral($value)
     {
