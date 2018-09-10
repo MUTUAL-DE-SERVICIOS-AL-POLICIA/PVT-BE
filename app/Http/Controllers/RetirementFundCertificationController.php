@@ -1261,7 +1261,7 @@ class RetirementFundCertificationController extends Controller
         $body_file .= "Que, mediante Certificación ". $file->code .", de Archivo de la Dirección de Beneficios Económicos de fecha ". Util::getStringDate($file->date) .", se establece que el trámite signado con el N° ". $retirement_fund->code." ";
         $discount = $retirement_fund->discount_types();
         $finance = $discount->where('discount_type_id','1')->first();
-        if(isset($finance->id))        
+        if(isset($finance->id) && $finance->amount > 0)        
             $body_file .= "si tiene expediente del referido titular por concepto de anticipo en el monto de ".Util::formatMoneyWithLiteral($finance->pivot->amount).".";
         else 
             $body_file .= "no tiene expediente del referido titular.";            
@@ -1272,7 +1272,7 @@ class RetirementFundCertificationController extends Controller
         $finance = $discount->where('discount_type_id','1')->first();
         $body_finance = "";
         $body_finance = "Que, mediante nota de respuesta ".($finance->pivot->code ?? 'sin cite')." de la Dirección de Asuntos Administrativos de fecha ". Util::getStringDate(($finance->pivot->date??'')).", refiere que el titular del beneficio ";
-        if(isset($finance->id)){
+        if(isset($finance->id) && $finance->amount > 0){
             $body_finance .= "si cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial en el monto de " .Util::formatMoneyWithLiteral(($finance->pivot->amount??0)).".";
         }
         else{
@@ -1313,7 +1313,7 @@ class RetirementFundCertificationController extends Controller
         $discounts = $retirement_fund->discount_types();
         $discount = $discounts->where('discount_type_id','3')->first();
         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-        $body_due = "Que, mediante nota ".($discount->pivot->note??'Sin nota'). " de la fecha ".Util::getStringDate(($discount->pivot->date??'')). ", la Dirección de Estrategias Sociales e Inversiones, refiere que la titular cuentacertr no cuenta con deuda en curso de pago a MUSERPOL y por concepto de garantes adeuda a los señores ";        
+        $body_due = "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la fecha ".Util::getStringDate(($discount->pivot->date??'')). ", la Dirección de Estrategias Sociales e Inversiones, refiere que la titular no cuenta con deuda en curso de pago a MUSERPOL y por concepto de garantes adeuda a los señores ";        
         $num_loans = $loans->count();        
         $i=0;
         foreach($loans as $loan){
@@ -1327,7 +1327,7 @@ class RetirementFundCertificationController extends Controller
             }
             $body_due.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card." en la suma de Bs ".Util::formatMoney($loan->amount)." (".Util::convertir($discount->pivot->amount);
         }
-        $body_due .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->code??'sin nro')."."; 
+        $body_due .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note??'sin nro')."."; 
         
 
 
@@ -1352,13 +1352,13 @@ class RetirementFundCertificationController extends Controller
 
         $discount = $discounts->where('discount_type_id','1')->first();
         
-        if(isset($discount->id)){            
+        if(isset($discount->id) && $discount->amount > 0){            
             $payment.="Bs ".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).") por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);            
         }
         
         $discounts = $retirement_fund->discount_types();
         
-        if(isset($discount->id)){
+        if(isset($discount->id) && $discount->amount > 0){
             $payment .= $this->getFlagy(3,2);
             // if($flagy == 1)
             // $body .= " y la suma de ";
@@ -1745,7 +1745,7 @@ class RetirementFundCertificationController extends Controller
         $finance = $discount->where('discount_type_id','1')->first();
         $body_finance = "";
         $body_finance = "Que, mediante nota de respuesta de la Dirección Administrativa Financiera con Cite: ".$finance->pivot->code ." de fecha ". Util::getStringDate($finance->pivot->date).",";
-        if(isset($finance->id)){
+        if(isset($finance->id) && $finance->amount > 0){
             $body_finance .= "se evidencia anticipo por concepto de Fondo de Retiro Policial en el monto de ".Util::formatMoney($finance->pivot->amount)." (".Util::convertir($finance->pivot->amount).").<br>";
         }
         else{
