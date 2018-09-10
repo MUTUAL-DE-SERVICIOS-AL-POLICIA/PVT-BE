@@ -40,7 +40,7 @@
                         RESOLUCI&Oacute;N DE LA COMISI&Oacute;N DE BENEFICIOS ECON&Oacute;MICOS
                     </div>
             <span class="block text-center">
-                N° {{ $correlative }}
+                N° {{ $correlative->code }}
               </span>
         </div>
         <div class="block">

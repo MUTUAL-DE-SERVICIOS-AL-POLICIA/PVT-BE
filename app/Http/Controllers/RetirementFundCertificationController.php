@@ -1638,86 +1638,93 @@ class RetirementFundCertificationController extends Controller
         ]; 
 
         $law = 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
-        NATURALEZA JURÍDICA, Parágrafo I establece: “Se crea la Mutual de Servicios al Policía –
+        NATURALEZA JURÍDICA, Parágrafo I establece: <i>“Se crea la Mutual de Servicios al Policía –
         MUSERPOL, como institución pública descentralizada, de duración indefinida y patrimonio
         propio, con autonomía de gestión administrativa, financiera, legal y técnica, bajo tuición del
-        Ministerio de Gobierno.” El Artículo 5 del ÁMBITO DE APLICACIÓN, Parágrafos I y II, refiere: “I.
+        Ministerio de Gobierno.”</i> El Artículo 5 del ÁMBITO DE APLICACIÓN, Parágrafos I y II, refiere: <i>“I.
         El presente Decreto Supremo es aplicable a todas y todos los afiliados activos y pasivos de la
         Policía Boliviana, así como a sus beneficiarios de acuerdo a reglamento. II. Para los afiliados
         activos y pasivos de la Policía Boliviana que hayan sido dados de baja, de forma voluntaria o
         forzosa, los beneficios establecidos en el presente Decreto Supremo estarán sujetos a
-        reglamentación interna”.
+        reglamentación interna”</i>.<br><br>
         Que, el Decreto Supremo N° 2829, de 06 de julio de 2016, modificatorio al Decreto Supremo Nº
         1446 de 19 de diciembre de 2012, en el Artículo 2 de las MODIFICACIONES, Parágrafo III
-        señala: “Se modifica el Parágrafo II del Artículo 14 del Decreto supremo Nº 1446, de 19 de
-        diciembre de 2012, con el siguiente texto: “II. El aporte y pago de los beneficios establecidos en
+        señala: <i>“Se modifica el Parágrafo II del Artículo 14 del Decreto supremo Nº 1446, de 19 de
+        diciembre de 2012, con el siguiente texto: II. El aporte y pago de los beneficios establecidos en
         los incisos a) (Fondo de Retiro) y b) del Parágrafo precedente, serán objeto de un estudio
         técnico financiero y estudio actuarial que asegure su sostenibilidad, en el marco del principio de
-        solidaridad”.
+        solidaridad”</i>.<br><br>
         Que, el Decreto Supremo N°3231, de 28 de junio de 2017, modificatoria al Decreto Supremo Nº
         1446 de 19 de diciembre de 2012, en el Artículo 2 de las MODIFICACIONES, Parágrafos I, III,
-        IV, V y VI señala: “I. Se modifica el inciso c) del Artículo 3 del Decreto Supremo N°1446, de 19
+        IV, V y VI señala: <i>“I. Se modifica el inciso c) del Artículo 3 del Decreto Supremo N°1446, de 19
         de diciembre de 2012, con el siguiente texto: “c) Otorgar el beneficio variable del Fondo de
-        Retiro Policial Solidario, en el marco del principio de Solidaridad;” III. Se modifica el inciso a) del
+        Retiro Policial Solidario, en el marco del principio de Solidaridad; III. Se modifica el inciso a) del
         Parágrafo I del Artículo 12 del Decreto Supremo N°1446, de 19 de diciembre de 2012, con el
-        siguiente texto: “a) Los aportes de los afiliados del sector activo de la Policía Boliviana
+        siguiente texto: a) Los aportes de los afiliados del sector activo de la Policía Boliviana
         transferidos por el Comando General de acuerdo a estudio actuarial aprobado; IV. Se modifica
         el inciso a) del Parágrafo I del Artículo 14 del Decreto Supremo N°1446, de 19 de diciembre de
-        2012, con el siguiente texto: “a) Fondo de Retiro Policial Solidario”; “V. Se modifica el Parágrafo
+        2012, con el siguiente texto: “a) Fondo de Retiro Policial Solidario; V. Se modifica el Parágrafo
         III del Artículo 14 del Decreto Supremo N°1446, de 19 de diciembre de 2012, con el siguiente
         texto: “III. Los beneficios señalados en el presente Artículo se rigen por los principios de
         equidad y solidaridad, debiendo ser otorgados a todos los afiliados, aportantes de la Policía
-        Boliviana en sus diferentes sectores y niveles sin ninguna distinción”; “VI. Se modifica el Artículo
+        Boliviana en sus diferentes sectores y niveles sin ninguna distinción; VI. Se modifica el Artículo
         15 del Decreto Supremo N°1446, de 19 de diciembre de 2012, con el siguiente texto:
         ARTICULO 15 (FONDO DE RETIRO POLICIAL SOLIDARIO). Es el beneficio que brinda
         protección a los miembros del servicio activo y sus derechohabientes, mediante el
         reconocimiento de un pago único, con motivo y oportunidad del retiro definitivo de la actividad
         remunerada dependiente de la Policía Boliviana, el cual será administrado por la MUSERPOL; a
         ser otorgado en el marco del principio de solidaridad, cuando el retiro se produzca por: a)
-        Jubilación, b) Fallecimiento del titular, c) Retiro forzoso, d) Retiro voluntario”.
+        Jubilación, b) Fallecimiento del titular, c) Retiro forzoso, d) Retiro voluntario”</i>.<br><br>
         Que, el Estudio Matemático Actuarial 2016 – 2020, aprobado mediante Resolución de Directorio
         Nº 26/2017, de 11 de agosto de 2017, determina la modalidad y parámetros de calificación para
         la otorgación del beneficio de Fondo de Retiro Policial Solidario.
         <br><br>
         Que, el Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de
         Directorio Nº 31/2017 de 24 de agosto de 2017 y modificado mediante Resolución de Directorio
-        Nº 36/2017 de 20 de septiembre de 2017, Artículos 2,3,5,7,8,10,12,13,15,26,27,'.$art[$retirement_fund->procedure_modality_id].',37,39,41,44
+        Nº 36/2017 de 20 de septiembre de 2017, Artículos 2,3,5,7,8,10,12,13,15,26,27,'.$art[$retirement_fund->procedure_modality_id].',37,41,44
         y 45, reconocen el derecho de la otorgación del pago de Fondo de Retiro Policial Solidario.
         <br><br>
         Que, el Reglamento de Fondo de Retiro Policial Solidario, Artículo 15 del RECONOCIMIENTO
         DE LOS APORTES, señala: “La MUSERPOL reconoce la densidad de aportes efectuados a
         partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía
         Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”.
-        <br><br>
-        Que, el Reglamento de Fondo de Retiro Policial Solidario, Artículo 20 de la PROCEDENCIA del
-        pago global, Parágrafo I señala: “El pago global de aportes procederá, cuando el afiliado no
-        haya cumplido con 60 cotizaciones (5 años) para acceder al pago del Fondo de Retiro Policial
-        Solidario, antes de su desvinculación laboral con la Policía Boliviana, siendo las causales
-        reconocidas para acceder a este pago el fallecimiento o retiro forzoso por invalidez
-        permanente.”.
-        <br><br>
-        Que, el Reglamento de Fondo de Retiro Policial Solidario, Artículo 45 del PROCESAMIENTO,
-        punto 6 refiere: “Con la liquidación, el trámite será remitido a Jefatura para la verificación de
-        actuados y puesta en conocimiento a la Dirección de Estrategias Sociales e Inversiones”
-        Artículo 73 de la Retención por Garantes, refiere: “Para dar curso a la solicitud de recuperación
-        de deuda efectuada por la Dirección de Estrategias Sociales e Inversiones, ésta deberá contar
-        con respaldo documental que el titular tiene conocimiento que se efectuará un descuento a
-        favor de su garante con cargo a su beneficio de Fondo de Retiro Policial”.
-        <br><br>
-        Que, el Reglamento de Fondo de Retiro Policial Solidario, Artículo 52 de los Anticipos de Fondo
-        de Retiro, Parágrafo II, refiere: “II El saldo pendiente de pago por anticipo, que hubiese sido
-        solicitado antes de la disolución de la Ex MUSEPOL, será calificado y cancelado de acuerdo a
-        los parámetros establecidos en la Reglamentación vigente a esa fecha”. “III. El saldo pendiente
-        de pago por anticipo, que hubiese sido solicitado posterior a la disolución de la Ex MUSEPOL,
-        será calificado y cancelado de acuerdo a los parámetros establecidos en el Estudio Matemático
-        Actuarial 2016 – 2020 y el presente Reglamento”.
-        <br><br>
-        Que, el Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de
+        <br><br>';
+        
+        if($retirement_fund->procedure_modality_id == 1 || $retirement_fund->procedure_modality_id == 2) {
+            $law .= "Que dicho Reglamento, en su Artículo 20 de la PROCEDENCIA del pago global, Parágrafo I señala: 
+            <i>“El pago global de aportes procederá, cuando el afiliado no haya cumplido con 60 cotizaciones (5 años) para acceder al pago del Fondo de Retiro Policial Solidario, antes 
+            de su desvinculación laboral con la Policía Boliviana, siendo las causales reconocidas para acceder a este pago el fallecimiento o retiro forzoso por invalidez permanente.”</i><br><br>";
+        }
+        $discounts = $retirement_fund->discount_types();
+        $discount = $discounts->where('discount_type_id','2')->orWhere('discount_type_id','3')->first();
+        if(isset($retirement_fund->id)) {
+            $law.='Que, el Reglamento de Fondo de Retiro Policial Solidario, Artículo 45 del PROCESAMIENTO,
+            punto 6 refiere: “Con la liquidación, el trámite será remitido a Jefatura para la verificación de
+            actuados y puesta en conocimiento a la Dirección de Estrategias Sociales e Inversiones”
+            Artículo 73 de la Retención por Garantes, refiere: <i>“Para dar curso a la solicitud de recuperación
+            de deuda efectuada por la Dirección de Estrategias Sociales e Inversiones, ésta deberá contar
+            con respaldo documental que el titular tiene conocimiento que se efectuará un descuento a
+            favor de su garante con cargo a su beneficio de Fondo de Retiro Policial”</i>.
+            <br><br>';
+        }
+        $discounts = $retirement_fund->discount_types();
+        $discount = $discounts->where('discount_type_id','1')->first();
+        if(isset($retirement_fund->id)) {
+            $law.='Que, el Reglamento de Fondo de Retiro Policial Solidario, Artículo 52 de los Anticipos de Fondo
+            de Retiro, Parágrafo II, refiere: <i>“II El saldo pendiente de pago por anticipo, que hubiese sido
+            solicitado antes de la disolución de la Ex MUSEPOL, será calificado y cancelado de acuerdo a
+            los parámetros establecidos en la Reglamentación vigente a esa fecha”. “III. El saldo pendiente
+            de pago por anticipo, que hubiese sido solicitado posterior a la disolución de la Ex MUSEPOL,
+            será calificado y cancelado de acuerdo a los parámetros establecidos en el Estudio Matemático
+            Actuarial 2016 – 2020 y el presente Reglamento”</i>.
+            <br><br>';
+        }
+        $law.='Que, el Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de
         Directorio Nº 31/2017 de 24 de agosto de 2017 y modificado mediante Resolución de Directorio
         Nº 36/2017 de 20 de septiembre de 2017, en su Artículo 55 de la DEFINICIÓN Y
-        CONFORMACIÓN, Parágrafo I refiere: “I. La Comisión de Beneficios Económicos es la
+        CONFORMACIÓN, Parágrafo I refiere: <<<<<<<<<<<<<<<i>“I. La Comisión de Beneficios Económicos es la
         instancia técnica legal que realiza el procedimiento administrativo para la otorgación del
-        beneficio de Fondo de Retiro Policial Solidario”. Por consiguiente, la Resolución Administrativa
+        beneficio de Fondo de Retiro Policial Solidario”</i>. Por consiguiente, la Resolución Administrativa
         Nº 031/2017 de 04 de diciembre de 2017, conforma la Comisión de Beneficios Económicos, en
         cumplimiento al Reglamento.
         <br><br>
