@@ -25,6 +25,19 @@ class ID
 	}
 
 	/**
+	* Retorna una modalidad para solicitante
+	*
+	* @return un objeto retfun
+	*/
+	public static function applicant()
+	{
+		$Ret_Fun = [
+			'beneficiary_id'	=>	1,
+			'advisor_id'	=>	2,
+			'legal_guardian_id'	=>	3
+	}
+
+	/**
 	* Retorna una modalidad para fondo de retiro
 	*
 	* @return un objeto retfun
@@ -32,9 +45,6 @@ class ID
 	public static function retFun()
 	{
 		$Ret_Fun = [
-			'beneficiary_id'	=>	1,
-			'advisor_id'	=>	2,
-			'legal_guardian_id'	=>	3,
 			'jubilacion_id'	=>	3,
 			'fallecimiento_id'	=>	4,
 			'retiro_forzoso_id'	=>	5,
@@ -109,7 +119,7 @@ class ID
 		$Ids = [
 			'servicio'	=>	1,
 			'comision'	=>	2,
-			'disponib'	=>	3,
+			'disponibilidad'	=>	3,
 			'fallecido'	=>	4,
 			'jubilado'	=>	5,
 			'invalidez'	=>	6,
