@@ -289,12 +289,15 @@
                 <div class="form-group" id="on_deleted">
                     <label>Sueldo</label>
                     <input id="reim_salary" name="reim_salary" type="text" placeholder="Sueldo" class="form-control numberformat">
-                    <label>Categor&iacute;a</label>
-                    <select class="form-control" name="reim_category" id="reim_category">
+                    <label>Antiguedad</label>
+                    <input id="reim_seniority_bonus" name="reim_seniority_bonus" type="text" placeholder="Antiguedad" class="form-control numberformat">
+                    {{-- <label>Categor&iacute;a</label>
+                    <input id="reim_category" disabled name="reim_salary" type="text" placeholder="Categoría" class="form-control numberformat"> --}}
+                    {{-- <select class="form-control" name="reim_category" id="reim_category">
                         @foreach($categories as $category)
                             <option value="{{$category->id}}">{{$category->percentage}}</option>
                         @endforeach
-                    </select>
+                    </select> --}}
                     <label>Cotizable</label>
                     <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control numberformat">
                     <label>Aporte</label>
@@ -397,7 +400,11 @@ function storeReimbursement(){
     salary = $('#reim_salary').val();
     salary = salary.replace(/,/g, "");
 
-    category = $('#reim_category').val();
+    //category = $('#reim_category').val();    
+    
+    seniority_bonus = $('#reim_seniority_bonus').val();
+    seniority_bonus = seniority_bonus.replace(/,/g, "");
+
     gain = $('#reim_gain').val();
     gain = gain.replace(/,/g, "");
 
@@ -408,7 +415,7 @@ function storeReimbursement(){
     $.ajax({
         url: "{{asset('reimbursement')}}",
         method: "POST",
-        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,category:category,gain:gain,total:total},
+        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,seniority_bonus:seniority_bonus,gain:gain,total:total},
         beforeSend: function (xhr, settings) {
             if (settings.url.indexOf(document.domain) >= 0) {
                 xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");

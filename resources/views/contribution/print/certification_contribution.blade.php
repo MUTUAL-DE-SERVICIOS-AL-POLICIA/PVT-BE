@@ -3,14 +3,13 @@
 <div>
     El suscrito Encargado de  Cuentas Individuales en base a una revisión de la Base de Datos del Sistema Informático de MUSERPOL de aportes realizados, del señor: 
 </div>
-<div>
+<div class="my-10">
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
 </div>
-
 <strong>CERTIFICA:</strong>  
-<table class="table-info w-100">        
+<table class="table-info w-100 my-10">        
     <thead class="bg-grey-darker">
-        <tr class="font-medium text-white text-sm">
+        <tr class="font-medium text-white text-sm uppercase">
             <td class="px-15 py text-center ">
                 Nº
             </td>
@@ -27,7 +26,7 @@
                 SUELDO
             </td>
             <td class="px-15 py text-center">
-                ANTIGUEDAD
+                Antigüedad
             </td>
             <td class="px-15 py text-center">
                 APORTE
@@ -40,10 +39,10 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->base_wage }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->seniority_bonus }}</td>                        
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain > 0 ? Util::formatMoney($contribution->gain) : Util::formatMoney($contribution->base_wage) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->base_wage) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->seniority_bonus) }}</td>                        
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                 </tr> 
                 @foreach($reimbursements as $reimbursement)
                     @if($contribution->month_year == $reimbursement->month_year)       
@@ -51,10 +50,10 @@
                             <td class="text-center uppercase font-bold px-5 py-3"></td>
                             <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->gain }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->base_wage }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->seniority_bonus }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->total }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->gain > 0 ? Util::formatMoney($reimbursement->gain) : Util::formatMoney($reimbursement->base_wage) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->base_wage) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->seniority_bonus) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>
                         </tr>
                     @endif        
                 @endforeach 

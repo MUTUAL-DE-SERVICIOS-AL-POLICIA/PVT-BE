@@ -19,7 +19,7 @@
 						<div class="pull-right" style="padding-right:10px">
 							<div class="form-inline">
 								<div class="form-group" :class="{ 'has-error': errors.has('modal_contribution_type_id') }">
-									<label class="label-control">Tipo de contribucion</label>
+									<label class="label-control">Tipo de contribución</label>
 									<select class="form-control" name="modal_contribution_type_id" v-model="modal.contribution_type_id" v-validate="'required'" @change="resetPrintButton()">
 										<option :value="null"></option>
 										<option v-for="item in types" :value="item.id" :key="item.id"> {{item.name}}</option>
@@ -290,7 +290,7 @@ export default {
 	  }
 	  if (!this.modal.contribution_type_id) {
 		flash(
-		  "Error: debe seleccionar al menos un tipo de contribucion",
+		  "Error: debe seleccionar al menos un tipo de contribución",
 		  "error"
 		);
 		response = false;

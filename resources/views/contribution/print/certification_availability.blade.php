@@ -40,9 +40,9 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->public_security_bonus }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>                        
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->gain) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->public_security_bonus) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>                        
                     {{--<td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->retirement_fund }}</td>--}}
                 </tr>
                 @foreach($reimbursements as $reimbursement)    
@@ -51,9 +51,9 @@
                             <td class="text-center uppercase font-bold px-5 py-3"></td>
                             <td class="text-center uppercase font-bold px-5 py-3">R1</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->gain }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->public_security_bonus }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->total }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->gain) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->public_security_bonus) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>
                             {{--<td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->retirement_fund }}</td>--}}
                         </tr>
                     @endif
