@@ -132,6 +132,13 @@ instance.extend('max_date', {
   }
 });
 instance = new Validator();
+instance.extend('max_current_date_month_year', {
+  getMessage: (field) => `  La fecha ingresada no debe ser mayor a la fecha actual.`,
+  validate: (value) => {
+    return moment().diff(moment(value, "MM/YYYY"), "months",true) > 0;
+  }
+});
+instance = new Validator();
 instance.extend('alpha_space_quote', {
   getMessage: (field) => `El dato ingresado es incorrecto.`,
   validate: (value) => {

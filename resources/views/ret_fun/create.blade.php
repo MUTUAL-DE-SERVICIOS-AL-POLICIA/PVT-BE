@@ -40,11 +40,11 @@
                                     inline-template>
                                 @include('ret_fun.step1_requirements')
                             </ret-fun-step1-requirements>
-                        </tab-content>
-                        <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
                             <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
                                 @include('ret_fun.step2_applicant')
                             </ret-fun-step2-applicant>
+                        </tab-content>
+                        <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
                         </tab-content>
                     <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
                         <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>

@@ -8,7 +8,7 @@
                         <label class="col-sm-4 control-label">
                             Fecha de desvinculaci&oacute;n</label>
                         <div class="col-sm-8">
-                            <input type="text" name="date_derelict" v-model="date_derelict" data-month-year="true" class="form-control" v-validate.initial="'required'">
+                            <input type="text" name="date_derelict" v-model="date_derelict" data-month-year="true" class="form-control" v-validate.initial="'required|max_current_date_month_year'">
                             <i v-show="errors.has('date_derelict')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('date_derelict')" class="text-danger">@{{ errors.first('date_derelict') }}</span>
                         </div>
@@ -342,7 +342,16 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                           
+                            <div class="col-md-4">
+                                <label class="control-label">Genero</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control m-b" name="legal_guardian_gender" v-model.trim="legal_guardian_gender">
+                                    <option :value="null"></option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <br>
@@ -375,8 +384,12 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="col-md-4"></div>
-                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <label class="control-label">Fecha de Poder</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" data-date="true" name="legal_guardian_date_authority" v-model.trim="legal_guardian_date_authority" class="form-control">
+                            </div>
                         </div>
                     </div>
                 </div><!-- /div principal cyk -->

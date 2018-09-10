@@ -38,6 +38,8 @@ export default {
       legal_guardian_identity_card: '',
       legal_guardian_city_identity_card: '',
       legal_guardian_number_authority: '',
+      legal_guardian_date_authority: '',
+      legal_guardian_gender: null,
       legal_guardian_notary_of_public_faith: '',
       legal_guardian_notary: '',
       beneficiary_city_id: '',
@@ -185,8 +187,11 @@ export default {
     },
     change_applicant: function() {
       // let modality_id_ = 
-      cellPhoneInputMaskAll();
-    phoneInputMaskAll();
+      setTimeout(() => {
+        dateInputMaskAll();
+        cellPhoneInputMaskAll();
+        phoneInputMaskAll();
+      }, 500);
       let modality_id=this.retFun.modality_id;
       if(this.applicant_type  == '2'){
         this.show_advisor_form = !this.show_advisor_form;

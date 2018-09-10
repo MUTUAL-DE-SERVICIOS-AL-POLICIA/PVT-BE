@@ -370,6 +370,8 @@ class RetirementFundController extends Controller
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
+            $legal_guardian->date_authority = $request->legal_guardian_date_authority;
+            $legal_guardian->gender = $request->legal_guardian_gender;
             $legal_guardian->save();
             $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
             $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
