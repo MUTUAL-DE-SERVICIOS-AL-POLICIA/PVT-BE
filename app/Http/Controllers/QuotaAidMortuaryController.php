@@ -209,7 +209,7 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->subtotal = 0;
         $quota_aid->total = 0;
         $quota_aid->save();
-        
+
         foreach ($requirements  as  $requirement)
         {
             if($request->input('document'.$requirement->id) == 'checked')
@@ -240,7 +240,7 @@ class QuotaAidMortuaryController extends Controller
         $beneficiary->type = "S";
         $beneficiary->save();
 
-        if($account_type == ID::retFun()->advisor_id)
+        if($account_type == ID::applicant()->advisor_id)
         {
             $advisor = new QuotaAidAdvisor();
             //$advisor->retirement_fund_id = $retirement_found->id;
@@ -267,7 +267,7 @@ class QuotaAidMortuaryController extends Controller
             $advisor_beneficiary->save();
         }
 
-        if($account_type == ID::retFun()->legal_guardian_id)
+        if($account_type == ID::applicant()->legal_guardian_id)
         {
             $legal_guardian = new QuotaAidLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_found->id;
