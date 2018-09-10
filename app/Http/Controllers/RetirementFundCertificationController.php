@@ -1761,7 +1761,7 @@ class RetirementFundCertificationController extends Controller
         $qualification_id = 23;
         $qualification = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$qualification_id)->first();
         $months  = $affiliate->getTotalQuotes();        
-        $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario N° ".$qualification->code." de la Encargada de Calificación de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de ". (int)($months/12) ." y ". ($months%12) .", determinando el beneficio de Fondo de Retiro Policial Solidario por Jubilación de ". Util::formatMoney($retirement_fund->total_ret_fun) ." (". Util::convertir($retirement_fund->total_ret_fun) .")".Util::getDiscountCombinations($retirement_fund->id);
+        $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario N° ".$qualification->code." de la Encargada de Calificación de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de ". Util::formatMoneyWithLiteral($months).", determinando el beneficio de Fondo de Retiro Policial Solidario por Jubilación de ". Util::formatMoney($retirement_fund->total_ret_fun) ." (". Util::convertir($retirement_fund->total_ret_fun) .")".Util::getDiscountCombinations($retirement_fund->id);
         ///----- END QUALIFICATION ----////
 
         $legal_dictum_id = 24;
