@@ -91,6 +91,10 @@
                         <b><u>RESUELVE:</u></b>
                         <br><br>
                     </div>
+                    <div>
+                        {!! $body_resolution !!}
+                        <br>
+                    </div>
                 <div >
 
         </div>
