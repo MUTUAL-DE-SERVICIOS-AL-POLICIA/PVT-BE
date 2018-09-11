@@ -184,6 +184,7 @@ export default {
       this.legal_guardian_surname_husband = data.surname_husband;
       this.legal_guardian_identity_card = data.identity_card;
       this.legal_guardian_city_identity_card = data.city_identity_card_id;
+      this.legal_guardian_gender = data.gender;
     },
     change_applicant: function() {
       // let modality_id_ = 

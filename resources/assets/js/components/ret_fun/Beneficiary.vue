@@ -212,7 +212,6 @@
                 </div>
             </div>
         </div>
-        <div class="hr-line-dashed"></div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="col-md-4">
@@ -224,7 +223,204 @@
                     <div class="col-md-6"></div>
                 </div>
                 <div class="col-md-6">
-
+                    <div class="col-md-4">
+                        <label class="control-label">Tutor/Apoderado: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <select name="beneficiary_legal_representative[]" v-model="beneficiary.legal_representative" class="form-control" :disabled="!editable" @change="changeLegalRepresentatives()">
+                                <option :value="null"></option>
+                                <option v-for="lr in legalRepresentatives" :value="lr.id" :key="`lg-${lr.id}`">{{lr.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row" v-if="beneficiary.legal_representative === 1">
+                <div class="col-md-12">
+                    <legend>Informacion del Tutor(a)</legend>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Nombre de Juzgado</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="advisor_name_court" v-model.trim="advisor_name_court" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Nro de Resolucion</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="advisor_resolution_number" v-model.trim="advisor_resolution_number" class="form-control">  
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row" v-if="show_advisor_form" >
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Fecha de Resolucion</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="date" name="advisor_resolution_date" v-model.trim="advisor_resolution_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            
+                        </div>
+                        <div class="col-md-8">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" v-if="beneficiary.legal_representative === 2">
+                <div class="col-md-12">
+                    <legend>Informacion del Apoderado(a)</legend>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_legal_guardian_identity_card[]') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Cédula de Identidad</label>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" name="beneficiary_legal_guardian_identity_card[]" v-model.trim="beneficiary.legal_guardian_identity_card" class="form-control" v-validate.initial="'required'">
+                                <span class="input-group-btn">
+                                    <button class="btn" :class="errors.has('beneficiary_legal_guardian_identity_card[]') ? 'btn-danger' : 'btn-primary'" type="button" @click="searchLegalGuardian" role="button"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                            <i v-show="errors.has('beneficiary_legal_guardian_identity_card[]')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('beneficiary_legal_guardian_identity_card[]')" class="text-danger">{{ errors.first('beneficiary_legal_guardian_identity_card[]') }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Ciudad de Expedición</label>
+                        </div>
+                        <div class="col-md-8">
+                            <select class="form-control" name="beneficiary_legal_guardian_city_identity_card[]" v-model.trim="beneficiary.legal_guardian_city_identity_card">
+                                <option :value="null"></option>
+                                <option v-for="city in cities" :key="`city-legal-guardian-${city.id}`" :value="city.id">{{ city.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_legal_guardian_first_name[]') }" >
+                        <div class="col-md-4">
+                            <label class="control-label">Primer Nombre</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="beneficiary_legal_guardian_first_name[]" v-model.trim="beneficiary.legal_guardian_first_name" class="form-control" v-validate.initial="'required'">
+                            <i v-show="errors.has('beneficiary_legal_guardian_first_name[]')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('beneficiary_legal_guardian_first_name[]')" class="text-danger">{{ errors.first('beneficiary_legal_guardian_first_name[]') }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Segundo Nombre</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="beneficiary_legal_guardian_second_name[]" v-model.trim="beneficiary.legal_guardian_second_name" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Apellido Paterno</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="beneficiary_legal_guardian_last_name[]" v-model.trim="beneficiary.legal_guardian_last_name" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Apellido Materno</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="beneficiary_legal_guardian_mothers_last_name[]" v-model.trim="beneficiary.legal_guardian_mothers_last_name" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Apellido de Casada</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="beneficiary_legal_guardian_surname_husband[]" v-model.trim="beneficiary.legal_guardian_surname_husband" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_legal_guardian_gender[]') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Genero</label>
+                        </div>
+                        <div class="col-md-8">
+                            <select class="form-control m-b" name="beneficiary_legal_guardian_gender[]" v-model.trim="beneficiary.legal_guardian_gender" v-validate.initial="'required'">
+                                <option :value="null"></option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                            <i v-show="errors.has('beneficiary_legal_guardian_gender[]')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('beneficiary_legal_guardian_gender[]')" class="text-danger">{{ errors.first('beneficiary_legal_guardian_gender[]') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_legal_guardian_number_authority[]') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Nro de Poder</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="beneficiary_legal_guardian_number_authority[]" v-model.trim="beneficiary.legal_guardian_number_authority" class="form-control" v-validate.initial="'required'">
+                            <i v-show="errors.has('beneficiary_legal_guardian_number_authority[]')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('beneficiary_legal_guardian_number_authority[]')" class="text-danger">{{ errors.first('beneficiary_legal_guardian_number_authority[]') }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_legal_guardian_notary_of_public_faith[]') }">
+                        <div class="col-md-4">
+                            <label class=" control-label">Notaria de Fe Publica Nro</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="beneficiary_legal_guardian_notary_of_public_faith[]" v-model.trim="beneficiary.legal_guardian_notary_of_public_faith" class="form-control" v-validate.initial="'required'">
+                            <i v-show="errors.has('beneficiary_legal_guardian_notary_of_public_faith[]')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('beneficiary_legal_guardian_notary_of_public_faith[]')" class="text-danger">{{ errors.first('beneficiary_legal_guardian_notary_of_public_faith[]') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_legal_guardian_notary[]') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Notario</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="beneficiary_legal_guardian_notary[]" v-model.trim="beneficiary.legal_guardian_notary" class="form-control" v-validate.initial="'required'">
+                            <i v-show="errors.has('beneficiary_legal_guardian_notary[]')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('beneficiary_legal_guardian_notary[]')" class="text-danger">{{ errors.first('beneficiary_legal_guardian_notary[]') }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_legal_guardian_date_authority[]') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Fecha de Poder</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" data-date="true" name="beneficiary_legal_guardian_date_authority[]" v-model.trim="beneficiary.legal_guardian_date_authority" class="form-control" v-validate.initial="'required|max_current_date'">
+                            <i v-show="errors.has('beneficiary_legal_guardian_date_authority[]')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('beneficiary_legal_guardian_date_authority[]')" class="text-danger">{{ errors.first('beneficiary_legal_guardian_date_authority[]') }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         <div class="hr-line-dashed"></div>
@@ -238,6 +434,11 @@ export default {
   data() {
     return {
         // removable_beneficiary: true
+        legalRepresentatives: [
+            { id: 1, name:'Tutor(a)'},
+            { id: 2, name:'Apoderado(a)'},
+        ]
+
     };
   },
   created(){
@@ -324,6 +525,14 @@ export default {
     },
     getGenderBeneficiary(value){
         return getGender(value);
+    },
+    searchLegalGuardian(){
+        console.log("searcj")
+    },
+    changeLegalRepresentatives(){
+        setTimeout(() => {
+            dateInputMaskAll();
+        }, 300);
     }
   },
   computed:{

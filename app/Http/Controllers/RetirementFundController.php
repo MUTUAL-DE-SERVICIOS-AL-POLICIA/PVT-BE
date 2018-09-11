@@ -85,6 +85,7 @@ class RetirementFundController extends Controller
         $birth_date = $request->beneficiary_birth_date;
         $kinship = $request->beneficiary_kinship;
         $gender = $request->beneficiary_gender;
+        $legal_representative = $request->beneficiary_legal_representative;
         $account_type = $request->input('accountType');
         //*********START VALIDATOR************//
         $rules=[];
@@ -364,13 +365,12 @@ class RetirementFundController extends Controller
             $legal_guardian->first_name = strtoupper(trim($request->legal_guardian_first_name));
             $legal_guardian->second_name = strtoupper(trim($request->legal_guardian_second_name));
             $legal_guardian->surname_husband = strtoupper(trim($request->legal_guardian_surname_husband));
-            //$legal_guardian->gender = "M";
             $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
             $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
-            $legal_guardian->date_authority = $request->legal_guardian_date_authority;
+            $legal_guardian->date_authority = Util::verifyBarDate($request->legal_guardian_date_authority) ? Util::parseBarDate($request->legal_guardian_date_authority) : $request->legal_guardian_date_authority;
             $legal_guardian->gender = $request->legal_guardian_gender;
             $legal_guardian->save();
             $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
@@ -399,7 +399,7 @@ class RetirementFundController extends Controller
             }
             $beneficiary->address()->save($address);
         }
-
+        $legal_guardian_count=0;
         for($i=0;is_array($first_name) && $i < sizeof($first_name);$i++){
             if($first_name[$i] != "" && ($last_name[$i] != "" || $mothers_last_name[$i] != "") ){
                 $beneficiary = new RetFunBeneficiary();
@@ -419,6 +419,48 @@ class RetirementFundController extends Controller
                 //$beneficiary->cell_phone_number = $request->;
                 $beneficiary->type = ID::beneficiary()->normal;
                 $beneficiary->save();
+                switch ($legal_representative[$i]) {
+                    case 1:
+                        Log::info('tutor');
+                        break;
+                    case 2:
+                        Log::info('APODE');
+                        $legal_guardian = new RetFunLegalGuardian();
+                        $legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
+                        $legal_guardian->identity_card = strtoupper(trim($request->beneficiary_legal_guardian_identity_card[$legal_guardian_count]));
+                        $legal_guardian->city_identity_card_id = $request->beneficiary_legal_guardian_city_identity_card[$legal_guardian_count];
+                        $legal_guardian->first_name = strtoupper(trim($request->beneficiary_legal_guardian_first_name[$legal_guardian_count]));
+                        $legal_guardian->second_name = strtoupper(trim($request->beneficiary_legal_guardian_second_name[$legal_guardian_count]));
+                        $legal_guardian->last_name = strtoupper(trim($request->beneficiary_legal_guardian_last_name[$legal_guardian_count]));
+                        $legal_guardian->mothers_last_name = strtoupper(trim($request->beneficiary_legal_guardian_mothers_last_name[$legal_guardian_count]));
+                        $legal_guardian->surname_husband = strtoupper(trim($request->beneficiary_legal_guardian_surname_husband[$legal_guardian_count]));
+                        /** !! TODO
+                         * phone and cellphone numbers
+                         */
+                        $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+                        $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
+
+                        $legal_guardian->gender = $request->beneficiary_legal_guardian_gender[$legal_guardian_count];
+                        $legal_guardian->number_authority = $request->beneficiary_legal_guardian_number_authority[$legal_guardian_count];
+                        $legal_guardian->notary_of_public_faith = $request->beneficiary_legal_guardian_notary_of_public_faith[$legal_guardian_count];
+                        $legal_guardian->notary = $request->beneficiary_legal_guardian_notary_of_public_faith[$legal_guardian_count];
+                        $legal_guardian->date_authority = Util::verifyBarDate($request->beneficiary_legal_guardian_date_authority[$legal_guardian_count]) ? Util::parseBarDate($request->beneficiary_legal_guardian_date_authority[$legal_guardian_count]) : $request->beneficiary_legal_guardian_date_authority[$legal_guardian_count];
+                        $legal_guardian->save();
+                        $legal_guardian_count++;
+                        /**
+                         * 😡
+                         * TODO
+                         */
+
+                        $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
+                        $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
+                        $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
+                        $beneficiary_legal_guardian->save();
+                        break;
+                    default:
+                        Log::info('NONE');
+                        break;
+                }
             }
         }
         $data = [

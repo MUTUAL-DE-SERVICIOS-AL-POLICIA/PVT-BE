@@ -131,9 +131,15 @@ instance.extend('max_date', {
     return moment().subtract(18, 'years').diff(moment(value, "DD/MM/YYYY"), "days") > 0;
   }
 });
+instance.extend('max_current_date', {
+  getMessage: (field) => `La fecha ingresada no debe ser mayor a la fecha actual.`,
+  validate: (value) => {
+    return moment().diff(moment(value, "DD/MM/YYYY"), "days", true) > 0;
+  }
+});
 instance = new Validator();
 instance.extend('max_current_date_month_year', {
-  getMessage: (field) => `  La fecha ingresada no debe ser mayor a la fecha actual.`,
+  getMessage: (field) => `La fecha ingresada no debe ser mayor a la fecha actual.`,
   validate: (value) => {
     return moment().diff(moment(value, "MM/YYYY"), "months",true) > 0;
   }
