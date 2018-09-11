@@ -17,6 +17,12 @@ class AddedColumnsRetFunLegalGuardians extends Migration
             $table->enum('gender', ['M', 'F'])->nullable();
             $table->date('date_authority')->nullable();
         });
+        Schema::table('ret_fun_advisors', function (Blueprint $table) {
+            $table->enum('gender', ['M', 'F'])->nullable();
+        });
+        Schema::table('users', function (Blueprint $table) {
+            $table->enum('gender', ['M', 'F'])->nullable();
+        });
     }
 
     /**
@@ -28,6 +34,12 @@ class AddedColumnsRetFunLegalGuardians extends Migration
     {
         Schema::table('ret_fun_legal_guardians', function (Blueprint $table) {
             $table->dropColumn(['gender', 'date_authority']);
+        });
+        Schema::table('ret_fun_advisors', function (Blueprint $table) {
+            $table->dropColumn(['gender']);
+        });
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['gender']);
         });
     }
 }
