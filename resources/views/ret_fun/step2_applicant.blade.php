@@ -8,7 +8,7 @@
                         <label class="col-sm-4 control-label">
                             Fecha de desvinculaci&oacute;n</label>
                         <div class="col-sm-8">
-                            <input type="text" name="date_derelict" v-model="date_derelict" data-month-year="true" class="form-control" v-validate.initial="'required'">
+                            <input type="text" name="date_derelict" v-model="date_derelict" data-month-year="true" class="form-control" v-validate.initial="'required|max_current_date_month_year'">
                             <i v-show="errors.has('date_derelict')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('date_derelict')" class="text-danger">@{{ errors.first('date_derelict') }}</span>
                         </div>
@@ -341,42 +341,65 @@
                                 <input type="text" name="legal_guardian_surname_husband" v-model.trim="legal_guardian_surname_husband" class="form-control">
                             </div>
                         </div>
-                        <div class="col-md-6">
-                           
+                        <div class="col-md-6" :class="{'has-error': errors.has('legal_guardian_gender') }">
+                            <div class="col-md-4">
+                                <label class="control-label">Genero</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control m-b" name="legal_guardian_gender" v-model.trim="legal_guardian_gender" v-validate.initial="'required'">
+                                    <option :value="null"></option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                                <i v-show="errors.has('legal_guardian_gender')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('legal_guardian_gender')" class="text-danger">@{{ errors.first('legal_guardian_gender') }}</span>
+                            </div>
                         </div>
                     </div>
                     <br>
                     <div class="row" v-if=" show_apoderado_form ">
-                        <div class="col-md-6">
+                        <div class="col-md-6" :class="{'has-error': errors.has('legal_guardian_number_authority') }">
                             <div class="col-md-4">
                                 <label class="control-label">Nro de Poder</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="legal_guardian_number_authority" v-model.trim="legal_guardian_number_authority" class="form-control">
+                                <input type="text" name="legal_guardian_number_authority" v-model.trim="legal_guardian_number_authority" class="form-control" v-validate.initial="'required'">
+                                <i v-show="errors.has('legal_guardian_number_authority')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('legal_guardian_number_authority')" class="text-danger">@{{ errors.first('legal_guardian_number_authority') }}</span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" :class="{'has-error': errors.has('legal_guardian_notary_of_public_faith') }">
                             <div class="col-md-4">
                                 <label class=" control-label">Notaria de Fe Publica Nro</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="legal_guardian_notary_of_public_faith" v-model.trim="legal_guardian_notary_of_public_faith" class="form-control">
+                                <input type="text" name="legal_guardian_notary_of_public_faith" v-model.trim="legal_guardian_notary_of_public_faith" class="form-control" v-validate.initial="'required'">
+                                <i v-show="errors.has('legal_guardian_notary_of_public_faith')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('legal_guardian_notary_of_public_faith')" class="text-danger">@{{ errors.first('legal_guardian_notary_of_public_faith') }}</span>
                             </div>
                         </div>
                     </div>
                     <br>
                     <div class="row" v-if=" show_apoderado_form ">
-                        <div class="col-md-6">
+                        <div class="col-md-6" :class="{'has-error': errors.has('legal_guardian_notary') }">
                             <div class="col-md-4">
                                 <label class="control-label">Notario</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="legal_guardian_notary" v-model.trim="legal_guardian_notary" class="form-control">
+                                <input type="text" name="legal_guardian_notary" v-model.trim="legal_guardian_notary" class="form-control" v-validate.initial="'required'">
+                                <i v-show="errors.has('legal_guardian_notary')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('legal_guardian_notary')" class="text-danger">@{{ errors.first('legal_guardian_notary') }}</span>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="col-md-4"></div>
-                            <div class="col-md-8"></div>
+                        <div class="col-md-6" :class="{'has-error': errors.has('legal_guardian_date_authority') }">
+                            <div class="col-md-4">
+                                <label class="control-label">Fecha de Poder</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" data-date="true" name="legal_guardian_date_authority" v-model.trim="legal_guardian_date_authority" class="form-control" v-validate.initial="'required|max_current_date'">
+                                <i v-show="errors.has('legal_guardian_date_authority')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('legal_guardian_date_authority')" class="text-danger">@{{ errors.first('legal_guardian_date_authority') }}</span>
+                            </div>
                         </div>
                     </div>
                 </div><!-- /div principal cyk -->

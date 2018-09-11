@@ -785,7 +785,7 @@ class ContributionController extends Controller
                 }
             }
             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
-            dd("error: Se eliminaran Varias contribuciones porque no las fechas no coinciden.");
+            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
             Log::info("-------------  / end deleting ---------");
         }
 
@@ -837,7 +837,7 @@ class ContributionController extends Controller
                     array_push($temp_ids, $value->id);
                 }
             }
-            dd("error: Se eliminaran Varias contribuciones porque no las fechas no coinciden.");
+            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
             Log::info("-------------  / end deleting ---------");
         }
