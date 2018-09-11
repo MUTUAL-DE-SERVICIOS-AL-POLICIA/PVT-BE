@@ -57,13 +57,13 @@
                 <div>
                     
                     <div >
-                      <b>CONSIDERANDO:   </b>
+                      <b><u>CONSIDERANDO:</u></b>
                     </div>
                     <p class="text-justify">
                         {!! $law !!}
                     </p>
                     <div >
-                        <b>CONSIDERANDO:   </b>
+                        <b><u>CONSIDERANDO:</u></b>
                     </div>
                     <div>
                         {!! $body_finance !!} 
@@ -76,6 +76,20 @@
                     <div>
                         {!! $body_qualification !!}
                         <br>
+                    </div>
+                    <div >
+                    <br>
+                        <b><u>POR TANTO:</u></b>                        
+                        <br><br>
+                    </div>
+                    <div>
+                        {!! $then !!}
+                        <br>
+                    </div>
+                    <div >
+                        <br>
+                        <b><u>RESUELVE:</u></b>
+                        <br><br>
                     </div>
                 <div >
 

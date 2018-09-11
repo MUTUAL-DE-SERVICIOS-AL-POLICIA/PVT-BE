@@ -1365,8 +1365,7 @@ class RetirementFundCertificationController extends Controller
         Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante 
         Resoluciones de Directorio Nros. 36/2017 y 51/2017 de fechas 20 de septiembre de 2017 y 29 de diciembre de 2017 respectivamente; y la Disposición Transitoria 
         Segunda del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y modificado 
-        mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017.<br>
-        Se <b>DICTAMINA</b> en merito a la documentación de respaldo contenida en el presente, ";
+        mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017.<br> Se <b>DICTAMINA</b> en merito a la documentación de respaldo contenida en el presente, ";
                 
         $flagy = 0;
         if($discounts->where('amount','>','0')->count()>0) {
@@ -1767,15 +1766,17 @@ class RetirementFundCertificationController extends Controller
         de ANTICIPO del 50% el monto de Bs() a favor del Sr. SOF. 1ro. MARIO BAUTISTA
         MANCILLA con C.I. 2215955 LP .';
 
-        $discount = $retirement_fund->discount_types();
+        $discount = $retirement_fund->discount_types();        
         $finance = $discount->where('discount_type_id','1')->first();
+        
         $body_finance = "";
         $body_finance = "Que, mediante nota de respuesta de la Dirección Administrativa Financiera con Cite: ".$finance->pivot->code ." de fecha ". Util::getStringDate($finance->pivot->date).",";
-        if(isset($finance->id) && $finance->amount > 0){
-            $body_finance .= "se evidencia anticipo por concepto de Fondo de Retiro Policial en el monto de ".Util::formatMoney($finance->pivot->amount)." (".Util::convertir($finance->pivot->amount).").<br>";
+        
+        if(isset($finance->id) && $finance->pivot->amount > 0){
+            $body_finance .= " se otorgó en calidad de ANTICIPO por concepto de Fondo de Retiro Policial el monto de ".Util::formatMoneyWithLiteral($finance->pivot->amount).", con cargo a liquidación final, a favor del <b>".$affiliate->degree->shortened." ".$affiliate->fullName()."</b> con C.I. N° <b>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</b>.<br>";
         }
         else{
-            $body_finance .= "no se evidencia pagos o anticipos por concepto de Fondo de Retiro Policial.<br>";
+            $body_finance .= " no se evidencia pagos o anticipos por concepto de Fondo de Retiro Policial.<br>";
         } 
         $reception = 'Que, en fecha <b>'.Util::getStringDate($retirement_fund->reception_date).'</b>, el <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>
         '.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b> , solicita el pago de Fondo de Retiro Policial, adjuntando documentación solicitada
@@ -1787,7 +1788,14 @@ class RetirementFundCertificationController extends Controller
         $qualification_id = 23;
         $qualification = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$qualification_id)->first();
         $months  = $affiliate->getTotalQuotes();        
-        $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario N° ".$qualification->code." de la Encargada de Calificación de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de ". Util::formatMoneyWithLiteral($months).", determinando el beneficio de Fondo de Retiro Policial Solidario por Jubilación de ". Util::formatMoney($retirement_fund->total_ret_fun) ." (". Util::convertir($retirement_fund->total_ret_fun) .")".Util::getDiscountCombinations($retirement_fund->id);
+        $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario <b>N° ".$qualification->code."</b> de fecha <b>".Util::getStringDate($qualification->date)."</b>, de la Encargada de Calificación de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, realizó el cálculo de otorgación, correspondiente al <b>"
+        .$affiliate->fullNameWithDegree()."</b> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened."</b>, determina el monto de <b>". Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun)."</b>";
+        if($affiliate->hasAvailability()) {
+            $body_qualification .=", de la misma forma realizó el cálculo por el reconocimiento de aportes laborales durante el periodo de disponibilidad, por no ser considerados en la calificación del beneficio de Fondo de Retiro Policial Solidario, 
+            de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 – 2020; correspondiéndole el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_availability)."</b>, haciendo un monto total de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_availability+$retirement_fund->subtotal_ret_fun)."</b>";//          
+        }   
+        $body_qualification .= Util::getDiscountCombinations($retirement_fund->id);
+        //".Util::getDiscountCombinations($retirement_fund->id);     
         ///----- END QUALIFICATION ----////
 
         $legal_dictum_id = 24;
@@ -1811,6 +1819,7 @@ class RetirementFundCertificationController extends Controller
             'body_finance'  =>  $body_finance,
             'reception' =>  $reception,
             'body_qualification'    =>  $body_qualification,
+            'then'  =>  $then
         ];
         return \PDF::loadView('ret_fun.print.legal_resolution', $data)
             ->setOption('encoding', 'utf-8')
