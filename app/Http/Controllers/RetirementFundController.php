@@ -259,6 +259,9 @@ class RetirementFundController extends Controller
             case 1:
             case 4:
                 $af->affiliate_state_id = ID::affiliateState()->fallecido;
+
+                $af->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
+                $af->reason_death = $request->reason_death;
                 break;
             case 2:
             case 3:

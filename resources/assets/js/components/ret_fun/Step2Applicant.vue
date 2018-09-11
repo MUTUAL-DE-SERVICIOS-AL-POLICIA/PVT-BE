@@ -51,10 +51,12 @@ export default {
       show_apoderado_form: false,
       applicant_types:[{name:'Beneficiario', id:1}, {name:'Tutor', id:2}, {name:'Apoderado', id:3}],
       date_derelict: this.affiliate.date_derelict,
+      date_death: null,
+      reason_death: null,
       beneficiary_city_address_id: null,
       error:{
         applicant_identity_card: false,
-      }
+      },
     }
   },
   mounted(){
@@ -86,6 +88,9 @@ export default {
       return this.applicant_types.filter(item=>{
             return item.id  != 2;
       })
+    },
+    isDeathMode(){
+      return (this.retFun.modality_id == 4 || this.retFun.modality_id == 1);
     }
   },
   methods: {

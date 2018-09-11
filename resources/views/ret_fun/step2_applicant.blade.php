@@ -3,7 +3,7 @@
         <div class="ibox-content">
             <legend>Datos del afiliado</legend>
             <div class="row">
-                <div class="col-md-4" :class="{'has-error': errors.has('date_derelict') }">
+                <div class="col-md-3" :class="{'has-error': errors.has('date_derelict') }">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">
                             Fecha de desvinculaci&oacute;n</label>
@@ -13,7 +13,30 @@
                                 <span v-show="errors.has('date_derelict')" class="text-danger">@{{ errors.first('date_derelict') }}</span>
                         </div>
                     </div>
-                </div>                       
+                </div>
+                <div class="col-md-3" :class="{'has-error': errors.has('date_death') }" v-if="isDeathMode">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            Fecha de Fallecimiento</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="date_death" v-model="date_death" data-date="true" class="form-control" v-validate.initial="'max_current_date'">
+                            <i v-show="errors.has('date_death')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('date_death')" class="text-danger">@{{ errors.first('date_death') }}</span>
+                        </div>
+                    </div>
+                </div>
+                {{-- <div class="col-md-3" :class="{'has-error': errors.has('reason_death') }" v-if="isDeathMode"> --}}
+                <div class="col-md-3" v-if="isDeathMode">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            Causa de Fallecimiento</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="reason_death" v-model="reason_death" class="form-control">
+                            {{-- <i v-show="errors.has('reason_death')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('reason_death')" class="text-danger">@{{ errors.first('reason_death') }}</span> --}}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
