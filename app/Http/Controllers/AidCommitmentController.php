@@ -12,7 +12,7 @@ use Muserpol\Models\Spouse;
 
 class AidCommitmentController extends Controller
 {
-    /**
+    /**$Global_Pay
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

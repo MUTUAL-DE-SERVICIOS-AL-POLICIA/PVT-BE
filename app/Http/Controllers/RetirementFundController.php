@@ -796,6 +796,7 @@ class RetirementFundController extends Controller
         $surname_husband = strtoupper($request->surname_husband) ?? '';
         $first_name = strtoupper($request->first_name) ?? '';
         $second_name = strtoupper($request->second_name) ?? '';
+        $procedure= strtoupper($request->procedure) ?? '';
         $modality = strtoupper($request->modality) ?? '';
         $workflow= strtoupper($request->workflow) ?? '';
         $state = strtoupper($request->state) ?? '';
@@ -805,6 +806,7 @@ class RetirementFundController extends Controller
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
+                                ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
                                 ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
@@ -814,7 +816,7 @@ class RetirementFundController extends Controller
                                 ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
                                 ->whereRaw("coalesce(ret_fun_states.name,'') LIKE '$state%'")
                                 ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
-
+                                ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
                                 ->count();
 
         $ret_funds = RetirementFund::select(
@@ -829,12 +831,14 @@ class RetirementFundController extends Controller
             'wf_states.first_shortened as workflow',
             'retirement_funds.reception_date as reception_date',
             'ret_fun_states.name as state',
-            'retirement_funds.total as total'
+            'retirement_funds.total as total',
+            'procedure_types.name as procedure'
         )
                                 ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
+                                ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
                                 ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
@@ -844,6 +848,7 @@ class RetirementFundController extends Controller
                                 ->whereRaw("coalesce(ret_fun_states.name,'') iLIKE '$state%'")
                                 ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
                                 ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
+                                ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
                                 ->skip($offset)
                                 ->take($limit)
                                 ->orderBy($sort,$order)
@@ -1143,10 +1148,10 @@ class RetirementFundController extends Controller
 
                 // if (is_null($new_ben['legal_representative'])) {
                 //     if ($old_ben->ret_fun_advisors->first()) {
-                //         //delete 
+                //         //delete
                 //     }
                 //     if ($old_ben->legal_guardian->first()) {
-                //         //delete 
+                //         //delete
                 //     }
                 // } else {
                     switch ($new_ben['legal_representative']) {
