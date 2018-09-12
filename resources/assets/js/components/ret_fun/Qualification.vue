@@ -249,6 +249,7 @@ export default {
           this.$scrollTo('#showEconomicDataTotal');
         }, 800);
       }).catch(error => {
+        flash('Error: '+error.response.data.message, 'error');
         this.showEconomicDataTotal = false
       });
     },
