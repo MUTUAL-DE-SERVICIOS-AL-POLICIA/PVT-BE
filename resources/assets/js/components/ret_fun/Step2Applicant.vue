@@ -51,8 +51,8 @@ export default {
       show_apoderado_form: false,
       applicant_types:[{name:'Beneficiario', id:1}, {name:'Tutor', id:2}, {name:'Apoderado', id:3}],
       date_derelict: this.affiliate.date_derelict,
-      date_death: null,
-      reason_death: null,
+      date_death: this.affiliate.date_death,
+      reason_death: this.affiliate.reason_death,
       beneficiary_city_address_id: null,
       error:{
         applicant_identity_card: false,

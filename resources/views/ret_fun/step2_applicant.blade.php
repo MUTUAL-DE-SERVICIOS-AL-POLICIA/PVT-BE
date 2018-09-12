@@ -19,9 +19,9 @@
                         <label class="col-sm-4 control-label">
                             Fecha de Fallecimiento</label>
                         <div class="col-sm-8">
-                            <input type="text" name="date_death" v-model="date_death" data-date="true" class="form-control" v-validate.initial="'max_current_date'">
+                            <input type="text" data-date="true" name="date_death" v-model="date_death" class="form-control" placeholder="DD/MM/YYYY" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
                             <i v-show="errors.has('date_death')" class="fa fa-warning text-danger"></i>
-                                <span v-show="errors.has('date_death')" class="text-danger">@{{ errors.first('date_death') }}</span>
+                            <span v-show="errors.has('date_death')" class="text-danger">@{{ errors.first('date_death') }}</span>
                         </div>
                     </div>
                 </div>
