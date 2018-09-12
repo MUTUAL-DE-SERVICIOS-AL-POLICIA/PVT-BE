@@ -250,6 +250,7 @@ Vue.component('ret-fun-beneficiaries-show', require('./components/ret_fun/ShowBe
 Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualification.vue'));
 Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterval.vue'));
 Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
+Vue.component('ret-fun-certification-button', require('./components/ret_fun/CertificationButton.vue'));
 
 // inbox
 Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));

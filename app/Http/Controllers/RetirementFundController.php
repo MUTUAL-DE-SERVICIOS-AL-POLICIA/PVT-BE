@@ -1823,6 +1823,18 @@ class RetirementFundController extends Controller
         }
         return $retirement_fund;
     }
+    public function saveCertificationNote(Request $request, $ret_fun_id)
+    {
+        $retirement_fund = RetirementFund::find($ret_fun_id);
+        if ($request->note) {
+            $wf_state = WorkflowState::where('role_id',Util::getRol()->id)->first();
+            Util::getNextAreaCode($ret_fun_id);
+            $ret_fun_correlative = RetFunCorrelative::where('retirement_fund_id', $ret_fun_id)->where('wf_state_id', $wf_state->id)->first();
+            $ret_fun_correlative->note = $request->note;
+            $ret_fun_correlative->save();
+        }
+        return $retirement_fund;
+    }
 
     public function editRequirements(Request $request, $id){
         //return $request->ret_fun_modality;
