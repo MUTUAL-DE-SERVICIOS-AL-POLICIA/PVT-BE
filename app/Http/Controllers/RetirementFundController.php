@@ -147,14 +147,14 @@ class RetirementFundController extends Controller
         $legal_has_lastname = false;
         if($request->applicant_last_name == '' && $request->applicant_mothers_last_name=='')
             $has_lastname = true;
-        if($account_type == ID::retFun()->legal_guardian_id )
+        if($account_type == ID::applicant()->legal_guardian_id )
         {
             if($request->legal_guardian_last_name == '' && $request->legal_guardian_mothers_last_name=='')
                 $legal_has_lastname = true;
         }
         $biz_rules = [
             'has_lastname'  =>  $has_lastname?'required':'',
-            'legal_guardian_first_name' => $account_type==ID::retFun()->legal_guardian_id ? 'required' : '',
+            'legal_guardian_first_name' => $account_type==ID::applicant()->legal_guardian_id ? 'required' : '',
             'legal_has_lastname' => $legal_has_lastname ? 'required' : '',
             //'legal_guardian_identity_card'  =>  $account_type==3 ? 'required' : '',
             //'legal_guardian_number_authority'   => $account_type==3 ? 'required' : '',
@@ -318,16 +318,16 @@ class RetirementFundController extends Controller
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
         $beneficiary->type = ID::beneficiary()->solicitante;
         $beneficiary->save();
-        if($account_type == ID::retFun()->beneficiary_id && $request->ret_fun_modality != ID::retFun()->fallecimiento_id && $request->ret_fun_modality != ID::retFunGlobalPay()->fallecimiento_id )
+        if($account_type == ID::applicant()->beneficiary_id && $request->ret_fun_modality != ID::retFun()->fallecimiento_id && $request->ret_fun_modality != ID::retFunGlobalPay()->fallecimiento_id )
         {
             Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
-        if ($account_type == ID::retFun()->beneficiary_id && ($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == ID::kinship()->conyuge) {
+        if ($account_type == ID::applicant()->beneficiary_id && ($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == ID::kinship()->conyuge) {
             Log::info("updating spouse 1");
             Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
 
-        if($account_type == ID::retFun()->advisor_id)
+        if($account_type == ID::applicant()->advisor_id)
         {
             $advisor = new RetFunAdvisor();
             //$advisor->retirement_fund_id = $retirement_fund->id;
@@ -354,7 +354,7 @@ class RetirementFundController extends Controller
             $advisor_beneficiary->save();
         }
 
-        if($account_type == ID::retFun()->legal_guardian_id)
+        if($account_type == ID::applicant()->legal_guardian_id)
         {
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
@@ -502,7 +502,7 @@ class RetirementFundController extends Controller
      */
     //public function show(RetirementFund $retirementFund)
     public function show($id)
-    {        
+    {
 //         $data = [
 
 //         ];
@@ -672,7 +672,7 @@ class RetirementFundController extends Controller
             select('ret_fun_submitted_documents.id','procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id','ret_fun_submitted_documents.comment','ret_fun_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
-            ->where('ret_fun_submitted_documents.retirement_fund_id',$id);       
+            ->where('ret_fun_submitted_documents.retirement_fund_id',$id);
         // return $submitted->get();
             // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/
@@ -796,6 +796,7 @@ class RetirementFundController extends Controller
         $surname_husband = strtoupper($request->surname_husband) ?? '';
         $first_name = strtoupper($request->first_name) ?? '';
         $second_name = strtoupper($request->second_name) ?? '';
+        $procedure= strtoupper($request->procedure) ?? '';
         $modality = strtoupper($request->modality) ?? '';
         $workflow= strtoupper($request->workflow) ?? '';
         $state = strtoupper($request->state) ?? '';
@@ -805,6 +806,7 @@ class RetirementFundController extends Controller
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
+                                ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
                                 ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
@@ -814,7 +816,7 @@ class RetirementFundController extends Controller
                                 ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
                                 ->whereRaw("coalesce(ret_fun_states.name,'') LIKE '$state%'")
                                 ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
-
+                                ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
                                 ->count();
 
         $ret_funds = RetirementFund::select(
@@ -829,12 +831,14 @@ class RetirementFundController extends Controller
             'wf_states.first_shortened as workflow',
             'retirement_funds.reception_date as reception_date',
             'ret_fun_states.name as state',
-            'retirement_funds.total as total'
+            'retirement_funds.total as total',
+            'procedure_types.name as procedure'
         )
                                 ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
+                                ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
                                 ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
@@ -844,6 +848,7 @@ class RetirementFundController extends Controller
                                 ->whereRaw("coalesce(ret_fun_states.name,'') iLIKE '$state%'")
                                 ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
                                 ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
+                                ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
                                 ->skip($offset)
                                 ->take($limit)
                                 ->orderBy($sort,$order)
@@ -1143,10 +1148,10 @@ class RetirementFundController extends Controller
 
                 // if (is_null($new_ben['legal_representative'])) {
                 //     if ($old_ben->ret_fun_advisors->first()) {
-                //         //delete 
+                //         //delete
                 //     }
                 //     if ($old_ben->legal_guardian->first()) {
-                //         //delete 
+                //         //delete
                 //     }
                 // } else {
                     switch ($new_ben['legal_representative']) {
