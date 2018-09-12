@@ -26,6 +26,8 @@ class AddedColumnsContributionTypesTables extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('contribution_types', function (Blueprint $table) {
+            $table->dropColumn(['display_name','sequence']);
+        });
     }
 }

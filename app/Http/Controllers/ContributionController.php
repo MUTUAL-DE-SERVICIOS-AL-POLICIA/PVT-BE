@@ -637,11 +637,11 @@ class ContributionController extends Controller
                 if (isset($contribution->id)) {
                     if(isset($request->total[$key]) && $request->total[$key] != "")
                         $contribution->total = strip_tags($request->total[$key]);
-                    
-                    if(!isset($request->base_wage[$key]) || $contribution->base_wage == "")
-                        $contribution->base_wage = 0;
-                    else
+                        //dd($request->base_wage[$key]);
+                    if(isset($request->base_wage[$key]) && $request->base_wage[$key] != "")
                         $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
+                    else
+                        $contribution->base_wage = $contribution->base_wage;
                     
                     if (isset($request->category[$key]) && $request->category[$key] != $contribution->category_id) {                    
                         $category = Category::where('percentage',$request->category[$key])->first();
@@ -653,10 +653,10 @@ class ContributionController extends Controller
                         $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
                     }
                     
-                    if(!isset($request->gain[$key]) || $contribution->gain == "")
-                        $contribution->gain = 0;
-                    else
+                    if(isset($request->gain[$key]) && $request->gain[$key] != "")
                         $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
+                    else
+                        $contribution->gain = $contribution->gain;
                     $contribution->save();
                     array_push($contributions, $contribution);
                 } else {
@@ -785,7 +785,7 @@ class ContributionController extends Controller
                 }
             }
             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
-            dd("error: Se eliminaran Varias contribuciones porque no las fechas no coinciden.");
+            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
             Log::info("-------------  / end deleting ---------");
         }
 
@@ -837,7 +837,7 @@ class ContributionController extends Controller
                     array_push($temp_ids, $value->id);
                 }
             }
-            dd("error: Se eliminaran Varias contribuciones porque no las fechas no coinciden.");
+            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
             Log::info("-------------  / end deleting ---------");
         }

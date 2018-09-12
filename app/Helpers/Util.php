@@ -533,8 +533,10 @@ class Util
                 $array_discounts_text = array();
                 foreach ($value as $id) {
                     $amount = $retirement_fund->discount_types()->find($id)->pivot->amount;
+                    if($amount > 0) {
                     $temp_total_discount = $temp_total_discount + $amount;
-                    array_push($array_discounts_text, "que descontado el monto ".self::formatMoney($amount,true).' ('.self::convertir($amount). " BOLIVIANOS) por concepto de ". $retirement_fund->discount_types()->find($id)->name);
+                    array_push($array_discounts_text, "que descontado el monto <b>".self::formatMoney($amount,true).' ('.self::convertir($amount). " BOLIVIANOS)</b> por concepto de ". $retirement_fund->discount_types()->find($id)->name);
+                    }
                 }
                 $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
                 array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
@@ -548,6 +550,7 @@ class Util
         $name = str_replace(" -", ",", $name);
         if (sizeOf($array_discounts_text) > 0) {
             $name = ', '. $name.", queda un saldo de ".self::formatMoney($array_discounts[sizeOf($array_discounts)-1]['amount'], true).' ('.self::convertir($array_discounts[sizeOf($array_discounts) - 1]['amount']) .' BOLIVIANOS).';
+            $name = ', '. $name.",queda un saldo de <b>".self::formatMoneyWithLiteral($retirement_fund->total_ret_fun)."</b>.";
         }
         return $name;
     }
@@ -663,7 +666,7 @@ class Util
         $months = $number%12;
         $years_literal = ($years > 0) ? ( $years == 1 ? 'año' :'años') : null;
         $months_literal = ($months > 0) ? ( $months == 1 ? 'mes' :'meses') : null;
-        return self::removeSpaces(($years_literal ? $years. ' '. $years_literal : null). ' '. ($months_literal ? $months . ' ' . $months_literal : null) );
+        return self::removeSpaces(($years_literal ? $years. ' '. $years_literal : null). ' '.($years_literal && $months_literal ? 'y ':''). ($months_literal ? $months . ' ' . $months_literal : null) );
     }
     public static function formatMoneyWithLiteral($value)
     {

@@ -30,6 +30,13 @@ class RetFunAdvisor extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function getResolutionDateAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     /**
      * Methods
      */

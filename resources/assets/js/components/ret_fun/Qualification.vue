@@ -215,7 +215,7 @@ export default {
             this.advancePaymentDate = advancePaymentResponse[0].pivot.date;
           }
 
-          let retentionLoanPaymentResponse = response.data.discounts.filter(d => d.id == 2);
+          let retentionLoanPaymentResponse = response.data.discounts.filter(d => d.id == 2);                    
           if (retentionLoanPaymentResponse.length) {
             this.retentionLoanPayment = retentionLoanPaymentResponse[0].pivot.amount;
             this.retentionLoanPaymentNoteCode = retentionLoanPaymentResponse[0].pivot.note_code;
@@ -249,6 +249,7 @@ export default {
           this.$scrollTo('#showEconomicDataTotal');
         }, 800);
       }).catch(error => {
+        flash('Error: '+error.response.data.message, 'error');
         this.showEconomicDataTotal = false
       });
     },
