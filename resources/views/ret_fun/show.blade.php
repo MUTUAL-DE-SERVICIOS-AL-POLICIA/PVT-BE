@@ -105,8 +105,7 @@
 
             @if(Muserpol\Helpers\Util::getRol()->id == 15)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
-            @endif
-
+            @endif                
             @if(Muserpol\Helpers\Util::getRol()->id == 14)
                 <ret-fun-certification-button
                     title="Imprimir Dictamen Legal"

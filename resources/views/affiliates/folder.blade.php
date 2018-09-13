@@ -97,7 +97,7 @@
                      <select class="form-control" name="procedure_modality_id">
                         <option></option>
                          @foreach($file_modalities as $modality)                         
-                         <option value={{$modality->id}}>{{$modality->procedure_type->name ." - " .$modality->name }}</option>
+                         <option value={{$modality->id}}>{{$modality->name." (".$modality->procedure_type->name.")" }}</option>
                          @endforeach
                      </select>
                 </div>                                                

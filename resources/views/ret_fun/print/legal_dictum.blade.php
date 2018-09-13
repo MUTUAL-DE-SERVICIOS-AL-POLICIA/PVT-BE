@@ -110,6 +110,7 @@
                 <p class="text-justify">
                     {!! $payment !!}
                 </p>
+                @include('ret_fun.print.signature_footer',['user'=>$user])
             </div>
             <footer>
                 @yield('footer')
