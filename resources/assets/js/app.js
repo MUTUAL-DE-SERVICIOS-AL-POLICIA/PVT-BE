@@ -131,6 +131,19 @@ instance.extend('max_date', {
     return moment().subtract(18, 'years').diff(moment(value, "DD/MM/YYYY"), "days") > 0;
   }
 });
+instance.extend('max_current_date', {
+  getMessage: (field) => `La fecha ingresada no debe ser mayor a la fecha actual.`,
+  validate: (value) => {
+    return moment().diff(moment(value, "DD/MM/YYYY"), "days", true) > 0;
+  }
+});
+instance = new Validator();
+instance.extend('max_current_date_month_year', {
+  getMessage: (field) => `La fecha ingresada no debe ser mayor a la fecha actual.`,
+  validate: (value) => {
+    return moment().diff(moment(value, "MM/YYYY"), "months",true) > 0;
+  }
+});
 instance = new Validator();
 instance.extend('alpha_space_quote', {
   getMessage: (field) => `El dato ingresado es incorrecto.`,
@@ -237,6 +250,10 @@ Vue.component('ret-fun-beneficiaries-show', require('./components/ret_fun/ShowBe
 Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualification.vue'));
 Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterval.vue'));
 Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
+Vue.component('ret-fun-certification-button', require('./components/ret_fun/CertificationButton.vue'));
+Vue.component('ret-fun-chart', require('./components/ret_fun/Chart.vue'));
+
+
 
 // inbox
 Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));

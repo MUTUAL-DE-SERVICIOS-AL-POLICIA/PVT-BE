@@ -36,11 +36,12 @@ export default {
           { title: 'Apellido de Casada', field: 'surname_husband', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Primer Nombre', field: 'first_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Segundo Nombre', field: 'second_name', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
+          { title: 'Trámite', field: 'procedure', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Modalidad', field: 'modality', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'Flujo', field: 'workflow', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },          
+          { title: 'Área', field: 'workflow', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Recepción', field: 'reception_date', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Estado', field: 'state', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
-          { title: 'Total', field: 'total', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },     
+          { title: 'Total', field: 'total', thComp: 'FilterTh', tdStyle: { fontStyle: 'italic' } },
           { title: 'Operation', tdComp: 'Opt', visible: 'true' }
         ]
         const groupsDef = {
@@ -52,7 +53,7 @@ export default {
           Object.keys(groupsDef).forEach(groupName => {
             if (groupsDef[groupName].includes(col.title)) {
               col.group = groupName
-            }            
+            }
           })
           return col
         })
@@ -84,7 +85,7 @@ export default {
       axios.get('/get_all_ret_fun',{
         params: this.query
       }).then((response)=> {
-        this.data = response.data.ret_funds, 
+        this.data = response.data.ret_funds,
         this.total = response.data.total
         // this.summary = summary
       }).catch(function (error) {

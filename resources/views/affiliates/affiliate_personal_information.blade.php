@@ -8,7 +8,7 @@
                         <div class="pull-left"> <legend > Información Personal</legend></div>
                         @can('update',$affiliate)
                             <div class="text-right">
-                                <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing" @if($is_editable == "0")disabled="disabled"@endif ><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
+                                <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing" @if($is_editable == 0)disabled="disabled"@endif ><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
                             </div>
                         @endcan
                     </div>

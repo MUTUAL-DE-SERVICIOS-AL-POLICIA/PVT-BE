@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddedColumnsContributionTypesTables extends Migration
+class AddedColumnNoteRetFunCorrelative extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddedColumnsContributionTypesTables extends Migration
      */
     public function up()
     {
-        Schema::table('contribution_types', function (Blueprint $table) {
-            $table->string('display_name')->nullable();
-            $table->integer('sequence')->nullable();
+        Schema::table('ret_fun_correlatives', function (Blueprint $table) {
+            $table->text('note')->nullable();
         });
     }
 
@@ -26,8 +25,8 @@ class AddedColumnsContributionTypesTables extends Migration
      */
     public function down()
     {
-        Schema::table('contribution_types', function (Blueprint $table) {
-            $table->dropColumn(['display_name','sequence']);
+        Schema::table('ret_fun_correlatives', function (Blueprint $table) {
+            $table->dropColumn(['note']);
         });
     }
 }

@@ -41,16 +41,16 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
                     @if($contribution->contribution_type_id == $security_contributions->id)
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->gain) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->base_wage) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->gain) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->base_wage) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->seniority_bonus) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                     @else
                         @if($contribution->total > 0 )
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->gain) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->base_wage) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($contribution->seniority_bonus) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->gain) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->base_wage) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->seniority_bonus) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                         @else
                             <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
                         @endif
@@ -62,10 +62,10 @@
                             <td class="text-center uppercase font-bold px-5 py-3"></td>
                             <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>                            
-                                <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($reimbursement->gain) }}</td>
-                                <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($reimbursement->base_wage) }}</td>
-                                <td class="text-center uppercase font-bold px-5 py-3">{{ \Muserpol\Helpers\Util::formatMoney($reimbursement->seniority_bonus) }}</td>
-                                <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->total }}</td>                            
+                                <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->gain) }}</td>
+                                <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->base_wage) }}</td>
+                                <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->seniority_bonus) }}</td>
+                                <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>                            
                         </tr>
                     @endif        
                 @endforeach 
@@ -101,9 +101,6 @@
     Es cuanto se certifica para  fines consiguientes. 
 </div>
 <br>
-<div align="right">
-    {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
-</div>
 @include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch
 

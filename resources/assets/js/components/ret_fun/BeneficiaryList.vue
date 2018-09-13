@@ -67,6 +67,7 @@ export default {
                 city_identity_card_id: null,
                 birth_date: null,
                 kinship: null,
+                legal_representative: null,
         }
         if(this.beneficiaries.length > 0){
             let last_beneficiary=this.beneficiaries[this.beneficiaries.length-1];

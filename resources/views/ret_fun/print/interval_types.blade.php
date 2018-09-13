@@ -35,7 +35,7 @@
     <table class="table-info w-100 m-b-10">
         <thead class="bg-grey-darker">
             <tr class="font-medium text-white text-sm uppercase">
-                <td class="px-15 text-center">Tipo de contribucion</td>
+                <td class="px-15 text-center">Tipo de contribución</td>
                 <td class="px-15 text-center">Años</td>
                 <td class="px-15 text-center">Meses</td>
             </tr>

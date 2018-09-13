@@ -37,9 +37,9 @@ class QuotaAidMortuaryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    
+
     public function index()
-    {        
+    {
         return View("quota_aid.index");
     }
     public function getAllQuotaAid(Request $request)
@@ -47,38 +47,38 @@ class QuotaAidMortuaryController extends Controller
         $offset = $request->offset ?? 0;
         $limit = $request->limit ?? 10;
         $sort = $request->sort ?? 'id';
-        $order = $request->order ?? 'desc';          
+        $order = $request->order ?? 'desc';
         $last_name = strtoupper($request->last_name) ?? '';
         $first_name = strtoupper($request->first_name) ?? '';
         $code = $request->code ?? '';
         $modality = strtoupper($request->modality) ?? '';
-         
+
 
         $total = QuotaAidMortuary::select('quota_aid_mortuaries.id')
                                 ->leftJoin('affiliates','quota_aid_mortuaries.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
-                                ->leftJoin('workflows','quota_aid_mortuaries.workflow_id','=','workflows.id')                               
-                                ->where('quota_aid_mortuaries.code','LIKE',$code.'%')                                
+                                ->leftJoin('workflows','quota_aid_mortuaries.workflow_id','=','workflows.id')
+                                ->where('quota_aid_mortuaries.code','LIKE',$code.'%')
                                 ->where('affiliates.first_name','LIKE',$first_name.'%')
-                                ->where('affiliates.last_name','LIKE',$last_name.'%')                             
+                                ->where('affiliates.last_name','LIKE',$last_name.'%')
                                 ->count();
         //dd($total);
          $quota_aid_mortuaries = QuotaAidMortuary::select('quota_aid_mortuaries.id','affiliates.first_name as first_name','affiliates.last_name as last_name','procedure_modalities.name as modality','workflows.name as workflow','quota_aid_mortuaries.code','quota_aid_mortuaries.reception_date','quota_aid_mortuaries.total')
                                 ->leftJoin('affiliates','quota_aid_mortuaries.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
-                                ->leftJoin('workflows','quota_aid_mortuaries.workflow_id','=','workflows.id')                               
-                                ->where('quota_aid_mortuaries.code','LIKE',$code.'%')                                
+                                ->leftJoin('workflows','quota_aid_mortuaries.workflow_id','=','workflows.id')
+                                ->where('quota_aid_mortuaries.code','LIKE',$code.'%')
                                 ->where('affiliates.first_name','LIKE',$first_name.'%')
-                                ->where('affiliates.last_name','LIKE',$last_name.'%')                                
+                                ->where('affiliates.last_name','LIKE',$last_name.'%')
                                 ->skip($offset)
                                 ->take($limit)
                                 ->orderBy($sort,$order)
-                                ->get();             
+                                ->get();
        // dd($quota_aid_mortuaries);
         return response()->json(['quota_aid_mortuaries' => $quota_aid_mortuaries->toArray(),'total'=>$total]);
     }
 
- 
+
     public function create()
     {
         //
@@ -106,17 +106,17 @@ class QuotaAidMortuaryController extends Controller
         $gender = $request->beneficiary_gender;
 
         $requirements = ProcedureRequirement::select('id')->get();
-        $affiliate = Affiliate::find($request->affiliate_id);        
+        $affiliate = Affiliate::find($request->affiliate_id);
         switch ($request->quota_aid_modality) {
             case 8:
             case 9:
             case 13:
-                $affiliate->affiliate_state_id = 4;
+                $affiliate->affiliate_state_id = ID::affiliateState()->fallecido;
                 $affiliate->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
                 break;
             case 14:
             case 15:
-                $affiliate->affiliate_state_id = 5;
+                $affiliate->affiliate_state_id = ID::affiliateState()->jubilado;
 
                 $spouse = new Spouse();
                 $spouse->user_id = Auth::user()->id;
@@ -143,20 +143,20 @@ class QuotaAidMortuaryController extends Controller
 
         $procedure = QuotaAidProcedure::where('hierarchy_id',$affiliate->degree->hierarchy_id)->where('procedure_modality_id',$request->quota_aid_modality)->select('id')->first();
         $validator = Validator::make($request->all(), [
-            //'applicant_first_name' => 'required|max:5',            
-        ]);                
+            //'applicant_first_name' => 'required|max:5',
+        ]);
         //custom this validator
         $validator->after(function($validator){
-            if(false)                   
-                $validator->errors()->add('Modalidad', 'el campo modalidad no puede ser tramitada este mes');            
-        });        
+            if(false)
+                $validator->errors()->add('Modalidad', 'el campo modalidad no puede ser tramitada este mes');
+        });
         if($validator->fails()){
-            return $validator->errors();            
+            return $validator->errors();
         }
 
         $rules = [];
         $biz_rules = [];
-        
+
         // $has_quota_aid = false;
         // $quota_aid = QuotaAidMortuary::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
         // if(isset($quota_aid->id)) {
@@ -193,7 +193,7 @@ class QuotaAidMortuaryController extends Controller
         }
 
         $modality = ProcedureModality::find($request->quota_aid_modality);
-        
+
         $quota_aid = new QuotaAidMortuary();
         //$this->authoriza('create', $quota_aid);
         $quota_aid->user_id = Auth::user()->id;
@@ -201,7 +201,7 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->procedure_modality_id = $request->quota_aid_modality;
         $quota_aid->quota_aid_procedure_id = $procedure->id;
         $quota_aid->city_start_id = Auth::user()->city_id;
-        $quota_aid->city_end_id = Auth::user()->city_id;        
+        $quota_aid->city_end_id = Auth::user()->city_id;
         $quota_aid->code = $code;
         $quota_aid->reception_date = date('Y-m-d');
         $quota_aid->workflow_id = 5;
@@ -209,7 +209,7 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->subtotal = 0;
         $quota_aid->total = 0;
         $quota_aid->save();
-        
+
         foreach ($requirements  as  $requirement)
         {
             if($request->input('document'.$requirement->id) == 'checked')
@@ -218,11 +218,11 @@ class QuotaAidMortuaryController extends Controller
                 $submit->quota_aid_mortuary_id = $quota_aid->id;
                 $submit->procedure_requirement_id = $requirement->id;
                 $submit->reception_date = date('Y-m-d');
-                $submit->comment = $request->input('comment'.$requirement->id);                
+                $submit->comment = $request->input('comment'.$requirement->id);
                 $submit->save();
-            }                
+            }
         }
-        $account_type = $request->input('accountType');    
+        $account_type = $request->input('accountType');
 
         $beneficiary = new QuotaAidBeneficiary();
         $beneficiary->quota_aid_mortuary_id = $quota_aid->id;
@@ -239,8 +239,8 @@ class QuotaAidMortuaryController extends Controller
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
         $beneficiary->type = "S";
         $beneficiary->save();
-                
-        if($account_type == '2')
+
+        if($account_type == ID::applicant()->advisor_id)
         {
             $advisor = new QuotaAidAdvisor();
             //$advisor->retirement_fund_id = $retirement_found->id;
@@ -251,50 +251,50 @@ class QuotaAidMortuaryController extends Controller
             $advisor->mothers_last_name = $request->applicant_mothers_last_name;
             $advisor->first_name = $request->applicant_first_name;
             $advisor->second_name = $request->applicant_second_name;
-            $advisor->surname_husband = $request->applicant_surname_husband;        
-            $advisor->gender = "M";                    
+            $advisor->surname_husband = $request->applicant_surname_husband;
+            $advisor->gender = "M";
             $advisor->phone_number = trim(implode(",", $request->applicant_phone_number));
             $advisor->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
-            $advisor->name_court = $request->advisor_name_court;            
+            $advisor->name_court = $request->advisor_name_court;
             $advisor->resolution_number = $request->advisor_resolution_number;
             $advisor->resolution_date = $request->advisor_resolution_date;
             $advisor->type = "Natural";
             $advisor->save();
-            
+
             $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
             $advisor_beneficiary->ret_fun_beneficiary_id = $beneficiary->id;
             $advisor_beneficiary->ret_fun_advisor_id = $advisor->id;
             $advisor_beneficiary->save();
         }
-        
-        if($account_type == '3')
+
+        if($account_type == ID::applicant()->legal_guardian_id)
         {
             $legal_guardian = new QuotaAidLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_found->id;
-            $legal_guardian->city_identity_card_id = $request->applicant_city_identity_card;            
+            $legal_guardian->city_identity_card_id = $request->applicant_city_identity_card;
             $legal_guardian->identity_card = $request->applicant_identity_card  ;
             $legal_guardian->last_name = $request->applicant_last_name;
             $legal_guardian->mothers_last_name = $request->applicant_mothers_last_name;
             $legal_guardian->first_name = $request->applicant_first_name;
             $legal_guardian->second_name = $request->applicant_second_name;
-            $legal_guardian->surname_husband = $request->applicant_surname_husband;        
-            //$legal_guardian->gender = "M";                    
+            $legal_guardian->surname_husband = $request->applicant_surname_husband;
+            //$legal_guardian->gender = "M";
             $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));
             $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
-            $legal_guardian->number_authority = $request->legal_guardian_number_authority;            
+            $legal_guardian->number_authority = $request->legal_guardian_number_authority;
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
             $legal_guardian->save();
-            
+
             $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
             $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
             $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
-            //$beneficiary->type = "N";            
+            //$beneficiary->type = "N";
         }
-        
-        
-        if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {            
+
+
+        if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
             $address = new Address();
             $address->city_address_id = 1;
             $address->zone = $request->beneficiary_zone;
@@ -304,15 +304,15 @@ class QuotaAidMortuaryController extends Controller
 
             $beneficiary->address()->save($address);
         }
-        
+
         // crear relacion
         //borrar esto
         // $address_rel = new RetFunAddressBeneficiary();
         // $address_rel->ret_fun_beneficiary_id = $beneficiary->id;
         // $address_rel->address_id = $address->id;
         // $address_rel->save();
-        
-       
+
+
 
         for($i=0;is_array($first_name) &&  $i<sizeof($first_name);$i++){
             if($first_name[$i] != "" && $last_name[$i] != ""){
@@ -329,14 +329,14 @@ class QuotaAidMortuaryController extends Controller
                 $beneficiary->birth_date = Util::verifyBarDate($birth_date[$i]) ? Util::parseBarDate($birth_date[$i]) : $birth_date[$i];
                 $beneficiary->gender = strtoupper(trim($gender[$i]));
                 $beneficiary->type = "N";
-                $beneficiary->save();                
-            }        
+                $beneficiary->save();
+            }
         }
-                
+
         $data = [
-            
-        ];        
-        return redirect('quota_aid/'.$quota_aid->id);           
+
+        ];
+        return redirect('quota_aid/'.$quota_aid->id);
     }
 
     /**
@@ -356,7 +356,7 @@ class QuotaAidMortuaryController extends Controller
         }
 
         $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->with(['kinship', 'city_identity_card'])->orderByDesc('type')->orderBy('id')->get();
-        
+
         foreach ($beneficiaries as $b) {
             $b->phone_number=explode(',',$b->phone_number);
             $b->cell_phone_number=explode(',',$b->cell_phone_number);
@@ -364,36 +364,36 @@ class QuotaAidMortuaryController extends Controller
                 $b->address[]= array('zone' => null, 'street'=>null, 'number_address'=>null);
             }
         }
-        
-        $applicant = QuotaAidBeneficiary::where('type','S')->where('quota_aid_mortuary_id',$quota_aid->id)->first();        
-        
+
+        $applicant = QuotaAidBeneficiary::where('type','S')->where('quota_aid_mortuary_id',$quota_aid->id)->first();
+
         $beneficiary_avdisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$applicant->id)->first();
-        
+
         if(isset($beneficiary_avdisor->id))
             $advisor= QuotaAidAdvisor::find($beneficiary_avdisor->ret_fun_advisor_id);
         else
             $advisor = new QuotaAidAdvisor();
 
-        
+
         $beneficiary_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
-        
+
         if(isset($beneficiary_guardian->id))
             $guardian = QuotaAidLegalGuardian::find($beneficiary_guardian->quota_aid_legal_guardian_id);
         else
-            $guardian = new QuotaAidLegalGuardian();            
+            $guardian = new QuotaAidLegalGuardian();
         $procedures_modalities_ids = ProcedureModality::join('procedure_types','procedure_types.id','=','procedure_modalities.procedure_type_id')
                 ->where('procedure_types.module_id','=',4)
                 ->orWhere('procedure_types.module_id','=',5)
                 ->get()
-                ->pluck('id'); //3 por el module 3 de fondo de retiro        
-                
+                ->pluck('id'); //3 por el module 3 de fondo de retiro
+
         //return $procedures_modalities_ids;
-        $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();        
+        $procedures_modalities = ProcedureModality::whereIn('procedure_type_id',$procedures_modalities_ids)->get();
         $file_modalities = ProcedureModality::get();
 
         $requirements = ProcedureRequirement::where('procedure_modality_id',$quota_aid->procedure_modality_id)->get();
-        
-        $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id',$id)->orderBy('procedure_requirement_id','ASC')->get();        
+
+        $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
         $cities = City::get();
         $kinships = Kinship::get();
 
@@ -401,10 +401,10 @@ class QuotaAidMortuaryController extends Controller
         $birth_cities = City::all()->pluck('name', 'id');
 
         $states = RetFunState::get();
-        
+
 
         //$ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
-        
+
         ///proof
         $user = User::find(Auth::user()->id);
         $procedure_types = ProcedureType::where('module_id', 4)->get();
@@ -414,27 +414,27 @@ class QuotaAidMortuaryController extends Controller
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
-                                                                
-        $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();            
-        
+
+        $modalities = ProcedureModality::where('procedure_type_id','<=', '2')->select('id','name', 'procedure_type_id')->get();
+
         $observation_types = ObservationType::where('module_id',4)->get();
-        
+
         //selected documents
         $submitted = QuotaAidSubmittedDocument::
             select('quota_aid_submitted_documents.id','procedure_requirements.number','quota_aid_submitted_documents.procedure_requirement_id','quota_aid_submitted_documents.comment')
             ->leftJoin('procedure_requirements','quota_aid_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
             ->where('quota_aid_submitted_documents.quota_aid_mortuary_id',$id);
-         
+
             // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
         $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
-        
+
         $can_validate = $wf_current_state->id == $quota_aid->wf_state_current_id;
         $can_cancel = ($quota_aid->user_id == $user->id && $quota_aid->inbox_state == true);
-        
+
         //workflow record
         //$workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
         //return $workflow_records;
@@ -453,16 +453,16 @@ class QuotaAidMortuaryController extends Controller
         // dd($first_wf_state);
 
         $wf_states = WorkflowState::where('module_id', '=', $module->id)->where('sequence_number','>',($first_wf_state->sequence_number ?? 1))->orderBy('sequence_number')->get();
-        
+
         //$correlatives = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->get();
-        
+
         $steps = [];
         //$data = $retirement_fund->getReceptionSummary();
         $is_editable = "1";
         if(isset($quota_aid->id))
-            $is_editable = "0";
+            $is_editable = ID::getNonEditableId();
         //return $data;
-        //return $correlatives;        
+        //return $correlatives;
         $data = [
             'quota_aid' => $quota_aid,
             'affiliate' =>  $affiliate,
@@ -493,7 +493,7 @@ class QuotaAidMortuaryController extends Controller
             //'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
             'is_editable'  =>  $is_editable
-        ];                
+        ];
         //return $procedures_modalities;
 
         return view('quota_aid.show',$data);
@@ -527,40 +527,40 @@ class QuotaAidMortuaryController extends Controller
      *
      * @param  \Muserpol\RetirementFund  $retirementFund
      * @return \Illuminate\Http\Response
-     */   
+     */
     public function destroy(RetirementFund $retirementFund)
     {
         //
     }
-    
+
     public function getAllRetFun(Request $request)
     {
-        
+
 //        $offset = $request->offset ?? 0;
 //        $limit = $request->limit ?? 10;
 //        $sort = $request->sort ?? 'id';
-//        $order = $request->order ?? 'desc';          
+//        $order = $request->order ?? 'desc';
 //        $last_name = strtoupper($request->last_name) ?? '';
 //        $first_name = strtoupper($request->first_name) ?? '';
 //        $code = $request->code ?? '';
 //        $modality = strtoupper($request->modality) ?? '';
-//        
+//
 //
 //        $total = RetirementFund::select('retirement_funds.id')
 //                                ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
 //                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
-//                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
+//                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
 //                                ->where('retirement_funds.code','LIKE',$code.'%')
 //                                //->where('procedure_modalities.name','LIKE',$modality.'%')
 //                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-//                                ->where('affiliates.last_name','LIKE',$last_name.'%')                                
+//                                ->where('affiliates.last_name','LIKE',$last_name.'%')
 //                                ->count();
-//        
-//                                
+//
+//
 //        $ret_funds = RetirementFund::select('retirement_funds.id','affiliates.first_name as first_name','affiliates.last_name as last_name','procedure_modalities.name as modality','workflows.name as workflow','retirement_funds.code','retirement_funds.reception_date','retirement_funds.total')
 //                                ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
 //                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
-//                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')                               
+//                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
 //                                ->where('affiliates.first_name','LIKE',$first_name.'%')
 //                                //->where('procedure_modalities.name','LIKE',$modality.'%')
 //                                ->where('affiliates.last_name','LIKE',$last_name.'%')
@@ -569,39 +569,39 @@ class QuotaAidMortuaryController extends Controller
 //                                ->take($limit)
 //                                ->orderBy($sort,$order)
 //                                ->get();
-//        
-//        
+//
+//
 //        return response()->json(['ret_funds' => $ret_funds->toArray(),'total'=>$total]);
     }
-    
-    public function generateProcedure(Affiliate $affiliate){  
-                        
+
+    public function generateProcedure(Affiliate $affiliate){
+
         //return $affiliate;
         //$this->authorize('create',QuotaAidMortuary::class);
         $hierarchy = $affiliate->degree->hierarchy;
         $procedure_types = ProcedureType::where('id','3')->orWhere('id','4')->get();
-        
+
         $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender','degree_id','degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_death')
                                 ->leftJoin('degrees','affiliates.degree_id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
-        
-        
+
+
         $procedure_requirements = ProcedureRequirement::
                                     select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
-                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')                                    
+                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
                                     ->where('procedure_requirements.number','!=','0')
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
-                                    ->orderBy('procedure_requirements.number','ASC')                                    
+                                    ->orderBy('procedure_requirements.number','ASC')
                                     ->get();
-        
+
         $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
         if(!isset($spouse->id))
             $spouse = new Spouse();
         $modalities = ProcedureModality::where('procedure_type_id','3')->orWhere('procedure_type_id','4')->select('id','procedure_type_id','name')->get();
-        
+
         $kinships = Kinship::get();
-        
+
         $cities = City::get();
         $degrees = Degree::all();
         $data = [
@@ -613,10 +613,10 @@ class QuotaAidMortuaryController extends Controller
             'degrees'    =>  $degrees,
             'ret'    =>  $cities,
             'spouse' =>  $spouse,
-            'procedure_types'    =>  $procedure_types,            
+            'procedure_types'    =>  $procedure_types,
             'hierarchy' => $hierarchy,
-        ];        
-        return view('quota_aid.create',$data);        
+        ];
+        return view('quota_aid.create',$data);
     }
     private function getLastCode($quotas){
         $num = 0;
@@ -637,21 +637,21 @@ class QuotaAidMortuaryController extends Controller
         }
         return $num."/".$year;
     }
-    
+
     /**
      * This function edit recepcioned documents
-     * 
+     *
      * @param object Request, int id
      * @return Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary
      */
-    public function editRequirements(Request $request, $id) {        
+    public function editRequirements(Request $request, $id) {
         $documents = QuotaAidSubmittedDocument::
             select('procedure_requirements.number','quota_aid_submitted_documents.procedure_requirement_id')
             ->leftJoin('procedure_requirements','quota_aid_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
             ->where('quota_aid_submitted_documents.quota_aid_mortuary_id',$id)
             ->pluck('quota_aid_submitted_documents.procedure_requirement_id','procedure_requirements.number');
-        
+
         $num = $num2 = 0;
 
         foreach($request->requirements as $requirement){

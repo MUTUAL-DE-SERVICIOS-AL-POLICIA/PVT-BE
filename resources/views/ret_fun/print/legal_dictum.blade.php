@@ -16,7 +16,7 @@
                     {{ $actual_city }}, {{ $actual_date }}
                  </span>
                 <span class="block">
-                   DBE/UFRPSCAM/AL-DL N° {{ $correlative }}
+                   DBE/UFRPSCAM/AL-DL N° {{ $correlative->code }}
                  </span>
             </div>
             <div class="block">
@@ -33,16 +33,14 @@
                     {!! $person !!}
                 </p>
                 <p class="text-justify">                    
-                    Conforme normativa, el trámite N° {!! $ret_fun->code !!} de la Regional {!! $ret_fun->city_start->name !!} es ingresado por Ventanilla
-                    de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio
+                    Conforme normativa, el trámite N° {!! $ret_fun->code !!} de la Regional {!! ucwords(strtolower($ret_fun->city_start->name)) !!} es ingresado por Ventanilla
+                    de Atención al Afiliado de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio
                     Mortuorio; verificados los requisitos y la documentación presentada por la parte solicitante
-                    según lo señalado el Art. 41 inciso a) del Reglamento de Fondo de Retiro Policial Solidario
-                    aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y
-                    modificado mediante Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017,
-                    y conforme el Art. 45 de referido Reglamento, se detalla la documentación como resultado de
-                    la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y
-                    adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro
-                    Policial, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:
+                    según lo señalado el Art. 41 inciso {!! $art[$ret_fun->procedure_modality_id] !!} (Fondo de Retiro por {!! $ret_fun->procedure_modality->name !!}) del Reglamento de Fondo de Retiro Policial Solidario aprobado mediante Resolución de 
+                    Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resoluciones de Directorio Nros. 36/2017 y 51/2017 de fechas 20 de septiembre de 2017 y 29 de 
+                    diciembre de 2017 respectivamente, y conforme el Art. 45 (Procesamiento) de referido Reglamento, se detalla la documentación como resultado de la aplicación de la base 
+                    técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial 
+                    Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente: 
                 </p>
                 <ul class="m-l-30">
                     <li class="text-justify">
@@ -112,6 +110,7 @@
                 <p class="text-justify">
                     {!! $payment !!}
                 </p>
+                @include('ret_fun.print.signature_footer',['user'=>$user])
             </div>
             <footer>
                 @yield('footer')

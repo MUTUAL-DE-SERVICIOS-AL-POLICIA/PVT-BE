@@ -38,6 +38,8 @@ export default {
       legal_guardian_identity_card: '',
       legal_guardian_city_identity_card: '',
       legal_guardian_number_authority: '',
+      legal_guardian_date_authority: '',
+      legal_guardian_gender: null,
       legal_guardian_notary_of_public_faith: '',
       legal_guardian_notary: '',
       beneficiary_city_id: '',
@@ -49,10 +51,12 @@ export default {
       show_apoderado_form: false,
       applicant_types:[{name:'Beneficiario', id:1}, {name:'Tutor', id:2}, {name:'Apoderado', id:3}],
       date_derelict: this.affiliate.date_derelict,
+      date_death: this.affiliate.date_death,
+      reason_death: this.affiliate.reason_death,
       beneficiary_city_address_id: null,
       error:{
         applicant_identity_card: false,
-      }
+      },
     }
   },
   mounted(){
@@ -84,6 +88,9 @@ export default {
       return this.applicant_types.filter(item=>{
             return item.id  != 2;
       })
+    },
+    isDeathMode(){
+      return (this.retFun.modality_id == 4 || this.retFun.modality_id == 1);
     }
   },
   methods: {
@@ -182,11 +189,15 @@ export default {
       this.legal_guardian_surname_husband = data.surname_husband;
       this.legal_guardian_identity_card = data.identity_card;
       this.legal_guardian_city_identity_card = data.city_identity_card_id;
+      this.legal_guardian_gender = data.gender;
     },
     change_applicant: function() {
       // let modality_id_ = 
-      cellPhoneInputMaskAll();
-    phoneInputMaskAll();
+      setTimeout(() => {
+        dateInputMaskAll();
+        cellPhoneInputMaskAll();
+        phoneInputMaskAll();
+      }, 500);
       let modality_id=this.retFun.modality_id;
       if(this.applicant_type  == '2'){
         this.show_advisor_form = !this.show_advisor_form;

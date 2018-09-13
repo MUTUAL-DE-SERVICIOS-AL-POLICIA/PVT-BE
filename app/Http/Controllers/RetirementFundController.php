@@ -85,6 +85,7 @@ class RetirementFundController extends Controller
         $birth_date = $request->beneficiary_birth_date;
         $kinship = $request->beneficiary_kinship;
         $gender = $request->beneficiary_gender;
+        $legal_representative = $request->beneficiary_legal_representative;
         $account_type = $request->input('accountType');
         //*********START VALIDATOR************//
         $rules=[];
@@ -146,14 +147,14 @@ class RetirementFundController extends Controller
         $legal_has_lastname = false;
         if($request->applicant_last_name == '' && $request->applicant_mothers_last_name=='')
             $has_lastname = true;
-        if($account_type == ID::retFun()->legal_guardian_id )
+        if($account_type == ID::applicant()->legal_guardian_id )
         {
             if($request->legal_guardian_last_name == '' && $request->legal_guardian_mothers_last_name=='')
                 $legal_has_lastname = true;
         }
         $biz_rules = [
             'has_lastname'  =>  $has_lastname?'required':'',
-            'legal_guardian_first_name' => $account_type==ID::retFun()->legal_guardian_id ? 'required' : '',
+            'legal_guardian_first_name' => $account_type==ID::applicant()->legal_guardian_id ? 'required' : '',
             'legal_has_lastname' => $legal_has_lastname ? 'required' : '',
             //'legal_guardian_identity_card'  =>  $account_type==3 ? 'required' : '',
             //'legal_guardian_number_authority'   => $account_type==3 ? 'required' : '',
@@ -258,6 +259,9 @@ class RetirementFundController extends Controller
             case 1:
             case 4:
                 $af->affiliate_state_id = ID::affiliateState()->fallecido;
+
+                $af->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
+                $af->reason_death = $request->reason_death;
                 break;
             case 2:
             case 3:
@@ -317,16 +321,16 @@ class RetirementFundController extends Controller
         $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
         $beneficiary->type = ID::beneficiary()->solicitante;
         $beneficiary->save();
-        if($account_type == ID::retFun()->beneficiary_id && $request->ret_fun_modality != ID::retFun()->fallecimiento_id && $request->ret_fun_modality != ID::retFunGlobalPay()->fallecimiento_id )
+        if($account_type == ID::applicant()->beneficiary_id && $request->ret_fun_modality != ID::retFun()->fallecimiento_id && $request->ret_fun_modality != ID::retFunGlobalPay()->fallecimiento_id )
         {
             Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
-        if ($account_type == ID::retFun()->beneficiary_id && ($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == ID::kinship()->conyuge) {
+        if ($account_type == ID::applicant()->beneficiary_id && ($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == ID::kinship()->conyuge) {
             Log::info("updating spouse 1");
             Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
 
-        if($account_type == ID::retFun()->advisor_id)
+        if($account_type == ID::applicant()->advisor_id)
         {
             $advisor = new RetFunAdvisor();
             //$advisor->retirement_fund_id = $retirement_fund->id;
@@ -343,7 +347,7 @@ class RetirementFundController extends Controller
             $advisor->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
             $advisor->name_court = $request->advisor_name_court;
             $advisor->resolution_number = $request->advisor_resolution_number;
-            $advisor->resolution_date = $request->advisor_resolution_date;
+            $advisor->resolution_date = Util::verifyBarDate($request->advisor_resolution_date) ? Util::parseBarDate($request->advisor_resolution_date) : $request->advisor_resolution_date;
             $advisor->type = "Natural";
             $advisor->save();
 
@@ -353,7 +357,7 @@ class RetirementFundController extends Controller
             $advisor_beneficiary->save();
         }
 
-        if($account_type == ID::retFun()->legal_guardian_id)
+        if($account_type == ID::applicant()->legal_guardian_id)
         {
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
@@ -364,12 +368,13 @@ class RetirementFundController extends Controller
             $legal_guardian->first_name = strtoupper(trim($request->legal_guardian_first_name));
             $legal_guardian->second_name = strtoupper(trim($request->legal_guardian_second_name));
             $legal_guardian->surname_husband = strtoupper(trim($request->legal_guardian_surname_husband));
-            //$legal_guardian->gender = "M";
             $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
             $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
+            $legal_guardian->date_authority = Util::verifyBarDate($request->legal_guardian_date_authority) ? Util::parseBarDate($request->legal_guardian_date_authority) : $request->legal_guardian_date_authority;
+            $legal_guardian->gender = $request->legal_guardian_gender;
             $legal_guardian->save();
             $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
             $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
@@ -397,7 +402,8 @@ class RetirementFundController extends Controller
             }
             $beneficiary->address()->save($address);
         }
-
+        $legal_guardian_count=0;
+        $advisor_count=0;
         for($i=0;is_array($first_name) && $i < sizeof($first_name);$i++){
             if($first_name[$i] != "" && ($last_name[$i] != "" || $mothers_last_name[$i] != "") ){
                 $beneficiary = new RetFunBeneficiary();
@@ -417,6 +423,72 @@ class RetirementFundController extends Controller
                 //$beneficiary->cell_phone_number = $request->;
                 $beneficiary->type = ID::beneficiary()->normal;
                 $beneficiary->save();
+                switch ($legal_representative[$i]) {
+                    case 1:
+                        Log::info('tutor');
+                        $advisor = new RetFunAdvisor();
+                        //$advisor->retirement_fund_id = $retirement_fund->id;
+                        $advisor->city_identity_card_id = $request->beneficiary_advisor_city_identity_card[$advisor_count];
+                        $advisor->kinship_id = null;
+                        $advisor->identity_card = $request->beneficiary_advisor_identity_card[$advisor_count];
+                        $advisor->last_name = strtoupper(trim($request->beneficiary_advisor_last_name[$advisor_count]));
+                        $advisor->mothers_last_name = strtoupper(trim($request->beneficiary_advisor_mothers_last_name[$advisor_count]));
+                        $advisor->first_name = strtoupper(trim($request->beneficiary_advisor_first_name[$advisor_count]));
+                        $advisor->second_name = strtoupper(trim($request->beneficiary_advisor_second_name[$advisor_count]));
+                        $advisor->surname_husband = strtoupper(trim($request->beneficiary_advisor_surname_husband[$advisor_count]));
+                        $advisor->gender = strtoupper(trim($request->beneficiary_advisor_gender[$advisor_count]));
+                        // $advisor->phone_number = trim(implode(",", $request->beneficiary_advisor_phone_number ?? []));
+                        // $advisor->cell_phone_number = trim(implode(",", $request->beneficiary_advisor_cell_phone_number ?? []));
+                        $advisor->name_court = $request->beneficiary_advisor_name_court[$advisor_count];
+                        $advisor->resolution_number = $request->beneficiary_advisor_resolution_number[$advisor_count];
+                        $advisor->resolution_date = Util::verifyBarDate($request->beneficiary_advisor_resolution_date[$advisor_count]) ? Util::parseBarDate($request->beneficiary_advisor_resolution_date[$advisor_count]) : $request->beneficiary_advisor_resolution_date[$advisor_count];
+                        $advisor->type = "Natural";
+                        $advisor->save();
+
+                        $advisor_beneficiary = new RetFunAdvisorBeneficiary();
+                        $advisor_beneficiary->ret_fun_beneficiary_id = $beneficiary->id;
+                        $advisor_beneficiary->ret_fun_advisor_id = $advisor->id;
+                        $advisor_beneficiary->save();
+                        $advisor_count++;
+                        break;
+                    case 2:
+                        Log::info('APODE');
+                        $legal_guardian = new RetFunLegalGuardian();
+                        $legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
+                        $legal_guardian->identity_card = strtoupper(trim($request->beneficiary_legal_guardian_identity_card[$legal_guardian_count]));
+                        $legal_guardian->city_identity_card_id = $request->beneficiary_legal_guardian_city_identity_card[$legal_guardian_count];
+                        $legal_guardian->first_name = strtoupper(trim($request->beneficiary_legal_guardian_first_name[$legal_guardian_count]));
+                        $legal_guardian->second_name = strtoupper(trim($request->beneficiary_legal_guardian_second_name[$legal_guardian_count]));
+                        $legal_guardian->last_name = strtoupper(trim($request->beneficiary_legal_guardian_last_name[$legal_guardian_count]));
+                        $legal_guardian->mothers_last_name = strtoupper(trim($request->beneficiary_legal_guardian_mothers_last_name[$legal_guardian_count]));
+                        $legal_guardian->surname_husband = strtoupper(trim($request->beneficiary_legal_guardian_surname_husband[$legal_guardian_count]));
+                        /** !! TODO
+                         * phone and cellphone numbers
+                         */
+                        $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+                        $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
+
+                        $legal_guardian->gender = $request->beneficiary_legal_guardian_gender[$legal_guardian_count];
+                        $legal_guardian->number_authority = $request->beneficiary_legal_guardian_number_authority[$legal_guardian_count];
+                        $legal_guardian->notary_of_public_faith = $request->beneficiary_legal_guardian_notary_of_public_faith[$legal_guardian_count];
+                        $legal_guardian->notary = $request->beneficiary_legal_guardian_notary_of_public_faith[$legal_guardian_count];
+                        $legal_guardian->date_authority = Util::verifyBarDate($request->beneficiary_legal_guardian_date_authority[$legal_guardian_count]) ? Util::parseBarDate($request->beneficiary_legal_guardian_date_authority[$legal_guardian_count]) : $request->beneficiary_legal_guardian_date_authority[$legal_guardian_count];
+                        $legal_guardian->save();
+                        $legal_guardian_count++;
+                        /**
+                         * 😡
+                         * TODO
+                         */
+
+                        $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
+                        $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
+                        $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
+                        $beneficiary_legal_guardian->save();
+                        break;
+                    default:
+                        Log::info('NONE');
+                        break;
+                }
             }
         }
         $data = [
@@ -433,7 +505,7 @@ class RetirementFundController extends Controller
      */
     //public function show(RetirementFund $retirementFund)
     public function show($id)
-    {        
+    {
 //         $data = [
 
 //         ];
@@ -518,6 +590,39 @@ class RetirementFundController extends Controller
             if(! sizeOf($b->address) > 0 && $b->type == 'S'){
                 $b->address[]= array('zone' => null, 'street'=>null, 'number_address'=>null);
             }
+            //1 => tutor
+            //2 => Apoderado
+            $b->legal_representative = null;
+            if($beneficiary_advisor = $b->ret_fun_advisors->first()){
+                $b->legal_representative = 1;
+                $b->advisor_identity_card = $beneficiary_advisor->identity_card;
+                $b->advisor_city_identity_card_id = $beneficiary_advisor->city_identity_card_id;
+                $b->advisor_first_name = $beneficiary_advisor->first_name;
+                $b->advisor_second_name = $beneficiary_advisor->second_name;
+                $b->advisor_last_name = $beneficiary_advisor->last_name;
+                $b->advisor_mothers_last_name = $beneficiary_advisor->mothers_last_name;
+                $b->advisor_surname_husband = $beneficiary_advisor->surname_husband;
+                $b->advisor_birth_date = $beneficiary_advisor->birth_date;
+                $b->advisor_gender = $beneficiary_advisor->gender;
+                $b->advisor_name_court = $beneficiary_advisor->name_court;
+                $b->advisor_resolution_number = $beneficiary_advisor->resolution_number;
+                $b->advisor_resolution_date = $beneficiary_advisor->resolution_date;
+            }
+            if($beneficiary_legal_guardian =  $b->legal_guardian->first()){
+                $b->legal_representative = 2;
+                $b->legal_guardian_identity_card = $beneficiary_legal_guardian->identity_card;
+                $b->legal_guardian_city_identity_card = $beneficiary_legal_guardian->city_identity_card;
+                $b->legal_guardian_first_name = $beneficiary_legal_guardian->first_name;
+                $b->legal_guardian_second_name = $beneficiary_legal_guardian->second_name;
+                $b->legal_guardian_last_name = $beneficiary_legal_guardian->last_name;
+                $b->legal_guardian_mothers_last_name = $beneficiary_legal_guardian->mothers_last_name;
+                $b->legal_guardian_surname_husband = $beneficiary_legal_guardian->surname_husband;
+                $b->legal_guardian_gender = $beneficiary_legal_guardian->gender;
+                $b->legal_guardian_number_authority = $beneficiary_legal_guardian->number_authority;
+                $b->legal_guardian_notary_of_public_faith = $beneficiary_legal_guardian->notary_of_public_faith;
+                $b->legal_guardian_notary = $beneficiary_legal_guardian->notary;
+                $b->legal_guardian_date_authority = $beneficiary_legal_guardian->date_authority;
+            }
         }
         $applicant = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$retirement_fund->id)->first();
 
@@ -570,7 +675,7 @@ class RetirementFundController extends Controller
             select('ret_fun_submitted_documents.id','procedure_requirements.number','ret_fun_submitted_documents.procedure_requirement_id','ret_fun_submitted_documents.comment','ret_fun_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements','ret_fun_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
-            ->where('ret_fun_submitted_documents.retirement_fund_id',$id);       
+            ->where('ret_fun_submitted_documents.retirement_fund_id',$id);
         // return $submitted->get();
             // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/
@@ -602,7 +707,7 @@ class RetirementFundController extends Controller
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
         $is_editable = ID::getEditableId();
-        if(isset($retirement_fund->id))
+        if(isset($retirement_fund->id) && $retirement_fund->modality_id!=4)
             $is_editable = ID::getNonEditableId();
         //return $data;
         //return $correlatives;
@@ -694,6 +799,7 @@ class RetirementFundController extends Controller
         $surname_husband = strtoupper($request->surname_husband) ?? '';
         $first_name = strtoupper($request->first_name) ?? '';
         $second_name = strtoupper($request->second_name) ?? '';
+        $procedure= strtoupper($request->procedure) ?? '';
         $modality = strtoupper($request->modality) ?? '';
         $workflow= strtoupper($request->workflow) ?? '';
         $state = strtoupper($request->state) ?? '';
@@ -703,6 +809,7 @@ class RetirementFundController extends Controller
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
+                                ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
                                 ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
@@ -712,7 +819,7 @@ class RetirementFundController extends Controller
                                 ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
                                 ->whereRaw("coalesce(ret_fun_states.name,'') LIKE '$state%'")
                                 ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
-
+                                ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
                                 ->count();
 
         $ret_funds = RetirementFund::select(
@@ -727,12 +834,14 @@ class RetirementFundController extends Controller
             'wf_states.first_shortened as workflow',
             'retirement_funds.reception_date as reception_date',
             'ret_fun_states.name as state',
-            'retirement_funds.total as total'
+            'retirement_funds.total as total',
+            'procedure_types.name as procedure'
         )
                                 ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
                                 ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
                                 ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
                                 ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
+                                ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
                                 ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
                                 ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
                                 ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
@@ -742,6 +851,7 @@ class RetirementFundController extends Controller
                                 ->whereRaw("coalesce(ret_fun_states.name,'') iLIKE '$state%'")
                                 ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
                                 ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
+                                ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
                                 ->skip($offset)
                                 ->take($limit)
                                 ->orderBy($sort,$order)
@@ -755,7 +865,7 @@ class RetirementFundController extends Controller
 
         $this->authorize('create',RetirementFund::class);
         $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_derelict')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_derelict', 'date_death', 'reason_death')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
@@ -838,7 +948,7 @@ class RetirementFundController extends Controller
                 array_push($beneficiaries_array_request, $value);
             }
         }
-        Log::info(json_encode($request->all()[0]));
+        // Log::info(json_encode($request->all()[0]));
         /* delete beneficiaries */
         $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries;
         foreach ($beneficiaries as $key => $ben) {
@@ -872,6 +982,96 @@ class RetirementFundController extends Controller
                 $old_ben->birth_date = Util::verifyBarDate($new_ben['birth_date']) ? Util::parseBarDate($new_ben['birth_date']) : $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
                 $old_ben->state = $new_ben['state'] ?? false;
+
+                if (is_null($new_ben['legal_representative'])) {
+                    if ($ben_advisor = $old_ben->ret_fun_advisors->first()) {
+                        // delete
+                        $advisor_beneficiary = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id', $old_ben->id)->where('ret_fun_advisor_id', $ben_advisor->id)->first();
+                        $advisor_beneficiary->delete();
+                    }
+                    if ($ben_legal_guardian = $old_ben->legal_guardian->first()) {
+                        //delete
+                        $ben_legal_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$old_ben->id)->where('ret_fun_legal_guardian_id', $ben_legal_guardian->id)->first();
+                        $ben_legal_guardian->delete();
+                    }
+                }else{
+                    switch ($new_ben['legal_representative']) {
+                        //tutor
+                        case 1:
+                            //exists
+                            if ($ben_advisor = $old_ben->ret_fun_advisors->first()) {
+
+                            }else{
+                                $ben_advisor = new RetFunAdvisor();
+                            }
+                            $ben_advisor->city_identity_card_id = isset($new_ben['advisor_city_identity_card_id']) ? intval($new_ben['advisor_city_identity_card_id'])  : null;
+                            $ben_advisor->kinship_id = null;
+                            $ben_advisor->identity_card = $new_ben['advisor_identity_card'] ?? null;
+                            $ben_advisor->last_name = strtoupper(trim($new_ben['advisor_last_name'] ?? null));
+                            $ben_advisor->mothers_last_name = strtoupper(trim($new_ben['advisor_mothers_last_name'] ?? null));
+                            $ben_advisor->first_name = strtoupper(trim($new_ben['advisor_first_name'] ?? null));
+                            $ben_advisor->second_name = strtoupper(trim($new_ben['advisor_second_name'] ?? null));
+                            $ben_advisor->surname_husband = strtoupper(trim($new_ben['advisor_surname_husband'] ?? null));
+                            $ben_advisor->gender = strtoupper(trim($new_ben['advisor_gender'] ?? null));
+                            // $ben_advisor->phone_number = trim(implode(",", $new_ben['advisor_phone_number'] ?? []));
+                            // $ben_advisor->cell_phone_number = trim(implode(",", $new_ben['advisor_cell_phone_number'] ?? []));
+                            $ben_advisor->name_court = $new_ben['advisor_name_court'] ?? null;
+                            $ben_advisor->resolution_number = $new_ben['advisor_resolution_number'] ?? null;
+                            $ben_advisor->resolution_date = isset($new_ben['advisor_resolution_date']) ? (Util::verifyBarDate($new_ben['advisor_resolution_date']) ? Util::parseBarDate($new_ben['advisor_resolution_date']) : $new_ben['advisor_resolution_date']) : null;
+                            $ben_advisor->type = "Natural";
+                            $ben_advisor->save();
+                            if ($old_ben->ret_fun_advisors->first()) {
+
+                            } else {
+                                $advisor_beneficiary = new RetFunAdvisorBeneficiary();
+                                $advisor_beneficiary->ret_fun_beneficiary_id = $old_ben->id;
+                                $advisor_beneficiary->ret_fun_advisor_id = $ben_advisor->id;
+                                $advisor_beneficiary->save();
+                            }
+
+                            break;
+                        //apoderado
+                        case 2:
+                            if ($ben_legal_guardian = $old_ben->legal_guardian->first()) {
+
+                            } else {
+                                $ben_legal_guardian = new RetFunLegalGuardian();
+                                $ben_legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
+                            }
+                            $ben_legal_guardian->identity_card = strtoupper(trim($new_ben['legal_guardian_identity_card'] ?? null));
+                            $ben_legal_guardian->city_identity_card_id = isset($new_ben['legal_guardian_city_identity_card']) ? intval($new_ben['legal_guardian_city_identity_card']) : null;
+                            $ben_legal_guardian->first_name = strtoupper(trim($new_ben['legal_guardian_first_name'] ?? null));
+                            $ben_legal_guardian->second_name = strtoupper(trim($new_ben['legal_guardian_second_name'] ?? null));
+                            $ben_legal_guardian->last_name = strtoupper(trim($new_ben['legal_guardian_last_name'] ?? null));
+                            $ben_legal_guardian->mothers_last_name = strtoupper(trim($new_ben['legal_guardian_mothers_last_name'] ?? null));
+                            $ben_legal_guardian->surname_husband = strtoupper(trim($new_ben['legal_guardian_surname_husband'] ?? null));
+                            /** !! TODO
+                             * phone and cellphone numbers
+                             */
+                            // $ben_legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+                            // $ben_legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
+
+                            $ben_legal_guardian->gender = $new_ben['legal_guardian_gender'] ?? null;
+                            $ben_legal_guardian->number_authority = $new_ben['legal_guardian_number_authority'] ?? null;
+                            $ben_legal_guardian->notary_of_public_faith = $new_ben['legal_guardian_notary_of_public_faith'] ?? null;
+                            $ben_legal_guardian->notary = $new_ben['legal_guardian_notary_of_public_faith'] ?? null;
+                            $ben_legal_guardian->date_authority = isset($new_ben['legal_guardian_date_authority']) ? (Util::verifyBarDate($new_ben['legal_guardian_date_authority']) ? Util::parseBarDate($new_ben['legal_guardian_date_authority']) : $new_ben['legal_guardian_date_authority']) : null;
+                            $ben_legal_guardian->save();
+                            if ($old_ben->legal_guardian->first()) {
+
+                            } else {
+                                $ben_legal_guardian_new = new RetFunLegalGuardianBeneficiary();
+                                $ben_legal_guardian_new->ret_fun_beneficiary_id = $old_ben->id;
+                                $ben_legal_guardian_new->ret_fun_legal_guardian_id = $ben_legal_guardian->id;
+                                $ben_legal_guardian_new->save();
+                            }
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                }
+
                 if($old_ben->type == 'S' && $retirement_fund->procedure_modality_id !=  ID::retFun()->fallecimiento_id){
                     $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
                     $update_affilaite->identity_card = $old_ben->identity_card;
@@ -939,7 +1139,7 @@ class RetirementFundController extends Controller
                 $beneficiary->first_name = mb_strtoupper(trim($new_ben['first_name']));
                 $beneficiary->second_name = mb_strtoupper(trim($new_ben['second_name']));
                 $beneficiary->surname_husband = mb_strtoupper(trim($new_ben['surname_husband']));
-                $beneficiary->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date; ;
+                $beneficiary->birth_date = Util::verifyBarDate($new_ben['birth_date']) ? Util::parseBarDate($new_ben['birth_date']) : $new_ben['birth_date'];
                 $beneficiary->gender = $new_ben['gender'];
                 $beneficiary->state = $new_ben['state'];
                 // $old_ben->state = $new_ben['state'];
@@ -947,6 +1147,94 @@ class RetirementFundController extends Controller
                 // $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
                 $beneficiary->type = ID::beneficiary()->normal;
                 $beneficiary->save();
+
+
+                // if (is_null($new_ben['legal_representative'])) {
+                //     if ($old_ben->ret_fun_advisors->first()) {
+                //         //delete
+                //     }
+                //     if ($old_ben->legal_guardian->first()) {
+                //         //delete
+                //     }
+                // } else {
+                    switch ($new_ben['legal_representative']) {
+                        //tutor
+                        case 1:
+                            //exists
+                            // if ($ben_advisor = $old_ben->ret_fun_advisors->first()) {
+
+                            // } else {
+                                $ben_advisor = new RetFunAdvisor();
+                            // }
+                            $ben_advisor->city_identity_card_id = $new_ben['advisor_city_identity_card_id'];
+                            $ben_advisor->kinship_id = null;
+                            $ben_advisor->identity_card = $new_ben['advisor_identity_card'];
+                            $ben_advisor->last_name = strtoupper(trim($new_ben['advisor_last_name']));
+                            $ben_advisor->mothers_last_name = strtoupper(trim($new_ben['advisor_mothers_last_name']));
+                            $ben_advisor->first_name = strtoupper(trim($new_ben['advisor_first_name']));
+                            $ben_advisor->second_name = strtoupper(trim($new_ben['advisor_second_name']));
+                            $ben_advisor->surname_husband = strtoupper(trim($new_ben['advisor_surname_husband']));
+                            $ben_advisor->gender = strtoupper(trim($new_ben['advisor_gender']));
+                            // $ben_advisor->phone_number = trim(implode(",", $new_ben['advisor_phone_number'] ?? []));
+                            // $ben_advisor->cell_phone_number = trim(implode(",", $new_ben['advisor_cell_phone_number'] ?? []));
+                            $ben_advisor->name_court = $new_ben['advisor_name_court'];
+                            $ben_advisor->resolution_number = $new_ben['advisor_resolution_number'];
+                            $ben_advisor->resolution_date = Util::verifyBarDate($new_ben['advisor_resolution_date']) ? Util::parseBarDate($new_ben['advisor_resolution_date']) : $new_ben['advisor_resolution_date'];
+                            $ben_advisor->type = "Natural";
+                            $ben_advisor->save();
+                            if ($old_ben->ret_fun_advisors->first()) {
+
+                            } else {
+                                $advisor_beneficiary = new RetFunAdvisorBeneficiary();
+                                $advisor_beneficiary->ret_fun_beneficiary_id = $beneficiary->id;
+                                $advisor_beneficiary->ret_fun_advisor_id = $ben_advisor->id;
+                                $advisor_beneficiary->save();
+                            }
+
+                            break;
+                        //apoderado
+                        case 2:
+                            // if ($ben_legal_guardian = $old_ben->legal_guardian->first()) {
+
+                            // } else {
+                                $ben_legal_guardian = new RetFunLegalGuardian();
+                                $ben_legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
+                            // }
+                            $ben_legal_guardian->identity_card = strtoupper(trim($new_ben['legal_guardian_identity_card']));
+                            $ben_legal_guardian->city_identity_card_id = $new_ben['legal_guardian_city_identity_card_id'];
+                            $ben_legal_guardian->first_name = strtoupper(trim($new_ben['legal_guardian_first_name']));
+                            $ben_legal_guardian->second_name = strtoupper(trim($new_ben['legal_guardian_second_name']));
+                            $ben_legal_guardian->last_name = strtoupper(trim($new_ben['legal_guardian_last_name']));
+                            $ben_legal_guardian->mothers_last_name = strtoupper(trim($new_ben['legal_guardian_mothers_last_name']));
+                            $ben_legal_guardian->surname_husband = strtoupper(trim($new_ben['legal_guardian_surname_husband']));
+                            /** !! TODO
+                             * phone and cellphone numbers
+                             */
+                            // $ben_legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+                            // $ben_legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
+
+                            $ben_legal_guardian->gender = $new_ben['legal_guardian_gender'];
+                            $ben_legal_guardian->number_authority = $new_ben['legal_guardian_number_authority'];
+                            $ben_legal_guardian->notary_of_public_faith = $new_ben['legal_guardian_notary_of_public_faith'];
+                            $ben_legal_guardian->notary = $new_ben['legal_guardian_notary_of_public_faith'];
+                            $ben_legal_guardian->date_authority = Util::verifyBarDate($new_ben['legal_guardian_date_authority']) ? Util::parseBarDate($new_ben['legal_guardian_date_authority']) : $new_ben['legal_guardian_date_authority'];
+                            $ben_legal_guardian->save();
+                            if ($old_ben->legal_guardian->first()) {
+
+                            } else {
+                                $ben_legal_guardian_new = new RetFunLegalGuardianBeneficiary();
+                                $ben_legal_guardian_new->ret_fun_beneficiary_id = $beneficiary->id;
+                                $ben_legal_guardian_new->ret_fun_legal_guardian_id = $ben_legal_guardian->id;
+                                $ben_legal_guardian_new->save();
+                            }
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                // }
+
+
             }
         }
         $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries()->with(['kinship', 'city_identity_card', 'address'])->orderByDesc('type')->orderBy('id')->get();
@@ -955,6 +1243,38 @@ class RetirementFundController extends Controller
             $b->cell_phone_number = explode(',', $b->cell_phone_number);
             if (!sizeOf($b->address) > 0 && $b->type == 'S') {
                 $b->address[] = array('zone' => null, 'street' => null, 'number_address' => null);
+            }
+
+            $b->legal_representative = null;
+            if ($beneficiary_advisor = $b->ret_fun_advisors->first()) {
+                $b->legal_representative = 1;
+                $b->advisor_identity_card = $beneficiary_advisor->identity_card;
+                $b->advisor_city_identity_card_id = $beneficiary_advisor->city_identity_card_id;
+                $b->advisor_first_name = $beneficiary_advisor->first_name;
+                $b->advisor_second_name = $beneficiary_advisor->second_name;
+                $b->advisor_last_name = $beneficiary_advisor->last_name;
+                $b->advisor_mothers_last_name = $beneficiary_advisor->mothers_last_name;
+                $b->advisor_surname_husband = $beneficiary_advisor->surname_husband;
+                $b->advisor_birth_date = $beneficiary_advisor->birth_date;
+                $b->advisor_gender = $beneficiary_advisor->gender;
+                $b->advisor_name_court = $beneficiary_advisor->name_court;
+                $b->advisor_resolution_number = $beneficiary_advisor->resolution_number;
+                $b->advisor_resolution_date = $beneficiary_advisor->resolution_date;
+            }
+            if ($beneficiary_legal_guardian = $b->legal_guardian->first()) {
+                $b->legal_representative = 2;
+                $b->legal_guardian_identity_card = $beneficiary_legal_guardian->identity_card;
+                $b->legal_guardian_city_identity_card = $beneficiary_legal_guardian->city_identity_card;
+                $b->legal_guardian_first_name = $beneficiary_legal_guardian->first_name;
+                $b->legal_guardian_second_name = $beneficiary_legal_guardian->second_name;
+                $b->legal_guardian_last_name = $beneficiary_legal_guardian->last_name;
+                $b->legal_guardian_mothers_last_name = $beneficiary_legal_guardian->mothers_last_name;
+                $b->legal_guardian_surname_husband = $beneficiary_legal_guardian->surname_husband;
+                $b->legal_guardian_gender = $beneficiary_legal_guardian->gender;
+                $b->legal_guardian_number_authority = $beneficiary_legal_guardian->number_authority;
+                $b->legal_guardian_notary_of_public_faith = $beneficiary_legal_guardian->notary_of_public_faith;
+                $b->legal_guardian_notary = $beneficiary_legal_guardian->notary;
+                $b->legal_guardian_date_authority = $beneficiary_legal_guardian->date_authority;
             }
         }
         $data=[
@@ -1204,7 +1524,7 @@ class RetirementFundController extends Controller
 
         //mejorar
         $discount_type = DiscountType::where('shortened','anticipo')->first();
-        if ($advance_payment > 0) {
+        if ($advance_payment >= 0) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
                 $retirement_fund->discount_types()->updateExistingPivot ($discount_type->id, ['amount' => $advance_payment, 'date'=> $request->advancePaymentDate, 'code'=> $request->advancePaymentCode, 'note_code'=>$request->advancePaymentNoteCode]);
             }else{
@@ -1214,7 +1534,7 @@ class RetirementFundController extends Controller
             $retirement_fund->discount_types()->detach($discount_type->id);
         }
         $discount_type = DiscountType::where('shortened','prestamo')->first();
-        if ($retention_loan_payment > 0) {
+        if ($retention_loan_payment >= 0) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
                 $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_loan_payment, 'date'=> $request->retentionLoanPaymentDate, 'code'=> $request->retentionLoanPaymentCode, 'note_code'=>$request->retentionLoanPaymentNoteCode]);
             } else {
@@ -1225,7 +1545,7 @@ class RetirementFundController extends Controller
         }
         $discount_type = DiscountType::where('shortened','garantes')->first();
         Log::info($request->guarantors);
-        if ($retention_guarantor > 0) {
+        if ($retention_guarantor >= 0) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
                 $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_guarantor, 'date'=> $request->retentionGuarantorDate, 'code'=> $request->retentionGuarantorCode, 'note_code'=>$request->retentionGuarantorNoteCode]);
             } else {
@@ -1357,7 +1677,9 @@ class RetirementFundController extends Controller
         foreach ($results as $value) {
             $sw = true;
             foreach ($value as $id) {
-                if (!$retirement_fund->discount_types()->find($id)) {
+                //siempre tendra id
+                // if (!$retirement_fund->discount_types()->find($id)) {
+                if (! ($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
                     $sw = false;
                 }
             }
@@ -1505,6 +1827,18 @@ class RetirementFundController extends Controller
             }
         } else {
             $retirement_fund->contribution_types()->detach($contribution_type);
+        }
+        return $retirement_fund;
+    }
+    public function saveCertificationNote(Request $request, $ret_fun_id)
+    {
+        $retirement_fund = RetirementFund::find($ret_fun_id);
+        if ($request->note) {
+            $wf_state = WorkflowState::where('role_id',Util::getRol()->id)->first();
+            Util::getNextAreaCode($ret_fun_id);
+            $ret_fun_correlative = RetFunCorrelative::where('retirement_fund_id', $ret_fun_id)->where('wf_state_id', $wf_state->id)->first();
+            $ret_fun_correlative->note = $request->note;
+            $ret_fun_correlative->save();
         }
         return $retirement_fund;
     }

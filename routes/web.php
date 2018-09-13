@@ -19,6 +19,7 @@ use Muserpol\Models\RetirementFund\RetFunProcedure;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
+use Muserpol\Models\RetirementFund\RetFunTemplate;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -109,6 +110,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/print/headship_review', 'RetirementFundCertificationController@printHeadshipReview')->name('ret_fun_print_headship_review');
 		Route::get('ret_fun/{retirement_fund}/print/legal_resolution', 'RetirementFundCertificationController@printLegalResolution')->name('ret_fun_print_legal_resolution');
 		Route::post('ret_fun/{retirement_fund}/save_message', 'RetirementFundController@saveMessageContributionType')->name('save_message_contribution_type');
+		Route::post('ret_fun/{retirement_fund}/save_certification_note', 'RetirementFundController@saveCertificationNote')->name('save_certification_note');
 
 		//Quota Aid Certification
 		Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
@@ -230,10 +232,10 @@ Route::group(['middleware' => ['auth']], function () {
 
 			//helpers route
 		Route::get('legal_opinion', function (Request $request) {
-			$ret_fun = RetirementFund::find(3);
+			$ret_fun = RetirementFund::find(4);
 			$affiliate = $ret_fun->affiliate;
 			$args = array(
-				'ret_fun' => RetirementFund::find(3),
+				'ret_fun' => $ret_fun,
 				'affiliate' => $affiliate,
 				'has_poder' => true,
 				'poder_number' => '151/2017',
@@ -264,14 +266,14 @@ Route::group(['middleware' => ['auth']], function () {
 				'annual_yield' => RetFunProcedure::current()->annual_yield,
 				'reserva_amount' => 84136.45,
 			);
-			return \PDF::loadView('ret_fun.legal_opinion.ret_fun_jubilacion', $args)
-				->setPaper('letter')
-				->setOption('encoding', 'utf-8')
-				->stream("dictamenLegal.pdf");
+			// return \PDF::loadView('ret_fun.legal_opinion.ret_fun_jubilacion', $args)
+			// 	->setPaper('letter')
+			// 	->setOption('encoding', 'utf-8')
+			// 	->stream("dictamenLegal.pdf");
 
-						/*
-						foreach (Template::all() as $value) {
-								$generated = \Blade::compileString($value->body);
+						
+						foreach (RetFunTemplate::all() as $value) {
+								$generated = \Blade::compileString($value->template);
 
 								ob_start() and extract($args, EXTR_SKIP);
 								try {
@@ -282,12 +284,19 @@ Route::group(['middleware' => ['auth']], function () {
 										throw $e;
 								}
 								$content = ob_get_clean();
+
+								$view = View::make('ret_fun.legal_opinion.header', ['title' => 'Arjun']);
+								$header = $view->render();
+								$view = View::make('ret_fun.legal_opinion.footer', ['title' => 'Arjun']);
+								$footer = $view->render();
+								$content = $header. ' '. $content .' '.$footer;
+
 								$pdf = \App::make('snappy.pdf.wrapper');
 								$pdf->loadHTML($content);
 								return $pdf->setPaper('letter')
 										->setOption('encoding', 'utf-8')
-										->stream($value->name.".pdf");
-						}*/
+										->stream($value->id.".pdf");
+						}
 		});
 		Route::get('print/pre-qualification', function () {
 			$re = RetirementFund::where('wf_state_current_id', 23)->get();
