@@ -392,7 +392,7 @@ class Util
     {
         $birth_date =  Carbon::createFromFormat('d/m/Y',$birth_date );
         if ($death_date) {
-            $death_date = Carbon::parse($death_date);
+            $death_date = Carbon::createFromFormat('d/m/Y', $death_date);
             $age = $birth_date->diff($death_date)->format('%y años %m meses');
         }else {
             $age = $birth_date->diff(Carbon::now())->format('%y años %m meses');
@@ -403,7 +403,7 @@ class Util
     {
         $birth_date = Carbon::createFromFormat('d/m/Y',$birth_date);
         if ($death_date) {
-            $death_date = Carbon::parse($death_date);
+            $death_date = Carbon::createFromFormat('d/m/Y', $death_date);
             $age = $birth_date->diffInYears($death_date);
         }else {
             $age = $birth_date->diffInYears(Carbon::now());
@@ -524,7 +524,8 @@ class Util
         foreach ($results as $value) {
             $sw = true;
             foreach ($value as $id) {
-                if (!$retirement_fund->discount_types()->find($id)) {
+                // if (!$retirement_fund->discount_types()->find($id)) {
+                if (!($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
                     $sw = false;
                 }
             }

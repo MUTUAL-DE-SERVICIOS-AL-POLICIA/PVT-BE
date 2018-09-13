@@ -1672,7 +1672,9 @@ class RetirementFundController extends Controller
         foreach ($results as $value) {
             $sw = true;
             foreach ($value as $id) {
-                if (!$retirement_fund->discount_types()->find($id)) {
+                //siempre tendra id
+                // if (!$retirement_fund->discount_types()->find($id)) {
+                if (! ($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
                     $sw = false;
                 }
             }
