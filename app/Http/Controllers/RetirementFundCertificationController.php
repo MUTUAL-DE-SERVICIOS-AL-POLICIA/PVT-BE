@@ -1830,11 +1830,11 @@ class RetirementFundCertificationController extends Controller
         $finance = $discount->where('discount_type_id','1')->first();
 
         $body_finance = "";
-        if(isset($finance) && $finance->pivot->amout) {            
+        if(isset($finance) && $finance->pivot->amount) {            
             $body_finance = "Que, mediante nota de respuesta de la Dirección Administrativa Financiera con Cite: ".$finance->pivot->code ." de fecha ". Util::getStringDate($finance->pivot->date).",";
             
             if(isset($finance->id) && $finance->pivot->amount > 0){
-                $body_finance .= " se otorgó en calidad de ANTICIPO por concepto de Fondo de Retiro Policial el monto de ".Util::formatMoneyWithLiteral($finance->pivot->amount).", con cargo a liquidación final, a favor del <b>".$affiliate->degree->shortened." ".$affiliate->fullName()."</b> con C.I. N° <b>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</b>.<br>";
+                $body_finance .= " se otorgó en calidad de ANTICIPO por concepto de Fondo de Retiro Policial el monto de <b>".Util::formatMoneyWithLiteral($finance->pivot->amount)."</b>, con cargo a liquidación final, a favor del <b>".$affiliate->degree->shortened." ".$affiliate->fullName()."</b> con C.I. N° <b>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</b>.<br>";
             }
             else{
                 $body_finance .= " no se evidencia pagos o anticipos por concepto de Fondo de Retiro Policial.<br>";
@@ -1937,7 +1937,7 @@ class RetirementFundCertificationController extends Controller
                 $body_resolution .= $beneficiary->fullName()." con C.I. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened.', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>"; 
             }
         } else {
-            $body_resolution .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_ret_fun).".<b><br><br>";
+            $body_resolution .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".<b><br><br>";
         } 
 
         $body_resolution .="<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b>";
