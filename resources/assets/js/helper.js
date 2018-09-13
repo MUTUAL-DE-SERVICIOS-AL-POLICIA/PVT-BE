@@ -27,8 +27,6 @@ export function dateInputMask() {
 export function dateInputMaskAll() {
     document.querySelectorAll('input').forEach(element => {
         if (element.getAttribute('data-date') == "true") {
-            console.log(element);
-            
             Inputmask(dateInputMask()).mask(element);
         }
     });
