@@ -579,6 +579,8 @@ class RetirementFundController extends Controller
         $this->authorize('view', $retirement_fund);
 
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
@@ -706,9 +708,10 @@ class RetirementFundController extends Controller
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
-        $is_editable = ID::getEditableId();
-        if(isset($retirement_fund->id) && $retirement_fund->modality_id!=4)
-            $is_editable = ID::getNonEditableId();
+        $is_editable = ID::getNonEditableId();
+        if(isset($retirement_fund->id) && ($retirement_fund->procedure_modality_id ==4 || $retirement_fund->procedure_modality_id == 2))
+            $is_editable = ID::getEditableId();
+
         //return $data;
         //return $correlatives;
         $data = [
@@ -1100,10 +1103,18 @@ class RetirementFundController extends Controller
                             $address->street = $new_ben['address'][0]['street'];
                             $address->number_address = $new_ben['address'][0]['number_address'];
                             $address->save();
+                            if ($retirement_fund->procedure_modality_id != ID::retFun()->fallecimiento_id) {
+                                $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
+                                if ($update_affilaite->address->contains($address->id)) {
+
+                                } else {
+                                    $update_affilaite->address()->save($address);
+                                }
+                            }
                         }else{
                             if ($retirement_fund->procedure_modality_id != ID::retFun()->fallecimiento_id) {
                                 $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
-                                $old_ben->address()->detach($address->id);
+                                $update_affilaite->address()->detach($address->id);
                             }
                             $old_ben->address()->detach($address->id);
                             $address->delete();
