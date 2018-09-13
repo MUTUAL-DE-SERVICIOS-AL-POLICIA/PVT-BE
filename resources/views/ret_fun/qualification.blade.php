@@ -229,6 +229,7 @@
                                     <th>Tipo</th>
                                     <th>Monto</th>
                                     <th>Cite</th>
+                                    <th>Fecha de Cite</th>
                                     <th>#</th>
                                     <th>Fecha</th>
                                 </tr>
@@ -247,10 +248,13 @@
                                         <input class="form-control" type="text" placeholder="Cite" v-model="advancePaymentCode">
                                     </td>
                                     <td>
+                                        <input class="form-control" type="date" v-model="advancePaymentDate">
+                                    </td>
+                                    <td>
                                         <input class="form-control" type="text" placeholder="# de Resolución de Anticipo" v-model="advancePaymentNoteCode">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="date" v-model="advancePaymentDate">
+                                        <input class="form-control" type="date" v-model="advancePaymentNoteCodeDate">
                                     </td>
                                 </tr>
                                 <tr>
@@ -266,10 +270,13 @@
                                         <input class="form-control" type="text" placeholder="Cite" v-model="retentionLoanPaymentCode">
                                     </td>
                                     <td>
+                                        <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
+                                    </td>
+                                    <td>
                                         <input class="form-control" type="text" placeholder="# de Contrato de Préstamo" v-model="retentionLoanPaymentNoteCode">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
+                                        <input class="form-control" type="date" v-model="retentionLoanPaymentNoteCodeDate">
                                     </td>
                                 </tr>
                                 <tr>
@@ -281,7 +288,7 @@
                                         Garantes
                                         <button class="btn btn-info" @click="addGuarantor"><i class="fa fa-plus"></i></button>
                                     </td>
-                                    <td colspan="4">
+                                    <td colspan="5">
                                         <div class="form-inline" v-for="(guarantor, index) in guarantors">
                                             <button class="btn btn-danger" type="button" @click="deleteGuarantor(index)" type="button" role="button"><i class="fa fa-trash "></i></button>
                                             <div class="input-group">
@@ -308,19 +315,22 @@
                                         <input class="form-control" type="text" placeholder="Cite" v-model="retentionGuarantorCode">
                                     </td>
                                     <td>
+                                        <input class="form-control" type="date" v-model="retentionGuarantorDate">
+                                    </td>
+                                    <td>
                                         <input class="form-control" type="text" placeholder="# de Contrato de Préstamo" v-model="retentionGuarantorNoteCode">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="date" v-model="retentionGuarantorDate">
+                                        <input class="form-control" type="date" v-model="retentionGuarantorNoteCodeDate">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>% de Retencion para garantes</td>
-                                    <td colspan="4">@{{ percentageRetentionGuarantor | percentage }}</td>
+                                    <td colspan="5">@{{ percentageRetentionGuarantor | percentage }}</td>
                                 </tr>
                                 <tr class="success">
                                     <td>Total fondo de retiro</td>
-                                    <td colspan="4"><strong>@{{ totalAnimated | currency }}</strong></td>
+                                    <td colspan="5"><strong>@{{ totalAnimated | currency }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
