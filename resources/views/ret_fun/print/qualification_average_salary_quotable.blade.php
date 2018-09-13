@@ -43,13 +43,13 @@
                     Nº
                 </td>
                 <td class="px-15 text-center">
-                    PERIODO
+                    PERÍODO
                 </td>
                 <td class="px-15 text-center">
-                    HABER BASICO
+                    HABER BÁSICO
                 </td>
                 <td class="px-15 text-center">
-                    CATEGORIA
+                    CATEGORÍA
                 </td>
                 <td class="px-15 text-center">
                     SALARIO COTIZABLE
@@ -68,8 +68,8 @@
                     <td class="text-right px-10">
                         {{ $index+1 }}
                     </td>
-                    <td class="text-right px-5">
-                        {{ Util::getDateFormat($contribution->month_year) }}
+                    <td class="text-right px-5 uppercase">
+                        {{ Util::printMonthYear($contribution->month_year) }}
                     </td>
                     <td class="text-right px-5">
                         {{ Util::formatMoney($contribution->base_wage) }}
