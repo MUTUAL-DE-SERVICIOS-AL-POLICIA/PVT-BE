@@ -707,7 +707,7 @@ class RetirementFundController extends Controller
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
         $is_editable = ID::getEditableId();
-        if(isset($retirement_fund->id))
+        if(isset($retirement_fund->id) && $retirement_fund->modality_id!=4)
             $is_editable = ID::getNonEditableId();
         //return $data;
         //return $correlatives;

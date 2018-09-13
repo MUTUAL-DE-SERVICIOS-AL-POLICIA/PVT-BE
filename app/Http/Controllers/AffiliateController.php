@@ -227,7 +227,7 @@ class AffiliateController extends Controller
         $year_death = $death[2];
         
         $is_editable = "1";
-        if(isset($retirement_fund->id))
+        if(isset($retirement_fund->id) && $retirement_fund->modality_id!=4)
         {
             $is_editable = "0";
         }
