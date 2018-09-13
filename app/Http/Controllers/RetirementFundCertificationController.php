@@ -694,9 +694,6 @@ class RetirementFundCertificationController extends Controller
         $affiliate =$retirement_fund->affiliate;
 
         $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
-        if (!$affiliate->selectedContributions() > 0){
-            $pages[] =\View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
-        }
         if ($retirement_fund->total_ret_fun > 0) {
             $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
         }
@@ -707,6 +704,9 @@ class RetirementFundCertificationController extends Controller
             // if ($retirement_fund->total > 0) {
             //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
             // }
+        }
+        if (!$affiliate->selectedContributions() > 0){
+            $pages[] =\View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
