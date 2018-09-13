@@ -773,34 +773,6 @@ export default {
         setTimeout(() => {
             dateInputMaskAll();
         }, 300);
-        
-        // this.advisor_identity_card = null;
-        // this.advisor_city_identity_card_id = null;
-        // this.advisor_first_name = null;
-        // this.advisor_second_name = null;
-        // this.advisor_last_name = null;
-        // this.advisor_mothers_last_name = null;
-        // this.advisor_surname_husband = null;
-        // this.advisor_birth_date = null;
-        // this.advisor_gender = null;
-        // // phone.value
-        // // cell_phone.value
-        // this.advisor_name_court = null;
-        // this.advisor_resolution_number = null;
-        // this.advisor_resolution_date = null;
-
-        // this.legal_guardian_identity_card = null
-        // this.legal_guardian_city_identity_card = null
-        // this.legal_guardian_first_name = null
-        // this.legal_guardian_second_name = null
-        // this.legal_guardian_last_name = null
-        // this.legal_guardian_mothers_last_name = null
-        // this.legal_guardian_surname_husband = null
-        // this.legal_guardian_gender = null
-        // this.legal_guardian_number_authority = null
-        // this.legal_guardian_notary_of_public_faith = null
-        // this.legal_guardian_notary = null
-        // this.legal_guardian_date_authority = null
     }
   },
   computed:{

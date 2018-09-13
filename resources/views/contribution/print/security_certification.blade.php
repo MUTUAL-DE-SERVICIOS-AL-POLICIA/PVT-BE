@@ -101,9 +101,6 @@
     Es cuanto se certifica para  fines consiguientes. 
 </div>
 <br>
-<div align="right">
-    {{ "Lugar y fecha: ". $place->name.", ".$dateac }}
-</div>
 @include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch
 

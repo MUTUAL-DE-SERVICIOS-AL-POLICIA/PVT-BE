@@ -259,6 +259,9 @@ class RetirementFundController extends Controller
             case 1:
             case 4:
                 $af->affiliate_state_id = ID::affiliateState()->fallecido;
+
+                $af->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
+                $af->reason_death = $request->reason_death;
                 break;
             case 2:
             case 3:
@@ -862,7 +865,7 @@ class RetirementFundController extends Controller
 
         $this->authorize('create',RetirementFund::class);
         $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_derelict')
+        $affiliate = Affiliate::select('affiliates.id','identity_card', 'city_identity_card_id','registration','first_name','second_name','last_name','mothers_last_name', 'surname_husband', 'birth_date','gender', 'degrees.name as degree','civil_status','affiliate_states.name as affiliate_state','phone_number', 'cell_phone_number','date_derelict', 'date_death', 'reason_death')
                                 ->leftJoin('degrees','affiliates.id','=','degrees.id')
                                 ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
                                 ->find($affiliate->id);
@@ -1674,7 +1677,9 @@ class RetirementFundController extends Controller
         foreach ($results as $value) {
             $sw = true;
             foreach ($value as $id) {
-                if (!$retirement_fund->discount_types()->find($id)) {
+                //siempre tendra id
+                // if (!$retirement_fund->discount_types()->find($id)) {
+                if (! ($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
                     $sw = false;
                 }
             }
@@ -1822,6 +1827,18 @@ class RetirementFundController extends Controller
             }
         } else {
             $retirement_fund->contribution_types()->detach($contribution_type);
+        }
+        return $retirement_fund;
+    }
+    public function saveCertificationNote(Request $request, $ret_fun_id)
+    {
+        $retirement_fund = RetirementFund::find($ret_fun_id);
+        if ($request->note) {
+            $wf_state = WorkflowState::where('role_id',Util::getRol()->id)->first();
+            Util::getNextAreaCode($ret_fun_id);
+            $ret_fun_correlative = RetFunCorrelative::where('retirement_fund_id', $ret_fun_id)->where('wf_state_id', $wf_state->id)->first();
+            $ret_fun_correlative->note = $request->note;
+            $ret_fun_correlative->save();
         }
         return $retirement_fund;
     }
