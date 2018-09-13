@@ -445,7 +445,9 @@ class RetirementFundCertificationController extends Controller
         foreach ($results as $value) {
             $sw = true;
             foreach ($value as $id) {
-                if (!$retirement_fund->discount_types()->find($id)) {
+                //siempre tendra id
+                // if (!$retirement_fund->discount_types()->find($id)) {
+                if (!($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
                     $sw = false;
                 }
             }
@@ -564,7 +566,8 @@ class RetirementFundCertificationController extends Controller
         foreach ($results as $value) {
             $sw = true;
             foreach ($value as $id) {
-                if (!$retirement_fund->discount_types()->find($id)) {
+                // if (!$retirement_fund->discount_types()->find($id)) {
+                if (!($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
                     $sw = false;
                 }
             }
@@ -642,7 +645,8 @@ class RetirementFundCertificationController extends Controller
         foreach ($results as $value) {
             $sw = true;
             foreach ($value as $id) {
-                if (!$retirement_fund->discount_types()->find($id)) {
+                // if (!$retirement_fund->discount_types()->find($id)) {
+                if (!($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
                     $sw = false;
                 }
             }
@@ -885,7 +889,8 @@ class RetirementFundCertificationController extends Controller
     }
 
     public function printCertification($id)
-    {                
+    {
+        // 60 aportes
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;        
         $valid_contributions = ContributionType::select('id')->where('operator','+')->pluck('id');
@@ -898,10 +903,12 @@ class RetirementFundCertificationController extends Controller
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
                         ->orderBy('month_year')
                         ->get();
+        $contributions_sixty = $contributions_sixty->reverse();
+        $reimbursements = $reimbursements->reverse();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-        $title = "CERTIFICACION DE APORTES";
+        $title = "CERTIFICACIÓN DE APORTES";
         $subtitle ="Cuenta Individual";
 
 
@@ -919,9 +926,9 @@ class RetirementFundCertificationController extends Controller
         $place = City::find(Auth::user()->city_id);
         $num=0;
         $pdftitle = "Cuentas Individuales";
-        $namepdf = Util::getPDFName($pdftitle, $affiliate); 
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
-        
+        $subtitle = $next_area_code->code;
 
         $data = [
             'code' => $code,
@@ -961,7 +968,7 @@ class RetirementFundCertificationController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-        $title = "CERTIFICACION DE APORTES EN DISPONIBILIDAD";
+        $title = "CERTIFICACIÓN DE APORTES EN DISPONIBILIDAD";
         $subtitle ="Cuenta Individual";
 
         $next_area_code = Util::getNextAreaCode($retirement_fund->id);
@@ -979,6 +986,8 @@ class RetirementFundCertificationController extends Controller
         $num=0;             
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        $subtitle = $next_area_code->code;
 
         //total de los aportes
         $aporte=$retirement_fund->subtotal_availability;
@@ -1024,7 +1033,7 @@ class RetirementFundCertificationController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-        $title = "CERTIFICACION DE CUENTAS INDIVIDUALES ITEM 0";
+        $title = "CERTIFICACIÓN DE CUENTAS INDIVIDUALES ITEM 0";
         $subtitle = "Cuenta Individual";
 
         $next_area_code = Util::getNextAreaCode($retirement_fund->id);
@@ -1042,6 +1051,9 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
         $item0_type = 2;
+
+        $subtitle = $next_area_code->code;
+
         // $total = Util::formatMoney(Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$item0_type)->sum('total'));
         $data = [
             'code' => $code,
@@ -1110,6 +1122,8 @@ class RetirementFundCertificationController extends Controller
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate); 
         // $total = Util::formatMoney($contributions_total);   
+
+        $subtitle = $next_area_code->code;
 
         $data = [
             'code' => $code,
@@ -1186,7 +1200,9 @@ class RetirementFundCertificationController extends Controller
         $num=0;       
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate); 
-        $total = Util::formatMoney($contributions_total);   
+        $total = Util::formatMoney($contributions_total);
+
+        $subtitle = $next_area_code->code;
 
         $data = [
             'code' => $code,
