@@ -1414,7 +1414,8 @@ class RetirementFundCertificationController extends Controller
                     else
                         $payment .= ", ";
                 }
-                $payment.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card." en la suma de ".Util::formatMoneyWithLiteral($loan->amount);
+                $payment.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
+                $payment.= " en la suma de ".Util::formatMoneyWithLiteral($loan->amount);
             }
             $payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->code??'sin nro')." y la nota ".($discount->pivot->note_code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones. Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".strtoupper($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>";                    
         } else {
@@ -1422,15 +1423,22 @@ class RetirementFundCertificationController extends Controller
         }
         
         if($retirement_fund->procedure_modality_id == 4) {
-            $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->get();
-            foreach($beneficiaries as $beneficiary){
-                $birth_date = Carbon::createFromFormat('d/m/Y', $beneficiary->birth_date);                
+            $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->get();            
+            foreach($beneficiaries as $beneficiary){                                
+                $birth_date = Carbon::createFromFormat('d/m/Y', $beneficiary->birth_date);  
                 if(date('Y') -$birth_date->format('Y') > 18) {
                 $payment .=$beneficiary->gender=='M'?'Sr.':'Sra. ';
                 } else {
                     $payment .='Menor ';
                 }
-                $payment .= $beneficiary->fullName()." con C.I. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened.', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>";                
+                $payment .= $beneficiary->fullName()." con C.I. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened;
+                $legal_guardian = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id',$beneficiary->id)->first();
+                if(isset($legal_guardian->id))
+                {
+                    $advisor = RetFunAdvisor::where('id',$legal_guardian->ret_fun_advisor_id)->first();
+                    $payment .= ", a través de su tutor".($advisor->gender=='F'?'a':'')." natural ".($advisor->gender=='M'?'Sr.':'Sra.')." ".Util::fullName($advisor)." con C.I. N°".$advisor->identity_card." ".$advisor->city_identity_card->first_shortened;
+                }
+                $payment .= ', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>";                                
             }
         } else {
             $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_ret_fun).".<b>";
@@ -1860,7 +1868,8 @@ class RetirementFundCertificationController extends Controller
                     else
                         $body_resolution .= ", ";
                 }
-                $body_resolution.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card." en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
+                $body_resolution.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
+                $body_resolution.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
             }
             $body_resolution .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->code??'sin nro')." y la nota ".($discount->pivot->note_code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) .".<br><br>";
         }
