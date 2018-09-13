@@ -13,7 +13,7 @@
         <div class="block">
             <div class="text-right">
                 <span class="block">
-                   DBE/UFRPSCAM/AL-DL N° {{ $correlative }}
+                   DBE/UFRPSCAM/AL-DL N° {{ $correlative->code }}
                  </span>
             </div>
             <div class="block">
@@ -37,19 +37,20 @@
                     <tr><td colspan="2"></td></tr>
                     <tr>
                         <td class="align-top"><strong>REF.:</strong></td>
-                        <td> {!! $affiliate->fullNameWithDegree() !!}</td>
+                        <td> <b>{!! $affiliate->fullNameWithDegree() !!} </b></td>
                     </tr>
                     <tr><td colspan="2"></td></tr>
                     <tr><td colspan="2"></td></tr>
                     <tr>
                         <td class="align-top w-10"><strong>FECHA:</strong></td>
-                        <td>{{ $actual_city }}, {{ $actual_date }}</td>
+                        <td>{{ ucwords(strtolower($actual_city)) }}, {{ $actual_date }}</td>
                     </tr>
                 </table> 
             </div>
-            <p class="text-left font-bold">
+            <hr>
+            {{-- <p class="text-left font-bold">
                 Fondo de Retiro Policial Solidario <br> Modalidad: <span class="uppercase">{{ $ret_fun->procedure_modality->name }}</span>
-            </p>
+            </p> --}}
             <div class="block">
                 <div>
                     <p class="text-justify">
