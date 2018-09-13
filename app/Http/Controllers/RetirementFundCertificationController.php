@@ -1467,13 +1467,14 @@ class RetirementFundCertificationController extends Controller
         /*HEADER FOOTER*/
         $footerHtml = view()->make('ret_fun.print.legal_footer')->render();
         $headerHtml = view()->make('ret_fun.print.legal_header')->render();
+        $user = Auth::user();
         $data = [
             'ret_fun' => $retirement_fund,
             'beneficiaries'    =>  $beneficiaries,
             'correlative'  =>  $number,
             'actual_city'  =>  Auth::user()->city->name,
             'actual_date'  =>  Util::getStringDate(date('Y-m-d')),
-
+            'user'  =>  $user,
             'person'    =>  $person,
             'law'   =>  $law,
             'body_file'  =>  $body_file,

@@ -35,7 +35,7 @@
             input: "textarea",
             // text: "<textarea id='text'></textarea>",
             // html:true,
-            inputValue: 'contributionType.message',
+            inputValue: '',
             inputAttributes: {
               autocapitalize: "off"
             },
