@@ -304,6 +304,8 @@ class RetirementFundCertificationController extends Controller
         $date = Util::getDateFormat($next_area_code->date);
         $number = $next_area_code->code;
 
+        $subtitle = $number;
+
         $title = $retirement_fund->procedure_modality->procedure_type->module->name;
 
         $affiliate = $retirement_fund->affiliate;
@@ -321,6 +323,7 @@ class RetirementFundCertificationController extends Controller
             'number' => $number,
 
             'title' => $title,
+            'subtitle' => $subtitle,
             'affiliate' => $affiliate,
             'applicant' => $applicant,
             'beneficiaries' => $beneficiaries,
@@ -337,12 +340,15 @@ class RetirementFundCertificationController extends Controller
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
         $affiliate = $retirement_fund->affiliate;
 
+        
         $next_area_code = Util::getNextAreaCode($retirement_fund->id);
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
         $date = Util::getDateFormat($next_area_code->date);
         $number = $next_area_code->code;
+        
+        $subtitle = $number;
 
         $title = "SALARIO PROMEDIO COTIZABLE";
         $data = [
@@ -353,6 +359,7 @@ class RetirementFundCertificationController extends Controller
             'number' => $number,
 
             'title' => $title,
+            'subtitle' => $subtitle,
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
             'number_contributions' => $number_contributions,
@@ -373,6 +380,8 @@ class RetirementFundCertificationController extends Controller
         $user = $next_area_code->user;
         $date = Util::getDateFormat($next_area_code->date);
         $number = $next_area_code->code;
+
+        $subtitle = $number;
 
         $title = $retirement_fund->procedure_modality->procedure_type->module->name;
         $affiliate = $retirement_fund->affiliate;
@@ -476,6 +485,7 @@ class RetirementFundCertificationController extends Controller
             'number' => $number,
 
             'title' => $title,
+            'subtitle' => $subtitle,
             'contributions' => $contributions,
             'total_quotes' => $total_quotes,
             'discounts' => $discounts,
@@ -502,6 +512,8 @@ class RetirementFundCertificationController extends Controller
         $user = $next_area_code->user;
         $date = Util::getDateFormat($next_area_code->date);
         $number = $next_area_code->code;
+
+        $subtitle = $number;
 
         $current_procedure = Util::getRetFunCurrentProcedure();
         $title = "RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD";
@@ -596,6 +608,7 @@ class RetirementFundCertificationController extends Controller
             'number' => $number,
 
             'title' => $title,
+            'subtitle' => $subtitle,
             'contributions' => $contributions,
             'total_quotes' => $total_quotes,
             'discounts' => $discounts,
@@ -625,6 +638,8 @@ class RetirementFundCertificationController extends Controller
         $user = $next_area_code->user;
         $date = Util::getDateFormat($next_area_code->date);
         $number = $next_area_code->code;
+
+        $subtitle = $number;
 
         $title = "fondo de retiro y disponibilidad ";
         $affiliate = $retirement_fund->affiliate;
@@ -675,6 +690,7 @@ class RetirementFundCertificationController extends Controller
             'number' => $number,
 
             'title' => $title,
+            'subtitle' => $subtitle,
             'array_discounts_availability' => $array_discounts_availability,
 
             'affiliate' => $affiliate,
