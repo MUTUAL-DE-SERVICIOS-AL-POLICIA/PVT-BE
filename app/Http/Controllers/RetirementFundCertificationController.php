@@ -1266,9 +1266,9 @@ class RetirementFundCertificationController extends Controller
             $legal_guardian = RetFunLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();
             $person .= "Mediante Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N°".  $legal_guardian->number_authority ." de fecha ".$legal_guardian->date." emitido por ". $legal_guardian->notary." otorgado al Sr. ".Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened." representa legalmente al ";
         } else {
-            $person .= "El ";
+            $person .= ($beneficiary->gender=='M'?"El señor ":"La señora ");
         }
-        $person .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". $retirement_fund->procedure_modality->name ."</strong>, presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($retirement_fund->reception_date) .", a lo cual considera lo siguiente:";
+        $person .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". $retirement_fund->procedure_modality->name ."</strong>, presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($retirement_fund->reception_date) .", a lo cual considera lo siguiente:";
         /** END PERSON DATA */
 
         /** LAW DATA */
@@ -1521,10 +1521,10 @@ class RetirementFundCertificationController extends Controller
         if(isset($ret_fun_beneficiary->id)) {
             $legal_guardian = RetFunLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();
             $head .= "Mediante Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N°".  $legal_guardian->number_authority ." de fecha ".$legal_guardian->date." emitido por ". $legal_guardian->notary." otorgado al Sr. ".Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened." representa legalmente al ";
-        } else {
-            $head .= "El ";
+        } else {            
+            $head .= ($beneficiary->gender=='M'?"El señor ":"La señora ");
         }
-        $head .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". ($retirement_fund->procedure_modality->name) ."</strong> y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: :";        
+        $head .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". ($retirement_fund->procedure_modality->name) ."</strong> y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: :";        
 
         $past = "Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 3231 de 28 de junio de 2017, referente al beneficio de Fondo de Retiro Policial en el artículo 2, (MODIFICACIONES) establece:
             <br><br>
