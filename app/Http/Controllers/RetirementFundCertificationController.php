@@ -2029,19 +2029,24 @@ class RetirementFundCertificationController extends Controller
                 $body_resolution .= $beneficiary->fullName()." con C.I. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened.', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>"; 
             }
         } else {
-            $body_resolution .= "<li class='text-justify'>".($affiliate->gender=='M'?'Sr. ':'Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".</li><b><br><br>";
+            $body_resolution .= "<li class='text-justify'>".($affiliate->gender=='M'?'Sr. ':'Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".</li></b><br>";
         } 
 
-        $body_resolution .="<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b>";
+        $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>
+        ";
+
+        $number = Util::getNextAreaCode($retirement_fund->id);
+
+        $user = User::find($number->user_id);
+        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN<br>ELABORADO POR: ".$user->username." </div>";
+
         //return $discount;
 
         //if()
         
             
         
-        $number = Util::getNextAreaCode($retirement_fund->id);
 
-        $user = User::find($number->user_id);
         $users_commission=User::where('is_commission', true)->get();
         $data = [
             'retirement_fund'   =>  $retirement_fund,
@@ -2067,8 +2072,8 @@ class RetirementFundCertificationController extends Controller
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-html', $footerHtml)
             ->setOption('header-html', $headerHtml)
-            ->setOption('margin-top', 30)
-            ->setOption('margin-bottom', 12)
+            ->setOption('margin-top', 40)
+            ->setOption('margin-bottom', 15)
             ->stream("jefaturaRevision.pdf");
     }
     private function getFlagy($num, $pos)

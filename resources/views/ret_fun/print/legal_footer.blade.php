@@ -42,7 +42,7 @@
             </div>
             <div style="float:right; font-family:sans-serif; font-size:14px;">
                 {{-- <span class="page"></span> --}}
-                <span class="">DICTAMEN LEGAL FONDO DE RETIRO</span>
+                <span class="">DICTAMEN LEGAL - FONDO DE RETIRO POLICIAL SOLIDARIO</span>
             </div>
         </div>
     </div>

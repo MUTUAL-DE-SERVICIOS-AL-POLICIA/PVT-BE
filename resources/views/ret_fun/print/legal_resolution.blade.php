@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
 </head>
-<body style="border: none">
+<body style="padding:0 65px 0px 65px; " class="no-border">
     <div class="page-break">
         <div class="block">
                 <div class="text-center text-2xl font-bold underline uppercase">
