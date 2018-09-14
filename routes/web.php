@@ -266,10 +266,10 @@ Route::group(['middleware' => ['auth']], function () {
 				'annual_yield' => RetFunProcedure::current()->annual_yield,
 				'reserva_amount' => 84136.45,
 			);
-			// return \PDF::loadView('ret_fun.legal_opinion.ret_fun_jubilacion', $args)
-			// 	->setPaper('letter')
-			// 	->setOption('encoding', 'utf-8')
-			// 	->stream("dictamenLegal.pdf");
+			return \PDF::loadView('ret_fun.legal_opinion.ret_fun_jubilacion', $args)
+				->setPaper('letter')
+				->setOption('encoding', 'utf-8')
+				->stream("dictamenLegal.pdf");
 
 						
 						foreach (RetFunTemplate::all() as $value) {

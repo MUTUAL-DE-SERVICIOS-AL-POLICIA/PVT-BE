@@ -5,10 +5,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>PLATAFORMA VIRTUAL - MUSERPOL {{ $title ?? '' }}</title>
     <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
+
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
+    <style>
+        p{
+            page-break-after: avoid;
+        }
+    </style>
 </head>
 
-<body style="padding:0 70px 0 60px; " class="no-border">
+<body style="padding:0 65px 0px 65px; " class="no-border text-base-1">
     <div class="page-break">     
         <div class="block">
             <div class="text-right">
@@ -110,6 +116,8 @@
                 <p class="text-justify">
                     {!! $payment !!}
                 </p>
+                <br>
+                <br>
                 @include('ret_fun.print.signature_footer',['user'=>$user])
             </div>
             <footer>
