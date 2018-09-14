@@ -359,18 +359,20 @@ Route::group(['middleware' => ['auth']], function () {
 			$area = WorkflowState::find(23)->first_shortened;
 			$user = Auth::user();
 			$date = Util::getDateFormat(Carbon::now());
-
+			$year = Carbon::now()->year;
 			$institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
 			$direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
 			$unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-			$title = "Cálculo preliminar de fondo de retiro";
+			$title = "TRÁMITES BENEFICIOS ECONÓMICOS - FONDO DE RETIRO POLICIAL SOLIDARIO";
 
+			$retirement_funds = RetirementFund::where('wf_state_current_id',26)->where('inbox_state', true)->get();
 
 			$data = [
 				'area' => $area,
 				'user' => $user,
 				'date' => $date,
-				'filter' => $filter,
+				'retirement_funds' => $retirement_funds,
+				'year' => $year,
 				'size' => $size,
 
 				'title' => $title,
@@ -378,7 +380,7 @@ Route::group(['middleware' => ['auth']], function () {
 				'direction' => $direction,
 				'unit' => $unit,
 			];
-			$pages[] = \View::make('print_global.report', $data)->render();
+			$pages[] = \View::make('print_global.send_daa', $data)->render();
 			$pdf = \App::make('snappy.pdf.wrapper');
 			$pdf->loadHTML($pages);
 			return $pdf->setOption('encoding', 'utf-8')
