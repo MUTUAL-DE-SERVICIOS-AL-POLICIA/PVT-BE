@@ -127,6 +127,10 @@
                 >
                 </ret-fun-certification-button>
             @endif
+            @if(Muserpol\Helpers\Util::getRol()->id == 29)
+                <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Notificacion"
+                onclick="printJS({printable:'{!! route('resolution_notification') !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Imprimir Notificacion</button>
+            @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 11)
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
