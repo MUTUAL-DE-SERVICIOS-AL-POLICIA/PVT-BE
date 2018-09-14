@@ -1268,7 +1268,7 @@ class RetirementFundCertificationController extends Controller
         } else {
             $person .= "El ";
         }
-        $person .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong>". strtoupper($retirement_fund->procedure_modality->name) ."</strong>, presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($retirement_fund->reception_date) .", a lo cual considera lo siguiente:";
+        $person .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppsercase'>". $retirement_fund->procedure_modality->name ."</strong>, presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($retirement_fund->reception_date) .", a lo cual considera lo siguiente:";
         /** END PERSON DATA */
 
         /** LAW DATA */
@@ -1523,7 +1523,7 @@ class RetirementFundCertificationController extends Controller
         } else {
             $head .= "El ";
         }
-        $head .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong>". strtoupper($retirement_fund->procedure_modality->name) ."</strong> y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: :";        
+        $head .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". ($retirement_fund->procedure_modality->name) ."</strong> y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: :";        
 
         $past = "Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 3231 de 28 de junio de 2017, referente al beneficio de Fondo de Retiro Policial en el artículo 2, (MODIFICACIONES) establece:
             <br><br>
@@ -1550,11 +1550,11 @@ class RetirementFundCertificationController extends Controller
         <br><br>
         Por tanto, el expediente que cursa en esta Jefatura, cuenta con los actuados requeridos.
         <br><br>";
-        $reception_id = 20;
+        $reception_id = 19;
         $reception = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$reception_id)->first();
-        $process .= "Conforme normativa, el trámite N°".$reception->code." de la Regional ".ucwords(strtolower($retirement_fund->city_start->name))." 
-        ingresado por la Ventanilla de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio Mortuorio, verificados los requisitos mediante 
-        solicitud N° ".$reception->code." por Ventanilla, adjuntado documentación según lo señalado en el Art. 39 del Reglamento de Fondo de Retiro Policial Solidario de la gestión 2017 y conforme al Art. 45, se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020 y Reglamento de la gestión 2017, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente: ";
+        $process .= "Conforme normativa, el trámite N°".$retirement_fund->code." de la Regional ".ucwords(strtolower($retirement_fund->city_start->name))." 
+        ingresado por la Ventanilla de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, verificados los requisitos mediante 
+        solicitud N° ".$retirement_fund->code." de Ventanilla, adjuntado documentación según lo señalado en el Art. 39 del Reglamento de Fondo de Retiro Policial Solidario de la gestión 2017 y conforme al Art. 45, se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020 y Reglamento de la gestión 2017, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente: ";
 
 
         $body = "";        
@@ -1711,9 +1711,9 @@ class RetirementFundCertificationController extends Controller
                 $conclusion.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
                 $conclusion.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
             }
-            $conclusion .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones. Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".strtoupper($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>";                    
+            $conclusion .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones, reconociendose los derechos del beneficiario de Fondo de Retiro Policial Solidario por <b>".strtoupper($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>";
         } else {
-            $conclusion .= "reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".$retirement_fund->procedure_modality->name."</b> a favor de: <br><br>";
+            $conclusion .= ", reconociendose los derechos del beneficiario de Fondo de Retiro Policial Solidario por <b>".$retirement_fund->procedure_modality->name."</b> a favor de: <br><br>";
         }
 
         
@@ -1741,7 +1741,7 @@ class RetirementFundCertificationController extends Controller
             }
             if($beneficiary->state)
             $payment .= "Según información contenida en el Certificado de Descendencia presentado por la solicitante, mantener en reserva la cuota parte de: ";
-            $payment .= Util::fullName($beneficiary). " con CI. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened."., en el monto de <strong>Bs ".Util::formatMoney($beneficiary->amount_total)." (".Util::convertir($beneficiary->amount_total).")</strong>, en calidad de ".$beneficiary->kinship->name."." ;            
+            $payment .= Util::fullName($beneficiary). " con CI. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened."., en el monto de <strong>Bs ".Util::formatMoney($beneficiary->amount_total)." (".Util::convertir($beneficiary->amount_total).")</strong>, en calidad de ".$beneficiary->kinship->name."." ;
 
             array_push($payments,$payment);
         }
