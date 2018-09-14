@@ -1481,8 +1481,9 @@ class RetirementFundCertificationController extends Controller
         $number = Util::getNextAreaCode($retirement_fund->id);
 
 
+        $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
         /*HEADER FOOTER*/
-        $footerHtml = view()->make('ret_fun.print.legal_footer')->render();
+        $footerHtml = view()->make('ret_fun.print.legal_footer', ['bar_code' => $bar_code])->render();
         $headerHtml = view()->make('ret_fun.print.legal_header')->render();
         $user = Auth::user();
         $data = [
@@ -1504,12 +1505,18 @@ class RetirementFundCertificationController extends Controller
             'art'   =>  $art,
         ];
 
-        return \PDF::loadView('ret_fun.print.legal_dictum', $data)
-        ->setOption('encoding', 'utf-8')
+        $pages = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $pages[] = \View::make('ret_fun.print.legal_dictum', $data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+
+        return $pdf->setOption('encoding', 'utf-8')
         ->setOption('footer-html', $footerHtml)
         ->setOption('header-html', $headerHtml)
-        ->setOption('margin-top',25)
-        ->setOption('margin-bottom',10)
+        ->setOption('margin-top',40)
+        ->setOption('margin-bottom',15)
         ->stream("dictamenLegal.pdf");
     }
 
@@ -2024,16 +2031,21 @@ class RetirementFundCertificationController extends Controller
             $body_resolution .= "<li class='text-justify'>".($affiliate->gender=='M'?'Sr. ':'Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.", en calidad de Titular.</li><b><br><br>";
         } 
 
-        $body_resolution .="<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b>";
+        $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>
+        ";
+
+        $number = Util::getNextAreaCode($retirement_fund->id);
+
+        $user = User::find($number->user_id);
+        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN<br>ELABORADO POR: ".$user->username." </div>";
+
         //return $discount;
 
         //if()
         
             
         
-        $number = Util::getNextAreaCode($retirement_fund->id);
 
-        $user = User::find($number->user_id);
         $users_commission=User::where('is_commission', true)->get();
         $data = [
             'retirement_fund'   =>  $retirement_fund,
@@ -2052,8 +2064,15 @@ class RetirementFundCertificationController extends Controller
             'users_commission'  =>  $users_commission,
             'body_legal_dictum' =>  $body_legal_dictum,
         ];
+        $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        $headerHtml = view()->make('ret_fun.print.legal_header')->render();
+        $footerHtml = view()->make('ret_fun.print.resolution_footer', ['bar_code' => $bar_code])->render();
         return \PDF::loadView('ret_fun.print.legal_resolution', $data)
             ->setOption('encoding', 'utf-8')
+            ->setOption('footer-html', $footerHtml)
+            ->setOption('header-html', $headerHtml)
+            ->setOption('margin-top', 40)
+            ->setOption('margin-bottom', 15)
             ->stream("jefaturaRevision.pdf");
     }
     private function getFlagy($num, $pos)

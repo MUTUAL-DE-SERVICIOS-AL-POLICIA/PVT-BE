@@ -38,7 +38,7 @@
                     <span class="font-semibold uppercase leading-tight text-md">
                                                 MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"
                                                 <br> DIRECCIÓN DE BENEFICIOS ECONÓMICOS
-                                                <br> UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO
+                                                <br> UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL SOLIDARIO, CUOTA MORTUORIA Y AUXILIO MORTUORIO
                                               </span>
                 </th>
                 <th class="w-20 no-padding no-margins align-top" style="width:20%">
