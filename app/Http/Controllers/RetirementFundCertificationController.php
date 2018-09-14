@@ -1364,7 +1364,7 @@ class RetirementFundCertificationController extends Controller
         $discounts = $retirement_fund->discount_types();
         $discount = $discounts->where('discount_type_id','3')->first();
         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-        $body_due = "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", refiere que ".($affiliate->gender == 'M'?'el':'la')." titular no cuenta con deuda en curso de pago a MUSERPOL";                
+        $body_due = "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", refiere que ".($affiliate->gender == 'M'?'el':'la')." titular no cuenta con deuda en curso de pago a MUSERPOL";
         $num_loans = $loans->count();        
         if($num_loans > 0){
             //$body_due .= " y por concepto de garantes adeuda a los señores ";
@@ -1531,7 +1531,7 @@ class RetirementFundCertificationController extends Controller
         } else {            
             $head .= ($affiliate->gender=='M'?"El señor ":"La señora ");
         }
-        $head .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". ($retirement_fund->procedure_modality->name) ."</strong> y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: :";        
+        $head .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". ($retirement_fund->procedure_modality->name) ."</strong> y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: ";        
 
         $past = "Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 3231 de 28 de junio de 2017, referente al beneficio de Fondo de Retiro Policial en el artículo 2, (MODIFICACIONES) establece:
             <br><br>
@@ -1763,7 +1763,8 @@ class RetirementFundCertificationController extends Controller
         //return $conclusion;
 
 
-        $footerHtml = view()->make('ret_fun.print.legal_footer')->render();
+        $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        $footerHtml = view()->make('ret_fun.print.headship_footer', ['bar_code' => $bar_code])->render();
         $headerHtml = view()->make('ret_fun.print.legal_header')->render();
 
             $number = Util::getNextAreaCode($retirement_fund->id);
@@ -1799,8 +1800,8 @@ class RetirementFundCertificationController extends Controller
             ->setOption('encoding', 'utf-8')
             ->setOption('header-html', $headerHtml)
             ->setOption('footer-html', $footerHtml)
-            ->setOption('margin-top', 25)
-            ->setOption('margin-bottom', 10)
+            ->setOption('margin-top', 40)
+            ->setOption('margin-bottom', 15)
             ->stream("jefaturaRevision.pdf");
     }
     public function printLegalResolution($ret_fun_id){
@@ -2014,7 +2015,7 @@ class RetirementFundCertificationController extends Controller
             }
             $body_resolution .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->code??'sin nro')." y la nota ".($discount->pivot->note_code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) .".<br><br>";
         }
-        $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> El monto TOTAL a pagar de <strong>".Util::formatMoneyWithLiteral($retirement_fund->total)."</strong>, a favor:  ".($affiliate->gender=='M'?'del beneficiario: ':'de la beneficiaria: ')."<br><br>";
+        $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> El monto TOTAL a pagar de <strong>".Util::formatMoneyWithLiteral($retirement_fund->total)."</strong>, a favor ".($affiliate->gender=='M'?'del beneficiario: ':'de la beneficiaria: ')."<br><br>";
         if($retirement_fund->procedure_modality_id == 4) {
             $body_resolution .= "<br><br>";
             $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->get();
@@ -2028,7 +2029,7 @@ class RetirementFundCertificationController extends Controller
                 $body_resolution .= $beneficiary->fullName()." con C.I. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened.', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>"; 
             }
         } else {
-            $body_resolution .= "<li class='text-justify'>".($affiliate->gender=='M'?'Sr. ':'Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".</li></b><br>";
+            $body_resolution .= "<li class='text-justify'>".($affiliate->gender=='M'?'Sr. ':'Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.", en calidad de Titular.</li><b><br><br>";
         } 
 
         $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>
@@ -2072,7 +2073,7 @@ class RetirementFundCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->setOption('header-html', $headerHtml)
             ->setOption('margin-top', 40)
-            ->setOption('margin-bottom', 15)
+            ->setOption('margin-bottom', 30)
             ->stream("jefaturaRevision.pdf");
     }
     private function getFlagy($num, $pos)
