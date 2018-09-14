@@ -1302,7 +1302,7 @@ class RetirementFundCertificationController extends Controller
         $discount = $retirement_fund->discount_types();
         $finance = $discount->where('discount_type_id','1')->first();
         if(isset($finance->id) && $finance->pivot->amount > 0)        
-            $body_file .= "si tiene expediente del referido titular por concepto de anticipo en el monto de ".Util::formatMoneyWithLiteral($finance->pivot->amount)." conforme Resolución de la Comisión de Presentaciones N°".($finance->pivot->note_code??'Sin codigo')." de fecha ".Util::getStringDate(($finance->pivot->date??'')).".";
+            $body_file .= "si tiene expediente del referido titular por concepto de anticipo en el monto de ".Util::formatMoneyWithLiteral($finance->pivot->amount)." conforme Resolución de la Comisión de Presentaciones N°".($finance->pivot->note_code??'Sin codigo')." de fecha ".Util::getStringDate(($finance->pivot->note_code_date??'')).".";
         else 
             $body_file .= "no tiene expediente del referido titular.";            
         ///---ENDIFLE--////
@@ -1367,7 +1367,8 @@ class RetirementFundCertificationController extends Controller
         $body_due = "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", refiere que ".($affiliate->gender == 'M'?'el':'la')." titular no cuenta con deuda en curso de pago a MUSERPOL";                
         $num_loans = $loans->count();        
         if($num_loans > 0){
-            $body_due .= " y por concepto de garantes adeuda a los señores ";
+            //$body_due .= " y por concepto de garantes adeuda a los señores ";
+            $body_due .= " y por concepto de garantes adeuda a ".($num_loans==1?"el señor":"los señores ");
             $i=0;
             foreach($loans as $loan){
                 $i++;
@@ -1469,7 +1470,7 @@ class RetirementFundCertificationController extends Controller
                     $advisor = RetFunAdvisor::where('id',$legal_guardian->ret_fun_advisor_id)->first();
                     $payment .= ", a través de su tutor".($advisor->gender=='F'?'a':'')." natural ".($advisor->gender=='M'?'Sr.':'Sra.')." ".Util::fullName($advisor)." con C.I. N°".$advisor->identity_card." ".$advisor->city_identity_card->first_shortened;
                 }
-                $payment .= ', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>";                                
+                $payment .= ', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>";
             }
         } else {
             $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->total).".<b>";
@@ -1625,9 +1626,10 @@ class RetirementFundCertificationController extends Controller
         $discount = $discounts->where('discount_type_id','3')->first();
         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
         $body_due = "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", refiere que ".($affiliate->gender == 'M'?'el':'la')." titular no cuenta con deuda en curso de pago a MUSERPOL";                
-        $num_loans = $loans->count();        
+        $num_loans = $loans->count();
+        
         if($num_loans > 0){
-            $body_due .= " y por concepto de garantes adeuda a los señores ";
+            $body_due .= " y por concepto de garantes adeuda a ".($num_loans==1?"el señor":"los señores");
             $i=0;
             foreach($loans as $loan){
                 $i++;
@@ -1731,7 +1733,7 @@ class RetirementFundCertificationController extends Controller
             ->setOption('margin-bottom', 10)
             ->stream("jefaturaRevision.pdf");
     }
-    public function printLegalResolution($ret_fun_id){        
+    public function printLegalResolution($ret_fun_id){
 
         $retirement_fund =  RetirementFund::find($ret_fun_id);        
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
@@ -1742,7 +1744,7 @@ class RetirementFundCertificationController extends Controller
             5 =>  30,
             6 =>  30,
             7 =>  31
-        ]; 
+        ];
 
         $law = 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
         NATURALEZA JURÍDICA, Parágrafo I establece: <i>“Se crea la Mutual de Servicios al Policía –
@@ -1837,7 +1839,7 @@ class RetirementFundCertificationController extends Controller
         if($affiliate->hasAvailability()) {
             $law .='Que dicho Reglamento, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 36/2017 de 20 de septiembre de 2017 y modificada mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: “ Corresponderá el reconocimiento de aportes laborales realizados con la prima de 1.85% durante la permanencia en la reserva activa, más el 5% de rendimiento, toda vez que estos aportes no forman parte de los parámetros de calificación establecidos en el Estudio Matemático Actuarial 2016 – 2020 considerado por el Decreto Supremo Nº 3231 de 28 de junio de 2017”. ';
         }
-
+        return "DAVID Y NADIA";
         $due = 'Que, mediante Resolución de la Comisión de Prestaciones Nº de fecha , se otorgó en calidad
         de ANTICIPO del 50% el monto de Bs() a favor del Sr. SOF. 1ro. MARIO BAUTISTA
         MANCILLA con C.I. 2215955 LP .';
