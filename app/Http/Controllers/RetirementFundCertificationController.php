@@ -1364,7 +1364,7 @@ class RetirementFundCertificationController extends Controller
         $discounts = $retirement_fund->discount_types();
         $discount = $discounts->where('discount_type_id','3')->first();
         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-        $body_due = "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", refiere que ".($affiliate->gender == 'M'?'el':'la')." titular no cuenta con deuda en curso de pago a MUSERPOL";                
+        $body_due = "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", refiere que ".($affiliate->gender == 'M'?'el':'la')." titular no cuenta con deuda en curso de pago a MUSERPOL";
         $num_loans = $loans->count();        
         if($num_loans > 0){
             //$body_due .= " y por concepto de garantes adeuda a los señores ";
@@ -2014,7 +2014,7 @@ class RetirementFundCertificationController extends Controller
             }
             $body_resolution .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->code??'sin nro')." y la nota ".($discount->pivot->note_code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) .".<br><br>";
         }
-        $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> El monto TOTAL a pagar de <strong>".Util::formatMoneyWithLiteral($retirement_fund->total)."</strong>, a favor:  ".($affiliate->gender=='M'?'del beneficiario: ':'de la beneficiaria: ')."<br><br>";
+        $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> El monto TOTAL a pagar de <strong>".Util::formatMoneyWithLiteral($retirement_fund->total)."</strong>, a favor ".($affiliate->gender=='M'?'del beneficiario: ':'de la beneficiaria: ')."<br><br>";
         if($retirement_fund->procedure_modality_id == 4) {
             $body_resolution .= "<br><br>";
             $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->get();
@@ -2028,7 +2028,7 @@ class RetirementFundCertificationController extends Controller
                 $body_resolution .= $beneficiary->fullName()." con C.I. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened.', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>"; 
             }
         } else {
-            $body_resolution .= "<li class='text-justify'>".($affiliate->gender=='M'?'Sr. ':'Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".</li></b><br>";
+            $body_resolution .= "<li class='text-justify'>".($affiliate->gender=='M'?'Sr. ':'Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.", en calidad de Titular.</li><b><br><br>";
         } 
 
         $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>
