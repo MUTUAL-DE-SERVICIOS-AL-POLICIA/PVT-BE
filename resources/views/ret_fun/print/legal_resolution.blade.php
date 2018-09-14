@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
 </head>
-<body style="padding:0 65px 0px 65px; " class="no-border">
+<body style="padding:0 65px 0px 65px;" class="no-border">
     <div class="page-break">
         <div class="block">
                 <div class="text-center text-2xl font-bold underline uppercase">
@@ -38,38 +38,38 @@
                     <div >
                         <b><u>CONSIDERANDO:</u></b>
                     </div>
-                    <div>
+                    <div class="text-justify">
                         {!! $body_finance !!} 
                         <br>
                     </div>
-                    <div>
+                    <div class="text-justify">
                         {!! $reception !!}
                         <br>
                     </div>
-                    <div>
+                    <div class="text-justify">
                         {!! $body_qualification !!}
                         <br>
                     </div>
-                    <div>
+                    <div class="text-justify">
                         <br>
                         {!! $body_legal_dictum !!}
                         <br>
-                    </div>                    
-                    <div >
+                    </div>
+                    <div class="text-justify">
                     <br>
-                        <b><u>POR TANTO:</u></b>                        
+                        <b><u>POR TANTO:</u></b>
                         <br><br>
                     </div>
-                    <div>
+                    <div class="text-justify">
                         {!! $then !!}
                         <br>
                     </div>
-                    <div >
+                    <div class="text-justify">
                         <br>
                         <b><u>RESUELVE:</u></b>
                         <br><br>
                     </div>
-                    <div>
+                    <div class="text-justify">
                         {!! $body_resolution !!}
                         <br>
                     </div>
