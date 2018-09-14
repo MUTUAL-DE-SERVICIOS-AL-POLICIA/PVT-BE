@@ -77,6 +77,11 @@
                         {!! $body_qualification !!}
                         <br>
                     </div>
+                    <div>
+                        <br>
+                        {!! $body_legal_dictum !!}
+                        <br>
+                    </div>                    
                     <div >
                     <br>
                         <b><u>POR TANTO:</u></b>                        
