@@ -98,6 +98,6 @@
                 <div >
 
         </div>
-        @include('ret_fun.print.signature_footer',['user'=>$user])
+        {{-- @include('ret_fun.print.commission_signature',['user'=>$user]) --}}
     </div>
 </body>

@@ -1344,7 +1344,7 @@ class RetirementFundCertificationController extends Controller
         $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes de su ".$end_contributions[$retirement_fund->procedure_modality_id];
 
         if($affiliate->hasAvailability()) {
-            $body_accounts .="Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad.";
+            $body_accounts .=" Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad.";
         }
         ////------- INDIVIDUAL ACCOUTNS ------////
 
@@ -1356,7 +1356,7 @@ class RetirementFundCertificationController extends Controller
         $body_qualification .=  "Que, mediante Calificación de Fondo de Retiro Policial Solidario N° ".$qualification->code." de Área de Calificación de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de <strong>". Util::formatMonthYearLiteral($months)."</strong>, determinando el beneficio de <strong>Fondo de Retiro Policial Solidario por ".$retirement_fund->procedure_modality->name."&nbsp;&nbsp;</strong>de<strong> ". Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun) ." </strong>".Util::getDiscountCombinations($retirement_fund->id).".";
         if($affiliate->hasAvailability()){
             $availability = Util::sumTotalContributions($affiliate->getDatesAvailability());
-            $body_qualification .= " Por concepto de reconocimiento de aportes laborales durante el periodo de disponibilidad de ".Util::formatMonthYearLiteral($availability) .', el cual no es considerado en la calificación del beneficio del Fondo de Retiro Policial Solidario, de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 - 2020, se determina el monto de '.Util::formatMoneyWithLiteral($retirement_fund->total_availability).'; haciendo un total de '.Util::formatMoneyWithLiteral($retirement_fund->total).'.';
+            $body_qualification .= " Por concepto de reconocimiento de aportes laborales durante el periodo de disponibilidad de ".Util::formatMonthYearLiteral($availability) .', el cual no es considerado en la calificación del beneficio del Fondo de Retiro Policial Solidario, de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 - 2020, se determina el monto de '.Util::formatMoneyWithLiteral($retirement_fund->total_availability).'; haciendo un total de <strong>'.Util::formatMoneyWithLiteral($retirement_fund->total).'</strong>.';
         }        
       
         ////----- DUE -----////
@@ -1903,7 +1903,8 @@ class RetirementFundCertificationController extends Controller
             $law .='Que dicho Reglamento, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 36/2017 de 20 de septiembre de 2017 y modificada 
             mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: “ Corresponderá el reconocimiento de aportes laborales realizados con la prima de 
             1.85% durante la permanencia en la reserva activa, más el 5% de rendimiento, toda vez que estos aportes no forman parte de los parámetros de 
-            calificación establecidos en el Estudio Matemático Actuarial 2016 – 2020 considerado por el Decreto Supremo Nº 3231 de 28 de junio de 2017”. ';
+            calificación establecidos en el Estudio Matemático Actuarial 2016 – 2020 considerado por el Decreto Supremo Nº 3231 de 28 de junio de 2017”. <br><br>
+            Que, el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: “Generada la desvinculación de la Policía Boliviana, se reconocerá al titular el aporte laboral efectivizado en el destino de la disponibilidad de las letras en función al aporte laboral efectuado (prima de aportación) más rendimiento de 5%, siempre y cuando no se haya suscitado el fallecimiento y el tiempo de aporte en éste destino no haya formado parte de la calificación del beneficio de Fondo de Retiro Policial”.';
         }        
         
         // $due = 'Que, mediante Resolución de la Comisión de Prestaciones Nº de fecha , se otorgó en calidad
@@ -1914,7 +1915,7 @@ class RetirementFundCertificationController extends Controller
          $finance = $discount->where('discount_type_id','1')->first();        
         $body_finance = "";
         if(isset($finance) && $finance->pivot->amount) {            
-            $body_finance = "Que, mediante nota de respuesta de la Dirección Administrativa Financiera con Cite: ".$finance->pivot->code ." de fecha ". Util::getStringDate($finance->pivot->date).",";
+            $body_finance = "Que, mediante Resolución de Préstamo N°".$finance->pivot->note_code ." de fecha ". Util::getStringDate($finance->pivot->note_code_date).",";
             
             if(isset($finance->id) && $finance->pivot->amount > 0){
                 $body_finance .= " se otorgó en calidad de ANTICIPO por concepto de Fondo de Retiro Policial el monto de <b>".Util::formatMoneyWithLiteral($finance->pivot->amount)."</b>, con cargo a liquidación final, a favor del&nbsp;<b>".$affiliate->degree->shortened." ".$affiliate->fullName()."</b> con C.I. N° <b>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</b>.<br>";
@@ -1933,13 +1934,13 @@ class RetirementFundCertificationController extends Controller
         $qualification_id = 23;
         $qualification = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$qualification_id)->first();
         $months  = $affiliate->getTotalQuotes();        
-        $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario <b>N° ".$qualification->code."</b> de fecha <b>".Util::getStringDate($qualification->date)."</b>, de la Encargada de Calificación de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, realizó el cálculo de otorgación, correspondiente al <b>"
+        $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario <b>N° ".$qualification->code."</b> de fecha <b>".Util::getStringDate($qualification->date)."</b>, de la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente al <b>"
         .$affiliate->fullNameWithDegree()."</b> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened."</b>, determina el monto de <b>". Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun)."</b>";
         if($affiliate->hasAvailability()) {
             $body_qualification .=", de la misma forma realizó el cálculo por el reconocimiento de aportes laborales durante el periodo de disponibilidad, por no ser considerados en la calificación del beneficio de Fondo de Retiro Policial Solidario, 
             de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 – 2020; correspondiéndole el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_availability)."</b>, haciendo un monto total de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_availability+$retirement_fund->subtotal_ret_fun)."</b>";
         }   
-        $body_qualification .= Util::getDiscountCombinations($retirement_fund->id);
+        //$body_qualification .= Util::getDiscountCombinations($retirement_fund->id);
         //".Util::getDiscountCombinations($retirement_fund->id);     
         ///----- END QUALIFICATION ----////
 
@@ -2032,6 +2033,7 @@ class RetirementFundCertificationController extends Controller
         
         $number = Util::getNextAreaCode($retirement_fund->id);
         $user = Auth::user();
+        $users_commission=User::where('is_commission', true)->get();
         $data = [
             'retirement_fund'   =>  $retirement_fund,
             'law'  =>  $law,
@@ -2046,6 +2048,7 @@ class RetirementFundCertificationController extends Controller
             'then'  =>  $then,
             'user'  =>  $user,
             'body_resolution'   =>  $body_resolution,
+            'users_commission'  =>  $users_commission
         ];
         return \PDF::loadView('ret_fun.print.legal_resolution', $data)
             ->setOption('encoding', 'utf-8')
