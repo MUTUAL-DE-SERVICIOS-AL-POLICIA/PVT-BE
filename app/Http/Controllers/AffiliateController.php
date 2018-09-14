@@ -226,10 +226,10 @@ class AffiliateController extends Controller
         $month_death = $death[1];
         $year_death = $death[2];
         
-        $is_editable = "1";
-        if(isset($retirement_fund->id) && $retirement_fund->modality_id!=4)
+        $is_editable = "0";
+        if(isset($retirement_fund->id) && ($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 2))
         {
-            $is_editable = "0";
+            $is_editable = "1";
         }
 
         $data = array(

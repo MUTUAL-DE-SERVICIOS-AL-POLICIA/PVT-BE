@@ -52,14 +52,17 @@ export default {
       totalRetFun: 0,
 
       advancePayment: 0,
+      advancePaymentNoteCodeDate: null,
       advancePaymentNoteCode: null,
       advancePaymentCode: null,
       advancePaymentDate: null,
       retentionLoanPayment: 0,
+      retentionLoanPaymentNoteCodeDate:null,
       retentionLoanPaymentNoteCode:null,
       retentionLoanPaymentCode:null,
       retentionLoanPaymentDate:null,
       retentionGuarantor: 0,
+      retentionGuarantorNoteCodeDate:null,
       retentionGuarantorNoteCode:null,
       retentionGuarantorCode:null,
       retentionGuarantorDate:null,
@@ -98,6 +101,7 @@ export default {
       if(this.retentionGuarantor == 0){
         this.retentionGuarantorCode = null;
         this.retentionGuarantorNoteCode = null;
+        this.retentionGuarantorNoteCodeDate = null;
         this.retentionGuarantorDate = null;
       }
     },
@@ -127,7 +131,7 @@ export default {
     deleteGuarantor(index){
       this.guarantors.splice(index,1);
       if(this.guarantors.length < 1)
-        this.addGuarantor();
+        // this.addGuarantor();
       this.updateTotalGuarantor();
     },
     searchGuarantor(index){
@@ -210,6 +214,7 @@ export default {
           let advancePaymentResponse = response.data.discounts.filter(d => d.id == 1);
           if (advancePaymentResponse.length) {
             this.advancePayment = advancePaymentResponse[0].pivot.amount;
+            this.advancePaymentNoteCodeDate = advancePaymentResponse[0].pivot.note_code_date;
             this.advancePaymentNoteCode = advancePaymentResponse[0].pivot.note_code;
             this.advancePaymentCode = advancePaymentResponse[0].pivot.code;
             this.advancePaymentDate = advancePaymentResponse[0].pivot.date;
@@ -218,6 +223,7 @@ export default {
           let retentionLoanPaymentResponse = response.data.discounts.filter(d => d.id == 2);                    
           if (retentionLoanPaymentResponse.length) {
             this.retentionLoanPayment = retentionLoanPaymentResponse[0].pivot.amount;
+            this.retentionLoanPaymentNoteCodeDate = retentionLoanPaymentResponse[0].pivot.note_code_date;
             this.retentionLoanPaymentNoteCode = retentionLoanPaymentResponse[0].pivot.note_code;
             this.retentionLoanPaymentCode = retentionLoanPaymentResponse[0].pivot.code;
             this.retentionLoanPaymentDate = retentionLoanPaymentResponse[0].pivot.date;
@@ -226,6 +232,7 @@ export default {
           let retentionGuarantorResponse = response.data.discounts.filter(d => d.id == 3);
           if (retentionGuarantorResponse.length) {
             this.retentionGuarantor = retentionGuarantorResponse[0].pivot.amount;
+            this.retentionGuarantorNoteCodeDate = retentionGuarantorResponse[0].pivot.note_code_date;
             this.retentionGuarantorNoteCode = retentionGuarantorResponse[0].pivot.note_code;
             this.retentionGuarantorCode = retentionGuarantorResponse[0].pivot.code;
             this.retentionGuarantorDate = retentionGuarantorResponse[0].pivot.date;
@@ -262,11 +269,14 @@ export default {
           retentionGuarantor: parseMoney(this.retentionGuarantor),
 
           advancePaymentNoteCode:this.advancePaymentNoteCode,
+          advancePaymentNoteCodeDate:this.advancePaymentNoteCodeDate,
           advancePaymentCode:this.advancePaymentCode,
           advancePaymentDate:this.advancePaymentDate,
+          retentionLoanPaymentNoteCodeDate:this.retentionLoanPaymentNoteCodeDate,
           retentionLoanPaymentNoteCode:this.retentionLoanPaymentNoteCode,
           retentionLoanPaymentCode:this.retentionLoanPaymentCode,
           retentionLoanPaymentDate:this.retentionLoanPaymentDate,
+          retentionGuarantorNoteCodeDate:this.retentionGuarantorNoteCodeDate,
           retentionGuarantorNoteCode:this.retentionGuarantorNoteCode,
           retentionGuarantorCode:this.retentionGuarantorCode,
           retentionGuarantorDate:this.retentionGuarantorDate,

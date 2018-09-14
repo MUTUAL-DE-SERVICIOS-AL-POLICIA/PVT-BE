@@ -579,6 +579,8 @@ class RetirementFundController extends Controller
         $this->authorize('view', $retirement_fund);
 
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
@@ -706,9 +708,10 @@ class RetirementFundController extends Controller
         $correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
         $steps = [];
         $data = $retirement_fund->getReceptionSummary();
-        $is_editable = ID::getEditableId();
-        if(isset($retirement_fund->id) && $retirement_fund->modality_id!=4)
-            $is_editable = ID::getNonEditableId();
+        $is_editable = ID::getNonEditableId();
+        if(isset($retirement_fund->id) && ($retirement_fund->procedure_modality_id ==4 || $retirement_fund->procedure_modality_id == 2))
+            $is_editable = ID::getEditableId();
+
         //return $data;
         //return $correlatives;
         $data = [
@@ -1100,10 +1103,18 @@ class RetirementFundController extends Controller
                             $address->street = $new_ben['address'][0]['street'];
                             $address->number_address = $new_ben['address'][0]['number_address'];
                             $address->save();
+                            if ($retirement_fund->procedure_modality_id != ID::retFun()->fallecimiento_id) {
+                                $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
+                                if ($update_affilaite->address->contains($address->id)) {
+
+                                } else {
+                                    $update_affilaite->address()->save($address);
+                                }
+                            }
                         }else{
                             if ($retirement_fund->procedure_modality_id != ID::retFun()->fallecimiento_id) {
                                 $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
-                                $old_ben->address()->detach($address->id);
+                                $update_affilaite->address()->detach($address->id);
                             }
                             $old_ben->address()->detach($address->id);
                             $address->delete();
@@ -1526,9 +1537,9 @@ class RetirementFundController extends Controller
         $discount_type = DiscountType::where('shortened','anticipo')->first();
         if ($advance_payment >= 0) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
-                $retirement_fund->discount_types()->updateExistingPivot ($discount_type->id, ['amount' => $advance_payment, 'date'=> $request->advancePaymentDate, 'code'=> $request->advancePaymentCode, 'note_code'=>$request->advancePaymentNoteCode]);
+                $retirement_fund->discount_types()->updateExistingPivot ($discount_type->id, ['amount' => $advance_payment, 'date'=> $request->advancePaymentDate, 'code'=> $request->advancePaymentCode, 'note_code'=>$request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
             }else{
-                $retirement_fund->discount_types()->save($discount_type, ['amount'=> $advance_payment, 'date'=> $request->advancePaymentDate, 'code'=> $request->advancePaymentCode, 'note_code'=>$request->advancePaymentNoteCode]);
+                $retirement_fund->discount_types()->save($discount_type, ['amount'=> $advance_payment, 'date'=> $request->advancePaymentDate, 'code'=> $request->advancePaymentCode, 'note_code'=>$request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
             }
         }else{
             $retirement_fund->discount_types()->detach($discount_type->id);
@@ -1536,9 +1547,9 @@ class RetirementFundController extends Controller
         $discount_type = DiscountType::where('shortened','prestamo')->first();
         if ($retention_loan_payment >= 0) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
-                $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_loan_payment, 'date'=> $request->retentionLoanPaymentDate, 'code'=> $request->retentionLoanPaymentCode, 'note_code'=>$request->retentionLoanPaymentNoteCode]);
+                $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_loan_payment, 'date'=> $request->retentionLoanPaymentDate, 'code'=> $request->retentionLoanPaymentCode, 'note_code'=>$request->retentionLoanPaymentNoteCode, 'note_code_date' => $request->retentionLoanPaymentNoteCodeDate]);
             } else {
-                $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_loan_payment, 'date'=> $request->retentionLoanPaymentDate, 'code'=> $request->retentionLoanPaymentCode, 'note_code'=>$request->retentionLoanPaymentNoteCode]);
+                $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_loan_payment, 'date'=> $request->retentionLoanPaymentDate, 'code'=> $request->retentionLoanPaymentCode, 'note_code'=>$request->retentionLoanPaymentNoteCode, 'note_code_date' => $request->retentionLoanPaymentNoteCodeDate]);
             }
         } else {
             $retirement_fund->discount_types()->detach($discount_type->id);
@@ -1547,9 +1558,9 @@ class RetirementFundController extends Controller
         Log::info($request->guarantors);
         if ($retention_guarantor >= 0) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
-                $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_guarantor, 'date'=> $request->retentionGuarantorDate, 'code'=> $request->retentionGuarantorCode, 'note_code'=>$request->retentionGuarantorNoteCode]);
+                $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_guarantor, 'date'=> $request->retentionGuarantorDate, 'code'=> $request->retentionGuarantorCode, 'note_code'=>$request->retentionGuarantorNoteCode, 'note_code_date' => $request->retentionGuarantorNoteCodeDate]);
             } else {
-                $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_guarantor, 'date'=> $request->retentionGuarantorDate, 'code'=> $request->retentionGuarantorCode, 'note_code'=>$request->retentionGuarantorNoteCode]);
+                $retirement_fund->discount_types()->save($discount_type, ['amount'=> $retention_guarantor, 'date'=> $request->retentionGuarantorDate, 'code'=> $request->retentionGuarantorCode, 'note_code'=>$request->retentionGuarantorNoteCode, 'note_code_date' => $request->retentionGuarantorNoteCodeDate]);
             }
             if (sizeOf($request->guarantors)) {
                 /*
