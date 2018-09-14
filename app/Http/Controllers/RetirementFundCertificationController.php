@@ -1411,6 +1411,7 @@ class RetirementFundCertificationController extends Controller
         $flagy = 0;
         if($discounts->where('amount','>','0')->count()>0) {
             $payment .= "proceder a realizar el descuento ";
+            $discounts = $retirement_fund->discount_types();
             $discount = $discounts->where('discount_type_id','1')->first();        
             if(isset($discount->id) && $discount->pivot->amount > 0){            
                 $payment.="<b>Bs ".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).")</b> por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);            
@@ -1449,9 +1450,9 @@ class RetirementFundCertificationController extends Controller
                 $payment.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
                 $payment.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
             }
-            $payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones. Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".strtoupper($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>";                    
+            $payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones. Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <strong class='uppsercase'>".($retirement_fund->procedure_modality->name)."</strong> a favor de:<br><br>";                    
         } else {
-            $payment .= "reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".$retirement_fund->procedure_modality->name."</b> a favor de: <br><br>";
+            $payment .= "reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <strong class='uppsercase'>".$retirement_fund->procedure_modality->name."</strong> a favor de: <br><br>";
         }
         
         if($retirement_fund->procedure_modality_id == 4) {
@@ -1672,10 +1673,12 @@ class RetirementFundCertificationController extends Controller
         // descontando la deuda por concepto de garantes de <strong>Bs14.327,85 (CATORCE MIL TRESCIENTOS VEINTE SIETE 85/100 BOLIVIANOS)</strong>, a solicitud de la Dirección de Estrategias Sociales e Inversiones, reconocer el <strong>Fondo de Retiro Policial Solidario</strong> por <strong>Bs27.811,63 (VEINTISIETE MIL OCHOCIENTOS ONCE 63/100 BOLIVIANOS)</strong>, a favor de los derechohabientes según el siguiente detalle:";
         $flagy = 0;
         if($discounts->where('amount','>','0')->count()>0) {
-            $conclusion .= "proceder a realizar el descuento ";
+            $conclusion .= "se procede a realizar el descuento ";
+            $discounts = $retirement_fund->discount_types();
             $discount = $discounts->where('discount_type_id','1')->first();        
-            if(isset($discount->id) && $discount->pivot->amount > 0){            
-                $conclusion.="<b>Bs ".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).")</b> por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);            
+            
+            if(isset($discount->id) && $discount->pivot->amount > 0){                            
+                $conclusion.="<b>Bs".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).")</b> por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);            
             }
             
             $discounts = $retirement_fund->discount_types();
@@ -1711,9 +1714,9 @@ class RetirementFundCertificationController extends Controller
                 $conclusion.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
                 $conclusion.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
             }
-            $conclusion .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones, reconociendose los derechos del beneficiario de Fondo de Retiro Policial Solidario por <b>".strtoupper($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>";
+            $conclusion .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones, reconociendose los derechos del beneficiario de Fondo de Retiro Policial Solidario por <strong class='uppercase'>".strtoupper($retirement_fund->procedure_modality->name)."</strong> a favor de:<br><br>";
         } else {
-            $conclusion .= ", reconociendose los derechos del beneficiario de Fondo de Retiro Policial Solidario por <b>".$retirement_fund->procedure_modality->name."</b> a favor de: <br><br>";
+            $conclusion .= ", reconociendose los derechos del beneficiario de Fondo de Retiro Policial Solidario por <strong class='uppercase'>".$retirement_fund->procedure_modality->name."</strong> a favor de: <br><br>";
         }
 
         
@@ -1741,7 +1744,7 @@ class RetirementFundCertificationController extends Controller
             }
             if($beneficiary->state)
             $payment .= "Según información contenida en el Certificado de Descendencia presentado por la solicitante, mantener en reserva la cuota parte de: ";
-            $payment .= Util::fullName($beneficiary). " con CI. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened."., en el monto de <strong>Bs ".Util::formatMoney($beneficiary->amount_total)." (".Util::convertir($beneficiary->amount_total).")</strong>, en calidad de ".$beneficiary->kinship->name."." ;
+            $payment .= Util::fullName($beneficiary). " con CI. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened."., en el monto de <strong>Bs".Util::formatMoney($beneficiary->amount_total)." (".Util::convertir($beneficiary->amount_total).")</strong>, en calidad de ".$beneficiary->kinship->name."." ;
 
             array_push($payments,$payment);
         }
@@ -1897,9 +1900,13 @@ class RetirementFundCertificationController extends Controller
         <br><br>';
 
         if($affiliate->hasAvailability()) {
-            $law .='Que dicho Reglamento, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 36/2017 de 20 de septiembre de 2017 y modificada mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: “ Corresponderá el reconocimiento de aportes laborales realizados con la prima de 1.85% durante la permanencia en la reserva activa, más el 5% de rendimiento, toda vez que estos aportes no forman parte de los parámetros de calificación establecidos en el Estudio Matemático Actuarial 2016 – 2020 considerado por el Decreto Supremo Nº 3231 de 28 de junio de 2017”. ';
+            $law .='Que dicho Reglamento, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 36/2017 de 20 de septiembre de 2017 y modificada 
+            mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: “ Corresponderá el reconocimiento de aportes laborales realizados con la prima de 
+            1.85% durante la permanencia en la reserva activa, más el 5% de rendimiento, toda vez que estos aportes no forman parte de los parámetros de 
+            calificación establecidos en el Estudio Matemático Actuarial 2016 – 2020 considerado por el Decreto Supremo Nº 3231 de 28 de junio de 2017”. ';
         }
         return "DAVID Y NADIA";
+        
         $due = 'Que, mediante Resolución de la Comisión de Prestaciones Nº de fecha , se otorgó en calidad
         de ANTICIPO del 50% el monto de Bs() a favor del Sr. SOF. 1ro. MARIO BAUTISTA
         MANCILLA con C.I. 2215955 LP .';
