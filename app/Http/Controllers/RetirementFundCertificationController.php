@@ -1474,7 +1474,7 @@ class RetirementFundCertificationController extends Controller
                 $payment .= ', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>";
             }
         } else {
-            $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->total).".<b>";
+            $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., el monto de &nbsp;<strong>".Util::formatMoneyWithLiteral($retirement_fund->total).".</strong>";
         } 
 
         ///------EN  PAYMENT ------///
