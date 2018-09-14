@@ -1448,9 +1448,9 @@ class RetirementFundCertificationController extends Controller
                 $payment.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
                 $payment.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
             }
-            $payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones. Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".strtoupper($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>";                    
+            $payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones. Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b class='uppercase'>".($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>";                    
         } else {
-            $payment .= "reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".$retirement_fund->procedure_modality->name."</b> a favor de: <br><br>";
+            $payment .= "reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b class='uppercase'>".$retirement_fund->procedure_modality->name."</b> a favor de: <br><br>";
         }
         
         if($retirement_fund->procedure_modality_id == 4) {
@@ -1479,8 +1479,9 @@ class RetirementFundCertificationController extends Controller
         $number = Util::getNextAreaCode($retirement_fund->id);
 
 
+        $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
         /*HEADER FOOTER*/
-        $footerHtml = view()->make('ret_fun.print.legal_footer')->render();
+        $footerHtml = view()->make('ret_fun.print.legal_footer', ['bar_code' => $bar_code])->render();
         $headerHtml = view()->make('ret_fun.print.legal_header')->render();
         $user = Auth::user();
         $data = [
@@ -1502,12 +1503,18 @@ class RetirementFundCertificationController extends Controller
             'art'   =>  $art,
         ];
 
-        return \PDF::loadView('ret_fun.print.legal_dictum', $data)
-        ->setOption('encoding', 'utf-8')
+        $pages = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $pages[] = \View::make('ret_fun.print.legal_dictum', $data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+
+        return $pdf->setOption('encoding', 'utf-8')
         ->setOption('footer-html', $footerHtml)
         ->setOption('header-html', $headerHtml)
-        ->setOption('margin-top',25)
-        ->setOption('margin-bottom',10)
+        ->setOption('margin-top',40)
+        ->setOption('margin-bottom',15)
         ->stream("dictamenLegal.pdf");
     }
 
@@ -1522,7 +1529,7 @@ class RetirementFundCertificationController extends Controller
         } else {
             $head .= "El ";
         }
-        $head .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong>". strtoupper($retirement_fund->procedure_modality->name) ."</strong> y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: :";        
+        $head .= "señor ". $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". ($retirement_fund->procedure_modality->name) ."</strong> y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: :";        
 
         $past = "Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 3231 de 28 de junio de 2017, referente al beneficio de Fondo de Retiro Policial en el artículo 2, (MODIFICACIONES) establece:
             <br><br>
@@ -1980,8 +1987,15 @@ class RetirementFundCertificationController extends Controller
             'user'  =>  $user,
             'body_resolution'   =>  $body_resolution,
         ];
+        $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        $headerHtml = view()->make('ret_fun.print.legal_header')->render();
+        $footerHtml = view()->make('ret_fun.print.resolution_footer', ['bar_code' => $bar_code])->render();
         return \PDF::loadView('ret_fun.print.legal_resolution', $data)
             ->setOption('encoding', 'utf-8')
+            ->setOption('footer-html', $footerHtml)
+            ->setOption('header-html', $headerHtml)
+            ->setOption('margin-top', 30)
+            ->setOption('margin-bottom', 12)
             ->stream("jefaturaRevision.pdf");
     }
     private function getFlagy($num, $pos)

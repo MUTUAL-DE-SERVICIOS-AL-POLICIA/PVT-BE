@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <style>
-        body{
+        body {
             padding: 0 69px 0 59px;
         }
     </style>
@@ -34,6 +35,7 @@
         }
     </script>
 </head>
+
 <body id="pdf-footer" onload="pagination()">
     <div style="height:60px;padding-top:10px; vertical-align:middle;">
         <div style="border-top: 1px solid #22292f;">
@@ -47,10 +49,12 @@
         </div>
     </div>
 </body>
+
 </html>
 
 
-{{-- <!DOCTYPE html>
+{{--
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
