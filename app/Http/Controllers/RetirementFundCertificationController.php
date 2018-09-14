@@ -1947,7 +1947,7 @@ class RetirementFundCertificationController extends Controller
         $legal_dictum_id = 25;
         $legal_dictum = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$qualification_id)->first();
         $body_legal_dictum = 'Que, habiéndose verificado el procesamiento establecido en el Reglamento de Fondo de Retiro
-        Policial Solidario, se procedió con la emisión de DICTAMEN LEGAL '.$legal_dictum->code.' de '.Util::getStringDate($legal_dictum->date).', para la otorgación del beneficio de Fondo de Retiro Policial Solidario por
+        Policial Solidario, se procedió con la emisión de DICTAMEN LEGAL <strong>'.$legal_dictum->code.'</strong> de '.Util::getStringDate($legal_dictum->date).', para la otorgación del beneficio de Fondo de Retiro Policial Solidario por
         '.$retirement_fund->procedure_modality->name.'.';
         
         $then = 'La Comisión de Beneficios Económicos de la Mutual de Servicios al Policía “MUSERPOL” en
@@ -1966,7 +1966,7 @@ class RetirementFundCertificationController extends Controller
         $qualification_id = 23;
         $qualification = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$qualification_id)->first();
         $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> Reconocer el beneficio de Fondo de Retiro Policial Solidario por ".ucwords($retirement_fund->procedure_modality->name).", por el periodo de &nbsp; <b>".Util::formatMonthYearLiteral($months).
-        "</b> de acuerdo a Calificación de Fondo de Retiro Policial Solidario, de fecha <b>".Util::getStringDate($qualification->date)."</b>, el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun)."</b>";
+        "</b> de acuerdo a Calificación de Fondo de Retiro Policial Solidario, de fecha <b>".Util::getStringDate($qualification->date)."</b>, el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun).".</b>";
         if($affiliate->hasAvailability()) {            
             $availability = Util::sumTotalContributions($affiliate->getDatesAvailability());
             $body_resolution .="y el reconocimiento de aportes laborales en disponibilidad de <b>".Util::formatMonthYearLiteral($availability)."</b> por el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_availability)."</b>. Reconociendo el monto TOTAL de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_availability+$retirement_fund->subtotal_ret_fun)."</b><br><br>";
@@ -2007,7 +2007,7 @@ class RetirementFundCertificationController extends Controller
             }
             $body_resolution .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->code??'sin nro')." y la nota ".($discount->pivot->note_code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) .".<br><br>";
         }
-        $body_resolution .= "<br><br><b>".$cardinal[$cardinal_index++].".-</b> El monto TOTAL a pagar de <b>".Util::formatMoneyWithLiteral($retirement_fund->total)."</b> a favor ".($affiliate->gender=='M'?'del beneficiario: ':'de la beneficiaria: ');
+        $body_resolution .= "<br><br><b>".$cardinal[$cardinal_index++].".-</b> El monto TOTAL a pagar de <strong>".Util::formatMoneyWithLiteral($retirement_fund->total)."</strong>, a favor:  ".($affiliate->gender=='M'?'del beneficiario: ':'de la beneficiaria: ')."<br><br>";
         if($retirement_fund->procedure_modality_id == 4) {
             $body_resolution .= "<br><br>";
             $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->get();
