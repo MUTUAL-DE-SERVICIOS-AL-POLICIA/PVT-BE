@@ -2032,6 +2032,7 @@ class RetirementFundCertificationController extends Controller
         
         $number = Util::getNextAreaCode($retirement_fund->id);
         $user = Auth::user();
+        $users_commission=User::where('is_commission', true)->get();
         $data = [
             'retirement_fund'   =>  $retirement_fund,
             'law'  =>  $law,
@@ -2046,6 +2047,7 @@ class RetirementFundCertificationController extends Controller
             'then'  =>  $then,
             'user'  =>  $user,
             'body_resolution'   =>  $body_resolution,
+            'users_commission'  =>  $users_commission
         ];
         return \PDF::loadView('ret_fun.print.legal_resolution', $data)
             ->setOption('encoding', 'utf-8')
