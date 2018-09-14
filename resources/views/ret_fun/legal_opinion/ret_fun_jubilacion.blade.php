@@ -53,7 +53,7 @@
             de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha {{ Util::getStringDate($qualification_date)
             }}, se realizó el cálculo por el periodo de {{ $qualification_years }} y {{ $qualification_months }}, determinando
             el beneficio de Fondo de Retiro Policial Solidario por Jubilación de {{ $qualification_amount }} ({{ Util::convertir($qualification_amount)
-            }}){{Util::getDiscountCombinations($ret_fun->id)}} {{-- reserva date examples 2 anios 1 anio y 1 mes 1 anio y
+            }}){{-- reserva date examples 2 anios 1 anio y 1 mes 1 anio y
             4 meses 1 anio 2 anios y 5 meses 2 anios y 1 mes ... --}} . Por concepto de devolución de aportes durante la
             permanencia en la reserva activa, se realizó el cálculo por el periodo de {{ $reserva_date }} , en base a la
             prima del 1,85%, más el {{ $annual_yield }} anual de rendimiento, determinando el monto de {{ $reserva_amount
