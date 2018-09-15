@@ -123,7 +123,7 @@ export default {
                             type: 'success',
                             title: 'Los Trámites fueron enviados correctamente.',
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 1000
                         })
                         this.getData();
                         this.classification(this.activeWorkflowId);
@@ -184,7 +184,7 @@ export default {
                             type: 'success',
                             title: 'Los Trámites fueron enviados correctamente.',
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 1000
                         })
                         this.getData();
                         this.classification(this.activeWorkflowId);
