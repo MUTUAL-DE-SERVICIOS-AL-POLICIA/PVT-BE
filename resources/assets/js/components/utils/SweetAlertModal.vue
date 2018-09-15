@@ -43,7 +43,7 @@
                type: 'success',
                title: 'El Trámite fue procesado correctamente.',
                showConfirmButton: false,
-               timer: 1500
+               timer: 1000
              })
             }
           });
@@ -82,7 +82,7 @@
                type: 'success',
                title: 'El Trámite fue procesado correctamente.',
                showConfirmButton: false,
-               timer: 1500
+               timer: 1000
              })
             }
           });
