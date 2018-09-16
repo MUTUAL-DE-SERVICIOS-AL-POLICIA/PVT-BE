@@ -93,7 +93,7 @@
                         <div class="col-md-6">
                             <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('birth_date') && editing }">
                                 <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
-                                <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" data-date="true" type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:DD/MM/YYYY|max_date'">
+                                <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" v-date type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:DD/MM/YYYY|max_date'">
                                     <div v-show="errors.has('birth_date') && editing">
                                         <i class="fa fa-warning text-danger"></i>
                                         <span class="text-danger">@{{ errors.first('birth_date') }}</span>
@@ -120,7 +120,7 @@
                                     <div class="col-md-10">
                                         <div v-for="(cell_phone,index) in form.cell_phone_number" :key=`cell_phone-${index}`>
                                             <div class="input-group">
-                                                <input type="text" name="cell_phone_number[]" v-model.trim="form.cell_phone_number[index]" class="form-control" data-cell-phone="true" :disabled="!editing">
+                                                <input type="text" name="cell_phone_number[]" v-model.trim="form.cell_phone_number[index]" class="form-control" v-cell-phone :disabled="!editing">
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-danger" v-if="form.cell_phone_number.length > 1 && editing" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                                 </span>
@@ -138,7 +138,7 @@
                                     <div class="col-md-10">
                                         <div v-for="(phone,index) in form.phone_number" :key=`phone-${index}`>
                                             <div class="input-group">
-                                                <input type="text" name="phone_number" v-model.trim="form.phone_number[index]" class="form-control" data-phone="true" :disabled="!editing">
+                                                <input type="text" name="phone_number" v-model.trim="form.phone_number[index]" class="form-control" v-phone :disabled="!editing">
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-danger" v-if="form.phone_number.length > 1 && editing" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                                 </span>
