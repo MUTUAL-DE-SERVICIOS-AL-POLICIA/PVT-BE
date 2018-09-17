@@ -365,8 +365,17 @@ Route::group(['middleware' => ['auth']], function () {
 			$unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
 			$title = "TRÁMITES BENEFICIOS ECONÓMICOS - FONDO DE RETIRO POLICIAL SOLIDARIO";
 
-			$retirement_funds = RetirementFund::where('wf_state_current_id',26)->where('inbox_state', true)->get();
-
+			//$retirement_funds = RetirementFund::where('wf_state_current_id',26)->where('inbox_state', true)->get();
+			$retirement_funds_i = RetirementFund::where('wf_state_current_id', 26)->where('inbox_state', true)
+                ->leftJoin('ret_fun_correlatives', 'retirement_funds.id', '=', 'ret_fun_correlatives.retirement_fund_id')
+                ->where('ret_fun_correlatives.wf_state_id', 25)
+                ->orderByDesc('ret_fun_correlatives.created_at')
+                ->select('retirement_funds.id')
+                ->get()
+                ->pluck('id')
+                ;
+			$retirement_funds = RetirementFund::whereIn('id', $retirement_funds_i)->orderBy('updated_at')->get();
+			
 			$data = [
 				'area' => $area,
 				'user' => $user,
