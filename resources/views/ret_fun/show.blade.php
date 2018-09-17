@@ -99,8 +99,9 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
             <div class="pull-left">
+                <span class="badge" style="font-size:16px">Último Correlativo: {{ Util::getRol()->correlative }}</span>
                 @if(Muserpol\Helpers\Util::getRol()->id == 10)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                    <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 15)

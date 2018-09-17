@@ -1,14 +1,12 @@
 <template>
-    <div>
-        <button class="btn btn-primary dim"
-                type="button"
-                data-toggle="tooltip"
-                data-placement="top"
-                :title="title"
-                @click="modal()">
-            <i class="fa fa-print"></i>
-        </button>
-    </div>
+  <button class="btn btn-primary dim"
+          type="button"
+          data-toggle="tooltip"
+          data-placement="top"
+          :title="title"
+          @click="modal()">
+      <i class="fa fa-print"></i>
+  </button>
 </template>
 <script>
     export default {
