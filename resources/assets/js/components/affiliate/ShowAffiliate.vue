@@ -1,5 +1,5 @@
 <script>
-import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors } from "../../helper.js";
+import { flashErrors } from "../../helper.js";
 	export default{
 		props:[
             'affiliate',
@@ -115,7 +115,6 @@ import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
-                dateInputMaskAll();
                 if(this.editing==false)
                 {
                     this.form.identity_card = this.values.identity_card;
@@ -186,9 +185,6 @@ import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors
                 }else{
                     this.form.phone_number.push(null);
                 }
-                setTimeout(() => {
-                    phoneInputMaskAll();
-                }, 500);
             },
             deletePhoneNumber(index){
                 this.form.phone_number.splice(index,1);
@@ -204,9 +200,6 @@ import { dateInputMaskAll, cellPhoneInputMaskAll, phoneInputMaskAll, flashErrors
                 }else{
                     this.form.cell_phone_number.push(null);
                 }
-                setTimeout(() => {
-                    cellPhoneInputMaskAll();
-                }, 500);
             },
             deleteCellPhoneNumber(index){
                 this.form.cell_phone_number.splice(index,1);
