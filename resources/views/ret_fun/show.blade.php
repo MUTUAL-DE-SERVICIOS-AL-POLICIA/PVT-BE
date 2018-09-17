@@ -112,12 +112,18 @@
                     title="Imprimir Dictamen Legal"
                     ret-fun-id="{{ $retirement_fund->id }}"
                     url-print="{{ route('ret_fun_print_legal_dictum', $retirement_fund->id)}}"
+                    message="true"
                 >
                 </ret-fun-certification-button>
             @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 28)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Revisi&oacute;n de Jefatura" onclick="printJS({printable:'{!! route('ret_fun_print_headship_review', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            <ret-fun-certification-button
+                    title="Imprimir Revisi&oacute;n de Jefatura"
+                    ret-fun-id="{{ $retirement_fund->id }}"
+                    url-print="{{ route('ret_fun_print_headship_review', $retirement_fund->id)}}"
+                >
+                </ret-fun-certification-button>
             @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 29)
@@ -125,6 +131,7 @@
                     title="Imprimir Resoluci&oacute;n Legal"
                     ret-fun-id="{{ $retirement_fund->id }}"
                     url-print="{{ route('ret_fun_print_legal_resolution', $retirement_fund->id) }}"
+                    message="true"
                 >
                 </ret-fun-certification-button>
             @endif
