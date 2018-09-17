@@ -227,6 +227,13 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('inbox_invalidate_doc/{doc_id}', 'InboxController@invalidateDoc')->name('inbox_validate_doc');
 
 
+		Route::get('print/resolution_notification', function ()
+		{
+			$data = [];
+			return \PDF::loadView('ret_fun.print.resolution_notification', $data)
+				->setOption('encoding', 'utf-8')
+				->stream("resolutionNotification.pdf");
+		})->name('resolution_notification');
 			//dictamen legal routes
 		Route::get('ret_fun/{retirement_fund}/dictamen_legal', 'RetirementFundController@dictamenLegal')->name('ret_fun_dictamen_legal');		
 
@@ -341,6 +348,51 @@ Route::group(['middleware' => ['auth']], function () {
 			return view('print_global.report', $data);
 			return $filter->all();
 		})->name('print_pre_qualification');
+		Route::get('print/send-daa', function () {
+			$re = RetirementFund::where('wf_state_current_id', 23)->get();
+			$filter = $re->filter(function ($value, $key) {
+				return $value->tags->contains(1);
+			});
+
+			$size = sizeof($filter);
+
+			$area = WorkflowState::find(23)->first_shortened;
+			$user = Auth::user();
+			$date = Util::getDateFormat(Carbon::now());
+			$year = Carbon::now()->year;
+			$institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+			$direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+			$unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+			$title = "TRÁMITES BENEFICIOS ECONÓMICOS - FONDO DE RETIRO POLICIAL SOLIDARIO";
+
+			$retirement_funds = RetirementFund::where('wf_state_current_id',26)->where('inbox_state', true)->get();
+
+			$data = [
+				'area' => $area,
+				'user' => $user,
+				'date' => $date,
+				'retirement_funds' => $retirement_funds,
+				'year' => $year,
+				'size' => $size,
+
+				'title' => $title,
+				'institution' => $institution,
+				'direction' => $direction,
+				'unit' => $unit,
+			];
+			$pages[] = \View::make('print_global.send_daa', $data)->render();
+			$pdf = \App::make('snappy.pdf.wrapper');
+			$pdf->loadHTML($pages);
+			return $pdf->setOption('encoding', 'utf-8')
+				->setOption('margin-bottom', '15mm')
+				->setOrientation('landscape')
+				->setOption('footer-center', 'Pagina [page] de [toPage]')
+				->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+				->stream("pre-calificados.pdf");
+
+			return view('print_global.report', $data);
+			return $filter->all();
+		})->name('print_send_daa');
 	});
 });
 

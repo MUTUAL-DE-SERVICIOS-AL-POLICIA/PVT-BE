@@ -1491,7 +1491,7 @@ class RetirementFundCertificationController extends Controller
             'beneficiaries'    =>  $beneficiaries,
             'correlative'  =>  $number,
             'actual_city'  =>  Auth::user()->city->name,
-            'actual_date'  =>  Util::getStringDate(date('Y-m-d')),
+            'actual_date'  =>  Util::getStringDate($number->date),
             'user'  =>  $user,
             'person'    =>  $person,
             'law'   =>  $law,
@@ -1763,7 +1763,8 @@ class RetirementFundCertificationController extends Controller
         //return $conclusion;
 
 
-        $footerHtml = view()->make('ret_fun.print.legal_footer')->render();
+        $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        $footerHtml = view()->make('ret_fun.print.headship_footer', ['bar_code' => $bar_code])->render();
         $headerHtml = view()->make('ret_fun.print.legal_header')->render();
 
             $number = Util::getNextAreaCode($retirement_fund->id);
@@ -1776,7 +1777,7 @@ class RetirementFundCertificationController extends Controller
                 'correlative'  =>  $number,
                 'affiliate' =>  $affiliate,
                 'actual_city'  =>  Auth::user()->city->name,
-                'actual_date'  =>  Util::getStringDate(date('Y-m-d')),    
+                'actual_date'  =>  Util::getStringDate($number->date),    
                 'head'    =>  $head,
                 'past'   =>  $past,
                 'past_footer'   =>  $past_footer,
@@ -1799,8 +1800,8 @@ class RetirementFundCertificationController extends Controller
             ->setOption('encoding', 'utf-8')
             ->setOption('header-html', $headerHtml)
             ->setOption('footer-html', $footerHtml)
-            ->setOption('margin-top', 25)
-            ->setOption('margin-bottom', 10)
+            ->setOption('margin-top', 40)
+            ->setOption('margin-bottom', 15)
             ->stream("jefaturaRevision.pdf");
     }
     public function printLegalResolution($ret_fun_id){
@@ -2054,7 +2055,7 @@ class RetirementFundCertificationController extends Controller
             'ret_fun' => $retirement_fund,                        
             'affiliate' =>  $affiliate,
             'actual_city'  =>  Auth::user()->city->name,
-            'actual_date'  =>  Util::getStringDate(date('Y-m-d')), 
+            'actual_date'  =>  Util::getStringDate($number->date), 
             'body_finance'  =>  $body_finance,
             'reception' =>  $reception,
             'body_qualification'    =>  $body_qualification,
@@ -2072,7 +2073,7 @@ class RetirementFundCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->setOption('header-html', $headerHtml)
             ->setOption('margin-top', 40)
-            ->setOption('margin-bottom', 15)
+            ->setOption('margin-bottom', 30)
             ->stream("jefaturaRevision.pdf");
     }
     private function getFlagy($num, $pos)

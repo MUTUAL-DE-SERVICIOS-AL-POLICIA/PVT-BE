@@ -166,7 +166,7 @@ class Util
         $correlative->wf_state_id = $wf_state->id;
         $correlative->retirement_fund_id = $retirement_fund_id;
         $correlative->code = $role->correlative;
-        $correlative->date = Carbon::now();
+        $correlative->date = self::saveDay(Carbon::now());
         $correlative->user_id = self::getAuthUser()->id;
         $correlative->save();
 
@@ -672,6 +672,18 @@ class Util
     public static function formatMoneyWithLiteral($value)
     {
         return self::formatMoney($value, true) .' ('. self::convertir($value).' BOLIVIANOS)';
+    }
+    public static function saveDay($date)
+    {
+        if(Carbon::parse($date)->isWeekend() ){
+            if(Carbon::parse($date)->subDay(1)->isWeekend()){
+                $date = Carbon::parse($date)->subDay(2)->toDateString();
+            }else{
+                $date = Carbon::parse($date)->subDay(1)->toDateString();
+            }
+        }
+        return $date;
+
     }
 
 
