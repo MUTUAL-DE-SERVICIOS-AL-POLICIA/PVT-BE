@@ -2038,7 +2038,7 @@ class RetirementFundCertificationController extends Controller
         $number = Util::getNextAreaCode($retirement_fund->id);
 
         $user = User::find($number->user_id);
-        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN<br>ELABORADO POR: ".$user->username." </div>";
+        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN<br>EMITIDO POR: ".$user->username." </div>";
 
         //return $discount;
 
