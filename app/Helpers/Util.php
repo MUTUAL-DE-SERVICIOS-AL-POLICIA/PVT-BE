@@ -21,14 +21,14 @@ class Util
 {
     //cambia el formato de la fecha a cadena
     //input $string=YYYY/mm/dd
-    public static function getStringDate($string = "1800/01/01", $month_year=false){        
+    public static function getStringDate($string = "1800/01/01", $month_year=false){
         setlocale(LC_TIME, 'es_ES.utf8');        
         $date = DateTime::createFromFormat("Y-m-d", $string);
         if($date){
             if($month_year)
-            return strftime("%B/%Y",$date->getTimestamp());
+                return strftime("%B/%Y",$date->getTimestamp());
             else
-            return strftime("%d de %B de %Y",$date->getTimestamp());
+                return strftime("%d de %B de %Y",$date->getTimestamp());
         }
         else 
             return "sin fecha";
@@ -166,7 +166,7 @@ class Util
         $correlative->wf_state_id = $wf_state->id;
         $correlative->retirement_fund_id = $retirement_fund_id;
         $correlative->code = $role->correlative;
-        $correlative->date = self::saveDay(Carbon::now());
+        $correlative->date = self::saveDay(Carbon::now()->toDateString());
         $correlative->user_id = self::getAuthUser()->id;
         $correlative->save();
 
