@@ -200,6 +200,8 @@ class InboxController extends Controller
                     $ret_fun->inbox_state = true;
                     $ret_fun->user_id = Auth::user()->id;
 
+                    $correlative = Util::getNextAreaCode($ret_fun->id);
+
 
                     /* TODO
                      * adicionar fechas de revision calificacion etc.
@@ -211,7 +213,10 @@ class InboxController extends Controller
                         'errors' => $exception->getMessage(),
                     ], 422);
                 }
-                return response()->json($ret_fun, 200);
+                return response()->json([
+                    'ret_fun' => $ret_fun,
+                    'correlative' => $correlative,
+                ], 200);
             break;
         }
     }

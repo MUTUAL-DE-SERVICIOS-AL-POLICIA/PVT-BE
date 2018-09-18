@@ -19,6 +19,8 @@ const state ={
     },
     contributionTypes:[],
     id: null,
+    isValidated: false,
+    correlative: null,
 }
 const mutations = {
   setModality(state, object) {
@@ -98,7 +100,12 @@ const mutations = {
   },
   resetContributionTypes(state, array){
       state.contributionTypes = array;
-
+  },
+  setIsValidated(state, value){
+    state.isValidated = value;
+  },
+  setCorrelative(state, value){
+    state.correlative = value;
   }
 };
 const getters = {

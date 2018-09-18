@@ -20,6 +20,7 @@ use Muserpol\Models\Affiliate;
 use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunTemplate;
+use Muserpol\Helpers\Util;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -92,6 +93,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 		Route::resource('ret_fun_observation', 'RetirementFundObservationController');
 		Route::post('ret_fun/{ret_fun_id}/edit_requirements', 'RetirementFundController@editRequirements')->name('edit_requirements');
+		Route::get('ret_fun/{ret_fun_id}/correlative/{wf_state_id}', 'RetirementFundController@getCorrelative')->name('ret_fun_get_correlative');
 
 		//Retirement Fund Certification
 		Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
@@ -349,14 +351,9 @@ Route::group(['middleware' => ['auth']], function () {
 			return $filter->all();
 		})->name('print_pre_qualification');
 		Route::get('print/send-daa', function () {
-			$re = RetirementFund::where('wf_state_current_id', 23)->get();
-			$filter = $re->filter(function ($value, $key) {
-				return $value->tags->contains(1);
-			});
 
-			$size = sizeof($filter);
 
-			$area = WorkflowState::find(23)->first_shortened;
+			$area = WorkflowState::find(26)->first_shortened;
 			$user = Auth::user();
 			$date = Util::getDateFormat(Carbon::now());
 			$year = Carbon::now()->year;
@@ -365,6 +362,20 @@ Route::group(['middleware' => ['auth']], function () {
 			$unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
 			$title = "TRÁMITES BENEFICIOS ECONÓMICOS - FONDO DE RETIRO POLICIAL SOLIDARIO";
 
+// <<<<<<< HEAD
+			$retirement_funds = RetirementFund::leftJoin('ret_fun_correlatives', 'retirement_funds.id','=','ret_fun_correlatives.retirement_fund_id')
+			->where('retirement_funds.wf_state_current_id',26)
+			->where('retirement_funds.inbox_state', true)
+			->where('ret_fun_correlatives.wf_state_id', 26)
+			->select('retirement_funds.id','ret_fun_correlatives.code')
+			->groupBy('retirement_funds.id', 'ret_fun_correlatives.code')
+			->orderBy(DB::raw("split_part(ret_fun_correlatives.code, '/',1)::integer"))
+			->get()
+			;
+			
+			$retirement_funds = RetirementFund::whereIn('id',$retirement_funds)->get();
+
+// =======
 			//$retirement_funds = RetirementFund::where('wf_state_current_id',26)->where('inbox_state', true)->get();
 			$retirement_funds_i = RetirementFund::where('wf_state_current_id', 26)->where('inbox_state', true)
                 ->leftJoin('ret_fun_correlatives', 'retirement_funds.id', '=', 'ret_fun_correlatives.retirement_fund_id')
@@ -376,13 +387,13 @@ Route::group(['middleware' => ['auth']], function () {
                 ;
 			$retirement_funds = RetirementFund::whereIn('id', $retirement_funds_i)->orderBy('updated_at')->get();
 			
+// >>>>>>> origin/master
 			$data = [
 				'area' => $area,
 				'user' => $user,
 				'date' => $date,
 				'retirement_funds' => $retirement_funds,
 				'year' => $year,
-				'size' => $size,
 
 				'title' => $title,
 				'institution' => $institution,
@@ -402,6 +413,12 @@ Route::group(['middleware' => ['auth']], function () {
 			return view('print_global.report', $data);
 			return $filter->all();
 		})->name('print_send_daa');
+
+		Route::get('test', function ()
+		{
+			return Util::getNextAreaCode(102);
+
+		});
 	});
 });
 
