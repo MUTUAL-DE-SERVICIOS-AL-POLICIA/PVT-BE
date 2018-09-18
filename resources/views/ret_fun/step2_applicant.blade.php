@@ -8,7 +8,7 @@
                         <label class="col-sm-4 control-label">
                             Fecha de desvinculaci&oacute;n</label>
                         <div class="col-sm-8">
-                            <input type="text" name="date_derelict" v-model="date_derelict" data-month-year="true" class="form-control" v-validate.initial="'required|max_current_date_month_year'">
+                            <input type="text" name="date_derelict" v-model="date_derelict" v-month-year class="form-control" v-validate.initial="'required|max_current_date_month_year'">
                             <i v-show="errors.has('date_derelict')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('date_derelict')" class="text-danger">@{{ errors.first('date_derelict') }}</span>
                         </div>
@@ -19,7 +19,7 @@
                         <label class="col-sm-4 control-label">
                             Fecha de Fallecimiento</label>
                         <div class="col-sm-8">
-                            <input type="text" data-date="true" name="date_death" v-model="date_death" class="form-control" placeholder="DD/MM/YYYY" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
+                            <input type="text" v-date name="date_death" v-model="date_death" class="form-control" placeholder="DD/MM/YYYY" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
                             <i v-show="errors.has('date_death')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('date_death')" class="text-danger">@{{ errors.first('date_death') }}</span>
                         </div>
@@ -177,7 +177,7 @@
                                 <label class="control-label">Fecha de Nacimiento</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" data-date="true" class="form-control" v-model.trim="applicant_birth_date" name="applicant_birth_date">
+                                <input type="text" v-date class="form-control" v-model.trim="applicant_birth_date" name="applicant_birth_date">
                             </div>
                         </div>
                         <div class="col-md-6" :class="{'has-error': errors.has('applicant_gender') }">
@@ -209,7 +209,7 @@
                                     <div class="col-md-10">
                                         <div v-for="(phone,index) in applicant_phone_numbers">
                                             <div class="input-group">
-                                                <input type="text" name="applicant_phone_number[]" v-model.trim="phone.value" :key="index" class="form-control" data-phone="true">
+                                                <input type="text" name="applicant_phone_number[]" v-model.trim="phone.value" :key="index" class="form-control" v-phone>
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-danger" v-show="applicant_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                                 </span>
@@ -233,7 +233,7 @@
                                     <div class="col-md-10">
                                         <div v-for="(cell_phone,index) in applicant_cell_phone_numbers">
                                             <div class="input-group">
-                                                <input type="text" name="applicant_cell_phone_number[]" v-model.trim="cell_phone.value" :key="index" class="form-control" data-cell-phone="true">
+                                                <input type="text" name="applicant_cell_phone_number[]" v-model.trim="cell_phone.value" :key="index" class="form-control" v-cell-phone>
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-danger" v-show="applicant_cell_phone_numbers.length > 1" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                                 </span>
@@ -419,7 +419,7 @@
                                 <label class="control-label">Fecha de Poder</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" data-date="true" name="legal_guardian_date_authority" v-model.trim="legal_guardian_date_authority" class="form-control" v-validate.initial="'required|max_current_date'">
+                                <input type="text" v-date name="legal_guardian_date_authority" v-model.trim="legal_guardian_date_authority" class="form-control" v-validate.initial="'required|max_current_date'">
                                 <i v-show="errors.has('legal_guardian_date_authority')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('legal_guardian_date_authority')" class="text-danger">@{{ errors.first('legal_guardian_date_authority') }}</span>
                             </div>

@@ -188,6 +188,37 @@ Vue.filter('monthYear', function (value) {
   return moment(value).format("MM/Y");
 });
 
+
+
+// custom directives
+Vue.directive('phone', {
+  inserted: function (el) {
+    Inputmask("(9) 999-999").mask(el);
+  }
+});
+Vue.directive('cell-phone', {
+  inserted: function (el) {
+    Inputmask("(999)-99999").mask(el);
+  }
+});
+let dateInputMask = {
+  alias: "date",
+  inputFormat: "dd/mm/yyyy"
+}
+Vue.directive('date',{
+  inserted: function(el) {
+    Inputmask(dateInputMask).mask(el);
+  }
+})
+let dateMonthYearInputMask = {
+  alias: "mm/yyyy"
+}
+Vue.directive('month-year',{
+  inserted: function(el) {
+    Inputmask(dateMonthYearInputMask).mask(el);
+  }
+})
+
 //vue mask hdp
 import VueTheMask from 'vue-the-mask'
 Vue.use(VueTheMask)
@@ -300,6 +331,6 @@ Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.v
 
 const app = new Vue({
   el: '#app',
-	store
-    
+  store
+
 });

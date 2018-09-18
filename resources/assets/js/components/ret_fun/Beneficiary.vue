@@ -106,7 +106,7 @@
                     <label class="control-label">Fecha de Nacimiento</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" data-date="true" v-model.trim="beneficiary.birth_date" name="beneficiary_birth_date[]" class="form-control" :disabled="!editable">
+                    <input type="text" v-date v-model.trim="beneficiary.birth_date" name="beneficiary_birth_date[]" class="form-control" :disabled="!editable">
                 </div>
             </div>
             <div class="col-md-6">
@@ -135,7 +135,7 @@
                         <div class="col-md-10">
                             <div v-for="(phone,index) in beneficiary.phone_number" :key="'phone-'+index">
                                 <div class="input-group">
-                                    <input type="text" name="beneficiary_phone_number[]" v-model.trim="beneficiary.phone_number[index]" :key="index" class="form-control" data-phone="true" :disabled="!editable">
+                                    <input type="text" name="beneficiary_phone_number[]" v-model.trim="beneficiary.phone_number[index]" :key="index" class="form-control" v-phone :disabled="!editable">
                                     <span class="input-group-btn" v-if="editable">
                                         <button class="btn btn-danger" v-show="beneficiary.phone_number.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                     </span>
@@ -157,7 +157,7 @@
                         <div class="col-md-10">
                             <div v-for="(cell_phone,index) in beneficiary.cell_phone_number" :key="`cellphone-${index}`">
                                 <div class="input-group">
-                                    <input type="text" name="beneficiary_cell_phone_number[]" v-model.trim="beneficiary.cell_phone_number[index]" :key="index" class="form-control" data-cell-phone="true" :disabled="!editable">
+                                    <input type="text" name="beneficiary_cell_phone_number[]" v-model.trim="beneficiary.cell_phone_number[index]" :key="index" class="form-control" v-cell-phone :disabled="!editable">
                                     <span class="input-group-btn" v-if="editable">
                                         <button class="btn btn-danger" v-show="beneficiary.cell_phone_number.length > 1" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                     </span>
@@ -229,7 +229,7 @@
                     </div>
                     <div class="col-md-8">
                         <div class="input-group">
-                            <select name="beneficiary_legal_representative[]" v-model="beneficiary.legal_representative" class="form-control" :disabled="!editable" @change="changeLegalRepresentatives()">
+                            <select name="beneficiary_legal_representative[]" v-model="beneficiary.legal_representative" class="form-control" :disabled="!editable">
                                 <option :value="null"></option>
                                 <option v-for="lr in legalRepresentatives" :value="lr.id" :key="`lg-${lr.id}`">{{lr.name}}</option>
                             </select>
@@ -340,7 +340,7 @@
                             <label class="control-label">Fecha de Nacimiento</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" data-date="true" class="form-control" v-model.trim="beneficiary.advisor_birth_date" name="beneficiary_advisor_birth_date[]" :disabled="!editable">
+                            <input type="text" v-date class="form-control" v-model.trim="beneficiary.advisor_birth_date" name="beneficiary_advisor_birth_date[]" :disabled="!editable">
                         </div>
                     </div>
                     <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_advisor_gender[]') }">
@@ -434,7 +434,7 @@
                             <label class="control-label">Fecha de Resolucion</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" data-date="true" name="beneficiary_advisor_resolution_date[]" v-model.trim="beneficiary.advisor_resolution_date" class="form-control" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'" :disabled="!editable">
+                            <input type="text" v-date name="beneficiary_advisor_resolution_date[]" v-model.trim="beneficiary.advisor_resolution_date" class="form-control" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'" :disabled="!editable">
                             <i v-show="errors.has('beneficiary_advisor_resolution_date[]')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('beneficiary_advisor_resolution_date[]')" class="text-danger">{{ errors.first('beneficiary_advisor_resolution_date[]') }}</span>
                         </div>
@@ -586,7 +586,7 @@
                             <label class="control-label">Fecha de Poder</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" data-date="true" name="beneficiary_legal_guardian_date_authority[]" v-model.trim="beneficiary.legal_guardian_date_authority" class="form-control" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'" :disabled="!editable">
+                            <input type="text" v-date name="beneficiary_legal_guardian_date_authority[]" v-model.trim="beneficiary.legal_guardian_date_authority" class="form-control" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'" :disabled="!editable">
                             <i v-show="errors.has('beneficiary_legal_guardian_date_authority[]')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('beneficiary_legal_guardian_date_authority[]')" class="text-danger">{{ errors.first('beneficiary_legal_guardian_date_authority[]') }}</span>
                         </div>
@@ -598,7 +598,7 @@
 
 </template>
 <script>
-import { getGender, cellPhoneInputMaskAll, phoneInputMaskAll, dateInputMaskAll } from '../../helper.js'
+import { getGender } from '../../helper.js'
 export default {
   props: ["kinships", "cities", "beneficiary", "editable", "removable","solicitante", "index"],
   data() {
@@ -616,9 +616,7 @@ export default {
   },
   mounted() {
     //this.$refs.identity_card.focus();
-    phoneInputMaskAll();
-    cellPhoneInputMaskAll();
-    dateInputMaskAll();
+    // dateInputMaskAll();
   },
   methods: {
     addPhoneNumber(){
@@ -630,9 +628,6 @@ export default {
       }else{
           this.beneficiary.phone_number.push(null);
       }
-      setTimeout(() => {
-        phoneInputMaskAll();
-      }, 500);
     },
     deletePhoneNumber(index){
       this.beneficiary.phone_number.splice(index,1);
@@ -647,10 +642,7 @@ export default {
         }
       }else{
           this.beneficiary.cell_phone_number.push(null);
-      }
-      setTimeout(() => {
-        cellPhoneInputMaskAll();
-      }, 500);
+      };
     },
     deleteCellPhoneNumber(index){
       this.beneficiary.cell_phone_number.splice(index,1);
@@ -769,11 +761,6 @@ export default {
             console.log(error);
         });
     },
-    changeLegalRepresentatives(){
-        setTimeout(() => {
-            dateInputMaskAll();
-        }, 300);
-    }
   },
   computed:{
       beneficiaryAge(){          

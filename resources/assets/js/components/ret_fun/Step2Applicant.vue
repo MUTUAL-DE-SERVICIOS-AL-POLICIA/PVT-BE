@@ -1,6 +1,5 @@
 <script>
 import {mapGetters} from 'vuex';
-import { cellPhoneInputMaskAll, phoneInputMaskAll, monthYearInputMaskAll, dateInputMask, dateInputMaskAll }  from "../../helper.js";
 export default {
   props:[
     'cities',
@@ -65,9 +64,6 @@ export default {
     console.log(this.affiliate.date_derelict);
     this.addPhoneNumber();
     this.addCellPhoneNumber();
-    monthYearInputMaskAll();
-    dateInputMask();
-    dateInputMaskAll();
   },
   computed:{
     ...mapGetters('retFunForm',{
@@ -103,10 +99,6 @@ export default {
       }else{
           this.applicant_phone_numbers.push({value:null});
       }
-      setTimeout(() => {
-        phoneInputMaskAll();
-      }, 500);
-
     },
     deletePhoneNumber(index){
       this.applicant_phone_numbers.splice(index,1);
@@ -122,9 +114,6 @@ export default {
       }else{
           this.applicant_cell_phone_numbers.push({value:null});
       }
-      setTimeout(() => {
-        cellPhoneInputMaskAll();
-      }, 500);
     },
     deleteCellPhoneNumber(index){
       this.applicant_cell_phone_numbers.splice(index,1);
@@ -193,11 +182,6 @@ export default {
     },
     change_applicant: function() {
       // let modality_id_ = 
-      setTimeout(() => {
-        dateInputMaskAll();
-        cellPhoneInputMaskAll();
-        phoneInputMaskAll();
-      }, 500);
       let modality_id=this.retFun.modality_id;
       if(this.applicant_type  == '2'){
         this.show_advisor_form = !this.show_advisor_form;
