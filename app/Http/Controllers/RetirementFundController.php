@@ -1850,6 +1850,7 @@ class RetirementFundController extends Controller
             $ret_fun_correlative = RetFunCorrelative::where('retirement_fund_id', $ret_fun_id)->where('wf_state_id', $wf_state->id)->first();
             $ret_fun_correlative->note = $request->note;
             $ret_fun_correlative->save();
+            Log::info('note saved');
         }
         return $retirement_fund;
     }
@@ -1959,5 +1960,14 @@ class RetirementFundController extends Controller
             'correlarives'  =>  $correlatives,  //codigos de documentos de cada area
         ];
         return $data;
+    }
+    public function getCorrelative($ret_fun_id, $wf_state_id)
+    {
+        $correlative = RetFunCorrelative::where('retirement_fund_id', $ret_fun_id)->where('wf_state_id', $wf_state_id)->first();
+
+        if($correlative){
+            return $correlative;
+        }
+        return null;
     }
 }

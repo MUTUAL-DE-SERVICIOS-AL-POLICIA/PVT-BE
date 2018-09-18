@@ -327,6 +327,7 @@ Vue.component('contribution-aid-commitment',require('./components/contribution/A
 
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
+Vue.component('correlative', require('./components/utils/Correlative.vue'));
 
 
 const app = new Vue({

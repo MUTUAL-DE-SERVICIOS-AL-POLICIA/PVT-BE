@@ -142,11 +142,12 @@ class Util
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
     public static function getNextAreaCode($retirement_fund_id){
-        
         $wf_state = WorkflowState::where('module_id',3)->where('role_id', Session::get('rol_id'))->first();        
         $reprint = RetFunCorrelative::where('retirement_fund_id',$retirement_fund_id)->where('wf_state_id',$wf_state->id)->first();
-        if(isset($reprint->id))
+        if(isset($reprint->id)){
+            Log::info("reprint ret_fun_id: ". $retirement_fund_id);
             return $reprint;
+        }
         $year =  date('Y');
         $role = Role::find($wf_state->role_id);
         if($role->correlative == ""){
@@ -154,10 +155,12 @@ class Util
         }
         else{
             $data = explode('/', $role->correlative);
-            if(!isset($data[1]))
+            if(!isset($data[1])){
                 $role->correlative = "1/".$year;
-            else
+            }else{
                 $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+                Log::info("correlative created " . $role->correlative);
+            }
         }
         $role->save();
 
