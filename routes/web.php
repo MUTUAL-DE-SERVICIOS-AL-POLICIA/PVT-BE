@@ -373,7 +373,7 @@ Route::group(['middleware' => ['auth']], function () {
 			->get()
 			;
 			
-			$retirement_funds = RetirementFund::whereIn('id',$retirement_funds)->get();
+			// $retirement_funds = RetirementFund::whereIn('id',$retirement_funds)->get();
 
 // =======
 			//$retirement_funds = RetirementFund::where('wf_state_current_id',26)->where('inbox_state', true)->get();
