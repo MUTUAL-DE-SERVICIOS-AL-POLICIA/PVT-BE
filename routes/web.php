@@ -349,14 +349,9 @@ Route::group(['middleware' => ['auth']], function () {
 			return $filter->all();
 		})->name('print_pre_qualification');
 		Route::get('print/send-daa', function () {
-			$re = RetirementFund::where('wf_state_current_id', 23)->get();
-			$filter = $re->filter(function ($value, $key) {
-				return $value->tags->contains(1);
-			});
 
-			$size = sizeof($filter);
 
-			$area = WorkflowState::find(23)->first_shortened;
+			$area = WorkflowState::find(26)->first_shortened;
 			$user = Auth::user();
 			$date = Util::getDateFormat(Carbon::now());
 			$year = Carbon::now()->year;
@@ -365,7 +360,17 @@ Route::group(['middleware' => ['auth']], function () {
 			$unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
 			$title = "TRÁMITES BENEFICIOS ECONÓMICOS - FONDO DE RETIRO POLICIAL SOLIDARIO";
 
-			$retirement_funds = RetirementFund::where('wf_state_current_id',26)->where('inbox_state', true)->get();
+			$retirement_funds = RetirementFund::leftJoin('ret_fun_correlatives', 'retirement_funds.id','=','ret_fun_correlatives.retirement_fund_id')
+			->where('retirement_funds.wf_state_current_id',26)
+			->where('retirement_funds.inbox_state', true)
+			->where('ret_fun_correlatives.wf_state_id', 26)
+			->select('retirement_funds.id','ret_fun_correlatives.code')
+			->groupBy('retirement_funds.id', 'ret_fun_correlatives.code')
+			->orderBy(DB::raw("split_part(ret_fun_correlatives.code, '/',1)::integer"))
+			->get()
+			;
+			
+			$retirement_funds = RetirementFund::whereIn('id',$retirement_funds)->get();
 
 			$data = [
 				'area' => $area,
@@ -373,7 +378,6 @@ Route::group(['middleware' => ['auth']], function () {
 				'date' => $date,
 				'retirement_funds' => $retirement_funds,
 				'year' => $year,
-				'size' => $size,
 
 				'title' => $title,
 				'institution' => $institution,

@@ -78,7 +78,7 @@
                             <td class="uppercase px-5 text-right">{{ $r->getCorrelative(26) }}</td>
                             <td class="uppercase px-15 text-left">{{ $r->affiliate->degree->shortened }}</td>
                             <td class="uppercase px-15 text-right">{{ $r->affiliate->identity_card }}</td>
-                            <td class="uppercase px-15 text-left">{{ $r->affiliate->city_identity_card->first_shortened }}</td>
+                            <td class="uppercase px-15 text-left">{{ $r->affiliate->city_identity_card->first_shortened ?? null }}</td>
                             <td class="uppercase px-15 text-left">{{ $r->affiliate->fullName() }}</td>
                             <td class="uppercase px-15 text-left">{{ $r->procedure_modality->name }}</td>
                             <td class="uppercase px-15 text-left">{{ $r->city_end->name }}</td>
