@@ -306,13 +306,13 @@ class RetirementFundCertificationController extends Controller
 
         $subtitle = $number;
 
-        $title = $retirement_fund->procedure_modality->procedure_type->module->name;
+        $title = 'INFORMACIÓN GENERAL';
 
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
 
-        $pdftitle = "Calificacion";
+        $pdftitle = "Calificación - INFORMACIÓN GENERAL";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
         $data = [
@@ -383,11 +383,11 @@ class RetirementFundCertificationController extends Controller
 
         $subtitle = $number;
 
-        $title = $retirement_fund->procedure_modality->procedure_type->module->name;
+        $title = 'INFORMACIÓN TÉCNICA';
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
-        $pdftitle = "Calificacion";
+        $pdftitle = "Calificación - INFORMACIÓN TÉCNICA";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
@@ -709,10 +709,6 @@ class RetirementFundCertificationController extends Controller
         $retirement_fund = RetirementFund::find($id);
         $affiliate =$retirement_fund->affiliate;
 
-        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
-        if ($retirement_fund->total_ret_fun > 0) {
-            $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
-        }
         if ($affiliate->hasAvailability()) {
             if ($retirement_fund->total_availability > 0) {
                 $pages[] =\View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
@@ -721,9 +717,13 @@ class RetirementFundCertificationController extends Controller
             //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
             // }
         }
+        if ($retirement_fund->total_ret_fun > 0) {
+            $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
+        }
         if (!$affiliate->selectedContributions() > 0){
             $pages[] =\View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
         }
+        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf
@@ -1665,7 +1665,7 @@ class RetirementFundCertificationController extends Controller
 
         $conclusion   = "";
         $headship_review_id = 25;
-        $headship_review = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$file_id)->first();
+        $headship_review = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$headship_review_id)->first();
 
         $conclusion = "Se realizó la revisión de la documentación citada anteriormente, verificando su correcta emisión y contenido, en base al Dictamen Legal con 
         Cite: <strong> DBE/UFRPSCAM/AL-DL N°".$headship_review->code."</strong> de fecha <strong>".Util::getStringDate($headship_review->date)."</strong> se establece que";

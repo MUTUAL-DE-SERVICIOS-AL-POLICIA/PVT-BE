@@ -1709,7 +1709,7 @@ class RetirementFundController extends Controller
             $availability = ContributionType::find(10);
             $subtotal_availability = ($retirement_fund->subtotal_availability );
             $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield)/100;
-            $total_availability = $subtotal_availability + $total_annual_yield;
+            $total_availability =round(($subtotal_availability + $total_annual_yield),2);
             $total = $total + $total_availability;
 
             $spouse_id = ID::kinship()->conyuge;
