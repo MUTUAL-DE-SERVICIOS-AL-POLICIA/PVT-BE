@@ -99,14 +99,19 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
             <div class="pull-left">
-                <span class="badge" style="font-size:16px">Último Correlativo: {{ Util::getRol()->correlative }}</span>
-                @if(Muserpol\Helpers\Util::getRol()->id == 10)
+                <correlative ret-fun-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}"></correlative>
+            @if(Muserpol\Helpers\Util::getRol()->id == 10)
                     <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('ret_fun_print_reception', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 15)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
-            @endif                
+                <ret-fun-certification-button
+                    title="Imprimir Certificacion de Archivo"
+                    ret-fun-id="{{ $retirement_fund->id }}"
+                    url-print="{{ route('ret_fun_print_file', $affiliate->id) }}"
+                >
+                </ret-fun-certification-button>
+            @endif
             @if(Muserpol\Helpers\Util::getRol()->id == 14)
                 <ret-fun-certification-button
                     title="Imprimir Dictamen Legal"
@@ -118,7 +123,7 @@
             @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 28)
-            <ret-fun-certification-button
+                <ret-fun-certification-button
                     title="Imprimir Revisi&oacute;n de Jefatura"
                     ret-fun-id="{{ $retirement_fund->id }}"
                     url-print="{{ route('ret_fun_print_headship_review', $retirement_fund->id)}}"
@@ -141,15 +146,22 @@
             @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 11)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                <ret-fun-certification-button
+                    title="Imprimir Certificacion de Documentacion Presentada y Revisada"
+                    ret-fun-id="{{ $retirement_fund->id }}"
+                    url-print="{{ route('ret_fun_print_legal_review', $retirement_fund->id) }}"
+                >
+                </ret-fun-certification-button>
             @endif
-            @can('view', new Muserpol\Models\Contribution\Contribution)
-            <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
-                <button class="btn btn-primary btn-sm dim"  data-toggle="tooltip" data-placement="top" title="Clasificar Aportes">
-                <i class="fa fa-list-alt" style="font-size:15px"></i> Clasificar Aportes
-                </button>
-            </a>
-            @endcan
+            @if(Muserpol\Helpers\Util::getRol()->id == 12)
+                @can('view', new Muserpol\Models\Contribution\Contribution)
+                    <a  href="{{ url('ret_fun/'.$retirement_fund->id.'/selectcontributions')}}" >
+                        <button class="btn btn-primary btn-sm dim"  data-toggle="tooltip" data-placement="top" title="Clasificar Aportes">
+                        <i class="fa fa-list-alt" style="font-size:15px"></i> Clasificar Aportes
+                        </button>
+                    </a>
+                @endcan
+            @endif
             @can('qualify', $retirement_fund)
                 <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
                     <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
@@ -164,7 +176,7 @@
         </div>
         <div class="pull-right">
             @if ($can_validate)
-        <sweet-alert-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}" :doc-user-id="{{$retirement_fund->user_id}}" :auth-id="{{ $user->id}}"  >
+                <sweet-alert-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}" :doc-user-id="{{$retirement_fund->user_id}}" :auth-id="{{ $user->id}}"  >
                     <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                         <div v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
                             {{-- <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button> --}}

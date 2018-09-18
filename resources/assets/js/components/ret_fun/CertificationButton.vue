@@ -5,7 +5,9 @@
           data-placement="top"
           :title="title"
           :disabled="loading"
-          @click="modal()">
+          @click="modal()"
+          v-if="retFun.isValidated"
+          >
       <i v-if="loading" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
       <i v-else class="fa fa-print"></i>
       &nbsp;
@@ -13,6 +15,7 @@
   </button>
 </template>
 <script>
+import { mapGetters } from 'vuex';
     export default {
       props: ["title", "urlPrint", "retFunId", "message"],
       data(){
@@ -78,6 +81,11 @@
             }, 1000);
           }
         }
+      },
+      computed: {
+        ...mapGetters('retFunForm',{
+            retFun: 'getData'
+        }),
       }
     };
 </script>

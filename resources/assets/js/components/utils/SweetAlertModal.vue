@@ -1,6 +1,9 @@
 <script>
     export default {
       props:['docId', 'inboxState', 'docUserId','authId'],
+      mounted () {
+        this.$store.commit('retFunForm/setIsValidated',this.inboxState);
+      },
       data(){
         return{
           status: this.inboxState,
@@ -38,7 +41,9 @@
           }).then(result => {
             if (result.value) {
              this.status = true;
-             this.docUserIdLocal = result.value.user_id;
+             this.docUserIdLocal = result.value.ret_fun.user_id;
+             this.$store.commit('retFunForm/setCorrelative',result.value.correlative.code);
+             this.$store.commit('retFunForm/setIsValidated',result.value.ret_fun.inbox_state);
              this.$swal({
                type: 'success',
                title: 'El Trámite fue procesado correctamente.',
@@ -78,6 +83,7 @@
           }).then(result => {
             if (result.value) {
              this.status = false;
+             this.$store.commit('retFunForm/setIsValidated',result.value.inbox_state);
              this.$swal({
                type: 'success',
                title: 'El Trámite fue procesado correctamente.',

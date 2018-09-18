@@ -189,7 +189,8 @@ class RetirementFundCertificationController extends Controller
         $affiliate = Affiliate::find($id);
         $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->get()->last();
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 20)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -243,7 +244,8 @@ class RetirementFundCertificationController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 21)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -297,14 +299,6 @@ class RetirementFundCertificationController extends Controller
     public function printBeneficiariesQualification($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
-        $code = $retirement_fund->code;
-        $area = $next_area_code->wf_state->first_shortened;
-        $user = $next_area_code->user;
-        $date = Util::getDateFormat($next_area_code->date);
-        $number = $next_area_code->code;
-
-        $subtitle = $number;
 
         $title = 'INFORMACIÓN GENERAL';
 
@@ -314,6 +308,15 @@ class RetirementFundCertificationController extends Controller
 
         $pdftitle = "Calificación - INFORMACIÓN GENERAL";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $code = $retirement_fund->code;
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+
+        $subtitle = $number;
 
         $data = [
             'code' => $code,
@@ -340,14 +343,13 @@ class RetirementFundCertificationController extends Controller
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
         $affiliate = $retirement_fund->affiliate;
 
-        
         $next_area_code = Util::getNextAreaCode($retirement_fund->id);
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
         $date = Util::getDateFormat($next_area_code->date);
         $number = $next_area_code->code;
-        
+
         $subtitle = $number;
 
         $title = "SALARIO PROMEDIO COTIZABLE";
@@ -374,14 +376,6 @@ class RetirementFundCertificationController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
-        $code = $retirement_fund->code;
-        $area = $next_area_code->wf_state->first_shortened;
-        $user = $next_area_code->user;
-        $date = Util::getDateFormat($next_area_code->date);
-        $number = $next_area_code->code;
-
-        $subtitle = $number;
 
         $title = 'INFORMACIÓN TÉCNICA';
         $affiliate = $retirement_fund->affiliate;
@@ -477,6 +471,15 @@ class RetirementFundCertificationController extends Controller
         
         /*  / discount combinations*/
 
+        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $code = $retirement_fund->code;
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+
+        $subtitle = $number;
+
         $data = [
             'code' => $code,
             'area' => $area,
@@ -505,15 +508,6 @@ class RetirementFundCertificationController extends Controller
     public function printDataQualificationAvailability($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
-
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
-        $code = $retirement_fund->code;
-        $area = $next_area_code->wf_state->first_shortened;
-        $user = $next_area_code->user;
-        $date = Util::getDateFormat($next_area_code->date);
-        $number = $next_area_code->code;
-
-        $subtitle = $number;
 
         $current_procedure = Util::getRetFunCurrentProcedure();
         $title = "RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD";
@@ -600,6 +594,15 @@ class RetirementFundCertificationController extends Controller
         }
         /*  discount combinations*/
 
+        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $code = $retirement_fund->code;
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+
+        $subtitle = $number;
+
         $data = [
             'code' => $code,
             'area' => $area,
@@ -631,15 +634,6 @@ class RetirementFundCertificationController extends Controller
     public function printDataQualificationRetFunAvailability($id, $only_print = true)
     {
         $retirement_fund = RetirementFund::find($id);
-
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
-        $code = $retirement_fund->code;
-        $area = $next_area_code->wf_state->first_shortened;
-        $user = $next_area_code->user;
-        $date = Util::getDateFormat($next_area_code->date);
-        $number = $next_area_code->code;
-
-        $subtitle = $number;
 
         $title = "fondo de retiro y disponibilidad ";
         $affiliate = $retirement_fund->affiliate;
@@ -681,6 +675,15 @@ class RetirementFundCertificationController extends Controller
             }
         }
         /*  discount combinations*/
+
+        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $code = $retirement_fund->code;
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+
+        $subtitle = $number;
 
         $data = [
             'code' => $code,
@@ -1253,8 +1256,8 @@ class RetirementFundCertificationController extends Controller
                 ->stream("$namepdf");
     }
     public function printLegalDictum($id) {
-        
         $retirement_fund = RetirementFund::find($id);
+
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
         $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderByDesc('type')->orderBy('id')->get();        
         /** PERSON DATA */
@@ -1478,7 +1481,8 @@ class RetirementFundCertificationController extends Controller
         } 
 
         ///------EN  PAYMENT ------///
-        $number = Util::getNextAreaCode($retirement_fund->id);
+        // $number = Util::getNextAreaCode($retirement_fund->id);
+        $number= RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 25)->first();
 
 
         $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
@@ -1767,10 +1771,11 @@ class RetirementFundCertificationController extends Controller
         $footerHtml = view()->make('ret_fun.print.headship_footer', ['bar_code' => $bar_code])->render();
         $headerHtml = view()->make('ret_fun.print.legal_header')->render();
 
-            $number = Util::getNextAreaCode($retirement_fund->id);
-            
+            // $number = Util::getNextAreaCode($retirement_fund->id);
+            $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 24)->first();
+
             $user = User::find($number->user_id);
-            
+
             $data = [
                 'ret_fun' => $retirement_fund,
                 //'beneficiaries'    =>  $beneficiaries,
@@ -2035,7 +2040,8 @@ class RetirementFundCertificationController extends Controller
         $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>
         ";
 
-        $number = Util::getNextAreaCode($retirement_fund->id);
+        // $number = Util::getNextAreaCode($retirement_fund->id);
+        $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();
 
         $user = User::find($number->user_id);
         $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN<br>ELABORADO POR: ".$user->username." </div>";

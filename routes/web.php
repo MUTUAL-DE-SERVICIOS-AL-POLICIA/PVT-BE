@@ -20,6 +20,7 @@ use Muserpol\Models\Affiliate;
 use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunTemplate;
+use Muserpol\Helpers\Util;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -92,6 +93,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
 		Route::resource('ret_fun_observation', 'RetirementFundObservationController');
 		Route::post('ret_fun/{ret_fun_id}/edit_requirements', 'RetirementFundController@editRequirements')->name('edit_requirements');
+		Route::get('ret_fun/{ret_fun_id}/correlative/{wf_state_id}', 'RetirementFundController@getCorrelative')->name('ret_fun_get_correlative');
 
 		//Retirement Fund Certification
 		Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
@@ -411,6 +413,12 @@ Route::group(['middleware' => ['auth']], function () {
 			return view('print_global.report', $data);
 			return $filter->all();
 		})->name('print_send_daa');
+
+		Route::get('test', function ()
+		{
+			return Util::getNextAreaCode(102);
+
+		});
 	});
 });
 
