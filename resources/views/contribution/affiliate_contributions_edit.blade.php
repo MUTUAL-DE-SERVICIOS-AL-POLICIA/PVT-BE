@@ -425,7 +425,7 @@ function storeReimbursement(){
         success: function(result){
             $("#reim"+result.month_year).html(result.total);
             $("#main"+result.month_year).css('background-color', '#ffe6b3');
-            clearModal
+            this.clearModal();
         },
         error: function(xhr, status, error) {                        
             console.log(xhr.responseText);
@@ -483,7 +483,8 @@ function clearModal(){
     salary = $('#reim_salary').val('');
     category = $('#reim_category').val('');
     gain = $('#reim_gain').val('');    
-    total =  $('#reim_amount').val('');    
+    total =  $('#reim_amount').val('');
+    reim_seniority_bonus = $('#reim_seniority_bonus').val('');
 }
     $('#month').change(function(){
 
