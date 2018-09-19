@@ -1758,6 +1758,7 @@ class RetirementFundController extends Controller
                 array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
             }
         }
+        Util::getNextAreaCode($retirement_fund->id);
         Log::info("total disponibilidad: ".json_encode($retirement_fund));
         $data = [
             'has_availability' => $has_availability,
@@ -1819,6 +1820,8 @@ class RetirementFundController extends Controller
             $new_beneficiary->amount_total = $beneficiary['temp_amount_total'];
             $new_beneficiary->save();
         }
+        Util::getNextAreaCode($retirement_fund->id);
+        
         $data = [
 
         ];
