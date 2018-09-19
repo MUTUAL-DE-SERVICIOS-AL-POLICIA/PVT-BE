@@ -94,6 +94,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('ret_fun_observation', 'RetirementFundObservationController');
 		Route::post('ret_fun/{ret_fun_id}/edit_requirements', 'RetirementFundController@editRequirements')->name('edit_requirements');
 		Route::get('ret_fun/{ret_fun_id}/correlative/{wf_state_id}', 'RetirementFundController@getCorrelative')->name('ret_fun_get_correlative');
+		Route::get('ret_fun/{ret_fun_id}/info', 'RetirementFundController@info')->name('ret_fun_info');
 
 		//Retirement Fund Certification
 		Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');

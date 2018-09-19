@@ -165,7 +165,7 @@ class InboxController extends Controller
                     $wf_record->ret_fun_id = $ret_fun->id;
                     $wf_record->date = Carbon::now();
                     $wf_record->record_type_id = 2;
-                    $wf_record->message = "El usuario " . Auth::user()->username . " devolvio el trámite " . $ret_fun->code . " con nota: " . $request->message . ".";
+                    $wf_record->message = "El usuario " . Auth::user()->username . " devolvió el trámite " . $ret_fun->code . " con nota: " . $request->message . ".";
                     $wf_record->save();
                 }
                 break;
