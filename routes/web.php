@@ -370,29 +370,36 @@ Route::group(['middleware' => ['auth']], function () {
 			->select('retirement_funds.id','ret_fun_correlatives.code')
 			->groupBy('retirement_funds.id', 'ret_fun_correlatives.code')
 			->orderBy(DB::raw("split_part(ret_fun_correlatives.code, '/',1)::integer"))
-			->get()
+			->pluck('ret_fun_correlatives.code','retirement_funds.id' )->toArray()
 			;
+			// dd($retirement_funds);
+			// $retirement_funds = RetirementFund::whereIn('id', array_keys($retirement_funds))->get();
 			
-			// $retirement_funds = RetirementFund::whereIn('id',$retirement_funds)->get();
+			
+			//$retirement_funds = RetirementFund::whereIn('id',$retirement_funds)->get();
 
 // =======
 			//$retirement_funds = RetirementFund::where('wf_state_current_id',26)->where('inbox_state', true)->get();
-			$retirement_funds_i = RetirementFund::where('wf_state_current_id', 26)->where('inbox_state', true)
-                ->leftJoin('ret_fun_correlatives', 'retirement_funds.id', '=', 'ret_fun_correlatives.retirement_fund_id')
-                ->where('ret_fun_correlatives.wf_state_id', 25)
-                ->orderByDesc('ret_fun_correlatives.created_at')
-                ->select('retirement_funds.id')
-                ->get()
-                ->pluck('id')
-                ;
-			$retirement_funds = RetirementFund::whereIn('id', $retirement_funds_i)->orderBy('updated_at')->get();
+			// $retirement_funds_i = RetirementFund::where('wf_state_current_id', 26)->where('inbox_state', true)
+            //     ->leftJoin('ret_fun_correlatives', 'retirement_funds.id', '=', 'ret_fun_correlatives.retirement_fund_id')
+            //     ->where('ret_fun_correlatives.wf_state_id', 25)
+            //     ->orderByDesc('ret_fun_correlatives.created_at')
+            //     ->select('retirement_funds.id')
+            //     ->get()
+            //     ->pluck('id')
+            //     ;
+			$retirement_funds1 = [];
+			// RetirementFund::whereIn('id', array_keys($retirement_funds))->orderBy('updated_at')->get();
+foreach (array_keys($retirement_funds) as $value) {
+	array_push($retirement_funds1, RetirementFund::find($value));
+}
 			
 // >>>>>>> origin/master
 			$data = [
 				'area' => $area,
 				'user' => $user,
 				'date' => $date,
-				'retirement_funds' => $retirement_funds,
+				'retirement_funds' => $retirement_funds1,
 				'year' => $year,
 
 				'title' => $title,
