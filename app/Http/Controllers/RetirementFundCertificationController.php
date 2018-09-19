@@ -1361,7 +1361,7 @@ class RetirementFundCertificationController extends Controller
         $availability_number_contributions = Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$availability_code)->count();
 
         $end_contributions = [
-            '3'  =>  'destino a disponibilidad de la letra (reserva activa) '.($affiliate->gender=='M'?'de la':'del').' titular.',
+            '3'  =>  'destino a disponibilidad de la letra (reserva activa) '.($affiliate->gender=='M'?'del':'de la').' titular.',
             '4'  =>  'fallecimiento.',
             '5'  =>  'retiro.',
             '6'  =>  'retiro.',
