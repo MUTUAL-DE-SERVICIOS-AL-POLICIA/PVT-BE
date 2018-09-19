@@ -1259,9 +1259,9 @@ class RetirementFundCertificationController extends Controller
         $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderByDesc('type')->orderBy('id')->get();        
         /** PERSON DATA */
         $person = "";
-        $affiliate = Affiliate::find($retirement_fund->affiliate_id);        
+        $affiliate = Affiliate::find($retirement_fund->affiliate_id);                        
         $ret_fun_beneficiary = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
-
+        return $ret_fun_beneficiary->kinship();
         if(isset($ret_fun_beneficiary->id)) {
             $legal_guardian = RetFunLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();
             $person .= "Mediante Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N°".  $legal_guardian->number_authority ." de fecha ".$legal_guardian->date." emitido por ". $legal_guardian->notary." otorgado al Sr. ".Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened." representa legalmente al ";
