@@ -162,6 +162,14 @@
                     </a>
                 @endcan
             @endif
+            @if(Muserpol\Helpers\Util::getRol()->id == 13)
+                <ret-fun-certification-button
+                    title="Imprimir todos los documentos de Calificacion"
+                    ret-fun-id="{{ $retirement_fund->id }}"
+                    url-print="{{ route('ret_fun_print_all_qualification', $retirement_fund->id) }}"
+                >
+                </ret-fun-certification-button>
+            @endif
             @can('qualify', $retirement_fund)
                 <a href="{{route('ret_fun_qualification', $retirement_fund->id)}}">
                     <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
@@ -175,19 +183,25 @@
             @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
         </div>
         <div class="pull-right">
-            @if ($can_validate)
-                <sweet-alert-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}" :doc-user-id="{{$retirement_fund->user_id}}" :auth-id="{{ $user->id}}"  >
-                    <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
-                        <div v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
-                            {{-- <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button> --}}
-                            <button  class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
-                        </div>
-                        <div v-else key="two" data-toggle="tooltip" data-placement="top" title="Procesar Trámite">
-                            <button class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="confirmModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
-                        </div>
-                    </transition>
-                </sweet-alert-modal>
-            @endif
+            <div class="form-inline">
+                @if ($can_validate)
+                    <ret-fun-send-back-button
+                        :wf-sequence-back-list="{{ $wf_sequences_back }}"
+                        :doc-id="{{$retirement_fund->id}}"
+                        :wf-current-state-name="`{{$retirement_fund->wf_state->name}}`"
+                    ></ret-fun-send-back-button>
+                      <sweet-alert-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}" :doc-user-id="{{$retirement_fund->user_id}}" :auth-id="{{ $user->id}}"  >
+                          <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
+                              <div style="display:inline-block" v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
+                                  <button  class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
+                              </div>
+                              <div style="display:inline-block" v-else key="two" data-toggle="tooltip" data-placement="top" title="Procesar Trámite">
+                                  <button class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="confirmModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                              </div>
+                          </transition>
+                      </sweet-alert-modal>
+                  @endif
+            </div>
         </div>
     </div>
 </div>

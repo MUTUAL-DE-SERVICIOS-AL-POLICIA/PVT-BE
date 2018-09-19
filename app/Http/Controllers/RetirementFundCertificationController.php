@@ -130,7 +130,8 @@ class RetirementFundCertificationController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 2 ) ? "REQUISITOS DEL PAGO GLOBAL DE APORTES – " . mb_strtoupper($modality)  : "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . mb_strtoupper($modality);
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 19)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -936,7 +937,8 @@ class RetirementFundCertificationController extends Controller
         $subtitle ="Cuenta Individual";
 
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -995,7 +997,8 @@ class RetirementFundCertificationController extends Controller
         $title = "CERTIFICACIÓN DE APORTES EN DISPONIBILIDAD";
         $subtitle ="Cuenta Individual";
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -1060,7 +1063,8 @@ class RetirementFundCertificationController extends Controller
         $title = "CERTIFICACIÓN DE CUENTAS INDIVIDUALES ITEM 0";
         $subtitle = "Cuenta Individual";
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -1130,7 +1134,8 @@ class RetirementFundCertificationController extends Controller
         $title = "BATALLÓN DE SEGURIDAD FÍSICA PRIVADA";
         $subtitle ="Cuenta Individual";
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -1209,7 +1214,8 @@ class RetirementFundCertificationController extends Controller
         $title = "CERTIFICACIÓN";
         $subtitle ="Cuenta Individual";
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
