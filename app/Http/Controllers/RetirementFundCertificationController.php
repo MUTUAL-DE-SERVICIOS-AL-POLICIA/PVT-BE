@@ -1347,8 +1347,14 @@ class RetirementFundCertificationController extends Controller
         $finance = $discount->where('discount_type_id','1')->first();
         if(isset($finance->id) && $finance->pivot->amount > 0)        
             $body_file .= "si tiene expediente del referido titular por concepto de anticipo en el monto de <b>".Util::formatMoneyWithLiteral($finance->pivot->amount)."</b> conforme Resolución de la Comisión de Presentaciones N°".($finance->pivot->note_code??'Sin codigo')." de fecha ".Util::getStringDate(($finance->pivot->note_code_date??'')).".";
-        else 
-            $body_file .= "no tiene expediente del referido titular.";            
+        else {
+            $folder = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
+            if ($folder->count() > 0)
+                $body_file .= "si ";
+            else
+                $body_file .= "no ";
+            $body_file .= "tiene expediente del referido titular.";
+        }
         ///---ENDIFLE--////
 
         /////----FINANCE----///        
@@ -1360,7 +1366,12 @@ class RetirementFundCertificationController extends Controller
             $body_finance .= "si cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial en el monto de " .Util::formatMoneyWithLiteral(($finance->pivot->amount??0)).".";
         }
         else{
-            $body_finance .= "no cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial, sin embargo se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.";
+            $folder = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
+            if ($folder->count() > 0)
+                $body_finance .= "si ";
+            else
+                $body_finance .= "no ";
+            $body_finance .= "cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial, sin embargo se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.";
         }                          
         /////----END FINANCE---////
 
@@ -2086,7 +2097,7 @@ class RetirementFundCertificationController extends Controller
         $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();
 
         $user = User::find($number->user_id);
-        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN<br>EMITIDO POR: ".$user->username." </div>";
+        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN</div>";
 
         //return $discount;
 
