@@ -1330,7 +1330,15 @@ class RetirementFundCertificationController extends Controller
         if(isset($finance->id) && $finance->pivot->amount > 0)        
             $body_file .= "si tiene expediente del referido titular por concepto de anticipo en el monto de <b>".Util::formatMoneyWithLiteral($finance->pivot->amount)."</b> conforme Resolución de la Comisión de Presentaciones N°".($finance->pivot->note_code??'Sin codigo')." de fecha ".Util::getStringDate(($finance->pivot->note_code_date??'')).".";
         else 
-            $body_file .= "no tiene expediente del referido titular.";            
+        {
+            $folder = AffiliateFolder::where('affiliate_id',$affiliate->id)->get();
+            if($folder->count() > 0) {
+                $body_file .= "si ";    
+            } else {
+                $body_file .= "no ";
+            }
+            $body_file .= "tiene expediente del referido titular.";
+        }
         ///---ENDIFLE--////
 
         /////----FINANCE----///        
