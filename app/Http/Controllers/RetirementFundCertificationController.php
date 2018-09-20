@@ -729,17 +729,30 @@ class RetirementFundCertificationController extends Controller
         if ($retirement_fund->total_ret_fun > 0) {
             $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
         }
+        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+        if ($affiliate->hasAvailability()) {
+            if ($retirement_fund->total_availability > 0) {
+                $pages[] =\View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
+            }
+            // if ($retirement_fund->total > 0) {
+            //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
+            // }
+        }
+        if ($retirement_fund->total_ret_fun > 0) {
+            $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
+        }
+        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+
         if (!$affiliate->selectedContributions() > 0){
             $pages[] =\View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
         }
-        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf
             ->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '15mm')
             // ->setOption('footer-html', $footerHtml)
-            ->setOption('footer-right', 'Pagina [page] de [toPage]')
+            // ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
             ->stream("namepdf");
     }
