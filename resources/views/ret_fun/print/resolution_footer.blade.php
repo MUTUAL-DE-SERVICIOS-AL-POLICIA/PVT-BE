@@ -23,7 +23,7 @@
             </div>
             <div style="float:right; font-family:sans-serif; font-size:14px; text-align:right">
                 <span>PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL &nbsp;</span><br>
-                </span>ÁREA LEGAL - FONDO DE RETIRO POLICIAL SOLIDARIO&nbsp;</span>
+                </span>FONDO DE RETIRO POLICIAL SOLIDARIO&nbsp;</span>
             </div>
         </div>
     </div>

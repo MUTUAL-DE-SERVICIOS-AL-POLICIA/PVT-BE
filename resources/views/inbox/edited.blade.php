@@ -74,7 +74,7 @@
                                 <transition name="some" enter-active-class="animated bounceIn" leave-active-class="animated bounceOut" :duration="{ enter: 400, leave: 400 }" mode="out-in">
                                     <div v-if="docs > 0" key="send">
                                         {{-- backward  --}}
-                                        <div class="col-md-6 text-center">
+                                        {{-- <div class="col-md-6 text-center">
                                             <transition name="fade" enter-active-class="animated bounceInLeft" leave-active-class="animated bounceOutLeft">
                                                 <div class="input-group" >
                                                     <span class="input-group-btn">
@@ -87,9 +87,9 @@
                                                     </select>
                                                 </div>
                                             </transition>
-                                        </div>
+                                        </div> --}}
                                         {{-- forward --}}
-                                        <div class="col-md-6 text-center">
+                                        <div class="col-md-6 col-xs-offset-6  text-center">
                                                 <div class="input-group" >
                                                     <select name="" v-model="wfSequenceNext" id="" class="form-control">
                                                         <option :value="null"> Seleccione a donde derivará los Trámites </option>

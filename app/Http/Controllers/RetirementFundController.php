@@ -712,6 +712,16 @@ class RetirementFundController extends Controller
         if(isset($retirement_fund->id) && ($retirement_fund->procedure_modality_id ==4 || $retirement_fund->procedure_modality_id == 2))
             $is_editable = ID::getEditableId();
 
+
+        
+        $wf_sequences_back = DB::table("wf_states")
+            ->where("wf_states.module_id", "=", $module->id)
+            ->where('wf_states.sequence_number', '<', WorkflowState::find($retirement_fund->wf_state_current_id)->sequence_number)
+            ->select(
+                'wf_states.id as wf_state_id',
+                'wf_states.first_shortened as wf_state_name'
+            )
+            ->get();
         //return $data;
         //return $correlatives;
         $data = [
@@ -743,7 +753,8 @@ class RetirementFundController extends Controller
             'workflow_records' =>  $workflow_records,
             'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
-            'is_editable'  =>  $is_editable
+            'is_editable'  =>  $is_editable,
+            'wf_sequences_back'  =>  $wf_sequences_back
         ];
         // return $data;
 
@@ -1312,7 +1323,7 @@ class RetirementFundController extends Controller
     public function qualification($ret_fun_id)
     {
         $retirement_fund = RetirementFund::find($ret_fun_id);
-        $this->authorize('qualify', $retirement_fund);
+        // $this->authorize('qualify', $retirement_fund);
         $affiliate = $retirement_fund->affiliate;
         $current_procedure = RetFunProcedure::where('is_enabled','=', true)->first();
         if (! $current_procedure) {
@@ -1758,7 +1769,6 @@ class RetirementFundController extends Controller
                 array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
             }
         }
-        Util::getNextAreaCode($retirement_fund->id);
         Log::info("total disponibilidad: ".json_encode($retirement_fund));
         $data = [
             'has_availability' => $has_availability,
@@ -1820,7 +1830,6 @@ class RetirementFundController extends Controller
             $new_beneficiary->amount_total = $beneficiary['temp_amount_total'];
             $new_beneficiary->save();
         }
-        Util::getNextAreaCode($retirement_fund->id);
         
         $data = [
 
@@ -1970,6 +1979,14 @@ class RetirementFundController extends Controller
 
         if($correlative){
             return $correlative;
+        }
+        return null;
+    }
+    public function info($ret_fund_id)
+    {
+        if($ret_fund_id) {
+            $ret_fun = RetirementFund::find($ret_fund_id);
+            return $ret_fun;
         }
         return null;
     }
