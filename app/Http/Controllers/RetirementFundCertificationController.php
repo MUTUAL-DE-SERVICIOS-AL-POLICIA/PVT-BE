@@ -380,7 +380,8 @@ class RetirementFundCertificationController extends Controller
         $retirement_fund = RetirementFund::find($id);
 
 
-        $title = 'INFORMACIÓN TÉCNICA';
+        // $title = 'INFORMACIÓN TÉCNICA';
+        $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
