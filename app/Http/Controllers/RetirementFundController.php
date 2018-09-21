@@ -722,8 +722,59 @@ class RetirementFundController extends Controller
                 'wf_states.first_shortened as wf_state_name'
             )
             ->get();
-        //return $data;
-        //return $correlatives;
+        
+
+        //summary individuals account
+        $group_dates = [];
+        $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
+        $dates = array(
+            'id' => 0,
+            'dates' => $affiliate->getDatesGlobal(),
+            'name' => "Alta y Baja de la Policía Nacional Boliviana",
+            'operator' => '**',
+            'description' => "Fechas de Alta y Baja de la Policía Nacional Boliviana",
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12,
+        );
+        $group_dates[] = $dates;
+        foreach (ContributionType::orderBy('id')->get() as $c) {
+            // if($c->id != 1){
+            $contributionsWithType = $affiliate->getContributionsWithType($c->id);
+            if (sizeOf($contributionsWithType) > 0) {
+                $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+                $dates = array(
+                    'id' => $c->id,
+                    'dates' => $affiliate->getContributionsWithType($c->id),
+                    'name' => $c->name,
+                    'operator' => $c->operator,
+                    'description' => $c->description,
+                    'years' => intval($sub_total_dates / 12),
+                    'months' => $sub_total_dates % 12,
+                );
+                if ($c->operator == '-') {
+                    eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
+                }
+                $group_dates[] = $dates;
+            }
+            // }
+        }
+        $contributions = array(
+            'contribution_types' => $group_dates,
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12
+        );
+
+        $contributions_select = $affiliate->contributions()
+        ->select('id', 'month_year', 'retirement_fund', 'total', 'breakdown_id', 'contribution_type_id')->orderbyDesc('month_year')->get();
+
+        // foreach ($contributions_select as $c) {
+        //     $c->contribution_type_id = Util::classificationContribution($c->contribution_type_id, $c->breakdown_id, $c->total);
+        // }
+        $contribution_types = ContributionType::select('id', 'name')->orderBy('id')->get();
+        $date_entry = $affiliate->date_entry;
+        $date_derelict = $affiliate->date_derelict;
+
+
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -754,7 +805,12 @@ class RetirementFundController extends Controller
             'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
             'is_editable'  =>  $is_editable,
-            'wf_sequences_back'  =>  $wf_sequences_back
+            'wf_sequences_back'  =>  $wf_sequences_back,
+            'all_contributions' => json_encode($contributions),
+            'contributions_select' => $contributions_select,
+            'contribution_types' => $contribution_types,
+            'date_entry' => Util::parseMonthYearDate($date_entry),
+            'date_derelict' => Util::parseMonthYearDate($date_derelict),
         ];
         // return $data;
 
