@@ -361,7 +361,8 @@ class ContributionController extends Controller
             type"
             )
             ->union($reimbursements)
-            ->orderBy('month_year','desc')
+            ->orderBy('month_year')
+            ->orderBy('type')
             ->get()
             ;
         $query = $contributions;
@@ -951,6 +952,7 @@ class ContributionController extends Controller
         $ret_fun->save();
         Log::info('saved subtotal availability: '. $subtotal_availability);
         $contribution_types = ContributionType::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_id')->distinct()->get()->pluck('contribution_type_id'))->orderBy('sequence')->select('name','id')->get();
+        Util::getNextAreaCode($ret_fun->id);
         foreach($contribution_types as $index =>$c){
             switch ($c->id) {
                 case 2:

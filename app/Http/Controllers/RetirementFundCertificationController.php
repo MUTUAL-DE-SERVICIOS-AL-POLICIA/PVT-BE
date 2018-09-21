@@ -130,7 +130,8 @@ class RetirementFundCertificationController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 2 ) ? "REQUISITOS DEL PAGO GLOBAL DE APORTES – " . mb_strtoupper($modality)  : "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . mb_strtoupper($modality);
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 19)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -379,7 +380,8 @@ class RetirementFundCertificationController extends Controller
         $retirement_fund = RetirementFund::find($id);
 
 
-        $title = 'INFORMACIÓN TÉCNICA';
+        // $title = 'INFORMACIÓN TÉCNICA';
+        $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
@@ -728,17 +730,30 @@ class RetirementFundCertificationController extends Controller
         if ($retirement_fund->total_ret_fun > 0) {
             $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
         }
+        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+        if ($affiliate->hasAvailability()) {
+            if ($retirement_fund->total_availability > 0) {
+                $pages[] =\View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
+            }
+            // if ($retirement_fund->total > 0) {
+            //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
+            // }
+        }
+        if ($retirement_fund->total_ret_fun > 0) {
+            $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
+        }
+        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+
         if (!$affiliate->selectedContributions() > 0){
             $pages[] =\View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
         }
-        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf
             ->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '15mm')
             // ->setOption('footer-html', $footerHtml)
-            ->setOption('footer-right', 'Pagina [page] de [toPage]')
+            // ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
             ->stream("namepdf");
     }
@@ -936,7 +951,8 @@ class RetirementFundCertificationController extends Controller
         $subtitle ="Cuenta Individual";
 
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -995,7 +1011,8 @@ class RetirementFundCertificationController extends Controller
         $title = "CERTIFICACIÓN DE APORTES EN DISPONIBILIDAD";
         $subtitle ="Cuenta Individual";
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -1060,7 +1077,8 @@ class RetirementFundCertificationController extends Controller
         $title = "CERTIFICACIÓN DE CUENTAS INDIVIDUALES ITEM 0";
         $subtitle = "Cuenta Individual";
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -1130,7 +1148,8 @@ class RetirementFundCertificationController extends Controller
         $title = "BATALLÓN DE SEGURIDAD FÍSICA PRIVADA";
         $subtitle ="Cuenta Individual";
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -1209,7 +1228,8 @@ class RetirementFundCertificationController extends Controller
         $title = "CERTIFICACIÓN";
         $subtitle ="Cuenta Individual";
 
-        $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
+        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
         $code = $retirement_fund->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
@@ -1269,8 +1289,7 @@ class RetirementFundCertificationController extends Controller
         $person = "";
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);                        
         $ret_fun_beneficiary = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
-        //return $ret_fun_beneficiary->kinship();
-        if($retirement_fund->procedure_modality_id)
+
 
         if(isset($ret_fun_beneficiary->id)) {
             $legal_guardian = RetFunLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();
@@ -1350,7 +1369,12 @@ class RetirementFundCertificationController extends Controller
             $body_finance .= "si cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial en el monto de " .Util::formatMoneyWithLiteral(($finance->pivot->amount??0)).".";
         }
         else{
-            $body_finance .= "no cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial, sin embargo se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.";
+            $folder = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
+            if ($folder->count() > 0)
+                $body_finance .= "si ";
+            else
+                $body_finance .= "no ";
+            $body_finance .= "cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial, sin embargo se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.";
         }                          
         /////----END FINANCE---////
 
@@ -2083,7 +2107,7 @@ class RetirementFundCertificationController extends Controller
         $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();
 
         $user = User::find($number->user_id);
-        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN<br>EMITIDO POR: ".$user->username." </div>";
+        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN</div>";
 
         //return $discount;
 
