@@ -1,6 +1,9 @@
 @extends('print_global.print') 
 @section('content')
 <div>
+    <div class="font-bold uppercase m-b-5 counter">
+        INFORMACIÓN TÉCNICA
+    </div>
     @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund, 'type'=>'availability'])
     <div class="block">
         <table class="table-info w-100 m-b-10">

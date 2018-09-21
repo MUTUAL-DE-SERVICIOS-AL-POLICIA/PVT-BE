@@ -380,7 +380,8 @@ class RetirementFundCertificationController extends Controller
         $retirement_fund = RetirementFund::find($id);
 
 
-        $title = 'INFORMACIÓN TÉCNICA';
+        // $title = 'INFORMACIÓN TÉCNICA';
+        $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
@@ -729,17 +730,30 @@ class RetirementFundCertificationController extends Controller
         if ($retirement_fund->total_ret_fun > 0) {
             $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
         }
+        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+        if ($affiliate->hasAvailability()) {
+            if ($retirement_fund->total_availability > 0) {
+                $pages[] =\View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
+            }
+            // if ($retirement_fund->total > 0) {
+            //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
+            // }
+        }
+        if ($retirement_fund->total_ret_fun > 0) {
+            $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
+        }
+        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+
         if (!$affiliate->selectedContributions() > 0){
             $pages[] =\View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
         }
-        $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf
             ->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '15mm')
             // ->setOption('footer-html', $footerHtml)
-            ->setOption('footer-right', 'Pagina [page] de [toPage]')
+            // ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
             ->stream("namepdf");
     }
@@ -1334,8 +1348,14 @@ class RetirementFundCertificationController extends Controller
         $finance = $discount->where('discount_type_id','1')->first();
         if(isset($finance->id) && $finance->pivot->amount > 0)        
             $body_file .= "si tiene expediente del referido titular por concepto de anticipo en el monto de <b>".Util::formatMoneyWithLiteral($finance->pivot->amount)."</b> conforme Resolución de la Comisión de Presentaciones N°".($finance->pivot->note_code??'Sin codigo')." de fecha ".Util::getStringDate(($finance->pivot->note_code_date??'')).".";
-        else 
-            $body_file .= "no tiene expediente del referido titular.";            
+        else {
+            $folder = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
+            if ($folder->count() > 0)
+                $body_file .= "si ";
+            else
+                $body_file .= "no ";
+            $body_file .= "tiene expediente del referido titular.";
+        }
         ///---ENDIFLE--////
 
         /////----FINANCE----///        
@@ -1347,7 +1367,12 @@ class RetirementFundCertificationController extends Controller
             $body_finance .= "si cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial en el monto de " .Util::formatMoneyWithLiteral(($finance->pivot->amount??0)).".";
         }
         else{
-            $body_finance .= "no cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial, sin embargo se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.";
+            $folder = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
+            if ($folder->count() > 0)
+                $body_finance .= "si ";
+            else
+                $body_finance .= "no ";
+            $body_finance .= "cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial, sin embargo se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.";
         }                          
         /////----END FINANCE---////
 
@@ -2073,7 +2098,7 @@ class RetirementFundCertificationController extends Controller
         $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();
 
         $user = User::find($number->user_id);
-        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN<br>EMITIDO POR: ".$user->username." </div>";
+        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN</div>";
 
         //return $discount;
 
