@@ -322,6 +322,21 @@
  
 @section('scripts')
 <script>
+    $('#reim_salary').keydown(function (e) {
+        if (e.which == 13 ) {
+            $('#reim_seniority_bonus').focus();
+        }
+    });
+    $('#reim_seniority_bonus').keydown(function (e) {
+        if (e.which == 13 ) {
+            $('#reim_gain').focus();
+        }
+    });
+    $('#reim_gain').keydown(function (e) {
+        if (e.which == 13 ) {
+            $('#reim_amount').focus();
+        }
+    });
     $('.numberformat').each(function(i, obj) {
             Inputmask(moneyInputMask()).mask(obj);        
     });    

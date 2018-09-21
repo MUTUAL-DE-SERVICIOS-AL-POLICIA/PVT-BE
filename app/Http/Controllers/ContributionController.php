@@ -361,7 +361,8 @@ class ContributionController extends Controller
             type"
             )
             ->union($reimbursements)
-            ->orderBy('month_year','desc')
+            ->orderBy('month_year')
+            ->orderBy('type')
             ->get()
             ;
         $query = $contributions;
