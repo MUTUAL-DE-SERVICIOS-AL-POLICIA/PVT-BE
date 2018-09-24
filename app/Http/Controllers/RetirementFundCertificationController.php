@@ -1414,7 +1414,7 @@ class RetirementFundCertificationController extends Controller
         $body_qualification .=  "Que, mediante Calificación de Fondo de Retiro Policial Solidario N° ".$qualification->code." del Área de Calificación de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de <strong>". Util::formatMonthYearLiteral($months)."</strong>, determinando el beneficio de <strong>Fondo de Retiro Policial Solidario por ".mb_strtoupper($retirement_fund->procedure_modality->name)."&nbsp;&nbsp;</strong>de<strong> ". Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun) ."</strong>".Util::getDiscountCombinations($retirement_fund->id);
         if($affiliate->hasAvailability()){
             $availability = Util::sumTotalContributions($affiliate->getDatesAvailability());
-            $body_qualification .= " Por concepto de reconocimiento de aportes laborales durante el periodo de disponibilidad de ".Util::formatMonthYearLiteral($availability) .', el cual no es considerado en la calificación del beneficio del Fondo de Retiro Policial Solidario, de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 - 2020, se determina el monto de '.Util::formatMoneyWithLiteral($retirement_fund->total_availability).'; haciendo un total de <strong>'.Util::formatMoneyWithLiteral($retirement_fund->total).'</strong>.';
+            $body_qualification .= " Por concepto de reconocimiento de aportes laborales durante el periodo de disponibilidad de ".Util::formatMonthYearLiteral($availability) .', el cual no es considerado en la calificación del beneficio del Fondo de Retiro Policial Solidario, de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 - 2020, se determina el monto de <strong>'.Util::formatMoneyWithLiteral($retirement_fund->total_availability).'</strong>; haciendo un total de <strong>'.Util::formatMoneyWithLiteral($retirement_fund->total).'</strong>.';
         }        
       
         ////----- DUE -----////
@@ -1423,7 +1423,7 @@ class RetirementFundCertificationController extends Controller
         //return $discount_counter;
         $body_due = "";
         if($discount_counter == 0) {
-            $body_due .="no cuenta con deuda en curso de pago a MUSERPOL, supra detallado.";
+            $body_due .="no cuenta con deuda en curso de pago a MUSERPOL.";
         } else {            
             // if($discount_counter == 1) {                                                        
                 $and = "";
@@ -1521,21 +1521,26 @@ class RetirementFundCertificationController extends Controller
         mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017. Se <b>DICTAMINA</b> en merito a la documentación de respaldo contenida en el presente, ";
                 
         $flagy = 0;
-        if($discounts->where('amount','>','0')->count()>0) {
+        $discounts = $retirement_fund->discount_types();
+        $discounts_number = $discounts->where('amount','>','0')->count();
+        if($discounts_number > 0) {
             $payment .= "proceder a realizar el descuento ";
             $discounts = $retirement_fund->discount_types();
             $discount = $discounts->where('discount_type_id','1')->first();        
-            if(isset($discount->id) && $discount->pivot->amount > 0){            
+            if(isset($discount->id) && $discount->pivot->amount > 0) {
+                $flagy++;
                 $payment.="de <b>Bs".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).")</b> por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);
             }
             
             $discounts = $retirement_fund->discount_types();
             $discount = $discounts->where('discount_type_id','2')->first();                           
-
-            if(isset($discount->id) && $discount->pivot->amount > 0){                
-                //return "here";
-                $payment .= $this->getFlagy(3,2)."<<<<";                
-                $payment.="de <b>Bs".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).")</b> por concepto de saldo de deuda con la MUSERPOL de conformidad al contrato de préstamo Nro. ".$discount->pivot->note_code." y nota ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date);
+            $discount_footer = false;
+            if(isset($discount->id) && $discount->pivot->amount > 0) {                                
+                $payment .= $this->getFlagy($discounts_number,$flagy);
+                $flagy++;
+                $discount_footer = true;
+                $payment.="de <b>Bs".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).")</b> por concepto de saldo de deuda con la MUSERPOL"; 
+                //de conformidad al contrato de préstamo Nro. ".$discount->pivot->note_code." y nota ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date);
             }
             //
             $discounts = $retirement_fund->discount_types();
@@ -1543,10 +1548,10 @@ class RetirementFundCertificationController extends Controller
             
             $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
 
-            if(isset($discount->id) && $discount->pivot->amount > 0) { 
-                $payment .= $this->getFlagy(3,1).">>>>>";
+            if(isset($discount->id) && $discount->pivot->amount > 0) {                 
+                $payment .= $this->getFlagy($discounts_number,$flagy);                
                 $payment.="total de <b>Bs".Util::formatMoney(($discount->pivot->amount??0))." (".Util::convertir(($discount->pivot->amount??0)).")</b> por concepto de garantía de préstamo, a favor ";
-            
+                $discount_footer = true;
                 $num_loans = $loans->count();
                 if($num_loans==1)
                     $payment .= " del señor ";
@@ -1565,7 +1570,11 @@ class RetirementFundCertificationController extends Controller
                     $payment.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
                     $payment.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
                 }
-                $payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones";
+                //$payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($discount->pivot->date) ." de la Dirección de Estrategias Sociales e Inversiones";
+            }
+            if($discount_footer) {
+                $payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($discount->pivot->date) ." de la Dirección de Estrategias Sociales e Inversiones";
+
             }
             $payment .= ". Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <strong class='uppercase'>".($retirement_fund->procedure_modality->name)."</strong> a favor de:<br><br>";
         } else {
@@ -2284,11 +2293,14 @@ class RetirementFundCertificationController extends Controller
     }
     private function getFlagy($num, $pos)
     {
-        if ($num == ($pos + 1))
-            return ", ";
-        if ($num == ($pos + 2))
-            return " y la suma de ";
-        return;
+        if($pos == 0) {
+            return;
+        }
+
+        if ($num == ($pos+1))
+            return " y la suma ";
+
+        return ", ";                
     }
 
 }
