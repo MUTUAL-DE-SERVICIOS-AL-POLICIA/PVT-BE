@@ -1708,20 +1708,27 @@ class RetirementFundCertificationController extends Controller
         if(isset($finance->id) && $finance->pivot->amount > 0)        
             $body_file .= "si tiene expediente del referido titular por concepto de anticipo en el monto de <b>".Util::formatMoneyWithLiteral($finance->pivot->amount)."</b> conforme Resolución de la Comisión de Presentaciones N°".($finance->pivot->note_code??'Sin codigo')." de fecha ".Util::getStringDate(($finance->pivot->note_code_date??'')).".";
         else 
-            $body_file .= "no tiene expediente del referido titular.";            
+        {
+            $folder = AffiliateFolder::where('affiliate_id',$affiliate->id)->get();
+            if($folder->count() > 0) {
+                $body_file .= "si ";    
+            } else {
+                $body_file .= "no ";
+            }
+            $body_file .= "tiene expediente del referido titular.";
+        }           
         ///---ENDIFLE--////
 
         /////----FINANCE----///        
         $discount = $retirement_fund->discount_types();
         $finance = $discount->where('discount_type_id','1')->first();
         $body_finance = "";
-        $body_finance = "Que, mediante nota de respuesta ".($finance->pivot->code ?? 'sin cite')." de la Dirección de Asuntos Administrativos de fecha ". Util::getStringDate(($finance->pivot->date??'')).", refiere que el titular del beneficio ";
+        $body_finance = "Que, mediante nota de respuesta ".($finance->pivot->code ?? 'sin cite')." de la Dirección de Asuntos Administrativos de fecha ". Util::getStringDate(($finance->pivot->date??'')).", refiere que ".($affiliate->gender=='M'?"el":"la")." titular del beneficio ";
         if(isset($finance->id) && $finance->amount > 0){
             $body_finance .= "si cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial en el monto de " .Util::formatMoneyWithLiteral(($finance->pivot->amount??0)).".";
-        }
-        else{
+        } else {            
             $body_finance .= "no cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial, sin embargo se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.";
-        }                          
+        }                           
         /////----END FINANCE---////
 
         ////-----LEGAL REVIEW ----////      
@@ -1757,40 +1764,97 @@ class RetirementFundCertificationController extends Controller
         $qualification_id = 23;
         $qualification = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$qualification_id)->first();
         $months  = $affiliate->getTotalQuotes();        
-        $body_qualification .=  "Que, mediante Calificación de Fondo de Retiro Policial Solidario N° ".$qualification->code." de Área de Calificación de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de <strong>". Util::formatMonthYearLiteral($months)."</strong>, determinando el beneficio de <strong>Fondo de Retiro Policial Solidario por ".$retirement_fund->procedure_modality->name."&nbsp;&nbsp;</strong>de<strong> ". Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun) ." </strong>".Util::getDiscountCombinations($retirement_fund->id).".";
+        $body_qualification .=  "Que, mediante Calificación de Fondo de Retiro Policial Solidario N° ".$qualification->code." del Área de Calificación de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de <strong>". Util::formatMonthYearLiteral($months)."</strong>, determinando el beneficio de <strong>Fondo de Retiro Policial Solidario por ".mb_strtoupper($retirement_fund->procedure_modality->name)."&nbsp;&nbsp;</strong>de<strong> ". Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun) ."</strong>".Util::getDiscountCombinations($retirement_fund->id);
         if($affiliate->hasAvailability()){
             $availability = Util::sumTotalContributions($affiliate->getDatesAvailability());
-            $body_qualification .= " Por concepto de reconocimiento de aportes laborales durante el periodo de disponibilidad de ".Util::formatMonthYearLiteral($availability) .', el cual no es considerado en la calificación del beneficio del Fondo de Retiro Policial Solidario, de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 - 2020, se determina el monto de '.Util::formatMoneyWithLiteral($retirement_fund->total_availability).'; haciendo un total de <strong>'.Util::formatMoneyWithLiteral($retirement_fund->total).'</strong>.';
-        }        
+            $body_qualification .= " Por concepto de reconocimiento de aportes laborales durante el periodo de disponibilidad de ".Util::formatMonthYearLiteral($availability) .', el cual no es considerado en la calificación del beneficio del Fondo de Retiro Policial Solidario, de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 - 2020, se determina el monto de <strong>'.Util::formatMoneyWithLiteral($retirement_fund->total_availability).'</strong>; haciendo un total de <strong>'.Util::formatMoneyWithLiteral($retirement_fund->total).'</strong>.';
+        }
       
         ////----- DUE -----////
-        
         $discounts = $retirement_fund->discount_types();
-        $discount = $discounts->where('discount_type_id','3')->first();
-        $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-        $body_due = "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", refiere que ".($affiliate->gender == 'M'?'el':'la')." titular no cuenta con deuda en curso de pago a MUSERPOL";                
-        $num_loans = $loans->count();        
-        if($num_loans > 0){
-            //$body_due .= " y por concepto de garantes adeuda a los señores ";
-            $body_due .= " y por concepto de garantes adeuda a ".($num_loans==1?"el señor":"los señores ");
-            $i=0;
-            foreach($loans as $loan){
-                $i++;
-                if($i!=1)
-                {
-                    if($num_loans-$i==0)
-                        $body_due .= " y ";
-                    else
-                        $body_due .= ", ";
+        $discount_counter = $discounts->where('discount_type_id','>','1')->where('amount','>','0')->count();
+        //return $discount_counter;
+        $body_due = "";
+        if($discount_counter == 0) {
+            $body_due .="no cuenta con deuda en curso de pago a MUSERPOL.";
+        } else {            
+            // if($discount_counter == 1) {                                                        
+                $and = "";
+                $discounts = $retirement_fund->discount_types();
+                $discount = $discounts->where('discount_type_id','2')->first();
+                if(isset($discount->id) && $discount->pivot->amount >0) {
+                    $body_due .= "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", 
+                    refiere que ".($affiliate->gender == 'M'?'el':'la')." titular ";
+                    $body_due .="si cuenta con deuda en curso de pago a MUSERPOL";
+                    $and = " y ";
+                }                
+                
+                $discounts = $retirement_fund->discount_types();
+                $discount = $discounts->where('discount_type_id','3')->first();
+                if(isset($discount->id) && $discount->pivot->amount >0) {                    
+                    if($and=="") {
+                    $body_due .= $and."Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", 
+                    refiere que ".($affiliate->gender == 'M'?'el':'la')." titular si cuenta con deuda";
+                    }
+                    $body_due .= $and." por concepto de garantía de préstamo";
+                    // $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
+                    // $num_loans = $loans->count(); 
+                    // $body_due .= "si cuenta con deuda por concepto de garantes adeuda a ".($num_loans==1?"el señor":"los señores ");                                        
+                    // if($num_loans > 0){            
+                    //     //$body_due .= " y por concepto de garantes adeuda a ".($num_loans==1?"el señor":"los señores ");
+                    //     $i=0;
+                    //     foreach($loans as $loan){
+                    //         $i++;
+                    //         if($i!=1)
+                    //         {
+                    //             if($num_loans-$i==0)
+                    //                 $body_due .= " y ";
+                    //             else
+                    //                 $body_due .= ", ";
+                    //         }
+                    //         $body_due.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card." en la suma de ".Util::formatMoneyWithLiteral($loan->amount);
+                    //     }
+                    //     $body_due .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro');
+                    // }
                 }
-                $body_due.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card." en la suma de ".Util::formatMoneyWithLiteral($loan->amount);
-            }
-            $body_due .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro').".";
-        }        
-        else {
-            $body_due .= " ni por concepto de garantes.";
+                $body_due .= ", supra detallado.";
+
+            // } else {
+                
+            // }
+            
         }
         
+        
+
+        
+
+        // $discounts = $retirement_fund->discount_types();
+        // $discount = $discounts->where('discount_type_id','3')->first();
+        // $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
+        
+        // $num_loans = $loans->count();        
+        // if($num_loans > 0){            
+        //     $body_due .= " y por concepto de garantes adeuda a ".($num_loans==1?"el señor":"los señores ");
+        //     $i=0;
+        //     foreach($loans as $loan){
+        //         $i++;
+        //         if($i!=1)
+        //         {
+        //             if($num_loans-$i==0)
+        //                 $body_due .= " y ";
+        //             else
+        //                 $body_due .= ", ";
+        //         }
+        //         $body_due.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card." en la suma de ".Util::formatMoneyWithLiteral($loan->amount);
+        //     }
+        //     $body_due .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro').".";
+        // }        
+        // else {
+        //     $body_due .= " ni por concepto de garantes.";
+        // }
+        
+        ///-----END DUE----///
 
 
         $conclusion   = "";
@@ -1809,52 +1873,66 @@ class RetirementFundCertificationController extends Controller
         requisitos de acuerdo a Reglamento y se le reconocen los derechos para otorgar el beneficio de <strong>Fondo de Retiro Policial Solidario</strong> por <strong> ".$retirement_fund->procedure_modality->name."</strong> por el periodo de&nbsp;<strong>". Util::formatMonthYearLiteral($months) ."</strong>, determinando el monto de <strong>".Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun)."</strong>, ";
         // descontando la deuda por concepto de garantes de <strong>Bs14.327,85 (CATORCE MIL TRESCIENTOS VEINTE SIETE 85/100 BOLIVIANOS)</strong>, a solicitud de la Dirección de Estrategias Sociales e Inversiones, reconocer el <strong>Fondo de Retiro Policial Solidario</strong> por <strong>Bs27.811,63 (VEINTISIETE MIL OCHOCIENTOS ONCE 63/100 BOLIVIANOS)</strong>, a favor de los derechohabientes según el siguiente detalle:";
         $flagy = 0;
-        if($discounts->where('amount','>','0')->count()>0) {
-            $conclusion .= "se procede a realizar el descuento ";
+        $discounts = $retirement_fund->discount_types();
+        $discounts_number = $discounts->where('amount','>','0')->count();
+        if($discounts_number > 0) {
+            $conclusion .= "proceder a realizar el descuento ";
             $discounts = $retirement_fund->discount_types();
             $discount = $discounts->where('discount_type_id','1')->first();        
-            
-            if(isset($discount->id) && $discount->pivot->amount > 0){                            
-                $conclusion.="<b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);
+            if(isset($discount->id) && $discount->pivot->amount > 0) {
+                $flagy++;
+                $conclusion.="de <b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);
             }
             
             $discounts = $retirement_fund->discount_types();
-            $discount = $discounts->where('discount_type_id','2')->first();   
-            if(isset($discount->id) && $discount->pivot->amount > 0){
-                $conclusion .= $this->getFlagy(3,2);                
-                $conclusion.="<b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> por concepto de saldo de deuda con la MUSERPOL de conformidad al contrato de préstamo Nro. ".$discount->code." y nota ".$discount->note_code." de fecha ".Util::getStringDate($discount->date);
+            $discount = $discounts->where('discount_type_id','2')->first();                           
+            $discount_footer = false;
+            if(isset($discount->id) && $discount->pivot->amount > 0) {                                
+                $conclusion .= $this->getFlagy($discounts_number,$flagy);
+                $flagy++;
+                $discount_footer = true;
+                $conclusion.="de <b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> por concepto de saldo de deuda con la MUSERPOL"; 
+                //de conformidad al contrato de préstamo Nro. ".$discount->pivot->note_code." y nota ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date);
             }
             //
             $discounts = $retirement_fund->discount_types();
             $discount = $discounts->where('discount_type_id','3')->first();
+            
             $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
 
-            if(isset($discount->id) && $discount->pivot->amount > 0) {
-                $conclusion .= $this->getFlagy(3,1);
-                $conclusion.="<b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> por concepto de garantía de préstamo a favor ";
-            }
-            $num_loans = $loans->count();
-            if($num_loans==1)
-                $conclusion .= " del señor ";
-            else
-                $conclusion .= " de los señores ";
-            $i=0;
-            foreach($loans as $loan){
-                $i++;
-                if($i!=1)
-                {
-                    if($num_loans-$i==0)
-                        $conclusion .= " y ";
-                    else
-                        $conclusion .= ", ";
+            if(isset($discount->id) && $discount->pivot->amount > 0) {                 
+                $conclusion .= $this->getFlagy($discounts_number,$flagy,"la suma ");                
+                $conclusion.="total de <b>".Util::formatMoneyWithLiteral(($discount->pivot->amount??0))."</b> por concepto de garantía de préstamo, a favor ";
+                $discount_footer = true;
+                $num_loans = $loans->count();
+                if($num_loans==1)
+                    $conclusion .= " del señor ";
+                else
+                    $conclusion .= " de los señores ";
+                $i=0;
+                foreach($loans as $loan){
+                    $i++;
+                    if($i!=1)
+                    {
+                        if($num_loans-$i==0)
+                            $conclusion .= " y ";
+                        else
+                            $conclusion .= ", ";
+                    }
+                    $conclusion.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
+                    $conclusion.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
                 }
-                $conclusion.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
-                $conclusion.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
+                //$payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($discount->pivot->date) ." de la Dirección de Estrategias Sociales e Inversiones";
             }
-            $conclusion .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones, reconociendose los derechos del beneficiario de Fondo de Retiro Policial Solidario por <strong class='uppercase'>".strtoupper($retirement_fund->procedure_modality->name)."</strong> a favor de:<br><br>";
+            if($discount_footer) {
+                $conclusion .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($discount->pivot->date) ." de la Dirección de Estrategias Sociales e Inversiones";
+
+            }
+            $conclusion .= ". Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <strong class='uppercase'>".($retirement_fund->procedure_modality->name)."</strong> a favor de:<br><br>";
         } else {
-            $conclusion .= ", reconociendose los derechos del beneficiario de Fondo de Retiro Policial Solidario por <strong class='uppercase'>".$retirement_fund->procedure_modality->name."</strong> a favor de: <br><br>";
+            $conclusion .= "reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <strong class='uppercase'>".$retirement_fund->procedure_modality->name."</strong> a favor de: <br><br>";
         }
+
 
         
 
