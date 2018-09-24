@@ -1545,7 +1545,7 @@ class RetirementFundCertificationController extends Controller
             $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
 
             if(isset($discount->id) && $discount->pivot->amount > 0) {                 
-                $payment .= $this->getFlagy($discounts_number,$flagy);                
+                $payment .= $this->getFlagy($discounts_number,$flagy,"la suma ");                
                 $payment.="total de <b>".Util::formatMoneyWithLiteral(($discount->pivot->amount??0))."</b> por concepto de garantía de préstamo, a favor ";
                 $discount_footer = true;
                 $num_loans = $loans->count();
@@ -2110,7 +2110,7 @@ class RetirementFundCertificationController extends Controller
                 $body_legal_dictum .= $this->getFlagy($discounts_number,$flagy);
                 $flagy++;
                 $body_legal_dictum .= "Que, la Dirección de Estrategias Sociales e Inversiones, emite Nota de Respuesta con Cite ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date).", refiriendo que ".($affiliate->gender=="M"?' el <strong>Sr. ':' la <strong>Sra. ').($affiliate->fullNameWithDegree())."</strong> con C.I. <strong>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</strong>, tiene una deuda pendiente con la MUSERPOL, por el monto ";
-                $body_legal_dictum.="de <b>Bs".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).")</b>";
+                $body_legal_dictum.="de <b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b>";
                 $header_discount = true;
             }
             //
@@ -2136,7 +2136,7 @@ class RetirementFundCertificationController extends Controller
                 if($num_loans==1)
                     $body_legal_dictum .= " con el (la) Garante: ";
                 else
-                    $body_legal_dictum .= " total con los Garantes: ";
+                    $body_legal_dictum .= " con los Garantes: ";
                 $i=0;                
                 foreach($loans as $loan){
                     $i++;
@@ -2255,14 +2255,7 @@ class RetirementFundCertificationController extends Controller
         $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();
 
         $user = User::find($number->user_id);
-        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN</div>";
-
-        //return $discount;
-
-        //if()
-        
-            
-        
+        $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN</div>";        
 
         $users_commission=User::where('is_commission', true)->get();
         $data = [
@@ -2293,14 +2286,14 @@ class RetirementFundCertificationController extends Controller
             ->setOption('margin-bottom', 30)
             ->stream("jefaturaRevision.pdf");
     }
-    private function getFlagy($num, $pos)
+    private function getFlagy($num, $pos, $text = "")
     {
         if($pos == 0) {
             return;
         }
 
         if ($num == ($pos+1))
-            return " y la suma ";
+            return " y ".$text;
 
         return ", ";                
     }
