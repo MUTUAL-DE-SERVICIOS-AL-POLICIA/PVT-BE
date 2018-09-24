@@ -386,9 +386,9 @@
                             </div>
                             <div id="tab-qualification" class="tab-pane">
 
-                                    @can('view',new Muserpol\Models\AffiliateFolder)
-                                        @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
-                                    @endcan
+                                    {{-- @can('view',new Muserpol\Models\AffiliateFolder) --}}
+                                        @include('ret_fun.summary_qualification', ['retirement_fund'=>$retirement_fund,'affiliate'=>$affiliate])
+                                    {{-- @endcan --}}
 
                             </div>
                             <div id="tab-folder" class="tab-pane">
