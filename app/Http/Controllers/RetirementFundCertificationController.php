@@ -2095,13 +2095,15 @@ class RetirementFundCertificationController extends Controller
         '.$retirement_fund->procedure_modality->name.'.<br><br>';
 
         
-
+        $flagy = 0;
         $discounts = $retirement_fund->discount_types();
-        if($discounts->where('amount','>','0')->count()>0) {
+        $discounts_number = $discounts->where('amount','>','0')->count();
+        if($discounts_number > 0) {
             $discounts = $retirement_fund->discount_types();
             $discount = $discounts->where('discount_type_id','1')->first();        
             if(isset($discount->id) && $discount->pivot->amount > 0){                            
                 $body_legal_dictum.="de <b>Bs".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).")</b> por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);
+                $flagy++;
             }
             
             $discounts = $retirement_fund->discount_types();
@@ -2109,22 +2111,26 @@ class RetirementFundCertificationController extends Controller
             $header_discount = false;
             if(isset($discount->id) && $discount->pivot->amount > 0){                
                 
-                $body_legal_dictum .= $this->getFlagy(3,2)."<<<<";
-                $body_legal_dictum .= "<br><br>Que, la Dirección de Estrategias Sociales e Inversiones, emite Nota de Respuesta con Cite ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date).", refiriendo que ".($affiliate->gender=="M"?' el <strong>Sr. ':' la <strong>Sra. ').($affiliate->fullNameWithDegree())."</strong> con C.I. <strong>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</strong>, tiene una deuda pendiente con la MUSERPOL, por el monto ";
+                $body_legal_dictum .= $this->getFlagy($discounts_number,$flagy);
+                $flagy++;
+                $body_legal_dictum .= "Que, la Dirección de Estrategias Sociales e Inversiones, emite Nota de Respuesta con Cite ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date).", refiriendo que ".($affiliate->gender=="M"?' el <strong>Sr. ':' la <strong>Sra. ').($affiliate->fullNameWithDegree())."</strong> con C.I. <strong>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</strong>, tiene una deuda pendiente con la MUSERPOL, por el monto ";
                 $body_legal_dictum.="de <b>Bs".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).")</b>";
                 $header_discount = true;
             }
             //
             $discounts = $retirement_fund->discount_types();
-            $discount = $discounts->where('discount_type_id','3')->first();
-            
-            $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
+            $discount = $discounts->where('discount_type_id','3')->first();                        
 
             if(isset($discount->id) && $discount->pivot->amount > 0) { 
+                $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
+                $body_legal_dictum .= $this->getFlagy($discounts_number,$flagy);
+                $flagy++;
+                $flagy++;
+
                 if(!$header_discount) {
-                    $body_legal_dictum .= "<br><br>Que, la Dirección de Estrategias Sociales e Inversiones, emite Nota de Respuesta con Cite ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date).", refiriendo que ".($affiliate->gender=="M"?' el <strong>Sr. ':' la <strong>Sra. ').($affiliate->fullNameWithDegree())."</strong> con C.I. <strong>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</strong>, tiene una deuda pendiente ";
+                    $body_legal_dictum .= "Que, la Dirección de Estrategias Sociales e Inversiones, emite Nota de Respuesta con Cite ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date).", refiriendo que ".($affiliate->gender=="M"?' el <strong>Sr. ':' la <strong>Sra. ').($affiliate->fullNameWithDegree())."</strong> con C.I. <strong>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</strong>, tiene una deuda pendiente ";
                 } else {
-                    $body_legal_dictum .= " y";
+                    $body_legal_dictum .= "";
                 }
 
                 //$body_legal_dictum .= $this->getFlagy(3,1).">>>>>";
@@ -2134,7 +2140,7 @@ class RetirementFundCertificationController extends Controller
                 if($num_loans==1)
                     $body_legal_dictum .= " con el (la) Garante: ";
                 else
-                    $body_legal_dictum .= " con los Garantes: ";
+                    $body_legal_dictum .= " total con los Garantes: ";
                 $i=0;                
                 foreach($loans as $loan){
                     $i++;
@@ -2187,24 +2193,24 @@ class RetirementFundCertificationController extends Controller
         $discount_sum = $discounts->where('discount_type_id','>','1')->sum('amount');        
         //return $discount_sum;
         $header_discount = false;
-        if($discount_sum > 0) 
-        {
-            $discounts = $retirement_fund->discount_types();
-            $discount = $discounts->where('discount_type_id','2')->first();
-            if(isset($discount->id) && $discount->pivot->amount > 0)
+        
+        $discounts = $retirement_fund->discount_types();
+        $discount = $discounts->where('discount_type_id','2')->first();
+        if(isset($discount->id) && $discount->pivot->amount > 0) {
             $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> A solicitud de la Dirección de Estrategias Sociales e Inversiones, retener por pago de deuda el monto de <strong>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</strong>, a favor de la MUSERPOL";
             $header_discount = true;
+        }
             //return $body_resolution;
-        }        
+                
 
         $discounts = $retirement_fund->discount_types();
         $discount = $discounts->where('discount_type_id','3')->first();
-        if(isset($discount) && $discount->pivot->amount >0) {
+        if(isset($discount->id) && $discount->pivot->amount >0) {
             
             $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();            
-            if(!$header_discount) {
+            if(!$header_discount) {                
                 $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> A solicitud de la Dirección de Estrategias Sociales e Inversiones, retener para pago ";// de los garantes: el monto de <b>".Util::formatMoneyWithLiteral(($discount->pivot->amount??0))."</b> por concepto de garantía de préstamo a favor de";// los señores. ".$discount->code." y nota ".$discount->note_code." de fecha ".$discount->date;               
-            } else {
+            } else {                
                 $body_resolution .= "; retener para pago ";
             }
             $num_loans = $loans->count();
