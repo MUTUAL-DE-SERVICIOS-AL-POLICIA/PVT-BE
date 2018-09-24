@@ -137,7 +137,7 @@
                 {extend: 'colvis', columnText: function ( dt, idx, title ) { return (idx+1)+': '+title; }},
                 { extend: 'copy'},
                 { extend: 'csv'},
-                { extend: 'excel', title: "{!! $affiliate->fullName() !!}"},
+                { extend: 'excel', title: "{!! $affiliate->fullName() !!}", exportOptions: { columns: ':visible' }},
             ],
             columns:[
                 {data: 'month_year_concat' },

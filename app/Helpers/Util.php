@@ -141,7 +141,7 @@ class Util
             return $default."/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
-    public static function getNextAreaCode($retirement_fund_id){
+    public static function getNextAreaCode($retirement_fund_id, $save = true){
         $wf_state = WorkflowState::where('module_id',3)->where('role_id', Session::get('rol_id'))->first();        
         $reprint = RetFunCorrelative::where('retirement_fund_id',$retirement_fund_id)->where('wf_state_id',$wf_state->id)->first();
         if(isset($reprint->id)){
@@ -162,7 +162,9 @@ class Util
                 Log::info("correlative created " . $role->correlative);
             }
         }
-        $role->save();
+        if ($save) {
+            $role->save();
+        }
 
         //Correlative 
         $correlative = new RetFunCorrelative();
@@ -171,7 +173,10 @@ class Util
         $correlative->code = $role->correlative;
         $correlative->date = self::saveDay(Carbon::now()->toDateString());
         $correlative->user_id = self::getAuthUser()->id;
-        $correlative->save();
+
+        if ($save) {
+            $correlative->save();
+        }
 
         return $correlative;
     }
