@@ -87,6 +87,12 @@
 @endif
 <br>
 <div>
+    <strong>Nota:</strong> Conforme a nota es remitida por la Dirección de Asuntos Administrativos según CITE: MUSERPOL/UT/N° 87/2018 de fecha
+    11.06.2018, NO EXISTEN TRANSFERENCIAS por concepto de ingresos del Batallon de Seguridad Física Privada de los periodos Enero
+    a Diciembre de 2002 y Diciembre de 2004.
+</div>
+<br>
+<div>
     <b>CONVENIO.-</b> Según Convenio el personal de Seguridad y Administrativo del Batallón de Seguridad Física Privada La Paz, efectuó un aporte laboral del 3% a la Mutual de Seguros del Policía "MUSEPOL", a partir de Junio del  2002.
 </div>
 <br>
