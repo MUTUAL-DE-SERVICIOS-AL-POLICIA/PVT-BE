@@ -1959,8 +1959,8 @@ class RetirementFundCertificationController extends Controller
             else{
                 $payment .= "Menor ";
             }
-            if($beneficiary->state)
-            $payment .= "Según información contenida en el Certificado de Descendencia presentado por la solicitante, mantener en reserva la cuota parte de: ";
+            //if($beneficiary->state)
+            //$payment .= "Según información contenida en el Certificado de Descendencia presentado por la solicitante, mantener en reserva la cuota parte de: ";
             $payment .= Util::fullName($beneficiary). " con CI. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened."., en el monto de <strong>".Util::formatMoneyWithLiteral($beneficiary->amount_total)."</strong>, en calidad de ".$beneficiary->kinship->name."." ;
 
             array_push($payments,$payment);
