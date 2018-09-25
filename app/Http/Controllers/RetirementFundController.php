@@ -53,7 +53,7 @@ class RetirementFundController extends Controller
      */
     public function index()
     {
-
+                
         $modalities =  ProcedureModality::all()->pluck('name');
         $cities =  City::all()->pluck('name');
         $wf_states =  WorkflowState::where('module_id', 3)->get()->pluck('first_shortened');
@@ -94,7 +94,7 @@ class RetirementFundController extends Controller
         $kinship = $request->beneficiary_kinship;
         $gender = $request->beneficiary_gender;
         $legal_representative = $request->beneficiary_legal_representative;
-        $account_type = $request->input('accountType');
+        $account_type = $request->input('accountType');        
         //*********START VALIDATOR************//
         $rules=[];
         $biz_rules = [];
@@ -160,10 +160,17 @@ class RetirementFundController extends Controller
             if($request->legal_guardian_last_name == '' && $request->legal_guardian_mothers_last_name=='')
                 $legal_has_lastname = true;
         }
+        $correct_role = false;
+        $wf_state = WorkflowState::where('module_id',3)->where('role_id',Util::getRol()->id)->first();
+        if(isset($wf_state->id)) {
+            $correct_role = true;
+        }
+
         $biz_rules = [
             'has_lastname'  =>  $has_lastname?'required':'',
             'legal_guardian_first_name' => $account_type==ID::applicant()->legal_guardian_id ? 'required' : '',
             'legal_has_lastname' => $legal_has_lastname ? 'required' : '',
+            'correct_role' => !$correct_role ? 'required' : '',
             //'legal_guardian_identity_card'  =>  $account_type==3 ? 'required' : '',
             //'legal_guardian_number_authority'   => $account_type==3 ? 'required' : '',
             //'legal_guardian_notary_of_public_faith' => $account_type==3 ? 'required' : '',
@@ -236,6 +243,7 @@ class RetirementFundController extends Controller
             $ret_fun_code = $this->getLastCode($ret_fund);
             $code = Util::getNextCode ($ret_fun_code);
         }
+        
 
         $retirement_fund = new RetirementFund();
         $this->authorize('create', $retirement_fund);
@@ -247,8 +255,8 @@ class RetirementFundController extends Controller
         $retirement_fund->city_end_id = $request->city_end_id;
         $retirement_fund->reception_date = Carbon::now();
         $retirement_fund->code = $code;
-        $retirement_fund->workflow_id = 4;
-        $retirement_fund->wf_state_current_id = 19;
+        $retirement_fund->workflow_id = 4;        
+        $retirement_fund->wf_state_current_id = $wf_state->id;
         //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal_ret_fun = 0;
         $retirement_fund->total_ret_fun = 0;
