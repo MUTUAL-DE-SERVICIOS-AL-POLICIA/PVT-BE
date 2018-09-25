@@ -316,7 +316,7 @@
                                     >
                                         @include('ret_fun.summary_individual_accounts')
                                     </ret-fun-qualification>
-                                    <summary-select-contributions
+                                    {{-- <summary-select-contributions
                                         :contributions="{{json_encode($contributions_select)}}"
                                         :retfunid="{{$retirement_fund->id}}"
                                         :contype="{{true}}"
@@ -385,7 +385,7 @@
                                             </div>
                                             
                                         </div>
-                                    </summary-select-contributions>
+                                    </summary-select-contributions> --}}
                                 @endcan
 
                             </div>
