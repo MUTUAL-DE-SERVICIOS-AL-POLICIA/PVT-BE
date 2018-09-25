@@ -285,6 +285,8 @@ Vue.component('ret-fun-certification-button', require('./components/ret_fun/Cert
 Vue.component('ret-fun-chart', require('./components/ret_fun/Chart.vue'));
 Vue.component('ret-fun-send-back-button', require('./components/ret_fun/SendBackButton.vue'));
 
+Vue.component('summary-select-contributions', require('./components/contribution/SummarySelectContributions.vue'));
+
 
 
 // inbox

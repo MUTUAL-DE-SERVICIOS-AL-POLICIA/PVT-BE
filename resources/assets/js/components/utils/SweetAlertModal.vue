@@ -7,13 +7,20 @@
       data(){
         return{
           status: this.inboxState,
-          docUserIdLocal: this.docUserId
+          docUserIdLocal: this.docUserId,
+          nextAreaCode: ''
         }
       },
       methods: {
-        confirmModal() {
-          this.$swal({
+        async confirmModal() {
+          await axios.get(`/get_next_area_code_ret_fun/${this.docId}`).then(response=>{
+            this.nextAreaCode = response.data.code;
+          }).catch(error => {
+            console.log(error);
+          })
+          await this.$swal({
             title: "¿Está seguro que revisó correctamente?",
+            html: '<span style="font-size: 18px">Se generara el siguiente correlativo <b>'+this.nextAreaCode+'</b></span>',
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#59B75C",

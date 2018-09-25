@@ -54,7 +54,15 @@ class RetirementFundController extends Controller
     public function index()
     {
 
-        return view('ret_fun.index');
+        $modalities =  ProcedureModality::all()->pluck('name');
+        $cities =  City::all()->pluck('name');
+        $wf_states =  WorkflowState::where('module_id', 3)->get()->pluck('first_shortened');
+        $data = [
+            'modalities' => $modalities,
+            'cities' => $cities,
+            'wf_states' => $wf_states,
+        ];
+        return view('ret_fun.index',$data);
 
     }
 
@@ -574,7 +582,9 @@ class RetirementFundController extends Controller
 //         return $body;
 // return "123";
 
-        $retirement_fund = RetirementFund::find($id);
+        $retirement_fund = RetirementFund::with(['discount_types' => function ($query) {
+            $query->orderBy('id');
+        }])->where('id', $id)->first();
 
         $this->authorize('view', $retirement_fund);
 
@@ -722,8 +732,107 @@ class RetirementFundController extends Controller
                 'wf_states.first_shortened as wf_state_name'
             )
             ->get();
-        //return $data;
-        //return $correlatives;
+        
+
+        //summary individuals account
+        $group_dates = [];
+        $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
+        $dates = array(
+            'id' => 0,
+            'dates' => $affiliate->getDatesGlobal(),
+            'name' => "Alta y Baja de la Policía Nacional Boliviana",
+            'operator' => '**',
+            'description' => "Fechas de Alta y Baja de la Policía Nacional Boliviana",
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12,
+        );
+        $group_dates[] = $dates;
+        foreach (ContributionType::orderBy('id')->get() as $c) {
+            // if($c->id != 1){
+            $contributionsWithType = $affiliate->getContributionsWithType($c->id);
+            if (sizeOf($contributionsWithType) > 0) {
+                $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+                $dates = array(
+                    'id' => $c->id,
+                    'dates' => $affiliate->getContributionsWithType($c->id),
+                    'name' => $c->name,
+                    'operator' => $c->operator,
+                    'description' => $c->description,
+                    'years' => intval($sub_total_dates / 12),
+                    'months' => $sub_total_dates % 12,
+                );
+                if ($c->operator == '-') {
+                    eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
+                }
+                $group_dates[] = $dates;
+            }
+            // }
+        }
+        $contributions = array(
+            'contribution_types' => $group_dates,
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12
+        );
+
+        $contributions_select = $affiliate->contributions()
+        ->select('id', 'month_year', 'retirement_fund', 'total', 'breakdown_id', 'contribution_type_id')->orderbyDesc('month_year')->get();
+
+        // foreach ($contributions_select as $c) {
+        //     $c->contribution_type_id = Util::classificationContribution($c->contribution_type_id, $c->breakdown_id, $c->total);
+        // }
+        $contribution_types = ContributionType::select('id', 'name')->orderBy('id')->get();
+        $date_entry = $affiliate->date_entry;
+        $date_derelict = $affiliate->date_derelict;
+
+
+        // summary qualification
+        $last_base_wage = $affiliate->getLastBaseWage();
+        $total_average_salary_quotable = $affiliate->selectedContributions() > 0 ? 0: $affiliate->getTotalAverageSalaryQuotable()['total_average_salary_quotable'];
+
+        $array_discounts = array();
+        $array = DiscountType::all()->pluck('id');
+        $results = array(array());
+        foreach ($array as $element) {
+            foreach ($results as $combination) {
+                array_push($results, array_merge(array($element), $combination));
+            }
+        }
+        foreach ($results as $value) {
+            $sw = false;
+            foreach ($value as $id) {
+                //siempre tendra id
+                if ($retirement_fund->discount_types()->find($id)) {
+                    if (($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
+                        $sw = true;
+                    }
+                }
+            }
+            if ($sw) {
+                $temp_total_discount = 0;
+                foreach ($value as $id) {
+                    $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
+                }
+                $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
+                array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+            }
+        }
+        if ($affiliate->hasAvailability()) {
+
+            $availability = ContributionType::find(10);
+            $array_discounts_availability = [];
+            foreach ($array_discounts as $value) {
+                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + ' . $availability->display_name . ' ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun + $retirement_fund->total_availability - $value['amount'])));
+            }
+
+        } else {
+            $array_discounts_availability = [];
+            foreach ($array_discounts as $value) {
+                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
+            }
+        }
+
+
+
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' =>  $affiliate,
@@ -754,7 +863,15 @@ class RetirementFundController extends Controller
             'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
             'is_editable'  =>  $is_editable,
-            'wf_sequences_back'  =>  $wf_sequences_back
+            'wf_sequences_back'  =>  $wf_sequences_back,
+            'all_contributions' => json_encode($contributions),
+            'contributions_select' => $contributions_select,
+            'contribution_types' => $contribution_types,
+            'date_entry' => Util::parseMonthYearDate($date_entry),
+            'date_derelict' => Util::parseMonthYearDate($date_derelict),
+            'last_base_wage' => $last_base_wage,
+            'total_average_salary_quotable' => $total_average_salary_quotable,
+            'array_discounts_availability' => $array_discounts_availability,
         ];
         // return $data;
 
@@ -799,80 +916,253 @@ class RetirementFundController extends Controller
         //
     }
 
-    public function getAllRetFun(Request $request)
+    public function getAllRetFun(DataTables $datatables)
+    // public function getAllRetFun(Request $request)
     {
 
-        $offset = $request->offset ?? 0;
-        $limit = $request->limit ?? 10;
-        $sort = $request->sort ?? 'id';
-        $order = $request->order ?? 'desc';
+        // $offset = $request->offset ?? 0;
+        // $limit = $request->limit ?? 10;
+        // $sort = $request->sort ?? 'id';
+        // $order = $request->order ?? 'desc';
 
-        $code = $request->code ?? '';
-        $last_name = strtoupper($request->last_name) ?? '';
-        $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
-        $surname_husband = strtoupper($request->surname_husband) ?? '';
-        $first_name = strtoupper($request->first_name) ?? '';
-        $second_name = strtoupper($request->second_name) ?? '';
-        $procedure= strtoupper($request->procedure) ?? '';
-        $modality = strtoupper($request->modality) ?? '';
-        $workflow= strtoupper($request->workflow) ?? '';
-        $state = strtoupper($request->state) ?? '';
+        // $code = $request->code ?? '';
+        // $last_name = strtoupper($request->last_name) ?? '';
+        // $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
+        // $surname_husband = strtoupper($request->surname_husband) ?? '';
+        // $first_name = strtoupper($request->first_name) ?? '';
+        // $second_name = strtoupper($request->second_name) ?? '';
+        // $procedure= strtoupper($request->procedure) ?? '';
+        // $modality = strtoupper($request->modality) ?? '';
+        // $workflow= strtoupper($request->workflow) ?? '';
+        // $state = strtoupper($request->state) ?? '';
 
-        $total = RetirementFund::select('retirement_funds.id')
-                                ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
-                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
-                                ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
-                                ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
-                                ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
-                                ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
-                                ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
-                                ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
-                                ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
-                                ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
-                                ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
-                                ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
-                                ->whereRaw("coalesce(ret_fun_states.name,'') LIKE '$state%'")
-                                ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
-                                ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
-                                ->count();
+        // $total = RetirementFund::select('retirement_funds.id')
+        //                         ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
+        //                         ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
+        //                         ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
+        //                         ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
+        //                         ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
+        //                         ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
+        //                         ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
+        //                         ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
+        //                         ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
+        //                         ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
+        //                         ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
+        //                         ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
+        //                         ->whereRaw("coalesce(ret_fun_states.name,'') LIKE '$state%'")
+        //                         ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
+        //                         ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
+        //                         ->count();
 
-        $ret_funds = RetirementFund::select(
-            'retirement_funds.id',
-            'retirement_funds.code',
-            'affiliates.last_name as last_name',
-            'affiliates.mothers_last_name as mothers_last_name',
-            'affiliates.surname_husband as surname_husband',
-            'affiliates.first_name as first_name',
-            'affiliates.second_name as second_name',
-            'procedure_modalities.name as modality',
-            'wf_states.first_shortened as workflow',
-            'retirement_funds.reception_date as reception_date',
-            'ret_fun_states.name as state',
-            'retirement_funds.total as total',
-            'procedure_types.name as procedure'
-        )
-                                ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
-                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
-                                ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
-                                ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
-                                ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
-                                ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
-                                ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
-                                ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
-                                ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
-                                ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
-                                ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
-                                ->whereRaw("coalesce(ret_fun_states.name,'') iLIKE '$state%'")
-                                ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
-                                ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
-                                ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
-                                ->skip($offset)
-                                ->take($limit)
-                                ->orderBy($sort,$order)
-                                ->get();
+        // $ret_funds = RetirementFund::select(
+        //     'retirement_funds.id',
+        //     'retirement_funds.code',
+        //     'affiliates.last_name as last_name',
+        //     'affiliates.mothers_last_name as mothers_last_name',
+        //     'affiliates.surname_husband as surname_husband',
+        //     'affiliates.first_name as first_name',
+        //     'affiliates.second_name as second_name',
+        //     'procedure_modalities.name as modality',
+        //     'wf_states.first_shortened as workflow',
+        //     'retirement_funds.reception_date as reception_date',
+        //     'ret_fun_states.name as state',
+        //     'retirement_funds.total as total',
+        //     'procedure_types.name as procedure'
+        // )
+        //                         ->leftJoin('affiliates','retirement_funds.affiliate_id','=','affiliates.id')
+        //                         ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
+        //                         ->leftJoin('wf_states','retirement_funds.wf_state_current_id','=','wf_states.id')
+        //                         ->leftJoin('ret_fun_states','retirement_funds.ret_fun_state_id','=','ret_fun_states.id')
+        //                         ->leftJoin('procedure_types','procedure_modalities.procedure_type_id','=','procedure_types.id')
+        //                         ->whereRaw("coalesce(retirement_funds.code, '') LIKE '$code%'")
+        //                         ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
+        //                         ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
+        //                         ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
+        //                         ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
+        //                         ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
+        //                         ->whereRaw("coalesce(ret_fun_states.name,'') iLIKE '$state%'")
+        //                         ->whereRaw("coalesce(upper(procedure_modalities.name),'') LIKE '$modality%'")
+        //                         ->whereRaw("coalesce(upper(wf_states.first_shortened),'') LIKE '$workflow%'")
+        //                         ->whereRaw("coalesce(procedure_types.name,'') iLIKE '$procedure%'")
+        //                         ->skip($offset)
+        //                         ->take($limit)
+        //                         ->orderBy($sort,$order)
+        //                         ->get();
 
 
-        return response()->json(['ret_funds' => $ret_funds->toArray(),'total'=>$total]);
+        // return response()->json(['ret_funds' => $ret_funds->toArray(),'total'=>$total]);
+        $retirement_funds = RetirementFund::with([
+            'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id',
+            'city_start:id,name,first_shortened',
+            'wf_state:id,name,first_shortened',
+            'procedure_modality:id,name,shortened,procedure_type_id',
+            'workflow:id,name',
+            'ret_fun_correlative',
+            ])->select(
+                'id',
+                'code',
+                'reception_date',
+                'total',
+                'affiliate_id',
+                'city_start_id',
+                'inbox_state',
+                'total',
+                'wf_state_current_id',
+                'procedure_modality_id',
+                'ret_fun_procedure_id',
+                'workflow_id'
+            )
+            ->where('code', 'not like', '%A')
+            ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+
+            ;
+        return $datatables->eloquent($retirement_funds)
+            ->addColumn('type', function ($ret_fun) {
+                return ProcedureType::find($ret_fun->procedure_modality->procedure_type_id)->name;
+            })
+            ->editColumn('inbox_state', function ($ret_fun) {
+                return $ret_fun->inbox_state ? 'Validado' : 'Pendiente';
+            })
+            ->editColumn('affiliate.city_identity_card_id', function ($ret_fun) {
+                $city = City::find($ret_fun->affiliate->city_identity_card_id);
+                return $city ? $city->first_shortened : null;
+            })
+            ->addColumn('file_code', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 20;
+                });
+                if(sizeof($filter) > 0){
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('file_date', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 20;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('review_code', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 21;
+                });
+                if(sizeof($filter) > 0){
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('review_date', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 21;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('individuals_account_code', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 22;
+                });
+                if(sizeof($filter) > 0){
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('individuals_account_date', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 22;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('qualification_code', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 23;
+                });
+                if(sizeof($filter) > 0){
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('qualification_date', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 23;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('dictum_code', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 25;
+                });
+                if(sizeof($filter) > 0){
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('dictum_date', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 25;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('headship_code', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 24;
+                });
+                if(sizeof($filter) > 0){
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('headship_date', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 24;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('resolution_code', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 26;
+                });
+                if(sizeof($filter) > 0){
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('resolution_date', function($ret_fun){
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 26;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('action', function($ret_fun){
+                return "<a href='/ret_fun/".$ret_fun->id."' class='btn btn-default'><i class='fa fa-eye'></i></a>";
+            })
+            ->make(true);
     }
 
     public function generateProcedure(Affiliate $affiliate){
@@ -1680,6 +1970,9 @@ class RetirementFundController extends Controller
             }
             $new_beneficiary->percentage = $beneficiary['temp_percentage'];
             $new_beneficiary->amount_ret_fun = $beneficiary['temp_amount'];
+            if(! $affiliate->hasAvailability()){
+                $new_beneficiary->amount_total = $beneficiary['temp_amount'];
+            }
             $new_beneficiary->save();
         }
         $availability = $affiliate->getContributionsWithType(10);
