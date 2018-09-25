@@ -427,6 +427,9 @@ foreach (array_keys($retirement_funds) as $value) {
 			return Util::getNextAreaCode(102);
 
 		});
+		Route::get('get_next_area_code_ret_fun/{ret_fun_id}', function ($retirement_fund_id) {
+			return Util::getNextAreaCode($retirement_fund_id, false);
+		});
 	});
 });
 
