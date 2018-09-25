@@ -116,4 +116,8 @@ class RetirementFund extends Model
     {
         return RetFunCorrelative::where('retirement_fund_id', $this->id)->where('wf_state_id', $area_id)->first()->code ?? 'SIN NÚMERO';
     }
+    public function info_loans()
+    {
+        return $this->hasMany('Muserpol\Models\InfoLoan');
+    }
 }
