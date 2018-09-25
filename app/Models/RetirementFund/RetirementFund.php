@@ -73,6 +73,10 @@ class RetirementFund extends Model
     {
         return $this->belongsToMany('Muserpol\Models\Contribution\ContributionType')->withPivot(['message'])->withTimestamps();
     }
+    public function ret_fun_correlative()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunCorrelative');
+    }
     public function getBasicInfoCode()
     {
         $code = $this->id." ".($this->affiliate->id ?? null) ."\n". "Trámite Nro: ".$this->code."\nModalidad: ".$this->procedure_modality->name."\nSolicitante: ".($this->ret_fun_beneficiaries()->where('type', 'S')->first()->fullName() ?? null);
@@ -83,6 +87,10 @@ class RetirementFund extends Model
     public function wf_state()
     {
         return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_state_current_id', 'id');
+    }
+    public function workflow()
+    {
+        return $this->belongsTo('Muserpol\Models\Workflow\Workflow');
     }
 
 
