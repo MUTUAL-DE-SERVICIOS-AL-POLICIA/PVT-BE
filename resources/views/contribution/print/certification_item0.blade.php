@@ -85,7 +85,7 @@
 </table>
 <br>
 <div>
-    <strong>Nota:</strong> Los datos señalados en el campo TOTAL GANADO, son montos referenciales, que de acuerdo a Reglamento vigente a fecha de cálculo corresponden al COTIZABLE sobre el que se determinaron los aportes.
+    <strong>Nota:</strong> Los datos señalados en el campo COTIZABLE, son montos referenciales, que de acuerdo a Reglamento vigente a fecha de cálculo corresponden al COTIZABLE sobre el que se determinaron los aportes.
 </div>
 <br>
 @if($retirement_fund->contribution_types()->where('contribution_type_id', 2)->first())

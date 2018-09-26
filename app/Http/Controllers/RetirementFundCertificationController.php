@@ -755,6 +755,7 @@ class RetirementFundCertificationController extends Controller
             // ->setOption('footer-html', $footerHtml)
             // ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            // ->setOption('user-style-sheet', 'css/app1.css')
             ->stream("namepdf");
     }
     public function printRetFunCommitmentLetter($id)
