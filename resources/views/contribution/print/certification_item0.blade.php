@@ -38,20 +38,18 @@
 
     <tbody> 
         @foreach($contributions as $contribution)     
-            @if($contribution->contribution_type_id == $itemcero->id)
+            {{-- @if($contribution->contribution_type_id == $itemcero->id) --}}
                 <tr class="text-sm">
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->base_wage) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->retirement_fund + $contribution->mortuary_quota) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->retirement_fund) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->mortuary_quota) }}</td>                        
-                    {{-- <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->ipc) }}</td> --}}
-                    {{-- {{-- con la bd devretfun --}}
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->interest }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->interest) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                 </tr> 
-                @foreach($reimbursements as $reimbursement)    
+                {{-- @foreach($reimbursements as $reimbursement)    
                     @if($contribution->month_year == $reimbursement->month_year)
                         <tr class="text-sm">
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
@@ -73,13 +71,11 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->retirement_fund) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->mortuary_quota) }}</td>                        
-                    {{-- <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->ipc) }}</td> --}}
-                    {{-- {{-- con la bd devretfun --}}
                         <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->interest) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                 </tr> 
                 
-            @endif
+            @endif --}}
         @endforeach
     </tbody>
 </table>

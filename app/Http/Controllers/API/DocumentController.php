@@ -94,6 +94,7 @@ class DocumentController extends Controller
                     ->leftJoin('procedure_modalities', 'retirement_funds.procedure_modality_id', '=', 'procedure_modalities.id')
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('retirement_funds.inbox_state', '=', false)
+                    ->where('retirement_funds.code', 'not like', '%A%')
                     ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
                     ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
                     ->get();
@@ -102,6 +103,7 @@ class DocumentController extends Controller
                     ->leftJoin('cities as ret_fun_cities', 'retirement_funds.city_end_id', '=', 'ret_fun_cities.id')
                     ->leftJoin('wf_states', 'retirement_funds.wf_state_current_id', '=', 'wf_states.id')
                     ->where('wf_states.role_id', '=', $rol_id)
+                    ->where('retirement_funds.code', 'not like', '%A%')
                     ->where('retirement_funds.inbox_state', '=', true)
                     ->where('retirement_funds.user_id', '=', $user_id)
                     ->get()->count();
@@ -214,6 +216,7 @@ class DocumentController extends Controller
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('retirement_funds.inbox_state', '=', true)
                     ->where('retirement_funds.user_id', '=', $user_id)
+                    ->where('retirement_funds.code', 'not like', '%A%')
                     ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
                     ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
                     ->get();
@@ -223,6 +226,7 @@ class DocumentController extends Controller
                     ->leftJoin('wf_states', 'retirement_funds.wf_state_current_id', '=', 'wf_states.id')
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('retirement_funds.inbox_state', '=', false)
+                    ->where('retirement_funds.code', 'not like', '%A%')
                     ->get()->count();
                 break;
             default:
