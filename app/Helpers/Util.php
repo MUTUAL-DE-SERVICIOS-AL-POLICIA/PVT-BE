@@ -559,7 +559,7 @@ class Util
         $name = str_replace(" -", ",", $name);
         if (sizeOf($array_discounts_text) > 0) {
             //$name = ', '. $name.", queda un saldo de <b>".self::formatMoney($array_discounts[sizeOf($array_discounts)-1]['amount'], true).' ('.self::convertir($array_discounts[sizeOf($array_discounts) - 1]['amount']) .' BOLIVIANOS)</b>.';            
-            $name = ', '. $name.", queda un saldo de <b>".self::formatMoney($retirement_fund->total_ret_fun).' ('.self::convertir($retirement_fund->total_ret_fun) .' BOLIVIANOS)</b>.';
+            $name = ', '. $name.", queda un saldo de <b>".self::formatMoneyWithLiteral($retirement_fund->total_ret_fun).'</b>.';
         }
         return $name;
     }
