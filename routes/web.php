@@ -311,7 +311,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('print/pre-qualification', function () {
 			$re = RetirementFund::where('wf_state_current_id', 23)->get();
 			$filter = $re->filter(function ($value, $key) {
-				return $value->tags->contains(1);
+				return $value->tags->contains(1) && $value->tags->contains(4);
 			});
 
 			$size = sizeof($filter);

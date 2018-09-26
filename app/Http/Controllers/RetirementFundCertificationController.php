@@ -1064,6 +1064,9 @@ class RetirementFundCertificationController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
+        $item_cero_ids = [2,3];
+        // $contributions = $affiliate->contributions()->whereIn('contribution_type_id', $item_cero_ids)->get();
+        dd($contributions);
         $itemcero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
         $itemcero_sin_aporte = ContributionType::where('name','=','Período en item 0 Sin Aporte')->first();
         $contributions = Contribution::where('affiliate_id', $affiliate->id)

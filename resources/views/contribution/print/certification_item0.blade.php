@@ -16,7 +16,7 @@
                 AÑO
             </td>        
             <td class="px-15 py text-center">
-                COTIZABLE
+                TOTAL GANADO
             </td>
             <td class="px-15 py text-center">
                 APORTE
@@ -46,9 +46,9 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->retirement_fund) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->mortuary_quota) }}</td>                        
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->ipc) }}</td>
-                    {{-- con la bd devretfun
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->interest }}</td>--}}
+                    {{-- <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->ipc) }}</td> --}}
+                    {{-- {{-- con la bd devretfun --}}
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->interest }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                 </tr> 
                 @foreach($reimbursements as $reimbursement)    
@@ -60,7 +60,7 @@
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->retirement_fund) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->mortuary_quota) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->ipc) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->interest) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>
                         </tr>
                     @endif        
@@ -73,9 +73,9 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->retirement_fund) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->mortuary_quota) }}</td>                        
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->ipc) }}</td>
-                    {{-- con la bd devretfun
-                        <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->interest) }}</td>--}}
+                    {{-- <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->ipc) }}</td> --}}
+                    {{-- {{-- con la bd devretfun --}}
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->interest) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                 </tr> 
                 
@@ -85,7 +85,7 @@
 </table>
 <br>
 <div>
-    <strong>Nota:</strong> Los datos señalados en el campo COTIZABLE, son montos referenciales, que de acuerdo a Reglamento vigente a fecha de cálculo corresponden al COTIZABLE sobre el que se determinaron los aportes.
+    <strong>Nota:</strong> Los datos señalados en el campo TOTAL GANADO, son montos referenciales, que de acuerdo a Reglamento vigente a fecha de cálculo corresponden al COTIZABLE sobre el que se determinaron los aportes.
 </div>
 <br>
 @if($retirement_fund->contribution_types()->where('contribution_type_id', 2)->first())
