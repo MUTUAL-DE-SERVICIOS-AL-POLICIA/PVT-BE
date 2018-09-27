@@ -755,6 +755,7 @@ class RetirementFundCertificationController extends Controller
             // ->setOption('footer-html', $footerHtml)
             // ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            // ->setOption('user-style-sheet', 'css/app1.css')
             ->stream("namepdf");
     }
     public function printRetFunCommitmentLetter($id)
@@ -1063,14 +1064,53 @@ class RetirementFundCertificationController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $itemcero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
-        $itemcero_sin_aporte = ContributionType::where('name','=','Período en item 0 Sin Aporte')->first();
-        $contributions = Contribution::where('affiliate_id', $affiliate->id)
-                        ->orderBy('month_year')
-                        ->get();
-        $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
-                        ->orderBy('month_year')
-                        ->get();
+        $item_cero_ids = [2,3];
+        $contributions =  $affiliate->contributions()->whereIn('contribution_type_id', $item_cero_ids)->get();
+        $month_years = $contributions->pluck('month_year');
+        $months = implode(",", array_map(function ($item) {
+            return "'".$item."'";
+        }, $month_years->toArray()));
+
+        $contributions = DB::select("
+        select * from
+        (
+            select
+                contributions.id,
+                contributions.affiliate_id,
+                contributions.month_year,
+                contributions.base_wage,
+                contributions.quotable,
+                contributions.subtotal,
+                contributions.retirement_fund,
+                contributions.mortuary_quota,
+                contributions.interest,
+                contributions.total
+            from contributions
+            where affiliate_id = ".$affiliate->id."
+            and deleted_at is null
+            and contribution_type_id in (2,3)
+            and month_year in (".$months.")
+            UNION
+            select
+                reimbursements.id,
+                reimbursements.affiliate_id,
+                reimbursements.month_year,
+                reimbursements.base_wage,
+                reimbursements.quotable,
+                reimbursements.subtotal,
+                reimbursements.retirement_fund,
+                reimbursements.mortuary_quota,
+                reimbursements.interest,
+                reimbursements.total
+            from reimbursements
+            where affiliate_id = ".$affiliate->id. "
+            and month_year in (" . $months . ")
+            and deleted_at is null
+        ) as contributions_reimbursements
+            ORDER BY month_year DESC");
+
+        $contributions = array_reverse($contributions);
+
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
@@ -1096,21 +1136,15 @@ class RetirementFundCertificationController extends Controller
 
         $subtitle = $next_area_code->code;
 
-        // $total = Util::formatMoney(Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$item0_type)->sum('total'));
         $data = [
             'code' => $code,
             'area' => $area,
             'user' => $user,
             'date' => $date,
             'number' => $number,
-
-            'itemcero'=>$itemcero,
-            'itemcero_sin_aporte'=>$itemcero_sin_aporte,
-            // 'total'=>$total,
             'subtitle'=>$subtitle,
             'place'=>$place,
             'retirement_fund'=>$retirement_fund,
-            'reimbursements'=>$reimbursements,
             'dateac'=>$dateac,
             'exp'=>$exp,
             'degree'=>$degree,

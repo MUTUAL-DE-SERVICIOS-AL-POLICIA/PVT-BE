@@ -311,7 +311,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('print/pre-qualification', function () {
 			$re = RetirementFund::where('wf_state_current_id', 23)->get();
 			$filter = $re->filter(function ($value, $key) {
-				return $value->tags->contains(1);
+				return $value->tags->contains(1) && $value->tags->contains(4);
 			});
 
 			$size = sizeof($filter);
@@ -368,6 +368,7 @@ Route::group(['middleware' => ['auth']], function () {
 			->where('retirement_funds.wf_state_current_id',26)
 			->where('retirement_funds.inbox_state', true)
 			->where('ret_fun_correlatives.wf_state_id', 26)
+			->where('retirement_funds.code', 'not like', '%A')
 			->select('retirement_funds.id','ret_fun_correlatives.code')
 			->groupBy('retirement_funds.id', 'ret_fun_correlatives.code')
 			->orderBy(DB::raw("split_part(ret_fun_correlatives.code, '/',1)::integer"))
