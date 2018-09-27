@@ -284,6 +284,7 @@ Vue.component('ret-fun-qualification-group', require('./components/ret_fun/Quali
 Vue.component('ret-fun-certification-button', require('./components/ret_fun/CertificationButton.vue'));
 Vue.component('ret-fun-chart', require('./components/ret_fun/Chart.vue'));
 Vue.component('ret-fun-send-back-button', require('./components/ret_fun/SendBackButton.vue'));
+Vue.component('ret-fun-report-form', require('./components/ret_fun/ReportForm.vue'));
 
 Vue.component('summary-select-contributions', require('./components/contribution/SummarySelectContributions.vue'));
 

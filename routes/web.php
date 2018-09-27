@@ -79,6 +79,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('affiliate/{affiliate}/ret_fun', 'RetirementFundRequirementController@retFun');
 		// Route::get('/home', 'HomeController@index')->name('home');
 		Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
+		Route::get('ret_fun/reports', 'RetFunReportController@index');
 		Route::resource('ret_fun', 'RetirementFundController');
 		Route::get('ret_fun/{ret_fun_id}/qualification', 'RetirementFundController@qualification')->name('ret_fun_qualification');
 		Route::get('ret_fun/{ret_fun_id}/get_average_quotable', 'RetirementFundController@getAverageQuotable');
