@@ -1366,7 +1366,7 @@ class RetirementFundController extends Controller
                             $ben_legal_guardian->gender = $new_ben['legal_guardian_gender'] ?? null;
                             $ben_legal_guardian->number_authority = $new_ben['legal_guardian_number_authority'] ?? null;
                             $ben_legal_guardian->notary_of_public_faith = $new_ben['legal_guardian_notary_of_public_faith'] ?? null;
-                            $ben_legal_guardian->notary = $new_ben['legal_guardian_notary_of_public_faith'] ?? null;
+                            $ben_legal_guardian->notary = $new_ben['legal_guardian_notary'] ?? null;
                             $ben_legal_guardian->date_authority = isset($new_ben['legal_guardian_date_authority']) ? (Util::verifyBarDate($new_ben['legal_guardian_date_authority']) ? Util::parseBarDate($new_ben['legal_guardian_date_authority']) : $new_ben['legal_guardian_date_authority']) : null;
                             $ben_legal_guardian->save();
                             if ($old_ben->legal_guardian->first()) {
