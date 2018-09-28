@@ -24,10 +24,45 @@
                         tabindex="4"
                         v-model="testimony.beneficiaries_list"
                         > -->
-                        <chosen-select v-model='testimony.beneficiaries_list' multiple>
-                            <option v-for="(beneficiary, index) in beneficiaries" :key="index" :value="beneficiary.id" >{{ beneficiary.identity_card }}</option>
-                        </chosen-select>
-                    <!-- :selected="verify(tag.id)" -->
+
+                        <!-- <select v-model='testimony.beneficiaries_list' multiple>
+                            <option v-for="(beneficiary, index) in beneficiaries"
+                                :key="index"
+                                :value="beneficiary.id"
+                             >{{ beneficiary.identity_card }}</option>
+                        </select> -->
+
+
+                        <multiselect
+                            v-model="testimony.beneficiaries_list"
+                            :options="options"
+                            :multiple="true"
+                            :close-on-select="false"
+                            :clear-on-select="false"
+                            :hide-selected="true"
+                            placeholder="Pick some"
+                            track-by="name"
+                            label="name"
+                            :preselect-first="true">
+                            <template
+                                slot="tag"
+                                slot-scope="props">
+                                <span class="custom__tag">
+                                    <span>{{ props.option.name }}</span>
+                                    <span
+                                        class="custom__remove"
+                                        @click="props.remove(props.option)"
+                                    >❌</span>
+                                </span>
+                            </template>
+                        </multiselect>
+
+                        <!-- <chosen-select v-model='testimony.beneficiaries_list' multiple>
+                            <option v-for="(beneficiary, index) in beneficiaries"
+                                :key="index"
+                                :value="beneficiary.id"
+                             >{{ beneficiary.identity_card }}</option>
+                        </chosen-select> -->
                 <!-- </select> -->
             </div>
         </div>
@@ -94,11 +129,38 @@
 </template>
 
     <script>
+    import Multiselect from 'vue-multiselect'
     export default {
-      props: ["testimony", "editable", "index", 'beneficiaries'],
+        components: {
+            Multiselect
+        },
+      props: ["testimony", "editable", "index", 'beneficiaries', 'beneficiariesSelected'],
+      mounted() {
+          this.testimony.beneficiaries_list = ['1031','1035']
+      },
+      data(){
+          return {
+              value: [{ name: 'Vue.js', },{ name: 'Sinatra', },],
+      options: [
+        { name: 'Vue.js', },
+        { name: 'Adonis', },
+        { name: 'Rails', },
+        { name: 'Sinatra', },
+        { name: 'Laravel', },
+        { name: 'Phoenix', }
+      ]
+          }
+      },
       methods: {
         remove() {
           this.$emit("remove");
+        },
+        verify(id) {
+            if (this.beneficiariesSelected.length > 0) {
+                console.log(id);
+                return this.beneficiariesSelected.some(i => i.id == id);
+            }
+            return false;
         }
       }
     };

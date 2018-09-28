@@ -1,9 +1,16 @@
 <template>
     <div class="col-lg-12">
         <div class="ibox">
+            <div class="ibox-title">
+              <h5>
+                Testimonios
+              </h5>
+              <div class="ibox-tools">
+                <button>Editar</button>
+              </div>
+            </div>
             <div class="ibox-content">
                 <div class="text-right">
-                    <button>Editar</button>
                 </div>
                 <BeneficiaryTestimony v-for="(testimony, index) in testimonies"
                                       :key="index"
@@ -11,6 +18,7 @@
                                       :testimony="testimony"
                                       :editable="editing"
                                       :beneficiaries="beneficiaries"
+                                      :beneficiaries-selected="testimony.ret_fun_beneficiaries"
                                       @remove="removeTestimony(index)"></BeneficiaryTestimony>
             </div>
                 <div class="row"
@@ -40,12 +48,16 @@
       components: {
         BeneficiaryTestimony
       },
-      props: ["beneficiaries", 'retFunId'],
+      props: ["beneficiaries", 'retFunId', 'testimoniesBackend'],
       data() {
         return {
-          testimonies: [],
+          testimonies: this.testimoniesBackend,
           editing: true
         };
+      },
+      mounted(){
+        console.log(this.testimoniesBackend);
+
       },
       methods: {
         addTestimony() {

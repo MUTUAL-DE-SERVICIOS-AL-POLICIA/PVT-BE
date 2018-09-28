@@ -833,14 +833,8 @@ class RetirementFundController extends Controller
             }
         }
 
-        $testimonies = [];
-        foreach ($beneficiaries as $key => $value) {
-            if($value->testimonies->count() > 0){
+        $testimonies = $affiliate->testimony()->with('ret_fun_beneficiaries')->get();
 
-                array_push($testimonies,$value->testimonies);
-            }
-        }
-        // dd($testimonies);
 
 
         $data = [
@@ -882,6 +876,7 @@ class RetirementFundController extends Controller
             'last_base_wage' => $last_base_wage,
             'total_average_salary_quotable' => $total_average_salary_quotable,
             'array_discounts_availability' => $array_discounts_availability,
+            'testimonies' => $testimonies,
         ];
         // return $data;
 
@@ -1607,6 +1602,8 @@ class RetirementFundController extends Controller
     }
     public function updateBeneficiaryTestimony(Request $request, $ret_fun_id)
     {
+        $ret_fun = RetirementFund::find($ret_fun_id);
+        $affiliate = $ret_fun->affiliate;
         Log::info($request->all());
         foreach ($request->all() as $key => $t) {
             // $found = Testimony::find($t['id']);
@@ -1614,6 +1611,7 @@ class RetirementFundController extends Controller
             if ($found) {
             }else{
                 $testimony = new Testimony();
+                $testimony->affiliate_id = $affiliate->id;
                 $testimony->document_type = $t['document_type'];
                 $testimony->number = $t['number'];
                 $testimony->date = $t['date'];
