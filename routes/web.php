@@ -62,6 +62,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('/update_affiliate_police/{affiliate}', 'AffiliateController@update_affiliate_police')->name('update_affiliate_police');
 
 		Route::patch('/update_beneficiaries/{retirement_fund}', 'RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
+		Route::patch('/update_beneficiary_testimony/{retirement_fund}', 'RetirementFundController@updateBeneficiaryTestimony')->name('update_beneficiary_testimony');
 
 		//SpouseControler
 		Route::patch('/update_spouse/{affiliate_id}', 'SpouseController@update')->name('update_spouse');

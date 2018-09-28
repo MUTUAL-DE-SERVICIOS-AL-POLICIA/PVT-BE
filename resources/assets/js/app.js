@@ -285,11 +285,30 @@ Vue.component('ret-fun-certification-button', require('./components/ret_fun/Cert
 Vue.component('ret-fun-chart', require('./components/ret_fun/Chart.vue'));
 Vue.component('ret-fun-send-back-button', require('./components/ret_fun/SendBackButton.vue'));
 Vue.component('ret-fun-report-form', require('./components/ret_fun/ReportForm.vue'));
+Vue.component('ret-fun-beneficiary-testimony-list', require('./components/ret_fun/BeneficiaryTestimonyList.vue'));
+Vue.component('ret-fun-beneficiary-testimony', require('./components/ret_fun/BeneficiaryTestimony.vue'));
 
 Vue.component('summary-select-contributions', require('./components/contribution/SummarySelectContributions.vue'));
 
 
-
+Vue.component("chosen-select", {
+  props: {
+    value: [String, Array],
+    multiple: Boolean
+  },
+  template: `<select :multiple="multiple"><slot></slot></select>`,
+  mounted() {
+    $(this.$el)
+      .val(this.value)
+      .chosen({ width: "100%" })
+      .on("change", e => this.$emit("input", $(this.$el).val()));
+  },
+  watch: {
+    value(val) {
+      $(this.$el).val(val).trigger('chosen:updated');
+    }
+  }
+})
 // inbox
 Vue.component('tabs-content', require('./components/inbox/TabsContent.vue'));
 Vue.component('inbox-content', require('./components/inbox/Content.vue'));

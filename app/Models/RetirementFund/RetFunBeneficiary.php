@@ -44,6 +44,10 @@ class RetFunBeneficiary extends Model
     {
         return $this->belongsToMany('\Muserpol\Models\Address', 'ret_fun_address_beneficiary');
     }
+    public function testimonies()
+    {
+        return $this->belongsToMany('Muserpol\Models\Testimony')->withTimestamps();
+    }
 
     /**
      * Methods

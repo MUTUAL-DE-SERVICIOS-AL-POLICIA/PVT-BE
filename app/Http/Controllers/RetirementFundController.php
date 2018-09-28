@@ -43,6 +43,8 @@ use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
 use Muserpol\Helpers\ID;
+use Muserpol\Models\Testimony;
+use Illuminate\Support\Collection;
 
 class RetirementFundController extends Controller
 {
@@ -623,7 +625,7 @@ class RetirementFundController extends Controller
             if($beneficiary_legal_guardian =  $b->legal_guardian->first()){
                 $b->legal_representative = 2;
                 $b->legal_guardian_identity_card = $beneficiary_legal_guardian->identity_card;
-                $b->legal_guardian_city_identity_card = $beneficiary_legal_guardian->city_identity_card;
+                $b->legal_guardian_city_identity_card_id = $beneficiary_legal_guardian->city_identity_card_id;
                 $b->legal_guardian_first_name = $beneficiary_legal_guardian->first_name;
                 $b->legal_guardian_second_name = $beneficiary_legal_guardian->second_name;
                 $b->legal_guardian_last_name = $beneficiary_legal_guardian->last_name;
@@ -831,6 +833,14 @@ class RetirementFundController extends Controller
             }
         }
 
+        $testimonies = [];
+        foreach ($beneficiaries as $key => $value) {
+            if($value->testimonies->count() > 0){
+
+                array_push($testimonies,$value->testimonies);
+            }
+        }
+        // dd($testimonies);
 
 
         $data = [
@@ -1343,7 +1353,7 @@ class RetirementFundController extends Controller
                                 $ben_legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
                             }
                             $ben_legal_guardian->identity_card = strtoupper(trim($new_ben['legal_guardian_identity_card'] ?? null));
-                            $ben_legal_guardian->city_identity_card_id = isset($new_ben['legal_guardian_city_identity_card']) ? intval($new_ben['legal_guardian_city_identity_card']) : null;
+                            $ben_legal_guardian->city_identity_card_id = isset($new_ben['legal_guardian_city_identity_card_id']) ? intval($new_ben['legal_guardian_city_identity_card_id']) : null;
                             $ben_legal_guardian->first_name = strtoupper(trim($new_ben['legal_guardian_first_name'] ?? null));
                             $ben_legal_guardian->second_name = strtoupper(trim($new_ben['legal_guardian_second_name'] ?? null));
                             $ben_legal_guardian->last_name = strtoupper(trim($new_ben['legal_guardian_last_name'] ?? null));
@@ -1576,7 +1586,7 @@ class RetirementFundController extends Controller
             if ($beneficiary_legal_guardian = $b->legal_guardian->first()) {
                 $b->legal_representative = 2;
                 $b->legal_guardian_identity_card = $beneficiary_legal_guardian->identity_card;
-                $b->legal_guardian_city_identity_card = $beneficiary_legal_guardian->city_identity_card;
+                $b->legal_guardian_city_identity_card_id = $beneficiary_legal_guardian->city_identity_card_id;
                 $b->legal_guardian_first_name = $beneficiary_legal_guardian->first_name;
                 $b->legal_guardian_second_name = $beneficiary_legal_guardian->second_name;
                 $b->legal_guardian_last_name = $beneficiary_legal_guardian->last_name;
@@ -1594,6 +1604,28 @@ class RetirementFundController extends Controller
         ];
         return $data;
 
+    }
+    public function updateBeneficiaryTestimony(Request $request, $ret_fun_id)
+    {
+        Log::info($request->all());
+        foreach ($request->all() as $key => $t) {
+            // $found = Testimony::find($t['id']);
+            $found = false;
+            if ($found) {
+            }else{
+                $testimony = new Testimony();
+                $testimony->document_type = $t['document_type'];
+                $testimony->number = $t['number'];
+                $testimony->date = $t['date'];
+                $testimony->court = $t['court'];
+                $testimony->place = $t['place'];
+                $testimony->notary = $t['notary'];
+                $testimony->save();
+                $testimony->ret_fun_beneficiaries()->attach($t['beneficiaries_list']);
+                Log::info($testimony);
+            }
+        }
+        return ;
     }
     public function updateInformation(Request $request)
     {
