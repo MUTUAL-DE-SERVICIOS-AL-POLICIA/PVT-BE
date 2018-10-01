@@ -16,8 +16,8 @@ class CreateTestimonyRetFunBeneficiary extends Migration
         Schema::create('ret_fun_beneficiary_testimony', function (Blueprint $table) {
             $table->bigInteger('ret_fun_beneficiary_id')->unsigned();
             $table->bigInteger('testimony_id')->unsigned();
-            $table->foreign('ret_fun_beneficiary_id')->references('id')->on('ret_fun_beneficiaries');
-            $table->foreign('testimony_id')->references('id')->on('testimonies');
+            $table->foreign('ret_fun_beneficiary_id')->references('id')->on('ret_fun_beneficiaries')->onDelete('cascade');
+            $table->foreign('testimony_id')->references('id')->on('testimonies')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateTestimonyRetFunBeneficiary extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('ret_fun_beneficiary_testimony');
     }
 }

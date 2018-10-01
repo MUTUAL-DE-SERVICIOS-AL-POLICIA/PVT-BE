@@ -6,7 +6,7 @@
                 Testimonios
               </h5>
               <div class="ibox-tools">
-                <button>Editar</button>
+                <button @click="editing = !editing" class="btn btn-primary"><i class="fa" :class="{'fa-edit':editing, 'fa-pencil':!editing}"></i> Editar</button>
               </div>
             </div>
             <div class="ibox-content">
@@ -18,7 +18,6 @@
                                       :testimony="testimony"
                                       :editable="editing"
                                       :beneficiaries="beneficiaries"
-                                      :beneficiaries-selected="testimony.ret_fun_beneficiaries"
                                       @remove="removeTestimony(index)"></BeneficiaryTestimony>
             </div>
                 <div class="row"
@@ -48,28 +47,35 @@
       components: {
         BeneficiaryTestimony
       },
-      props: ["beneficiaries", 'retFunId', 'testimoniesBackend'],
+      props: ["beneficiaries", 'retFunId'],
       data() {
         return {
-          testimonies: this.testimoniesBackend,
-          editing: true
+          testimonies: [],
+          editing: false
         };
       },
       mounted(){
-        console.log(this.testimoniesBackend);
-
+        this.getTestimonies();
       },
       methods: {
+        getTestimonies(){
+          axios.get(`/ret_fun_beneficiaries_testimonies/${this.retFunId}`)
+          .then(response => {
+            this.testimonies = response.data
+          }).catch(error => {
+            console.log(error);
+          })
+        },
         addTestimony() {
           let testimony = {
-            id: null,
+            id: 'new',
             document_type: null,
             number: null,
             date: null,
             court: null,
             place: null,
             notary: null,
-            beneficiaries_list:[]
+            ret_fun_beneficiaries:[]
           };
           if (this.testimonies.length > 0) {
             let lastTestimony = this.testimonies[this.testimonies.length - 1];
@@ -95,12 +101,17 @@
         update(){
             axios.patch(`/update_beneficiary_testimony/${this.retFunId}`, this.testimonies)
             .then(response => {
-                console.log(response);
-                
+                flash('Testimonios Actualizados');
+                this.getTestimonies();
+                this.editing = false;
             }).catch(error=>{
+                this.editing = false;
                 console.log(error);
-                
             })
+        },
+        cancel(){
+          this.editing = false;
+          this.getTestimonies();
         }
       }
     };

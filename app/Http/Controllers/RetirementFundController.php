@@ -833,7 +833,6 @@ class RetirementFundController extends Controller
             }
         }
 
-        $testimonies = $affiliate->testimony()->with('ret_fun_beneficiaries')->get();
 
 
 
@@ -876,7 +875,6 @@ class RetirementFundController extends Controller
             'last_base_wage' => $last_base_wage,
             'total_average_salary_quotable' => $total_average_salary_quotable,
             'array_discounts_availability' => $array_discounts_availability,
-            'testimonies' => $testimonies,
         ];
         // return $data;
 
@@ -1604,26 +1602,50 @@ class RetirementFundController extends Controller
     {
         $ret_fun = RetirementFund::find($ret_fun_id);
         $affiliate = $ret_fun->affiliate;
-        Log::info($request->all());
-        foreach ($request->all() as $key => $t) {
-            // $found = Testimony::find($t['id']);
-            $found = false;
-            if ($found) {
-            }else{
-                $testimony = new Testimony();
-                $testimony->affiliate_id = $affiliate->id;
-                $testimony->document_type = $t['document_type'];
-                $testimony->number = $t['number'];
-                $testimony->date = $t['date'];
-                $testimony->court = $t['court'];
-                $testimony->place = $t['place'];
-                $testimony->notary = $t['notary'];
-                $testimony->save();
-                $testimony->ret_fun_beneficiaries()->attach($t['beneficiaries_list']);
-                Log::info($testimony);
+
+        $testimonies_array_request =  array();
+        foreach (array_pluck($request->all(), 'id') as $key => $value) {
+            if ($value) {
+                array_push($testimonies_array_request, $value);
             }
         }
+        $testimonies = $affiliate->testimony;
+        foreach ($testimonies as $key => $t) {
+            $index = array_search($t->id, $testimonies_array_request);
+            if ($index === false) {
+                Log::info('deliting');
+                $t->delete();
+            }
+        }
+        foreach ($request->all() as $key => $t) {
+            if($t['id'] == 'new'){
+                $testimony = new Testimony();
+            }else{
+                $testimony = Testimony::find($t['id']);
+            }
+            $testimony->user_id = Util::getAuthUser()->id;
+            $testimony->affiliate_id = $affiliate->id;
+            $testimony->document_type = $t['document_type'];
+            $testimony->number = $t['number'];
+            $testimony->date = $t['date'];
+            $testimony->court = $t['court'];
+            $testimony->place = $t['place'];
+            $testimony->notary = $t['notary'];
+            $testimony->save();
+            $ids_ben = array();
+            foreach ($t['ret_fun_beneficiaries'] as $ben) {
+                array_push($ids_ben, $ben['id']);
+            }
+            $testimony->ret_fun_beneficiaries()->sync($ids_ben);
+        }
         return ;
+    }
+    public function getTestimonies($ret_fun_id)
+    {
+        $ret_fun = RetirementFund::find($ret_fun_id);
+        $affiliate = $ret_fun->affiliate;
+        $testimonies = $affiliate->testimony()->with('ret_fun_beneficiaries')->get();
+        return $testimonies;
     }
     public function updateInformation(Request $request)
     {

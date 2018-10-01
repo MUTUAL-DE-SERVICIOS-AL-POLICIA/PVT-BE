@@ -18,37 +18,24 @@
                 <label class="control-label">Beneficiarios</label>
             </div>
             <div class="col-md-9">
-                <!-- <select data-placeholder="Haz click para seleccionar un beneficiario o mas"
-                        class="chosen-select"
-                        multiple
-                        tabindex="4"
-                        v-model="testimony.beneficiaries_list"
-                        > -->
-
-                        <!-- <select v-model='testimony.beneficiaries_list' multiple>
-                            <option v-for="(beneficiary, index) in beneficiaries"
-                                :key="index"
-                                :value="beneficiary.id"
-                             >{{ beneficiary.identity_card }}</option>
-                        </select> -->
-
-
                         <multiselect
-                            v-model="testimony.beneficiaries_list"
-                            :options="options"
+                            v-model="testimony.ret_fun_beneficiaries"
+                            :options="beneficiaries"
                             :multiple="true"
                             :close-on-select="false"
                             :clear-on-select="false"
                             :hide-selected="true"
-                            placeholder="Pick some"
-                            track-by="name"
-                            label="name"
-                            :preselect-first="true">
+                            :disabled="!editable"
+                            placeholder="Seleccione la cedula de identidad del beneficiario"
+                            track-by="identity_card"
+                            :custom-label="customLabel"
+                            :show-labels="false"
+                            >
                             <template
                                 slot="tag"
                                 slot-scope="props">
                                 <span class="custom__tag">
-                                    <span>{{ props.option.name }}</span>
+                                    <span>{{ fullName(props.option) }}</span>
                                     <span
                                         class="custom__remove"
                                         @click="props.remove(props.option)"
@@ -56,14 +43,6 @@
                                 </span>
                             </template>
                         </multiselect>
-
-                        <!-- <chosen-select v-model='testimony.beneficiaries_list' multiple>
-                            <option v-for="(beneficiary, index) in beneficiaries"
-                                :key="index"
-                                :value="beneficiary.id"
-                             >{{ beneficiary.identity_card }}</option>
-                        </chosen-select> -->
-                <!-- </select> -->
             </div>
         </div>
         <br>
@@ -134,34 +113,22 @@
         components: {
             Multiselect
         },
-      props: ["testimony", "editable", "index", 'beneficiaries', 'beneficiariesSelected'],
-      mounted() {
-          this.testimony.beneficiaries_list = ['1031','1035']
-      },
+      props: ["testimony", "editable", "index", 'beneficiaries'],
       data(){
-          return {
-              value: [{ name: 'Vue.js', },{ name: 'Sinatra', },],
-      options: [
-        { name: 'Vue.js', },
-        { name: 'Adonis', },
-        { name: 'Rails', },
-        { name: 'Sinatra', },
-        { name: 'Laravel', },
-        { name: 'Phoenix', }
-      ]
-          }
+          return {}
       },
       methods: {
         remove() {
           this.$emit("remove");
         },
-        verify(id) {
-            if (this.beneficiariesSelected.length > 0) {
-                console.log(id);
-                return this.beneficiariesSelected.some(i => i.id == id);
-            }
-            return false;
+        fullName(obj){
+            let name = obj.identity_card + ' - ' +obj.first_name+ ' '+obj.second_name+' '+obj.last_name+' '+obj.mothers_last_name+' '+obj.surname_husband;
+            return name.replace(/\s+/g, ' ').trim();
+        },
+        customLabel (obj) {
+            return this.fullName(obj);
         }
+
       }
     };
 </script>

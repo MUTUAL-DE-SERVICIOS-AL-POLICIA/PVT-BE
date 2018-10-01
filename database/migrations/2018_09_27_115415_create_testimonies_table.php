@@ -16,6 +16,7 @@ class CreateTestimoniesTable extends Migration
         Schema::create('testimonies', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedBigInteger('affiliate_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('document_type')->nullable();
             $table->string('number')->nullable();
             $table->date('date')->nullable();
@@ -23,6 +24,7 @@ class CreateTestimoniesTable extends Migration
             $table->string('place')->nullable();
             $table->string('notary')->nullable();
             $table->foreign('affiliate_id')->references('id')->on('affiliates');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
