@@ -99,38 +99,26 @@
                                     </tr>
                                     <tr>                                
                                         <td colspan="2"><label for="total">Total Pagado:</label></td>
-                                        <td colspan="4"><input type="text" v-model="paid"  data-money="true" class="form-control"></td>                                
+                                        <td colspan="4"><input type="text" v-model="paid"  data-money="true" class="form-control"></td>
                                     </tr>
                                 </tbody>
-                            </table> 
-                            <!-- <table>
-                                <tr style="" v-for="(reim, index) in reimbursements" :key="index" id="reimbursement_form">                                
-                                            <td>                                    
-                                            <input type="text"  v-model = "reim.month_year" disabled class="form-control">
-                                        </td>
-                                        <td>
-                                            <input type="text" v-model = "reim.amount" data-money="true" class="form-control" >
-                                        </td>
-                                        <td>
-                                            <input type="text"  v-model = "reim.retirement_fund" data-money='true' disabled class="form-control">
-                                        </td>
-                                        <td>
-                                            <input type="text" v-model = "reim.quota" data-money="true" disabled class="form-control">
-                                        </td>
-                                        <td>
-                                            <input type="text" v-model = "reim.interest" disabled data-money="true" class="form-control">
-                                        </td>
-                                        <td>
-                                            <input type="text"  v-model = "reim.subtotal" data-money="true" disabled class="form-control">
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button> 
-                                        </td>
-                                    </tr>
-                            </table> -->
-                            <div class="text-center">
-                                <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                    
-                            </div>
+                            </table>                                                                                                           
+                            <div class="text-center" v-if="!is_regional">
+                                <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                                
+                            </div>                  
+                            
+                            <div class="col-md-12" v-else>
+                                <div class="col-md-4">
+                                <input type="text" placeholder="banco" v-model="bank" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                <input type="text" placeholder="número de comprobante" v-model="bank_pay_number" class="form-control">
+                                </div>                                
+                                <div class="col-md-4">
+                                <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+                                </div>
+                            </div>                            
+                            
                             <div>
                                 <input type="checkbox" id="switch" v-model="toggle" >
                                 <label for="switch" class="label-control">Opciones avanzadas</label>
@@ -260,7 +248,8 @@ export default {
         // 'contributions1',
         'afid',
         'last_quotable',
-        'commitment'
+        'commitment',
+        'is_regional'
     ],
     data() {   
 
@@ -286,6 +275,8 @@ export default {
       info_retirement_fund : 0,
       info_quota : 0,
       info_total : 0,
+      bank : '',
+      bank_pay_number : '',
       reprint: null,
       dateEnd: moment().format('DD/MM/YYYY'),
       showContributions:true,
@@ -295,6 +286,7 @@ export default {
   },
    
   mounted() {
+    console.log(this.is_regional);
     // this.contributions = this.contributions1;  
     this.afi_id = this.afid;    
     window.addEventListener("load", function(event) {
@@ -585,7 +577,7 @@ export default {
             }).then((result) => {    
                 if (result.value) {                    
                 var aportes = this.contributions;                    
-                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid,paid:parseMoney(this.paid)})
+                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid,paid:parseMoney(this.paid),bank:this.bank,bank_pay_number:this.bank_pay_number})
                 .then(response => {                  
                 this.enableDC();
                 var i;
