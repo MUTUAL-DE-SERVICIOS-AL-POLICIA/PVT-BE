@@ -153,6 +153,10 @@ class Affiliate extends Model
     {
         return $this->hasMany('Muserpol\Models\AffiliateRecord');
     }
+    public function testimony()
+    {
+        return $this->hasMany('Muserpol\Models\Testimony');
+    }
 
     /**
      * methods
@@ -354,6 +358,9 @@ class Affiliate extends Model
     }
     public function getContributionsPlus($with_reimbursements = true)
     {
+        if ($this->selectedContributions() > 0) {
+            return [];
+        }
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
         if ($with_reimbursements) {
             $contributions = DB::select("
@@ -446,6 +453,9 @@ class Affiliate extends Model
         }
     }
     public function getContributionsAvailability($with_reimbursements = true){
+        if ($this->selectedContributions() > 0) {
+            return [];
+        }
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
         if ($with_reimbursements) {
             $contributions = DB::select("

@@ -46,3 +46,5 @@
        
     </div>
 </ret-fun-beneficiaries-show>
+<ret-fun-beneficiary-testimony-list :beneficiaries="{{ $beneficiaries }}" :ret-fun-id="{{ $retirement_fund->id }}">
+</ret-fun-beneficiary-testimony-list>
