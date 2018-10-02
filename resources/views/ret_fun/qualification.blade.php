@@ -183,7 +183,7 @@
                 <div class="ibox-title">
                     <h5>Datos Economicos</h5>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content" v-if="!globalPay">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -216,6 +216,37 @@
                         </transition>
                     </button>
                 </div>
+                <div class="ibox-content" v-else>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Cotizacion</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Total Aporte</td>
+                                <td>@{{ totalAporte | currency }}</td>
+                            </tr>
+                            <tr>
+                                <td>+ Rendiminento del 5%</td>
+                                <td>@{{ yield | currency}} </td>
+                            </tr>
+                            <tr>
+                                <td>- Gastos Administrativos del 10%</td>
+                                <td>@{{ lessAdministrativeExpenses | currency }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar
+                        <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicDataTotal">
+                            <div>
+                                <check-svg></check-svg>
+                            </div>
+                        </transition>
+                    </button>
+                </div>
             </div>
             <div v-show="showEconomicDataTotal" id="showEconomicDataTotal">
                 <div class="ibox" class="fadeInRight">
@@ -236,7 +267,8 @@
                             </thead>
                             <tbody>
                                 <tr class="info">
-                                    <td>Sub Total fondo de retiro</td>
+                                    <td v-if="! globalPay">Sub Total fondo de retiro</td>
+                                    <td v-else>Sub Total Pago Global por {{ $retirement_fund->procedure_modality->name }} </td>
                                     <td>@{{ subTotalRetFun | currency }}</td>
                                 </tr>
                                 <tr>
@@ -329,7 +361,8 @@
                                     <td colspan="5">@{{ percentageRetentionGuarantor | percentage }}</td>
                                 </tr>
                                 <tr class="success">
-                                    <td>Total fondo de retiro</td>
+                                    <td v-if="! globalPay">Total Fondo de Retiro</td>
+                                    <td v-else>Total Pago Global por {{ $retirement_fund->procedure_modality->name }} </td>
                                     <td colspan="5"><strong>@{{ totalAnimated | currency }}</strong></td>
                                 </tr>
                             </tbody>
@@ -347,9 +380,12 @@
                     <div class="ibox" class="fadeInRight">
                         <div class="ibox-title">
                             @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
-                                <h5>Calculo de las cuotas partes para los derechohabientes (Fondo de Retiro) </h5>
+                                <h5> </h5>
+                                <h5 v-if="! globalPay">Calculo de las cuotas partes para los derechohabientes (Fondo de Retiro)</h5>
+                                <h5 v-else>Calculo de las cuotas partes para los derechohabientes (Pago Global por {{ $retirement_fund->procedure_modality->name }})</h5>
                             @else
-                                <h5>Calculo de del total (Fondo de Retiro) </h5>
+                                <h5 v-if="! globalPay">Calculo del total (Fondo de Retiro)</h5>
+                                <h5 v-else>Calculo del total (Pago Global por {{ $retirement_fund->procedure_modality->name }})</h5>
                             @endif
                             <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="saveTotalRetFun(true)" ><i class="fa fa-refresh"></i></button>
                         </div>

@@ -15,21 +15,39 @@
                 </tr>
             </thead>
             <tbody class="table-striped">
-                <tr class="text-sm">
-                    <td class="w-60 text-left px-10 py-3 uppercase">ultimo sueldo percibido</td>
-                    <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($affiliate->getLastBaseWage()) ?? '-' }} </td>
-                    <td class="w-15  text-center uppercase font-bold px-5 py-3"> Bs. </td>
-                </tr>
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">salario promedio cotizable</td>
-                    <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->average_quotable) }} </td>
-                    <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
-                </tr>
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">densidad total de cotizaciones</td>
-                    <td class="text-right uppercase font-bold px-5 py-3"> {{$total_quotes}} </td>
-                    <td class="text-center uppercase font-bold px-5 py-3"> meses </td>
-                </tr>
+                @if ( $affiliate->globalPayRetFun() )
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">TOTAL APORTES</td>
+                        <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->average_quotable) }} </td>
+                        <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
+                    </tr>
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">CON RENDIMIENTO DEL 5% ANUAL</td>
+                        <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($yield) }} </td>
+                        <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
+                    </tr>
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">menos gastos administrativos de 10%</td>
+                        <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($less_administrative_expenses) }} </td>
+                        <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
+                    </tr>
+                @else
+                    <tr class="text-sm">
+                        <td class="w-60 text-left px-10 py-3 uppercase">ultimo sueldo percibido</td>
+                        <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($affiliate->getLastBaseWage()) ?? '-' }} </td>
+                        <td class="w-15  text-center uppercase font-bold px-5 py-3"> Bs. </td>
+                    </tr>
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">salario promedio cotizable</td>
+                        <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->average_quotable) }} </td>
+                        <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
+                    </tr>
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">densidad total de cotizaciones</td>
+                        <td class="text-right uppercase font-bold px-5 py-3"> {{$total_quotes}} </td>
+                        <td class="text-center uppercase font-bold px-5 py-3"> meses </td>
+                    </tr>
+                @endif
             </tbody>
         </table>
         <table class="table-info w-100 m-b-10">
@@ -43,7 +61,13 @@
             <tbody class="table-striped">
                 @if (sizeOf($discounts)>0)
                     <tr class="text-sm">
-                        <td class="text-left px-10 py-3 uppercase">total fondo de retiro</td>
+                        <td class="text-left px-10 py-3 uppercase">
+                            @if ($affiliate->globalPayRetFun())
+                                total pago blobal por {{ $retirement_fund->procedure_modality->name }}
+                            @else
+                                total fondo de retiro
+                            @endif
+                        </td>
                         <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->subtotal_ret_fun) }} </td>
                         <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>
@@ -63,7 +87,13 @@
                     </tr>
                 @endforeach
                 <tr class="text-lg">
-                    <td class="text-left px-10 py-3 uppercase font-bold">total fondo de retiro</td>
+                    <td class="text-left px-10 py-3 uppercase font-bold">
+                        @if ($affiliate->globalPayretFUn())
+                            total pago global por {{ $retirement_fund->procedure_modality->name }}
+                        @else
+                        total fondo de retiro
+                        @endif
+                    </td>
                     <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_ret_fun) }} </td>
                     <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                 </tr>

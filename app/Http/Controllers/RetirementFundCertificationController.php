@@ -381,12 +381,19 @@ class RetirementFundCertificationController extends Controller
 
 
         // $title = 'INFORMACIÓN TÉCNICA';
-        $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
         $affiliate = $retirement_fund->affiliate;
         $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
         $pdftitle = "Calificación - INFORMACIÓN TÉCNICA";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        if($affiliate->globalPayRetFun()){
+
+            $title = 'CALIFICACIÓN DE PAGO GLOBAL POR '. $retirement_fund->procedure_modality->name;
+        }else{
+            $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
+        }
+
+
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
         $dates = array(
@@ -410,18 +417,18 @@ class RetirementFundCertificationController extends Controller
         $group_dates[] = $dates;
         foreach (ContributionType::orderBy('id')->get() as $c) {
             // if($c->id != 1){
-            $contributionsWithType = $affiliate->getContributionsWithType($c->id);
-            if (sizeOf($contributionsWithType) > 0) {
-                $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
-                $dates = array(
-                    'id' => $c->id,
-                    'dates' => $affiliate->getContributionsWithType($c->id),
-                    'name' => $c->name,
-                    'operator' => $c->operator,
-                    'description' => $c->description,
-                    'years' => intval($sub_total_dates / 12),
-                    'months' => $sub_total_dates % 12,
-                );
+                $contributionsWithType = $affiliate->getContributionsWithType($c->id);
+                if (sizeOf($contributionsWithType) > 0) {
+                    $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+                    $dates = array(
+                        'id' => $c->id,
+                        'dates' => $affiliate->getContributionsWithType($c->id),
+                        'name' => $c->name,
+                        'operator' => $c->operator,
+                        'description' => $c->description,
+                        'years' => intval($sub_total_dates / 12),
+                        'months' => $sub_total_dates % 12,
+                    );
                 if ($c->operator == '-') {
                     eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
                 }
@@ -470,7 +477,11 @@ class RetirementFundCertificationController extends Controller
 
         $array_discounts_combi = [];
         foreach ($array_discounts as $value) {
-            array_push($array_discounts_combi, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
+            $temp = 'Fondo de Retiro';
+            if($affiliate->globalPayRetFun()){
+                $temp = 'Pago Global por '.$retirement_fund->procedure_modality->name;
+            }
+            array_push($array_discounts_combi, array('name' => ($temp.' ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
         }
         
         /*  / discount combinations*/
@@ -485,6 +496,19 @@ class RetirementFundCertificationController extends Controller
 
         $subtitle = $number;
 
+        $current_procedure = Util::getRetFunCurrentProcedure();
+        $temp = [];
+        if ($affiliate->globalPayRetFun()){
+            $total_aporte = $retirement_fund->average_quotable;
+            $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
+            $administrative_expenses = (($yield * $current_procedure->administrative_expenses) / 100);
+            $less_administrative_expenses = $yield - $administrative_expenses;
+            $temp =[
+                'yield' => $yield,
+                'administrative_expenses' => $administrative_expenses,
+                'less_administrative_expenses' => $less_administrative_expenses,
+            ];
+        }
         $data = [
             'code' => $code,
             'area' => $area,
@@ -504,6 +528,7 @@ class RetirementFundCertificationController extends Controller
             'beneficiaries' => $beneficiaries,
             'retirement_fund' => $retirement_fund,
         ];
+        $data = array_merge($data, $temp);
 
         if ($only_print) {
             return \PDF::loadView('ret_fun.print.qualification_step_data', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
@@ -744,7 +769,7 @@ class RetirementFundCertificationController extends Controller
         }
         $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
 
-        if (!$affiliate->selectedContributions() > 0){
+        if (!$affiliate->selectedContributions() > 0 && $affiliate->globalPayRetFun()  && $retirement_fund->procedure_modality->procedure_type->id == 2 ){
             $pages[] =\View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
         }
         $pdf = \App::make('snappy.pdf.wrapper');
