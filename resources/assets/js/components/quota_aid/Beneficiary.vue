@@ -94,7 +94,7 @@
                     <select name="beneficiary_gender[]" id="" v-model.trim="beneficiary.gender" class="form-control" :disabled="!editable">
                         <option :value="null"></option>
                         <option value="M">Masculino</option>
-                        <option value="F">Fenemino</option>
+                        <option value="F">Femenino</option>
                     </select>
                 </div>
             </div>

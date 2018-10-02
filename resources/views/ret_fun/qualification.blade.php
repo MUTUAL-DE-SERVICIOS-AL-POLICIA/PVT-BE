@@ -227,10 +227,12 @@
                         <tbody>
                             <tr>
                                 <td>Total Aporte</td>
-                                <td>@{{ totalAporte | currency }}</td>
+                                <td>@{{ totalAporte | currency }}
+                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                </td>
                             </tr>
                             <tr>
-                                <td>+ Rendiminento del 5%</td>
+                                <td>+ Rendimiento del 5%</td>
                                 <td>@{{ yield | currency}} </td>
                             </tr>
                             <tr>
@@ -647,18 +649,25 @@
                     </table>
                     <table class="table table-bordered table-striped">
                         <tbody>
-                            <tr>
-                                <td>Total Aportes Fondo de Retiro Policial Solidario</td>
-                                <td>{{ $total_retirement_fund }}</td>
-                            </tr>
-                            <tr>
-                                <td>Salario Total</td>
-                                <td>{{ $sub_total_average_salary_quotable }}</td>
-                            </tr>
-                            <tr>
-                                <td>Salario Promedio</td>
-                                <td>{{ $total_average_salary_quotable }}</td>
-                            </tr>
+                            @if ($affiliate->globalPayRetFun())
+                                <tr>
+                                    <td>Total Aportes</td>
+                                    <td>Bs {{ Util::formatMoney($total_aporte) }}</td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td>Total Aportes Fondo de Retiro Policial Solidario</td>
+                                    <td>{{ $total_retirement_fund }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Salario Total</td>
+                                    <td>{{ $sub_total_average_salary_quotable }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Salario Promedio</td>
+                                    <td>{{ $total_average_salary_quotable }}</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>

@@ -63,7 +63,7 @@
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">
                             @if ($affiliate->globalPayRetFun())
-                                total pago blobal por {{ $retirement_fund->procedure_modality->name }}
+                                total pago global por {{ $retirement_fund->procedure_modality->name }}
                             @else
                                 total fondo de retiro
                             @endif
