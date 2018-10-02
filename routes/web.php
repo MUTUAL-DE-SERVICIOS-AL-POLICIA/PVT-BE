@@ -62,6 +62,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('/update_affiliate_police/{affiliate}', 'AffiliateController@update_affiliate_police')->name('update_affiliate_police');
 
 		Route::patch('/update_beneficiaries/{retirement_fund}', 'RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
+		Route::patch('/update_beneficiary_testimony/{retirement_fund}', 'RetirementFundController@updateBeneficiaryTestimony')->name('update_beneficiary_testimony');
+		Route::get('/ret_fun_beneficiaries_testimonies/{ret_fun_id}', 'RetirementFundController@getTestimonies')->name('ret_fun_beneficiaries_testimonies');
 
 		//SpouseControler
 		Route::patch('/update_spouse/{affiliate_id}', 'SpouseController@update')->name('update_spouse');
@@ -79,6 +81,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('affiliate/{affiliate}/ret_fun', 'RetirementFundRequirementController@retFun');
 		// Route::get('/home', 'HomeController@index')->name('home');
 		Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
+		Route::get('ret_fun/reports', 'RetFunReportController@index');
 		Route::resource('ret_fun', 'RetirementFundController');
 		Route::get('ret_fun/{ret_fun_id}/qualification', 'RetirementFundController@qualification')->name('ret_fun_qualification');
 		Route::get('ret_fun/{ret_fun_id}/get_average_quotable', 'RetirementFundController@getAverageQuotable');

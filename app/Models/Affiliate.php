@@ -153,6 +153,10 @@ class Affiliate extends Model
     {
         return $this->hasMany('Muserpol\Models\AffiliateRecord');
     }
+    public function testimony()
+    {
+        return $this->hasMany('Muserpol\Models\Testimony');
+    }
 
     /**
      * methods

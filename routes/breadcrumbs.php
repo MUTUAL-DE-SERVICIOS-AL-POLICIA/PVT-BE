@@ -48,6 +48,10 @@ Breadcrumbs::register('show_affiliate_aid_contributions', function($breadcrumbs,
 	$breadcrumbs->push("Aportes Pasivo", route('show_aid_contribution', $affiliate->id));
 });
 
+Breadcrumbs::register('ret_fun_report', function($breadcrumbs)
+{
+	$breadcrumbs->push('Reportes de Fondo de Retiro', URL::to('ret_fun/reports'));
+});
 Breadcrumbs::register('retirement_fund', function($breadcrumbs)
 {
 	$breadcrumbs->push('Fondo de Retiro', URL::to('ret_fun'));

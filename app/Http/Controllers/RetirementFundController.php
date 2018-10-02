@@ -43,6 +43,8 @@ use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\InfoLoan;
 use Muserpol\Helpers\ID;
+use Muserpol\Models\Testimony;
+use Illuminate\Support\Collection;
 
 class RetirementFundController extends Controller
 {
@@ -631,7 +633,7 @@ class RetirementFundController extends Controller
             if($beneficiary_legal_guardian =  $b->legal_guardian->first()){
                 $b->legal_representative = 2;
                 $b->legal_guardian_identity_card = $beneficiary_legal_guardian->identity_card;
-                $b->legal_guardian_city_identity_card = $beneficiary_legal_guardian->city_identity_card;
+                $b->legal_guardian_city_identity_card_id = $beneficiary_legal_guardian->city_identity_card_id;
                 $b->legal_guardian_first_name = $beneficiary_legal_guardian->first_name;
                 $b->legal_guardian_second_name = $beneficiary_legal_guardian->second_name;
                 $b->legal_guardian_last_name = $beneficiary_legal_guardian->last_name;
@@ -838,6 +840,7 @@ class RetirementFundController extends Controller
                 array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
             }
         }
+
 
 
 
@@ -1351,7 +1354,7 @@ class RetirementFundController extends Controller
                                 $ben_legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
                             }
                             $ben_legal_guardian->identity_card = strtoupper(trim($new_ben['legal_guardian_identity_card'] ?? null));
-                            $ben_legal_guardian->city_identity_card_id = isset($new_ben['legal_guardian_city_identity_card']) ? intval($new_ben['legal_guardian_city_identity_card']) : null;
+                            $ben_legal_guardian->city_identity_card_id = isset($new_ben['legal_guardian_city_identity_card_id']) ? intval($new_ben['legal_guardian_city_identity_card_id']) : null;
                             $ben_legal_guardian->first_name = strtoupper(trim($new_ben['legal_guardian_first_name'] ?? null));
                             $ben_legal_guardian->second_name = strtoupper(trim($new_ben['legal_guardian_second_name'] ?? null));
                             $ben_legal_guardian->last_name = strtoupper(trim($new_ben['legal_guardian_last_name'] ?? null));
@@ -1584,7 +1587,7 @@ class RetirementFundController extends Controller
             if ($beneficiary_legal_guardian = $b->legal_guardian->first()) {
                 $b->legal_representative = 2;
                 $b->legal_guardian_identity_card = $beneficiary_legal_guardian->identity_card;
-                $b->legal_guardian_city_identity_card = $beneficiary_legal_guardian->city_identity_card;
+                $b->legal_guardian_city_identity_card_id = $beneficiary_legal_guardian->city_identity_card_id;
                 $b->legal_guardian_first_name = $beneficiary_legal_guardian->first_name;
                 $b->legal_guardian_second_name = $beneficiary_legal_guardian->second_name;
                 $b->legal_guardian_last_name = $beneficiary_legal_guardian->last_name;
@@ -1602,6 +1605,55 @@ class RetirementFundController extends Controller
         ];
         return $data;
 
+    }
+    public function updateBeneficiaryTestimony(Request $request, $ret_fun_id)
+    {
+        $ret_fun = RetirementFund::find($ret_fun_id);
+        $affiliate = $ret_fun->affiliate;
+
+        $testimonies_array_request =  array();
+        foreach (array_pluck($request->all(), 'id') as $key => $value) {
+            if ($value) {
+                array_push($testimonies_array_request, $value);
+            }
+        }
+        $testimonies = $affiliate->testimony;
+        foreach ($testimonies as $key => $t) {
+            $index = array_search($t->id, $testimonies_array_request);
+            if ($index === false) {
+                Log::info('deliting');
+                $t->delete();
+            }
+        }
+        foreach ($request->all() as $key => $t) {
+            if($t['id'] == 'new'){
+                $testimony = new Testimony();
+            }else{
+                $testimony = Testimony::find($t['id']);
+            }
+            $testimony->user_id = Util::getAuthUser()->id;
+            $testimony->affiliate_id = $affiliate->id;
+            $testimony->document_type = $t['document_type'];
+            $testimony->number = $t['number'];
+            $testimony->date = $t['date'];
+            $testimony->court = $t['court'];
+            $testimony->place = $t['place'];
+            $testimony->notary = $t['notary'];
+            $testimony->save();
+            $ids_ben = array();
+            foreach ($t['ret_fun_beneficiaries'] as $ben) {
+                array_push($ids_ben, $ben['id']);
+            }
+            $testimony->ret_fun_beneficiaries()->sync($ids_ben);
+        }
+        return ;
+    }
+    public function getTestimonies($ret_fun_id)
+    {
+        $ret_fun = RetirementFund::find($ret_fun_id);
+        $affiliate = $ret_fun->affiliate;
+        $testimonies = $affiliate->testimony()->with('ret_fun_beneficiaries')->get();
+        return $testimonies;
     }
     public function updateInformation(Request $request)
     {
