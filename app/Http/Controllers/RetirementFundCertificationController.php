@@ -1901,7 +1901,7 @@ class RetirementFundCertificationController extends Controller
         foreach($beneficiaries as $beneficiary){
             $legal_guardian  = RetFunLegalGuardianbeneficiary::where('ret_fun_beneficiary_id',$beneficiary->id)->first();
             $payment = "";
-            if(!isset($legal_guardian)){
+            if(!isset($legal_guardian) || true){
                 if($beneficiary->geneder == "F")
                 {
                     $payment .= "Sra. ";
