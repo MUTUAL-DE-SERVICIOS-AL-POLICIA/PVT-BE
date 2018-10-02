@@ -1336,21 +1336,22 @@ class RetirementFundCertificationController extends Controller
         if($retirement_fund->procedure_modality_id == 4) {
             //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($retirement_fund->reception_date) .", a lo cual considera lo siguiente:";
        
-            $person .=  ($applicant->gender=='M'?' el Sr. ':' la Sra. ').Util::fullName($applicant)." con C.I. N° ". $applicant->identity_card." ".$applicant->city_identity_card->first_shortened.". solicita el beneficio a favor suyo en calidad de ".$applicant->kinship->name;            
+            $person .=  ($applicant->gender=='M'?' el Sr. ':' la Sra. ').Util::fullName($applicant)." con C.I. N° ". $applicant->identity_card." ".$applicant->city_identity_card->first_shortened.". solicita el beneficio a favor suyo en calidad de >>>>>>>>".$applicant->kinship->name;            
             $testimony_applicant = Testimony::find($applicant->testimonies()->first()->id);
             
            // foreach($testimonies_applicant as $testimony) {
                 $beneficiaries = $testimony_applicant->ret_fun_beneficiaries;
                 $quantity = $beneficiaries->count();
-                if($quantity > 1) {
-                    $person .= " y de los Señores ";
+                if($quantity > 2) {
+                    $person .= " y de los derechohabientes ";
                 } else {
-                    $person .= " y de ";
+                    $person .= " y del(de) la derechohabiente ";
                 }
                 foreach($beneficiaries as $beneficiary) {
+                    if($beneficiary->id != $applicant->id)
                     $person .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI").".".((--$quantity)==2?" y ":(($quantity==1)?'':', '))." ";
                 }
-                $person .=" en calidad de hijos como herederos legales acreditados mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
+                $person .=" en calidad de >>hijos<< como herederos legales acreditados mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
             //} 
 
             $testimonies_applicant = Testimony::where('affiliate_id',$affiliate->id)->where('id','!=',$applicant->testimonies()->first()->id)->get();
@@ -1360,7 +1361,7 @@ class RetirementFundCertificationController extends Controller
                 $quantity = $beneficiaries->count();
                 if($quantity > 0) {
                     if($quantity > 1) {
-                        $person .= ", los Señores ";
+                        $person .= "; asimismo solicitan el beneficio los Señores ";
                     } else {
                         $person .= ", de ";
                     }
