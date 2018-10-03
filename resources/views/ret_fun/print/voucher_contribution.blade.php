@@ -66,18 +66,18 @@
     <table class="table-info rounded m-5">
         <thead class="bg-grey-darker">
             <tr class="text-white text-base">
-                <td class="w-30 px-15">
-                    Nro:
-                </td>
                 <td class="px-15">
                     Banco:
                 </td>
+                <td class="w-30 px-15">
+                    Nro:
+                </td>                
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td> {!! $voucher->bank !!} </td>
+                <td class='text-left px-15'> {!! $voucher->bank_pay_number !!} </td>                
             </tr>
         </tbody>
     </table>

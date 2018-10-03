@@ -201,6 +201,8 @@ class ContributionController extends Controller
         $voucher->payment_date = Carbon::now();
         $voucher->code = $code;
         $voucher->paid_amount = $request->paid;
+        $voucher->bank = $request->bank;
+        $voucher->bank_pay_number = $request->bank_pay_number;
         $voucher->save();      
         
         $affiliate = Affiliate::find($request->afid);
@@ -451,13 +453,14 @@ class ContributionController extends Controller
                 
     }
     public function directContributions(Affiliate $affiliate = null){
-
+        
          $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();                                            
-         if(!isset($commitment->id) && Util::getRol()->pivot->role_id != 12)
-        {            
+        $user = Auth::user();
+         if (!isset($commitment->id) &&  !$user->can('create', ContributionCommitment::class)) {
             Session::flash('message','No se encontró compromiso de pago');
             return redirect('affiliate/'.$affiliate->id);    
         }
+        
         if(!isset($commitment->id))
         {
             $commitment = new ContributionCommitment();
@@ -476,7 +479,12 @@ class ContributionController extends Controller
            'interest'  =>  $contributions->sum('interest'),
            'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
         ); 
-        
+        $is_regional = false;
+        $role = Util::getRol()->id;        
+        $regional_roles = [30,31,32,33,34,35];
+        if( in_array($role,$regional_roles) ) {            
+            $is_regional = true;
+        }
         $data = [
             // 'new_contributions' => $this->getMonthContributions($affiliate->id),            
             'commitment'    =>  $commitment,
@@ -484,6 +492,7 @@ class ContributionController extends Controller
             'summary'   =>  $summary,
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
+            'is_regional'   =>  $is_regional,
             // 'rate'  =>  $rate,        
         ];
 

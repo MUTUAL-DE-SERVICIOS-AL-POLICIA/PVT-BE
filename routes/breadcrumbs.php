@@ -48,6 +48,10 @@ Breadcrumbs::register('show_affiliate_aid_contributions', function($breadcrumbs,
 	$breadcrumbs->push("Aportes Pasivo", route('show_aid_contribution', $affiliate->id));
 });
 
+Breadcrumbs::register('ret_fun_report', function($breadcrumbs)
+{
+	$breadcrumbs->push('Reportes de Fondo de Retiro', URL::to('ret_fun/reports'));
+});
 Breadcrumbs::register('retirement_fund', function($breadcrumbs)
 {
 	$breadcrumbs->push('Fondo de Retiro', URL::to('ret_fun'));
@@ -68,8 +72,17 @@ Breadcrumbs::register('show_quota_aid', function($breadcrumbs, $quota_aid)
 });
 Breadcrumbs::register('show_qualification_retirement_fund', function($breadcrumbs, $retirement_fund)
 {
+
+	$affiliate = $retirement_fund->affiliate;
+	$name = 'Calificación';
+	// if ($affiliate->globalPayRetFun()) {
+	// 	$name =  $name . ' Pago Global por '.$retirement_fund->procedure_modality->name;
+	// }else{
+	// 	$name =  $name . ' Fondo de Retiro '.$retirement_fund->procedure_modality->name;
+	// }
+
 	$breadcrumbs->parent('show_retirement_fund', $retirement_fund);
-	$breadcrumbs->push	("Calificación", URL::to('ret_fun/'.$retirement_fund->id.'/qualification'));
+	$breadcrumbs->push	($name, URL::to('ret_fun/'.$retirement_fund->id.'/qualification'));
 });
 Breadcrumbs::register('show_qualification_certification_retirement_fund', function($breadcrumbs, $retirement_fund, $number_contributions)
 {
