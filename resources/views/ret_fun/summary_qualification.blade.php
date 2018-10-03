@@ -139,7 +139,7 @@
                         <td>{{ $beneficary->fullName() }}</td>
                         <td>{{ $beneficary->percentage }}</td>
                         <td>{{ Util::formatMoney($beneficary->amount_ret_fun) }}</td>
-                        <td>{{ $beneficary->kinship->name }}</td>
+                        <td>{{ $beneficary->kinship->name ?? 'SIN PARENTESCO' }}</td>
                     </tr>
                 @endforeach
             </tbody>
