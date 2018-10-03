@@ -19,6 +19,11 @@ use Muserpol\Models\Spouse;
 use Muserpol\QuotaAidCorrelative;
 class Util
 {
+    public static function isRegionalRole()
+    {
+        $wf_state = WorkflowState::where('role_id', self::getRol()->id)->where('sequence_number', 0)->first();
+        return $wf_state ? true : false;
+    }
     //cambia el formato de la fecha a cadena
     //input $string=YYYY/mm/dd
     public static function getStringDate($string = "1800/01/01", $month_year=false){

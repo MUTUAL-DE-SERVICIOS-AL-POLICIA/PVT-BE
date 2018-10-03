@@ -90,6 +90,11 @@ export default {
       maxPercentage: 100.00,
       serviceYears:this.affiliate.service_years,
       serviceMonths:this.affiliate.service_months,
+      globalPay: false,
+
+      totalAporte: 0,
+      yield: 0,
+      lessAdministrativeExpenses: 0,
 
     };
   },
@@ -195,7 +200,15 @@ export default {
         }}
       ).then(response =>{
           flash("Verificacion Correcta");
-          this.showEconomicData = true
+
+          this.showEconomicData = true;
+          this.globalPay = response.data.global_pay;
+          if (this.globalPay) {
+            this.totalAporte = response.data.total_aporte;
+            this.yield = response.data.yield;
+            this.lessAdministrativeExpenses = response.data.less_administrative_expenses;
+          }
+
           TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_salary_quotable.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
           setTimeout(() => {
             this.$scrollTo('#showEconomicData');

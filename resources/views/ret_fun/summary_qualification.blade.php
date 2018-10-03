@@ -23,10 +23,14 @@
                         </div>
                         <div class="col-md-6">
                             <div class="col-sm-6">
-                                <label class="control-label">Salario Promedio Cotizable</label>
+                                @if ($affiliate->globalPayretFun())
+                                    <label class="control-label">Total Aportes</label>
+                                @else
+                                    <label class="control-label">Salario Promedio Cotizable</label>
+                                @endif
                             </div>
                             <div class="col-sm-6">
-                                Bs {{ Util::formatMoney($total_average_salary_quotable) }}
+                                Bs {{ Util::formatMoney($retirement_fund->average_quotable) }}
                                 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
                             </div>
                         </div>
