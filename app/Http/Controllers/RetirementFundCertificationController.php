@@ -2249,7 +2249,7 @@ class RetirementFundCertificationController extends Controller
                 
                 $body_legal_dictum .= $this->getFlagy($discounts_number,$flagy);
                 $flagy++;
-                $body_legal_dictum .= "Que, la Dirección de Estrategias Sociales e Inversiones, emite Nota de Respuesta con Cite ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date).", refiriendo que ".($affiliate->gender=="M"?' el <strong>Sr. ':' la <strong>Sra. ').($affiliate->fullNameWithDegree())."</strong> con C.I. <strong>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</strong>, tiene una deuda pendiente con la MUSERPOL, por el monto ";
+                $body_legal_dictum .= "<br>Que, la Dirección de Estrategias Sociales e Inversiones, emite Nota de Respuesta con Cite ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date).", refiriendo que ".($affiliate->gender=="M"?' el <strong>Sr. ':' la <strong>Sra. ').($affiliate->fullNameWithDegree())."</strong> con C.I. <strong>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</strong>, tiene una deuda pendiente con la MUSERPOL, por el monto ";
                 $body_legal_dictum.="de <b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b>";
                 $header_discount = true;
             }
@@ -2264,18 +2264,21 @@ class RetirementFundCertificationController extends Controller
                 $flagy++;
 
                 if(!$header_discount) {
-                    $body_legal_dictum .= "Que, la Dirección de Estrategias Sociales e Inversiones, emite Nota de Respuesta con Cite ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date).", refiriendo que ".($affiliate->gender=="M"?' el <strong>Sr. ':' la <strong>Sra. ').($affiliate->fullNameWithDegree())."</strong> con C.I. <strong>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."</strong>, tiene una deuda pendiente ";
+                    $body_legal_dictum .= "Que, la Dirección de Estrategias Sociales e Inversiones, emite Nota de Respuesta con Cite ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date).", refiriendo que ".($affiliate->gender=="M"?' el <strong>Sr. ':' la <strong>Sra. ').($affiliate->fullNameWithDegree())."</strong> con C.I. <strong>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".</strong>, tiene una deuda pendiente ";
                 } else {
                     $body_legal_dictum .= "";
                 }
             
                 $num_loans = $loans->count();
-                if($num_loans==1)
-                    $body_legal_dictum .= " con el (la) Garante: ";
-                else
-                    $body_legal_dictum .= " con los Garantes: ";
+                $header = true; 
+                if($num_loans > 1) {                    
+                    $body_legal_dictum .= " con los Garantes: ";                    
+                }                
                 $i=0;                
                 foreach($loans as $loan){
+                    if(!$header){
+                        $body_legal_dictum .= " con ".($loan->affiliate_guarantor->gender=="M"?"el":"la")." Garante: ";
+                    }
                     $i++;
                     if($i!=1)
                     {
@@ -2347,13 +2350,17 @@ class RetirementFundCertificationController extends Controller
                     $body_resolution .= "; retener para pago ";
                 }
                 $num_loans = $loans->count();
-                if($num_loans==1)
-                    $body_resolution .= "del (de la) Garante: ";
-                else
+                $header = false;
+                if($num_loans > 1) {
                     $body_resolution .= "de los Garantes: ";
+                    $header = true;
+                }
                 $i=0;
                 foreach($loans as $loan){
                     $i++;
+                    if(!$header){
+                        $body_resolution .= " con ".($loan->affiliate_guarantor->gender=="M"?"el":"la")." Garante: ";
+                    }
                     if($i!=1)
                     {
                         if($num_loans-$i==0)
@@ -2361,7 +2368,7 @@ class RetirementFundCertificationController extends Controller
                         else
                             $body_resolution .= ", ";
                     }
-                    $body_resolution.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
+                    $body_resolution.= ($loan->affiliate_guarantor->gender=="M"?"Sr. ":"Sra. ").$loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
                     $body_resolution.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
                 }
                 //$body_resolution .= ".<br><br>";//;" en conformidad al contrato de préstamo Nro. ".($discount->pivot->code??'sin nro')." y la nota ".($discount->pivot->note_code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) .".<br><br>";
