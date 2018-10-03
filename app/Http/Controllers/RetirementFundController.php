@@ -250,7 +250,12 @@ class RetirementFundController extends Controller
         $retirement_fund->reception_date = Carbon::now();
         $retirement_fund->code = $code;
         $retirement_fund->workflow_id = 4;
-        $retirement_fund->wf_state_current_id = 19;
+        $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0,1])->first();
+        if(!$wf_state){
+            Log::info("error al crear el tramite");
+            return;
+        }
+        $retirement_fund->wf_state_current_id = $wf_state->id;
         //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal_ret_fun = 0;
         $retirement_fund->total_ret_fun = 0;
