@@ -155,16 +155,24 @@ class Util
         }
         $year =  date('Y');
         $role = Role::find($wf_state->role_id);
-        if($role->correlative == ""){
-            $role->correlative = "1/".$year;
-        }
-        else{
-            $data = explode('/', $role->correlative);
-            if(!isset($data[1])){
+
+
+        $reception = WorkflowState::where('role_id', Session::get('rol_id'))->whereIn('sequence_number', [0, 1])->first();
+        if ($reception) {
+            $role->correlative = RetirementFund::find($retirement_fund_id)->code;
+        }else{
+
+            if($role->correlative == ""){
                 $role->correlative = "1/".$year;
-            }else{
-                $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
-                Log::info("correlative created " . $role->correlative);
+            }
+            else{
+                $data = explode('/', $role->correlative);
+                if(!isset($data[1])){
+                    $role->correlative = "1/".$year;
+                }else{
+                    $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+                    Log::info("correlative created " . $role->correlative);
+                }
             }
         }
         if ($save) {
