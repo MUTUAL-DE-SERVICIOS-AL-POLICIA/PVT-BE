@@ -60,7 +60,9 @@
                             <th>Ubicacion</th>
                             <th>Regional</th>
                             <th>Estado de Bandeja</th>
-                            <th>Total</th>
+                            <th>Disponibilidad</th>
+                            <th>Fondo de Retiro</th>
+                            <th>Total</th>                            
                             <th># de Archivo</th>
                             <th>Fecha Archivo</th>
                             <th># de Revision Legal</th>
@@ -167,7 +169,9 @@
                 { data: 'wf_state.first_shortened' },
                 { data: 'city_start.name' },
                 { data: 'inbox_state' },
-                { data: 'total' },
+                { data: 'total_availability', visible: false },
+                { data: 'subtotal_ret_fun', visible: false },
+                { data: 'total' },                
                 { data: 'file_code',  visible: false },
                 { data: 'file_date', visible: false },
                 { data: 'review_code', visible: false },
