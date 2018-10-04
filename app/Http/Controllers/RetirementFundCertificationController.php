@@ -1341,7 +1341,7 @@ class RetirementFundCertificationController extends Controller
             
            // foreach($testimonies_applicant as $testimony) {
                 $beneficiaries = $testimony_applicant->ret_fun_beneficiaries;
-                $quantity = $beneficiaries->count();
+                $quantity = $beneficiaries->count();                
                 $start_message = false;
                 if($quantity > 1) {
                     $person .= " y de los derechohabientes ";
@@ -1355,6 +1355,7 @@ class RetirementFundCertificationController extends Controller
                         $person .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI").".".((--$quantity)==2?" y ":(($quantity==1)?'':', '))." en calidad de ".$beneficiary->kinship->name;
                     }
                 }
+                $quantity = $beneficiaries->count();
                 if($quantity > 1) {
                     $person .=" como herederos legales acreditados mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
                 } else {
@@ -1640,7 +1641,6 @@ class RetirementFundCertificationController extends Controller
                     $legal_guardian = RetFunLegalGuardian::where('id',$beneficiary_legal_guardian->ret_fun_legal_guardian_id)->first();
                     $payment .= " por si o representada legamente por ".($legal_guardian->gender=='M'?"el Sr.":"la Sra. ")." ".Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".($legal_guardian->city_identity_card->first_shortened??"sin extencion").". 
                     conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° ".$legal_guardian->number_authority." de ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." emitido por ".$legal_guardian->notary.".";
-
                 }
                 $payment .= ', en el monto de <strong>'.Util::formatMoneyWithLiteral($beneficiary->amount_total).'</strong> '.'en calidad de '.$beneficiary->kinship->name.".<br><br>";
             
