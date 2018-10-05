@@ -22,10 +22,32 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
 use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\QuotaAidCorrelative;
 
 class QuotaAidCertificationController extends Controller
 {
-    //
+    public function saveCertificationNote(Request $request, $quota_aid_id)
+    {
+        $retirement_fund =  QuotaAidMortuary::find($quota_aid_id);
+        if ($request->note) {
+            $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first();
+            Util::getNextAreaCodeQuotaAid($quota_aid_id);
+            $ret_fun_correlative = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid_id)->where('wf_state_id', $wf_state->id)->first();
+            $ret_fun_correlative->note = $request->note;
+            $ret_fun_correlative->save();
+            Log::info('note saved');
+        }
+        return $retirement_fund;
+    }
+    public function getCorrelative($quota_aid_id, $wf_state_id)
+    {
+        $correlative = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid_id)->where('wf_state_id', $wf_state_id)->first();
+
+        if ($correlative) {
+            return $correlative;
+        }
+        return null;
+    }
     public function printQuotaAidCommitmentLetter($id)
     {
         $affiliate = Affiliate::find($id);

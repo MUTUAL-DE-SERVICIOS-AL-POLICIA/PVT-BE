@@ -193,7 +193,7 @@ class Util
 
         return $correlative;
     }
-    public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id){
+    public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id, $save = true){
         $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();        
         $reprint = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
         if(isset($reprint->id))
@@ -210,7 +210,9 @@ class Util
             else
                 $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
         }
-        $role->save();
+        if ($save) {
+            $role->save();
+        }
 
         //Correlative 
         $correlative = new QuotaAidCorrelative();
@@ -219,7 +221,9 @@ class Util
         $correlative->code = $role->correlative;
         $correlative->date = Carbon::now();
         $correlative->user_id = self::getAuthUser()->id;
-        $correlative->save();
+        if ($save) {
+            $correlative->save();
+        }
 
         return $correlative;
     }

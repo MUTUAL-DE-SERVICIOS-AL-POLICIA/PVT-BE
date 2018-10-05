@@ -10,6 +10,7 @@ use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Auth;
 use Log;
+use DB;
 use Validator;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
@@ -31,6 +32,8 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
 use Muserpol\Models\RetirementFund\RetFunState;
 use Muserpol\Helpers\ID;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidRecord;
+use Muserpol\Models\Workflow\WorkflowRecord;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -404,7 +407,7 @@ class QuotaAidMortuaryController extends Controller
         $states = RetFunState::get();
 
 
-        //$ret_fun_records=RetFunRecord::where('ret_fun_id', $id)->orderBy('id','desc')->get();
+        $quota_aid_records =  QuotaAidRecord::where('quota_aid_id', $id)->orderBy('id','desc')->get();
 
         ///proof
         $user = User::find(Auth::user()->id);
@@ -436,19 +439,17 @@ class QuotaAidMortuaryController extends Controller
         $can_validate = $wf_current_state->id == $quota_aid->wf_state_current_id;
         $can_cancel = ($quota_aid->user_id == $user->id && $quota_aid->inbox_state == true);
 
-        //workflow record
-        //$workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
-        //return $workflow_records;
-        // $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
-        // return $first_wf_state;
-        // if ($first_wf_state) {
-        //     $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
-        //     $str = $first_wf_state->message;
-        //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-        //     $user_name = $matches[0][0];
-        //     $rol = User::where('username','=', $user_name)->first()->roles->first();
-        //     $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
-        // }
+        // workflow record
+        $workflow_records = WorkflowRecord::where('quota_aid_id', $id)->orderBy('created_at', 'desc')->get();
+        $first_wf_state = QuotaAidRecord::whereRaw("message like '%creo el Tr%'")->first();
+        if ($first_wf_state) {
+            $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
+            $str = $first_wf_state->message;
+            preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+            $user_name = $matches[0][0];
+            $rol = User::where('username','=', $user_name)->first()->roles->first();
+            $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
+        }
 
 
         // dd($first_wf_state);
@@ -462,6 +463,16 @@ class QuotaAidMortuaryController extends Controller
         $is_editable = "1";
         if(isset($quota_aid->id))
             $is_editable = ID::getNonEditableId();
+
+
+        $wf_sequences_back = DB::table("wf_states")
+            ->where("wf_states.module_id", "=", $module->id)
+            ->where('wf_states.sequence_number', '<', WorkflowState::find($quota_aid->wf_state_current_id)->sequence_number)
+            ->select(
+                'wf_states.id as wf_state_id',
+                'wf_states.first_shortened as wf_state_name'
+            )
+            ->get();
         //return $data;
         //return $correlatives;
         $data = [
@@ -479,7 +490,7 @@ class QuotaAidMortuaryController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
-            //'ret_fun_records' => $ret_fun_records,
+            'quota_aid_records' => $quota_aid_records,
             'requirements'  =>  $procedure_requirements,
             'user'  =>  $user,
             'procedure_types'   =>  $procedure_types,
@@ -490,10 +501,11 @@ class QuotaAidMortuaryController extends Controller
             'submit_documents' => $submitted->get(),
             'can_validate' =>  $can_validate,
             'can_cancel' =>  $can_cancel,
-            //'workflow_records' =>  $workflow_records,
-            //'first_wf_state' =>  $first_wf_state,
+            'workflow_records' =>  $workflow_records,
+            'first_wf_state' =>  $first_wf_state,
             'wf_states' =>  $wf_states,
-            'is_editable'  =>  $is_editable
+            'is_editable'  =>  $is_editable,
+            'wf_sequences_back' => $wf_sequences_back,
         ];
         //return $procedures_modalities;
 

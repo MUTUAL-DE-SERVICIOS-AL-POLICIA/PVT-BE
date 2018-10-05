@@ -124,6 +124,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('print_contributions_quote_aid', 'QuotaAidCertificationController@printDirectContributionQuoteAid');
 
 		Route::get('quota_aid/{quota_aid}/print/reception', 'QuotaAidCertificationController@printReception')->name('quota_aid_print_reception');
+		Route::post('quota_aid/{quota_aid}/save_certification_note', 'QuotaAidCertificationController@saveCertificationNote')->name('save_certification_note');
+		Route::get('quota_aid/{quota_aid_id}/correlative/{wf_state_id}', 'QuotaAidCertificationController@getCorrelative')->name('quota_aid_get_correlative');
 
 		Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->middleware('affiliate_has_ret_fun')->name('create_ret_fun');
 		Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
@@ -433,6 +435,9 @@ foreach (array_keys($retirement_funds) as $value) {
 		});
 		Route::get('get_next_area_code_ret_fun/{ret_fun_id}', function ($retirement_fund_id) {
 			return Util::getNextAreaCode($retirement_fund_id, false);
+		});
+		Route::get('get_next_area_code_quota_aid/{quota_aid_id}', function ($quota_aid_id) {
+			return Util::getNextAreaCodeQuotaAid($quota_aid_id, false);
 		});
 	});
 });

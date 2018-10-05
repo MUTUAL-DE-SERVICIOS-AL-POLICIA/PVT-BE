@@ -94,8 +94,14 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
             <div class="pull-left">
-                @if(Muserpol\Helpers\Util::getRol()->id == 40)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir recepción" onclick="printJS({printable:'{!! route('quota_aid_print_reception', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+                <correlative doc-id="{{ $quota_aid->id }}" wf-state-id="{{ $quota_aid->wf_state_current_id }}" :type="`quotaAid`"></correlative>
+            @if(Util::getRol()->id == 40 || Util::isRegionalRole())
+                <quota-aid-certification-button
+                    title="Imprimir recepción"
+                    quota-adi-id="{{ $quota_aid->id }}"
+                    url-print="{{ route('quota_aid_print_reception', $quota_aid->id) }}"
+                >
+                </quota-aid-certification-button>
             @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 15)
@@ -129,27 +135,41 @@
                 <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
             </a>
             @endcan
-            <span data-toggle="modal" data-target="#ModalRecordRetFun">
+            <span data-toggle="modal" data-target="#ModalRecordQuotaAid">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
                 </button>
             </span>
-            {{-- @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,]) --}}
+            @include('quota_aid.quota_aid_records', ['quota_aid_records' => $quota_aid_records,])
         </div>
         <div class="pull-right">
-            @if ($can_validate)
-        <sweet-alert-modal inline-template :doc-id="{{$quota_aid->id}}" :inbox-state="{{$quota_aid->inbox_state ? 'true' : 'false'}}" :doc-user-id="{{$quota_aid->user_id}}" :auth-id="{{ $user->id}}"  >
-                    <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
-                        <div v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
-                            {{-- <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active" type="button" :disabled="! status == false " ><i class="fa fa-check"></i></button> --}}
-                            <button  class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
-                        </div>
-                        <div v-else key="two" data-toggle="tooltip" data-placement="top" title="Procesar Trámite">
-                            <button class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="confirmModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
-                        </div>
-                    </transition>
-                </sweet-alert-modal>
-            @endif
+            <div class="form-inline">
+                @if ($can_validate)
+                    <inbox-send-back-button-quota-aid
+                        :wf-sequence-back-list="{{ $wf_sequences_back }}"
+                        :doc-id="{{$quota_aid->id}}"
+                        :wf-current-state-name="`{{$quota_aid->wf_state->name}}`"
+                        type="quotaAid"
+                    ></inbox-send-back-button-quota-aid>
+                    <sweet-alert-modal
+                    inline-template
+                    :doc-id="{{$quota_aid->id}}"
+                    :inbox-state="{{$quota_aid->inbox_state ? 'true' : 'false'}}"
+                    :doc-user-id="{{$quota_aid->user_id}}"
+                    :auth-id="{{ $user->id}}"
+                    type="quotaAid"
+                    >
+                        <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
+                            <div style="display:inline-block" v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
+                                <button  class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
+                            </div>
+                            <div style="display:inline-block" v-else key="two" data-toggle="tooltip" data-placement="top" title="Procesar Trámite">
+                                <button class="btn btn-primary btn-circle btn-outline btn-lg" type="button" @click="confirmModal()" :disabled="! status == false " ><i class="fa fa-check"></i></button>
+                            </div>
+                        </transition>
+                    </sweet-alert-modalinline-template>
+                @endif
+            </div>
         </div>
     </div>
 </div>

@@ -101,3 +101,6 @@ export function flashErrors(prefix, errors, level) {
         }
     }
 }
+export function camelCaseToSnakeCase(myStr) {
+    return myStr.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+}
