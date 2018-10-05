@@ -102,7 +102,7 @@
     <div class="col-md-5 text-center" style="margin-top:12px;">
             <div class="pull-left">
                 <correlative ret-fun-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}"></correlative>
-            @if(Muserpol\Helpers\Util::getRol()->id == 10)
+            @if(Util::getRol()->id == 10 || Util::isRegionalRole())
                 <ret-fun-certification-button
                     title="Imprimir recepción"
                     ret-fun-id="{{ $retirement_fund->id }}"

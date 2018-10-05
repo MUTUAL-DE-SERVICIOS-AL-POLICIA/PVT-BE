@@ -356,6 +356,13 @@ class Affiliate extends Model
         );
         return $total_dates;
     }
+    public function globalPayRetFun()
+    {
+        $current_procedure = Util::getRetFunCurrentProcedure();
+        $number_contributions = $current_procedure->contributions_number;
+        return $this->getTotalQuotes() < $number_contributions;
+
+    }
     public function getContributionsPlus($with_reimbursements = true)
     {
         if ($this->selectedContributions() > 0) {
