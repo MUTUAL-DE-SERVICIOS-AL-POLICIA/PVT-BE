@@ -2228,7 +2228,7 @@ class RetirementFundCertificationController extends Controller
         $discounts = $retirement_fund->discount_types();
         $discount = $discounts->where('discount_type_id','1')->first();        
         if(isset($discount->id) && $discount->pivot->amount > 0){                                        
-            $body_qualification.=" Descontando el monto del anticipo, reconocer el pago de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_availavility+$retirement_fund->total_ret_fun-$discount->pivot->amount)."</b>";
+            $body_qualification.=" Descontando el monto del anticipo, reconocer el pago de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_availability+$retirement_fund->subtotal_ret_fun-$discount->pivot->amount)."</b>";
         }        
         $body_qualification.= ".";
         //$body_qualification .= Util::getDiscountCombinations($retirement_fund->id);
@@ -2308,7 +2308,7 @@ class RetirementFundCertificationController extends Controller
         $discount = $discounts->where('discount_type_id','1')->first();    
         $body_resolution = "";    
         if(isset($discount->id) && $discount->pivot->amount > 0){            
-            $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> Ratifica el Anticipo otorgado mediante <strong>Resolución de la Comisión de Prestaciones Nº ".$discount->pivot->note_code."</strong> de fecha ".Util::getStringDate($discount->pivot->note_code_date).", por un monto de <b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> con cargo de liquidación final, a favor del<b>&nbsp; ".$affiliate->fullNameWithDegree()."</b> con C.I. <b>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".</b><br><br>";
+            $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> Ratificar el Anticipo otorgado mediante <strong>Resolución de la Comisión de Prestaciones Nº ".$discount->pivot->note_code."</strong> de fecha ".Util::getStringDate($discount->pivot->note_code_date).", por un monto de <b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> con cargo de liquidación final, a favor del<b>&nbsp; ".$affiliate->fullNameWithDegree()."</b> con C.I. <b>".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".</b><br><br>";
         }
         $months  = $affiliate->getTotalQuotes();
         $qualification_id = 23;
@@ -2323,7 +2323,7 @@ class RetirementFundCertificationController extends Controller
         $discounts = $retirement_fund->discount_types();
         $discount = $discounts->where('discount_type_id','1')->first();        
         if(isset($discount->id) && $discount->pivot->amount > 0){                                        
-            $body_resolution.=" Descontando el monto del anticipo, reconocer el pago del beneficio de Fondo de Retiro Policial Solidario, por un TOTAL de <strong>".Util::formatMoneyWithLiteral($retirement_fund->total_availavility+$retirement_fund->total_ret_fun-$discount->pivot->amount)."</strong>, a favor ".($affiliate->gender=='M'?'del ':'de la ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".";
+            $body_resolution.=" Descontando el monto del anticipo, reconocer el pago del beneficio de Fondo de Retiro Policial Solidario, por un TOTAL de <strong>".Util::formatMoneyWithLiteral($retirement_fund->total_availability+$retirement_fund->subtotal_ret_fun-$discount->pivot->amount)."</strong>, a favor ".($affiliate->gender=='M'?'del ':'de la ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".";
         } 
         $body_resolution.= "<br><br><br>";
         //$body_resolution .= ", reconocer el pago del beneficio de Fondo de Retiro Policial Solidario, por un TOTAL de &nbsp;<b>".Util::formatMoneyWithLiteral($retirement_fund->total)."</b> a favor del <b>".$affiliate->fullNameWithDegree()."</b> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened."</b>.";        
@@ -2404,12 +2404,10 @@ class RetirementFundCertificationController extends Controller
                 if(!$beneficiary->state) {
                     $reserved_quantity = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
-                    $body_resolution .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
-                    la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes ":" la Cuota Parte ")." salvando los derechos del beneficiario ".
-                    ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
-                    ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 29, 34, 35 y 41 del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resoluciones de Directorio Nros. 36/2017 y 51/2017 de fechas 20 de septiembre de 2017 y 29 de diciembre de 2017 respectivamente, de la siguiente manera:<br><br>";
+                    $body_resolution .= "Se Mantiene la reserva la Cuota Parte salvando los derechos, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos del Reglamento de Fondo de Retiro Policial Solidario, de la siguiente manera:<br><br>";
                 }
                 $birth_date = Carbon::createFromFormat('d/m/Y', $beneficiary->birth_date);  
+                $body_resolution .= "<li class='text-justify'>";
                 if(date('Y') -$birth_date->format('Y') > 18) {
                 $body_resolution .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 } else {
@@ -2430,7 +2428,7 @@ class RetirementFundCertificationController extends Controller
                     $body_resolution .= " por si o representada legamente por ".($legal_guardian->gender=='M'?"el Sr.":"la Sra. ")." ".Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".($legal_guardian->city_identity_card->first_shortened??"sin extencion").". 
                     conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° ".$legal_guardian->number_authority." de ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." emitido por ".$legal_guardian->notary.".";
                 }
-                $body_resolution .= ', en el monto de <strong>'.Util::formatMoneyWithLiteral($beneficiary->amount_total).'</strong> '.'en calidad de '.$beneficiary->kinship->name.".<br><br>";
+                $body_resolution .= ', en el monto de <strong>'.Util::formatMoneyWithLiteral($beneficiary->amount_total).'</strong> '.'en calidad de '.$beneficiary->kinship->name.".</li><br><br>";
             
             }
         } else {            
