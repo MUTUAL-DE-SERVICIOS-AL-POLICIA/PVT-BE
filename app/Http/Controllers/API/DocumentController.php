@@ -279,7 +279,7 @@ class DocumentController extends Controller
                         procedure_modalities.name as modality,
                         quota_aid_mortuaries.reception_date as reception_date,
                         quota_aid_mortuaries.workflow_id as workflow_id,
-                        concat('/ret_fun/', quota_aid_mortuaries.id) as path,
+                        concat('/quota_aid/', quota_aid_mortuaries.id) as path,
                         false as status
                         "
                     )

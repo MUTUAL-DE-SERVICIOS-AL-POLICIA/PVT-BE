@@ -29,6 +29,20 @@ class AddedTablesQuotaAid extends Migration
         Schema::table('wf_records', function (Blueprint $table) {
             $table->bigInteger('quota_aid_id')->nullable();
         });
+        Schema::create('quota_aid_beneficiary_testimony', function (Blueprint $table) {
+            $table->bigInteger('quota_aid_beneficiary_id')->unsigned();
+            $table->bigInteger('testimony_id')->unsigned();
+            $table->foreign('quota_aid_beneficiary_id')->references('id')->on('quota_aid_beneficiaries')->onDelete('cascade');
+            $table->foreign('testimony_id')->references('id')->on('testimonies')->onDelete('cascade');
+            $table->timestamps();
+        });
+        Schema::table('quota_aid_beneficiaries', function (Blueprint $table) {
+            $table->boolean('state')->default(false);
+        });
+        Schema::table('quota_aid_legal_guardians', function (Blueprint $table) {
+            $table->enum('gender', ['M', 'F'])->nullable();
+            $table->date('date_authority')->nullable();
+        });
     }
 
     /**
@@ -38,6 +52,14 @@ class AddedTablesQuotaAid extends Migration
      */
     public function down()
     {
+        Schema::table('quota_aid_legal_guardians', function (Blueprint $table) {
+            $table->dropColumn('gender');
+            $table->dropColumn('date_authority');
+        });
+        Schema::table('quota_aid_beneficiaries', function (Blueprint $table) {
+            $table->dropColumn('state');
+        });
+        Schema::dropIfExists('quota_aid_beneficiary_testimony');
         Schema::table('wf_records', function (Blueprint $table) {
             $table->dropColumn('quota_aid_id');
         });

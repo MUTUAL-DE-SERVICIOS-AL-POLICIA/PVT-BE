@@ -367,6 +367,39 @@ class QuotaAidMortuaryController extends Controller
             if(! sizeOf($b->address) > 0 && $b->type == 'S'){
                 $b->address[]= array('zone' => null, 'street'=>null, 'number_address'=>null);
             }
+            //1 => tutor
+            //2 => Apoderado
+            $b->legal_representative = null;
+            if ($beneficiary_advisor = $b->quota_aid_advisors->first()) {
+                $b->legal_representative = 1;
+                $b->advisor_identity_card = $beneficiary_advisor->identity_card;
+                $b->advisor_city_identity_card_id = $beneficiary_advisor->city_identity_card_id;
+                $b->advisor_first_name = $beneficiary_advisor->first_name;
+                $b->advisor_second_name = $beneficiary_advisor->second_name;
+                $b->advisor_last_name = $beneficiary_advisor->last_name;
+                $b->advisor_mothers_last_name = $beneficiary_advisor->mothers_last_name;
+                $b->advisor_surname_husband = $beneficiary_advisor->surname_husband;
+                $b->advisor_birth_date = $beneficiary_advisor->birth_date;
+                $b->advisor_gender = $beneficiary_advisor->gender;
+                $b->advisor_name_court = $beneficiary_advisor->name_court;
+                $b->advisor_resolution_number = $beneficiary_advisor->resolution_number;
+                $b->advisor_resolution_date = $beneficiary_advisor->resolution_date;
+            }
+            if ($beneficiary_legal_guardian = $b->quota_aid_legal_guardians->first()) {
+                $b->legal_representative = 2;
+                $b->legal_guardian_identity_card = $beneficiary_legal_guardian->identity_card;
+                $b->legal_guardian_city_identity_card_id = $beneficiary_legal_guardian->city_identity_card_id;
+                $b->legal_guardian_first_name = $beneficiary_legal_guardian->first_name;
+                $b->legal_guardian_second_name = $beneficiary_legal_guardian->second_name;
+                $b->legal_guardian_last_name = $beneficiary_legal_guardian->last_name;
+                $b->legal_guardian_mothers_last_name = $beneficiary_legal_guardian->mothers_last_name;
+                $b->legal_guardian_surname_husband = $beneficiary_legal_guardian->surname_husband;
+                $b->legal_guardian_gender = $beneficiary_legal_guardian->gender;
+                $b->legal_guardian_number_authority = $beneficiary_legal_guardian->number_authority;
+                $b->legal_guardian_notary_of_public_faith = $beneficiary_legal_guardian->notary_of_public_faith;
+                $b->legal_guardian_notary = $beneficiary_legal_guardian->notary;
+                $b->legal_guardian_date_authority = $beneficiary_legal_guardian->date_authority;
+            }
         }
 
         $applicant = QuotaAidBeneficiary::where('type','S')->where('quota_aid_mortuary_id',$quota_aid->id)->first();
@@ -511,6 +544,356 @@ class QuotaAidMortuaryController extends Controller
 
         return view('quota_aid.show',$data);
 
+    }
+    public function updateBeneficiaries(Request $request, $id)
+    {
+        $i = 0;
+        $ben = 0;
+        $beneficiaries_array_request = [];
+        foreach (array_pluck($request->all(), 'id') as $key => $value) {
+            if ($value) {
+                array_push($beneficiaries_array_request, $value);
+            }
+        }
+        /* delete beneficiaries */
+        $beneficiaries = QuotaAidMortuary::find($id)->quota_aid_beneficiaries;
+        foreach ($beneficiaries as $key => $ben) {
+            $index = array_search($ben->id, $beneficiaries_array_request);
+            if ($index === false) {
+                $ben->delete();
+            }
+        }
+        $quota_aid = QuotaAidMortuary::find($id);
+        /*update info beneficiaries*/
+        $beneficiaries = QuotaAidMortuary::find($id)->quota_aid_beneficiaries->toArray();
+        foreach ($request->all() as $key => $new_ben) {
+            $found = [];
+            if (isset($new_ben['id'])) {
+                $found = array_filter($beneficiaries, function ($var) use ($new_ben) {
+                    return ($var['id'] == $new_ben['id']);
+                });
+            }
+            // Log::info($new_ben);
+            if ($found) {
+                $old_ben = QuotaAidBeneficiary::find($new_ben['id']);
+                $old_ben->city_identity_card_id = $new_ben['city_identity_card_id'];
+                $old_ben->kinship_id = $new_ben['kinship_id'];
+                $old_ben->identity_card = mb_strtoupper(trim($new_ben['identity_card']));
+                $old_ben->last_name = mb_strtoupper(trim($new_ben['last_name']));
+                $old_ben->mothers_last_name = mb_strtoupper(trim($new_ben['mothers_last_name']));
+                $old_ben->first_name = mb_strtoupper(trim($new_ben['first_name']));
+                $old_ben->second_name = mb_strtoupper(trim($new_ben['second_name']));
+                $old_ben->surname_husband = mb_strtoupper(trim($new_ben['surname_husband']));
+                $old_ben->birth_date = Util::verifyBarDate($new_ben['birth_date']) ? Util::parseBarDate($new_ben['birth_date']) : $new_ben['birth_date'];
+                $old_ben->gender = $new_ben['gender'];
+                $old_ben->state = $new_ben['state'] ?? false;
+
+                if (is_null($new_ben['legal_representative'])) {
+                    if ($ben_advisor = $old_ben->quota_aid_advisors->first()) {
+                        // delete
+                        $advisor_beneficiary = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $old_ben->id)->where('quota_aid_advisor_id', $ben_advisor->id)->first();
+                        $advisor_beneficiary->delete();
+                    }
+                    if ($ben_legal_guardian = $old_ben->quota_aid_legal_guardians->first()) {
+                        //delete
+                        $ben_legal_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $old_ben->id)->where('quota_aid_legal_guardian_id', $ben_legal_guardian->id)->first();
+                        $ben_legal_guardian->delete();
+                    }
+                } else {
+                    switch ($new_ben['legal_representative']) {
+                        //tutor
+                        case 1:
+                            //exists
+                            if ($ben_advisor = $old_ben->quota_aid_advisors->first()) {
+
+                            } else {
+                                $ben_advisor = new QuotaAidAdvisor();
+                            }
+                            $ben_advisor->city_identity_card_id = isset($new_ben['advisor_city_identity_card_id']) ? intval($new_ben['advisor_city_identity_card_id']) : null;
+                            $ben_advisor->kinship_id = null;
+                            $ben_advisor->identity_card = $new_ben['advisor_identity_card'] ?? null;
+                            $ben_advisor->last_name = strtoupper(trim($new_ben['advisor_last_name'] ?? null));
+                            $ben_advisor->mothers_last_name = strtoupper(trim($new_ben['advisor_mothers_last_name'] ?? null));
+                            $ben_advisor->first_name = strtoupper(trim($new_ben['advisor_first_name'] ?? null));
+                            $ben_advisor->second_name = strtoupper(trim($new_ben['advisor_second_name'] ?? null));
+                            $ben_advisor->surname_husband = strtoupper(trim($new_ben['advisor_surname_husband'] ?? null));
+                            $ben_advisor->gender = strtoupper(trim($new_ben['advisor_gender'] ?? null));
+                            // $ben_advisor->phone_number = trim(implode(",", $new_ben['advisor_phone_number'] ?? []));
+                            // $ben_advisor->cell_phone_number = trim(implode(",", $new_ben['advisor_cell_phone_number'] ?? []));
+                            $ben_advisor->name_court = $new_ben['advisor_name_court'] ?? null;
+                            $ben_advisor->resolution_number = $new_ben['advisor_resolution_number'] ?? null;
+                            $ben_advisor->resolution_date = isset($new_ben['advisor_resolution_date']) ? (Util::verifyBarDate($new_ben['advisor_resolution_date']) ? Util::parseBarDate($new_ben['advisor_resolution_date']) : $new_ben['advisor_resolution_date']) : null;
+                            $ben_advisor->type = "Natural";
+                            $ben_advisor->save();
+                            if ($old_ben->quota_aid_advisors->first()) {
+
+                            } else {
+                                $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
+                                $advisor_beneficiary->quota_aid_beneficiary_id = $old_ben->id;
+                                $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
+                                $advisor_beneficiary->save();
+                            }
+
+                            break;
+                        //apoderado
+                        case 2:
+                            if ($ben_legal_guardian = $old_ben->quota_aid_legal_guardians->first()) {
+
+                            } else {
+                                $ben_legal_guardian = new QuotaAidLegalGuardian();
+                                // $ben_legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
+                            }
+                            $ben_legal_guardian->identity_card = strtoupper(trim($new_ben['legal_guardian_identity_card'] ?? null));
+                            $ben_legal_guardian->city_identity_card_id = isset($new_ben['legal_guardian_city_identity_card_id']) ? intval($new_ben['legal_guardian_city_identity_card_id']) : null;
+                            $ben_legal_guardian->first_name = strtoupper(trim($new_ben['legal_guardian_first_name'] ?? null));
+                            $ben_legal_guardian->second_name = strtoupper(trim($new_ben['legal_guardian_second_name'] ?? null));
+                            $ben_legal_guardian->last_name = strtoupper(trim($new_ben['legal_guardian_last_name'] ?? null));
+                            $ben_legal_guardian->mothers_last_name = strtoupper(trim($new_ben['legal_guardian_mothers_last_name'] ?? null));
+                            $ben_legal_guardian->surname_husband = strtoupper(trim($new_ben['legal_guardian_surname_husband'] ?? null));
+                            /** !! TODO
+                             * phone and cellphone numbers
+                             */
+                            // $ben_legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+                            // $ben_legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
+
+                            $ben_legal_guardian->gender = $new_ben['legal_guardian_gender'] ?? null;
+                            $ben_legal_guardian->number_authority = $new_ben['legal_guardian_number_authority'] ?? null;
+                            $ben_legal_guardian->notary_of_public_faith = $new_ben['legal_guardian_notary_of_public_faith'] ?? null;
+                            $ben_legal_guardian->notary = $new_ben['legal_guardian_notary'] ?? null;
+                            $ben_legal_guardian->date_authority = isset($new_ben['legal_guardian_date_authority']) ? (Util::verifyBarDate($new_ben['legal_guardian_date_authority']) ? Util::parseBarDate($new_ben['legal_guardian_date_authority']) : $new_ben['legal_guardian_date_authority']) : null;
+                            $ben_legal_guardian->save();
+                            if ($old_ben->quota_aid_legal_guardians->first()) {
+
+                            } else {
+                                $ben_legal_guardian_new = new QuotaAidBeneficiaryLegalGuardian();
+                                $ben_legal_guardian_new->quota_aid_beneficiary_id = $old_ben->id;
+                                $ben_legal_guardian_new->quota_aid_legal_guardian_id = $ben_legal_guardian->id;
+                                $ben_legal_guardian_new->save();
+                            }
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                }
+
+                if ($old_ben->type == 'S' && $old_ben->kinship_id == 1 &&  ($quota_aid->procedure_modality_id == 15 || $quota_aid->procedure_modality_id == 14 )) {
+                    $update_affilaite = Affiliate::find($quota_aid->affiliate_id);
+                    $update_affilaite->identity_card = $old_ben->identity_card;
+                    $update_affilaite->first_name = $old_ben->first_name;
+                    $update_affilaite->second_name = $old_ben->second_name;
+                    $update_affilaite->last_name = $old_ben->last_name;
+                    $update_affilaite->mothers_last_name = $old_ben->mothers_last_name;
+                    $update_affilaite->gender = $old_ben->gender;
+                    $update_affilaite->birth_date = Util::verifyBarDate($old_ben->birth_date) ? Util::parseBarDate($old_ben->birth_date) : $old_ben->birth_date;
+                    $update_affilaite->city_identity_card_id = $old_ben->city_identity_card_id;
+                    $update_affilaite->surname_husband = $old_ben->surname_husband;
+                    $update_affilaite->save();
+                }
+                if ($old_ben->type == 'S') {
+                    $old_ben->phone_number = trim(implode(",", $new_ben['phone_number']));
+                    $old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
+
+                    //$old_ben->cell_phone_number = trim(implode(",", $new_ben['cell_phone_number']));
+                    /*Actualizar direccion  */
+                    if (sizeOf($old_ben->address) > 0) {
+                        $address_id = $old_ben->address()->first()->id;
+                        $address = Address::find($address_id);
+                        if ($new_ben['address'][0]['zone'] || $new_ben['address'][0]['street'] || $new_ben['address'][0]['number_address']) {
+                            $address->city_address_id = $new_ben['address'][0]['city_address_id'] ?? 1;
+                            $address->zone = $new_ben['address'][0]['zone'];
+                            $address->street = $new_ben['address'][0]['street'];
+                            $address->number_address = $new_ben['address'][0]['number_address'];
+                            $address->save();
+                            if (($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) && $old_ben->kinship_id == 1) {
+                                $update_affilaite = Affiliate::find($quota_aid->affiliate_id);
+                                if ($update_affilaite->address->contains($address->id)) {
+
+                                } else {
+                                    $update_affilaite->address()->save($address);
+                                }
+                            }
+                        } else {
+                            if (($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) && $old_ben->kinship_id == 1) {
+                                $update_affilaite = Affiliate::find($quota_aid->affiliate_id);
+                                $update_affilaite->address()->detach($address->id);
+                            }
+                            $old_ben->address()->detach($address->id);
+                            $address->delete();
+                        }
+                    } else {
+                        if ($new_ben['address']) {
+                            Log::info('new Address');
+                            $address = new Address();
+                            $address->city_address_id = $new_ben['address'][0]['city_address_id'] ?? 1;
+                            $address->zone = $new_ben['address'][0]['zone'];
+                            $address->street = $new_ben['address'][0]['street'];
+                            $address->number_address = $new_ben['address'][0]['number_address'];
+                            $address->save();
+                            $old_ben->address()->save($address);
+                            if (($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) && $old_ben->kinship_id == 1) {
+                                $update_affilaite = Affiliate::find($quota_aid->affiliate_id);
+                                $update_affilaite->address()->save($address);
+                            }
+                        }
+                    }
+
+
+                }
+                $old_ben->save();
+            } else {
+                $beneficiary = new QuotaAidBeneficiary();
+                $beneficiary->quota_aid_mortuary_id = $id;
+                $beneficiary->city_identity_card_id = $new_ben['city_identity_card_id'];
+                $beneficiary->kinship_id = $new_ben['kinship_id'];
+                $beneficiary->identity_card = mb_strtoupper(trim($new_ben['identity_card']));
+                $beneficiary->last_name = mb_strtoupper(trim($new_ben['last_name']));
+                $beneficiary->mothers_last_name = mb_strtoupper(trim($new_ben['mothers_last_name']));
+                $beneficiary->first_name = mb_strtoupper(trim($new_ben['first_name']));
+                $beneficiary->second_name = mb_strtoupper(trim($new_ben['second_name']));
+                $beneficiary->surname_husband = mb_strtoupper(trim($new_ben['surname_husband']));
+                $beneficiary->birth_date = Util::verifyBarDate($new_ben['birth_date']) ? Util::parseBarDate($new_ben['birth_date']) : $new_ben['birth_date'];
+                $beneficiary->gender = $new_ben['gender'];
+                $beneficiary->state = $new_ben['state'];
+                // $old_ben->state = $new_ben['state'];
+                // $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
+                // $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+                $beneficiary->type = ID::beneficiary()->normal;
+                $beneficiary->save();
+
+
+                // if (is_null($new_ben['legal_representative'])) {
+                //     if ($old_ben->quota_aid_advisors->first()) {
+                //         //delete
+                //     }
+                //     if ($old_ben->quota_aid_legal_guardians->first()) {
+                //         //delete
+                //     }
+                // } else {
+                switch ($new_ben['legal_representative']) {
+                        //tutor
+                    case 1:
+                            //exists
+                            // if ($ben_advisor = $old_ben->quota_aid_advisors->first()) {
+
+                            // } else {
+                        $ben_advisor = new QuotaAidAdvisor();
+                            // }
+                        $ben_advisor->city_identity_card_id = $new_ben['advisor_city_identity_card_id'];
+                        $ben_advisor->kinship_id = null;
+                        $ben_advisor->identity_card = $new_ben['advisor_identity_card'];
+                        $ben_advisor->last_name = strtoupper(trim($new_ben['advisor_last_name']));
+                        $ben_advisor->mothers_last_name = strtoupper(trim($new_ben['advisor_mothers_last_name']));
+                        $ben_advisor->first_name = strtoupper(trim($new_ben['advisor_first_name']));
+                        $ben_advisor->second_name = strtoupper(trim($new_ben['advisor_second_name']));
+                        $ben_advisor->surname_husband = strtoupper(trim($new_ben['advisor_surname_husband']));
+                        $ben_advisor->gender = strtoupper(trim($new_ben['advisor_gender']));
+                            // $ben_advisor->phone_number = trim(implode(",", $new_ben['advisor_phone_number'] ?? []));
+                            // $ben_advisor->cell_phone_number = trim(implode(",", $new_ben['advisor_cell_phone_number'] ?? []));
+                        $ben_advisor->name_court = $new_ben['advisor_name_court'];
+                        $ben_advisor->resolution_number = $new_ben['advisor_resolution_number'];
+                        $ben_advisor->resolution_date = Util::verifyBarDate($new_ben['advisor_resolution_date']) ? Util::parseBarDate($new_ben['advisor_resolution_date']) : $new_ben['advisor_resolution_date'];
+                        $ben_advisor->type = "Natural";
+                        $ben_advisor->save();
+                        if ($old_ben->quota_aid_advisors->first()) {
+
+                        } else {
+                            $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
+                            $advisor_beneficiary->quota_aid_beneficiary_id = $beneficiary->id;
+                            $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
+                            $advisor_beneficiary->save();
+                        }
+
+                        break;
+                        //apoderado
+                    case 2:
+                            // if ($ben_legal_guardian = $old_ben->quota_aid_legal_guardians->first()) {
+
+                            // } else {
+                        $ben_legal_guardian = new QuotaAidLegalGuardian();
+                        // $ben_legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
+                            // }
+                        $ben_legal_guardian->identity_card = strtoupper(trim($new_ben['legal_guardian_identity_card']));
+                        $ben_legal_guardian->city_identity_card_id = $new_ben['legal_guardian_city_identity_card_id'];
+                        $ben_legal_guardian->first_name = strtoupper(trim($new_ben['legal_guardian_first_name']));
+                        $ben_legal_guardian->second_name = strtoupper(trim($new_ben['legal_guardian_second_name']));
+                        $ben_legal_guardian->last_name = strtoupper(trim($new_ben['legal_guardian_last_name']));
+                        $ben_legal_guardian->mothers_last_name = strtoupper(trim($new_ben['legal_guardian_mothers_last_name']));
+                        $ben_legal_guardian->surname_husband = strtoupper(trim($new_ben['legal_guardian_surname_husband']));
+                        /** !! TODO
+                         * phone and cellphone numbers
+                         */
+                            // $ben_legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+                            // $ben_legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
+
+                        $ben_legal_guardian->gender = $new_ben['legal_guardian_gender'];
+                        $ben_legal_guardian->number_authority = $new_ben['legal_guardian_number_authority'];
+                        $ben_legal_guardian->notary_of_public_faith = $new_ben['legal_guardian_notary_of_public_faith'];
+                        $ben_legal_guardian->notary = $new_ben['legal_guardian_notary_of_public_faith'];
+                        $ben_legal_guardian->date_authority = Util::verifyBarDate($new_ben['legal_guardian_date_authority']) ? Util::parseBarDate($new_ben['legal_guardian_date_authority']) : $new_ben['legal_guardian_date_authority'];
+                        $ben_legal_guardian->save();
+                        if ($old_ben->quota_aid_legal_guardians->first()) {
+
+                        } else {
+                            $ben_legal_guardian_new = new QuotaAidBeneficiaryLegalGuardian();
+                            $ben_legal_guardian_new->quota_aid_beneficiary_id = $beneficiary->id;
+                            $ben_legal_guardian_new->quota_aid_legal_guardian_id = $ben_legal_guardian->id;
+                            $ben_legal_guardian_new->save();
+                        }
+                        break;
+                    default:
+                            # code...
+                        break;
+                }
+                // }
+
+
+            }
+        }
+        $beneficiaries = QuotaAidMortuary::find($id)->quota_aid_beneficiaries()->with(['kinship', 'city_identity_card', 'address'])->orderByDesc('type')->orderBy('id')->get();
+        foreach ($beneficiaries as $b) {
+            $b->phone_number = explode(',', $b->phone_number);
+            $b->cell_phone_number = explode(',', $b->cell_phone_number);
+            if (!sizeOf($b->address) > 0 && $b->type == 'S') {
+                $b->address[] = array('zone' => null, 'street' => null, 'number_address' => null);
+            }
+
+            $b->legal_representative = null;
+            if ($beneficiary_advisor = $b->quota_aid_advisors->first()) {
+                $b->legal_representative = 1;
+                $b->advisor_identity_card = $beneficiary_advisor->identity_card;
+                $b->advisor_city_identity_card_id = $beneficiary_advisor->city_identity_card_id;
+                $b->advisor_first_name = $beneficiary_advisor->first_name;
+                $b->advisor_second_name = $beneficiary_advisor->second_name;
+                $b->advisor_last_name = $beneficiary_advisor->last_name;
+                $b->advisor_mothers_last_name = $beneficiary_advisor->mothers_last_name;
+                $b->advisor_surname_husband = $beneficiary_advisor->surname_husband;
+                $b->advisor_birth_date = $beneficiary_advisor->birth_date;
+                $b->advisor_gender = $beneficiary_advisor->gender;
+                $b->advisor_name_court = $beneficiary_advisor->name_court;
+                $b->advisor_resolution_number = $beneficiary_advisor->resolution_number;
+                $b->advisor_resolution_date = $beneficiary_advisor->resolution_date;
+            }
+            if ($beneficiary_legal_guardian = $b->quota_aid_legal_guardians->first()) {
+                $b->legal_representative = 2;
+                $b->legal_guardian_identity_card = $beneficiary_legal_guardian->identity_card;
+                $b->legal_guardian_city_identity_card_id = $beneficiary_legal_guardian->city_identity_card_id;
+                $b->legal_guardian_first_name = $beneficiary_legal_guardian->first_name;
+                $b->legal_guardian_second_name = $beneficiary_legal_guardian->second_name;
+                $b->legal_guardian_last_name = $beneficiary_legal_guardian->last_name;
+                $b->legal_guardian_mothers_last_name = $beneficiary_legal_guardian->mothers_last_name;
+                $b->legal_guardian_surname_husband = $beneficiary_legal_guardian->surname_husband;
+                $b->legal_guardian_gender = $beneficiary_legal_guardian->gender;
+                $b->legal_guardian_number_authority = $beneficiary_legal_guardian->number_authority;
+                $b->legal_guardian_notary_of_public_faith = $beneficiary_legal_guardian->notary_of_public_faith;
+                $b->legal_guardian_notary = $beneficiary_legal_guardian->notary;
+                $b->legal_guardian_date_authority = $beneficiary_legal_guardian->date_authority;
+            }
+        }
+        $data = [
+            'beneficiaries' => $beneficiaries,
+        ];
+        return $data;
     }
 
     /**

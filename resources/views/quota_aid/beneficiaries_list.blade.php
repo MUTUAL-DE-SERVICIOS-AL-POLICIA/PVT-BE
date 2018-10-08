@@ -2,7 +2,7 @@
 <quota-aid-beneficiaries-show
     :beneficiaries2="{{ $beneficiaries }}" 
     :beneficiaries-backend="{{ $beneficiaries }}" 
-    :ret-fun-id="{{ $quota_aid->id }}" 
+    :quota-aid-id="{{ $quota_aid->id }}" 
     :procedure-modality-id="{{ $quota_aid->procedure_modality_id }}" 
     :original-beneficiaries-backend="{{ $beneficiaries }}" 
     :cities="{{$cities}}" 
@@ -24,7 +24,7 @@
                 </div>
                 
                 <div>
-                <quota-aid-beneficiary v-for="(beneficiary, index) in beneficiaries"
+                <ret-fun-beneficiary v-for="(beneficiary, index) in beneficiaries"
                     :key='index'
                     :beneficiary="beneficiary"
                     :cities="cities"
@@ -34,7 +34,7 @@
                     v-on:remove="removeBeneficiary(index)"
                     >
                 
-                </quota-aid-beneficiary>
+                </ret-fun-beneficiary>
                 </div>
                 <div class="row" v-if="editing && canAddBeneficiary() ">
                     <div class="col-md-5"></div>

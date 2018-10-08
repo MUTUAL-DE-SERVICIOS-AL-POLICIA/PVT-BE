@@ -207,7 +207,7 @@
             <div class="col-md-3" style="padding-right: 3px">
                     <div class="widget-head-color-box yellow-bg p-lg text-center">
                         <div class="m-b-md">
-                        <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Affiliado ">
+                        <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Afiliado ">
                         <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $quota_aid->affiliate->fullNameWithDegree() }}</a>
                         </h2>
                             <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $quota_aid->affiliate->ciWithExt() }}</strong></h3>
@@ -218,7 +218,7 @@
                             <ul class="list-group elements-list">
                                 <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Cuota Mortuoria Y Auxilio Mortuorio</a></li>
                                 @if($quota_aid->procedure_modality_id == 4)
-                                <li class="list-group-item " data-toggle="tab" href="#tab-affiliate" ><a href="#"><i class="fa fa-user"></i> Affiliado </a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-affiliate" ><a href="#"><i class="fa fa-user"></i> Afiliado </a></li>
                                 @endif
                                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
@@ -227,7 +227,7 @@
                             </ul>
                     </div>
                     <br>
-                <tag-list :ret-fun-id="{{ $quota_aid->id }}"></tag-list>
+                <tag-list :doc-id="{{ $quota_aid->id }}" type="quotaAid"></tag-list>
             </div>
             <br>
             <div class="col-md-9" style="padding-left: 6px">
