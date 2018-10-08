@@ -223,6 +223,19 @@ class QuotaAidMortuaryController extends Controller
                 $submit->save();
             }
         }
+
+        if($request->aditional_requirements){
+            foreach ($request->aditional_requirements  as  $requirement)
+            {
+                $submit = new QuotaAidSubmittedDocument();
+                $submit->quota_aid_mortuary_id = $quota_aid->id;
+                $submit->procedure_requirement_id = $requirement;
+                $submit->reception_date = date('Y-m-d');
+                $submit->comment = "";
+                $submit->save();
+            }
+        }
+
         $account_type = $request->input('accountType');
 
         $beneficiary = new QuotaAidBeneficiary();
@@ -591,7 +604,7 @@ class QuotaAidMortuaryController extends Controller
         $procedure_requirements = ProcedureRequirement::
                                     select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
                                     ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
-                                    ->where('procedure_requirements.number','!=','0')
+                                    //->where('procedure_requirements.number','!=','0')
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();

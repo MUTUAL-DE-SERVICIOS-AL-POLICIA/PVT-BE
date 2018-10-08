@@ -39,22 +39,54 @@
             </thead>
             <tbody class="text-sm">
                 @foreach($submitted_documents as $i=>$item)
-                <tr>
-                    <td class='text-center p-5'>{!! $item->procedure_requirement->number !!}</td>
-                    <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
-                    @if (true)
-                    <td class="text-center">
-                        <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
-                    </td>
-                    @else
-                    <td class="text-center">
-                        <i class="mdi mdi-close-box-outline"></i>
-                    </td>
-                    @endif
-                </tr>
+                @if($item->procedure_requirement->number > 0)
+                    <tr>
+                        <td class='text-center p-5'>{!! $item->procedure_requirement->number !!}</td>
+                        <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
+                        @if (true)
+                        <td class="text-center">
+                            <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
+                        </td>
+                        @else
+                        <td class="text-center">
+                            <i class="mdi mdi-close-box-outline"></i>
+                        </td>
+                        @endif
+                    </tr>
+                @endif
                 @endforeach
             </tbody>
         </table>
+        @if($submitted_documents[0]->procedure_requirement->number != 1)
+            <table class="table-info w-100 m-b-5">
+                <thead class="bg-grey-darker">
+                    <tr class="font-medium text-white text-sm">
+                        {{-- <td class="text-center p-5">N°</td> --}}
+                        <td class="text-center p-5">ADICIONALES</td>
+                        <td class="text-center p-5">V°B°</td>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    @foreach($submitted_documents as $i=>$item)
+                        @if($item->procedure_requirement->number == 0)
+                            <tr>
+                                {{-- <td class='text-center p-5'>{!! $item->procedure_requirement->number !!}</td> --}}
+                                <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
+                                @if (true)
+                                <td class="text-center">
+                                    <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
+                                </td>
+                                @else
+                                <td class="text-center">
+                                    <i class="mdi mdi-close-box-outline"></i>
+                                </td>
+                                @endif
+                            </tr>
+                        @endif
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
         <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, y en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario Cuota y Auxilio Mortuorio procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme el artículo 50 del Reglamento de Cuota y Auxilio Mortuorio.</div>
         <table class="m-t-35">
             <tr>
