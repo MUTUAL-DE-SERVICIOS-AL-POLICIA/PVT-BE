@@ -1753,7 +1753,7 @@ class RetirementFundCertificationController extends Controller
                         if(!$start_message) {
                             $head .= " y ".($beneficiary->gender=="M"?"del":"de la")." derechohabiente ";
                         }
-                        $head .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI").".".((--$quantity)==2?" y ":(($quantity==1)?'':', '))." en calidad de ".$beneficiary->kinship->name;
+                        $head .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI")."."." en calidad de ".$beneficiary->kinship->name.((--$quantity)==2?" y ":(($quantity==1)?'':', '));
                     }
                 }
                 $quantity = $beneficiaries->count();
