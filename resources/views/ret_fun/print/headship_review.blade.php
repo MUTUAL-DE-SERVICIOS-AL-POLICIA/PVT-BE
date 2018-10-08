@@ -105,11 +105,12 @@
                         {!! $conclusion !!}
                     </p>
                     <ul class="m-l-30">
-                        @foreach($payments as $payment)
+                        {!! $payment !!}
+                        {{-- @foreach($payments as $payment)
                             <li class="text-justify">
                                 {!! $payment !!}
                             </li>
-                        @endforeach
+                        @endforeach --}}
                     </ul>
                     <p class="text-justify">
                         {!! $end_conclusion !!}
