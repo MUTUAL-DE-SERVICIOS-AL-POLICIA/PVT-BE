@@ -1031,7 +1031,7 @@ class RetirementFundController extends Controller
                 'subtotal_ret_fun'
             )
             ->where('code', 'not like', '%A')
-            ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+            ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
 
             ;
         return $datatables->eloquent($retirement_funds)

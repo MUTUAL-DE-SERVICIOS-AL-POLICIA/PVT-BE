@@ -1361,7 +1361,7 @@ class RetirementFundCertificationController extends Controller
         if($retirement_fund->procedure_modality_id == 4) {
             //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($retirement_fund->reception_date) .", a lo cual considera lo siguiente:";
        
-            $person .=  ($applicant->gender=='M'?' el Sr. ':' la Sra. ').Util::fullName($applicant)." con C.I. N° ". $applicant->identity_card." ".$applicant->city_identity_card->first_shortened.". solicita el beneficio a favor suyo en calidad de ".$applicant->kinship->name;            
+            $person .=  ($applicant->gender=='M'?' el Sr. ':' la Sra. ').Util::fullName($applicant)." con C.I. N° ". $applicant->identity_card." ".$applicant->city_identity_card->first_shortened.". solicita el beneficio a favor suyo en calidad de ".$applicant->kinship->name; 
             $testimony_applicant = Testimony::find($applicant->testimonies()->first()->id);
             
            // foreach($testimonies_applicant as $testimony) {
@@ -1727,13 +1727,76 @@ class RetirementFundCertificationController extends Controller
 
         $head = "<p>Señora Directora:</p><p class='text-justify'>En atención a solicitud de fecha ".Util::getStringDate($retirement_fund->reception_date).", del beneficio de Fondo de Retiro Policial, ";
         if(isset($ret_fun_beneficiary->id)) {
-            $legal_guardian = RetFunLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();
-            //$head .= "Mediante Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N°".  $legal_guardian->number_authority ." de fecha ".$legal_guardian->date." emitido por ". $legal_guardian->notary." otorgado al Sr. ".Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened." representa legalmente al ";
+            $legal_guardian = RetFunLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();            
             $head .= ($legal_guardian->gender=='M'?"el señor ":"la señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
         } else {            
             $head .= ($affiliate->gender=='M'?"El señor ":"La señora ");
         }
-        $head .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". ucwords($retirement_fund->procedure_modality->name) ."</strong> y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: ";        
+        $head .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". ucwords($retirement_fund->procedure_modality->name) ."</strong>";
+
+        if($retirement_fund->procedure_modality_id == 4) {
+            //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($retirement_fund->reception_date) .", a lo cual considera lo siguiente:";
+            $head .= ", ";    
+            $head .=  ($applicant->gender=='M'?' el Sr. ':' la Sra. ').Util::fullName($applicant)." con C.I. N° ". $applicant->identity_card." ".$applicant->city_identity_card->first_shortened.". solicita el beneficio a favor suyo en calidad de ".$applicant->kinship->name; 
+            $testimony_applicant = Testimony::find($applicant->testimonies()->first()->id);
+            
+           // foreach($testimonies_applicant as $testimony) {
+                $beneficiaries = $testimony_applicant->ret_fun_beneficiaries;
+                $quantity = $beneficiaries->count();                
+                $start_message = false;
+                if($quantity > 1) {
+                    $head .= " y de los derechohabientes ";
+                    $start_message = true;
+                }
+                foreach($beneficiaries as $beneficiary) {
+                    if($beneficiary->id != $applicant->id) {
+                        if(!$start_message) {
+                            $head .= " y ".($beneficiary->gender=="M"?"del":"de la")." derechohabiente ";
+                        }
+                        $head .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI").".".((--$quantity)==2?" y ":(($quantity==1)?'':', '))." en calidad de ".$beneficiary->kinship->name;
+                    }
+                }
+                $quantity = $beneficiaries->count();
+                if($quantity > 1) {
+                    $head .=" como herederos legales acreditados mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
+                } else {
+                    $head .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de la cuidad de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
+                }
+            //} 
+
+            $testimonies_applicant = Testimony::where('affiliate_id',$affiliate->id)->where('id','!=',$applicant->testimonies()->first()->id)->get();
+            foreach($testimonies_applicant as $testimony) {
+                $beneficiaries = $testimony->ret_fun_beneficiaries;                
+                $beneficiaries = $beneficiaries->where('state',true);
+                $quantity = $beneficiaries->count();
+                $start_message = false;
+                if($quantity > 0) {
+                    if($quantity > 1) {
+                        $head .= "; asimismo solicitan el beneficio los derechohabientes ";
+                        $start_message = true;
+                    } 
+                    $stored_quantity = $quantity;
+                    foreach($beneficiaries as $beneficiary) {
+                        //if($beneficiary->state)
+                        if(!$start_message)
+                        {
+                            $head .= " asimismo solicita el beneficio ".($beneficiary->gender=="M"?"el":"la")." derechohabiente ";
+                        }
+                        $head .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI").". en calidad de ".$beneficiary->kinship->name.((--$quantity)==1?" y ":(($quantity==0)?'':', '));
+                    }
+                    if($stored_quantity > 1) {
+                        $head .=" como herederos legales acreditados mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de ".$testimony->place." a cargo de ".$testimony->notary."";
+                    } else {
+                        $head .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de la cuidad de ".$testimony->place." a cargo de ".$testimony->notary."";
+                    }                    
+                }
+            } 
+            //$head .=". Presentando";
+        }  
+        // else {
+        //     $head .= " p";
+        // }
+        $head .= " y en cumplimiento al numeral 8 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión: ";
 
         $past = "Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 3231 de 28 de junio de 2017, referente al beneficio de Fondo de Retiro Policial en el artículo 2, (MODIFICACIONES) establece:
             <br><br>
@@ -1988,31 +2051,70 @@ class RetirementFundCertificationController extends Controller
 
         $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderByDesc('type')->orderBy('id')->get();
 
-        $payments = [];
-        if($retirement_fund->procedure_modality_id == 4) {
-            $conclusion .= "Según información contenida en el Certificado de Descendencia presentado por la solicitante, mantener en reserva la cuota parte de: ";
-        }
-        foreach($beneficiaries as $beneficiary){
-            $legal_guardian  = RetFunLegalGuardianbeneficiary::where('ret_fun_beneficiary_id',$beneficiary->id)->first();
-            $payment = "";
-            if(!isset($legal_guardian) || true){
-                if($beneficiary->geneder == "F")
-                {
-                    $payment .= "Sra. ";
-                }
-                else{
-                    $payment .= "Sr. ";
-                }
-            }
-            else{
-                $payment .= "Menor ";
-            }
-            //if($beneficiary->state)
-            //$payment .= "Según información contenida en el Certificado de Descendencia presentado por la solicitante, mantener en reserva la cuota parte de: ";
-            $payment .= Util::fullName($beneficiary). " con CI. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened."., en el monto de <strong>".Util::formatMoneyWithLiteral($beneficiary->amount_total)."</strong>, en calidad de ".$beneficiary->kinship->name."." ;
+        $payment = "";
 
-            array_push($payments,$payment);
-        }
+        if($retirement_fund->procedure_modality_id == 4) {
+            $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('kinship_id')->orderByDesc('state')->get();
+            foreach($beneficiaries as $beneficiary){
+                if(!$beneficiary->state) {
+                    $reserved_quantity = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('state',false)->count();
+                    $certification = $beneficiary->testimonies()->first();
+                    $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
+                    la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes ":" la Cuota Parte ")." salvando los derechos del beneficiario ".
+                    ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
+                    ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 29, 34, 35 y 41 del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resoluciones de Directorio Nros. 36/2017 y 51/2017 de fechas 20 de septiembre de 2017 y 29 de diciembre de 2017 respectivamente, de la siguiente manera:<br><br>";
+                }
+                $birth_date = Carbon::createFromFormat('d/m/Y', $beneficiary->birth_date);  
+                if(date('Y') -$birth_date->format('Y') > 18) {
+                $payment .=$beneficiary->gender=='M'?'<li>Sr. ':'<li>Sra. ';
+                } else {
+                    $payment .='<li>Menor ';
+                }
+                $payment .= $beneficiary->fullName();
+                if($beneficiary->identity_card)
+                $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");
+                $beneficiary_advisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id',$beneficiary->id)->first();
+                if(isset($beneficiary_advisor->id))
+                {
+                    $advisor = RetFunAdvisor::where('id',$beneficiary_advisor->ret_fun_advisor_id)->first();
+                    $payment .= ", a través de su tutor".($advisor->gender=='F'?'a':'')." natural ".($advisor->gender=='M'?'Sr.':'Sra.')." ".Util::fullName($advisor)." con C.I. N°".$advisor->identity_card." ".($advisor->city_identity_card->first_shortened??"Sin Extencion").".";
+                }
+                $beneficiary_legal_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$beneficiary->id)->first();
+                if(isset($beneficiary_legal_guardian->id)) {
+                    $legal_guardian = RetFunLegalGuardian::where('id',$beneficiary_legal_guardian->ret_fun_legal_guardian_id)->first();
+                    $payment .= " por si o representada legamente por ".($legal_guardian->gender=='M'?"el Sr.":"la Sra. ")." ".Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".($legal_guardian->city_identity_card->first_shortened??"sin extencion").". 
+                    conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° ".$legal_guardian->number_authority." de ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." emitido por ".$legal_guardian->notary.".";
+                }
+                $payment .= ', en el monto de <strong>'.Util::formatMoneyWithLiteral($beneficiary->amount_total).'</strong> '.'en calidad de '.$beneficiary->kinship->name.".</li><br><br>";
+            
+            }
+        } else {            
+            $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI")."., el monto de &nbsp;<strong>".Util::formatMoneyWithLiteral($retirement_fund->total).".</strong>";
+        } 
+
+        // if($retirement_fund->procedure_modality_id == 4) {
+        //     $conclusion .= "Según información contenida en el Certificado de Descendencia presentado por la solicitante, mantener en reserva la cuota parte de: ";
+        // }
+        // foreach($beneficiaries as $beneficiary){
+        //     $legal_guardian  = RetFunLegalGuardianbeneficiary::where('ret_fun_beneficiary_id',$beneficiary->id)->first();
+        //     $payment = "";
+        //     if(!isset($legal_guardian) || true){
+        //         if($beneficiary->geneder == "F")
+        //         {
+        //             $payment .= "Sra. ";
+        //         }
+        //         else{
+        //             $payment .= "Sr. ";
+        //         }
+        //     }
+        //     else{
+        //         $payment .= "Menor ";
+        //     }            
+        //     $payment .= Util::fullName($beneficiary). " con CI. N° ".$beneficiary->identity_card." ".$beneficiary->city_identity_card->first_shortened."., en el monto de <strong>".Util::formatMoneyWithLiteral($beneficiary->amount_total)."</strong>, en calidad de ".$beneficiary->kinship->name."." ;
+
+        //     array_push($payments,$payment);
+        // }
+
         $end_conclusion = "Elevo el presente informe a su persona para su conocimiento y consideración.";
         $from = 'Lic. '.Util::fullName(Auth::user()).'
         <br><b>JEFE DE UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA Y AUXILIO MORTUORIO “MUSERPOL”</b>';
@@ -2048,7 +2150,7 @@ class RetirementFundCertificationController extends Controller
                 'body_qualification'  =>  $body_qualification,
                 'body_due'  =>  $body_due,
                 'conclusion'   =>  $conclusion,
-                'payments'  =>  $payments,
+                'payment'  =>  $payment,
                 'end_conclusion'    =>  $end_conclusion,
                 'from'  =>  $from,
                 'to'    =>  $to,
