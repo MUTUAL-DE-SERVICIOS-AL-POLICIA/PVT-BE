@@ -2432,6 +2432,8 @@ class RetirementFundCertificationController extends Controller
             } else {
                 $body_resolution.=", a favor ".($affiliate->gender=='M'?'del ':'de la ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".";
             }
+        } else {
+            $body_resolution.= ".";
         } 
         $body_resolution.= "<br><br><br>";
         //$body_resolution .= ", reconocer el pago del beneficio de Fondo de Retiro Policial Solidario, por un TOTAL de &nbsp;<b>".Util::formatMoneyWithLiteral($retirement_fund->total)."</b> a favor del <b>".$affiliate->fullNameWithDegree()."</b> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened."</b>.";        
