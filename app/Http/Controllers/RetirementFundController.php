@@ -1026,10 +1026,12 @@ class RetirementFundController extends Controller
                 'wf_state_current_id',
                 'procedure_modality_id',
                 'ret_fun_procedure_id',
-                'workflow_id'
+                'workflow_id',
+                'total_availability',
+                'subtotal_ret_fun'
             )
             ->where('code', 'not like', '%A')
-            ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+            ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
 
             ;
         return $datatables->eloquent($retirement_funds)
