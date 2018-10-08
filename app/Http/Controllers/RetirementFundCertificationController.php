@@ -1377,7 +1377,7 @@ class RetirementFundCertificationController extends Controller
                         if(!$start_message) {
                             $person = $person .= " y ".($beneficiary->gender=="M"?"del":"de la")." derechohabiente ";
                         }
-                        $person .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI")."."." en calidad de ".$beneficiary->kinship->name.((--$quantity)==1?" y ":(($quantity==0)?'':', '));
+                        $person .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI")."."." en calidad de ".$beneficiary->kinship->name.((--$quantity)==2?" y ":(($quantity==1)?'':', '));
                     }
                 }
                 $quantity = $beneficiaries->count();
@@ -2320,8 +2320,8 @@ class RetirementFundCertificationController extends Controller
         $qualification_id = 23;
         $qualification = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$qualification_id)->first();
         $months  = $affiliate->getTotalQuotes();        
-        $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario <b>N° ".$qualification->code."</b> de fecha <strong>".Util::getStringDate($qualification->date)."</strong>, de la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente ".($affiliate->gender=='M'?'al':'a la')." <b>"
-        .$affiliate->fullNameWithDegree()."</b> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened."</b>, determina el monto de <b>". Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun)."</b>";
+        $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario <b>N° ".$qualification->code."</b> de fecha <strong>".Util::getStringDate($qualification->date)."</strong>, de la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente ".($affiliate->gender=='M'?'al':'a la')."<strong> "
+        .$affiliate->fullNameWithDegree()."</strong> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened."</b>, determina el monto de <b>". Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun)."</b>";
         if($affiliate->hasAvailability()) {
             $body_qualification .=", de la misma forma realizó el cálculo por el reconocimiento de aportes laborales durante el periodo de disponibilidad, por no ser considerados en la calificación del beneficio de Fondo de Retiro Policial Solidario, 
             de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 – 2020; correspondiéndole el monto de <b>".Util::formatMoneyWithLiteral($retirement_fund->total_availability)."</b>, haciendo un monto total de<strong> ".Util::formatMoneyWithLiteral($retirement_fund->total_availability+$retirement_fund->subtotal_ret_fun)."</strong>";
@@ -2515,7 +2515,7 @@ class RetirementFundCertificationController extends Controller
             } else {
                 $body_resolution .= ($applicant->gender=='M'?'del beneficiario ':'de la beneficiaria ');
             }
-            $body_resolution .= ($affiliate->gender=='M'?' del Sr. ':' de la Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.". en el siguiente tenor: <br><br>";
+            $body_resolution .= ($affiliate->gender=='M'?' del Sr. ':' de la Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., en el siguiente tenor: <br><br>";
             foreach($beneficiaries as $beneficiary){
                 if(!$beneficiary->state) {
                     $reserved_quantity = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('state',false)->count();
