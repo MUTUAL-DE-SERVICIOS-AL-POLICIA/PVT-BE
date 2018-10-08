@@ -356,6 +356,25 @@ class QuotaAidMortuaryController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Muserpol\QuotaAidMortuary  $quotaAidMortuary
+     * @return \Illuminate\Http\Response
+     */
+    public function storeLegalReview(Request $request,$id){        
+        $quota_id = QuotaAidMortuary::find($id);
+        // $this->authorize('update',new RetFunSubmittedDocument);
+
+        foreach($request->submit_documents as $document_array){
+            $document = $document_array[0];
+            $submit_document = QuotaAidSubmittedDocument::find($document['submit_document_id']);
+            $submit_document->is_valid=$document['status'];
+            $submit_document->comment=$document['comment'];
+            $submit_document->save();            
+        }
+        return $request;
+    }
+    /**
+     * Display the specified resource.
+     *
      * @param  \Muserpol\RetirementFund  $retirementFund
      * @return \Illuminate\Http\Response
      */
