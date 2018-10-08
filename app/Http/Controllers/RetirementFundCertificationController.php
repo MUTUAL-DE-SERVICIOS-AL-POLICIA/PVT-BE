@@ -1377,7 +1377,7 @@ class RetirementFundCertificationController extends Controller
                         if(!$start_message) {
                             $person = $person .= " y ".($beneficiary->gender=="M"?"del":"de la")." derechohabiente ";
                         }
-                        $person .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI").".".((--$quantity)==2?" y ":(($quantity==1)?'':', '))." en calidad de ".$beneficiary->kinship->name;
+                        $person .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI")."."." en calidad de ".$beneficiary->kinship->name.((--$quantity)==1?" y ":(($quantity==0)?'':', '));
                     }
                 }
                 $quantity = $beneficiaries->count();
