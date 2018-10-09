@@ -251,7 +251,7 @@ class QuotaAidCertificationController extends Controller
         $next_area_code = //RetFunCorrelative::where('quota_aid_id', $quota_aid->id)->where('wf_state_id', 21)->first();
         $code = $quota_aid->code;
         $area = "12";//$next_area_code->wf_state->first_shortened;
-        $user = "bbarrera";//$next_area_code->user;
+        $user = Auth::user();"bbarrera";//$next_area_code->user;
         $date = "01/10/2018";//Util::getDateFormat($next_area_code->date);
         $number = "01/2018";//$next_area_code->code;
 

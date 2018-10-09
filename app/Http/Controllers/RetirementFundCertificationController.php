@@ -2229,7 +2229,13 @@ class RetirementFundCertificationController extends Controller
         partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía
         Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”.
         <br><br>';
-        
+        $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();        
+        if($number->note != "")
+        {
+            $law .= 'Que dicho Reglamento, en su Artículo 31 Bisº de la EXCEPCIÓN EN EL TRÁMITE DE FONDO DE RETIRO POR ENFERMEDADES TERMINALES refiere: <i>"I. Se dará prioridad al trámite del beneficio de Fondo de Retiro Policial Solidario, previo estudio social y emisión de Informe por el área de Trabajo Social de la 
+            MUSERPOL, en caso que el titular atraviese por algún tipo de enfermedad terminal y se haya suscitado la desvinculación de la Policiía Boliviana, al cumplimiento de requisitos establecidos en el presente Reglamenteo". </i><br><br>';
+        }
+
         if($retirement_fund->procedure_modality_id == 1 || $retirement_fund->procedure_modality_id == 2) {
             $law .= "Que dicho Reglamento, en su Artículo 20 de la PROCEDENCIA del pago global, Parágrafo I señala: 
             <i>“El pago global de aportes procederá, cuando el afiliado no haya cumplido con 60 cotizaciones (5 años) para acceder al pago del Fondo de Retiro Policial Solidario, antes 
@@ -2315,6 +2321,9 @@ class RetirementFundCertificationController extends Controller
         por la Unidad; por consiguiente, habiéndose cumplido con los requisitos de orden establecido
         en el Reglamento de Fondo de Retiro Policial Solidario, se dio curso al trámite.<br>';
 
+        if($number->note != "") {
+            $reception = $number->note."<br>";
+        }
         //----- QUALIFICATION -----////      
         $body_qualification = "";
         $qualification_id = 23;
