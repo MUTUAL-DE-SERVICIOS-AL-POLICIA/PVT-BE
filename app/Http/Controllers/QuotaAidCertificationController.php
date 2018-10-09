@@ -248,12 +248,12 @@ class QuotaAidCertificationController extends Controller
     public function printLegalReview($id){
 
         $quota_aid = QuotaAidMortuary::find($id);        
-        $next_area_code = //RetFunCorrelative::where('quota_aid_id', $quota_aid->id)->where('wf_state_id', 21)->first();
-        $code = $quota_aid->code;
-        $area = "12";//$next_area_code->wf_state->first_shortened;
-        $user = Auth::user();"bbarrera";//$next_area_code->user;
-        $date = "01/10/2018";//Util::getDateFormat($next_area_code->date);
-        $number = "01/2018";//$next_area_code->code;
+        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 35)->first();
+        $code = $quota_aid->code;        
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
 
         $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
         $submitted_documents = QuotaAidSubmittedDocument::

@@ -79,9 +79,9 @@
         @endif
 
     <p class="text-justify rounded border p-10">
-        El Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de acuerdo al
-        numeral 2 del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, <strong>CERTIFICA</strong> que la documentación presentada
-        es <strong>VALIDA</strong>.
+        El Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de acuerdo al 
+        numeral 2 del artículo 48 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, <strong>CERTIFICA</strong> que la documentación presentada es 
+        <strong>VALIDA</strong>.
     </p>
     <div class="text-center w-100 m-t-50">
             <span class="font-bold block">--------------------------------------------------</span>
