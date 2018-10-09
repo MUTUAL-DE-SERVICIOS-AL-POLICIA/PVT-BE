@@ -222,4 +222,69 @@ class QuotaAidCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("$namepdf");
     }
+
+    public function printLegalReview($id){
+
+        $quota_aid = QuotaAidMortuary::find($id);        
+        $next_area_code = //RetFunCorrelative::where('quota_aid_id', $quota_aid->id)->where('wf_state_id', 21)->first();
+        $code = $quota_aid->code;
+        $area = "12";//$next_area_code->wf_state->first_shortened;
+        $user = "bbarrera";//$next_area_code->user;
+        $date = "01/10/2018";//Util::getDateFormat($next_area_code->date);
+        $number = "01/2018";//$next_area_code->code;
+
+        $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
+        $submitted_documents = QuotaAidSubmittedDocument::
+                                select(
+                                    'quota_aid_submitted_documents.id',
+                                    'quota_aid_submitted_documents.quota_aid_mortuary_id',
+                                    'quota_aid_submitted_documents.procedure_requirement_id',
+                                    'quota_aid_submitted_documents.is_valid',
+                                    'quota_aid_submitted_documents.reception_date')
+                                ->where('quota_aid_submitted_documents.quota_aid_mortuary_id', $id)
+                                ->leftJoin('procedure_requirements','quota_aid_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+                                ->orderBy('procedure_requirements.number', 'ASC')->get();
+
+        $affiliate = $quota_aid->affiliate;
+        $footerHtml = view()->make('quota_aid.print.footer', ['bar_code'=>$this->generateBarCode($quota_aid)])->render();
+        $cite = $number;//RetFunIncrement::getIncrement(Session::get('rol_id'), $quota_aid->id);
+        $subtitle = $cite;
+        $pdftitle = "Revision Legal";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        $data = [
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+
+            'subtitle'=>$subtitle,
+            'title'=>$title,
+            'quota_aid'=>$quota_aid,
+            'affiliate'=>$affiliate,
+            'submitted_documents'=>$submitted_documents,
+        ];
+
+        $pages = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $pages[] = \View::make('quota_aid.print.legal_certification',$data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("$namepdf");            
+    }
+    private function generateBarCode($quota_aid){
+        $bar_code = \DNS2D::getBarcodePNG((
+                        $quota_aid->getBasicInfoCode()['code']."\n\n".$quota_aid->getBasicInfoCode()['hash']), 
+                        "PDF417", 
+                        100, 
+                        33, 
+                        array(1, 1, 1)
+                    );
+        return $bar_code;
+    }
 }
