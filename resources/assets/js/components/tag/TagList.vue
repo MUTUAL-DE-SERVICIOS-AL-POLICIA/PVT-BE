@@ -33,7 +33,7 @@
                         <ul class="tag-list"
                         style="padding: 0"
                         >
-                        <li v-for="(tag, index) in tagsRetFun"
+                        <li v-for="(tag, index) in tagsList"
                             :key="index">
                             <a href="#"
                                 :style="colorClass()"
@@ -70,13 +70,14 @@
     </div>
 </template>
 <script>
+import { camelCaseToSnakeCase } from "../../helper.js";
     export default {
-        props:['retFunId'],
+        props:['docId', 'type'],
       data() {
         return {
           editing: false,
           showSpinner: false,
-          tagsRetFun: [],
+          tagsList: [],
           tagsWfState: [],
         };
       },
@@ -86,9 +87,9 @@
       methods: {
         getCurrentTags(){
             this.showSpinner = true;
-            axios.get(`/tag_ret_fun/${this.retFunId}`)
+            axios.get(`/tag_${camelCaseToSnakeCase(this.type)}/${this.docId}`)
             .then(response=>{
-                this.tagsRetFun = response.data
+                this.tagsList = response.data
                 this.showSpinner = false;
             }).catch(error=>{
                 console.error(error);
@@ -108,8 +109,8 @@
           }, 700);
         },
         verify(tagId){
-            if(this.tagsRetFun.length){
-                return this.tagsRetFun.some(element => element.id == tagId)
+            if(this.tagsList.length){
+                return this.tagsList.some(element => element.id == tagId)
             }
             return false;
         },
@@ -120,7 +121,7 @@
         save() {
           this.showSpinner = true;
           $(".chosen-select").val()
-          axios.post(`/update_tag_ret_fun/${this.retFunId}`,{
+          axios.post(`/update_tag_${camelCaseToSnakeCase(this.type)}/${this.docId}`,{
               ids: $(".chosen-select").val()
           }).then(response=>{
               flash('Actualizacion correcta.');

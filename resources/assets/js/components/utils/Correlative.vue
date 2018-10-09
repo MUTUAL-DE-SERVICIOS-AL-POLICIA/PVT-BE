@@ -3,20 +3,21 @@
 </template>
 
 <script>
-    import { mapGetters } from "vuex";
+    import { mapGetters, mapState } from "vuex";
+    import { camelCaseToSnakeCase } from "../../helper.js";
     export default {
-        props: ['retFunId', 'wfStateId'],
+        props: ['docId', 'wfStateId', 'type'],
         mounted(){
-            axios.get(`/ret_fun/${this.retFunId}/correlative/${this.wfStateId}`).then(response =>{
-                this.$store.commit('retFunForm/setCorrelative',response.data.code);
+            axios.get(`/${camelCaseToSnakeCase(this.type)}/${this.docId}/correlative/${this.wfStateId}`).then(response =>{
+                this.$store.commit(`${this.type}Form/setCorrelative`,response.data.code);
             }).catch(error=>{
                 console.log(error);
             })
         },
         computed: {
-            ...mapGetters("retFunForm", {
-                retFun: "getData"
-            })
+            retFun () {
+                return this.$store.state[`${this.type}Form`];
+            }
         }
     };
 </script>

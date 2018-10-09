@@ -9,6 +9,8 @@ use Muserpol\Observers\RetirementFundObserver;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Observers\RetirementFundObservationObserver;
 use Muserpol\Models\RetirementFund\RetFunObservation;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Observers\QuotaAidMortuaryObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         //
         Affiliate::observe(AffiliateObserver::class);
         RetirementFund::observe(RetirementFundObserver::class);
+        QuotaAidMortuary::observe(QuotaAidMortuaryObserver::class);
         RetFunObservation::observe(RetirementFundObservationObserver::class);
     }
 
