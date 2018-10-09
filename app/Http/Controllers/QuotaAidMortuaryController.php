@@ -227,6 +227,19 @@ class QuotaAidMortuaryController extends Controller
                 $submit->save();
             }
         }
+
+        if($request->aditional_requirements){
+            foreach ($request->aditional_requirements  as  $requirement)
+            {
+                $submit = new QuotaAidSubmittedDocument();
+                $submit->quota_aid_mortuary_id = $quota_aid->id;
+                $submit->procedure_requirement_id = $requirement;
+                $submit->reception_date = date('Y-m-d');
+                $submit->comment = "";
+                $submit->save();
+            }
+        }
+
         $account_type = $request->input('accountType');
 
         $beneficiary = new QuotaAidBeneficiary();
@@ -344,6 +357,25 @@ class QuotaAidMortuaryController extends Controller
         return redirect('quota_aid/'.$quota_aid->id);
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Muserpol\QuotaAidMortuary  $quotaAidMortuary
+     * @return \Illuminate\Http\Response
+     */
+    public function storeLegalReview(Request $request,$id){        
+        $quota_id = QuotaAidMortuary::find($id);
+        // $this->authorize('update',new RetFunSubmittedDocument);
+
+        foreach($request->submit_documents as $document_array){
+            $document = $document_array[0];
+            $submit_document = QuotaAidSubmittedDocument::find($document['submit_document_id']);
+            $submit_document->is_valid=$document['status'];
+            $submit_document->comment=$document['comment'];
+            $submit_document->save();            
+        }
+        return $request;
+    }
     /**
      * Display the specified resource.
      *
@@ -987,7 +1019,7 @@ class QuotaAidMortuaryController extends Controller
         $procedure_requirements = ProcedureRequirement::
                                     select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
                                     ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
-                                    ->where('procedure_requirements.number','!=','0')
+                                    //->where('procedure_requirements.number','!=','0')
                                     ->orderBy('procedure_requirements.procedure_modality_id','ASC')
                                     ->orderBy('procedure_requirements.number','ASC')
                                     ->get();

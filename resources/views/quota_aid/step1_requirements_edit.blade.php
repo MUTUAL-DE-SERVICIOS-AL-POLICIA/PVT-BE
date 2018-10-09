@@ -59,8 +59,11 @@
                                 <div class="row">
                                     <div :class="editing?'col-md-10':'col-md-10'">
                                         <div class="vote-actions">
-                                            <h1>
-                                                @{{rq.number}}
+                                            <h1 v-if="rq.number < 1000">
+                                                @{{rq.number}}                                                
+                                            </h1>
+                                            <h1 v-else>
+                                                A
                                             </h1>
                                         </div> 
                                         <span class="vote-title">@{{rq.document}}</span>
