@@ -23,6 +23,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\QuotaAidCorrelative;
+use Muserpol\Models\AffiliateFolder;
 
 class QuotaAidCertificationController extends Controller
 {
@@ -299,6 +300,64 @@ class QuotaAidCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("$namepdf");            
     }
+    public function printFile($id)
+    {
+        $affiliate = Affiliate::find($id);
+        $role = Util::getRol();
+                
+        $quota_aid = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get()->last();        
+        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 34)->first();
+        $code = $quota_aid->code;
+        $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();        
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+
+        // $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
+        $title = "CERTIFICACIÓN DE ARCHIVO";
+        $affiliate_folders = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
+        
+
+        /**
+         * !!TODO
+         *!!revisar
+         */
+        $cite = $number; // RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
+
+        $subtitle = $cite;
+        $pdftitle = "Certificación de Archivo";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        $footerHtml = view()->make('quota_aid.print.footer', ['bar_code'=>$this->generateBarCode($quota_aid)])->render();
+        $data = [
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+
+            'cite'=>$cite,
+            'subtitle'=>$subtitle,
+            'title'=>$title,
+            'retirement_fund'=>$quota_aid,
+            'affiliate'=>$affiliate,
+            'affiliate_folders'=>$affiliate_folders,
+            'applicant'=>$applicant,
+            'unit1'=>'archivo y gestión documental<br> beneficios económicos',
+        ];
+        $pages = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $pages[] = \View::make('ret_fun.print.file_certification',$data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("$namepdf");
+
+    }
+    
     private function generateBarCode($quota_aid){
         $bar_code = \DNS2D::getBarcodePNG((
                         $quota_aid->getBasicInfoCode()['code']."\n\n".$quota_aid->getBasicInfoCode()['hash']), 

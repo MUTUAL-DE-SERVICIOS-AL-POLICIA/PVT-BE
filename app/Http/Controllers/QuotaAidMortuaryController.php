@@ -474,6 +474,7 @@ class QuotaAidMortuaryController extends Controller
 
 
         $quota_aid_records =  QuotaAidRecord::where('quota_aid_id', $id)->orderBy('id','desc')->get();
+                              
 
         ///proof
         $user = User::find(Auth::user()->id);

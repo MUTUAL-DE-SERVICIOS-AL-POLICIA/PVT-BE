@@ -136,6 +136,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('/update_information_rf', 'RetirementFundController@updateInformation')->name('update_information_rf');
 		Route::post('quota_aid/{quota_aid}/legal_review/create', 'QuotaAidMortuaryController@storeLegalReview')->name('store_quota_aid_legal_review_create');
 		Route::get('quota_aid/{quota_aid}/print/legal_review', 'QuotaAidCertificationController@printLegalReview')->name('quota_aid_print_legal_review');
+		Route::get('affiliate/{affiliate}/print/file', 'QuotaAidCertificationController@printFile')->name('quota_aid_print_file');
 		// tags
 		Route::resource('/tag', "TagController");
 		Route::get('/tag_wf_state', "TagController@wfState")->name('tag_wf_state');

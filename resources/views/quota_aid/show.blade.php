@@ -104,8 +104,8 @@
                 </quota-aid-certification-button>
             @endif
 
-            @if(Muserpol\Helpers\Util::getRol()->id == 15)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if(Muserpol\Helpers\Util::getRol()->id == 42)
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('quota_aid_print_file', $affiliate->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 14)
@@ -278,9 +278,9 @@
 
                             <div id="tab-folder" class="tab-pane">
 
-                                    {{-- @can('view',new Muserpol\Models\AffiliateFolder)
+                                    {{-- @can('view',new Muserpol\Models\AffiliateFolder) --}}
                                         @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
-                                    @endcan --}}
+                                    {{-- @endcan --}}
 
                             </div>
                             <div id="tab-observations" class="tab-pane">
