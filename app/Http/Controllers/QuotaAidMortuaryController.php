@@ -34,6 +34,7 @@ use Muserpol\Models\RetirementFund\RetFunState;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidRecord;
 use Muserpol\Models\Workflow\WorkflowRecord;
+use Muserpol\Models\Testimony;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -1069,5 +1070,52 @@ class QuotaAidMortuaryController extends Controller
 
         return $num;
     }
+    public function getTestimonies($quota_aid_id)
+    {
+        $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+        $affiliate = $quota_aid->affiliate;
+        $testimonies = $affiliate->testimony()->with('quota_aid_beneficiaries')->get();
+        return $testimonies;
+    }
+    public function updateBeneficiaryTestimony(Request $request, $quota_aid_id)
+    {
+        $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+        $affiliate = $quota_aid->affiliate;
 
+        $testimonies_array_request = array();
+        foreach (array_pluck($request->all(), 'id') as $key => $value) {
+            if ($value) {
+                array_push($testimonies_array_request, $value);
+            }
+        }
+        $testimonies = $affiliate->testimony;
+        foreach ($testimonies as $key => $t) {
+            $index = array_search($t->id, $testimonies_array_request);
+            if ($index === false) {
+                $t->delete();
+            }
+        }
+        foreach ($request->all() as $key => $t) {
+            if ($t['id'] == 'new') {
+                $testimony = new Testimony();
+            } else {
+                $testimony = Testimony::find($t['id']);
+            }
+            $testimony->user_id = Util::getAuthUser()->id;
+            $testimony->affiliate_id = $affiliate->id;
+            $testimony->document_type = $t['document_type'];
+            $testimony->number = $t['number'];
+            $testimony->date = $t['date'];
+            $testimony->court = $t['court'];
+            $testimony->place = $t['place'];
+            $testimony->notary = $t['notary'];
+            $testimony->save();
+            $ids_ben = array();
+            foreach ($t['quota_aid_beneficiaries'] as $ben) {
+                array_push($ids_ben, $ben['id']);
+            }
+            $testimony->quota_aid_beneficiaries()->sync($ids_ben);
+        }
+        return;
+    }
 }

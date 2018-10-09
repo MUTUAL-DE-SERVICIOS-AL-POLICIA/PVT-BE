@@ -1,4 +1,3 @@
-
 <quota-aid-beneficiaries-show
     :beneficiaries2="{{ $beneficiaries }}" 
     :beneficiaries-backend="{{ $beneficiaries }}" 
@@ -55,3 +54,5 @@
        
     </div>
 </quota-aid-beneficiaries-show>
+<ret-fun-beneficiary-testimony-list :beneficiaries="{{ $beneficiaries }}" :doc-id="{{ $quota_aid->id }}" type="quotaAid">
+</ret-fun-beneficiary-testimony-list>

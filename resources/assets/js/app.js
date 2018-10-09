@@ -15,7 +15,7 @@ window.events = new Vue();
 window.flash = function (message, level = 'success', timeOut = 5000) {
 	window.events.$emit('flash', { message, level, timeOut});
 };
-console.log = function () {}
+// console.log = function () {}
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

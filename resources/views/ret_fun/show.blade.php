@@ -92,7 +92,6 @@
 }
 </style>
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
-<link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
 @endsection
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -270,7 +269,7 @@
                             </ul>
                     </div>
                     <br>
-                <tag-list :ret-fun-id="{{ $retirement_fund->id }}"></tag-list>
+                <tag-list :doc-id="{{ $retirement_fund->id }}" type="retFun"></tag-list>
             </div>
             <br>
             <div class="col-md-9" style="padding-left: 6px">

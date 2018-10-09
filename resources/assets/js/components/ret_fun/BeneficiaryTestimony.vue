@@ -19,7 +19,7 @@
             </div>
             <div class="col-md-9">
                         <multiselect
-                            v-model="testimony.ret_fun_beneficiaries"
+                            v-model="testimony[camelCaseToSnakeCase(type)+'_beneficiaries']"
                             :options="beneficiaries"
                             :multiple="true"
                             :close-on-select="false"
@@ -113,7 +113,7 @@
         components: {
             Multiselect
         },
-      props: ["testimony", "editable", "index", 'beneficiaries'],
+      props: ["testimony", "editable", "index", 'beneficiaries', 'type'],
       data(){
           return {}
       },
@@ -127,6 +127,9 @@
         },
         customLabel (obj) {
             return this.fullName(obj);
+        },
+        camelCaseToSnakeCase(myStr) {
+            return myStr.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
         }
 
       }
