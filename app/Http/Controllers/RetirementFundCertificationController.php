@@ -2129,7 +2129,9 @@ class RetirementFundCertificationController extends Controller
 
             // $number = Util::getNextAreaCode($retirement_fund->id);
             $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 24)->first();
-
+            $legal_dictum_number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 25)->first();
+            $number->note = $legal_dictum_number->note;
+            $number->save();
             $user = User::find($number->user_id);
 
             $data = [
