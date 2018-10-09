@@ -15,7 +15,7 @@ window.events = new Vue();
 window.flash = function (message, level = 'success', timeOut = 5000) {
 	window.events.$emit('flash', { message, level, timeOut});
 };
-
+// console.log = function () {}
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -283,7 +283,8 @@ Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterva
 Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
 Vue.component('ret-fun-certification-button', require('./components/ret_fun/CertificationButton.vue'));
 Vue.component('ret-fun-chart', require('./components/ret_fun/Chart.vue'));
-Vue.component('ret-fun-send-back-button', require('./components/ret_fun/SendBackButton.vue'));
+Vue.component('inbox-send-back-button-ret-fun', require('./components/inbox/SendBackButtonRetFun.vue'));
+Vue.component('inbox-send-back-button-quota-aid', require('./components/inbox/SendBackButtonQuotaAid.vue'));
 Vue.component('ret-fun-report-form', require('./components/ret_fun/ReportForm.vue'));
 Vue.component('ret-fun-beneficiary-testimony-list', require('./components/ret_fun/BeneficiaryTestimonyList.vue'));
 Vue.component('ret-fun-beneficiary-testimony', require('./components/ret_fun/BeneficiaryTestimony.vue'));
@@ -333,6 +334,7 @@ Vue.component('quota-aid-beneficiary', require('./components/quota_aid/Beneficia
 Vue.component('quota-aid-info', require('./components/quota_aid/Info.vue'));
 Vue.component('quota-aid-beneficiaries-show', require('./components/quota_aid/ShowBeneficiaries.vue'));
 Vue.component('quota-aid-step1-requirements-edit', require('./components/quota_aid/Step1RequirementsEdit.vue'));
+Vue.component('quota-aid-certification-button', require('./components/quota_aid/CertificationButton.vue'));
 //user
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
 //permission

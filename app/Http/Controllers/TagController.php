@@ -10,6 +10,7 @@ use Log;
 use Muserpol\Models\Tag;
 use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 class TagController extends Controller
 {
     public function wfState()
@@ -20,6 +21,10 @@ class TagController extends Controller
     public function retFun($ret_fun_id)
     {
         return RetirementFund::find($ret_fun_id)->tags;
+    }
+    public function quotaAid($quota_aid_id)
+    {
+        return QuotaAidMortuary::find($quota_aid_id)->tags;
     }
     public function updateRetFun(Request $request, $ret_fun_id)
     {
@@ -43,6 +48,29 @@ class TagController extends Controller
             }
         }
         return $retirement_fund->tags;
+    }
+    public function updateQuotaAid(Request $request, $quota_aid_id)
+    {
+
+        $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+        $tags_wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first()->tags;
+        foreach ($tags_wf_state as $tag_wf_state) {
+            $found = array_filter($request->ids, function ($id) use ($tag_wf_state) {
+                return $id == $tag_wf_state['id'];
+            });
+            if ($found) {
+                if ($quota_aid->tags->contains($tag_wf_state->id)) {
+                    // $quota_aid->tags()->updateExistingPivot($tag_wf_state->id);
+                }else{
+                    $quota_aid->tags()->save($tag_wf_state, ['date'=>Carbon::now(), 'user_id'=>Util::getAuthUser()->id]);
+                }
+            }else{
+                if ($quota_aid->tags->contains($tag_wf_state->id)) {
+                    $quota_aid->tags()->detach($tag_wf_state->id);
+                }
+            }
+        }
+        return $quota_aid->tags;
     }
     public function getTags()
     {
@@ -69,7 +97,6 @@ class TagController extends Controller
     public function tagWfState()
     {
         $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
-        $wf_states = WorkflowState::where('module_id', 3)->get();
         $tags = Tag::all();
         $data =[
             'tags'=> $tags,

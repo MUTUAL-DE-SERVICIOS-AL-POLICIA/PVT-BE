@@ -62,7 +62,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('/update_affiliate_police/{affiliate}', 'AffiliateController@update_affiliate_police')->name('update_affiliate_police');
 
 		Route::patch('/update_beneficiaries/{retirement_fund}', 'RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
-		Route::patch('/update_beneficiary_testimony/{retirement_fund}', 'RetirementFundController@updateBeneficiaryTestimony')->name('update_beneficiary_testimony');
+		Route::patch('/update_beneficiary_testimony_ret_fun/{retirement_fund}', 'RetirementFundController@updateBeneficiaryTestimony')->name('update_beneficiary_testimony');
 		Route::get('/ret_fun_beneficiaries_testimonies/{ret_fun_id}', 'RetirementFundController@getTestimonies')->name('ret_fun_beneficiaries_testimonies');
 
 		//SpouseControler
@@ -124,6 +124,11 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('print_contributions_quote_aid', 'QuotaAidCertificationController@printDirectContributionQuoteAid');
 
 		Route::get('quota_aid/{quota_aid}/print/reception', 'QuotaAidCertificationController@printReception')->name('quota_aid_print_reception');
+		Route::post('quota_aid/{quota_aid}/save_certification_note', 'QuotaAidCertificationController@saveCertificationNote')->name('save_certification_note');
+		Route::get('quota_aid/{quota_aid_id}/correlative/{wf_state_id}', 'QuotaAidCertificationController@getCorrelative')->name('quota_aid_get_correlative');
+		Route::patch('/update_beneficiaries_quota_aid/{quota_aid_id}', 'QuotaAidMortuaryController@updateBeneficiaries')->name('update_beneficiaries_quota_aid');
+		Route::patch('/update_beneficiary_testimony_quota_aid/{quota_aid_id}', 'QuotaAidMortuaryController@updateBeneficiaryTestimony')->name('update_beneficiary_testimony_quota_aid');
+		Route::get('/quota_aid_beneficiaries_testimonies/{ret_fun_id}', 'QuotaAidMortuaryController@getTestimonies')->name('ret_fun_beneficiaries_testimonies_quota_aid');
 
 		Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->middleware('affiliate_has_ret_fun')->name('create_ret_fun');
 		Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
@@ -141,6 +146,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/tag_wf_state_list', 'TagController@tagWfState');
 		Route::get('/get_tag_wf_state', 'TagController@getTagWfState');
 		Route::post('/update_tag_wf_state', 'TagController@updateTagWfState');
+		Route::get('/tag_quota_aid/{quota_aid_id}', "TagController@quotaAid")->name('tag_quota_aid');
+		Route::post('/update_tag_quota_aid/{quota_aid_id}', "TagController@updateQuotaAid")->name('update_tag_quota_aid');
 
 		//QuotaAidMortuory
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
@@ -152,7 +159,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('editFolder', 'AffiliateFolderController@editFolder')->name('editFolder');
 		Route::post('deleteFolder', 'AffiliateFolderController@destroy')->name('deleteFolder');
 		Route::post('updateFileCode', 'AffiliateFolderController@updateFileCode')->name('updateFileCode');
-			
+
 			//searcherController
 		Route::get('search/{ci}', 'SearcherController@search');
 		Route::get('search_ajax', 'SearcherController@searchAjax');
@@ -435,6 +442,9 @@ foreach (array_keys($retirement_funds) as $value) {
 		});
 		Route::get('get_next_area_code_ret_fun/{ret_fun_id}', function ($retirement_fund_id) {
 			return Util::getNextAreaCode($retirement_fund_id, false);
+		});
+		Route::get('get_next_area_code_quota_aid/{quota_aid_id}', function ($quota_aid_id) {
+			return Util::getNextAreaCodeQuotaAid($quota_aid_id, false);
 		});
 	});
 });

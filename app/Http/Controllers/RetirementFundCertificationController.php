@@ -770,7 +770,7 @@ class RetirementFundCertificationController extends Controller
         }
         $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
 
-        if (!$affiliate->selectedContributions() > 0 && $affiliate->globalPayRetFun()  && $retirement_fund->procedure_modality->procedure_type->id == 2 ){
+        if (!$affiliate->selectedContributions() > 0 && ! $affiliate->globalPayRetFun()  && $retirement_fund->procedure_modality->procedure_type->id == 2 ){
             $pages[] =\View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
         }
         $pdf = \App::make('snappy.pdf.wrapper');

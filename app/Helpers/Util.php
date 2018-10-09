@@ -17,6 +17,7 @@ use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\Spouse;
 use Muserpol\QuotaAidCorrelative;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 class Util
 {
     public static function isRegionalRole()
@@ -193,24 +194,32 @@ class Util
 
         return $correlative;
     }
-    public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id){
+    public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id, $save = true){
         $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();        
         $reprint = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
         if(isset($reprint->id))
             return $reprint;
         $year =  date('Y');
         $role = Role::find($wf_state->role_id);
-        if($role->correlative == ""){
-            $role->correlative = "1/".$year;
-        }
-        else{
-            $data = explode('/', $role->correlative);
-            if(!isset($data[1]))
+
+        $reception = WorkflowState::where('role_id', Session::get('rol_id'))->whereIn('sequence_number', [0, 1])->first();
+        if ($reception) {
+            $role->correlative = QuotaAidMortuary::find($quota_aid_mortuary_id)->code;
+        } else {
+            if($role->correlative == ""){
                 $role->correlative = "1/".$year;
-            else
-                $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+            }
+            else{
+                $data = explode('/', $role->correlative);
+                if(!isset($data[1]))
+                    $role->correlative = "1/".$year;
+                else
+                    $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+            }
         }
-        $role->save();
+        if ($save) {
+            $role->save();
+        }
 
         //Correlative 
         $correlative = new QuotaAidCorrelative();
@@ -219,7 +228,9 @@ class Util
         $correlative->code = $role->correlative;
         $correlative->date = Carbon::now();
         $correlative->user_id = self::getAuthUser()->id;
-        $correlative->save();
+        if ($save) {
+            $correlative->save();
+        }
 
         return $correlative;
     }

@@ -51,7 +51,11 @@ class QuotaAidMortuary extends Model
     }
     public function wf_state()
     {
-        return $this->belongsTo('Muserpol\WfState', 'wf_state_current_id');
+        return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_state_current_id', 'id');
+    }
+    public function tags()
+    {
+        return $this->belongsToMany('Muserpol\Models\Tag')->withPivot(['date', 'user_id']);
     }
 
     public function getBasicInfoCode()

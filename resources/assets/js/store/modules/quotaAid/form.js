@@ -16,7 +16,10 @@ const state ={
 		gender: null,
 		phone_number: null,
 		cell_phone_number: null,
-    }
+	},
+	id: null,
+	isValidated: false,
+	correlative: null,
 }
 const mutations = {
     setModality(state, object){
@@ -40,7 +43,13 @@ const mutations = {
 		state.applicant.gender =object.gender;
 		state.applicant.phone_number =object.phone_number;
 		state.applicant.cell_phone_number =object.cell_phone_number;
-    }
+	},
+	setIsValidated(state, value) {
+		state.isValidated = value;
+	},
+	setCorrelative(state, value) {
+		state.correlative = value;
+	}
 }
 const getters = {
     getData: state => state
