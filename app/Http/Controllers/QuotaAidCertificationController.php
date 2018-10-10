@@ -24,7 +24,9 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\QuotaAidCorrelative;
 use Muserpol\Models\AffiliateFolder;
-
+use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\Reimbursement;
+use Muserpol\Models\Degree;
 class QuotaAidCertificationController extends Controller
 {
     public function saveCertificationNote(Request $request, $quota_aid_id)
@@ -359,24 +361,22 @@ class QuotaAidCertificationController extends Controller
     }
     public function printCertification($id)
     {
-        $quota_aid = QuotaAidMortuary::find($id);
+        $quota_aid = QuotaAidMortuary::find($id);        
         $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 36)->first();
         $code = $quota_aid->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
         $date = Util::getDateFormat($next_area_code->date);
+        Carbon::useMonthsOverflow(false);
         $number = $next_area_code->code;
-        $affiliate = Affiliate::find($quota_aid->affiliate_id);
-        return $affiliate->date_death;
-        $contributions = Contribution::where()->get();
-
-        // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
-        $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
-        $code = $retirement_fund->code;
-        $area = $next_area_code->wf_state->first_shortened;
-        $user = $next_area_code->user;
-        $date = Util::getDateFormat($next_area_code->date);
-        $number = $next_area_code->code;
+        $affiliate = Affiliate::find($quota_aid->affiliate_id);                
+        $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
+        $end_date->subMonth();
+        $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
+        $start_date->subMonths(12); // change by procedure cotizations        
+        
+        $contributions = Contribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->get();    
+        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->get();
 
         $degree = Degree::find($affiliate->degree_id);
         $exp = City::find($affiliate->city_identity_card_id);
@@ -388,7 +388,11 @@ class QuotaAidCertificationController extends Controller
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
         $subtitle = $next_area_code->code;
-
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+        $title = "CERTIFICACIÓN ".$quota_aid->procedure_modality->procedure_type->second_name;
+        
         $data = [
             'code' => $code,
             'area' => $area,
@@ -399,19 +403,19 @@ class QuotaAidCertificationController extends Controller
             'num'=>$num,
             'subtitle'=>$subtitle,
             'place'=>$place,
-            'retirement_fund'=>$retirement_fund,
+            'quota_aid'=>$quota_aid,
             'reimbursements'=>$reimbursements,
             'dateac'=>$dateac,
             'exp'=>$exp,
             'degree'=>$degree,
-            'contributions'=>$contributions_sixty,
+            'contributions'=>$contributions,
             'affiliate'=>$affiliate,
             'title'=>$title,
-            'institution'=>$institution,
-            'direction'=>$direction,
+            //'institution'=>$institution,
+            //'direction'=>$direction,
             'unit'=>$unit,
         ];
-        return \PDF::loadView('contribution.print.certification_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        return \PDF::loadView('contribution.print.certification_aid_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
     }
 
     private function generateBarCode($quota_aid){
