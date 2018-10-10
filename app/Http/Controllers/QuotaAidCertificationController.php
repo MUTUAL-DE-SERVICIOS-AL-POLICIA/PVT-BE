@@ -26,6 +26,7 @@ use Muserpol\QuotaAidCorrelative;
 use Muserpol\Models\AffiliateFolder;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\Reimbursement;
+use Muserpol\Models\Contribution\AidReimbursement;
 use Muserpol\Models\Degree;
 class QuotaAidCertificationController extends Controller
 {
@@ -360,8 +361,9 @@ class QuotaAidCertificationController extends Controller
 
     }
     public function printCertification($id)
-    {
-        $quota_aid = QuotaAidMortuary::find($id);        
+    {        
+
+        $quota_aid = QuotaAidMortuary::find($id);
         $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 36)->first();
         $code = $quota_aid->code;
         $area = $next_area_code->wf_state->first_shortened;
@@ -369,15 +371,25 @@ class QuotaAidCertificationController extends Controller
         $date = Util::getDateFormat($next_area_code->date);
         Carbon::useMonthsOverflow(false);
         $number = $next_area_code->code;
-        $affiliate = Affiliate::find($quota_aid->affiliate_id);                
+        $affiliate = Affiliate::find($quota_aid->affiliate_id);
+
         $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
         $end_date->subMonth();
         $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
-        $start_date->subMonths(12); // change by procedure cotizations        
-        
-        $contributions = Contribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->get();    
-        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->get();
+        $start_date->subMonths(12); // change by procedure cotizations            
 
+        if($quota_aid->procedure_modality->procedure_type_id == 3) {
+            $quota_aid->completQuotaContributions($start_date,$end_date);
+            $contributions = Contribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->get();    
+            $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->get();            
+        }   
+        //return $start_date->format('Y-m');     
+        if($quota_aid->procedure_modality->procedure_type_id == 4) {            
+            Util::completAidContributions($affiliate->id,$start_date->copy(),$end_date->copy());            
+            $contributions = AidContribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->get();
+            $reimbursements = AidReimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->get();
+        }
+        //return $contributions;
         $degree = Degree::find($affiliate->degree_id);
         $exp = City::find($affiliate->city_identity_card_id);
         $exp = ($exp==Null)? "-": $exp->first_shortened;
@@ -392,14 +404,14 @@ class QuotaAidCertificationController extends Controller
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = "CERTIFICACIÓN ".$quota_aid->procedure_modality->procedure_type->second_name;
-        
+        $contributions_number = 12;
         $data = [
             'code' => $code,
             'area' => $area,
             'user' => $user,
             'date' => $date,
             'number' => $number,
-
+            'contributions_number' => $contributions_number,
             'num'=>$num,
             'subtitle'=>$subtitle,
             'place'=>$place,

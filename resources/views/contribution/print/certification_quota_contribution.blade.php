@@ -1,37 +1,30 @@
 @extends('print_global.print')
 @section('content')
 <div>
-    El suscrito Encargado de Cuentas Individuales a solicitud del (la) Calificador (a) del Fondo de Retiro, Cuota Y Auxilio Mortuorio, y en base a una revisi&oacute;n en la Plataforma Virtual MUSERPOL, 
-    @if($affiliate->gender == "M")
-        del señor: 
-    @else 
-        de la señora: 
-    @endif
+        El suscrito Encargado de Cuentas Individuales a solicitud del (la) Calificador (a) del Fondo de Retiro, Cuota Y Auxilio Mortuorio, y en base a una revisi&oacute;n en la Plataforma Virtual MUSERPOL, 
+        @if($affiliate->gender == "M")
+            del señor: 
+        @else 
+            de la señora: 
+        @endif
 </div>
 <div class="my-10">
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
 </div>
 <strong>CERTIFICA:</strong> Que los &uacute;ltimos doce (12) aportes establecidos en el Reglamento de Couta Mortuoria y Auxilio Mortuorio, corresponden al siguiente detalle:
-<table class="table-info w-100 my-10"> 
-    <tr class="text-sm" >
-            <td class="text-center uppercase font-bold px-5 py-3">FECHA DE PASE A LA JUBILACI&Oacute;N</td>                
-            <td class="text-center uppercase font-bold px-5 py-3"> {!! $affiliate->date_derelict !!}</td>    
-            <td class="text-center uppercase font-bold px-5 py-3">MODALIDAD</td>    
-            <td class="text-center uppercase font-bold px-5 py-3"> {!! $quota_aid->procedure_modality->name !!}  </td>    
-    </tr>
-    {{-- <tr class="text-sm">
-            <td class="text-center uppercase font-bold px-5 py-3">MODALIDAD</td>    
-            <td class="text-center uppercase font-bold px-5 py-3"> {!! $quota_aid->procedure_modality->name !!}  </td>    
-    </tr> --}}
-</table>
+<p>
+    <strong>MODALIDAD: </strong>
+    <span class="uppercase">
+            {!! $quota_aid->procedure_modality->name !!} 
+    </span>
+</p>
 
 <table class="table-info w-100 my-10">        
     <thead class="bg-grey-darker">
-        <tr class="font-medium text-white text-sm uppercase">            
-            <td class="px-15 py text-center ">
+        <tr class="font-medium text-white text-sm uppercase">            <td class="px-15 py text-center ">
                 Nº
             </td>
-            <td class="px-15 py text-center">
+            <td class="px-15 py text-center ">
                 GESTI&Oacute;N
             </td>        
             <td class="px-15 py text-center">
@@ -57,10 +50,10 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>                    
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->name }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->quotable) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->degree->name??$affiliate->degree->name }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain > 0 ? Util::formatMoney($contribution->gain) : Util::formatMoney($contribution->base_wage) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->base_wage) }}</td>                    
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->mortuary_quota) }}</td>
                 </tr> 
                 @foreach($reimbursements as $reimbursement)
                     @if($contribution->month_year == $reimbursement->month_year)       
@@ -68,10 +61,10 @@
                             <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($reimbursement->month_year)) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->name  }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->quotable) }}</td>                            
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->degree->name??$affiliate->degree->name  }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->gain > 0 ? Util::formatMoney($reimbursement->gain) : Util::formatMoney($reimbursement->base_wage) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->base_wage) }}</td>                            
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->mortuary_quota) }}</td>
                         </tr>
                     @endif        
                 @endforeach                                                
@@ -85,7 +78,6 @@
 <div>
     En cuanto el suscrito Encargado de Cuentas Individuales certifica para los fines consiguientes.
 </div>
-<br>
 <br>
 @include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch

@@ -18,6 +18,7 @@ use Muserpol\Models\Affiliate;
 use Muserpol\Models\Spouse;
 use Muserpol\QuotaAidCorrelative;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\Contribution\AidContribution;
 class Util
 {
     public static function isRegionalRole()
@@ -718,5 +719,28 @@ class Util
 
     }
 
+    public static function completAidContributions($id, Carbon $start, Carbon $end_date) {
+        $start_date = $start;
+        $affiliate = Affiliate::find($id);
+        while($start_date <= $end_date) {
+            $date = $start_date;            
+            $aid_contribution = AidContribution::where('month_year',$date->format('Y-m').'-01')->where('affiliate_id',$affiliate->id)->first();            
+            if(!isset($aid_contribution->id)) {
+                $aid_contribution = new AidContribution();
+                $aid_contribution->user_id = Auth::user()->id;
+                $aid_contribution->affiliate_id = $affiliate->id;                        
+                $aid_contribution->month_year = $start_date->format('Y-m').'-01';
+                $aid_contribution->type='DIRECTO';            
+                $aid_contribution->dignity_rent = 0;
+                $aid_contribution->quotable = 0;
+                $aid_contribution->rent = 0;
+                $aid_contribution->total = 0;
+                $aid_contribution->interest = 0;
+                $aid_contribution->save();                
+            }
+            $start_date->addMonth();
+        }
+        return;       
+    }
 
 }
