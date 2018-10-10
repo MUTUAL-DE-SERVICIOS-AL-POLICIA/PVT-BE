@@ -77,8 +77,9 @@ class AidContributionController extends Controller
     {
 
         $affiliate = Affiliate::find($affiliate_id);
-         $list = $this->getContributionDebt($affiliate->id,3);
-         $data = [
+        $date = date('Y-m-d');
+        $list = $this->getContributionDebt($affiliate->id,3,$date);
+        $data = [
             'affiliate'=>$affiliate, 
             'list' => $list
         ];
@@ -247,6 +248,7 @@ class AidContributionController extends Controller
             $aid_commitment->id = 0;
             $aid_commitment->affiliate_id = $affiliate->id;
         }
+        $date = date('Y-m-d');
         $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();               
         $data = [
             'contributions' => $group,
@@ -258,7 +260,7 @@ class AidContributionController extends Controller
             'cities' => $cities,
             'cities_objects' => $cities_objects,
             'birth_cities' => $birth_cities,
-            'new_contributions' => $this->getContributionDebt($affiliate->id, 3),
+            'new_contributions' => $this->getContributionDebt($affiliate->id, 3,$date),
             'aid_commitment' => $aid_commitment,
             'spouse' => $spouse,
             'today_date' => date('Y-m-d'),
