@@ -1,7 +1,7 @@
 @extends('print_global.print')
 @section('content')
 <div>
-        El suscrito Encargado de Cuentas Individuales a solicitud del (la) Calificador (a) del Fondo de Retiro, Cuota Y Auxilio Mortuorio, y en base a una revisi&oacute;n en la Plataforma Virtual MUSERPOL, 
+        El suscrito Encargado de Cuentas Individuales a solicitud del (la) Calificador (a) de Fondo de Retiro, Cuota Y Auxilio Mortuorio, y en base a una revisi&oacute;n en la Plataforma Virtual MUSERPOL, 
         @if($affiliate->gender == "M")
             del señor: 
         @else 
@@ -19,7 +19,7 @@
     </span>
 </p>
 
-<table class="table-info w-100 my-10">        
+<table class="table-info w-100 my-10">
     <thead class="bg-grey-darker">
         <tr class="font-medium text-white text-sm uppercase">            <td class="px-15 py text-center ">
                 Nº
