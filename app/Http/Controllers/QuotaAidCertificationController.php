@@ -342,7 +342,7 @@ class QuotaAidCertificationController extends Controller
             'cite'=>$cite,
             'subtitle'=>$subtitle,
             'title'=>$title,
-            'retirement_fund'=>$quota_aid,
+            'quota_aid'=>$quota_aid,
             'affiliate'=>$affiliate,
             'affiliate_folders'=>$affiliate_folders,
             'applicant'=>$applicant,
@@ -350,7 +350,7 @@ class QuotaAidCertificationController extends Controller
         ];
         $pages = [];
         for ($i = 1; $i <= 2; $i++) {
-            $pages[] = \View::make('ret_fun.print.file_certification',$data)->render();
+            $pages[] = \View::make('quota_aid.print.file_certification',$data)->render();
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
@@ -363,8 +363,7 @@ class QuotaAidCertificationController extends Controller
     public function printCertification($id)
     {                
         $quota_aid = QuotaAidMortuary::find($id);
-        $code = Util::getNextAreaCodeQuotaAid($id);
-        return $code;
+        $code = Util::getNextAreaCodeQuotaAid($id);        
         $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 36)->first();
         $code = $quota_aid->code;
         $area = $next_area_code->wf_state->first_shortened;
