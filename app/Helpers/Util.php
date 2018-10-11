@@ -197,30 +197,34 @@ class Util
     }
     public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id, $save = true){
         $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();        
-        $reprint = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
+        $quota_aid = QuotaAidMortuary::find($quota_aid_mortuary_id);
+        $reprint = QuotaAidCorrelative::where('procedure_type_id',$quota_aid->procedure_type_id)->where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
+
+        $last_quota_aid = QuotaAidMortuary::
+                                orderByDesc(DB::raw("split_part(code, '/',2)::integer"))
+                                ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
+                                ->first();
         if(isset($reprint->id))
             return $reprint;
         $year =  date('Y');
-        $role = Role::find($wf_state->role_id);
+
+        $correlative = $last_quota_aid->code ?? "";
 
         $reception = WorkflowState::where('role_id', Session::get('rol_id'))->whereIn('sequence_number', [0, 1])->first();
         if ($reception) {
-            $role->correlative = QuotaAidMortuary::find($quota_aid_mortuary_id)->code;
+            $correlative = QuotaAidMortuary::find($quota_aid_mortuary_id)->code;
         } else {
-            if($role->correlative == ""){
-                $role->correlative = "1/".$year;
+            if($correlative == ""){
+                $correlative = "1/".$year;
             }
             else{
-                $data = explode('/', $role->correlative);
+                $data = explode('/', $correlative);
                 if(!isset($data[1]))
-                    $role->correlative = "1/".$year;
+                    $correlative = "1/".$year;
                 else
-                    $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+                    $correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
             }
-        }
-        if ($save) {
-            $role->save();
-        }
+        }        
 
         //Correlative 
         $correlative = new QuotaAidCorrelative();
@@ -229,6 +233,7 @@ class Util
         $correlative->code = $role->correlative;
         $correlative->date = Carbon::now();
         $correlative->user_id = self::getAuthUser()->id;
+        $correlative->procedure_type_id = $quota_aid->procedure_type_id;
         if ($save) {
             $correlative->save();
         }
