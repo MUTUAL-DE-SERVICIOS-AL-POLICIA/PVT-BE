@@ -380,14 +380,14 @@ class QuotaAidCertificationController extends Controller
         
         $spouse = null;
         if($quota_aid->procedure_modality->procedure_type_id == 3) {
-            $quota_aid->completQuotaContributions($start_date,$end_date);
+            Util::completQuotaContributions($affiliate->id,$start_date->copy(),$end_date->copy());
             $contributions = Contribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
             $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
         }   
         //return $start_date->format('Y-m');     
         
         if($quota_aid->procedure_modality->procedure_type_id == 4) {            
-            Util::completAidContributions($affiliate->id,$start_date->copy(),$end_date->copy());            
+            Util::completAidContributions($affiliate->id,$start_date->copy(),$end_date->copy());
             $contributions = AidContribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
             $reimbursements = AidReimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
             if($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) {

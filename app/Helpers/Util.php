@@ -19,6 +19,7 @@ use Muserpol\Models\Spouse;
 use Muserpol\QuotaAidCorrelative;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\Contribution\Contribution;
 class Util
 {
     public static function isRegionalRole()
@@ -735,7 +736,7 @@ class Util
                 $aid_contribution->user_id = Auth::user()->id;
                 $aid_contribution->affiliate_id = $affiliate->id;                        
                 $aid_contribution->month_year = $start_date->format('Y-m').'-01';
-                $aid_contribution->type='DIRECTO';            
+                $aid_contribution->type='PLANILLA';            
                 $aid_contribution->dignity_rent = 0;
                 $aid_contribution->quotable = 0;
                 $aid_contribution->rent = 0;
@@ -747,5 +748,51 @@ class Util
         }
         return;       
     }
+    public static function completQuotaContributions($id, Carbon $start, Carbon $end_date) {
+        $start_date = $start;
+        $affiliate = Affiliate::find($id);
+        while($start_date <= $end_date) {
+            $date = $start_date;            
+            $aid_contribution = Contribution::where('month_year',$date->format('Y-m').'-01')->where('affiliate_id',$affiliate->id)->first();
+            if(!isset($aid_contribution->id)) {                
+                $contribution = new Contribution();
+                $contribution->user_id = Auth::user()->id;
+                $contribution->affiliate_id = $affiliate->id;
+                $contribution->degree_id = $affiliate->degree_id;
+                $contribution->unit_id = $affiliate->unit_id;
+                $contribution->breakdown_id = $affiliate->breakdown_id;
+                $contribution->category_id = $affiliate->category_id;            
+                $contribution->month_year = $start_date->format('Y-m').'-01';
+                $contribution->type='Planilla';     
+                $contribution->base_wage = 0;
+                $contribution->seniority_bonus = 0;
+                $contribution->study_bonus = 0;
+                $contribution->position_bonus = 0;
+                $contribution->border_bonus = 0;
+                $contribution->east_bonus = 0;
+                $contribution->public_security_bonus = 0;
+                $contribution->deceased = 0;
+                $contribution->natality = 0;
+                $contribution->lactation = 0;
+                $contribution->prenatal = 0;
+                $contribution->subsidy = 0;
+                $contribution->gain = 0;
+                $contribution->payable_liquid = 0;
+                $contribution->quotable = 0;
+                $contribution->retirement_fund = 0;
+                $contribution->mortuary_quota = 0;
+                $contribution->total = 0;
+                $contribution->interest = 0;        
+                //$contribution->breakdown_id = 3;
+                $contribution->save();
+
+            }
+            $start_date->addMonth();
+        }
+        return;       
+    }
+    
+
+    
 
 }

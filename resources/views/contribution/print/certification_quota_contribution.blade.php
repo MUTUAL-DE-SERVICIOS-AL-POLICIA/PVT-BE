@@ -12,12 +12,16 @@
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
 </div>
 <strong>CERTIFICA:</strong> Que los &uacute;ltimos doce (12) aportes establecidos en el Reglamento de Couta Mortuoria y Auxilio Mortuorio, corresponden al siguiente detalle:
-<p>
-    <strong>MODALIDAD: </strong>
-    <span class="uppercase">
-            {!! $quota_aid->procedure_modality->name !!} 
-    </span>
-</p>
+<table class="table-info w-100 my-10">
+    <thead class="bg-grey-darker">
+        <tr class="font-medium text-white text-sm uppercase">                            
+            <td class="text-center uppercase font-bold px-5 py-3">MODALIDAD</td>
+        </tr>
+    </thead>
+    <tr class="text-sm" >                                    
+            <td class="text-center uppercase font-bold px-5 py-3"> {!! $quota_aid->procedure_modality->name !!}  </td>    
+    </tr>
+</table>
 
 <table class="table-info w-100 my-10">
     <thead class="bg-grey-darker">
