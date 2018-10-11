@@ -227,15 +227,15 @@ class Util
         }        
 
         //Correlative 
-        $correlative = new QuotaAidCorrelative();
-        $correlative->wf_state_id = $wf_state->id;
-        $correlative->quota_aid_mortuary_id = $quota_aid_mortuary_id;
-        $correlative->code = $role->correlative;
-        $correlative->date = Carbon::now();
-        $correlative->user_id = self::getAuthUser()->id;
-        $correlative->procedure_type_id = $quota_aid->procedure_type_id;
+        $quota_aid_correlative = new QuotaAidCorrelative();
+        $quota_aid_correlative->wf_state_id = $wf_state->id;
+        $quota_aid_correlative->quota_aid_mortuary_id = $quota_aid_mortuary_id;
+        $quota_aid_correlative->code = $correlative;
+        $quota_aid_correlative->date = Carbon::now();
+        $quota_aid_correlative->user_id = self::getAuthUser()->id;
+        $quota_aid_correlative->procedure_type_id = $quota_aid->procedure_type_id;
         if ($save) {
-            $correlative->save();
+            $quota_aid_correlative->save();
         }
 
         return $correlative;
