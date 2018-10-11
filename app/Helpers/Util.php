@@ -197,12 +197,15 @@ class Util
         return $correlative;
     }
     public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id, $save = true){
-        $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();        
+        $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();  
         $quota_aid = QuotaAidMortuary::find($quota_aid_mortuary_id);
+        Log::info("role_id: ". Session::get('rol_id'));
         $reprint = QuotaAidCorrelative::where('procedure_type_id',$quota_aid->procedure_type_id)->where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
-
-        $last_quota_aid = QuotaAidMortuary::
-                                orderByDesc(DB::raw("split_part(code, '/',2)::integer"))
+        
+        $last_quota_aid = QuotaAidCorrelative::
+                                where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)                                
+                                ->where('wf_state_id',$wf_state->id)
+                                ->orderByDesc(DB::raw("split_part(code, '/',2)::integer"))
                                 ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
                                 ->first();
         if(isset($reprint->id))
@@ -210,7 +213,7 @@ class Util
         $year =  date('Y');
 
         $correlative = $last_quota_aid->code ?? "";
-
+        Log::info("type: ". $quota_aid->procedure_modality->procedure_type_id);
         $reception = WorkflowState::where('role_id', Session::get('rol_id'))->whereIn('sequence_number', [0, 1])->first();
         if ($reception) {
             $correlative = QuotaAidMortuary::find($quota_aid_mortuary_id)->code;
@@ -234,7 +237,7 @@ class Util
         $quota_aid_correlative->code = $correlative;
         $quota_aid_correlative->date = Carbon::now();
         $quota_aid_correlative->user_id = self::getAuthUser()->id;
-        $quota_aid_correlative->procedure_type_id = $quota_aid->procedure_type_id;
+        $quota_aid_correlative->procedure_type_id = $quota_aid->procedure_modality->procedure_type_id;
         if ($save) {
             $quota_aid_correlative->save();
         }
