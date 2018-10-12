@@ -8,6 +8,7 @@ use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 use Validator;
 use Auth;
+use Util;
 use Muserpol\Models\Spouse;
 
 class AidCommitmentController extends Controller

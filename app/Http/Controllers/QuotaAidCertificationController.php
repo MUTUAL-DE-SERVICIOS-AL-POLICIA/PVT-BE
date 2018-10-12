@@ -378,16 +378,29 @@ class QuotaAidCertificationController extends Controller
         $start_date->subMonths(12); // change by procedure cotizations            
         
         $spouse = null;
+        $valid_contributions = null;
         if($quota_aid->procedure_modality->procedure_type_id == 3) {
             Util::completQuotaContributions($affiliate->id,$start_date->copy(),$end_date->copy());
             $contributions = Contribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
+            $valid_contributions = $contributions;
             $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
         }   
         //return $start_date->format('Y-m');     
         
         if($quota_aid->procedure_modality->procedure_type_id == 4) {            
+            $aid_commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+            $valid_contributions = AidContribution::where('affiliate_id',$affiliate->id)
+                                        ->whereDate('month_year','>=',$start_date->format('Y-m')."-01")
+                                        ->whereDate('month_year','<=',$end_date->format('Y-m')."-01")
+                                        ->whereDate('month_year','>=',$aid_commitment->date_commitment)
+                                        ->orderByDesc('month_year')->pluck('id','month_year');
+                //return $valid_contributions;
             Util::completAidContributions($affiliate->id,$start_date->copy(),$end_date->copy());
-            $contributions = AidContribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
+            $contributions = AidContribution::where('affiliate_id',$affiliate->id)
+                                                ->whereDate('month_year','>=',$start_date->format('Y-m')."-01")
+                                                ->whereDate('month_year','<=',$end_date->format('Y-m')."-01")
+                                                //->whereDate('month_year','>=',$aid_commitment->date_commitment)
+                                                ->orderByDesc('month_year')->get();
             $reimbursements = AidReimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
             if($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) {
                 $spouse = $affiliate->spouse()->first();
@@ -409,6 +422,7 @@ class QuotaAidCertificationController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
         $title = "CERTIFICACIÓN ".$quota_aid->procedure_modality->procedure_type->second_name;
         $contributions_number = 12;
+        
         $data = [
             'code' => $code,
             'area' => $area,
@@ -428,6 +442,7 @@ class QuotaAidCertificationController extends Controller
             'affiliate'=>$affiliate,
             'title'=>$title,
             'spouse' => $spouse,
+            'valid_contributions' => $valid_contributions,
             //'institution'=>$institution,
             //'direction'=>$direction,
             'unit'=>$unit,
@@ -449,5 +464,385 @@ class QuotaAidCertificationController extends Controller
                         array(1, 1, 1)
                     );
         return $bar_code;
+    }
+
+
+
+    public function printLegalDictum($id) {
+        $quota_aid = QuotaAidMortuary::find($id);
+
+        $applicant = RetFunBeneficiary::where('type', 'S')->where('quota_aid_id', $quota_aid->id)->first();
+        $beneficiaries = RetFunBeneficiary::where('quota_aid_id',$quota_aid->id)->orderByDesc('type')->orderBy('id')->get();        
+        /** PERSON DATA */
+        $person = "";
+        $affiliate = Affiliate::find($quota_aid->affiliate_id);                        
+        $ret_fun_beneficiary = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
+        
+
+        if(isset($ret_fun_beneficiary->id)) {
+            $legal_guardian = RetFunLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();
+            $person .= ($legal_guardian->gender=='M'?"El señor ":"La señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
+        } else {
+            $person .= ($affiliate->gender=='M'?"El señor ":"La señora ");
+        }        
+        $person .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR ".($quota_aid->procedure_modality_id == 4?"FALLECIDO ":" ")."del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
+        if($quota_aid->procedure_modality_id == 4) {
+            //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) .", a lo cual considera lo siguiente:";
+       
+            $person .=  ($applicant->gender=='M'?' el Sr. ':' la Sra. ').Util::fullName($applicant)." con C.I. N° ". $applicant->identity_card." ".$applicant->city_identity_card->first_shortened.". solicita el beneficio a favor suyo en calidad de ".$applicant->kinship->name; 
+            $testimony_applicant = Testimony::find($applicant->testimonies()->first()->id);
+            
+           // foreach($testimonies_applicant as $testimony) {
+                $beneficiaries = $testimony_applicant->ret_fun_beneficiaries;
+                $quantity = $beneficiaries->count();                
+                $start_message = false;
+                if($quantity > 1) {
+                    $person .= " y de los derechohabientes ";
+                    $start_message = true;
+                }
+                foreach($beneficiaries as $beneficiary) {
+                    if($beneficiary->id != $applicant->id) {
+                        if(!$start_message) {
+                            $person = $person .= " y ".($beneficiary->gender=="M"?"del":"de la")." derechohabiente ";
+                        }
+                        $person .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI")."."." en calidad de ".$beneficiary->kinship->name.((--$quantity)==2?" y ":(($quantity==1)?'':', '));
+                    }
+                }
+                $quantity = $beneficiaries->count();
+                if($quantity > 1) {
+                    $person .=" como herederos legales acreditados mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
+                } else {
+                    $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de la cuidad de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
+                }
+            //} 
+
+            $testimonies_applicant = Testimony::where('affiliate_id',$affiliate->id)->where('id','!=',$applicant->testimonies()->first()->id)->get();
+            foreach($testimonies_applicant as $testimony) {
+                $beneficiaries = $testimony->ret_fun_beneficiaries;                
+                $beneficiaries = $beneficiaries->where('state',true);
+                $quantity = $beneficiaries->count();
+                $start_message = false;
+                if($quantity > 0) {
+                    if($quantity > 1) {
+                        $person .= "; asimismo solicitan el beneficio los derechohabientes ";
+                        $start_message = true;
+                    } 
+                    $stored_quantity = $quantity;
+                    foreach($beneficiaries as $beneficiary) {
+                        //if($beneficiary->state)
+                        if(!$start_message)
+                        {
+                            $person = $person .= " asimismo solicita el beneficio ".($beneficiary->gender=="M"?"el":"la")." derechohabiente ";
+                        }
+                        $person .= Util::fullName($beneficiary)." con C.I. N° ". $beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"SIN CI").". en calidad de ".$beneficiary->kinship->name.((--$quantity)==1?" y ":(($quantity==0)?'':', '));
+                    }
+                    if($stored_quantity > 1) {
+                        $person .=" como herederos legales acreditados mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de ".$testimony->place." a cargo de ".$testimony->notary."";
+                    } else {
+                        $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de la cuidad de ".$testimony->place." a cargo de ".$testimony->notary."";
+                    }                    
+                }
+            } 
+            $person .=". Presentando";
+        } else {
+            $person .= " presenta";
+        }
+        $person .= " la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) .", a lo cual considera lo siguiente:";        
+        //return $person;
+        /** END PERSON DATA */
+
+        /** LAW DATA */
+        $art = [
+            '3' => 'a)',
+            '4' => 'b)',
+            '5' => 'c)',
+            '6' => 'c.1)',
+            '7' => 'd)',
+        ];
+
+        $law = "Conforme normativa, el trámite N° ".$quota_aid->code." de la Regional ".ucwords($quota_aid->city_start->name)." es ingresado por Ventanilla
+        de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio
+        Mortuorio; verificados los requisitos y la documentación presentada por la parte solicitante
+        según lo señalado el Art. 41 inciso a) del Reglamento de Fondo de Retiro Policial Solidario
+        aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y
+        modificado mediante Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017,
+        y conforme el Art. 45 de referido Reglamento, se detalla la documentación como resultado de
+        la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y
+        adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro
+        Policial, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:";
+        /** END LAW DATA */
+
+        $body = "";        
+
+        ///---FILE---///
+        $body_file = "";    
+        $file_id = 20;
+        $file = RetFunCorrelative::where('quota_aid_id',$quota_aid->id)->where('wf_state_id',$file_id)->first();
+        $body_file .= "Que, mediante Certificación N° ". $file->code .", de Archivo de la Dirección de Beneficios Económicos de fecha ". Util::getStringDate($file->date) .", se establece que el trámite signado con el N° ". $quota_aid->code." ";
+        $discount = $quota_aid->discount_types();
+        $finance = $discount->where('discount_type_id','1')->first();
+        if(isset($finance->id) && $finance->pivot->amount > 0)        
+            $body_file .= "si tiene expediente del referido titular por concepto de anticipo en el monto de <b>".Util::formatMoneyWithLiteral($finance->pivot->amount)."</b> conforme Resolución de la Comisión de Presentaciones N°".($finance->pivot->note_code??'Sin codigo')." de fecha ".Util::getStringDate(($finance->pivot->note_code_date??'')).".";
+        else 
+        {
+            $folder = AffiliateFolder::where('affiliate_id',$affiliate->id)->get();
+            if($folder->count() > 0) {
+                $body_file .= "si ";    
+            } else {
+                $body_file .= "no ";
+            }
+            $body_file .= "tiene expediente del referido titular.";
+        }
+        ///---ENDIFLE--////
+
+        /////----FINANCE----///        
+        $discount = $quota_aid->discount_types();
+        $finance = $discount->where('discount_type_id','1')->first();
+        $body_finance = "";
+        $body_finance = "Que, mediante nota de respuesta ".($finance->pivot->code ?? 'sin cite')." de la Dirección de Asuntos Administrativos de fecha ". Util::getStringDate(($finance->pivot->date??'')).", refiere que ".($affiliate->gender=='M'?"el":"la")." titular del beneficio ";
+        if(isset($finance->id) && $finance->amount > 0){
+            $body_finance .= "si cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial en el monto de " .Util::formatMoneyWithLiteral(($finance->pivot->amount??0)).".";
+        } else {            
+            $body_finance .= "no cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial, sin embargo se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.";
+        }                          
+        /////----END FINANCE---////
+
+        ////-----LEGAL REVIEW ----////      
+        $body_legal_review   = "";
+        $legal_review_id = 21;
+        $legal_review = RetFunCorrelative::where('quota_aid_id',$quota_aid->id)->where('wf_state_id',$legal_review_id)->first();
+        $body_legal_review .= "Que, mediante Certificación N° ".$legal_review->code." del Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ".Util::getStringDate($legal_review->date).", fue verificada y validada la documentación presentada por ".($quota_aid->procedure_modality_id == 4?"los beneficiarios":($affiliate->gender=="M"?"el titular":"la titular")) ." del trámite signado con el N° ".$quota_aid->code.".";
+        /////-----END LEGAL REVIEW----///
+        
+        ///------ INDIVIDUAL ACCCOUTNS ------////    
+        $body_accounts = "";           
+        $accounts_id = 22;
+        $accounts = RetFunCorrelative::where('quota_aid_id',$quota_aid->id)->where('wf_state_id',$accounts_id)->first();
+        $availability_code = 10;
+        $availability_number_contributions = Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$availability_code)->count();
+
+        $end_contributions = [
+            '3'  =>  'destino a disponibilidad de la letra (reserva activa) '.($affiliate->gender=='M'?'del':'de la').' titular.',
+            '4'  =>  'del fallecimiento del Titular.',
+            '5'  =>  'de su retiro.',
+            '6'  =>  'de su retiro.',
+            '7'  =>  'de su retiro.',
+        ];
+        $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes ".$end_contributions[$quota_aid->procedure_modality_id];
+
+        if($affiliate->hasAvailability()) {
+            $body_accounts .=" Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad antes ".$end_contributions[$quota_aid->procedure_modality_id];
+        }
+        ////------- INDIVIDUAL ACCOUTNS ------////
+
+        //----- QUALIFICATION -----////      
+        $body_qualification = "";
+        $qualification_id = 23;
+        $qualification = RetFunCorrelative::where('quota_aid_id',$quota_aid->id)->where('wf_state_id',$qualification_id)->first();
+        $months  = $affiliate->getTotalQuotes();        
+        $body_qualification .=  "Que, mediante Calificación de Fondo de Retiro Policial Solidario N° ".$qualification->code." del Área de Calificación de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de<strong> ". Util::formatMonthYearLiteral($months)."</strong>, determinando el beneficio de <strong>Fondo de Retiro Policial Solidario por ".mb_strtoupper($quota_aid->procedure_modality->name)."&nbsp;&nbsp;</strong>de<strong> ". Util::formatMoneyWithLiteral($quota_aid->subtotal_ret_fun) ."</strong>".Util::getDiscountCombinations($quota_aid->id);
+        if($affiliate->hasAvailability()){
+            $availability = Util::sumTotalContributions($affiliate->getDatesAvailability());
+            $body_qualification .= " Por concepto de reconocimiento de aportes laborales durante el periodo de disponibilidad de ".Util::formatMonthYearLiteral($availability) .', el cual no es considerado en la calificación del beneficio del Fondo de Retiro Policial Solidario, de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 - 2020, se determina el monto de <strong>'.Util::formatMoneyWithLiteral($quota_aid->total_availability).'</strong>; haciendo un total de <strong>'.Util::formatMoneyWithLiteral($quota_aid->total).'</strong>';
+        }        
+        $body_qualification .= ".";
+        ////----- DUE -----////
+        $discounts = $quota_aid->discount_types();
+        $discount = $discounts->where('discount_type_id','2')->first();
+        $body_due = "";
+        $body_due .= "Que, mediante nota ".($discount->pivot->code??'Sin nota'). " de la Dirección de Estrategias Sociales e Inversiones de fecha ".Util::getStringDate(($discount->pivot->date??'')). ", 
+                    refiere que ".($affiliate->gender == 'M'?'el':'la')." titular ";
+        $discounts = $quota_aid->discount_types();
+        $discount_counter = $discounts->where('discount_type_id','>','1')->where('amount','>','0')->count();
+        if($discount_counter == 0) {
+            $body_due .="no cuenta con deuda en curso de pago a MUSERPOL ni por concepto de garantía de préstamo.";
+        } else {                        
+                $and = "";
+                $discounts = $quota_aid->discount_types();
+                $discount = $discounts->where('discount_type_id','2')->first();
+                if(isset($discount->id) && $discount->pivot->amount >0) {                    
+                    $body_due .="si cuenta con deuda en curso de pago a MUSERPOL";
+                    $and = " y ";
+                }                
+                
+                $discounts = $quota_aid->discount_types();
+                $discount = $discounts->where('discount_type_id','3')->first();
+                if(isset($discount->id) && $discount->pivot->amount >0) {                    
+                    if($and=="") {
+                        $body_due .="si cuenta con deuda en curso de pago a MUSERPOL";
+                    }
+                     $body_due .= $and." por concepto de garantía de préstamo";
+                }
+                $body_due .= ", supra detallado.";            
+        }
+        ///-----END DUE----///
+
+        ///------ PAYMENT ------////
+        $payment = "";
+        $discounts = $quota_aid->discount_types(); //DiscountType::where('quota_aid_id',$quota_aid->id)->orderBy('discount_type_id','ASC')->get();                
+        $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
+        $payment = "Por consiguiente, habiendo sido remitido el presente tramite al Área Legal Unidad de
+        Otorgación del Fondo de Retiro Policial Solidario, autorizado por Jefatura de la referida unidad, conforme a los Art. 2, 3, 5, 10, 26, 27, 28, 31 Ter.,
+        32, 36, 37, 38, 40, 41, 42, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74 y la Disposición Transitoria
+        Segunda, del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante
+        Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante
+        Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017. Se DICTAMINA en
+        merito a la documentación de respaldo contenida en el presente, ";
+        $payment = "Por consiguiente, habiendo sido remitido el presente tramite al Área Legal Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
+        Cuota y Auxilio Mortuorio, autorizado por Jefatura de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, conforme a 
+        los Arts. 2, 3, 5, 10, 26, 27, 29, 31 Ter., 32, 33, 34, 35, 36, 37, 38, 41, 42, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74, Disposición Transitoria Segunda del 
+        Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante 
+        Resoluciones de Directorio Nros. 36/2017 y 51/2017 de fechas 20 de septiembre de 2017 y 29 de diciembre de 2017 respectivamente; y la Disposición Transitoria 
+        Segunda del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y modificado 
+        mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017. Se <b>DICTAMINA</b> en merito a la documentación de respaldo contenida en el presente, ";
+                
+        $flagy = 0;
+        $discounts = $quota_aid->discount_types();
+        $discounts_number = $discounts->where('amount','>','0')->count();
+        if($discounts_number > 0) {
+            $payment .= "proceder a realizar el descuento ";
+            $discounts = $quota_aid->discount_types();
+            $discount = $discounts->where('discount_type_id','1')->first();        
+            if(isset($discount->id) && $discount->pivot->amount > 0) {
+                $flagy++;
+                $payment.="de <b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> por concepto de anticipo de Fondo de Retiro Policial de conformidad a la Resoluci&oacute;n de la Comisión de Presentaciones Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);
+            }
+            
+            $discounts = $quota_aid->discount_types();
+            $discount = $discounts->where('discount_type_id','2')->first();                           
+            $discount_footer = false;
+            if(isset($discount->id) && $discount->pivot->amount > 0) {                                
+                $payment .= $this->getFlagy($discounts_number,$flagy);
+                $flagy++;
+                $discount_footer = true;
+                $payment.="de <b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> por concepto de saldo de deuda con la MUSERPOL"; 
+                //de conformidad al contrato de préstamo Nro. ".$discount->pivot->note_code." y nota ".$discount->pivot->code." de fecha ".Util::getStringDate($discount->pivot->date);
+            }
+            //
+            $discounts = $quota_aid->discount_types();
+            $discount = $discounts->where('discount_type_id','3')->first();
+            
+            $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
+
+            if(isset($discount->id) && $discount->pivot->amount > 0) {                 
+                $payment .= $this->getFlagy($discounts_number,$flagy,"la suma ");                
+                $payment.="total de <b>".Util::formatMoneyWithLiteral(($discount->pivot->amount??0))."</b> por concepto de garantía de préstamo, a favor ";
+                $discount_footer = true;
+                $num_loans = $loans->count();
+                if($num_loans==1)
+                    $payment .= " del señor ";
+                else
+                    $payment .= " de los señores ";
+                $i=0;
+                foreach($loans as $loan){
+                    $i++;
+                    if($i!=1)
+                    {
+                        if($num_loans-$i==0)
+                            $payment .= " y ";
+                        else
+                            $payment .= ", ";
+                    }
+                    $payment.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
+                    $payment.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
+                }
+                //$payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($discount->pivot->date) ." de la Dirección de Estrategias Sociales e Inversiones";
+            }
+            if($discount_footer) {
+                $payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($discount->pivot->date) ." de la Dirección de Estrategias Sociales e Inversiones";
+
+            }
+            $payment .= ". Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <strong class='uppercase'>".($quota_aid->procedure_modality->name)."</strong> a favor ";
+        } else {
+            $payment .= "reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <strong class='uppercase'>".$quota_aid->procedure_modality->name."</strong> a favor ";
+        }
+        if($quota_aid->procedure_modality_id == 4) {
+            $beneficiaries_count = RetFunBeneficiary::where('quota_aid_id',$quota_aid->id)->count();            
+            $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"el beneficiario ":"la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";
+
+        } else {
+            $payment .=" de:<br><br>";
+        }
+        if($quota_aid->procedure_modality_id == 4) {
+            $beneficiaries = RetFunBeneficiary::where('quota_aid_id',$quota_aid->id)->orderBy('kinship_id')->orderByDesc('state')->get();
+            foreach($beneficiaries as $beneficiary){
+                if(!$beneficiary->state) {
+                    $reserved_quantity = RetFunBeneficiary::where('quota_aid_id',$quota_aid->id)->where('state',false)->count();
+                    $certification = $beneficiary->testimonies()->first();
+                    $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
+                    la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes ":" la Cuota Parte ")." salvando los derechos del beneficiario ".
+                    ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
+                    ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 29, 34, 35 y 41 del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resoluciones de Directorio Nros. 36/2017 y 51/2017 de fechas 20 de septiembre de 2017 y 29 de diciembre de 2017 respectivamente, de la siguiente manera:<br><br>";
+                }
+                $birth_date = Carbon::createFromFormat('d/m/Y', $beneficiary->birth_date);  
+                if(date('Y') -$birth_date->format('Y') > 18) {
+                $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
+                } else {
+                    $payment .='Menor ';
+                }
+                $payment .= $beneficiary->fullName();
+                if($beneficiary->identity_card)
+                $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");
+                $beneficiary_advisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id',$beneficiary->id)->first();
+                if(isset($beneficiary_advisor->id))
+                {
+                    $advisor = RetFunAdvisor::where('id',$beneficiary_advisor->ret_fun_advisor_id)->first();
+                    $payment .= ", a través de su tutor".($advisor->gender=='F'?'a':'')." natural ".($advisor->gender=='M'?'Sr.':'Sra.')." ".Util::fullName($advisor)." con C.I. N°".$advisor->identity_card." ".($advisor->city_identity_card->first_shortened??"Sin Extencion").".";
+                }
+                $beneficiary_legal_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$beneficiary->id)->first();
+                if(isset($beneficiary_legal_guardian->id)) {
+                    $legal_guardian = RetFunLegalGuardian::where('id',$beneficiary_legal_guardian->ret_fun_legal_guardian_id)->first();
+                    $payment .= " por si o representada legamente por ".($legal_guardian->gender=='M'?"el Sr.":"la Sra. ")." ".Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".($legal_guardian->city_identity_card->first_shortened??"sin extencion").". 
+                    conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° ".$legal_guardian->number_authority." de ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." emitido por ".$legal_guardian->notary.".";
+                }
+                $payment .= ', en el monto de<strong> '.Util::formatMoneyWithLiteral($beneficiary->amount_total).'</strong> '.'en calidad de '.$beneficiary->kinship->name.".<br><br>";
+            
+            }
+        } else {            
+            $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI")."., el monto de &nbsp;<strong>".Util::formatMoneyWithLiteral($quota_aid->total).".</strong>";
+        } 
+
+        ///------EN  PAYMENT ------///
+        // $number = Util::getNextAreaCode($quota_aid->id);
+        $number= RetFunCorrelative::where('quota_aid_id', $quota_aid->id)->where('wf_state_id', 25)->first();
+
+
+        $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        /*HEADER FOOTER*/
+        $footerHtml = view()->make('ret_fun.print.legal_footer', ['bar_code' => $bar_code])->render();
+        $headerHtml = view()->make('ret_fun.print.legal_header')->render();
+        $user = Auth::user();
+        $data = [
+            'ret_fun' => $quota_aid,
+            'beneficiaries'    =>  $beneficiaries,
+            'correlative'  =>  $number,
+            'actual_city'  =>  Auth::user()->city->name,
+            'actual_date'  =>  Util::getStringDate($number->date),
+            'user'  =>  $user,
+            'person'    =>  $person,
+            'law'   =>  $law,
+            'body_file'  =>  $body_file,
+            'body_accounts'  =>  $body_accounts,
+            'body_finance'  =>  $body_finance,
+            'body_legal_review'  =>  $body_legal_review,
+            'body_qualification'  =>  $body_qualification,
+            'body_due'  =>  $body_due,
+            'payment'   =>  $payment,
+            'art'   =>  $art,
+        ];
+
+        $pages = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $pages[] = \View::make('ret_fun.print.legal_dictum', $data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+
+        return $pdf->setOption('encoding', 'utf-8')
+        ->setOption('footer-html', $footerHtml)
+        ->setOption('header-html', $headerHtml)
+        ->setOption('margin-top',40)
+        ->setOption('margin-bottom',15)
+        ->stream("dictamenLegal.pdf");
     }
 }
