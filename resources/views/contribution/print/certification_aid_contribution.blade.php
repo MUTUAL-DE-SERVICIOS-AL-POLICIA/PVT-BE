@@ -72,13 +72,13 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened }}</td>
                     @if(isset($valid_contributions[$contribution->month_year])) 
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->quotable) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent) }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->quotable) }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                     @else 
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney("0")??"45" }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney(0) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney(0) }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ "0.00" }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ "0.00" }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ "0.00" }}</td>
                     @endif
 
                 </tr> 
@@ -88,10 +88,10 @@
                             <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($reimbursement->month_year)) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened  }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened  }}</td>                            
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->quotable) }}</td>                            
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>                                                                                      
                         </tr>
                     @endif        
                 @endforeach                                                

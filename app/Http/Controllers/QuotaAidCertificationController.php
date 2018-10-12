@@ -389,11 +389,16 @@ class QuotaAidCertificationController extends Controller
         
         if($quota_aid->procedure_modality->procedure_type_id == 4) {            
             $aid_commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+            if(!isset($aid_commit)) {
+                Session::flash('message','No se encontró compromiso de pago');
+                return redirect('affiliate/'.$affiliate->id);   
+            }
             $valid_contributions = AidContribution::where('affiliate_id',$affiliate->id)
                                         ->whereDate('month_year','>=',$start_date->format('Y-m')."-01")
                                         ->whereDate('month_year','<=',$end_date->format('Y-m')."-01")
                                         ->whereDate('month_year','>=',$aid_commitment->date_commitment)
-                                        ->orderByDesc('month_year')->pluck('id','month_year');
+                                        ->orderByDesc('month_year')->pluck('id','month_year');                       
+
                 //return $valid_contributions;
             Util::completAidContributions($affiliate->id,$start_date->copy(),$end_date->copy());
             $contributions = AidContribution::where('affiliate_id',$affiliate->id)
