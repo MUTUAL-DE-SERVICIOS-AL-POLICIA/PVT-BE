@@ -249,108 +249,161 @@ class QuotaAidCertificationController extends Controller
             ->stream("$namepdf");
     }
 
-    public function printLegalReview($id){
+    public function printBeneficiariesQualification($id, $only_print = true)
+    {
+        $quota_aid = QuotaAidMortuary::find($id);
 
-        $quota_aid = QuotaAidMortuary::find($id);        
-        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 35)->first();
-        $code = $quota_aid->code;        
+        $title = 'INFORMACIÓN GENERAL';
+
+        $affiliate = $quota_aid->affiliate;
+        $applicant = $quota_aid->quota_aid_beneficiaries()->where('type', 'S')->with('kinship')->first();
+        $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
+
+        $pdftitle = "Calificación - INFORMACIÓN GENERAL";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        // $next_area_code = Util::getNextAreaCode($quota_aid->id);
+        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)
+        // ->where('wf_state_id', 23)
+            ->first();
+        $code = $quota_aid->code;
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
         $date = Util::getDateFormat($next_area_code->date);
         $number = $next_area_code->code;
 
-        $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
-        $submitted_documents = QuotaAidSubmittedDocument::
-                                select(
-                                    'quota_aid_submitted_documents.id',
-                                    'quota_aid_submitted_documents.quota_aid_mortuary_id',
-                                    'quota_aid_submitted_documents.procedure_requirement_id',
-                                    'quota_aid_submitted_documents.is_valid',
-                                    'quota_aid_submitted_documents.reception_date')
-                                ->where('quota_aid_submitted_documents.quota_aid_mortuary_id', $id)
-                                ->leftJoin('procedure_requirements','quota_aid_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
-                                ->orderBy('procedure_requirements.number', 'ASC')->get();
+        $subtitle = $number;
 
+        $data = [
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'affiliate' => $affiliate,
+            'applicant' => $applicant,
+            'beneficiaries' => $beneficiaries,
+            'quota_aid' => $quota_aid,
+        ];
+        if ($only_print) {
+            return \PDF::loadView('quota_aid.print.beneficiaries_qualification', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        }
+        return $data;
+    }
+    public function printQualificationData($id, $only_print = true)
+    {
+        $quota_aid = QuotaAidMortuary::find($id);
         $affiliate = $quota_aid->affiliate;
-        $footerHtml = view()->make('quota_aid.print.footer', ['bar_code'=>$this->generateBarCode($quota_aid)])->render();
+        $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->get();
+
+        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)
+        // ->where('wf_state_id', 37)
+            ->first();
+        $code = $quota_aid->code;
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+
+        $dates = $affiliate->getContributionsWithTypeQuotaAid();
+        if (sizeof($dates) > 1) {
+            return "error";
+        }
+        $start_date = $dates[0]->start;
+        $end_date = $dates[0]->end;
+
+        $title = 'CALIFICACIÓN ' . $quota_aid->procedure_modality->procedure_type->second_name;
+        $subtitle = $number;
+        $data = [
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'quota_aid' => $quota_aid,
+            'affiliate' => $affiliate,
+            'beneficiaries' => $beneficiaries,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+        ];
+
+        if ($only_print) {
+            return \PDF::loadView('quota_aid.print.qualification_data', $data)
+                ->setOption('encoding', 'utf-8')
+                        // ->setOption('footer-right', 'Pagina [page] de [toPage]')
+                ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+                ->stream("calificacion");
+        }
+        return $data;
+    }
+    public function printAllQualification($id)
+    {
+        $quota_aid = QuotaAidMortuary::find($id);
+        $affiliate = $quota_aid->affiliate;
+
+        $pages[] = \View::make('quota_aid.print.qualification_data', self::printQualificationData($id, false))->render();
+
+        $pages[] = \View::make('quota_aid.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf
+            ->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
+            // ->setOption('footer-html', $footerHtml)
+            // ->setOption('footer-right', 'Pagina [page] de [toPage]')
+            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            // ->setOption('user-style-sheet', 'css/app1.css')
+            ->stream("namepdf");
+    }
+
+
+
+    public function printLegalReview($id)
+    {
+        $quota_aid = QuotaAidMortuary::find($id);
+        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 35)->first();
+        $code = $quota_aid->code;
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+        $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
+        $submitted_documents = QuotaAidSubmittedDocument::select(
+            'quota_aid_submitted_documents.id',
+            'quota_aid_submitted_documents.quota_aid_mortuary_id',
+            'quota_aid_submitted_documents.procedure_requirement_id',
+            'quota_aid_submitted_documents.is_valid',
+            'quota_aid_submitted_documents.reception_date'
+        )
+            ->where('quota_aid_submitted_documents.quota_aid_mortuary_id', $id)
+            ->leftJoin('procedure_requirements', 'quota_aid_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
+            ->orderBy('procedure_requirements.number', 'ASC')->get();
+        $affiliate = $quota_aid->affiliate;
+        $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
         $cite = $number;//RetFunIncrement::getIncrement(Session::get('rol_id'), $quota_aid->id);
         $subtitle = $cite;
         $pdftitle = "Revision Legal";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-
         $data = [
             'code' => $code,
             'area' => $area,
             'user' => $user,
             'date' => $date,
             'number' => $number,
-
-            'subtitle'=>$subtitle,
-            'title'=>$title,
-            'quota_aid'=>$quota_aid,
-            'affiliate'=>$affiliate,
-            'submitted_documents'=>$submitted_documents,
-        ];
-
-        $pages = [];
-        for ($i = 1; $i <= 2; $i++) {
-            $pages[] = \View::make('quota_aid.print.legal_certification',$data)->render();
-        }
-        $pdf = \App::make('snappy.pdf.wrapper');
-        $pdf->loadHTML($pages);
-        return $pdf->setOption('encoding', 'utf-8')
-            ->setOption('margin-bottom', '15mm')
-            ->setOption('footer-html', $footerHtml)
-            ->stream("$namepdf");            
-    }
-    public function printFile($id)
-    {
-        $affiliate = Affiliate::find($id);
-        $role = Util::getRol();
-                
-        $quota_aid = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get()->last();        
-        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 34)->first();
-        $code = $quota_aid->code;
-        $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();        
-        $area = $next_area_code->wf_state->first_shortened;
-        $user = $next_area_code->user;
-        $date = Util::getDateFormat($next_area_code->date);
-        $number = $next_area_code->code;
-
-        // $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
-        $title = "CERTIFICACIÓN DE ARCHIVO";
-        $affiliate_folders = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
-        
-
-        /**
-         * !!TODO
-         *!!revisar
-         */
-        $cite = $number; // RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
-
-        $subtitle = $cite;
-        $pdftitle = "Certificación de Archivo";
-        $namepdf = Util::getPDFName($pdftitle, $affiliate);
-        $footerHtml = view()->make('quota_aid.print.footer', ['bar_code'=>$this->generateBarCode($quota_aid)])->render();
-        $data = [
-            'code' => $code,
-            'area' => $area,
-            'user' => $user,
-            'date' => $date,
-            'number' => $number,
-
-            'cite'=>$cite,
-            'subtitle'=>$subtitle,
-            'title'=>$title,
-            'quota_aid'=>$quota_aid,
-            'affiliate'=>$affiliate,
-            'affiliate_folders'=>$affiliate_folders,
-            'applicant'=>$applicant,
-            'unit1'=>'archivo y gestión documental<br> beneficios económicos',
+            'subtitle' => $subtitle,
+            'title' => $title,
+            'quota_aid' => $quota_aid,
+            'affiliate' => $affiliate,
+            'submitted_documents' => $submitted_documents,
         ];
         $pages = [];
         for ($i = 1; $i <= 2; $i++) {
-            $pages[] = \View::make('quota_aid.print.file_certification',$data)->render();
+            $pages[] = \View::make('quota_aid.print.legal_certification', $data)->render();
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
@@ -358,11 +411,62 @@ class QuotaAidCertificationController extends Controller
             ->setOption('margin-bottom', '15mm')
             ->setOption('footer-html', $footerHtml)
             ->stream("$namepdf");
+    }
+    public function printFile($id)
+    {
+        $affiliate = Affiliate::find($id);
+        $role = Util::getRol();
 
+        $quota_aid = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get()->last();
+        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 34)->first();
+        $code = $quota_aid->code;
+        $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+        // $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
+        $title = "CERTIFICACIÓN DE ARCHIVO";
+        $affiliate_folders = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
+
+        /**
+         * !!TODO
+         *!!revisar
+         */
+        $cite = $number; // RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
+        $subtitle = $cite;
+        $pdftitle = "Certificación de Archivo";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+        $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
+        $data = [
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'cite' => $cite,
+            'subtitle' => $subtitle,
+            'title' => $title,
+            'quota_aid' => $quota_aid,
+            'affiliate' => $affiliate,
+            'affiliate_folders' => $affiliate_folders,
+            'applicant' => $applicant,
+            'unit1' => 'archivo y gestión documental<br> beneficios económicos',
+        ];
+        $pages = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $pages[] = \View::make('quota_aid.print.file_certification', $data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("$namepdf");
     }
     public function printCertification($id)
-    {                
-        $quota_aid = QuotaAidMortuary::find($id);        
+    {
+        $quota_aid = QuotaAidMortuary::find($id);
         $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 36)->first();
         $code = $quota_aid->code;
         $area = $next_area_code->wf_state->first_shortened;
@@ -371,43 +475,41 @@ class QuotaAidCertificationController extends Controller
         Carbon::useMonthsOverflow(false);
         $number = $next_area_code->code;
         $affiliate = Affiliate::find($quota_aid->affiliate_id);
-
         $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
         $end_date->subMonth();
         $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
         $start_date->subMonths(12); // change by procedure cotizations            
-        
+
         $spouse = null;
-        if($quota_aid->procedure_modality->procedure_type_id == 3) {
-            Util::completQuotaContributions($affiliate->id,$start_date->copy(),$end_date->copy());
-            $contributions = Contribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
-            $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
+        if ($quota_aid->procedure_modality->procedure_type_id == 3) {
+            Util::completQuotaContributions($affiliate->id, $start_date->copy(), $end_date->copy());
+            $contributions = Contribution::where('affiliate_id', $affiliate->id)->where('month_year', '>=', $start_date->format('Y-m') . "-01")->whereDate('month_year', '<=', $end_date->format('Y-m') . "-01")->orderByDesc('month_year')->get();
+            $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)->where('month_year', '>=', $start_date->format('Y-m') . "-01")->whereDate('month_year', '<=', $end_date->format('Y-m') . "-01")->orderByDesc('month_year')->get();
         }   
         //return $start_date->format('Y-m');     
-        
-        if($quota_aid->procedure_modality->procedure_type_id == 4) {            
-            Util::completAidContributions($affiliate->id,$start_date->copy(),$end_date->copy());
-            $contributions = AidContribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
-            $reimbursements = AidReimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
-            if($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) {
+
+        if ($quota_aid->procedure_modality->procedure_type_id == 4) {
+            Util::completAidContributions($affiliate->id, $start_date->copy(), $end_date->copy());
+            $contributions = AidContribution::where('affiliate_id', $affiliate->id)->where('month_year', '>=', $start_date->format('Y-m') . "-01")->whereDate('month_year', '<=', $end_date->format('Y-m') . "-01")->orderByDesc('month_year')->get();
+            $reimbursements = AidReimbursement::where('affiliate_id', $affiliate->id)->where('month_year', '>=', $start_date->format('Y-m') . "-01")->whereDate('month_year', '<=', $end_date->format('Y-m') . "-01")->orderByDesc('month_year')->get();
+            if ($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) {
                 $spouse = $affiliate->spouse()->first();
             }
         }
         //return $contributions;
         $degree = Degree::find($affiliate->degree_id);
         $exp = City::find($affiliate->city_identity_card_id);
-        $exp = ($exp==Null)? "-": $exp->first_shortened;
+        $exp = ($exp == null) ? "-" : $exp->first_shortened;
         $dateac = Carbon::now()->format('d/m/Y');
         $place = City::find(Auth::user()->city_id);
-        $num=0;
+        $num = 0;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
-
         $subtitle = $next_area_code->code;
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-        $title = "CERTIFICACIÓN ".$quota_aid->procedure_modality->procedure_type->second_name;
+        $title = "CERTIFICACIÓN " . $quota_aid->procedure_modality->procedure_type->second_name;
         $contributions_number = 12;
         $data = [
             'code' => $code,
@@ -416,38 +518,38 @@ class QuotaAidCertificationController extends Controller
             'date' => $date,
             'number' => $number,
             'contributions_number' => $contributions_number,
-            'num'=>$num,
-            'subtitle'=>$subtitle,
-            'place'=>$place,
-            'quota_aid'=>$quota_aid,
-            'reimbursements'=>$reimbursements,
-            'dateac'=>$dateac,
-            'exp'=>$exp,
-            'degree'=>$degree,
-            'contributions'=>$contributions,
-            'affiliate'=>$affiliate,
-            'title'=>$title,
+            'num' => $num,
+            'subtitle' => $subtitle,
+            'place' => $place,
+            'quota_aid' => $quota_aid,
+            'reimbursements' => $reimbursements,
+            'dateac' => $dateac,
+            'exp' => $exp,
+            'degree' => $degree,
+            'contributions' => $contributions,
+            'affiliate' => $affiliate,
+            'title' => $title,
             'spouse' => $spouse,
             //'institution'=>$institution,
             //'direction'=>$direction,
-            'unit'=>$unit,
+            'unit' => $unit,
         ];
-        if($quota_aid->procedure_modality->procedure_type_id == 3) {
+        if ($quota_aid->procedure_modality->procedure_type_id == 3) {
             return \PDF::loadView('contribution.print.certification_quota_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
         }
-        if($quota_aid->procedure_modality->procedure_type_id == 4) {
+        if ($quota_aid->procedure_modality->procedure_type_id == 4) {
             return \PDF::loadView('contribution.print.certification_aid_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
         }
     }
-
-    private function generateBarCode($quota_aid){
-        $bar_code = \DNS2D::getBarcodePNG((
-                        $quota_aid->getBasicInfoCode()['code']."\n\n".$quota_aid->getBasicInfoCode()['hash']), 
-                        "PDF417", 
-                        100, 
-                        33, 
-                        array(1, 1, 1)
-                    );
+    private function generateBarCode($quota_aid)
+    {
+        $bar_code = \DNS2D::getBarcodePNG(
+            ($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']),
+            "PDF417",
+            100,
+            33,
+            array(1, 1, 1)
+        );
         return $bar_code;
     }
 }
