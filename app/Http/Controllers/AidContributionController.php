@@ -77,8 +77,9 @@ class AidContributionController extends Controller
     {
 
         $affiliate = Affiliate::find($affiliate_id);
-         $list = $this->getContributionDebt($affiliate->id,3);
-         $data = [
+        $date = date('Y-m-d');
+        $list = $this->getContributionDebt($affiliate->id,3,$date);
+        $data = [
             'affiliate'=>$affiliate, 
             'list' => $list
         ];
@@ -247,6 +248,7 @@ class AidContributionController extends Controller
             $aid_commitment->id = 0;
             $aid_commitment->affiliate_id = $affiliate->id;
         }
+        $date = date('Y-m-d');
         $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();               
         $data = [
             'contributions' => $group,
@@ -258,7 +260,7 @@ class AidContributionController extends Controller
             'cities' => $cities,
             'cities_objects' => $cities_objects,
             'birth_cities' => $birth_cities,
-            'new_contributions' => $this->getContributionDebt($affiliate->id, 3),
+            'new_contributions' => $this->getContributionDebt($affiliate->id, 3,$date),
             'aid_commitment' => $aid_commitment,
             'spouse' => $spouse,
             'today_date' => date('Y-m-d'),
@@ -312,6 +314,8 @@ class AidContributionController extends Controller
                     $contribution->dignity_rent = 0;
                 else 
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
+
+                $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
                 $contribution->interest = 0;
                 $contribution->save();
             } else {
@@ -330,7 +334,7 @@ class AidContributionController extends Controller
                 else
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
-                $contribution->quotable = $contribution->rent-$contribution->dinity_rent;
+                $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
                 $contribution->type = 'PLANILLA';
                 $contribution->interest = 0;
                 $contribution->save();
@@ -380,7 +384,7 @@ class AidContributionController extends Controller
             $has_commitment = false;            
             $commitment = AidCommitment::where('affiliate_id',$request->afid)->where('state','ALTA')->first();
             
-            if(!isset($commitment->id)){                
+            if(!isset($commitment->id)){
                 $has_commitment = true;                                    
                 $biz_rules = [
                     'has_commitment'    =>  $has_commitment?'required':'',                

@@ -76,7 +76,7 @@
             </div>
             <div class="col-md-6">
                 <div class="col-md-4">
-                    <label class="control-label">Juzgado</label>
+                    <label class="control-label">Juzgado/Notario</label>
                 </div>
                 <div class="col-md-8">
                     <input type="text" v-model="testimony.court" class="form-control" :disabled="!editable" />
@@ -95,7 +95,7 @@
             </div>
             <div class="col-md-6">
                 <div class="col-md-4">
-                    <label class="control-label">Notario</label>
+                    <label class="control-label">Autoridad</label>
                 </div>
                 <div class="col-md-8">
                     <input type="text" v-model="testimony.notary" class="form-control" :disabled="!editable" />
