@@ -474,6 +474,7 @@ class QuotaAidMortuaryController extends Controller
 
 
         $quota_aid_records =  QuotaAidRecord::where('quota_aid_id', $id)->orderBy('id','desc')->get();
+                              
 
         ///proof
         $user = User::find(Auth::user()->id);
@@ -491,7 +492,7 @@ class QuotaAidMortuaryController extends Controller
 
         //selected documents
         $submitted = QuotaAidSubmittedDocument::
-            select('quota_aid_submitted_documents.id','procedure_requirements.number','quota_aid_submitted_documents.procedure_requirement_id','quota_aid_submitted_documents.comment')
+            select('quota_aid_submitted_documents.id','procedure_requirements.number','quota_aid_submitted_documents.procedure_requirement_id','quota_aid_submitted_documents.comment','quota_aid_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements','quota_aid_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
             ->where('quota_aid_submitted_documents.quota_aid_mortuary_id',$id);

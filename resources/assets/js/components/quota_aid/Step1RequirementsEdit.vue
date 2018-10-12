@@ -80,6 +80,7 @@
                         //if(this.submitted[r.number] == r.id){
                             // console.log('match 1'+this.modality_id);
                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });                       
+                       console.log(this.rol);
                         if(this.rol!=38){ //revision legal
                         
                             if(submit_document){
@@ -97,15 +98,13 @@
                         }else{                            
                             if(submit_document)
                             {                                
-                                if(submit_document.is_valid){
-                                    console.log('valid');
+                                if(submit_document.is_valid){                                    
                                     r['status'] = true;
                                     r['background'] = 'bg-success-green';
                                     r['comment'] = submit_document.comment;
                                     r['submit_document_id'] = submit_document.id;
                                 }
-                                else{
-                                    console.log('invalid');
+                                else{                                    
                                      r['status'] = false;
                                     r['background'] = '';
                                     r['comment'] = submit_document.comment;

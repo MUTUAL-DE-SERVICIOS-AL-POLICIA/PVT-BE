@@ -8,7 +8,7 @@
                         <div class="pull-left"> <legend > Información Personal</legend></div>
                         @can('update',$affiliate)
                             <div class="text-right">
-                                <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing" @if($is_editable == 0)disabled="disabled"@endif ><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
+                                <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing" @if($is_editable == 0 && false)disabled="disabled"@endif ><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
                             </div>
                         @endcan
                     </div>
@@ -111,6 +111,17 @@
                                 <div class="col-md-3"><label class="control-label">Estado Civil:</label></div>
                                 <div class="col-md-9"> {!! Form::select('civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'], null, ['placeholder'=> 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'form.civil_status',':disabled'=>'!editing' ]) !!}</div>
                             </div>
+
+                            <div class="row m-b-md">
+                            <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Fallecimiento:</label></div>
+                            <div class="col-md-9"><input name="date_death" v-model="form.date_death" v-date type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:DD/MM/YYYY'">
+                                <div v-show="errors.has('date_death') && editing">
+                                    <i class="fa fa-warning text-danger"></i>
+                                    <span class="text-danger">@{{ errors.first('date_death') }}</span>
+                                </div>
+                            </div>
+                            </div>
+
                             <div class="row m-b-md">
                                 <div class="col-md-3"><label class="control-label">Celular:</label></div>
                                 <div class="col-md-9">

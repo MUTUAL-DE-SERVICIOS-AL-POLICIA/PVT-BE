@@ -104,8 +104,8 @@
                 </quota-aid-certification-button>
             @endif
 
-            @if(Muserpol\Helpers\Util::getRol()->id == 15)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('ret_fun_print_file', $affiliate->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if(Muserpol\Helpers\Util::getRol()->id == 42)
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('quota_aid_print_file', $affiliate->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 14)
@@ -120,16 +120,21 @@
             <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Resoluci&oacute;n Legal" onclick="printJS({printable:'{!! route('ret_fun_print_legal_resolution', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
 
-            @if(Muserpol\Helpers\Util::getRol()->id == 11)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('ret_fun_print_legal_review', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if(Muserpol\Helpers\Util::getRol()->id == 38)
+            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('quota_aid_print_legal_review', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
             @endif
-            @can('view', new Muserpol\Models\Contribution\Contribution)
+            
+            @if(Muserpol\Helpers\Util::getRol()->id == 39)
+                <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir aportes" onclick="printJS({printable:'{!! route('quota_aid_print_certification', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @endif
+
+            {{-- @can('view', new Muserpol\Models\Contribution\Contribution)
             <a  href="{{ url('ret_fun/'.$quota_aid->id.'/selectcontributions')}}" >
                 <button class="btn btn-primary btn-sm dim"  data-toggle="tooltip" data-placement="top" title="Clasificar Aportes">
                 <i class="fa fa-list-alt" style="font-size:15px"></i> Clasificar Aportes
                 </button>
             </a>
-            @endcan
+            @endcan --}}
             @can('qualify', $quota_aid)
             <a href="{{route('ret_fun_qualification', $quota_aid->id)}}">
                 <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
@@ -278,9 +283,9 @@
 
                             <div id="tab-folder" class="tab-pane">
 
-                                    {{-- @can('view',new Muserpol\Models\AffiliateFolder)
+                                    {{-- @can('view',new Muserpol\Models\AffiliateFolder) --}}
                                         @include('affiliates.folder', ['folders'=>$affiliate->affiliate_folders,'procedure_modalities'=>$procedure_modalities,'affiliate_id'=>$affiliate->id])
-                                    @endcan --}}
+                                    {{-- @endcan --}}
 
                             </div>
                             <div id="tab-observations" class="tab-pane">
