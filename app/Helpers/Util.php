@@ -243,7 +243,7 @@ class Util
             $quota_aid_correlative->save();
         }
 
-        return $correlative;
+        return $quota_aid_correlative;
     }
     private static $UNIDADES = [
         '',

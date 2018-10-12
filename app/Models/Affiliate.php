@@ -138,7 +138,7 @@ class Affiliate extends Model
     }
     public function quota_aid_mortuaries()
     {
-        return $this->hasMany('Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary');
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary');
     }
 
     public function aid_commitments()
@@ -385,23 +385,35 @@ class Affiliate extends Model
     }
     public function getQuotaAidContributions($with_reimbursements = true)
     {
+        $null_data = [
+            'is_continuous' => false,
+            'contributions' => []
+        ];
         if (! $this->date_death){
-            return [
-                'is_continuous' => false,
-                'contributions' => []
-            ];
+            return $null_data;
         }
         $number_contributions = Util::getQuotaAidCurrentProcedure()->first()->months;
-        if ($with_reimbursements) {
+        $date_death = Carbon::parse(Util::parseBarDate($this->date_death))->subMonth();
+        if ($this->hasQuota()) {
             $contributions = $this->contributions()
-                            // ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-                            // ->where('contribution_types.operator', '=', '+')
-                            ->where('contributions.month_year', '<=', Util::parseBarDate($this->date_death))
-                            ->orderByDesc('contributions.month_year')
-                            ->take($number_contributions)
-                            ->get()
-                            ->toArray();
-            $contributions = array_reverse($contributions);
+                        ->where('contributions.month_year', '<=', $date_death)
+                        ->where('total', '>', 0)
+                        ->orderByDesc('contributions.month_year')
+                        ->take($number_contributions)
+                        ->get()
+                        ->toArray();
+        }
+        if ($this->hasAid()) {
+            $contributions = $this->aid_contributions()
+                        ->where('aid_contributions.month_year', '<=', $date_death)
+                        ->where('total', '>', 0)
+                        ->orderByDesc('aid_contributions.month_year')
+                        ->take($number_contributions)
+                        ->get()
+                        ->toArray();
+        }
+        $contributions = array_reverse($contributions);
+        if( sizeof($contributions) == 12 ){
             // checking continuity
             $is_continuous = true;
             $first_date = Carbon::parse($contributions[0]['month_year'])->subMonth();
@@ -417,94 +429,8 @@ class Affiliate extends Model
                 'contributions' => $contributions
             ];
             return $data;
-            // $contributions = DB::select("
-            // SELECT
-            //     contributions_reimbursements.month_year,
-            //     contributions_reimbursements.affiliate_id,
-            //     sum(contributions_reimbursements.base_wage) as base_wage,
-            //     sum(contributions_reimbursements.seniority_bonus) as seniority_bonus,
-            //     sum(contributions_reimbursements.total) as total,
-            //     sum(contributions_reimbursements.retirement_fund) as retirement_fund
-            //     FROM(
-            //     SELECT
-            //         reimbursements.id,
-            //     reimbursements.affiliate_id,
-            //     reimbursements.degree_id,
-            //     reimbursements.unit_id,
-            //     reimbursements.breakdown_id,
-            //     reimbursements.month_year,
-            //     reimbursements.item,
-            //     reimbursements.type,
-            //     reimbursements.base_wage,
-            //     reimbursements.seniority_bonus,
-            //     reimbursements.study_bonus,
-            //     reimbursements.position_bonus,
-            //     reimbursements.border_bonus,
-            //     reimbursements.east_bonus,
-            //     reimbursements.public_security_bonus,
-            //     reimbursements.deceased,
-            //     reimbursements.natality,
-            //     reimbursements.lactation,
-            //     reimbursements.prenatal,
-            //     reimbursements.subsidy,
-            //     reimbursements.gain,
-            //     reimbursements.payable_liquid,
-            //     reimbursements.quotable,
-            //     reimbursements.retirement_fund,
-            //     reimbursements.mortuary_quota,
-            //     reimbursements.subtotal,
-            //     reimbursements.total
-            //         FROM reimbursements
-            //         WHERE affiliate_id = ".$this->id. " and reimbursements.deleted_at is null and month_year <= '". $this->contributions()->leftJoin('contribution_types', 'contributions.contribution_type_id', '=', 'contribution_types.id')->where('contribution_types.operator', '=', '+')->orderBy('contributions.month_year')->get()->last()->month_year ."'
-            //         UNION ALL
-            //         SELECT
-            //         contributions.id,
-            //     contributions.affiliate_id,
-            //     contributions.degree_id,
-            //     contributions.unit_id,
-            //     contributions.breakdown_id,
-            //     contributions.month_year,
-            //     contributions.item,
-            //     contributions.type,
-            //     contributions.base_wage,
-            //     contributions.seniority_bonus,
-            //     contributions.study_bonus,
-            //     contributions.position_bonus,
-            //     contributions.border_bonus,
-            //     contributions.east_bonus,
-            //     contributions.public_security_bonus,
-            //     contributions.deceased,
-            //     contributions.natality,
-            //     contributions.lactation,
-            //     contributions.prenatal,
-            //     contributions.subsidy,
-            //     contributions.gain,
-            //     contributions.payable_liquid,
-            //     contributions.quotable,
-            //     contributions.retirement_fund,
-            //     contributions.mortuary_quota,
-            //     contributions.subtotal,
-            //     contributions.total
-            //         FROM contributions
-            //         LEFT JOIN contribution_types ON contributions.contribution_type_id = contribution_types.id
-            //         WHERE affiliate_id = ".$this->id. " and  contributions.deleted_at is null and contribution_types.operator LIKE '+'
-            // ) as contributions_reimbursements
-            //     GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id
-            //     ORDER BY month_year DESC
-            //     LIMIT ". $number_contributions."");
-            // return array_reverse($contributions);
-        }else{
-            $contributions = $this->contributions()
-            ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-            // ->where("contribution_types.id", '=', 1)
-            // ->where('contributions.month_year', '<=', $start_date_availability)
-            ->where('contribution_types.operator', '=', '+')
-            ->orderBy('contributions.month_year', 'desc')
-            ->take($number_contributions)
-            ->get();
-            return $contributions;
-            /* TODO verificar reverse order*/
         }
+        return $null_data;
     }
     public function getContributionsPlus($with_reimbursements = true)
     {
@@ -749,6 +675,25 @@ class Affiliate extends Model
     {
         return $this->contributions()->where('contribution_type_id', '=',null)->get()->count();
     }
+    public function hasAid()
+    {
+        $aid = $this->quota_aid_mortuaries()
+                    ->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
+                    ->leftJoin('procedure_types', 'procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
+                    ->where('procedure_types.id', 4)
+                    ->get();
+        return $aid->count() > 0;
+    }
+    public function hasQuota()
+    {
+        $quota = $this->quota_aid_mortuaries()
+            ->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
+            ->leftJoin('procedure_types', 'procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
+            ->where('procedure_types.id', 3)
+            ->get();
+        return $quota->count() > 0;
+    }
+
     // public function getLastDateContribution()
     // {
     //     $date = $this->contributions()->max('month_year');

@@ -104,28 +104,65 @@
                 </quota-aid-certification-button>
             @endif
 
-            @if(Muserpol\Helpers\Util::getRol()->id == 42)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Archivo" onclick="printJS({printable:'{!! route('quota_aid_print_file', $affiliate->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if(Util::getRol()->id == 42)
+                <quota-aid-certification-button
+                    title="Imprimir Certificacion de Archivo"
+                    quota-adi-id="{{ $quota_aid->id }}"
+                    url-print="{!! route('quota_aid_print_file', $affiliate->id) !!}"
+                >
+                </quota-aid-certification-button>
             @endif
 
-            @if(Muserpol\Helpers\Util::getRol()->id == 14)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Dictamen Legal" onclick="printJS({printable:'{!! route('ret_fun_print_legal_dictum', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if(Util::getRol()->id == 14)
+                <quota-aid-certification-button
+                    title="Imprimir Dictamen Legal"
+                    quota-adi-id="{{ $quota_aid->id }}"
+                    url-print="{{ route('ret_fun_print_legal_dictum', $quota_aid->id) }}"
+                >
+                </quota-aid-certification-button>
             @endif
 
-            @if(Muserpol\Helpers\Util::getRol()->id == 28)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Revisi&oacute;n de Jefatura" onclick="printJS({printable:'{!! route('ret_fun_print_headship_review', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if(Util::getRol()->id == 28)
+                <quota-aid-certification-button
+                    title="Imprimir Revisi&oacute;n de Jefatura"
+                    quota-adi-id="{{ $quota_aid->id }}"
+                    url-print="{{ route('ret_fun_print_headship_review', $quota_aid->id) }}"
+                >
+                </quota-aid-certification-button>
             @endif
 
-            @if(Muserpol\Helpers\Util::getRol()->id == 29)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Resoluci&oacute;n Legal" onclick="printJS({printable:'{!! route('ret_fun_print_legal_resolution', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if(Util::getRol()->id == 29)
+                <quota-aid-certification-button
+                    title="Imprimir Resoluci&oacute;n Legal"
+                    quota-adi-id="{{ $quota_aid->id }}"
+                    url-print="{{ route('ret_fun_print_legal_resolution', $quota_aid->id) }}"
+                >
+                </quota-aid-certification-button>
             @endif
 
-            @if(Muserpol\Helpers\Util::getRol()->id == 38)
-            <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Certificacion de Documentacion Presentada y Revisada" onclick="printJS({printable:'{!! route('quota_aid_print_legal_review', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if(Util::getRol()->id == 38)
+                <quota-aid-certification-button
+                    title="Imprimir Certificacion de Documentacion Presentada y Revisada"
+                    quota-adi-id="{{ $quota_aid->id }}"
+                    url-print="{{ route('quota_aid_print_legal_review', $quota_aid->id) }}"
+                >
+                </quota-aid-certification-button>
             @endif
-            
-            @if(Muserpol\Helpers\Util::getRol()->id == 39)
-                <button class="btn btn-primary dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir aportes" onclick="printJS({printable:'{!! route('quota_aid_print_certification', $quota_aid->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i></button>
+            @if(Util::getRol()->id == 39)
+                <quota-aid-certification-button
+                    title="Imprimir aportes"
+                    quota-adi-id="{{ $quota_aid->id }}"
+                    url-print="{{ route('quota_aid_print_certification', $quota_aid->id) }}"
+                >
+                </quota-aid-certification-button>
+            @endif
+            @if(Util::getRol()->id == 37)
+                <quota-aid-certification-button
+                    title="Imprimir todos los documentos de Calificacion"
+                    quota-adi-id="{{ $quota_aid->id }}"
+                    url-print="{{ route('quota_aid_print_all_qualification', $quota_aid->id) }}"
+                >
+                </quota-aid-certification-button>
             @endif
 
             {{-- @can('view', new Muserpol\Models\Contribution\Contribution)

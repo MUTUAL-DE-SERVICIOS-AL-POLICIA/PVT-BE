@@ -6,39 +6,37 @@
     data() {
       return {
         showEconomicData: true,
-        showEconomicDataTotal: true,
-        showPercentagesQuotaAid: true,
+        showEconomicDataTotal: false,
+        showPercentagesQuotaAid: false,
         totalPercentageQuotaAid: 100,
         maxPercentage: 100.0,
         beneficiaries: [],
         subTotalQuotaAid: 0,
         totalQuotaAid: 0,
         finishQuotaAid: false,
-        guarantors: [],
-        advancePayment: 0,
-        advancePaymentNoteCodeDate: null,
-        advancePaymentNoteCode: null,
-        advancePaymentCode: null,
-        advancePaymentDate: null,
-        retentionLoanPayment: 0,
-        retentionLoanPaymentNoteCodeDate: null,
-        retentionLoanPaymentNoteCode: null,
-        retentionLoanPaymentCode: null,
-        retentionLoanPaymentDate: null,
-        retentionGuarantor: 0,
-        retentionGuarantorNoteCodeDate: null,
-        retentionGuarantorNoteCode: null,
-        retentionGuarantorCode: null,
-        retentionGuarantorDate: null
+        // guarantors: [],
+        // advancePayment: 0,
+        // advancePaymentNoteCodeDate: null,
+        // advancePaymentNoteCode: null,
+        // advancePaymentCode: null,
+        // advancePaymentDate: null,
+        // retentionLoanPayment: 0,
+        // retentionLoanPaymentNoteCodeDate: null,
+        // retentionLoanPaymentNoteCode: null,
+        // retentionLoanPaymentCode: null,
+        // retentionLoanPaymentDate: null,
+        // retentionGuarantor: 0,
+        // retentionGuarantorNoteCodeDate: null,
+        // retentionGuarantorNoteCode: null,
+        // retentionGuarantorCode: null,
+        // retentionGuarantorDate: null
       };
     },
     methods: {
       max(a, b) {
-        return true;
         return parseFloat(a.toFixed(2)) > parseFloat(b.toFixed(2)) || isNaN(a);
       },
       colorClass(a, b) {
-        return "text";
         if (isNaN(a)) {
           return;
         }
@@ -211,24 +209,24 @@
       //       this.showEconomicDataTotal = false;
       //     });
       // }
-      firstContinue() {
+      saveTotal(reload) {
         let uri = `/quota_aid/${this.quotaAidId}/save_total`;
         axios
-          .patch(uri)
+          .patch(uri, {
+            reload
+          })
           .then(response => {
-            console.log(response);
-
-            // if (reload) {
-            //   flash("Montos recalculados.");
-            // } else {
-            //   flash("Calculo Total guardado correctamente.");
-            // }
+            if (reload) {
+              flash("Montos recalculados.");
+            } else {
+              flash("Calculo Total guardado correctamente.");
+            }
             this.beneficiaries = response.data.beneficiaries;
-            this.totalquotaAid = response.data.total_quota_aid;
-            this.showPercentagesquotaAid = true;
-            // setTimeout(() => {
-            //   this.$scrollTo("#showPercentagesquotaAid");
-            // }, 800);
+            this.totalQuotaAid = parseFloat(response.data.total);
+            this.showPercentagesQuotaAid = true;
+            setTimeout(() => {
+              this.$scrollTo("#showPercentagesQuotaAid");
+            }, 800);
           })
           .catch(error => {
             flash(
@@ -259,20 +257,16 @@
             // this.totalAvailability = response.data.total_availability;
             // this.total = response.data.total;
             // this.beneficiariesAvailability = response.data.beneficiaries;
-            // (this.finishRetFun = true),
+            this.finishQuotaAid = true,
             //   (this.arrayDiscounts = response.data.array_discounts);
             // console.log("Has Availability: " + response.data.has_availability);
-            // setTimeout(() => {
-            //   if (this.hasAvailability) {
-            //     this.$scrollTo("#hasAvailabilityScroll");
-            //   } else {
-            //     this.$scrollTo("#wrapper");
-            //   }
-            // }, 800);
+            setTimeout(() => {
+                this.$scrollTo("#wrapper");
+            }, 800);
           })
           .catch(error => {
             console.log(error);
-            (this.finishRetFun = false),
+            (this.finishQuotaAid = false),
               flash("Error al guardar los porcentages", "error");
           });
       }
@@ -284,29 +278,29 @@
         }, 0.0);
         return sum;
       },
-      totalAnimated() {
-        return (
-          this.subTotalquotaAid -
-          parseMoney(this.advancePayment) -
-          parseMoney(this.retentionLoanPayment) -
-          parseMoney(this.retentionGuarantor)
-        );
-      },
-      percentageAdvancePayment() {
-        return this.subTotalquotaAid > 0 && this.subTotalquotaAid != ""
-          ? (100 * parseMoney(this.advancePayment)) / this.subTotalquotaAid
-          : 0;
-      },
-      percentageRetentionLoanPayment() {
-        return this.subTotalquotaAid > 0 && this.subTotalquotaAid != ""
-          ? (100 * parseMoney(this.retentionLoanPayment)) / this.subTotalquotaAid
-          : 0;
-      },
-      percentageRetentionGuarantor() {
-        return this.subTotalquotaAid > 0 && this.subTotalquotaAid != ""
-          ? (100 * parseMoney(this.retentionGuarantor)) / this.subTotalquotaAid
-          : 0;
-      }
+      // totalAnimated() {
+      //   return (
+      //     this.subTotalquotaAid -
+      //     parseMoney(this.advancePayment) -
+      //     parseMoney(this.retentionLoanPayment) -
+      //     parseMoney(this.retentionGuarantor)
+      //   );
+      // },
+      // percentageAdvancePayment() {
+      //   return this.subTotalquotaAid > 0 && this.subTotalquotaAid != ""
+      //     ? (100 * parseMoney(this.advancePayment)) / this.subTotalquotaAid
+      //     : 0;
+      // },
+      // percentageRetentionLoanPayment() {
+      //   return this.subTotalquotaAid > 0 && this.subTotalquotaAid != ""
+      //     ? (100 * parseMoney(this.retentionLoanPayment)) / this.subTotalquotaAid
+      //     : 0;
+      // },
+      // percentageRetentionGuarantor() {
+      //   return this.subTotalquotaAid > 0 && this.subTotalquotaAid != ""
+      //     ? (100 * parseMoney(this.retentionGuarantor)) / this.subTotalquotaAid
+      //     : 0;
+      // }
     }
   };
 </script>

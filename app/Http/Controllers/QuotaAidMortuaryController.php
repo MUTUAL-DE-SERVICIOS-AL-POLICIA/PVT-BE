@@ -1159,6 +1159,9 @@ class QuotaAidMortuaryController extends Controller
         if (! $affiliate->date_death) {
             return 'Verifique que el titular tenga fecha de Fallecimiento';
         }
+        if (! $affiliate->hasQuota() && ! $affiliate->hasAid()) {
+            return 'Verifique que el titular tenga un beneficio de cuota o auxilio.';
+        }
         $degree = $affiliate->degree;
         $procedure = QuotaAidProcedure::where('procedure_modality_id', $quota_aid->procedure_modality_id)
                     ->where('hierarchy_id', $degree->hierarchy_id)
@@ -1166,6 +1169,9 @@ class QuotaAidMortuaryController extends Controller
                     ->first();
         $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid();
         $quota_aid_contributions = $affiliate->getQuotaAidContributions();
+        if (!$quota_aid_contributions['is_continuous']) {
+            return 'Verifique que el titular tenga la cantidad de aportes correctas';
+        }
         $total_dates = Util::sumTotalContributions($quota_aid_dates);
         $dates = array(
             'id' => 0,
@@ -1255,7 +1261,7 @@ class QuotaAidMortuaryController extends Controller
                         $beneficiary->temp_amount = $total_spouse;
                     } else {
                         $beneficiary->temp_percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_spouse_percentage;
-                        $beneficiary->temp_amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_spouse;
+                        $beneficiary->temp_amount = $beneficiary->paid_amount ? $beneficiary->paid_amount : $total_spouse;
                     }
                 } else {
                     return response('error', 500);
@@ -1268,14 +1274,13 @@ class QuotaAidMortuaryController extends Controller
                     $beneficiary->temp_amount = $total_derechohabientes;
                 } else {
                     $beneficiary->temp_percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_derechohabientes_percentage;
-                    $beneficiary->temp_amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_derechohabientes;
+                    $beneficiary->temp_amount = $beneficiary->paid_amount ? $beneficiary->paid_amount : $total_derechohabientes;
                 }
             }
         }
         $data = [
             'beneficiaries' => $beneficiaries,
             'total' => $quota_aid->total,
-
         ];
         return $data;
     }
