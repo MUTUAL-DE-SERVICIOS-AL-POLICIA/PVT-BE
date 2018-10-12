@@ -135,3 +135,12 @@ Breadcrumbs::register('inbox', function($breadcrumbs)
 	$breadcrumbs->push('Mi bandeja');
 });
 
+/* quota aid */
+Breadcrumbs::register('show_qualification_quota_aid', function ($breadcrumbs, $quota_aid) {
+
+	$affiliate = $quota_aid->affiliate;
+	$name = 'Calificación';
+	$breadcrumbs->parent('show_quota_aid', $quota_aid);
+	$breadcrumbs->push($name, URL::to('quota_aid/' . $quota_aid->id . '/qualification'));
+});
+

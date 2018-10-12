@@ -218,6 +218,20 @@ Vue.directive('month-year',{
     Inputmask(dateMonthYearInputMask).mask(el);
   }
 })
+let moneyInputMask = {
+  alias: "numeric",
+  groupSeparator: ",",
+  autoGroup: true,
+  digits: 2,
+  digitsOptional: false,
+  prefix: "Bs ",
+  placeholder: "0"
+};
+Vue.directive('money',{
+  inserted: function(el) {
+    Inputmask(moneyInputMask).mask(el);
+  }
+})
 
 //vue mask hdp
 import VueTheMask from 'vue-the-mask'
@@ -335,6 +349,7 @@ Vue.component('quota-aid-info', require('./components/quota_aid/Info.vue'));
 Vue.component('quota-aid-beneficiaries-show', require('./components/quota_aid/ShowBeneficiaries.vue'));
 Vue.component('quota-aid-step1-requirements-edit', require('./components/quota_aid/Step1RequirementsEdit.vue'));
 Vue.component('quota-aid-certification-button', require('./components/quota_aid/CertificationButton.vue'));
+Vue.component('quota-aid-qualification', require('./components/quota_aid/Qualification.vue'));
 //user
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
 //permission

@@ -244,4 +244,119 @@ class QuotaAidCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("$namepdf");
     }
+    public function printBeneficiariesQualification($id, $only_print = true)
+    {
+        $quota_aid = QuotaAidMortuary::find($id);
+
+        $title = 'INFORMACIÓN GENERAL';
+
+        $affiliate = $quota_aid->affiliate;
+        $applicant = $quota_aid->quota_aid_beneficiaries()->where('type', 'S')->with('kinship')->first();
+        $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
+
+        $pdftitle = "Calificación - INFORMACIÓN GENERAL";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        // $next_area_code = Util::getNextAreaCode($quota_aid->id);
+        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)
+        // ->where('wf_state_id', 23)
+        ->first();
+        $code = $quota_aid->code;
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+
+        $subtitle = $number;
+
+        $data = [
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'affiliate' => $affiliate,
+            'applicant' => $applicant,
+            'beneficiaries' => $beneficiaries,
+            'quota_aid' => $quota_aid,
+        ];
+        if ($only_print) {
+            return \PDF::loadView('quota_aid.print.beneficiaries_qualification', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+        }
+        return $data;
+    }
+    public function printQualificationData($id, $only_print = true)
+    {
+        $quota_aid = QuotaAidMortuary::find($id);
+        $affiliate = $quota_aid->affiliate;
+        $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->get();
+
+        $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)
+        // ->where('wf_state_id', 37)
+        ->first();
+        $code = $quota_aid->code;
+        $area = $next_area_code->wf_state->first_shortened;
+        $user = $next_area_code->user;
+        $date = Util::getDateFormat($next_area_code->date);
+        $number = $next_area_code->code;
+
+        $dates = $affiliate->getContributionsWithTypeQuotaAid();
+        if(sizeof($dates)>1){
+            return "error";
+        }
+        $start_date = $dates[0]->start;
+        $end_date = $dates[0]->end;
+
+        $title = 'CALIFICACIÓN '. $quota_aid->procedure_modality->procedure_type->second_name;
+        $subtitle = $number;
+
+        $data = [
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'title' => $title,
+            'subtitle' => $subtitle,
+
+
+            'quota_aid' => $quota_aid,
+            'affiliate' => $affiliate,
+            'beneficiaries' => $beneficiaries,
+            'start_date'=> $start_date,
+            'end_date'=> $end_date,
+        ];
+
+        if ($only_print) {
+            return \PDF::loadView('quota_aid.print.qualification_data', $data)
+                        ->setOption('encoding', 'utf-8')
+                        // ->setOption('footer-right', 'Pagina [page] de [toPage]')
+                        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+                        ->stream("calificacion");
+        }
+        return $data;
+    }
+    public function printAllQualification($id)
+    {
+        $quota_aid = QuotaAidMortuary::find($id);
+        $affiliate = $quota_aid->affiliate;
+
+        $pages[] = \View::make('quota_aid.print.qualification_data', self::printQualificationData($id, false))->render();
+
+        $pages[] = \View::make('quota_aid.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf
+            ->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
+            // ->setOption('footer-html', $footerHtml)
+            // ->setOption('footer-right', 'Pagina [page] de [toPage]')
+            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            // ->setOption('user-style-sheet', 'css/app1.css')
+            ->stream("namepdf");
+    }
 }

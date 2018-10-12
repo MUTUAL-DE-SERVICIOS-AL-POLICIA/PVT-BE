@@ -57,11 +57,18 @@ class QuotaAidMortuary extends Model
     {
         return $this->belongsToMany('Muserpol\Models\Tag')->withPivot(['date', 'user_id']);
     }
-
+    public function discount_types()
+    {
+        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount', 'date', 'code', 'note_code', 'note_code_date'])->withTimestamps();
+    }
     public function getBasicInfoCode()
     {
         $code = $this->id . " " . ($this->affiliate->id ?? null) . "\n" . "Trámite Nro: " . $this->code . "\nModalidad: " . $this->procedure_modality->name . "\nSolicitante: " . ($this->quota_aid_beneficiaries()->where('type', 'S')->first()->fullName() ?? null);
         $hash = crypt($code, 100);
         return array('code' => $code, 'hash' => $hash);;
+    }
+    public function hasLegalGuardian()
+    {
+        return $this->quota_aid_beneficiaries()->where('type', 'S')->first()->quota_aid_legal_guardians()->count();
     }
 }

@@ -35,6 +35,7 @@ use Muserpol\Helpers\ID;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidRecord;
 use Muserpol\Models\Workflow\WorkflowRecord;
 use Muserpol\Models\Testimony;
+use Muserpol\Models\InfoLoan;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -1117,5 +1118,153 @@ class QuotaAidMortuaryController extends Controller
             $testimony->quota_aid_beneficiaries()->sync($ids_ben);
         }
         return;
+    }
+    public function qualification($quota_aid_id)
+    {
+        $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+        $affiliate = $quota_aid->affiliate;
+        if (! $affiliate->date_death) {
+            return 'Verifique que el titular tenga fecha de Fallecimiento';
+        }
+        $degree = $affiliate->degree;
+        $procedure = QuotaAidProcedure::where('procedure_modality_id', $quota_aid->procedure_modality_id)
+                    ->where('hierarchy_id', $degree->hierarchy_id)
+                    ->where('is_enabled', true)
+                    ->first();
+        $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid();
+        $quota_aid_contributions = $affiliate->getQuotaAidContributions();
+        $total_dates = Util::sumTotalContributions($quota_aid_dates);
+        $dates = array(
+            'id' => 0,
+            'dates' => $quota_aid_dates,
+            'name' => "PERIODO DE APORTES CONSIDERADOS PARA EL CÁLCULO DEL BENEFICIO",
+            'operator' => '**',
+            'description' => "PERIODO DE APORTES CONSIDERADOS PARA EL CÁLCULO DEL BENEFICIO",
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12,
+        );
+        
+
+        $group_dates[] = $dates;
+        $data = [
+            'quota_aid' => $quota_aid,
+            'affiliate' => $affiliate,
+            'contributions' => $quota_aid_contributions['contributions'],
+            'is_continuous' => $quota_aid_contributions['is_continuous'],
+            'procedure' => $procedure,
+            'dates' => $dates,
+        ];
+        return view('quota_aid.qualification', $data);
+    }
+    // public function saveSubtotal($quota_aid_id)
+    // {
+    //     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+    //     $affiliate = $quota_aid->affiliate;
+    //     $quota_aid->subtotal = 100;
+    //     $quota_aid->save();
+
+    //     $discounts = $quota_aid->discount_types()->whereIn('discount_types.id', [1, 2, 3])->get();
+    //     $guarantors = InfoLoan::where('quota_aid_mortuary_id', $quota_aid->id)->get();
+    //     foreach ($guarantors as $value) {
+    //         $value->full_name = $value->affiliate_guarantor->fullName();
+    //         $value->identity_card = $value->affiliate_guarantor->identity_card;
+    //     }
+    //     $data = [
+    //         'guarantors' => $guarantors,
+    //         'discounts' => $discounts,
+    //         'sub_total_quota_aid' => $quota_aid->subtotal,
+    //         'total_quota_aid' => $quota_aid->total,
+    //     ];
+    //     return $data;
+    // }
+    public function saveTotal(Request $request, $quota_aid_id)
+    {
+        $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+        $affiliate = $quota_aid->affiliate;
+        $degree = $affiliate->degree;
+        $procedure = QuotaAidProcedure::where('procedure_modality_id', $quota_aid->procedure_modality_id)
+            ->where('hierarchy_id', $degree->hierarchy_id)
+            ->where('is_enabled', true)
+            ->first();
+        $quota_aid->total = $procedure->amount;
+        $quota_aid->save();
+
+        $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
+        //create function search spouse
+        $spouse_id = ID::kinship()->conyuge;
+        $spouse = $beneficiaries->filter(function ($item) use ($spouse_id) {
+            return $item->kinship->id == $spouse_id;
+        });
+        $total_quota_aid = $quota_aid->total;
+
+        if (sizeOf($spouse) > 0) {
+            $has_spouse = true;
+            $total_spouse = $total_quota_aid / 2;
+            $total_spouse_percentage = 100 / 2;
+            $total_derechohabientes_percentage = round($total_spouse_percentage / sizeOf($beneficiaries), 2);
+            $total_spouse_percentage = round($total_spouse_percentage + $total_derechohabientes_percentage, 2);
+            $total_spouse = $total_quota_aid / 2;
+            $total_derechohabientes = round(($total_spouse / sizeOf($beneficiaries)), 2);
+            $total_spouse = round(($total_spouse + $total_derechohabientes), 2);
+        } else {
+            $has_spouse = false;
+            $total_derechohabientes = round($total_quota_aid / sizeOf($beneficiaries), 2);
+            $total_derechohabientes_percentage = round(100 / sizeOf($beneficiaries), 2);
+        }
+        $one_spouse = 1;
+        foreach ($beneficiaries as $beneficiary) {
+            $beneficiary->full_name = $beneficiary->fullName();
+            if ($beneficiary->kinship->id == $spouse_id) {
+                if ($one_spouse <= 1) {
+                    // recalculate
+                    if ($request->reload) {
+                        $beneficiary->temp_percentage = $total_spouse_percentage;
+                        $beneficiary->temp_amount = $total_spouse;
+                    } else {
+                        $beneficiary->temp_percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_spouse_percentage;
+                        $beneficiary->temp_amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_spouse;
+                    }
+                } else {
+                    return response('error', 500);
+                }
+                $one_spouse++;
+            } else {
+                //recalculate
+                if ($request->reload) {
+                    $beneficiary->temp_percentage = $total_derechohabientes_percentage;
+                    $beneficiary->temp_amount = $total_derechohabientes;
+                } else {
+                    $beneficiary->temp_percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_derechohabientes_percentage;
+                    $beneficiary->temp_amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_derechohabientes;
+                }
+            }
+        }
+        $data = [
+            'beneficiaries' => $beneficiaries,
+            'total' => $quota_aid->total,
+
+        ];
+        return $data;
+    }
+    public function savePercentages(Request $request, $quota_aid_id)
+    {
+        $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+        $affiliate = $quota_aid->affiliate;
+        foreach ($request->beneficiaries as $beneficiary) {
+            $new_beneficiary = $quota_aid->quota_aid_beneficiaries()->where('id', $beneficiary['id'])->first();
+            if (!$new_beneficiary) {
+                return response("error al buscar al beneficiario", 500);
+            }
+            $new_beneficiary->percentage = $beneficiary['temp_percentage'];
+            $new_beneficiary->paid_amount = $beneficiary['temp_amount'];
+            $new_beneficiary->save();
+        }
+        $beneficiaries = $quota_aid->quota_aid_beneficiaries;
+
+        $data = [
+            'beneficiaries' => $beneficiaries,
+            'quota_aid' => $quota_aid,
+        ];
+        return $data;
     }
 }

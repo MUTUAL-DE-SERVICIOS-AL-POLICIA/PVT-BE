@@ -131,7 +131,7 @@
             </a>
             @endcan
             @can('qualify', $quota_aid)
-            <a href="{{route('ret_fun_qualification', $quota_aid->id)}}">
+            <a href="{{route('quota_aid_qualification', $quota_aid->id)}}">
                 <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
             </a>
             @endcan

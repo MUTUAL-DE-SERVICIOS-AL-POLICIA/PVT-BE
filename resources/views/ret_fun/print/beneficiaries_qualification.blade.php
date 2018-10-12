@@ -1,7 +1,7 @@
 @extends('print_global.print')
 @section('content')
 <div>
-    @include('affiliates.print.full_personal_info', ['affiliate'=>$affiliate, 'ret_fun'=>$retirement_fund])
+    @include('affiliates.print.full_personal_info', ['affiliate'=>$affiliate, 'ret_fun'=>$retirement_fund, 'type'=>'quota_aid'])
     @include('ret_fun.print.applicant', ['applicant'=>$applicant])
     @if($retirement_fund->hasLegalGuardian())
         @include('ret_fun.print.legal_guardian', ['legal_guardian'=>$retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->first()->legal_guardian()->first()])

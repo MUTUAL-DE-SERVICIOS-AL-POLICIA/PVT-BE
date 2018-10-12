@@ -55,7 +55,7 @@
         </table>
     </div>
 
-    @if( $ret_fun->procedure_modality->id != 4 && $ret_fun->procedure_modality->id != 1)
+    @if( $ret_fun->procedure_modality->id != 4 && $ret_fun->procedure_modality->id != 1 && $type == 'ret_fun')
         <div class="inline-block align-top w-100">
             <table class="table-info w-100 m-b-10">
                 <thead class="bg-grey-darker">

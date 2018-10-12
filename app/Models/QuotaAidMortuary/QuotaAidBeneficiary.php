@@ -36,4 +36,14 @@ class QuotaAidBeneficiary extends Model
     {
         return Util::fullName($this, $style);
     }
+    public function getAddress()
+    {
+        if ($this->address()->count()) {
+            $address = $this->address()->first();
+            if (isset($address->id)) {
+                return 'Calle ' . $address->street . ' Nº ' . $address->number_address . ' ' . $address->zone;
+            }
+        }
+        return 'Sin dirección';
+    }
 }
