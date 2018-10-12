@@ -362,8 +362,7 @@ class QuotaAidCertificationController extends Controller
     }
     public function printCertification($id)
     {                
-        $quota_aid = QuotaAidMortuary::find($id);
-        $code = Util::getNextAreaCodeQuotaAid($id);        
+        $quota_aid = QuotaAidMortuary::find($id);        
         $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 36)->first();
         $code = $quota_aid->code;
         $area = $next_area_code->wf_state->first_shortened;
