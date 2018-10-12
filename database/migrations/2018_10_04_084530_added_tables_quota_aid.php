@@ -65,7 +65,10 @@ class AddedTablesQuotaAid extends Migration
         //     $table->bigInteger('quota_aid_mortuary_id')->unsigned()->nullable();
         //     $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
         // });
-
+        Schema::table('quota_aid_correlatives', function (Blueprint $table) {
+            $table->bigInteger('procedure_type_id')->unsigned()->nullable();
+            $table->foreign('procedure_type_id')->references('id')->on('procedure_types');
+        });
     }
 
     /**
@@ -75,6 +78,9 @@ class AddedTablesQuotaAid extends Migration
      */
     public function down()
     {
+        Schema::table('quota_aid_correlatives', function (Blueprint $table) {
+            $table->dropColumn('procedure_type_id');
+        });
         // Schema::table('info_loans', function (Blueprint $table) {
         //     $table->dropColumn('quota_aid_mortuary_id');
         // });
