@@ -43,6 +43,29 @@ class AddedTablesQuotaAid extends Migration
             $table->enum('gender', ['M', 'F'])->nullable();
             $table->date('date_authority')->nullable();
         });
+        Schema::table('quota_aid_procedures', function (Blueprint $table) {
+            $table->integer('months')->nullable();
+            $table->boolean('is_enabled')->default(true);
+        });
+        // Schema::create('discount_type_quota_aid_mortuary', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->bigInteger('discount_type_id')->unsigned()->nullable();
+        //     $table->bigInteger('quota_aid_mortuary_id')->unsigned()->nullable();
+        //     $table->unique(['discount_type_id', 'quota_aid_mortuary_id']);
+        //     $table->decimal('amount', 13, 2)->nullable();
+        //     $table->date('date')->nullable();
+        //     $table->string('code')->nullable();
+        //     $table->string('note_code')->nullable();
+        //     $table->date('note_code_date')->nullable();
+        //     $table->foreign('discount_type_id')->references('id')->on('discount_types')->onDelete('cascade');
+        //     $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
+        //     $table->timestamps();
+        // });
+        // Schema::table('info_loans', function (Blueprint $table) {
+        //     $table->bigInteger('quota_aid_mortuary_id')->unsigned()->nullable();
+        //     $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
+        // });
+
     }
 
     /**
@@ -52,6 +75,14 @@ class AddedTablesQuotaAid extends Migration
      */
     public function down()
     {
+        // Schema::table('info_loans', function (Blueprint $table) {
+        //     $table->dropColumn('quota_aid_mortuary_id');
+        // });
+        // Schema::dropIfExists('discount_type_quota_aid_mortuary');
+        Schema::table('quota_aid_procedures', function (Blueprint $table) {
+            $table->dropColumn('months');
+            $table->dropColumn('is_enabled');
+        });
         Schema::table('quota_aid_legal_guardians', function (Blueprint $table) {
             $table->dropColumn('gender');
             $table->dropColumn('date_authority');
