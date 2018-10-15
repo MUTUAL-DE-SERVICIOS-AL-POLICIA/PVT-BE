@@ -11,6 +11,7 @@ use Muserpol\Models\Tag;
 use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\Module;
 class TagController extends Controller
 {
     public function wfState()
@@ -96,10 +97,13 @@ class TagController extends Controller
     }
     public function tagWfState()
     {
-        $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
+        $modules = Module::all();
+        $wf_states = WorkflowState::all();
+        // $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
         $tags = Tag::all();
         $data =[
             'tags'=> $tags,
+            'modules'=> $modules,
             'wf_states'=> $wf_states,
         ];
         return view('tags.wf_state',$data);
@@ -119,9 +123,11 @@ class TagController extends Controller
     }
     public function create()
     {
-        $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
-        $wf_states = WorkflowState::where('module_id', 3)->get();
+        // $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
+        $modules = Module::all();
+        $wf_states = WorkflowState::all();
         $data = [
+            'modules'=> $modules,
             'wf_states'=> $wf_states,
         ];
         return view('tags.create',$data);

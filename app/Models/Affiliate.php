@@ -169,6 +169,10 @@ class Affiliate extends Model
     {
         return Util::getDateFormat($this->date_derelict, $size);
     }
+    public function getDateDeath($size = 'short')
+    {
+        return Util::getDateFormat(Util::parseBarDate($this->date_death), $size);
+    }
     public function getDateEntryAvailability()
     {
         $availability = $this->getContributionsWithType(10);
