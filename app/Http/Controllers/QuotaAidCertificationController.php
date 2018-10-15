@@ -21,6 +21,7 @@ use Muserpol\Models\Contribution\AidCommitment;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\QuotaAidCorrelative;
 use Muserpol\Models\AffiliateFolder;
@@ -28,6 +29,7 @@ use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Contribution\AidReimbursement;
 use Muserpol\Models\Degree;
+use Muserpol\Models\Testimony;
 class QuotaAidCertificationController extends Controller
 {
     public function saveCertificationNote(Request $request, $quota_aid_id)
@@ -579,22 +581,22 @@ class QuotaAidCertificationController extends Controller
         $quota_aid = QuotaAidMortuary::find($id);
 
         $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
-        return $applicant;
-        $beneficiaries = RetFunBeneficiary::where('quota_aid_id',$quota_aid->id)->orderByDesc('type')->orderBy('id')->get();        
+        
+        $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->orderByDesc('type')->orderBy('id')->get();        
         /** PERSON DATA */
         $person = "";
         $affiliate = Affiliate::find($quota_aid->affiliate_id);                        
-        $ret_fun_beneficiary = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id',$applicant->id)->first();
+        $ret_fun_beneficiary = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
         
 
         if(isset($ret_fun_beneficiary->id)) {
-            $legal_guardian = RetFunLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();
+            $legal_guardian = QuotaAidLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();
             $person .= ($legal_guardian->gender=='M'?"El señor ":"La señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
         } else {
             $person .= ($affiliate->gender=='M'?"El señor ":"La señora ");
         }        
         $person .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR ".($quota_aid->procedure_modality_id == 4?"FALLECIDO ":" ")."del beneficio del Fondo de Retiro Policial Solidario en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
-        if($quota_aid->procedure_modality_id == 4) {
+        if($quota_aid->procedure_modality_id == 4 || true) {
             //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) .", a lo cual considera lo siguiente:";
        
             $person .=  ($applicant->gender=='M'?' el Sr. ':' la Sra. ').Util::fullName($applicant)." con C.I. N° ". $applicant->identity_card." ".$applicant->city_identity_card->first_shortened.". solicita el beneficio a favor suyo en calidad de ".$applicant->kinship->name; 
@@ -669,23 +671,16 @@ class QuotaAidCertificationController extends Controller
         ];
 
         $law = "Conforme normativa, el trámite N° ".$quota_aid->code." de la Regional ".ucwords($quota_aid->city_start->name)." es ingresado por Ventanilla
-        de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio
-        Mortuorio; verificados los requisitos y la documentación presentada por la parte solicitante
-        según lo señalado el Art. 41 inciso a) del Reglamento de Fondo de Retiro Policial Solidario
-        aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y
-        modificado mediante Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017,
-        y conforme el Art. 45 de referido Reglamento, se detalla la documentación como resultado de
-        la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y
-        adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro
-        Policial, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:";
+        de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio; verificados los requisitos y la documentación presentada por la parte solicitante según lo señalado el Art. 43 inciso a) (Cuota Mortuoria al Fallecimiento del Titular en Cumplimiento de Funciones) del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 de fecha 08 de noviembre de 2017 y modificado mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017, y conforme el Art. 48 de referido Reglamento (Procesamiento), de referido Reglamento, se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:";
         /** END LAW DATA */
 
         $body = "";        
 
         ///---FILE---///
         $body_file = "";    
-        $file_id = 20;
-        $file = RetFunCorrelative::where('quota_aid_id',$quota_aid->id)->where('wf_state_id',$file_id)->first();
+        $file_id = 34;
+        $file = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$file_id)->first();
+        
         $body_file .= "Que, mediante Certificación N° ". $file->code .", de Archivo de la Dirección de Beneficios Económicos de fecha ". Util::getStringDate($file->date) .", se establece que el trámite signado con el N° ". $quota_aid->code." ";
         $discount = $quota_aid->discount_types();
         $finance = $discount->where('discount_type_id','1')->first();
@@ -702,7 +697,7 @@ class QuotaAidCertificationController extends Controller
             $body_file .= "tiene expediente del referido titular.";
         }
         ///---ENDIFLE--////
-
+return $body_file;
         /////----FINANCE----///        
         $discount = $quota_aid->discount_types();
         $finance = $discount->where('discount_type_id','1')->first();
