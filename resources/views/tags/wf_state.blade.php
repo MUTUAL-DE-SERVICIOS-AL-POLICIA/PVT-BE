@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="ibox-content">
-                <tag-wf-state :wf-states="{{ $wf_states }}" :tags="{{ $tags }}">
+                <tag-wf-state :wf-states="{{ $wf_states }}" :tags="{{ $tags }}" :modules="{{ $modules }}">
                 </tag-wf-state>
             </div>
         </div>

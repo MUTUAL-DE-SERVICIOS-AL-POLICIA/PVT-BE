@@ -1,13 +1,26 @@
 <template>
     <div class="row">
         <div class="form-group">
+            <label class="col-lg-2 control-label">Modulos </label>
+            <div class="col-lg-10">
+                        <!-- @change="updateTagList()" -->
+                <select v-model="moduleId"
+                        class="form-control"
+                        >
+                    <option v-for="(md, index) in modules"
+                            :value="md.id"
+                            :key="index">{{ md.name }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-lg-2 control-label">Worklflow State (Area)</label>
             <div class="col-lg-10">
                 <select v-model="wfStateId"
                         class="form-control"
                         @change="updateTagList()"
                         >
-                    <option v-for="(wf, index) in wfStates"
+                    <option v-for="(wf, index) in wfStatesList"
                             :value="wf.id"
                             :key="index">{{ wf.name }}</option>
                 </select>
@@ -26,11 +39,13 @@
 <script>
 export default {
     props:{
+        modules:Array,
         wfStates:Array,
         tags:Array,
     },
     data(){
         return{
+            moduleId:null,
             wfStateId:null,
             list:[],
         }
@@ -77,6 +92,9 @@ export default {
             return this.tags.filter(t=>{
                 return !this.list.map(l=>l.id).includes(t.id)
             })
+        },
+        wfStatesList() {
+            return this.wfStates.filter(w => w.module_id == this.moduleId)
         }
     }
 }

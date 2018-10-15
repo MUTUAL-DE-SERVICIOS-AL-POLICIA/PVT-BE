@@ -53,10 +53,18 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Ultimo Sueldo Percibido</td>
-                                    <td>Bs {{ Util::formatMoney($affiliate->getLastBaseWage()) ?? '-' }}</td>
+                                    <td>Grado</td>
+                                    <td>{{ $affiliate->degree->shortened }}</td>
                                 </tr>
                                 <tr>
+                                    <td>Fecha de Fallecimiento</td>
+                                    <td class="text-uppercase">{{ $affiliate->getDateDeath() }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Causa de Fallecimiento</td>
+                                    <td>{{ $affiliate->reason_death }}</td>
+                                </tr>
+                                <tr class="font-bold">
                                     <td>Total Cuota Mortuoria</td>
                                     <td>Bs {{ Util::formatMoney($procedure->amount) ?? '-' }}</td>
                                 </tr>
