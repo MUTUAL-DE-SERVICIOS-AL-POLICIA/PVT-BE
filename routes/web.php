@@ -143,6 +143,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('quota_aid/{quota_aid}/print/legal_review', 'QuotaAidCertificationController@printLegalReview')->name('quota_aid_print_legal_review');
 		Route::get('affiliate/{affiliate}/print/file', 'QuotaAidCertificationController@printFile')->name('quota_aid_print_file');
 		Route::get('quota_aid/{quota_aid}/print/certification', 'QuotaAidCertificationController@printCertification')->name('quota_aid_print_certification');
+		Route::get('quota_aid/{quota_aid}/print/legal_dictum', 'QuotaAidCertificationController@printLegalDictum')->name('quota_aid_print_legal_dictum');
+		Route::get('quota_aid/{quota_aid}/print/headship_review', 'QuotaAidCertificationController@printHeadshipReview')->name('quota_aid_print_headship_review');
+		Route::get('quota_aid/{quota_aid}/print/legal_resolution', 'QuotaAidCertificationController@printLegalResolution')->name('quota_aid_print_legal_resolution');
+		
 																															 
 		// tags
 		Route::resource('/tag', "TagController");

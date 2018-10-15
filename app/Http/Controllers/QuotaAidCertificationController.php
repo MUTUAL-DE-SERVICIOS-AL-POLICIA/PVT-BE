@@ -578,7 +578,8 @@ class QuotaAidCertificationController extends Controller
     public function printLegalDictum($id) {
         $quota_aid = QuotaAidMortuary::find($id);
 
-        $applicant = RetFunBeneficiary::where('type', 'S')->where('quota_aid_id', $quota_aid->id)->first();
+        $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
+        return $applicant;
         $beneficiaries = RetFunBeneficiary::where('quota_aid_id',$quota_aid->id)->orderByDesc('type')->orderBy('id')->get();        
         /** PERSON DATA */
         $person = "";

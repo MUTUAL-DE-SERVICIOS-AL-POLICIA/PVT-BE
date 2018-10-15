@@ -70,7 +70,7 @@
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->quotable) }}</td>                            
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->mortuary_quota) }}</td>
                         </tr>
-                    @endif        
+                    @endif     
                 @endforeach                                                
         @endforeach    
         <tr class="text-sm">
