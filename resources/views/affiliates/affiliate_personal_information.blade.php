@@ -121,6 +121,15 @@
                                 </div>
                             </div>
                             </div>
+                            <div class="row m-b-md">
+                            <div class="col-sm-3 col-form-label"><label class="control-label">Causa de Fallecimiento:</label></div>
+                            <div class="col-md-9"><input name="reason_death" v-model="form.reason_death" type="text" class="form-control" :disabled="!editing" v-validate="'required'">
+                                <div v-show="errors.has('reason_death') && editing">
+                                    <i class="fa fa-warning text-danger"></i>
+                                    <span class="text-danger">@{{ errors.first('reason_death') }}</span>
+                                </div>
+                            </div>
+                            </div>
 
                             <div class="row m-b-md">
                                 <div class="col-md-3"><label class="control-label">Celular:</label></div>
