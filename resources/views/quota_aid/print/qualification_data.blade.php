@@ -44,14 +44,20 @@
             </thead>
             <tbody class="table-striped">
                 <tr class="text-sm">
-                    <td class="w-60 text-left px-10 py-3 uppercase">ultimo sueldo percibido</td>
-                    <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($affiliate->getLastBaseWage()) ?? '-' }} </td>
-                    <td class="w-15  text-center uppercase font-bold px-5 py-3"> Bs. </td>
+                    <td class="w-60 text-left px-10 py-3 uppercase">Grado</td>
+                    <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ $affiliate->degree->shortened }} </td>
+                </tr>
+                <tr class="text-sm">
+                    <td class="w-60 text-left px-10 py-3 uppercase">Fecha de Fallecimiento</td>
+                    <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ $affiliate->getDateDeath() }} </td>
+                </tr>
+                <tr class="text-sm">
+                    <td class="w-60 text-left px-10 py-3 uppercase">Causa de Fallecimiento</td>
+                    <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ $affiliate->reason_death }} </td>
                 </tr>
                 <tr class="text-xl font-bold">
                     <td class="text-left px-10 py-3 uppercase">TOTAL {{$quota_aid->procedure_modality->procedure_type->second_name}}</td>
-                    <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($quota_aid->total) }} </td>
-                    <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
+                    <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($quota_aid->total) }}  Bs.</td>
                 </tr>
             </tbody>
         </table>
