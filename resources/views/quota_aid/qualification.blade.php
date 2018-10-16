@@ -70,7 +70,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <button class="btn btn-primary" :class="{'btn-outline':!showPercentagesQuotaAid}" type="submit" @click="saveTotal(false)"><i class="fa fa-save"></i> Continuar
+                        <button class="btn btn-primary" :class="{'btn-outline':!showPercentagesQuotaAid}" type="submit" @click="calculateTotal(false)"><i class="fa fa-save"></i> Continuar
                             <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showPercentagesQuotaAid">
                                 <div>
                                     <check-svg></check-svg>
@@ -81,7 +81,7 @@
 
                 </div>
                 <div>
-                    {{-- <div class="ibox" class="fadeInRight">
+                    <div class="ibox" class="fadeInRight">
                         <div class="ibox-title">
                             <h5>Datos Economicos Total (Descuentos)</h5>
                         </div>
@@ -124,7 +124,7 @@
                                         <td>% de Anticipo Fondo de Retiro</td>
                                         <td>@{{ percentageAdvancePayment | percentage }}</td>
                                     </tr>
-                                    <tr>
+                                    {{-- <tr>
                                         <td>Retencion para pago de prestamo</td>
                                         <td>
                                             <input class="form-control" type="text" v-model="retentionLoanPayment" v-money style="width:130px">
@@ -192,27 +192,27 @@
                                     <tr>
                                         <td>% de Retencion para garantes</td>
                                         <td colspan="5">@{{ percentageRetentionGuarantor | percentage }}</td>
-                                    </tr>
+                                    </tr>--}}
                                     <tr class="success">
                                         <td>Total Fondo de Retiro</td>
-                                        <td colspan="5"><strong>@{{ subTotalQuotaAid | currency }}</strong></td>
+                                        <td colspan="5"><strong>@{{ totalAnimated | currency }}</strong></td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <button class="btn btn-primary" :class="{'btn-outline': !showPercentagesQuotaAid}" type="submit" @click="saveTotalQuotaAid(false)"><i class="fa fa-save"></i> Guardar
-                                                <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showPercentagesQuotaAid">
-                                                    <div>
-                                                        <check-svg></check-svg>
-                                                    </div>
-                                                </transition>
-                                            </button>
+                            <button class="btn btn-primary" :class="{'btn-outline': !showPercentagesQuotaAid}" type="submit" @click="saveDiscounts(false)"><i class="fa fa-save"></i> Guardar
+                                <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showPercentagesQuotaAid">
+                                    <div>
+                                        <check-svg></check-svg>
+                                    </div>
+                                </transition>
+                            </button>
                         </div>
-                    </div> --}}
+                    </div>
                     <div>
                         <div class="ibox" class="fadeInRight" v-if="showPercentagesQuotaAid" id="showPercentagesQuotaAid">
                             <div class="ibox-title">
                                 <h5>Calculo de las cuotas partes para los derechohabientes</h5>
-                                <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="saveTotal(true)"><i class="fa fa-refresh"></i></button>
+                                <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="saveDiscounts(true)"><i class="fa fa-refresh"></i></button>
                             </div>
                             <div class="ibox-content">
                                 <table class="table table-bordered">

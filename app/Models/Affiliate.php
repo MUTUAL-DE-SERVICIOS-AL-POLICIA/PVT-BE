@@ -393,6 +393,9 @@ class Affiliate extends Model
             'is_continuous' => false,
             'contributions' => []
         ];
+        /**
+         * ! revisar de quien es la fecha de fallecimiento
+         *  */
         if (! $this->date_death){
             return $null_data;
         }
@@ -417,7 +420,7 @@ class Affiliate extends Model
                         ->toArray();
         }
         $contributions = array_reverse($contributions);
-        if( sizeof($contributions) == 12 ){
+        if( sizeof($contributions) == $number_contributions ){
             // checking continuity
             $is_continuous = true;
             $first_date = Carbon::parse($contributions[0]['month_year'])->subMonth();

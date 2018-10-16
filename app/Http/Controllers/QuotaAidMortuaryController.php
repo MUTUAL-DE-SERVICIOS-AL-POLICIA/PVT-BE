@@ -36,6 +36,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidRecord;
 use Muserpol\Models\Workflow\WorkflowRecord;
 use Muserpol\Models\Testimony;
 use Muserpol\Models\InfoLoan;
+use Muserpol\Models\DiscountType;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -1216,7 +1217,7 @@ class QuotaAidMortuaryController extends Controller
     //     ];
     //     return $data;
     // }
-    public function saveTotal(Request $request, $quota_aid_id)
+    public function calculateTotal(Request $request, $quota_aid_id)
     {
         $quota_aid = QuotaAidMortuary::find($quota_aid_id);
         $affiliate = $quota_aid->affiliate;
@@ -1225,8 +1226,48 @@ class QuotaAidMortuaryController extends Controller
             ->where('hierarchy_id', $degree->hierarchy_id)
             ->where('is_enabled', true)
             ->first();
+        $quota_aid->subtotal = $procedure->amount;
         $quota_aid->total = $procedure->amount;
         $quota_aid->save();
+        $discounts = $quota_aid->discount_types()->whereIn('discount_types.id', [1])->get();
+        $data = [
+            'sub_total' => $quota_aid->subtotal,
+            'total' => $quota_aid->total,
+            'discounts' => $discounts,
+        ];
+        return $data;
+    }
+    public function saveDiscounts(Request $request, $quota_aid_id)
+    {
+
+        $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+        $affiliate = $quota_aid->affiliate;
+        $degree = $affiliate->degree;
+        $procedure = QuotaAidProcedure::where('procedure_modality_id', $quota_aid->procedure_modality_id)
+            ->where('hierarchy_id', $degree->hierarchy_id)
+            ->where('is_enabled', true)
+            ->first();
+
+
+        $advance_payment = $request->advancePayment ?? 0;
+        // $retention_loan_payment = $request->retentionLoanPayment ?? 0;
+        // $retention_guarantor = $request->retentionGuarantor ?? 0;
+        $total = $quota_aid->subtotal - $advance_payment;// - $retention_loan_payment - $retention_guarantor;
+        $quota_aid->total = $total;
+        $quota_aid->save();
+
+        $discounts = $quota_aid->discount_types()->whereIn('discount_types.id', [1])->get();
+        //mejorar
+        $discount_type = DiscountType::where('id',1)->first();
+        if ($advance_payment >= 0) {
+            if ($quota_aid->discount_types->contains($discount_type->id)) {
+                $quota_aid->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $advance_payment, 'date' => $request->advancePaymentDate, 'code' => $request->advancePaymentCode, 'note_code' => $request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
+            } else {
+                $quota_aid->discount_types()->save($discount_type, ['amount' => $advance_payment, 'date' => $request->advancePaymentDate, 'code' => $request->advancePaymentCode, 'note_code' => $request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
+            }
+        } else {
+            $quota_aid->discount_types()->detach($discount_type->id);
+        }
 
         $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
         //create function search spouse
@@ -1279,7 +1320,9 @@ class QuotaAidMortuaryController extends Controller
             }
         }
         $data = [
+            'discounts' => $discounts,
             'beneficiaries' => $beneficiaries,
+            'sub_total' => $quota_aid->subtotal,
             'total' => $quota_aid->total,
         ];
         return $data;
