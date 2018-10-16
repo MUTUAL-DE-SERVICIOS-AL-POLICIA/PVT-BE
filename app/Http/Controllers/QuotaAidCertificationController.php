@@ -477,11 +477,18 @@ class QuotaAidCertificationController extends Controller
         Carbon::useMonthsOverflow(false);
         $number = $next_area_code->code;
         $affiliate = Affiliate::find($quota_aid->affiliate_id);
-        $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
-        $end_date->subMonth();
-        $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
+        
+        
+        if($quota_aid->procedure_modality_id == 15 || $quota_aid->procedure_modality_id == 14) {
+            $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();            
+            $end_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);
+            $start_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);    
+        } else {
+            $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
+            $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);    
+        }        
+        $end_date->subMonth();                
         $start_date->subMonths(12); // change by procedure cotizations            
-
         $spouse = null;
         $valid_contributions = null;
         if($quota_aid->procedure_modality->procedure_type_id == 3) {
@@ -494,6 +501,7 @@ class QuotaAidCertificationController extends Controller
         
         if($quota_aid->procedure_modality->procedure_type_id == 4) {            
             $aid_commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+            return $aid_commitment;
             if(!isset($aid_commit)) {
                 Session::flash('message','No se encontró compromiso de pago');
                 return redirect('affiliate/'.$affiliate->id);   
@@ -663,11 +671,11 @@ class QuotaAidCertificationController extends Controller
 
         /** LAW DATA */
         $art = [
-            '3' => 'a)',
-            '4' => 'b)',
-            '5' => 'c)',
-            '6' => 'c.1)',
-            '7' => 'd)',
+            '8' => '43 a)',
+            '9' => '43 b)',
+            '13' => '44 a)',
+            '14' => '44 b)',
+            '15' => '44 c)',
         ];
 
         $law = "Conforme normativa, el trámite N° ".$quota_aid->code." de la Regional ".ucwords($quota_aid->city_start->name)." es ingresado por Ventanilla
@@ -682,8 +690,8 @@ class QuotaAidCertificationController extends Controller
         $file = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$file_id)->first();
         
         $body_file .= "Que, mediante Certificación N° ". $file->code .", de Archivo de la Dirección de Beneficios Económicos de fecha ". Util::getStringDate($file->date) .", se establece que el trámite signado con el N° ". $quota_aid->code." ";
-        $discount = $quota_aid->discount_types();
-        $finance = $discount->where('discount_type_id','1')->first();
+        //$discount = $quota_aid->discount_types();
+        //$finance = $discount->where('discount_type_id','1')->first();
         if(isset($finance->id) && $finance->pivot->amount > 0)        
             $body_file .= "si tiene expediente del referido titular por concepto de anticipo en el monto de <b>".Util::formatMoneyWithLiteral($finance->pivot->amount)."</b> conforme Resolución de la Comisión de Presentaciones N°".($finance->pivot->note_code??'Sin codigo')." de fecha ".Util::getStringDate(($finance->pivot->note_code_date??'')).".";
         else 
