@@ -81,7 +81,7 @@
 
                 </div>
                 <div>
-                    <div class="ibox" class="fadeInRight">
+                    <div class="ibox" class="fadeInRight" v-if="showDiscounts" id="showDiscounts">
                         <div class="ibox-title">
                             <h5>Datos Economicos Total (Descuentos)</h5>
                         </div>
@@ -228,7 +228,7 @@
                                         <tr>
                                             <th></th>
                                             <th :class="colorClass(totalPercentageQuotaAid, maxPercentage)">@{{ totalPercentageQuotaAid | percentage }}</th>
-                                            <th :class="colorClass(totalAmountQuotaAid, totalQuotaAid)">@{{ totalAmountQuotaAid | currency }}</th>
+                                            <th :class="colorClass(totalAmountQuotaAid, totalAnimated)">@{{ totalAmountQuotaAid | currency }}</th>
                                             <th></th>
                                         </tr>
                                     </tfoot>
@@ -241,8 +241,8 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div :class="{ 'has-error': max(totalAmountQuotaAid,totalQuotaAid) }">
-                                                    <input class="form-control" :class="{'text-danger':max(totalAmountQuotaAid,totalQuotaAid)}" type="number" step="0.01" v-model="beneficiary.temp_amount">
+                                                <div :class="{ 'has-error': max(totalAmountQuotaAid,totalAnimated) }">
+                                                    <input class="form-control" :class="{'text-danger':max(totalAmountQuotaAid,totalAnimated)}" type="number" step="0.01" v-model="beneficiary.temp_amount">
                                                 </div>
                                             </td>
                                             <td>@{{ beneficiary.kinship.name }}</td>

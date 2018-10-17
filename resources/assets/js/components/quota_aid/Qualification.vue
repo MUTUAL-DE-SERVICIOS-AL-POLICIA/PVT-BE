@@ -7,6 +7,7 @@
       return {
         showEconomicData: true,
         showEconomicDataTotal: false,
+        showDiscounts: false,
         showPercentagesQuotaAid: false,
         totalPercentageQuotaAid: 100,
         maxPercentage: 100.0,
@@ -128,61 +129,16 @@
       //       console.log("error al buscar garante: ", error);
       //     });
       // },
-      saveDiscounts(reload) {
-        let uri = `/quota_aid/${this.quotaAidId}/save_discounts`;
-        axios
-          .patch(uri,{
-            advancePayment: parseMoney(this.advancePayment),
-            // retentionLoanPayment: parseMoney(this.retentionLoanPayment),
-            // retentionGuarantor: parseMoney(this.retentionGuarantor),
-
-            advancePaymentNoteCode:this.advancePaymentNoteCode,
-            advancePaymentNoteCodeDate:this.advancePaymentNoteCodeDate,
-            advancePaymentCode:this.advancePaymentCode,
-            advancePaymentDate:this.advancePaymentDate,
-            reload
-          })
-          .then(response => {
-            flash("Subtotal Actualizado");
-            this.showEconomicDataTotal = true;
-            console.log(response.data);
-            
-
-            if (response.data.discounts.length) {
-              let advancePaymentResponse = response.data.discounts.filter(
-                d => d.id == 1
-              );
-              if (advancePaymentResponse.length) {
-                this.advancePayment = advancePaymentResponse[0].pivot.amount;
-                this.advancePaymentNoteCodeDate =
-                  advancePaymentResponse[0].pivot.note_code_date;
-                this.advancePaymentNoteCode =
-                  advancePaymentResponse[0].pivot.note_code;
-                this.advancePaymentCode = advancePaymentResponse[0].pivot.code;
-                this.advancePaymentDate = advancePaymentResponse[0].pivot.date;
-              }
-            }
-            // this.subTotalQuotaAid = response.data.sub_total_quota_aid;
-            // this.totalQuotaAid = response.data.total_quota_aid;
-            this.beneficiaries = response.data.beneficiaries;
-          })
-          .catch(error => {
-            flash("Error: " + error.response.data.message, "error");
-            this.showEconomicDataTotal = false;
-          });
-      },
       calculateTotal(reload) {
         let uri = `/quota_aid/${this.quotaAidId}/calculate_total`;
         axios
-          .patch(uri, {
-            reload
-          })
+          .patch(uri)
           .then(response => {
-            if (reload) {
-              flash("Montos recalculados.");
-            } else {
+            // if (reload) {
+            //   flash("Montos recalculados.");
+            // } else {
               flash("Calculo Total guardado correctamente.");
-            }
+            // }
             // this.beneficiaries = response.data.beneficiaries;
             this.subTotalQuotaAid = parseFloat(response.data.sub_total);
             this.totalQuotaAid = parseFloat(response.data.total);
@@ -200,9 +156,9 @@
                 this.advancePaymentDate = advancePaymentResponse[0].pivot.date;
               }
             }
-            this.showPercentagesQuotaAid = true;
+            this.showDiscounts = true;
             setTimeout(() => {
-              this.$scrollTo("#showPercentagesQuotaAid");
+              this.$scrollTo("#showDiscounts");
             }, 800);
           })
           .catch(error => {
@@ -211,6 +167,50 @@
               "error"
             );
             this.showPercentagesquotaAid = false;
+          });
+      },
+      saveDiscounts(reload) {
+        let uri = `/quota_aid/${this.quotaAidId}/save_discounts`;
+        axios
+          .patch(uri,{
+            advancePayment: parseMoney(this.advancePayment),
+            // retentionLoanPayment: parseMoney(this.retentionLoanPayment),
+            // retentionGuarantor: parseMoney(this.retentionGuarantor),
+
+            advancePaymentNoteCode:this.advancePaymentNoteCode,
+            advancePaymentNoteCodeDate:this.advancePaymentNoteCodeDate,
+            advancePaymentCode:this.advancePaymentCode,
+            advancePaymentDate:this.advancePaymentDate,
+            reload
+          })
+          .then(response => {
+            flash("Subtotal Actualizado");
+            this.showEconomicDataTotal = true;
+            if (response.data.discounts.length) {
+              let advancePaymentResponse = response.data.discounts.filter(
+                d => d.id == 1
+              );
+              if (advancePaymentResponse.length) {
+                this.advancePayment = advancePaymentResponse[0].pivot.amount;
+                this.advancePaymentNoteCodeDate =
+                  advancePaymentResponse[0].pivot.note_code_date;
+                this.advancePaymentNoteCode =
+                  advancePaymentResponse[0].pivot.note_code;
+                this.advancePaymentCode = advancePaymentResponse[0].pivot.code;
+                this.advancePaymentDate = advancePaymentResponse[0].pivot.date;
+              }
+            }
+            this.showPercentagesQuotaAid = true;
+            // this.subTotalQuotaAid = response.data.sub_total_quota_aid;
+            // this.totalQuotaAid = response.data.total_quota_aid;
+            this.beneficiaries = response.data.beneficiaries;
+            setTimeout(() => {
+              this.$scrollTo("#showPercentagesQuotaAid");
+            }, 800);
+          })
+          .catch(error => {
+            flash("Error: " + error.response.data.message, "error");
+            this.showEconomicDataTotal = false;
           });
       },
       savePercentages(reload) {

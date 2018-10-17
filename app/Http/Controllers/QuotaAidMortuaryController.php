@@ -1256,7 +1256,6 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->total = $total;
         $quota_aid->save();
 
-        $discounts = $quota_aid->discount_types()->whereIn('discount_types.id', [1])->get();
         //mejorar
         $discount_type = DiscountType::where('id',1)->first();
         if ($advance_payment >= 0) {
@@ -1268,7 +1267,7 @@ class QuotaAidMortuaryController extends Controller
         } else {
             $quota_aid->discount_types()->detach($discount_type->id);
         }
-
+        $discounts = $quota_aid->discount_types()->whereIn('discount_types.id', [1])->get();
         $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
         //create function search spouse
         $spouse_id = ID::kinship()->conyuge;
