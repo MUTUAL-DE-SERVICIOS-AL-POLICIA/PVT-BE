@@ -99,11 +99,11 @@
                                 </thead>
                                 <tbody>
                                     <tr class="info">
-                                        <td>Sub Total fondo de retiro</td>
+                                        <td>Sub Total</td>
                                         <td>@{{ subTotalQuotaAid | currency }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Anticipo Fondo de Retiro</td>
+                                        <td>Anticipo </td>
                                         <td>
                                             <input class="form-control" type="text" v-model="advancePayment" v-money style="width:130px">
                                         </td>
@@ -121,7 +121,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>% de Anticipo Fondo de Retiro</td>
+                                        <td>% de Anticipo </td>
                                         <td>@{{ percentageAdvancePayment | percentage }}</td>
                                     </tr>
                                     {{-- <tr>
@@ -194,7 +194,7 @@
                                         <td colspan="5">@{{ percentageRetentionGuarantor | percentage }}</td>
                                     </tr>--}}
                                     <tr class="success">
-                                        <td>Total Fondo de Retiro</td>
+                                        <td>Total</td>
                                         <td colspan="5"><strong>@{{ totalAnimated | currency }}</strong></td>
                                     </tr>
                                 </tbody>
