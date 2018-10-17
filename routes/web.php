@@ -132,7 +132,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/quota_aid_beneficiaries_testimonies/{ret_fun_id}', 'QuotaAidMortuaryController@getTestimonies')->name('ret_fun_beneficiaries_testimonies_quota_aid');
 		Route::get('quota_aid/{quota_aid_id}/qualification', 'QuotaAidMortuaryController@qualification')->name('quota_aid_qualification');
 		// Route::get('quota_aid/{quota_aid_id}/save_subtotal', 'QuotaAidMortuaryController@saveSubtotal')->name('quota_aid_save_subtotal');
-		Route::patch('quota_aid/{quota_aid_id}/save_total', 'QuotaAidMortuaryController@saveTotal')->name('quota_aid_save_total');
+		Route::patch('quota_aid/{quota_aid_id}/calculate_total', 'QuotaAidMortuaryController@calculateTotal')->name('quota_aid_calculate_total');
+		Route::patch('quota_aid/{quota_aid_id}/save_discounts', 'QuotaAidMortuaryController@saveDiscounts')->name('quota_aid_save_discounts');
 		Route::patch('quota_aid/{quota_aid_id}/save_percentages', 'QuotaAidMortuaryController@savePercentages')->name('quota_aid_save_percentages');
 
 		Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->middleware('affiliate_has_ret_fun')->name('create_ret_fun');
