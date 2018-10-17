@@ -8,10 +8,16 @@
         de la señora: 
     @endif
 </div>
+{{-- <div class="font-bold uppercase m-b-5 counter">
+    Datos del Titular
+</div> --}}
 <div class="my-10">
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
 </div>
-@if(isset($spouse->id)) 
+@if(isset($spouse->id) && false) 
+    <div class="font-bold uppercase m-b-5 counter">
+        Datos del fallecido
+    </div>
     <div class="my-10">
         @include('print_global.spouse_info', ['spouse' => $spouse])
     </div>
@@ -59,15 +65,22 @@
         </tr>
     </thead><br>
     <tbody> 
-        @foreach($contributions as $contribution)       
+        @foreach($contributions as $contribution)
                 <tr class="text-sm">
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>                    
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->name }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->quotable) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened }}</td>
+                    @if(isset($valid_contributions[$contribution->month_year])) 
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent) }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->quotable) }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
+                    @else 
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ "0.00" }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ "0.00" }}</td>
+                        <td class="text-center uppercase font-bold px-5 py-3">{{ "0.00" }}</td>
+                    @endif
+
                 </tr> 
                 @foreach($reimbursements as $reimbursement)
                     @if($contribution->month_year == $reimbursement->month_year)       
@@ -75,10 +88,10 @@
                             <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($reimbursement->month_year)) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->name  }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened  }}</td>                            
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->quotable) }}</td>                            
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>                                                                                      
                         </tr>
                     @endif        
                 @endforeach                                                

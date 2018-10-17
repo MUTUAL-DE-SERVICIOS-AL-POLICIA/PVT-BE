@@ -225,14 +225,24 @@ class AidContributionController extends Controller
         //$dateentry = Util::getStringDate($affiliate->date_derelict);
         $dateentry = Util::parseMonthYearDate($affiliate->date_derelict);
         //return $dateentry;
-        if($dateentry == NULL || $dateentry == "")
-        $dateentry = "2017-01-01";
+        if($dateentry == NULL || $dateentry == "") {            
+            $dateentry = "2017-01-01";
+        }
         $end = explode('-', $dateentry);
         $newcontributions = [];
         $month_end = $end[1];
         $year_end = $end[0];
-        $month_start = (date('m') - 1);
-        $year_start = date('Y');
+        
+        $death_date = Util::parseBarDate($affiliate->date_death);
+        //return $death_date;
+        if(!$death_date) {            
+            $month_start = (date('m') - 1);
+            $year_start = date('Y');    
+        } else {
+            $death = explode('-', $death_date);
+            $month_start = $death[1];
+            $year_start = $death[0];    
+        }
         $summary = array(
             'aid' => $aid,
             'total' => $total,

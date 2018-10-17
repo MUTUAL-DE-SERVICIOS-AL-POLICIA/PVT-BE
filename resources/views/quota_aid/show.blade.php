@@ -113,29 +113,29 @@
                 </quota-aid-certification-button>
             @endif
 
-            @if(Util::getRol()->id == 14)
+            @if(Util::getRol()->id == 41)
                 <quota-aid-certification-button
                     title="Imprimir Dictamen Legal"
                     quota-adi-id="{{ $quota_aid->id }}"
-                    url-print="{{ route('ret_fun_print_legal_dictum', $quota_aid->id) }}"
+                    url-print="{{ route('quota_aid_print_legal_dictum', $quota_aid->id) }}"
                 >
                 </quota-aid-certification-button>
             @endif
 
-            @if(Util::getRol()->id == 28)
+            @if(Util::getRol()->id == 43)
                 <quota-aid-certification-button
                     title="Imprimir Revisi&oacute;n de Jefatura"
                     quota-adi-id="{{ $quota_aid->id }}"
-                    url-print="{{ route('ret_fun_print_headship_review', $quota_aid->id) }}"
+                    url-print="{{ route('quota_aid_print_headship_review', $quota_aid->id) }}"
                 >
                 </quota-aid-certification-button>
             @endif
 
-            @if(Util::getRol()->id == 29)
+            @if(Util::getRol()->id == 44)
                 <quota-aid-certification-button
                     title="Imprimir Resoluci&oacute;n Legal"
                     quota-adi-id="{{ $quota_aid->id }}"
-                    url-print="{{ route('ret_fun_print_legal_resolution', $quota_aid->id) }}"
+                    url-print="{{ route('quota_aid_print_legal_resolution', $quota_aid->id) }}"
                 >
                 </quota-aid-certification-button>
             @endif

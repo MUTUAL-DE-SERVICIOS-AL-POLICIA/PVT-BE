@@ -46,4 +46,8 @@ class QuotaAidBeneficiary extends Model
         }
         return 'Sin dirección';
     }
+    public function testimonies()
+    {
+        return $this->belongsToMany('Muserpol\Models\Testimony')->withTimestamps();
+    }
 }
