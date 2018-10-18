@@ -21,6 +21,7 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunTemplate;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -447,6 +448,49 @@ foreach (array_keys($retirement_funds) as $value) {
 			return view('print_global.report', $data);
 			return $filter->all();
 		})->name('print_send_daa');
+		Route::get('print/be', function () {
+			$area = WorkflowState::find(47)->first_shortened;
+			$user = Auth::user();
+			$date = Util::getDateFormat(Carbon::now());
+			$year = Carbon::now()->year;
+			$institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+			$direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+			$unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+			$title = "TRÁMITES BENEFICIOS ECONÓMICOS - FONDO DE RETIRO POLICIAL SOLIDARIO";
+			$retirement_funds = RetirementFund::leftJoin('ret_fun_correlatives', 'retirement_funds.id','=','ret_fun_correlatives.retirement_fund_id')
+			->where('retirement_funds.wf_state_current_id',47)
+			->where('retirement_funds.inbox_state', true)
+			->where('retirement_funds.code', 'not like', '%A')
+			->select('retirement_funds.id','ret_fun_correlatives.code')
+			->groupBy('retirement_funds.id', 'ret_fun_correlatives.code')
+			->orderBy(DB::raw("split_part(ret_fun_correlatives.code, '/',1)::integer"))
+			->pluck('ret_fun_correlatives.code','retirement_funds.id' )->toArray();
+			$retirement_funds1 = [];
+			foreach (array_keys($retirement_funds) as $value) {
+				array_push($retirement_funds1, RetirementFund::find($value));
+			}
+			$data = [
+				'area' => $area,
+				'user' => $user,
+				'date' => $date,
+				'retirement_funds' => $retirement_funds1,
+				'year' => $year,
+
+				'title' => $title,
+				'institution' => $institution,
+				'direction' => $direction,
+				'unit' => $unit,
+			];
+			$pages[] = \View::make('print_global.send_daa', $data)->render();
+			$pdf = \App::make('snappy.pdf.wrapper');
+			$pdf->loadHTML($pages);
+			return $pdf->setOption('encoding', 'utf-8')
+				->setOption('margin-bottom', '15mm')
+				->setOrientation('landscape')
+				->setOption('footer-center', 'Pagina [page] de [toPage]')
+				->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+				->stream("pre-calificados.pdf");
+		})->name('print_be');
 
 		Route::get('test', function ()
 		{
