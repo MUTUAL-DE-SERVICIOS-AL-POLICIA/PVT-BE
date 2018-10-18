@@ -23,7 +23,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
 use Muserpol\Models\Workflow\WorkflowState;
-use Muserpol\QuotaAidCorrelative;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
 use Muserpol\Models\AffiliateFolder;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\Reimbursement;

@@ -47,7 +47,7 @@ class QuotaAidMortuary extends Model
     }
     public function workflow()
     {
-        return $this->belongsTo('Muserpol\Workflow');
+        return $this->belongsTo('Muserpol\Models\Workflow\Workflow');
     }
     public function wf_state()
     {
@@ -60,6 +60,10 @@ class QuotaAidMortuary extends Model
     public function discount_types()
     {
         return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount', 'date', 'code', 'note_code', 'note_code_date'])->withTimestamps();
+    }
+    public function quota_aid_correlative()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative');
     }
     public function getBasicInfoCode()
     {

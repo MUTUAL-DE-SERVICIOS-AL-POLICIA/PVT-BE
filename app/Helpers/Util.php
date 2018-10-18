@@ -16,7 +16,7 @@ use Muserpol\Models\DiscountType;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\Spouse;
-use Muserpol\QuotaAidCorrelative;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
 use Muserpol\Models\Contribution\AidContribution;
