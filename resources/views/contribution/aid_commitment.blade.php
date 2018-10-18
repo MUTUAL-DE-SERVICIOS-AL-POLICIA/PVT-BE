@@ -25,7 +25,8 @@
                             </div>
                             <div class="col-md-6">
                                 <dl class="dl-">
-                                    <dt>Fecha de compromiso:</dt> <dd>@{{ aid_commitment.date_commitment | getFormatDate }}</dd>
+                                    <dt>Fecha de compromiso:</dt> <dd>@{{ aid_commitment.date_commitment | getFormatDate }}</dd>                                    
+                                    <dt>Periodo de incio de aporte:</dt> <dd>@{{ aid_commitment.start_contribution_date | getFormatDate}}</dd>
                                     <dt>Estado:</dt> <dd>@{{ aid_commitment.state }}</dd>
                                     <dt>Imprimir:</dt> <dd> 
                                     <button data-animation="flip" class="btn btn-primary" @click="print_aid_commitment"><i class="fa fa-print"></i> </button>
@@ -62,6 +63,7 @@
                                             <dt>Declaración de Pensión:</dt> <dd><input type="text" v-model="aid_commitment.pension_declaration" class="form-control"></dd>
                                             <dt>Fecha de Declaración:</dt> <dd><input type="date" v-model="aid_commitment.pension_declaration_date"  class="form-control"></dd>
                                             <dt>Fecha de compromiso:</dt> <dd><input type="date" v-model="aid_commitment.date_commitment"  class="form-control"></dd>
+                                            <dt>Periodo de primer aporte:</dt> <dd><input type="date" v-model="aid_commitment.start_contribution_date"  class="form-control"></dd>
                                         </dl>   
                                     </div>
                                     <div class="col-md-6"  v-if=" aid_commitment.id != 0">                               

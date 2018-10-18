@@ -10,6 +10,7 @@ use Validator;
 use Auth;
 use Util;
 use Muserpol\Models\Spouse;
+use Muserpol\Helpers\ID;
 
 class AidCommitmentController extends Controller
 {
@@ -121,6 +122,7 @@ class AidCommitmentController extends Controller
             $aid_commitment->contributor = $request->contributor;
             $aid_commitment->pension_declaration = $request->pension_declaration;
             $aid_commitment->pension_declaration_date = $request->pension_declaration_date;
+            $aid_commitment->start_contribution_date = $request->start_contribution_date;
             $aid_commitment->state = "ALTA";
 
         $aid_commitment->save();
