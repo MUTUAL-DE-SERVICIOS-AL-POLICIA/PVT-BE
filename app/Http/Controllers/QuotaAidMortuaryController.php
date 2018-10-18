@@ -89,7 +89,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('file_code', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 20;
+                    return $value['wf_state_id'] == 34;
                 });
                 if (sizeof($filter) > 0) {
                     return (reset($filter)['code']);
@@ -98,7 +98,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('file_date', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 20;
+                    return $value['wf_state_id'] == 34;
                 });
                 if (sizeof($filter) > 0) {
                     return (reset($filter)['date']);
@@ -107,7 +107,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('review_code', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 21;
+                    return $value['wf_state_id'] == 35;
                 });
                 if (sizeof($filter) > 0) {
 
@@ -117,7 +117,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('review_date', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 21;
+                    return $value['wf_state_id'] == 35;
                 });
                 if (sizeof($filter) > 0) {
                     return (reset($filter)['date']);
@@ -126,7 +126,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('individuals_account_code', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 22;
+                    return $value['wf_state_id'] == 36;
                 });
                 if (sizeof($filter) > 0) {
 
@@ -136,7 +136,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('individuals_account_date', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 22;
+                    return $value['wf_state_id'] == 36;
                 });
                 if (sizeof($filter) > 0) {
                     return (reset($filter)['date']);
@@ -145,7 +145,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('qualification_code', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 23;
+                    return $value['wf_state_id'] == 37;
                 });
                 if (sizeof($filter) > 0) {
 
@@ -155,7 +155,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('qualification_date', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 23;
+                    return $value['wf_state_id'] == 37;
                 });
                 if (sizeof($filter) > 0) {
                     return (reset($filter)['date']);
@@ -164,7 +164,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('dictum_code', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 25;
+                    return $value['wf_state_id'] == 39;
                 });
                 if (sizeof($filter) > 0) {
 
@@ -174,7 +174,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('dictum_date', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 25;
+                    return $value['wf_state_id'] == 39;
                 });
                 if (sizeof($filter) > 0) {
                     return (reset($filter)['date']);
@@ -183,7 +183,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('headship_code', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 24;
+                    return $value['wf_state_id'] == 38;
                 });
                 if (sizeof($filter) > 0) {
 
@@ -193,7 +193,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('headship_date', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 24;
+                    return $value['wf_state_id'] == 38;
                 });
                 if (sizeof($filter) > 0) {
                     return (reset($filter)['date']);
@@ -202,7 +202,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('resolution_code', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 26;
+                    return $value['wf_state_id'] == 40;
                 });
                 if (sizeof($filter) > 0) {
 
@@ -212,7 +212,7 @@ class QuotaAidMortuaryController extends Controller
             })
             ->addColumn('resolution_date', function ($quota_aid) {
                 $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 26;
+                    return $value['wf_state_id'] == 40;
                 });
                 if (sizeof($filter) > 0) {
                     return (reset($filter)['date']);
