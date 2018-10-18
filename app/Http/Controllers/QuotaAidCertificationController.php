@@ -483,7 +483,7 @@ class QuotaAidCertificationController extends Controller
         if($quota_aid->procedure_modality_id == 15 || $quota_aid->procedure_modality_id == 14) {
             $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();            
             $end_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);
-            $start_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);    
+            $start_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);            
         } else {
             $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
             $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);    
@@ -502,15 +502,15 @@ class QuotaAidCertificationController extends Controller
         
         if($quota_aid->procedure_modality->procedure_type_id == 4) {            
             $aid_commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
-            return $aid_commitment;
-            if(!isset($aid_commit)) {
+            
+            if(!isset($aid_commitment->id)) {
                 Session::flash('message','No se encontró compromiso de pago');
                 return redirect('affiliate/'.$affiliate->id);   
             }
             $valid_contributions = AidContribution::where('affiliate_id',$affiliate->id)
                                         ->whereDate('month_year','>=',$start_date->format('Y-m')."-01")
                                         ->whereDate('month_year','<=',$end_date->format('Y-m')."-01")
-                                        ->whereDate('month_year','>=',$aid_commitment->date_commitment)
+                                        ->whereDate('month_year','>=',$aid_commitment->start_contribution_date)
                                         ->orderByDesc('month_year')->pluck('id','month_year');                       
 
                 //return $valid_contributions;
