@@ -10,6 +10,7 @@ use Validator;
 use Auth;
 use Util;
 use Muserpol\Models\Spouse;
+use Muserpol\Helpers\ID;
 
 class AidCommitmentController extends Controller
 {
@@ -78,16 +79,17 @@ class AidCommitmentController extends Controller
         //*********START VALIDATOR************//
         $has_spouse = false;
         $spouse = Spouse::select('id')->where('affiliate_id',$request->affiliate_id)->first();
-        if($request->contributor!="T" && !isset($spouse->id))
+        if($request->contributor=="V" && !isset($spouse->id))
             $has_spouse = true;
         $biz_rules = [
                 'has_spouse'    =>  $has_spouse?'required':'',
             ];
         $rules = [
-            'contributor' => 'required',
-            'pension_declaration' => 'required',
-            'pension_declaration_date' => 'required|date|date_format:Y-m-d',
-            'date_commitment' => 'required'
+            //'contributor' => 'required',
+            //'pension_declaration' => 'required',
+            //'pension_declaration_date' => 'required|date|date_format:Y-m-d',
+            //'date_commitment' => 'required'
+            'start_contribution_date' => 'required'
        ];
         $rules = array_merge($rules,$biz_rules);
          $messages = [
@@ -121,6 +123,7 @@ class AidCommitmentController extends Controller
             $aid_commitment->contributor = $request->contributor;
             $aid_commitment->pension_declaration = $request->pension_declaration;
             $aid_commitment->pension_declaration_date = $request->pension_declaration_date;
+            $aid_commitment->start_contribution_date = $request->start_contribution_date;
             $aid_commitment->state = "ALTA";
 
         $aid_commitment->save();
