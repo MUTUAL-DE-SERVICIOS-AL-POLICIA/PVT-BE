@@ -12,6 +12,7 @@ use Auth;
 use Log;
 use DB;
 use Validator;
+use Yajra\Datatables\DataTables;
 use Muserpol\Models\Address;
 use Muserpol\Models\Spouse;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
@@ -49,40 +50,179 @@ class QuotaAidMortuaryController extends Controller
     {
         return View("quota_aid.index");
     }
-    public function getAllQuotaAid(Request $request)
+    public function getAllQuotaAid(DataTables $datatables)
     {
-        $offset = $request->offset ?? 0;
-        $limit = $request->limit ?? 10;
-        $sort = $request->sort ?? 'id';
-        $order = $request->order ?? 'desc';
-        $last_name = strtoupper($request->last_name) ?? '';
-        $first_name = strtoupper($request->first_name) ?? '';
-        $code = $request->code ?? '';
-        $modality = strtoupper($request->modality) ?? '';
+        $quota_aids = QuotaAidMortuary::with([
+            'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id',
+            'city_start:id,name,first_shortened',
+            'wf_state:id,name,first_shortened',
+            'procedure_modality:id,name,shortened,procedure_type_id',
+            'workflow:id,name',
+            'quota_aid_correlative',
+        ])->select(
+            'id',
+            'code',
+            'reception_date',
+            'total',
+            'affiliate_id',
+            'city_start_id',
+            'inbox_state',
+            'total',
+            'wf_state_current_id',
+            'procedure_modality_id',
+            'quota_aid_procedure_id',
+            'workflow_id',
+            'total'
+        )
+        ->where('code', 'not like', '%A')
+        ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"));
+        return $datatables->eloquent($quota_aids)
+            ->addColumn('type', function ($quota_aid) {
+                return ProcedureType::find($quota_aid->procedure_modality->procedure_type_id)->name;
+            })
+            ->editColumn('inbox_state', function ($quota_aid) {
+                return $quota_aid->inbox_state ? 'Validado' : 'Pendiente';
+            })
+            ->editColumn('affiliate.city_identity_card_id', function ($quota_aid) {
+                $city = City::find($quota_aid->affiliate->city_identity_card_id);
+                return $city ? $city->first_shortened : null;
+            })
+            ->addColumn('file_code', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 34;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('file_date', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 34;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('review_code', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 35;
+                });
+                if (sizeof($filter) > 0) {
 
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('review_date', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 35;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('individuals_account_code', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 36;
+                });
+                if (sizeof($filter) > 0) {
 
-        $total = QuotaAidMortuary::select('quota_aid_mortuaries.id')
-                                ->leftJoin('affiliates','quota_aid_mortuaries.affiliate_id','=','affiliates.id')
-                                ->leftJoin('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
-                                ->leftJoin('workflows','quota_aid_mortuaries.workflow_id','=','workflows.id')
-                                ->where('quota_aid_mortuaries.code','LIKE',$code.'%')
-                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-                                ->where('affiliates.last_name','LIKE',$last_name.'%')
-                                ->count();
-        //dd($total);
-         $quota_aid_mortuaries = QuotaAidMortuary::select('quota_aid_mortuaries.id','affiliates.first_name as first_name','affiliates.last_name as last_name','procedure_modalities.name as modality','workflows.name as workflow','quota_aid_mortuaries.code','quota_aid_mortuaries.reception_date','quota_aid_mortuaries.total')
-                                ->leftJoin('affiliates','quota_aid_mortuaries.affiliate_id','=','affiliates.id')
-                                ->leftJoin('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
-                                ->leftJoin('workflows','quota_aid_mortuaries.workflow_id','=','workflows.id')
-                                ->where('quota_aid_mortuaries.code','LIKE',$code.'%')
-                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-                                ->where('affiliates.last_name','LIKE',$last_name.'%')
-                                ->skip($offset)
-                                ->take($limit)
-                                ->orderBy($sort,$order)
-                                ->get();
-       // dd($quota_aid_mortuaries);
-        return response()->json(['quota_aid_mortuaries' => $quota_aid_mortuaries->toArray(),'total'=>$total]);
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('individuals_account_date', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 36;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('qualification_code', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 37;
+                });
+                if (sizeof($filter) > 0) {
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('qualification_date', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 37;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('dictum_code', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 39;
+                });
+                if (sizeof($filter) > 0) {
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('dictum_date', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 39;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('headship_code', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 38;
+                });
+                if (sizeof($filter) > 0) {
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('headship_date', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 38;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('resolution_code', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 40;
+                });
+                if (sizeof($filter) > 0) {
+
+                    return (reset($filter)['code']);
+                }
+                return null;
+            })
+            ->addColumn('resolution_date', function ($quota_aid) {
+                $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 40;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
+            ->addColumn('action', function ($quota_aid) {
+                return "<a href='/quota_aid/" . $quota_aid->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
+            })
+            ->make(true);
     }
 
 
@@ -963,47 +1103,6 @@ class QuotaAidMortuaryController extends Controller
     public function destroy(RetirementFund $retirementFund)
     {
         //
-    }
-
-    public function getAllRetFun(Request $request)
-    {
-
-//        $offset = $request->offset ?? 0;
-//        $limit = $request->limit ?? 10;
-//        $sort = $request->sort ?? 'id';
-//        $order = $request->order ?? 'desc';
-//        $last_name = strtoupper($request->last_name) ?? '';
-//        $first_name = strtoupper($request->first_name) ?? '';
-//        $code = $request->code ?? '';
-//        $modality = strtoupper($request->modality) ?? '';
-//
-//
-//        $total = RetirementFund::select('retirement_funds.id')
-//                                ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
-//                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
-//                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
-//                                ->where('retirement_funds.code','LIKE',$code.'%')
-//                                //->where('procedure_modalities.name','LIKE',$modality.'%')
-//                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-//                                ->where('affiliates.last_name','LIKE',$last_name.'%')
-//                                ->count();
-//
-//
-//        $ret_funds = RetirementFund::select('retirement_funds.id','affiliates.first_name as first_name','affiliates.last_name as last_name','procedure_modalities.name as modality','workflows.name as workflow','retirement_funds.code','retirement_funds.reception_date','retirement_funds.total')
-//                                ->leftJoin('affiliates','retirement_funds.id','=','affiliates.id')
-//                                ->leftJoin('procedure_modalities','retirement_funds.procedure_modality_id','=','procedure_modalities.id')
-//                                ->leftJoin('workflows','retirement_funds.workflow_id','=','workflows.id')
-//                                ->where('affiliates.first_name','LIKE',$first_name.'%')
-//                                //->where('procedure_modalities.name','LIKE',$modality.'%')
-//                                ->where('affiliates.last_name','LIKE',$last_name.'%')
-//                                ->where('retirement_funds.code','LIKE',$code.'%')
-//                                ->skip($offset)
-//                                ->take($limit)
-//                                ->orderBy($sort,$order)
-//                                ->get();
-//
-//
-//        return response()->json(['ret_funds' => $ret_funds->toArray(),'total'=>$total]);
     }
 
     public function generateProcedure(Affiliate $affiliate){
