@@ -24,6 +24,7 @@ use Muserpol\Models\AffiliatePoliceRecord;
 use Validator;
 use Muserpol\Models\Spouse;
 use Carbon\Carbon;
+use Muserpol\Models\Entities;
 
 class AffiliateController extends Controller
 {
@@ -175,7 +176,7 @@ class AffiliateController extends Controller
             'city_identity_card:id,first_shortened',
             'city_birth:id,name',
             'affiliate_state',
-            'pension_entity',
+            'pension_entity:id,name',
             'category',
             'degree'
         ]);
@@ -232,6 +233,7 @@ class AffiliateController extends Controller
             $is_editable = "1";
         }
 
+        $pension_entities = PensionEntity::all()->pluck('name', 'id');
         $data = array(
             'retirement_fund'=>$retirement_fund,
             'affiliate'=>$affiliate,
@@ -260,6 +262,7 @@ class AffiliateController extends Controller
             'reimbursements'    =>  $reimbursements,
             'aid_reimbursements'    =>  $aid_reimbursement,
             'is_editable'   =>  $is_editable,
+            'pension_entities' => $pension_entities,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);

@@ -285,7 +285,7 @@
                             <div id="tab-affiliate" class="tab-pane">
 
                                     <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
-                                        @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
+                                        @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities, 'pension_entities' => $pension_entities ,'is_editable'=>$is_editable])
                                     </affiliate-show>
 
                             </div>
