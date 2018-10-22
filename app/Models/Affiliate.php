@@ -394,14 +394,11 @@ class Affiliate extends Model
             'is_continuous' => false,
             'contributions' => []
         ];
-        /**
-         * ! revisar de quien es la fecha de fallecimiento
-         *  */
-        if (! $this->date_death){
+        if (! $date_death  = $this->quota_aid_mortuaries->last()->getDeceased()->date_death){
             return $null_data;
         }
         $number_contributions = Util::getQuotaAidCurrentProcedure()->first()->months;
-        $date_death = Carbon::parse(Util::parseBarDate($this->date_death))->subMonth();
+        $date_death = Carbon::parse(Util::verifyBarDate($date_death)  ? Util::parseBarDate($date_death) : $date_death)->subMonth();
         if ($this->hasQuota()) {
             $contributions = $this->contributions()
                         ->where('contributions.month_year', '<=', $date_death)

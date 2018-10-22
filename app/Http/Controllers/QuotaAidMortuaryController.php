@@ -1273,8 +1273,8 @@ class QuotaAidMortuaryController extends Controller
     {
         $quota_aid = QuotaAidMortuary::find($quota_aid_id);
         $affiliate = $quota_aid->affiliate;
-        if (! $affiliate->date_death) {
-            return 'Verifique que el titular tenga fecha de Fallecimiento';
+        if (! $quota_aid->getDeceased()->date_death) {
+            return 'Verifique que el fallecido (a) tenga fecha de Fallecimiento';
         }
         if (! $affiliate->hasQuota() && ! $affiliate->hasAid()) {
             return 'Verifique que el titular tenga un beneficio de cuota o auxilio.';
