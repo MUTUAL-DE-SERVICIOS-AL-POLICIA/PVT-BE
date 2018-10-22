@@ -684,6 +684,21 @@ class QuotaAidMortuaryController extends Controller
             ->get();
         //return $data;
         //return $correlatives;
+
+        //summary individual accounts
+        $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid();
+        $quota_aid_contributions = $affiliate->getQuotaAidContributions();
+        $total_dates = Util::sumTotalContributions($quota_aid_dates);
+        $dates = array(
+            'id' => 0,
+            'dates' => $quota_aid_dates,
+            'name' => "PERIODO DE APORTES CONSIDERADOS PARA EL CÁLCULO DEL BENEFICIO",
+            'operator' => '**',
+            'description' => "PERIODO DE APORTES CONSIDERADOS PARA EL CÁLCULO DEL BENEFICIO",
+            'years' => intval($total_dates / 12),
+            'months' => $total_dates % 12,
+        );
+        $discounts = $quota_aid->discount_types;
         $data = [
             'quota_aid' => $quota_aid,
             'affiliate' =>  $affiliate,
@@ -715,6 +730,8 @@ class QuotaAidMortuaryController extends Controller
             'wf_states' =>  $wf_states,
             'is_editable'  =>  $is_editable,
             'wf_sequences_back' => $wf_sequences_back,
+            'dates' => $dates,
+            'discounts' => $discounts
         ];
         //return $procedures_modalities;
 

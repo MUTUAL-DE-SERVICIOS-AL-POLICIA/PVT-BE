@@ -259,12 +259,14 @@
                     <div class="widget-text-box">
                             <ul class="list-group elements-list">
                                 <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Cuota Mortuoria Y Auxilio Mortuorio</a></li>
-                                @if($quota_aid->procedure_modality_id == 4)
+                                {{-- @if($quota_aid->procedure_modality_id == 4) --}}
                                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate" ><a href="#"><i class="fa fa-user"></i> Afiliado </a></li>
-                                @endif
+                                {{-- @endif --}}
                                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
-                                <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-folder"><a href="#"><i class="fa fa-copy"></i> Archivos</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-individual-accounts"><a href="#"><i class="fa fa-list"></i> Cuentas Individuales</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                             </ul>
                     </div>
@@ -317,7 +319,17 @@
                                     {{-- @endcan --}}
 
                             </div>
-
+                            <div id="tab-individual-accounts" class="tab-pane">
+                                @if ($quota_aid->hasCorrelative(36))
+                                    <quota-aid-qualification inline-template :quota-aid-id="{{$quota_aid->id}}" :contributions="{{json_encode($dates)}}"
+                                        :affiliate="{{$quota_aid->affiliate}}">
+                                        @include('quota_aid.summary_individual_accounts'    )
+                                    </quota-aid-qualification>
+                                @endif
+                            </div>
+                            <div id="tab-qualification" class="tab-pane">
+                                @include('quota_aid.summary_qualification', ['quota_aid'=>$quota_aid,'affiliate'=>$affiliate])
+                            </div>
                             <div id="tab-folder" class="tab-pane">
 
                                     {{-- @can('view',new Muserpol\Models\AffiliateFolder) --}}

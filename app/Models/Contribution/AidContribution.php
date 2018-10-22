@@ -29,4 +29,8 @@ class AidContribution extends Model
     {
         return $this->belongsTo('Muserpol\Models\User');
     }
+    public function voucher()
+    {
+        return $this->belongsToMany('Muserpol\Models\Voucher')->withTimestamps();
+    }
 }

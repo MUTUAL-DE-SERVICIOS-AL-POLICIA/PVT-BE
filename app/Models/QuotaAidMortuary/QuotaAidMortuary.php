@@ -75,4 +75,8 @@ class QuotaAidMortuary extends Model
     {
         return $this->quota_aid_beneficiaries()->where('type', 'S')->first()->quota_aid_legal_guardians()->count();
     }
+    public function hasCorrelative($id = null)
+    {
+        return !! $this->quota_aid_correlative()->where('wf_state_id', $id)->first();
+    }
 }

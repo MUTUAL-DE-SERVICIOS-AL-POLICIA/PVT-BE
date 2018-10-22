@@ -73,4 +73,8 @@ class Contribution extends Model
     {
         return $this->belongsTo('Muserpol\Models\Breakdown');
     }
+    public function voucher()
+    {
+        return $this->belongsToMany('Muserpol\Models\Voucher')->withTimestamps();
+    }
 }
