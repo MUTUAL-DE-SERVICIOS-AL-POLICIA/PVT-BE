@@ -172,6 +172,7 @@ import { flashErrors } from "../../helper.js";
                         this.values.civil_status = response.data.affiliate.civil_status;
                         this.values.surname_husband = response.data.affiliate.surname_husband;
                         this.values.address = response.data.affiliate.address;
+                        this.pension_entity = response.data.pension_entity;
                         flash('Informacion del Afiliado Actualizada');
                         this.loadingButton=false;
                     }).catch((error)=>{
