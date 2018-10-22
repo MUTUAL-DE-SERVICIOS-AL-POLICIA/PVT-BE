@@ -171,7 +171,8 @@ class Affiliate extends Model
     }
     public function getDateDeath($size = 'short')
     {
-        return Util::getDateFormat(Util::parseBarDate($this->date_death), $size);
+        $date_death = Util::verifyBarDate($this->date_death) ? Util::parseBarDate($this->date_death) : $this->date_death;
+        return Util::getDateFormat($date_death, $size);
     }
     public function getDateEntryAvailability()
     {
