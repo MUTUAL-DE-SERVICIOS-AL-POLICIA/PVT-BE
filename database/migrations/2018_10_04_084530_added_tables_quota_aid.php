@@ -47,27 +47,43 @@ class AddedTablesQuotaAid extends Migration
             $table->integer('months')->nullable();
             $table->boolean('is_enabled')->default(true);
         });
-        // Schema::create('discount_type_quota_aid_mortuary', function (Blueprint $table) {
-        //     $table->increments('id');
-        //     $table->bigInteger('discount_type_id')->unsigned()->nullable();
-        //     $table->bigInteger('quota_aid_mortuary_id')->unsigned()->nullable();
-        //     $table->unique(['discount_type_id', 'quota_aid_mortuary_id']);
-        //     $table->decimal('amount', 13, 2)->nullable();
-        //     $table->date('date')->nullable();
-        //     $table->string('code')->nullable();
-        //     $table->string('note_code')->nullable();
-        //     $table->date('note_code_date')->nullable();
-        //     $table->foreign('discount_type_id')->references('id')->on('discount_types')->onDelete('cascade');
-        //     $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
-        //     $table->timestamps();
-        // });
-        // Schema::table('info_loans', function (Blueprint $table) {
-        //     $table->bigInteger('quota_aid_mortuary_id')->unsigned()->nullable();
-        //     $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
-        // });
+        Schema::create('discount_type_quota_aid_mortuary', function (Blueprint $table) {
+            $table->increments('id');
+            $table->bigInteger('discount_type_id')->unsigned()->nullable();
+            $table->bigInteger('quota_aid_mortuary_id')->unsigned()->nullable();
+            $table->unique(['discount_type_id', 'quota_aid_mortuary_id']);
+            $table->decimal('amount', 13, 2)->nullable();
+            $table->date('date')->nullable();
+            $table->string('code')->nullable();
+            $table->string('note_code')->nullable();
+            $table->date('note_code_date')->nullable();
+            $table->foreign('discount_type_id')->references('id')->on('discount_types')->onDelete('cascade');
+            $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
+            $table->timestamps();
+        });
+        Schema::table('info_loans', function (Blueprint $table) {
+            $table->bigInteger('quota_aid_mortuary_id')->unsigned()->nullable();
+            $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
+        });
         Schema::table('quota_aid_correlatives', function (Blueprint $table) {
             $table->bigInteger('procedure_type_id')->unsigned()->nullable();
             $table->foreign('procedure_type_id')->references('id')->on('procedure_types');
+        });
+        Schema::create('contribution_voucher', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('contribution_id')->unsigned();
+            $table->bigInteger('voucher_id')->unsigned();
+            $table->foreign('contribution_id')->references('id')->on('contributions');
+            $table->foreign('voucher_id')->references('id')->on('vouchers');
+            $table->timestamps();
+        });
+        Schema::create('aid_contribution_voucher', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('aid_contribution_id')->unsigned();
+            $table->bigInteger('voucher_id')->unsigned();
+            $table->foreign('aid_contribution_id')->references('id')->on('aid_contributions');
+            $table->foreign('voucher_id')->references('id')->on('vouchers');
+            $table->timestamps();
         });
     }
 
@@ -78,13 +94,15 @@ class AddedTablesQuotaAid extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('aid_contribution_voucher');
+        Schema::dropIfExists('contribution_voucher');
         Schema::table('quota_aid_correlatives', function (Blueprint $table) {
             $table->dropColumn('procedure_type_id');
         });
-        // Schema::table('info_loans', function (Blueprint $table) {
-        //     $table->dropColumn('quota_aid_mortuary_id');
-        // });
-        // Schema::dropIfExists('discount_type_quota_aid_mortuary');
+        Schema::table('info_loans', function (Blueprint $table) {
+            $table->dropColumn('quota_aid_mortuary_id');
+        });
+        Schema::dropIfExists('discount_type_quota_aid_mortuary');
         Schema::table('quota_aid_procedures', function (Blueprint $table) {
             $table->dropColumn('months');
             $table->dropColumn('is_enabled');
