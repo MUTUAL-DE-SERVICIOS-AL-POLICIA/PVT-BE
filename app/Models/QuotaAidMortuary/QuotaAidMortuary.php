@@ -79,4 +79,22 @@ class QuotaAidMortuary extends Model
     {
         return !! $this->quota_aid_correlative()->where('wf_state_id', $id)->first();
     }
+    public function isQuota()
+    {
+        return $this->procedure_modality->procedure_type_id == 3;
+    }
+    public function isAid()
+    {
+        return $this->procedure_modality->procedure_type_id == 4;
+    }
+    public function getDeceased()
+    {
+        if ( $this->isQuota() ) {
+            return $this->affiliate;
+        }
+        if ( $this->isAid() ) {
+            return $this->procedure_modality->id == 13 ? $this->affiliate : $this->affiliate->spouse->first();
+        }
+        return null;
+    }
 }

@@ -53,15 +53,15 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Grado</td>
+                                    <td>Grado del Titular</td>
                                     <td>{{ $affiliate->degree->shortened }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Fecha de Fallecimiento</td>
-                                    <td class="text-uppercase">{{ $affiliate->getDateDeath() }}</td>
+                                    <td>Fecha de Fallecimiento del {{ ($quota_aid->getDeceased() instanceof Muserpol\Models\Affiliate) ? 'Titular' : ' o de la Esposa (o)' }} </td>
+                                    <td class="text-uppercase">{{ $quota_aid->getDeceased()->getDateDeath() }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Causa de Fallecimiento</td>
+                                    <td>Causa de Fallecimiento del {{ ($quota_aid->getDeceased() instanceof Muserpol\Models\Affiliate) ? 'Titular' : ' o de la Esposa (o)' }} </td>
                                     <td>{{ $affiliate->reason_death }}</td>
                                 </tr>
                                 <tr class="font-bold">

@@ -38,6 +38,11 @@ class Spouse extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function getDateDeath($size = 'short')
+    {
+        $date_death = Util::verifyBarDate($this->date_death) ? Util::parseBarDate($this->date_death) : $this->date_death;
+        return Util::getDateFormat($date_death, $size);
+    }
     /**
      * Methods
      */
