@@ -23,7 +23,7 @@
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">fecha de Nacimiento</td>
-                    <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->birth_date }}</td>
+                    <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->getBirthDate() }}</td>
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">Edad</td>
@@ -44,7 +44,7 @@
                 @if ($affiliate->date_death)
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">FECHA DE FALLECIMIENTO</td>
-                        <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->date_death }}</td>
+                        <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->getDateDeath() }}</td>
                     </tr>
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">CAUSA DE FALLECIMIENTO</td>

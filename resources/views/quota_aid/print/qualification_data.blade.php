@@ -38,12 +38,12 @@
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
                     <td colspan='3' class="px-15 text-center">
-                        DATOS ECONOMICOS DEL AFILIADO
+                        DATOS ECONOMICOS
                     </td>
                 </tr>
             </thead>
             <tbody class="table-striped">
-                <tr class="text-sm">
+                {{-- <tr class="text-sm">
                     <td class="w-60 text-left px-10 py-3 uppercase">Grado</td>
                     <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ $affiliate->degree->shortened }} </td>
                 </tr>
@@ -54,7 +54,7 @@
                 <tr class="text-sm">
                     <td class="w-60 text-left px-10 py-3 uppercase">Causa de Fallecimiento</td>
                     <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ $affiliate->reason_death }} </td>
-                </tr>
+                </tr> --}}
                 <tr class="text-xl font-bold">
                     <td class="text-left px-10 py-3 uppercase">TOTAL {{$quota_aid->procedure_modality->procedure_type->second_name}}</td>
                     <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($quota_aid->total) }}  Bs.</td>

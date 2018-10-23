@@ -114,7 +114,7 @@
 
                             <div class="row m-b-md">
                             <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Fallecimiento:</label></div>
-                            <div class="col-md-9"><input name="date_death" v-model="form.date_death" v-date type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:DD/MM/YYYY'">
+                            <div class="col-md-9"><input name="date_death" v-model="form.date_death" v-date type="text" class="form-control" :disabled="!editing" v-validate="'date_format:DD/MM/YYYY|max_current_date'">
                                 <div v-show="errors.has('date_death') && editing">
                                     <i class="fa fa-warning text-danger"></i>
                                     <span class="text-danger">@{{ errors.first('date_death') }}</span>
@@ -123,7 +123,7 @@
                             </div>
                             <div class="row m-b-md">
                             <div class="col-sm-3 col-form-label"><label class="control-label">Causa de Fallecimiento:</label></div>
-                            <div class="col-md-9"><input name="reason_death" v-model="form.reason_death" type="text" class="form-control" :disabled="!editing" v-validate="'required'">
+                            <div class="col-md-9"><input name="reason_death" v-model="form.reason_death" type="text" class="form-control" :disabled="!editing">
                                 <div v-show="errors.has('reason_death') && editing">
                                     <i class="fa fa-warning text-danger"></i>
                                     <span class="text-danger">@{{ errors.first('reason_death') }}</span>

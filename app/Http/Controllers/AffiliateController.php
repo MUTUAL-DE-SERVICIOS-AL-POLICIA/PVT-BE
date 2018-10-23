@@ -232,7 +232,9 @@ class AffiliateController extends Controller
             $is_editable = "1";
         }
 
+        $quota_aid = $affiliate->quota_aid_mortuaries->last();
         $data = array(
+            'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
             'affiliate'=>$affiliate,
             'spouse'=>$spouse,
@@ -331,6 +333,7 @@ class AffiliateController extends Controller
         $affiliate->civil_status = $request->civil_status;
         $affiliate->birth_date = Util::verifyBarDate($request->birth_date) ? Util::parseBarDate($request->birth_date) : $request->birth_date;
         $affiliate->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
+        $affiliate->reason_death = $request->reason_death;
         $affiliate->phone_number = trim(implode(",", $request->phone_number));
         $affiliate->cell_phone_number = trim(implode(",", $request->cell_phone_number));
         $affiliate->city_birth_id = $request->city_birth_id;

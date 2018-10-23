@@ -97,10 +97,10 @@ th.ellipsis-text {
                         <li class="list-group-item " data-toggle="tab" href="#tab-spouse-info"><a href="#"><i class="fa fa-user"></i> Información de Conyuge </a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-contributions"><a href="#" ><i class="fa fa-money "></i> Aportes</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-documents-scanned"><a href="#" ><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
-                        <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
-                        <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Muserpol\Helpers\Util::IconModule(2)}}"></i> Complemento</a></li>
-                        {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-cuot-mortuory"><i class="{{ Muserpol\Helpers\Util::IconModule(4)}}"></i> Cuota Mortuorio </a></li>
-                        <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Muserpol\Helpers\Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
+                        <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-quota-aid-mortuory"><a href="#"><i class="{{ Util::IconModule(4)}}"></i> Cuota y Auxilio Mortuorio</a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Util::IconModule(2)}}"></i> Complemento Económico</a></li>
+                        {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
 
                     </ul>
@@ -184,13 +184,16 @@ th.ellipsis-text {
 
 
                     </div>
-                    {{-- <div id="tab-cuot-mortuory" class="tab-pane"> //cuota mortuoria
-
-
-
+                    <div id="tab-quota-aid-mortuory" class="tab-pane">
+                        @can('update',$quota_aid)
+                        <quota-aid-info :quota_aid="{{ $quota_aid }}" :rf_city_start="{{$quota_aid->city_start}}" :rf_city_end="{{$quota_aid->city_end}}"
+                            :rf_procedure_modality=" {{$quota_aid->procedure_modality}}" :states="{{ $states }}" :read="true" inline-template>
+                            @include('quota_aid.info', ['quota_aid'=>$quota_aid,'cities'=>$birth_cities])
+                        </quota-aid-info>
+                        @endcan
                     </div>
 
-                    <div id="tab-aid-mortuory" class="tab-pane"> //auxilio mortuorio
+                    {{-- <div id="tab-aid-mortuory" class="tab-pane"> //auxilio mortuorio
 
 
 

@@ -169,6 +169,11 @@ class Affiliate extends Model
     {
         return Util::getDateFormat($this->date_derelict, $size);
     }
+    public function getBirthDate($size = 'short')
+    {
+        $birth_date = Util::verifyBarDate($this->birth_date) ? Util::parseBarDate($this->birth_date) : $this->birth_date;
+        return Util::getDateFormat($birth_date, $size);
+    }
     public function getDateDeath($size = 'short')
     {
         $date_death = Util::verifyBarDate($this->date_death) ? Util::parseBarDate($this->date_death) : $this->date_death;

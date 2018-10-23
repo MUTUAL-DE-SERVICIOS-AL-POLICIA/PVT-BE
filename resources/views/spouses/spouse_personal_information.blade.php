@@ -94,7 +94,7 @@
                 <div class="col-md-6">
                     <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('birth_date') && editing }">
                         <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
-                        <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" data-date="true" type="text" class="form-control" :disabled="!editing"
+                        <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" v-date type="text" class="form-control" :disabled="!editing"
                                 v-validate="'required|date_format:DD/MM/YYYY|max_date'">
                             <div v-show="errors.has('birth_date') && editing">
                                 <i class="fa fa-warning text-danger"></i>
@@ -117,14 +117,8 @@
                             !!}</div>
                     </div>
                     <div class="row m-b-md">
-                        <div class="col-md-3"><label class="control-label">Estado Civil:</label></div>
-                        <div class="col-md-9"> {!! Form::select('civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'], null, ['placeholder'=>
-                            'Seleccione estado civil', 'class' => 'form-control','v-model' => 'form.civil_status',':disabled'=>'!editing' ])
-                            !!}</div>
-                    </div>
-                    <div class="row m-b-md">
                         <div class="col-md-3"><label class="control-label">Fecha de Fallecimiento:</label></div>
-                        <div class="col-md-9"><input name="date_death" v-model="form.date_death"  type="date" class="form-control" :disabled="!editing"></div>
+                        <div class="col-md-9"><input name="date_death" v-date v-model="form.date_death"  type="text" class="form-control" :disabled="!editing"></div>
                     </div>
                     <div class="row m-b-md">
                         <div class="col-md-3"><label class="control-label">Causa de Fallecimiento:</label></div>
