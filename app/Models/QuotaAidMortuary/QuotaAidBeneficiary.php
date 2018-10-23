@@ -4,6 +4,7 @@ namespace Muserpol\Models\QuotaAidMortuary;
 
 use Illuminate\Database\Eloquent\Model;
 use Muserpol\Helpers\Util;
+use Carbon\Carbon;
 
 class QuotaAidBeneficiary extends Model
 {
@@ -32,6 +33,13 @@ class QuotaAidBeneficiary extends Model
     {
         return $this->belongsToMany('Muserpol\Models\QuotaAidMortuary\QuotaAidLegalGuardian', 'quota_aid_beneficiary_legal_guardian', 'quota_aid_beneficiary_id', 'quota_aid_legal_guardian_id');
     }
+    public function getBirthDateAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     public function fullName($style = "uppercase")
     {
         return Util::fullName($this, $style);
@@ -45,6 +53,11 @@ class QuotaAidBeneficiary extends Model
             }
         }
         return 'Sin dirección';
+    }
+    public function getBirthDate($size = 'short')
+    {
+        $birth_date = Util::verifyBarDate($this->birth_date) ? Util::parseBarDate($this->birth_date) : $this->birth_date;
+        return Util::getDateFormat($birth_date, $size);
     }
     public function testimonies()
     {

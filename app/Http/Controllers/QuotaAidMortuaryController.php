@@ -272,13 +272,15 @@ class QuotaAidMortuaryController extends Controller
                 $spouse->identity_card = $request->spouse_identity_card;
                 $spouse->registration = '';//$request->spouse_registration;
                 $spouse->last_name = $request->spouse_last_name;
-                $spouse->mothers_last_name = $request->spouse_mother_last_namel;
+                $spouse->mothers_last_name = $request->spouse_mothers_last_name;
                 $spouse->first_name = $request->spouse_first_name;
                 $spouse->second_name = $request->spouse_second_name;
                 $spouse->surname_husband = $request->spouse_surname_husband;
                 $spouse->civil_status = $request->spouse_civil_status;
-                $spouse->birth_date = $request->spouse_birth_date;
+                $spouse->birth_date = Util::verifyBarDate($request->spouse_birth_date) ?  Util::parseBarDate($request->spouse_birth_date) : $request->spouse_birth_date;
+                $spouse->city_birth_id = $request->spouse_city_birth_id;
                 $spouse->date_death = $request->spouse_date_death;
+                $spouse->reason_death = $request->spouse_reason_death;
                 $spouse->save();
 
                 break;

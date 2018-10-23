@@ -164,7 +164,6 @@ import { flashErrors } from "../../helper.js";
                         this.values.mothers_last_name =  response.data.affiliate.mothers_last_name;
                         this.values.birth_date =  response.data.affiliate.birth_date;
                         this.values.date_death =  response.data.affiliate.date_death;
-                        this.values.date_death =  response.data.affiliate.date_death;
                         this.values.reason_death =  response.data.affiliate.reason_death;
                         this.values.phone_number =  response.data.affiliate.phone_number;
                         this.values.cell_phone_number =  response.data.affiliate.cell_phone_number;

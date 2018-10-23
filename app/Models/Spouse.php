@@ -38,6 +38,18 @@ class Spouse extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function getDateDeathAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getBirthDate($size = 'short')
+    {
+        $birth_date = Util::verifyBarDate($this->birth_date) ? Util::parseBarDate($this->birth_date) : $this->birth_date;
+        return Util::getDateFormat($birth_date, $size);
+    }
     public function getDateDeath($size = 'short')
     {
         $date_death = Util::verifyBarDate($this->date_death) ? Util::parseBarDate($this->date_death) : $this->date_death;
@@ -49,5 +61,9 @@ class Spouse extends Model
     public function fullName($style = "uppercase")
     {
         return Util::fullName($this, $style);
+    }
+    public function getCivilStatus()
+    {
+        return Util::getCivilStatus($this->civil_status, $this->gender);
     }
 }
