@@ -197,7 +197,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="col-md-4">
-                                <label class="control-label">Numero</label>
+                                <label class="control-label">N&uacute;mero</label>
                             </div>
                             <div class="col-md-8">
                                 <div class="input-group">

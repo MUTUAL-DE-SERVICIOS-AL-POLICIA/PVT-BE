@@ -480,13 +480,13 @@ class QuotaAidCertificationController extends Controller
         $affiliate = Affiliate::find($quota_aid->affiliate_id);
         
 
-        if($quota_aid->procedure_modality_id == 15 || $quota_aid->procedure_modality_id == 14) {
+        if($quota_aid->procedure_modality_id == 15 || $quota_aid->procedure_modality_id == 14 && $affiliate->pension_entity->id != 5) {
             $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();            
             $end_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);
             $start_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);            
         } else {
             $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
-            $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);    
+            $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
         }        
         $end_date->subMonth();                
         $start_date->subMonths(12); // change by procedure cotizations            
@@ -503,14 +503,20 @@ class QuotaAidCertificationController extends Controller
         if($quota_aid->procedure_modality->procedure_type_id == 4) {            
             $aid_commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
             
-            if(!isset($aid_commitment->id)) {
+            if(!isset($aid_commitment->id) && $affiliate->pension_entity_id!=5) {
                 Session::flash('message','No se encontró compromiso de pago');
-                return redirect('affiliate/'.$affiliate->id);   
+                return redirect('affiliate/'.$affiliate->id);
+            }
+            $limit_period = "";
+            if($affiliate->pension_entity_id == 5) {
+                $limit_period = $start_date->format('Y-m')."-01";
+            } else {
+                $limit_period = $aid_commitment->start_contribution_date;
             }
             $valid_contributions = AidContribution::where('affiliate_id',$affiliate->id)
                                         ->whereDate('month_year','>=',$start_date->format('Y-m')."-01")
                                         ->whereDate('month_year','<=',$end_date->format('Y-m')."-01")
-                                        ->whereDate('month_year','>=',$aid_commitment->start_contribution_date)
+                                        ->whereDate('month_year','>=',$limit_period)
                                         ->orderByDesc('month_year')->pluck('id','month_year');                       
 
                 //return $valid_contributions;
