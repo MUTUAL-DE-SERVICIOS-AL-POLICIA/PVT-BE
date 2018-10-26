@@ -10,6 +10,15 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
+        <div class="text-right col-lg-12">
+            <a href="{{ route('affiliate.create') }}">
+                <button class="btn btn-circle btn-primary">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </a>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-lg-12">
             <div class="text-center m-t-lg">
                 <affiliate-index></affiliate-index>

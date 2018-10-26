@@ -111,7 +111,10 @@ class AffiliateController extends Controller
      */
     public function create()
     {
-        //
+        $cities = City::all()->pluck('name', 'id');
+        $birth_cities = City::all()->pluck('name', 'id');
+        $degrees = Degree::all()->pluck('name', 'id');
+        return view('affiliates.create', compact('cities', 'birth_cities', 'degrees'));
     }
 
     /**
@@ -122,7 +125,52 @@ class AffiliateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = $this->validate($request, [
+            'identity_card' => 'required',
+            'last_name' => 'required',
+            'mothers_last_name' => 'required',
+            'first_name' => 'required',
+            'second_name' => 'required',
+            'city_identity_card_id' => 'required',
+            'surname_husband' => 'required',
+            'nua' => 'required',
+            'phone_number' => 'required',
+            'cell_phone_number' => 'required',
+            'due_date' => 'required',
+            'genre' => 'required',
+            'civil_status' => 'required',
+            'city_birth_id' => 'required',
+            'type' => 'required',
+            'category_id' => 'required',
+            'pension_entities_id' => 'required',
+            'degrees_id' => 'required',
+        ]);
+        //Log::info($request->all());
+        $new = new Affiliate;
+        $new->identity_card = $request->identity_card;
+        $new->last_name = $request->last_name;
+        $new->mothers_last_name = $request->mothers_last_name;
+        $new->first_name = $request->first_name;
+        $new->second_name = $request->second_name;
+        $new->city_identity_card_id = $request->city_identity_card_id;
+        $new->surname_husband = $request->surname_husband;
+        $new->nua = $request->nua;
+        $new->phone_number = $request->phone_number;
+        $new->cell_phone_number = $request->cell_phone_number;
+        $new->due_date = $request->due_date;
+        $new->gender = $request->gender;
+        $new->birth_date = $request->birth_date;
+        $new->civil_status = $request->civil_status;
+        $new->type = $request->type;
+        $new->category_id = $request->category_id;
+        $new->pension_entity_id = $request->pension_entity_id;
+        $new->degree_id = $request->degree_id;
+        if($validator->fails()){
+            return back()->withErrors($validator)->withInput();
+        }
+        $new->save();
+        return view('affiliates.index');
+        //Affiliate::create($request->all());
     }
 
     /**telefono
