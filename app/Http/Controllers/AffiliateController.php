@@ -168,7 +168,7 @@ class AffiliateController extends Controller
         if($validator->fails()){
             return back()->withErrors($validator)->withInput();
         }
-        $new->save();
+        $new->save($request->all());
         return view('affiliates.index');
         //Affiliate::create($request->all());
     }
