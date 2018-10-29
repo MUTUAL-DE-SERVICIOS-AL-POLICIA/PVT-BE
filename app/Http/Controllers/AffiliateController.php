@@ -25,6 +25,7 @@ use Validator;
 use Muserpol\Models\Spouse;
 use Carbon\Carbon;
 use Muserpol\Models\Entities;
+use Auth;
 
 class AffiliateController extends Controller
 {
@@ -125,52 +126,34 @@ class AffiliateController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = $this->validate($request, [
-            'identity_card' => 'required',
-            'last_name' => 'required',
-            'mothers_last_name' => 'required',
-            'first_name' => 'required',
-            'second_name' => 'required',
-            'city_identity_card_id' => 'required',
-            'surname_husband' => 'required',
-            'nua' => 'required',
-            'phone_number' => 'required',
-            'cell_phone_number' => 'required',
-            'due_date' => 'required',
-            'genre' => 'required',
-            'civil_status' => 'required',
-            'city_birth_id' => 'required',
-            'type' => 'required',
-            'category_id' => 'required',
-            'pension_entities_id' => 'required',
-            'degrees_id' => 'required',
+        /*$ValidatedData = $request->validate([
+            'identity_card' => 'required|unique:affiliates'
+        ],[
+            'identity_card.unique' => 'El carnet de identidad ya se encuentra registrado'
+        ]);*/
+        Affiliate::create([
+            'user_id' => Auth::user()->id,
+            'identity_card' => $request->identity_card,
+            'last_name' => $request->last_name,
+            'mothers_last_name' => $request->mothers_last_name,
+            'first_name' => $request->first_name,
+            'second_name' => $request->second_name,
+            'city_identity_card_id' => $request->city_identity_card_id,
+            'surname_husband' => $request->surname_husband,
+            'nua' => $request->nua,
+            'phone_number' => $request->phone_number,
+            'cell_phone_number' => $request->cell_phone_number,
+            'due_date' => $request->due_date,
+            'gender' => $request->gender,
+            'birth_date' => $request->birth_date,
+            'civil_status' => $request->civil_status,
+            'type' => $request->type,
+            'category_id' => $request->category_id,
+            'pension_entity_id' => $request->pension_entity_id,
+            'degree_id' => $request->degree_id,
+            'is_duedate_undefined' => false
         ]);
-        //Log::info($request->all());
-        $new = new Affiliate;
-        $new->identity_card = $request->identity_card;
-        $new->last_name = $request->last_name;
-        $new->mothers_last_name = $request->mothers_last_name;
-        $new->first_name = $request->first_name;
-        $new->second_name = $request->second_name;
-        $new->city_identity_card_id = $request->city_identity_card_id;
-        $new->surname_husband = $request->surname_husband;
-        $new->nua = $request->nua;
-        $new->phone_number = $request->phone_number;
-        $new->cell_phone_number = $request->cell_phone_number;
-        $new->due_date = $request->due_date;
-        $new->gender = $request->gender;
-        $new->birth_date = $request->birth_date;
-        $new->civil_status = $request->civil_status;
-        $new->type = $request->type;
-        $new->category_id = $request->category_id;
-        $new->pension_entity_id = $request->pension_entity_id;
-        $new->degree_id = $request->degree_id;
-        if($validator->fails()){
-            return back()->withErrors($validator)->withInput();
-        }
-        $new->save($request->all());
-        return view('affiliates.index');
-        //Affiliate::create($request->all());
+        return redirect()->route('affiliate.index');
     }
 
     /**telefono
