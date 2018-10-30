@@ -126,11 +126,37 @@ class AffiliateController extends Controller
      */
     public function store(Request $request)
     {
-        /*$ValidatedData = $request->validate([
-            'identity_card' => 'required|unique:affiliates'
-        ],[
-            'identity_card.unique' => 'El carnet de identidad ya se encuentra registrado'
-        ]);*/
+        $rules = [
+            'identity_card' => 'required|unique:affiliates',
+            'city_identity_card_id' => 'required|min:1',
+            'first_name' => 'required|min:1',
+            'gender' => 'required',
+            'birth_date' => 'required',
+            'category_id' => 'required',
+            'degree_id' => 'required',
+            'last_name' => '',
+            'mothers_last_name' => ''
+        ];
+
+        $messages = [
+            'identity_card.required' => 'Se requiere llenar este campo',
+            'identity_card.unique' => 'El carnet introducido ya existe',
+            'city_identity_card_id.required' => 'Debe seleccionar una opción',
+            'first_name.required' => 'Se requiere llenar este campo',
+            'gender.required' => 'Debe seleccionar una opción',
+            'birth_date.required' => 'Debe seleccionar una opción',
+            'category_id' => 'Debe seleccionar una opción',
+            'degree_id' => 'Debe seleccionar una opción'
+        ];
+
+        if (! $request->last_name && !$request->mothers_last_name) {
+            //only for flash message
+            $rules['last_name'] .='required';
+            $messages =[
+                'last_name.required' => 'El campo Apellido Paterno o Materno es requerido.',
+            ];
+        }
+        $this->validate($request, $rules, $messages);
         Affiliate::create([
             'user_id' => Auth::user()->id,
             'identity_card' => $request->identity_card,
