@@ -92,7 +92,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row m-b-md">
-                                                                <div class="col-md-4"><label class="control-label">Apellido de Esposo:</label></div>
+                                                                <div class="col-md-4"><label class="control-label">Apellido de Casada:</label></div>
                                                                 <div class="col-md-8"><input name="surname_husband" type="text" class="form-control" value="{{ old('surname_husband')}}">
                                                                     @if( $errors->has('surname_husband') )
                                                                     <div>
