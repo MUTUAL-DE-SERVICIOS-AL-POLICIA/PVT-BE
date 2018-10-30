@@ -34,8 +34,14 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {                                        
-        //$affiliate->registration = Util::getRegistration(Util::parseBarDate($affiliate->birth_date),$affiliate->last_name,$affiliate->mothers_last_name,$affiliate->first_name,$affiliate->gender);
+    {           
+        // $affiliates = Affiliate::where('registration',null)->where('birth_date','!=',null)->get();        
+        // foreach($affiliates as $affiliate) {            
+        //     $affiliate->registration = Util::getRegistration(Util::parseBarDate($affiliate->birth_date),$affiliate->last_name,$affiliate->mothers_last_name,$affiliate->first_name,$affiliate->gender);
+        //     $affiliate->save();
+        // }
+        // return ;
+
         return view('affiliates.index');
     }
     public function getAllAffiliates(Request $request)

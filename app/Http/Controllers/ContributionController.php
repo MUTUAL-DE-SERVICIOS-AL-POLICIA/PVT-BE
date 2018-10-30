@@ -58,7 +58,7 @@ class ContributionController extends Controller
         $json = '';
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if($c_start_date->gt($c_end_date))
-            $foo = "0,00";        
+            $foo = "0,00";                    
         //if( ($json = curl_exec($ch) ) === false)
         if( $foo === false)
         {
