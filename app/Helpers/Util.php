@@ -806,8 +806,27 @@ class Util
         }
         return;       
     }
-    
 
-    
-
+    public static function getHeadersInboxRetFunQuotaAid()
+    {
+        return [
+            ['text' => "# Trámite", 'value' => "code"],
+            ['text' => "CI Titular", 'align' => "left", 'value' => "ci"],
+            ['text' => "Nombre del titular", 'value' => "name"],
+            ['text' => "Modalidad", 'value' => "modality"],
+            ['text' => "Regional", 'value' => "city"],
+            ['text' => "Fecha de Recepción", 'value' => "date_reception"],
+        ];
+    }
+    public static function getHeadersInboxTreasury()
+    {
+        return [
+            ['text' => "# ", 'value' => "code"],
+            ['text' => "CI Titular", 'align' => "left", 'value' => "ci"],
+            ['text' => "Nombre del titular", 'value' => "name"],
+            ['text' => "Tipo", 'value' => "modality"],
+            ['text' => "Regional", 'value' => "city"],
+            ['text' => "Fecha", 'value' => "date_reception"],
+        ];
+    }
 }

@@ -77,4 +77,9 @@ class Contribution extends Model
     {
         return $this->belongsToMany('Muserpol\Models\Voucher')->withTimestamps();
     }
+
+    public function contribution_process()
+    {
+        return $this->morphToMany('Muserpol\Models\Contribution\ContributionProcess', 'quotable')->withTimestamps();
+    }
 }
