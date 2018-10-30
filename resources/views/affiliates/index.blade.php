@@ -7,6 +7,15 @@
     <div class="col-lg-9">
         {{ Breadcrumbs::render('affiliate') }}
     </div>
+    <div class="col-lg-12 text-right" style="margin-top:12px;">
+        <span data-toggle="modal" data-target="#ModalRecord">
+            <a href="{{ route('affiliate.create')}}">
+                <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Registrar un nuevo afiliado">
+                    <i class="fa fa-plus" style="font-size:15px;"></i> Añadir afiliado
+                </button>
+            </a>
+        </span>
+    </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
