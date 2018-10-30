@@ -11,7 +11,7 @@
                     placeholder="Escribe el número de Trámite, Nombre del titular, etc...">
             </div>
         </v-card-title>
-        <v-data-table :headers="headers"
+        <v-data-table :headers="dataInbox.headers"
                       :items="documents"
                       :search="search"
                       hide-actions
@@ -107,21 +107,13 @@
     </v-card>
 </template>
 <script>
-    import { mapState, mapMutations } from "vuex";
+    import { mapState, mapGetters } from "vuex";
     export default {
       props: ["workflowId", "documents", "inboxState"],
       data() {
         return {
           checkedAllStatus: false,
           search: "",
-          headers: [
-            { text: "# Trámite", value: "code" },
-            { text: "CI Titular", align: "left", value: "ci" },
-            { text: "Nombre del titular", value: "name" },
-            { text: "Modalidad", value: "modality" },
-            { text: "Regional", value: "city" },
-            { text: "Fecha de Recepción", value: "date_reception" }
-          ]
         };
       },
       mounted() {
@@ -176,6 +168,11 @@
         //     this.pagination.descending = false
         //     }
         // }
+      },
+      computed: {
+        ...mapGetters('inbox',{
+          dataInbox: 'getDataInbox',
+        }),
       }
     };
 </script>
