@@ -671,9 +671,9 @@ class QuotaAidMortuaryController extends Controller
 
         $steps = [];
         //$data = $retirement_fund->getReceptionSummary();
-        $is_editable = "1";
-        if(isset($quota_aid->id))
-            $is_editable = ID::getNonEditableId();
+        $is_editable = 1;        
+        //if(isset($quota_aid->id))
+            //$is_editable = ID::getNonEditableId();
 
 
         $wf_sequences_back = DB::table("wf_states")
