@@ -36,6 +36,18 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row m-b-md">
+                                                                <div class="col-md-4"><label class="control-label">Lugar de expedición:</label></div>
+                                                                <div class="col-md-8">
+                                                                    {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control', 'value' => '{{ old("identity_card")}}']) !!}
+                                                                    @if( $errors->has('city_identity_card_id') )
+                                                                    <div>
+                                                                        <i class="fa fa-warning text-danger"></i>
+                                                                        <span class="text-danger">{{ $errors->first('city_identity_card_id') }}</span>
+                                                                    </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row m-b-md">
                                                                 <div class="col-md-4"><label class="control-label">Apellido Paterno:</label></div>
                                                                 <div class="col-md-8"><input name="last_name" type="text" class="form-control" value="{{ old('last_name')}}">
                                                                     @if( $errors->has('last_name') )
@@ -80,18 +92,6 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row m-b-md">
-                                                                <div class="col-md-4"><label class="control-label">Lugar de expedición:</label></div>
-                                                                <div class="col-md-8">
-                                                                    {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control', 'value' => '{{ old("identity_card")}}']) !!}
-                                                                    @if( $errors->has('city_identity_card_id') )
-                                                                    <div>
-                                                                        <i class="fa fa-warning text-danger"></i>
-                                                                        <span class="text-danger">{{ $errors->first('city_identity_card_id') }}</span>
-                                                                    </div>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                            <div class="row m-b-md">
                                                                 <div class="col-md-4"><label class="control-label">Apellido de Casada:</label></div>
                                                                 <div class="col-md-8"><input name="surname_husband" type="text" class="form-control" value="{{ old('surname_husband')}}">
                                                                     @if( $errors->has('surname_husband') )
@@ -114,9 +114,9 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row m-b-md">
-                                                                <div class="col-md-3"><label class="control-label">Teléfono:</label></div>
-                                                                <div class="col-md-9">
-                                                                    <div class="col-md-10">
+                                                                <div class="col-md-4"><label class="control-label">Teléfono:</label></div>
+                                                                <div class="col-md-8">
+
                                                                         <div class="input-group">
                                                                             <input type="text" name="phone_number" class="form-control" v-phone value="{{ old('phone_number')}}">
                                                                             @if( $errors->has('phone_number') )
@@ -126,13 +126,13 @@
                                                                             </div>
                                                                             @endif
                                                                         </div>
-                                                                    </div>
+
                                                                 </div>
                                                             </div>
                                                             <div class="row m-b-md">
-                                                                <div class="col-md-3"><label class="control-label">Celular:</label></div>
-                                                                <div class="col-md-9">
-                                                                    <div class="col-md-10">
+                                                                <div class="col-md-4"><label class="control-label">Celular:</label></div>
+                                                                <div class="col-md-8">
+
                                                                         <div class="input-group">
                                                                             <input type="text" name="cell_phone_number" class="form-control" v-cell-phone value="{{ old('cell_phone_number')}}">
                                                                             @if( $errors->has('cell_phone_number') )
@@ -142,7 +142,7 @@
                                                                             </div>
                                                                             @endif
                                                                         </div>
-                                                                    </div>
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -150,13 +150,20 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group row m-b-md">
                                                                 <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de vencimiento del CI:</label></div>
-                                                                <div class="col-md-5"><input name="due_date" v-date type="text" class="form-control" value="{{ old('due_date')}}">
+                                                                <div class="col-md-5"><input name="due_date" v-date id="due_date" type="text" class="form-control" value="{{ old('due_date')}}">
                                                                     @if( $errors->has('due_date') )
                                                                     <div>
                                                                         <i class="fa fa-warning text-danger"></i>
                                                                         <span class="text-danger">{{ $errors->first('due_date') }}</span>
                                                                     </div>
                                                                     @endif
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="checkbox-inline i-checks">
+                                                                        <label>
+                                                                            <input type="checkbox" id="is_duedate_undefined" name="is_duedate_undefined" value="true"> Indefinida
+                                                                        </label>
+                                                                    </div>
                                                                 </div>                                                                
                                                             </div>
                                                             <div class="row m-b-md">
@@ -194,7 +201,7 @@
                                                             </div>
                                                             <div class="row m-b-md">
                                                                 <div class="col-md-3"><label class="control-label">Lugar de Nacimiento:</label></div>
-                                                                <div class="col-md-9">{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control', 'value' => '{{ old("city_birth_id")}}'])
+                                                                <div class="col-md-9">{!! Form::select('city_birth_id', $birth_cities, null , ['placeholder' => 'Seleccione la ciudad de nacimiento', 'class' => 'form-control', 'value' => '{{ old("city_birth_id")}}'])
                                                                     !!} 
                                                                 @if( $errors->has('city_birth_id') )
                                                                 <div>
@@ -272,4 +279,11 @@
                 </div>
             </div>
         </form>          
+@endsection
+@section('jss')
+<script>
+    document.getElementById('is_duedate_undefined').onchange = function() {
+    document.getElementById('due_date').disabled = !this.checked;
+};
+</script>
 @endsection
