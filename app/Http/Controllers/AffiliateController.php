@@ -35,8 +35,14 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {                                        
-        //$affiliate->registration = Util::getRegistration(Util::parseBarDate($affiliate->birth_date),$affiliate->last_name,$affiliate->mothers_last_name,$affiliate->first_name,$affiliate->gender);
+    {           
+        // $affiliates = Affiliate::where('registration',null)->where('birth_date','!=',null)->get();        
+        // foreach($affiliates as $affiliate) {            
+        //     $affiliate->registration = Util::getRegistration(Util::parseBarDate($affiliate->birth_date),$affiliate->last_name,$affiliate->mothers_last_name,$affiliate->first_name,$affiliate->gender);
+        //     $affiliate->save();
+        // }
+        // return ;
+
         return view('affiliates.index');
     }
     public function getAllAffiliates(Request $request)
@@ -284,10 +290,10 @@ class AffiliateController extends Controller
         $month_death = $death[1];
         $year_death = $death[2];
         
-        $is_editable = "0";
-        if(isset($retirement_fund->id) && ($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 2))
+        $is_editable = "1";
+        if(isset($retirement_fund->id) && $retirement_fund->procedure_modality_id != 4 && $retirement_fund->procedure_modality_id != 2)
         {
-            $is_editable = "1";
+            $is_editable = "0";
         }
         $quota_aid = $affiliate->quota_aid_mortuaries->last();
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
