@@ -15,4 +15,8 @@ class ContributionProcess extends Model
     {
         return $this->morphedByMany('Muserpol\Models\Contribution\AidContribution', 'quotable')->withTimestamps();
     }
+    public function tags()
+    {
+        return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id', 'date'])->withTimestamps();
+    }
 }

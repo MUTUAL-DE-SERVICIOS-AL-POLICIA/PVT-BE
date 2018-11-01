@@ -15,6 +15,7 @@ use Log;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Workflow\WorkflowSequence;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\Contribution\ContributionProcess;
 class DocumentController extends Controller
 {
     public function received(Request $request, $rol_id, $user_id)
@@ -148,41 +149,41 @@ class DocumentController extends Controller
                     ->get()->count();
                 break;
             case 11:
-                # contributions
+                # contribution process
                 $headers = Util::getHeadersInboxTreasury();
-                $documents = Voucher::select(
+                $documents = ContributionProcess::with('tags')->select(
                     DB::raw(
                         "
-                        quota_aid_mortuaries.id as id,
+                        contribution_processes.id as id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
-                        quota_aid_mortuaries.code as code,
-                        quota_aid_cities.second_shortened as city,
-                        quota_aid_mortuaries.reception_date as reception_date,
-                        quota_aid_mortuaries.workflow_id as workflow_id,
+                        contribution_processes.code as code,
+                        contribution_process_cities.second_shortened as city,
+                        contribution_processes.date as reception_date,
+                        contribution_processes.workflow_id as workflow_id,
                         procedure_modalities.name as modality,
-                        concat('/quota_aid/', quota_aid_mortuaries.id) as path
+                        concat('/quota_aid/', contribution_processes.id) as path
                         "
                     )
                 )
-                    ->leftJoin('affiliates', 'quota_aid_mortuaries.affiliate_id', '=', 'affiliates.id')
-                    ->leftJoin('cities as quota_aid_cities', 'quota_aid_mortuaries.city_start_id', '=', 'quota_aid_cities.id')
-                    ->leftJoin('wf_states', 'quota_aid_mortuaries.wf_state_current_id', '=', 'wf_states.id')
-                    ->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
+                    ->leftJoin('affiliates', 'contribution_processes.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('cities as contribution_process_cities', 'contribution_processes.city_id', '=', 'contribution_process_cities.id')
+                    ->leftJoin('wf_states', 'contribution_processes.wf_state_current_id', '=', 'wf_states.id')
+                    ->leftJoin('procedure_modalities', 'contribution_processes.procedure_modality_id', '=', 'procedure_modalities.id')
                     ->where('wf_states.role_id', '=', $rol_id)
-                    ->where('quota_aid_mortuaries.inbox_state', '=', false)
-                    ->where('quota_aid_mortuaries.code', 'not like', '%A%')
+                    ->where('contribution_processes.inbox_state', '=', false)
+                    ->where('contribution_processes.code', 'not like', '%A%')
                     ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
                     ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
                     ->get();
-                $documents_edited_total = QuotaAidMortuary::select('quota_aid_mortuaries.id as id')
-                    ->leftJoin('affiliates', 'quota_aid_mortuaries.affiliate_id', '=', 'affiliates.id')
-                    ->leftJoin('cities as quota_aid_cities', 'quota_aid_mortuaries.city_start_id', '=', 'quota_aid_cities.id')
-                    ->leftJoin('wf_states', 'quota_aid_mortuaries.wf_state_current_id', '=', 'wf_states.id')
+                $documents_edited_total = ContributionProcess::select('contribution_processes.id as id')
+                    ->leftJoin('affiliates', 'contribution_processes.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('cities as contribution_process_cities', 'contribution_processes.city_id', '=', 'contribution_process_cities.id')
+                    ->leftJoin('wf_states', 'contribution_processes.wf_state_current_id', '=', 'wf_states.id')
                     ->where('wf_states.role_id', '=', $rol_id)
-                    ->where('quota_aid_mortuaries.code', 'not like', '%A%')
-                    ->where('quota_aid_mortuaries.inbox_state', '=', true)
-                    ->where('quota_aid_mortuaries.user_id', '=', $user_id)
+                    ->where('contribution_processes.code', 'not like', '%A%')
+                    ->where('contribution_processes.inbox_state', '=', true)
+                    ->where('contribution_processes.user_id', '=', $user_id)
                     ->get()->count();
                 break;
             default:
@@ -216,8 +217,8 @@ class DocumentController extends Controller
 
     public function edited(Request $request, $rol_id, $user_id)
     {
-        
         $module = Role::find($rol_id)->module;
+        $headers = Util::getHeadersInboxRetFunQuotaAid();
         switch ($module->id) {
             case 1:
                 # code...
@@ -345,6 +346,45 @@ class DocumentController extends Controller
                     ->where('quota_aid_mortuaries.code', 'not like', '%A%')
                     ->get()->count();
                 break;
+            case 11:
+                # contributions process
+                $headers = Util::getHeadersInboxTreasury();
+                $documents = ContributionProcess::with('tags')->select(
+                    DB::raw(
+                        "
+                        contribution_processes.id as id,
+                        affiliates.identity_card as ci,
+                        trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
+                        contribution_processes.code as code,
+                        contribution_process_cities.second_shortened as city,
+                        procedure_modalities.name as modality,
+                        contribution_processes.date as reception_date,
+                        contribution_processes.workflow_id as workflow_id,
+                        concat('/quota_aid/', contribution_processes.id) as path,
+                        false as status
+                        "
+                    )
+                )
+                    ->leftJoin('affiliates', 'contribution_processes.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('cities as contribution_process_cities', 'contribution_processes.city_id', '=', 'contribution_process_cities.id')
+                    ->leftJoin('wf_states', 'contribution_processes.wf_state_current_id', '=', 'wf_states.id')
+                    ->leftJoin('procedure_modalities', 'contribution_processes.procedure_modality_id', '=', 'procedure_modalities.id')
+                    ->where('wf_states.role_id', '=', $rol_id)
+                    ->where('contribution_processes.inbox_state', '=', true)
+                    ->where('contribution_processes.user_id', '=', $user_id)
+                    ->where('contribution_processes.code', 'not like', '%A%')
+                    ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
+                    ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+                    ->get();
+                $documents_received_total = ContributionProcess::select('contribution_processes.id as id')
+                    ->leftJoin('affiliates', 'contribution_processes.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('cities as contribution_process_cities', 'contribution_processes.city_id', '=', 'contribution_process_cities.id')
+                    ->leftJoin('wf_states', 'contribution_processes.wf_state_current_id', '=', 'wf_states.id')
+                    ->where('wf_states.role_id', '=', $rol_id)
+                    ->where('contribution_processes.inbox_state', '=', false)
+                    ->where('contribution_processes.code', 'not like', '%A%')
+                    ->get()->count();
+                break;
             default:
                 # code...
                 break;
@@ -377,7 +417,7 @@ class DocumentController extends Controller
             $wf_sequences_back = null;
         }
         $workflows = Workflow::whereIn('id',$temp)->get();
-        $headers = Util::getHeadersInboxRetFunQuotaAid();
+
         $data = [
             'documents_received_total' => $documents_received_total ?? 0,
             'documents_edited_total' => $documents->count() ?? 0,
