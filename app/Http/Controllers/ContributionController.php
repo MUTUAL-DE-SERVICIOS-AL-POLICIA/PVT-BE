@@ -215,21 +215,17 @@ class ContributionController extends Controller
         $process->affiliate_id = $affiliate->id;
         $process->user_id = Auth::user()->id;
         $process->city_id = Auth::user()->city_id;
-        $process->wf_state_current_id = 1;
-        $process->workflow_id = 1;
-        $process->procedure_modality_id = 4;
+        $process->wf_state_current_id = 50;
+        $process->workflow_id = 7;
+        $process->procedure_modality_id = 1;
         $process->date = date('Y-m-d');
         $process->code = "1/2018";
         $process->inbox_state = true;
         $process->save();
-        return $process;
-        if($process)
-        $process->contribution->attach([1,2,3,4,5]);
-        else return "nose pudo";
-        return 123;
         
         $result = [];
-        $stored_contributions = [];        
+        $stored_contributions = [];
+        $contribution_ids = [];  
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;            
@@ -293,19 +289,19 @@ class ContributionController extends Controller
                 $contribution->breakdown_id = 3;
                 $contribution->save();
             }
-
+            array_push($contribution_ids,$contribution->id);
             array_push($result, [
                 'total'=>$contribution->total,
                 'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
                     ]);
             array_push($stored_contributions,$contribution);            
         }
-        $process->contribution->attach([1,2,3,4,5]);
         
+        $process->contributions()->attach($contribution_ids);
         $data = [
             'contribution'  =>  $result,
             'contributions'  =>  $stored_contributions,
-            'voucher_id'    => $voucher->id,
+            //'voucher_id'    => $voucher->id,
             'affiliate_id'  =>  $affiliate->id,
         ];
         return $data;
