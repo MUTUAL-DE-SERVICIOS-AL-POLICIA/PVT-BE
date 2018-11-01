@@ -222,6 +222,11 @@ class ContributionController extends Controller
         $process->code = "1/2018";
         $process->inbox_state = true;
         $process->save();
+        return $process;
+        if($process)
+        $process->contribution->attach([1,2,3,4,5]);
+        else return "nose pudo";
+        return 123;
         
         $result = [];
         $stored_contributions = [];        
@@ -295,7 +300,7 @@ class ContributionController extends Controller
                     ]);
             array_push($stored_contributions,$contribution);            
         }
-        $process->contribution->atach([1,2,3,4,5]);
+        $process->contribution->attach([1,2,3,4,5]);
         
         $data = [
             'contribution'  =>  $result,
