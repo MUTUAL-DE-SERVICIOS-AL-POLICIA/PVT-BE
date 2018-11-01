@@ -132,6 +132,8 @@ class AffiliateController extends Controller
      */
     public function store(Request $request)
     {
+        $verificate = true;
+        $due_date = null;
         $rules = [
             'identity_card' => 'required|unique:affiliates',
             'city_identity_card_id' => 'required|min:1',
@@ -141,7 +143,8 @@ class AffiliateController extends Controller
             'category_id' => 'required',
             'degree_id' => 'required',
             'last_name' => '',
-            'mothers_last_name' => ''
+            'mothers_last_name' => '',
+            'city_birth_id' => 'required'
         ];
 
         $messages = [
@@ -154,7 +157,10 @@ class AffiliateController extends Controller
             'category_id' => 'Debe seleccionar una opción',
             'degree_id' => 'Debe seleccionar una opción'
         ];
-
+        if(!$request->is_duedate_undefined){
+            $due_date = $request->due_date;
+            $verificate = false;
+        }
         if (! $request->last_name && !$request->mothers_last_name) {
             //only for flash message
             $rules['last_name'] .='required';
@@ -175,7 +181,7 @@ class AffiliateController extends Controller
             'nua' => $request->nua,
             'phone_number' => $request->phone_number,
             'cell_phone_number' => $request->cell_phone_number,
-            'due_date' => $request->due_date,
+            'due_date' => $due_date,
             'gender' => $request->gender,
             'birth_date' => $request->birth_date,
             'civil_status' => $request->civil_status,
@@ -183,7 +189,8 @@ class AffiliateController extends Controller
             'category_id' => $request->category_id,
             'pension_entity_id' => $request->pension_entity_id,
             'degree_id' => $request->degree_id,
-            'is_duedate_undefined' => false
+            'is_duedate_undefined' => $verificate,
+            'city_birth_id' => $request->city_birth_id
         ]);
         return redirect()->route('affiliate.index');
     }

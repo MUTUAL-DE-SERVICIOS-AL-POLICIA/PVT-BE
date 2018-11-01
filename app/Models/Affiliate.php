@@ -47,7 +47,9 @@ class Affiliate extends Model
         'cell_phone_number',
         'afp',
         'nua',
-        'item'
+        'item',
+        'is_duedate_undefined',
+        'due_date'
     ];
     public function getBirthDateAttribute($value)
     {
