@@ -267,7 +267,7 @@ class QuotaAidCertificationController extends Controller
 
         // $next_area_code = Util::getNextAreaCode($quota_aid->id);
         $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)
-        // ->where('wf_state_id', 23)
+         ->where('wf_state_id', 37)
             ->first();
         $code = $quota_aid->code;
         $area = $next_area_code->wf_state->first_shortened;
@@ -302,7 +302,7 @@ class QuotaAidCertificationController extends Controller
         $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->get();
 
         $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)
-        // ->where('wf_state_id', 37)
+            ->where('wf_state_id', 37)
             ->first();
         $code = $quota_aid->code;
         $area = $next_area_code->wf_state->first_shortened;
