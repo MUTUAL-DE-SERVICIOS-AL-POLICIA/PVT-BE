@@ -127,6 +127,7 @@ class AffiliateController extends Controller
     public function store(Request $request)
     {
         $verificate = true;
+        $due_date = null;
         $rules = [
             'identity_card' => 'required|unique:affiliates',
             'city_identity_card_id' => 'required|min:1',
@@ -151,6 +152,7 @@ class AffiliateController extends Controller
             'degree_id' => 'Debe seleccionar una opción'
         ];
         if(!$request->is_duedate_undefined){
+            $due_date = $request->due_date;
             $verificate = false;
         }
         if (! $request->last_name && !$request->mothers_last_name) {
@@ -173,7 +175,7 @@ class AffiliateController extends Controller
             'nua' => $request->nua,
             'phone_number' => $request->phone_number,
             'cell_phone_number' => $request->cell_phone_number,
-            'due_date' => $request->due_date,
+            'due_date' => $due_date,
             'gender' => $request->gender,
             'birth_date' => $request->birth_date,
             'civil_status' => $request->civil_status,

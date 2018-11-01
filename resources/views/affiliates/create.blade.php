@@ -159,7 +159,7 @@
                                                                     @endif
                                                                 </div>
                                                                 <div class="col-md-4">
-                                                                    <div class="checkbox-inline i-checks">
+                                                                    <div class="checkbox-inline">
                                                                         <label>
                                                                             <input type="checkbox" id="is_duedate_undefined" name="is_duedate_undefined" value="true"> Indefinida
                                                                         </label>
@@ -280,10 +280,14 @@
             </div>
         </form>          
 @endsection
-@section('jss')
+@section('scripts')
 <script>
-    document.getElementById('is_duedate_undefined').onchange = function() {
-    document.getElementById('due_date').disabled = !this.checked;
-};
+$('#is_duedate_undefined').change(function(){
+    if ($('#is_duedate_undefined').is(':checked') == true){
+        $('#due_date').prop('disabled', true);
+    } else {
+        $('#due_date').prop('disabled', false);
+    }
+});
 </script>
 @endsection
