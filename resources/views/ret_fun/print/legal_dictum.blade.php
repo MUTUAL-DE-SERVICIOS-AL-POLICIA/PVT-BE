@@ -67,6 +67,11 @@
                     <li class="text-justify">
                         {{ $body_due }}
                     </li>
+                     @if($correlative->note!="")
+                        <li class="text-justify">
+                            {{ $correlative->note }}
+                        </li>
+                    @endif
                 </ul>
                 {{--
                 <ul>
