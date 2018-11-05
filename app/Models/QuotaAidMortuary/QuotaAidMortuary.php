@@ -65,6 +65,10 @@ class QuotaAidMortuary extends Model
     {
         return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative');
     }
+    public function wf_records()
+    {
+        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
+    }
     public function getBasicInfoCode()
     {
         $code = $this->id . " " . ($this->affiliate->id ?? null) . "\n" . "Trámite Nro: " . $this->code . "\nModalidad: " . $this->procedure_modality->name . "\nSolicitante: " . ($this->quota_aid_beneficiaries()->where('type', 'S')->first()->fullName() ?? null);
