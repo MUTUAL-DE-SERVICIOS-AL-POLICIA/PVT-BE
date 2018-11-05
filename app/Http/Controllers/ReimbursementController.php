@@ -132,7 +132,7 @@ class ReimbursementController extends Controller
      * @param  \Muserpol\Contribution  $contribution
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Reimbursement $reimbursement)
+    public function destroy(Request $request)
     {
         $reimbursement = Reimbursement::where('affiliate_id',$request->affiliate_id)
                                         ->where('month_year',$request->year.'-'.$request->month.'-01')

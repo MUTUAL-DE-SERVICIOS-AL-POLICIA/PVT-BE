@@ -97,6 +97,11 @@
                         <li class="text-justify">
                             {{ $body_due }}
                         </li>
+                        @if($correlative->note!="")
+                            <li class="text-justify">
+                                {{ $correlative->note }}
+                            </li>
+                        @endif
                     </ul>
                     <div class="m-l-10">
                         <strong><span class="m-r-20">III.</span> CONCLUSIONES.-</strong>
