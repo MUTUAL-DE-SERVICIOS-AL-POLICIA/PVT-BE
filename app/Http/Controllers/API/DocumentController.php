@@ -162,7 +162,7 @@ class DocumentController extends Controller
                         contribution_processes.date as reception_date,
                         contribution_processes.workflow_id as workflow_id,
                         procedure_modalities.name as modality,
-                        concat('/quota_aid/', contribution_processes.id) as path
+                        concat('/contribution_process/', contribution_processes.id) as path
                         "
                     )
                 )
@@ -360,7 +360,7 @@ class DocumentController extends Controller
                         procedure_modalities.name as modality,
                         contribution_processes.date as reception_date,
                         contribution_processes.workflow_id as workflow_id,
-                        concat('/quota_aid/', contribution_processes.id) as path,
+                        concat('/contribution_process/', contribution_processes.id) as path,
                         false as status
                         "
                     )

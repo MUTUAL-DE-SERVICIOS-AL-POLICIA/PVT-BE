@@ -15,6 +15,10 @@ class ContributionProcess extends Model
     {
         return $this->morphedByMany('Muserpol\Models\Contribution\AidContribution', 'quotable')->withTimestamps();
     }
+    public function wf_state()
+    {
+        return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_state_current_id', 'id');
+    }
     public function tags()
     {
         return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id', 'date'])->withTimestamps();
