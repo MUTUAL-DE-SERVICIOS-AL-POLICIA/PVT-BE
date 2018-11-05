@@ -365,7 +365,7 @@ class Affiliate extends Model
     }
     public function getContributionsPlus($with_reimbursements = true)
     {
-        if ($this->selectedContributions() > 0) {
+        if ($this->selectedContributions() > 0 || $this->contributions()->count() == 0) {
             return [];
         }
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
@@ -460,7 +460,7 @@ class Affiliate extends Model
         }
     }
     public function getContributionsAvailability($with_reimbursements = true){
-        if ($this->selectedContributions() > 0) {
+        if ($this->selectedContributions() > 0 || $this->contributions()->count() == 0) {
             return [];
         }
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
