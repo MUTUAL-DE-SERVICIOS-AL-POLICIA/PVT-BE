@@ -27,11 +27,14 @@ class CreateWfRecordsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('record_type_id');
+            $table->unsignedBigInteger('wf_state_id');
             $table->unsignedBigInteger('recordable_id');
             $table->string('recordable_type');
             $table->text('message');
             $table->dateTime('date');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('record_type_id')->references('id')->on('record_types');
+            $table->foreign('wf_state_id')->references('id')->on('wf_states');
             $table->timestamps();
         });
     }
@@ -43,6 +46,9 @@ class CreateWfRecordsTable extends Migration
      */
     public function down()
     {
+        Schema::table('quota_aid_submitted_documents', function (Blueprint $table) {
+            $table->dropColumn('is_valid');
+        });
         Schema::dropIfExists('wf_records');
         Schema::dropIfExists('record_types');
     }

@@ -11,7 +11,7 @@ use Muserpol\Observers\RetirementFundObservationObserver;
 use Muserpol\Models\RetirementFund\RetFunObservation;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Observers\QuotaAidMortuaryObserver;
-
+use Illuminate\Database\Eloquent\Relations\Relation;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -26,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
         RetirementFund::observe(RetirementFundObserver::class);
         QuotaAidMortuary::observe(QuotaAidMortuaryObserver::class);
         RetFunObservation::observe(RetirementFundObservationObserver::class);
+        Relation::morphMap([
+            'retirement_funds' => 'Muserpol\Models\RetirementFund\RetirementFund',
+        ]);
     }
 
     /**

@@ -19,4 +19,8 @@ class ContributionProcess extends Model
     {
         return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id', 'date'])->withTimestamps();
     }
+    public function wf_records()
+    {
+        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
+    }
 }

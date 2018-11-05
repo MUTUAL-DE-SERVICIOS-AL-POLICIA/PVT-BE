@@ -21,46 +21,10 @@ class InboxController extends Controller
 {
     public function received()
     {
-        $module_id = Util::getRol()->module->id;
-        switch ($module_id) {
-            case 2:
-                # eco com
-                break;
-            case 3:
-                # ret fun
-                // return "hola";
-                break;
-            case 4:
-                # cm
-                break;
-            case 5:
-                # am
-            default:
-                # code...
-                break;
-        }
         return view('inbox.received');
     }
     public function edited()
     {
-        $module_id = Util::getRol()->module->id;
-        switch ($module_id) {
-            case 2:
-                # eco com
-                break;
-            case 3:
-                # ret fun
-                // return "hola";
-                break;
-            case 4:
-                # cm
-                break;
-            case 5:
-                # am
-            default:
-                # code...
-                break;
-        }
         return view('inbox.edited');
     }
     public function sendForward(Request $request)
@@ -177,14 +141,6 @@ class InboxController extends Controller
                     $ret_fun->wf_state_current_id = $wf_state_back_id;
                     $ret_fun->inbox_state = false;
                     $ret_fun->save();
-                    $wf_record = new WorkflowRecord() ;
-                    $wf_record->user_id = Auth::user()->id;
-                    $wf_record->wf_state_id = $wf_state_back_id;
-                    $wf_record->ret_fun_id = $ret_fun->id;
-                    $wf_record->date = Carbon::now();
-                    $wf_record->record_type_id = 2;
-                    $wf_record->message = "El usuario " . Auth::user()->username . " devolvió el trámite " . $ret_fun->code . " con nota: " . $request->message . ".";
-                    $wf_record->save();
                 }
                 break;
             case 4:
@@ -193,14 +149,6 @@ class InboxController extends Controller
                     $quota_aid->wf_state_current_id = $wf_state_back_id;
                     $quota_aid->inbox_state = false;
                     $quota_aid->save();
-                    $wf_record = new WorkflowRecord();
-                    $wf_record->user_id = Auth::user()->id;
-                    $wf_record->wf_state_id = $wf_state_back_id;
-                    $wf_record->quota_aid_id = $quota_aid->id;
-                    $wf_record->date = Carbon::now();
-                    $wf_record->record_type_id = 2;
-                    $wf_record->message = "El usuario " . Auth::user()->username . " devolvió el trámite " . $quota_aid->code . " con nota: " . $request->message . ".";
-                    $wf_record->save();
                 }
                 break;
             case 11:
@@ -209,14 +157,6 @@ class InboxController extends Controller
                     $doc->wf_state_current_id = $wf_state_back_id;
                     $doc->inbox_state = false;
                     $doc->save();
-                    // $wf_record = new WorkflowRecord();
-                    // $wf_record->user_id = Auth::user()->id;
-                    // $wf_record->wf_state_id = $wf_state_back_id;
-                    // $wf_record->quota_aid_id = $doc->id;
-                    // $wf_record->date = Carbon::now();
-                    // $wf_record->record_type_id = 2;
-                    // $wf_record->message = "El usuario " . Auth::user()->username . " devolvió el trámite " . $doc->code . " con nota: " . $request->message . ".";
-                    // $wf_record->save();
                 }
                 break;
             default:
