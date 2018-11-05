@@ -48,7 +48,6 @@
             <table class="table-info w-100 m-b-5">
                 <thead class="bg-grey-darker">
                     <tr class="font-medium text-white text-sm text-center">
-                        <td></td>
                         <td>Nº</td>
                         <td>GESTION</td>
                         <td>TRAMITE Nº</td>
@@ -70,7 +69,6 @@
                     @foreach ($retirement_funds as $r)
                         <tr>
                             <td class="uppercase px-5 text-right">{{ $index++ }}</td>
-                            <td class="uppercase px-5 text-right"></td>
                             <td class="uppercase px-5 text-right">{{ $year }}</td>
                             <td class="uppercase px-5 text-right">{{ $r->code }}</td>
                             <td class="uppercase px-5 text-right">{{ $r->getCorrelative(25) }}</td>
