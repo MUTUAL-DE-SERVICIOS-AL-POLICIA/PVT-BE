@@ -517,7 +517,7 @@ class QuotaAidCertificationController extends Controller
                                         ->whereDate('month_year','>=',$start_date->format('Y-m')."-01")
                                         ->whereDate('month_year','<=',$end_date->format('Y-m')."-01")
                                         ->whereDate('month_year','>=',$limit_period)
-                                        ->orderByDesc('month_year')->pluck('id','month_year');                       
+                                        ->orderBy('month_year')->pluck('id','month_year');                       
 
                 //return $valid_contributions;
             Util::completAidContributions($affiliate->id,$start_date->copy(),$end_date->copy());
@@ -525,7 +525,7 @@ class QuotaAidCertificationController extends Controller
                                                 ->whereDate('month_year','>=',$start_date->format('Y-m')."-01")
                                                 ->whereDate('month_year','<=',$end_date->format('Y-m')."-01")
                                                 //->whereDate('month_year','>=',$aid_commitment->date_commitment)
-                                                ->orderByDesc('month_year')->get();
+                                                ->orderBy('month_year')->get();
             $reimbursements = AidReimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
             if($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) {
                 $spouse = $affiliate->spouse()->first();
