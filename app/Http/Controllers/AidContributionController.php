@@ -240,7 +240,7 @@ class AidContributionController extends Controller
         }
         $spouse_death = $affiliate->spouse()->whereDate('date_death','>',$death_date)->first();
         if(isset($spouse_death)) {
-            $death_date = Util::parseBarDate($spouse->date_death);
+            $death_date = Util::parseBarDate($spouse_death->date_death);
         }
         
         //return $death_date;

@@ -482,8 +482,8 @@ class QuotaAidCertificationController extends Controller
 
         if($quota_aid->procedure_modality_id == 15 || $quota_aid->procedure_modality_id == 14 && $affiliate->pension_entity->id != 5) {
             $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();            
-            $end_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);
-            $start_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);            
+            $end_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($spouse->date_death));
+            $start_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($spouse->date_death));            
         } else {
             $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
             $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
