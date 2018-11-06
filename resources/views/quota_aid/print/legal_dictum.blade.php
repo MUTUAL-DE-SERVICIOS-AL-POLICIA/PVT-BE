@@ -56,10 +56,7 @@
                     </li>
                     <li class="text-justify">
                         {!! $body_qualification !!}
-                    </li>
-                    <li class="text-justify">
-                        {{ $body_due }}
-                    </li>
+                    </li>                    
                     @if($correlative->note!="")
                         <li class="text-justify">
                             {{ $correlative->note }}

@@ -482,8 +482,8 @@ class QuotaAidCertificationController extends Controller
 
         if($quota_aid->procedure_modality_id == 15 || $quota_aid->procedure_modality_id == 14 && $affiliate->pension_entity->id != 5) {
             $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();            
-            $end_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);
-            $start_date = Carbon::createFromFormat('Y-m-d', $spouse->date_death);            
+            $end_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($spouse->date_death));
+            $start_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($spouse->date_death));            
         } else {
             $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
             $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
@@ -517,7 +517,7 @@ class QuotaAidCertificationController extends Controller
                                         ->whereDate('month_year','>=',$start_date->format('Y-m')."-01")
                                         ->whereDate('month_year','<=',$end_date->format('Y-m')."-01")
                                         ->whereDate('month_year','>=',$limit_period)
-                                        ->orderByDesc('month_year')->pluck('id','month_year');                       
+                                        ->orderBy('month_year')->pluck('id','month_year');                       
 
                 //return $valid_contributions;
             Util::completAidContributions($affiliate->id,$start_date->copy(),$end_date->copy());
@@ -525,7 +525,7 @@ class QuotaAidCertificationController extends Controller
                                                 ->whereDate('month_year','>=',$start_date->format('Y-m')."-01")
                                                 ->whereDate('month_year','<=',$end_date->format('Y-m')."-01")
                                                 //->whereDate('month_year','>=',$aid_commitment->date_commitment)
-                                                ->orderByDesc('month_year')->get();
+                                                ->orderBy('month_year')->get();
             $reimbursements = AidReimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
             if($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) {
                 $spouse = $affiliate->spouse()->first();
@@ -601,11 +601,11 @@ class QuotaAidCertificationController extends Controller
         /** PERSON DATA */
         $person = "";
         $affiliate = Affiliate::find($quota_aid->affiliate_id);                        
-        $ret_fun_beneficiary = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
+        $quota_aid_beneficiaries = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
         
 
-        if(isset($ret_fun_beneficiary->id)) {
-            $legal_guardian = QuotaAidLegalGuardian::where('id',$ret_fun_beneficiary->ret_fun_legal_guardian_id)->first();
+        if(isset($quota_aid_beneficiaries->id)) {
+            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->ret_fun_legal_guardian_id)->first();
             $person .= ($legal_guardian->gender=='M'?"El señor ":"La señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
         } else {
             $person .= ($affiliate->gender=='M'?"El señor ":"La señora ");
@@ -616,9 +616,10 @@ class QuotaAidCertificationController extends Controller
        
             $person .=  ($applicant->gender=='M'?' el Sr. ':' la Sra. ').Util::fullName($applicant)." con C.I. N° ". $applicant->identity_card." ".$applicant->city_identity_card->first_shortened.". solicita el beneficio a favor suyo en calidad de ".$applicant->kinship->name; 
             $testimony_applicant = Testimony::find($applicant->testimonies()->first()->id);
-            
+
            // foreach($testimonies_applicant as $testimony) {
-                $beneficiaries = $testimony_applicant->ret_fun_beneficiaries;
+                $beneficiaries = $testimony_applicant->quota_aid_beneficiaries;
+                
                 $quantity = $beneficiaries->count();                
                 $start_message = false;
                 if($quantity > 1) {
@@ -643,7 +644,7 @@ class QuotaAidCertificationController extends Controller
 
             $testimonies_applicant = Testimony::where('affiliate_id',$affiliate->id)->where('id','!=',$applicant->testimonies()->first()->id)->get();
             foreach($testimonies_applicant as $testimony) {
-                $beneficiaries = $testimony->ret_fun_beneficiaries;                
+                $beneficiaries = $testimony->quota_aid_beneficiaries;                
                 $beneficiaries = $beneficiaries->where('state',true);
                 $quantity = $beneficiaries->count();
                 $start_message = false;
@@ -755,8 +756,10 @@ class QuotaAidCertificationController extends Controller
         $body_qualification = "";
         $qualification_id = 37;
         $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$qualification_id)->first();
-        $months  = $affiliate->getTotalQuotes();        
-        $body_qualification .=  "Que, mediante Calificación de Fondo de Retiro Policial Solidario N° ".$qualification->code." del Área de Calificación de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de<strong> ". Util::formatMonthYearLiteral($months)."</strong>, determinando el beneficio de <strong>Fondo de Retiro Policial Solidario por ".mb_strtoupper($quota_aid->procedure_modality->name)."&nbsp;&nbsp;</strong>de<strong> ". Util::formatMoneyWithLiteral($quota_aid->subtotal_ret_fun) ."</strong>".Util::getDiscountCombinations($quota_aid->id);
+        $months  = $affiliate->getTotalQuotes();                
+        $start_contribution = $affiliate->getContributionsWithTypeQuotaAid()[0]->start;
+        $end_contribution = $affiliate->getContributionsWithTypeQuotaAid()[0]->end;        
+        $body_qualification .=  "Que, mediante Calificación de Fondo de Retiro Policial Solidario N° ".$qualification->code." del Área de Calificación de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($qualification->date) .", se realizó el cálculo por el periodo de ". Util::getStringDate($start_contribution,true) ." a ".Util::getStringDate($end_contribution,true).", determinando el beneficio de <strong>".mb_strtoupper($quota_aid->procedure_modality->procedure_type->name)." por ".mb_strtoupper($quota_aid->procedure_modality->name)."&nbsp;&nbsp;</strong>de<strong> ". Util::formatMoneyWithLiteral($quota_aid->total) ."</strong>";
         $body_qualification .= ".";
         
         ////----- DUE -----////
@@ -805,7 +808,7 @@ class QuotaAidCertificationController extends Controller
         }        
         $payment .="y la Disposición Transitoria Única del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y 
         modificado mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017. Se <strong>DICTAMINA</strong> en merito a la documentación de respaldo contenida en el presente reconocer 
-        los derechos y se otorgue el beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." por <strong>".$quota_aid->procedure_modality->name."</strong> a favor ";
+        los derechos y se otorgue el beneficio de ".strtoupper($quota_aid->procedure_modality->procedure_type->second_name)." por <strong>".strtoupper($quota_aid->procedure_modality->name)."</strong> a favor ";
                         
         $flagy = 0;
         $discounts = $quota_aid->discount_types();
@@ -816,7 +819,7 @@ class QuotaAidCertificationController extends Controller
         
         if(true) {
             $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->orderBy('kinship_id')->orderByDesc('state')->get();
-            foreach($beneficiaries as $beneficiary){
+            foreach($beneficiaries as $beneficiary){                
                 if(!$beneficiary->state) {
                     $reserved_quantity = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
@@ -825,8 +828,8 @@ class QuotaAidCertificationController extends Controller
                     ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
                     ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 29, 34, 35 y 41 del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resoluciones de Directorio Nros. 36/2017 y 51/2017 de fechas 20 de septiembre de 2017 y 29 de diciembre de 2017 respectivamente, de la siguiente manera:<br><br>";
                 }
-                //return $beneficiary->birth_date;
-                $birth_date = Carbon::createFromFormat('Y-m-d', $beneficiary->birth_date);
+                //return $beneficiary;
+                $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
                 if(date('Y') -$birth_date->format('Y') > 18) {
                 $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 } else {
@@ -877,8 +880,7 @@ class QuotaAidCertificationController extends Controller
             'body_accounts'  =>  $body_accounts,
             'body_finance'  =>  $body_finance,
             'body_legal_review'  =>  $body_legal_review,
-            'body_qualification'  =>  $body_qualification,
-            'body_due'  =>  "no body",
+            'body_qualification'  =>  $body_qualification,            
             'payment'   =>  $payment,
             'art'   =>  $art,
         ];
