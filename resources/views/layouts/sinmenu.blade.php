@@ -8,12 +8,6 @@
 
     <link rel="stylesheet" href="{!! asset('css/vendor.css') !!}" />
     <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
-    <style>
-        col-center{
-            width: 25%;
-            position: absolute
-        }
-    </style>
 </head>
 <body class="gray-bg">
 

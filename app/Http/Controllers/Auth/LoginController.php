@@ -6,7 +6,6 @@ use Muserpol\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Log;
 use Session;
-use Ldap;
 
 class LoginController extends Controller
 {
