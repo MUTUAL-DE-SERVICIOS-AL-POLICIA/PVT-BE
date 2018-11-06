@@ -2,10 +2,12 @@
 
 namespace Muserpol\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use Muserpol\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Log;
 use Session;
+use Ldap;
 
 class LoginController extends Controller
 {
@@ -21,7 +23,57 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
+    protected function attemptLogin(Request $request)
+    {
+        return $this->guard()->attempt(
+            $this->credentials($request), $request->filled('remember')
+        );
+    }
+    public function login(Request $request)
+    {
+            if (!env("LDAP_AUTHENTICATION")) {
+                $this->validateLogin($request);
+                if ($this->hasTooManyLoginAttempts($request)) {
+                    $this->fireLockoutEvent($request);
 
+                    return $this->sendLockoutResponse($request);
+                }
+                if ($this->attemptLogin($request)) {
+                    return $this->sendLoginResponse($request);
+                }
+                $this->incrementLoginAttempts($request);
+                return $this->sendFailedLoginResponse($request);
+            } 
+            else {
+                
+                $ldap = new Ldap();
+                if ($ldap->connection && $ldap->verify_open_port()) {
+                    
+                    if ($ldap->bind($request['username'], $request['password'])) {
+                        return $request;
+                        $ldap->unbind();
+                        $user = User::where('username', $request['username'])->where('status', 'active')->first();
+                        if ($user) {
+                            $this->validateLogin($request);
+                            if ($this->hasTooManyLoginAttempts($request)) {
+                                $this->fireLockoutEvent($request);
+                                return $this->sendLockoutResponse($request);
+                            }
+                            if ($this->attemptLogin($request)) {
+                                return $this->sendLoginResponse($request);
+                            }
+                            $this->incrementLoginAttempts($request);
+                            return $this->sendFailedLoginResponse($request);
+                        }
+                    }
+                    return $this->sendFailedLoginResponse($request);
+                }
+                else{
+                    return $this->sendFailedLoginResponse($request);
+                }
+            }
+        
+    }
     /**
      * Where to redirect users after login.
      *
