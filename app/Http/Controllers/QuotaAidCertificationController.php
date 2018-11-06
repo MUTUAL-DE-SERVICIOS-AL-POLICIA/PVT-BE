@@ -610,8 +610,8 @@ class QuotaAidCertificationController extends Controller
         } else {
             $person .= ($affiliate->gender=='M'?"El señor ":"La señora ");
         }        
-        $person .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR FALLECIDO ".($quota_aid->procedure_modality_id == 4?"FALLECIDO ":" ")."del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
-        if($quota_aid->procedure_modality_id == 4 || true) {
+        $person .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO ":" ")."del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
+        if($quota_aid->procedure_modality_id != 14) {
             //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) .", a lo cual considera lo siguiente:";
        
             $person .=  ($applicant->gender=='M'?' el Sr. ':' la Sra. ').Util::fullName($applicant)." con C.I. N° ". $applicant->identity_card." ".$applicant->city_identity_card->first_shortened.". solicita el beneficio a favor suyo en calidad de ".$applicant->kinship->name; 
@@ -678,6 +678,7 @@ class QuotaAidCertificationController extends Controller
         /** END PERSON DATA */
 
         /** LAW DATA */
+        
         $art = [
             '8' => '43 a)',
             '9' => '43 b)',
@@ -815,9 +816,14 @@ class QuotaAidCertificationController extends Controller
         $discounts_number = $discounts->where('amount','>','0')->count();
         
         $beneficiaries_count = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->count();            
-        $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"el beneficiario ":"la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??'Sin extencion')."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";
+        if($quota_aid->procedure_modality_id != 14) {
+            $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"el beneficiario ":"la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??'Sin extencion')."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";
+        } else 
+        {
+            $payment .= " de: ";
+        }
         
-        if(true) {
+        if($quota_aid->procedure_modality_id != 14) {
             $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->orderBy('kinship_id')->orderByDesc('state')->get();
             foreach($beneficiaries as $beneficiary){                
                 if(!$beneficiary->state) {
@@ -853,9 +859,7 @@ class QuotaAidCertificationController extends Controller
                 $payment .= ', en el monto de<strong> '.Util::formatMoneyWithLiteral($beneficiary->paid_amount).'</strong> '.'en calidad de '.$beneficiary->kinship->name.".<br><br>";
             
             }
-        } else {            
-            $payment .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI")."., el monto de &nbsp;<strong>".Util::formatMoneyWithLiteral($quota_aid->total).".</strong>";
-        } 
+        }
         
         ///------EN  PAYMENT ------///
         // $number = Util::getNextAreaCode($quota_aid->id);

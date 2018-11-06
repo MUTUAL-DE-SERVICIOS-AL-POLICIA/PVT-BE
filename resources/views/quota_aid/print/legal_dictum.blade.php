@@ -111,8 +111,7 @@
                 <p class="text-justify">
                     {!! $payment !!}
                 </p>
-                <br>
-                <br>
+                
                 @include('ret_fun.print.signature_footer',['user'=>$user])
             </div>
             <footer>
