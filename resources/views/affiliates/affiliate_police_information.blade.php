@@ -31,7 +31,7 @@
                 </div>
                 <br>
                 <div class="row">
-                    <div class="col-md-2"><strong>Categoria:</strong></div>
+                    <div class="col-md-2"><strong>Categor&iacute;a:</strong></div>
                     <div class="col-md-4">{!! Form::select('category_id', $categories, null, ['placeholder' => 'Seleccione una categoria',
                             'class' => 'form-control', 'v-model' => 'form.category_id' ,':disabled' => '!editing']) !!}</div>
                     <div class="col-md-2"><strong>Grado:</strong></div>
@@ -40,10 +40,21 @@
                 </div>
                 <br>
                 <div class="row">
-                    <div class="col-md-2"><strong>Fecha de Desvinculacion:</strong></div>
+                    <div class="col-md-2"><strong>Fecha de Desvinculaci&oacute;n:</strong></div>
                     <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_derelict" v-month-year :disabled="!editing"></div>
                     <div class="col-md-2"><strong>C&oacute;digo de archivo:</strong></div>
                     <div class="col-md-4"><input type="text" class="form-control" v-model="form.file_code" :disabled="!editing"></div>                    
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-2"><label class="control-label">Ente gestor:</label></div>
+                    <div class="col-md-4">
+                        {!! Form::select('pension_entity_id', $pension_entities, null, ['placeholder' => 'Seleccione el ente gestor', 'class' => 'form-control','v-model'=> 'form.pension_entity_id',':disabled'=>'!editing' ]) !!}
+                        <div v-show="errors.has('pension_entity_id') && editing" >
+                            <i class="fa fa-warning text-danger"></i>
+                            <span class="text-danger">@{{ errors.first('pension_entity_id') }}</span>
+                        </div>
+                    </div>
                 </div>
                 <br>
                 <div class="row">

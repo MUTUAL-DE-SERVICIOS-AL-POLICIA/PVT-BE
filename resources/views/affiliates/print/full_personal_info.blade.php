@@ -23,7 +23,7 @@
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">fecha de Nacimiento</td>
-                    <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->birth_date }}</td>
+                    <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->getBirthDate() }}</td>
                 </tr>
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">Edad</td>
@@ -44,7 +44,7 @@
                 @if ($affiliate->date_death)
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">FECHA DE FALLECIMIENTO</td>
-                        <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->date_death }}</td>
+                        <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->getDateDeath() }}</td>
                     </tr>
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">CAUSA DE FALLECIMIENTO</td>
@@ -55,7 +55,7 @@
         </table>
     </div>
 
-    @if( $ret_fun->procedure_modality->id != 4 && $ret_fun->procedure_modality->id != 1)
+    @if( $ret_fun->procedure_modality->id != 4 && $ret_fun->procedure_modality->id != 1 && $type == 'ret_fun')
         <div class="inline-block align-top w-100">
             <table class="table-info w-100 m-b-10">
                 <thead class="bg-grey-darker">
@@ -96,22 +96,31 @@
                     <td class="text-left px-10 py-3 uppercase">categoria</td>
                     <td class="uppercase font-bold px-5 py-3 text-left">{!! $affiliate->category->name ?? 'ERROR' !!}</td>
                 </tr>
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">fecha de alta - policia</td>
-                    <td class="uppercase font-bold px-5 py-3 text-left">{{ $affiliate->getDateEntry() }}</td>
-                </tr>
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">fecha de ingreso a disponibilidad</td>
-                    <td class="uppercase font-bold px-5 py-3 text-left">{{ $affiliate->getDateEntryAvailability() }}</td>
-                </tr>
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">fecha de baja</td>
-                    <td class="uppercase font-bold px-5 py-3 text-left">{{ $affiliate->getDateDerelict() }}</td>
-                </tr>
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">motivo de baja</td>
-                    <td class="uppercase font-bold px-5 py-3 text-left">{{ $ret_fun->procedure_modality->name}}</td>
-                </tr>
+                @if( $type == "quota_aid" )
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">MODALIDAD</td>
+                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $ret_fun->procedure_modality->name}}</td>
+                    </tr>
+                @endif
+                @if( $type == "ret_fun" )
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">fecha de alta - policia</td>
+                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $affiliate->getDateEntry() }}</td>
+                    </tr>
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">fecha de ingreso a disponibilidad</td>
+                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $affiliate->getDateEntryAvailability() }}</td>
+                    </tr>
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">fecha de baja</td>
+                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $affiliate->getDateDerelict() }}</td>
+                    </tr>
+                    <tr class="text-sm">
+                        <td class="text-left px-10 py-3 uppercase">motivo de baja</td>
+                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $ret_fun->procedure_modality->name}}</td>
+                    </tr>
+                @endif
+
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">regional de registro</td>
                     <td class="uppercase font-bold px-5 py-3 text-left">{{ $ret_fun->city_start->name ?? ''}}</td>

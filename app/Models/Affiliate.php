@@ -47,7 +47,9 @@ class Affiliate extends Model
         'cell_phone_number',
         'afp',
         'nua',
-        'item'
+        'item',
+        'is_duedate_undefined',
+        'due_date'
     ];
     public function getBirthDateAttribute($value)
     {
@@ -138,7 +140,7 @@ class Affiliate extends Model
     }
     public function quota_aid_mortuaries()
     {
-        return $this->hasMany('Muserpol\Models\QuotaAidMortuaries\QuotaAidMortuary');
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary');
     }
 
     public function aid_commitments()
@@ -168,6 +170,16 @@ class Affiliate extends Model
     public function getDateDerelict($size = 'short')
     {
         return Util::getDateFormat($this->date_derelict, $size);
+    }
+    public function getBirthDate($size = 'short')
+    {
+        $birth_date = Util::verifyBarDate($this->birth_date) ? Util::parseBarDate($this->birth_date) : $this->birth_date;
+        return Util::getDateFormat($birth_date, $size);
+    }
+    public function getDateDeath($size = 'short')
+    {
+        $date_death = Util::verifyBarDate($this->date_death) ? Util::parseBarDate($this->date_death) : $this->date_death;
+        return Util::getDateFormat($date_death, $size);
     }
     public function getDateEntryAvailability()
     {
@@ -285,6 +297,26 @@ class Affiliate extends Model
             }
         return $dates;
     }
+    public function getContributionsWithTypeQuotaAid()
+    {
+        $dates=[];
+        $contributions = $this->getQuotaAidContributions()['contributions'];
+            if ($length = sizeof($contributions)) {
+                $start = $contributions[0]['month_year'];
+                for ($i=0; $i < $length - 1; $i++) {
+                    if ( $i <= $length -1 ) {
+                        if (Carbon::parse($contributions[$i]['month_year'])->addMonth()->toDateString() == Carbon::parse($contributions[$i+1]['month_year'])->toDateString()) {
+                        }else{
+                            $dates[] = (object)array('start' => $start, 'end' => $contributions[$i]['month_year']);
+                            $start = $contributions[$i+1]['month_year'];
+                        }
+                    }
+                }
+                $dates[] = (object) array('start' => $start, 'end' => $contributions[$i]['month_year']);
+            }
+
+        return $dates;
+    }
     public function getTotalContributionsAmount($name_contribution_type)
     {
         $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
@@ -363,8 +395,58 @@ class Affiliate extends Model
         return $this->getTotalQuotes() < $number_contributions;
 
     }
+    public function getQuotaAidContributions($with_reimbursements = true)
+    {
+        $null_data = [
+            'is_continuous' => false,
+            'contributions' => []
+        ];
+        if (! $date_death  = $this->quota_aid_mortuaries->last()->getDeceased()->date_death){
+            return $null_data;
+        }
+        $number_contributions = Util::getQuotaAidCurrentProcedure()->first()->months;
+        $date_death = Carbon::parse(Util::verifyBarDate($date_death)  ? Util::parseBarDate($date_death) : $date_death)->subMonth();
+        if ($this->hasQuota()) {
+            $contributions = $this->contributions()
+                        ->where('contributions.month_year', '<=', $date_death)
+                        ->where('total', '>', 0)
+                        ->orderByDesc('contributions.month_year')
+                        ->take($number_contributions)
+                        ->get()
+                        ->toArray();
+        }
+        if ($this->hasAid()) {
+            $contributions = $this->aid_contributions()
+                        ->where('aid_contributions.month_year', '<=', $date_death)
+                        ->where('total', '>', 0)
+                        ->orderByDesc('aid_contributions.month_year')
+                        ->take($number_contributions)
+                        ->get()
+                        ->toArray();
+        }
+        $contributions = array_reverse($contributions);
+        if( sizeof($contributions) == $number_contributions ){
+            // checking continuity
+            $is_continuous = true;
+            $first_date = Carbon::parse($contributions[0]['month_year'])->subMonth();
+            foreach ($contributions as $c) {
+                if (Carbon::parse($c['month_year'])->toDateString() != Carbon::parse($first_date)->addMonth()->toDateString() ) {
+                    $is_continuous = false;
+                    break;
+                }
+                $first_date = $c['month_year'];
+            }
+            $data = [
+                'is_continuous' => $is_continuous,
+                'contributions' => $contributions
+            ];
+            return $data;
+        }
+        return $null_data;
+    }
     public function getContributionsPlus($with_reimbursements = true)
     {
+
         if ($this->selectedContributions() > 0 || $this->contributions()->count() == 0) {
             return [];
         }
@@ -460,7 +542,7 @@ class Affiliate extends Model
         }
     }
     public function getContributionsAvailability($with_reimbursements = true){
-        if ($this->selectedContributions() > 0 || $this->contributions()->count() == 0) {
+        if ($this->selectedContributions() > 0 ||  $this->contributions()->count() == 0 ) {
             return [];
         }
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
@@ -606,6 +688,25 @@ class Affiliate extends Model
     {
         return $this->contributions()->where('contribution_type_id', '=',null)->get()->count();
     }
+    public function hasAid()
+    {
+        $aid = $this->quota_aid_mortuaries()
+                    ->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
+                    ->leftJoin('procedure_types', 'procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
+                    ->where('procedure_types.id', 4)
+                    ->get();
+        return $aid->count() > 0;
+    }
+    public function hasQuota()
+    {
+        $quota = $this->quota_aid_mortuaries()
+            ->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
+            ->leftJoin('procedure_types', 'procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
+            ->where('procedure_types.id', 3)
+            ->get();
+        return $quota->count() > 0;
+    }
+
     // public function getLastDateContribution()
     // {
     //     $date = $this->contributions()->max('month_year');

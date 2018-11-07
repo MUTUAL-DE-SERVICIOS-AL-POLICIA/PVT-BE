@@ -28,12 +28,24 @@
             </div>
         </div>
         <div class="form-group" v-if="! edit">
+            <label class="col-lg-2 control-label">Modulo (Opcional) </label>
+            <div class="col-lg-10">
+                <select v-model="moduleId"
+                        class="form-control">
+                    <option :value="null"></option>
+                    <option v-for="(md, index) in modules"
+                            :value="md.id"
+                            :key="index">{{ md.name }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" v-if="! edit">
             <label class="col-lg-2 control-label">Worklflow State "Area" (Opcional)</label>
             <div class="col-lg-10">
                 <select v-model="wfStateId"
                         class="form-control">
                     <option :value="null"></option>
-                    <option v-for="(wf, index) in wfStates"
+                    <option v-for="(wf, index) in wfStatesList"
                             :value="wf.id"
                             :key="index">{{ wf.name }}</option>
                 </select>
@@ -55,6 +67,7 @@
     export default {
       props: {
         edit: Boolean,
+        modules: Array,
         wfStates: Array,
         tagId: Number,
       },
@@ -62,6 +75,7 @@
         return {
           tag: {},
           tagWfState:[],
+          moduleId:null,
           wfStateId:null
         }
       },
@@ -100,6 +114,9 @@
         }
       },
       computed: {
+        wfStatesList() {
+            return this.wfStates.filter(w => w.module_id == this.moduleId);
+        },
         sluglify() {
           let str = this.tag.name || "";
           const a =

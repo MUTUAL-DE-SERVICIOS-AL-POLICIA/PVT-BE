@@ -130,7 +130,7 @@ class AffiliateObserver
 
         if($affiliate->pension_entity_id != $old->pension_entity_id)
         {
-            $message = $message . ' ente gestor '.$old->pension_entity->name.' a '.$affiliate->pension_entity->name.', ';
+            $message = $message . ' ente gestor '.($old->pension_entity->name??"Sin ente gestor").' a '.($affiliate->pension_entity->name??"Sin ente gestor").', ';
 
         }
 

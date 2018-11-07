@@ -47,17 +47,58 @@ class QuotaAidMortuary extends Model
     }
     public function workflow()
     {
-        return $this->belongsTo('Muserpol\Workflow');
+        return $this->belongsTo('Muserpol\Models\Workflow\Workflow');
     }
     public function wf_state()
     {
-        return $this->belongsTo('Muserpol\WfState', 'wf_state_current_id');
+        return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_state_current_id', 'id');
     }
-
+    public function tags()
+    {
+        return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id','date'])->withTimestamps();
+    }
+    public function discount_types()
+    {
+        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount', 'date', 'code', 'note_code', 'note_code_date'])->withTimestamps();
+    }
+    public function quota_aid_correlative()
+    {
+        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative');
+    }
+    public function wf_records()
+    {
+        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
+    }
     public function getBasicInfoCode()
     {
         $code = $this->id . " " . ($this->affiliate->id ?? null) . "\n" . "Trámite Nro: " . $this->code . "\nModalidad: " . $this->procedure_modality->name . "\nSolicitante: " . ($this->quota_aid_beneficiaries()->where('type', 'S')->first()->fullName() ?? null);
         $hash = crypt($code, 100);
         return array('code' => $code, 'hash' => $hash);;
+    }
+    public function hasLegalGuardian()
+    {
+        return $this->quota_aid_beneficiaries()->where('type', 'S')->first()->quota_aid_legal_guardians()->count();
+    }
+    public function hasCorrelative($id = null)
+    {
+        return !! $this->quota_aid_correlative()->where('wf_state_id', $id)->first();
+    }
+    public function isQuota()
+    {
+        return $this->procedure_modality->procedure_type_id == 3;
+    }
+    public function isAid()
+    {
+        return $this->procedure_modality->procedure_type_id == 4;
+    }
+    public function getDeceased()
+    {
+        if ( $this->isQuota() ) {
+            return $this->affiliate;
+        }
+        if ( $this->isAid() ) {
+            return $this->procedure_modality->id == 13 ? $this->affiliate : $this->affiliate->spouse->first();
+        }
+        return null;
     }
 }

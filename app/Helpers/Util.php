@@ -16,7 +16,11 @@ use Muserpol\Models\DiscountType;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\Spouse;
-use Muserpol\QuotaAidCorrelative;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
+use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\Contribution\Contribution;
 class Util
 {
     public static function isRegionalRole()
@@ -31,7 +35,7 @@ class Util
         $date = DateTime::createFromFormat("Y-m-d", $string);
         if($date){
             if($month_year)
-                return strftime("%B/%Y",$date->getTimestamp());
+                return strftime("%B de %Y",$date->getTimestamp());
             else
                 return strftime("%d de %B de %Y",$date->getTimestamp());
         }
@@ -193,35 +197,53 @@ class Util
 
         return $correlative;
     }
-    public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id){
-        $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();        
-        $reprint = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
+    public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id, $save = true){
+        $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();  
+        $quota_aid = QuotaAidMortuary::find($quota_aid_mortuary_id);
+        Log::info("role_id: ". Session::get('rol_id'));
+        $reprint = QuotaAidCorrelative::where('procedure_type_id',$quota_aid->procedure_type_id)->where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
+        
+        $last_quota_aid = QuotaAidCorrelative::
+                                where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)                                
+                                ->where('wf_state_id',$wf_state->id)
+                                ->orderByDesc(DB::raw("split_part(code, '/',2)::integer"))
+                                ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
+                                ->first();
         if(isset($reprint->id))
             return $reprint;
         $year =  date('Y');
-        $role = Role::find($wf_state->role_id);
-        if($role->correlative == ""){
-            $role->correlative = "1/".$year;
-        }
-        else{
-            $data = explode('/', $role->correlative);
-            if(!isset($data[1]))
-                $role->correlative = "1/".$year;
-            else
-                $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
-        }
-        $role->save();
+
+        $correlative = $last_quota_aid->code ?? "";
+        Log::info("type: ". $quota_aid->procedure_modality->procedure_type_id);
+        $reception = WorkflowState::where('role_id', Session::get('rol_id'))->whereIn('sequence_number', [0, 1])->first();
+        if ($reception) {
+            $correlative = QuotaAidMortuary::find($quota_aid_mortuary_id)->code;
+        } else {
+            if($correlative == ""){
+                $correlative = "1/".$year;
+            }
+            else{
+                $data = explode('/', $correlative);
+                if(!isset($data[1]))
+                    $correlative = "1/".$year;
+                else
+                    $correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+            }
+        }        
 
         //Correlative 
-        $correlative = new QuotaAidCorrelative();
-        $correlative->wf_state_id = $wf_state->id;
-        $correlative->quota_aid_mortuary_id = $quota_aid_mortuary_id;
-        $correlative->code = $role->correlative;
-        $correlative->date = Carbon::now();
-        $correlative->user_id = self::getAuthUser()->id;
-        $correlative->save();
+        $quota_aid_correlative = new QuotaAidCorrelative();
+        $quota_aid_correlative->wf_state_id = $wf_state->id;
+        $quota_aid_correlative->quota_aid_mortuary_id = $quota_aid_mortuary_id;
+        $quota_aid_correlative->code = $correlative;
+        $quota_aid_correlative->date = Carbon::now();
+        $quota_aid_correlative->user_id = self::getAuthUser()->id;
+        $quota_aid_correlative->procedure_type_id = $quota_aid->procedure_modality->procedure_type_id;
+        if ($save) {
+            $quota_aid_correlative->save();
+        }
 
-        return $correlative;
+        return $quota_aid_correlative;
     }
     private static $UNIDADES = [
         '',
@@ -495,6 +517,15 @@ class Util
         }
         return $procedure_active;
     }
+    public static function getQuotaAidCurrentProcedure()
+    {
+        $procedure_active =  QuotaAidProcedure::where('is_enabled', 'true')->first();
+        if (!$procedure_active) {
+            Log::info("No existe ret fun procedure activo");
+            abort(500);
+        }
+        return $procedure_active;
+    }
     public static function sumTotalContributions($array, $fromView = false)
     {
         $total = 0;
@@ -612,6 +643,8 @@ class Util
         $spouse->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
         $spouse->city_birth_id = $object->city_birth_id;
         $spouse->city_identity_card_id = $object->city_identity_card_id;
+        $spouse->date_death = $object->date_death ?? null;
+        $spouse->reason_death = $object->reason_death ?? null;
         $spouse->save();
     }
     public static function classificationContribution($contribution_type_id, $breakdown_id, $total)
@@ -707,5 +740,93 @@ class Util
 
     }
 
+    public static function completAidContributions($id, Carbon $start, Carbon $end_date) {
+        $start_date = $start;
+        $affiliate = Affiliate::find($id);
+        while($start_date <= $end_date) {
+            $date = $start_date;            
+            $aid_contribution = AidContribution::where('month_year',$date->format('Y-m').'-01')->where('affiliate_id',$affiliate->id)->first();            
+            if(!isset($aid_contribution->id)) {
+                $aid_contribution = new AidContribution();
+                $aid_contribution->user_id = Auth::user()->id;
+                $aid_contribution->affiliate_id = $affiliate->id;                        
+                $aid_contribution->month_year = $start_date->format('Y-m').'-01';
+                $aid_contribution->type='PLANILLA';            
+                $aid_contribution->dignity_rent = 0;
+                $aid_contribution->quotable = 0;
+                $aid_contribution->rent = 0;
+                $aid_contribution->total = 0;
+                $aid_contribution->interest = 0;
+                $aid_contribution->save();                
+            }
+            $start_date->addMonth();
+        }
+        return;       
+    }
+    public static function completQuotaContributions($id, Carbon $start, Carbon $end_date) {
+        $start_date = $start;
+        $affiliate = Affiliate::find($id);
+        while($start_date <= $end_date) {
+            $date = $start_date;            
+            $aid_contribution = Contribution::where('month_year',$date->format('Y-m').'-01')->where('affiliate_id',$affiliate->id)->first();
+            if(!isset($aid_contribution->id)) {                
+                $contribution = new Contribution();
+                $contribution->user_id = Auth::user()->id;
+                $contribution->affiliate_id = $affiliate->id;
+                $contribution->degree_id = $affiliate->degree_id;
+                $contribution->unit_id = $affiliate->unit_id;
+                $contribution->breakdown_id = $affiliate->breakdown_id;
+                $contribution->category_id = $affiliate->category_id;            
+                $contribution->month_year = $start_date->format('Y-m').'-01';
+                $contribution->type='Planilla';     
+                $contribution->base_wage = 0;
+                $contribution->seniority_bonus = 0;
+                $contribution->study_bonus = 0;
+                $contribution->position_bonus = 0;
+                $contribution->border_bonus = 0;
+                $contribution->east_bonus = 0;
+                $contribution->public_security_bonus = 0;
+                $contribution->deceased = 0;
+                $contribution->natality = 0;
+                $contribution->lactation = 0;
+                $contribution->prenatal = 0;
+                $contribution->subsidy = 0;
+                $contribution->gain = 0;
+                $contribution->payable_liquid = 0;
+                $contribution->quotable = 0;
+                $contribution->retirement_fund = 0;
+                $contribution->mortuary_quota = 0;
+                $contribution->total = 0;
+                $contribution->interest = 0;        
+                //$contribution->breakdown_id = 3;
+                $contribution->save();
 
+            }
+            $start_date->addMonth();
+        }
+        return;       
+    }
+
+    public static function getHeadersInboxRetFunQuotaAid()
+    {
+        return [
+            ['text' => "# Trámite", 'value' => "code"],
+            ['text' => "CI Titular", 'align' => "left", 'value' => "ci"],
+            ['text' => "Nombre del titular", 'value' => "name"],
+            ['text' => "Modalidad", 'value' => "modality"],
+            ['text' => "Regional", 'value' => "city"],
+            ['text' => "Fecha de Recepción", 'value' => "date_reception"],
+        ];
+    }
+    public static function getHeadersInboxTreasury()
+    {
+        return [
+            ['text' => "# ", 'value' => "code"],
+            ['text' => "CI Titular", 'align' => "left", 'value' => "ci"],
+            ['text' => "Nombre del titular", 'value' => "name"],
+            ['text' => "Tipo", 'value' => "modality"],
+            ['text' => "Regional", 'value' => "city"],
+            ['text' => "Fecha", 'value' => "date_reception"],
+        ];
+    }
 }

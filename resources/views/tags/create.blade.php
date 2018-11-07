@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="ibox-content">
-                <tag-create :edit="false" :wf-states="{{ $wf_states }}">
+                <tag-create :edit="false" :wf-states="{{ $wf_states }}" :modules="{{ $modules }}">
                 </tag-create>
             </div>
         </div>

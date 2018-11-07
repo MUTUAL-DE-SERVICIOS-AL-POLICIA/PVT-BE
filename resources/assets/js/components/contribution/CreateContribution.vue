@@ -104,7 +104,7 @@
                                 </tbody>
                             </table>                                                                                                           
                             <div class="text-center" v-if="!is_regional">
-                                <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>                                
+                                <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Imprimir</button>                                
                             </div>                  
                             
                             <div class="col-md-12" v-else>
@@ -115,7 +115,7 @@
                                 <input type="text" placeholder="número de comprobante" v-model="bank_pay_number" class="form-control">
                                 </div>                                
                                 <div class="col-md-4">
-                                <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+                                <button class="btn btn-primary " type="button" :disabled="!disabledSaved" @click="Guardar()"><i class="fa fa-save"></i>&nbsp;Imprimir</button>
                                 </div>
                             </div>                            
                             
@@ -591,13 +591,24 @@ export default {
                 type: 'success'
                 })
                 var json_contribution= JSON.stringify(response.data.contributions);
-                this.reprint = response.data;
+                this.reprint = response.data;                
+                var total = this.total;        
                 printJS({printable:
-                        '/ret_fun/'+
-                        response.data.affiliate_id+
-                        '/print/voucher/'+
-                        response.data.voucher_id + "?contributions="+json_contribution, 
-                        type:'pdf', showModal:true});
+                            '/print_contributions_quote?contributions='+json_contribution+
+                            '&affiliate_id='+response.data.affiliate_id+
+                            '&total='+total, 
+                            type:'pdf', 
+                        showModal:true});
+
+                // printJS({printable:
+                //         '/ret_fun/'+
+                //         response.data.affiliate_id+
+                //         '/print/voucher/'+
+                //         response.data.voucher_id + "?contributions="+json_contribution, 
+                //         type:'pdf', showModal:true});
+
+
+
                 this.contributions = [];
                 })                    
                 .catch(error => {
