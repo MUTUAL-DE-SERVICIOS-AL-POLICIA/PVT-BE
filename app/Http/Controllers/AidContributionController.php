@@ -77,8 +77,9 @@ class AidContributionController extends Controller
     {
 
         $affiliate = Affiliate::find($affiliate_id);
-         $list = $this->getContributionDebt($affiliate->id,3);
-         $data = [
+        $date = date('Y-m-d');
+        $list = $this->getContributionDebt($affiliate->id,3,$date);
+        $data = [
             'affiliate'=>$affiliate, 
             'list' => $list
         ];
@@ -204,6 +205,7 @@ class AidContributionController extends Controller
 
     public function getAffiliateContributions(Affiliate $affiliate)
     {                                
+
         $date_derelict = $affiliate->date_derelict;                
         if(!$date_derelict){
             Session::flash('message','Verifique la fecha desvinculación del afiliado antes de continuar');
@@ -224,14 +226,32 @@ class AidContributionController extends Controller
         //$dateentry = Util::getStringDate($affiliate->date_derelict);
         $dateentry = Util::parseMonthYearDate($affiliate->date_derelict);
         //return $dateentry;
-        if($dateentry == NULL || $dateentry == "")
-        $dateentry = "2017-01-01";
+        if($dateentry == NULL || $dateentry == "") {            
+            $dateentry = "2017-01-01";
+        }
         $end = explode('-', $dateentry);
         $newcontributions = [];
         $month_end = $end[1];
         $year_end = $end[0];
-        $month_start = (date('m') - 1);
-        $year_start = date('Y');
+        
+        $death_date = Util::parseBarDate($affiliate->date_death);
+        if($affiliate->date_death) {
+            $death_date = Util::parseBarDate($affiliate->date_death);
+        }
+        $spouse_death = $affiliate->spouse()->whereDate('date_death','>',$death_date)->first();
+        if(isset($spouse_death)) {
+            $death_date = Util::parseBarDate($spouse_death->date_death);
+        }
+        
+        //return $death_date;
+        if(!$death_date) {            
+            $month_start = (date('m') - 1);
+            $year_start = date('Y');    
+        } else {
+            $death = explode('-', $death_date);
+            $month_start = $death[1];
+            $year_start = $death[0];    
+        }
         $summary = array(
             'aid' => $aid,
             'total' => $total,
@@ -247,6 +267,7 @@ class AidContributionController extends Controller
             $aid_commitment->id = 0;
             $aid_commitment->affiliate_id = $affiliate->id;
         }
+        $date = date('Y-m-d');
         $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();               
         $data = [
             'contributions' => $group,
@@ -258,7 +279,7 @@ class AidContributionController extends Controller
             'cities' => $cities,
             'cities_objects' => $cities_objects,
             'birth_cities' => $birth_cities,
-            'new_contributions' => $this->getContributionDebt($affiliate->id, 3),
+            'new_contributions' => $this->getContributionDebt($affiliate->id, 3,$date),
             'aid_commitment' => $aid_commitment,
             'spouse' => $spouse,
             'today_date' => date('Y-m-d'),
@@ -312,6 +333,8 @@ class AidContributionController extends Controller
                     $contribution->dignity_rent = 0;
                 else 
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
+
+                $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
                 $contribution->interest = 0;
                 $contribution->save();
             } else {
@@ -330,7 +353,7 @@ class AidContributionController extends Controller
                 else
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
-                $contribution->quotable = $contribution->rent-$contribution->dinity_rent;
+                $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
                 $contribution->type = 'PLANILLA';
                 $contribution->interest = 0;
                 $contribution->save();
@@ -380,7 +403,7 @@ class AidContributionController extends Controller
             $has_commitment = false;            
             $commitment = AidCommitment::where('affiliate_id',$request->afid)->where('state','ALTA')->first();
             
-            if(!isset($commitment->id)){                
+            if(!isset($commitment->id)){
                 $has_commitment = true;                                    
                 $biz_rules = [
                     'has_commitment'    =>  $has_commitment?'required':'',                

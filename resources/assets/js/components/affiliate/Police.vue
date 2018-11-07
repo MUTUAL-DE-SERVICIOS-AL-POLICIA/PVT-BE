@@ -48,7 +48,7 @@
 					this.form.date_entry = this.values.date_entry;
 					this.form.item = this.values.item;
 					this.form.category_id  = this.category.id;
-					this.form.degree_id  = this.degree.id;
+					this.form.degree_id  = this.degree.id;					
 					this.form.pension_entity_id = this.pension_entity.id;
 					this.form.state_id = this.state.id;
 					this.form.type = this.values.type;

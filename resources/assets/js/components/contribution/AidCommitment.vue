@@ -2,8 +2,8 @@
 	export default{
 		props:[
 			'aid_commitment',
-                            'affiliate_id',
-                            'today_date',
+            'affiliate_id',
+            'today_date',
 		],
         data(){
             return{
@@ -63,6 +63,7 @@
                             this.aid_commitment.pension_declaration = response.data.pension_declaration;
                             this.aid_commitment.pension_declaration_date = response.data.pension_declaration_date;
                             this.aid_commitment.state = response.data.state;
+                            this.aid_commitment.start_contribution_date = response.start_contribution_date;
                             this.enable_delete=true;                            
                         }
                         else{                            
@@ -73,6 +74,7 @@
                             this.aid_commitment.contributor = "";
                             this.aid_commitment.pension_declaration = "";
                             this.aid_commitment.pension_declaration_date = '';
+                            this.aid_commitment.start_contribution_date = '';
                             this.aid_commitment.state = '';
                         }                        
                         flash('Informacion actualizada');

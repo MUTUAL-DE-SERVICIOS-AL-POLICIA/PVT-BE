@@ -19,7 +19,7 @@
             </tr>
             <tr class="text-sm">
                 <td class="text-left px-10 py-3 uppercase">fecha de Nacimiento</td>
-                <td class="text-left uppercase font-bold px-5 py-3">{{ $beneficiary->birth_date }}</td>
+                <td class="text-left uppercase font-bold px-5 py-3">{{ $beneficiary->getBirthDate() }}</td>
             </tr>
             <tr class="text-sm">
                 <td class="text-left px-10 py-3 uppercase" style="border-bottom:2px solid #22292f">parentesco con el titular</td>

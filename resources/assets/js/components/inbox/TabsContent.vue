@@ -20,25 +20,11 @@ export default {
     },
     mounted(){
         this.getData();
-
-        // $('.datatable').each(function(i, obj) {
-        //     console.log(obj);
-            
-        //     obj.removeClass('datatable table datatable--select-all');
-        //     obj.addClass('table table-hover table-mail');
-        // });
-
-        
     },
     methods:{
         getData(){
             this.showLoading=true;
-            let uri;
-            if (this.inboxState == 'received') {
-                uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
-            }else{
-                uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
-            }
+            let uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
             axios.get(uri).then(({data})=>{
                 this.workflows =  data.workflows;
                 this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
@@ -50,6 +36,7 @@ export default {
                 this.documentsEditedTotal = data.documents_edited_total;
                 this.updateCheckStatus();
                 this.showLoading = false;
+                this.$store.commit('inbox/setHeaders', data.headers);
             });
         },
         updateCheckStatus(){

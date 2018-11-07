@@ -97,6 +97,16 @@ Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliat
 });
 
 
+Breadcrumbs::register('contribution_process', function ($breadcrumbs) {
+	$breadcrumbs->push('Tramites de Contribuciones', URL::to('contribution_process'));
+});
+Breadcrumbs::register('show_contribution_process', function ($breadcrumbs, $contribution_process) {
+	$breadcrumbs->parent('contribution_process');
+	$breadcrumbs->push("Trámite Nro. " . $contribution_process->code, URL::to('contribution_process/' . $contribution_process->id));
+});
+
+
+
 Breadcrumbs::register('quota_aid_mortuary', function($breadcrumbs)
 {
 	$breadcrumbs->push('Cuota y Auxilio Mortuorio', URL::to('quota_aid'));
@@ -133,5 +143,14 @@ Breadcrumbs::register('payment_contributions', function($breadcrumbs, $affiliate
 Breadcrumbs::register('inbox', function($breadcrumbs)
 {
 	$breadcrumbs->push('Mi bandeja');
+});
+
+/* quota aid */
+Breadcrumbs::register('show_qualification_quota_aid', function ($breadcrumbs, $quota_aid) {
+
+	$affiliate = $quota_aid->affiliate;
+	$name = 'Calificación';
+	$breadcrumbs->parent('show_quota_aid', $quota_aid);
+	$breadcrumbs->push($name, URL::to('quota_aid/' . $quota_aid->id . '/qualification'));
 });
 

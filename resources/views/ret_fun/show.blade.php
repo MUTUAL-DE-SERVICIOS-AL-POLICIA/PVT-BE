@@ -92,7 +92,6 @@
 }
 </style>
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
-<link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
 @endsection
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -101,12 +100,13 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
             <div class="pull-left">
-                <correlative ret-fun-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}"></correlative>
+                <correlative doc-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}" type="retFun"></correlative>
             @if(Util::getRol()->id == 10 || Util::isRegionalRole())
                 <ret-fun-certification-button
                     title="Imprimir recepción"
                     ret-fun-id="{{ $retirement_fund->id }}"
                     url-print="{{ route('ret_fun_print_reception', $retirement_fund->id) }}"
+                    type="retFun"
                 >
                 </ret-fun-certification-button>
             @endif
@@ -192,12 +192,13 @@
         <div class="pull-right">
             <div class="form-inline">
                 @if ($can_validate)
-                    <ret-fun-send-back-button
+                    <inbox-send-back-button-ret-fun
                         :wf-sequence-back-list="{{ $wf_sequences_back }}"
                         :doc-id="{{$retirement_fund->id}}"
                         :wf-current-state-name="`{{$retirement_fund->wf_state->name}}`"
-                    ></ret-fun-send-back-button>
-                      <sweet-alert-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}" :doc-user-id="{{$retirement_fund->user_id}}" :auth-id="{{ $user->id}}"  >
+                        type="retFun"
+                    ></inbox-send-back-button-ret-fun>
+                      <sweet-alert-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}" :doc-user-id="{{$retirement_fund->user_id}}" :auth-id="{{ $user->id}}" type="retFun" >
                           <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                               <div style="display:inline-block" v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
                                   <button  class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
@@ -268,7 +269,7 @@
                             </ul>
                     </div>
                     <br>
-                <tag-list :ret-fun-id="{{ $retirement_fund->id }}"></tag-list>
+                <tag-list :doc-id="{{ $retirement_fund->id }}" type="retFun"></tag-list>
             </div>
             <br>
             <div class="col-md-9" style="padding-left: 6px">

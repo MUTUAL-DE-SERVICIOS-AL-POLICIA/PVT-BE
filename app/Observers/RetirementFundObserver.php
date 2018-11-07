@@ -20,6 +20,17 @@ class RetirementFundObserver
 
         // Log::info('se creo el tramite con el id '.$retfun->id);
     }
+    private function defaultValuesWfRecord($wf_state_current_id = null , $record_type_id = null, $message = null)
+    {
+        $default = [
+            'user_id' => Auth::user()->id,
+            'date' => Carbon::now(),
+            'wf_state_id' => $wf_state_current_id,
+            'record_type_id' => $record_type_id,
+            'message' => $message,
+        ];
+        return $default;
+    }
     public function updating(RetirementFund $rf)
     {
         $old = RetirementFund::find($rf->id);
@@ -55,44 +66,16 @@ class RetirementFundObserver
         $old_wf_state_sequence = WorkflowState::find($old->wf_state_current_id)->sequence_number;
 
         if ( $rf->wf_state_current_id != $old->wf_state_current_id && $wf_state_sequence > $old_wf_state_sequence ) {
-            $wf_record = new WorkflowRecord;
-            $wf_record->user_id = Auth::user()->id;
-            $wf_record->wf_state_id = $rf->wf_state_current_id;
-            $wf_record->ret_fun_id = $rf->id;
-            $wf_record->date = Carbon::now();
-            $wf_record->record_type_id = 1;
-            $wf_record->message = "El usuario " . Auth::user()->username . " derivo el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $rf->wf_state->name . ".";
-            $wf_record->save();
+            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 1, "El usuario " . Auth::user ()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $rf->wf_state->name . "."));
         }
         if ( $rf->wf_state_current_id != $old->wf_state_current_id && $wf_state_sequence < $old_wf_state_sequence ) {
-            $wf_record = new WorkflowRecord;
-            $wf_record->user_id = Auth::user()->id;
-            $wf_record->wf_state_id = $rf->wf_state_current_id;
-            $wf_record->ret_fun_id = $rf->id;
-            $wf_record->date = Carbon::now();
-            $wf_record->record_type_id = 1;
-            $wf_record->message = "El usuario " . Auth::user()->username . " devolvio el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $rf->wf_state->name . ".";
-            $wf_record->save();
+            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 1 , "El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $rf->wf_state->name . " con Nota: " . request()->message . "."));
         }
         if ( $old->inbox_state == false && $rf->inbox_state == true &&  $rf->wf_state_current_id == $old->wf_state_current_id  ) {
-            $wf_record = new WorkflowRecord;
-            $wf_record->user_id = Auth::user()->id;
-            $wf_record->wf_state_id = $rf->wf_state_current_id;
-            $wf_record->ret_fun_id = $rf->id;
-            $wf_record->date = Carbon::now();
-            $wf_record->record_type_id = 1;
-            $wf_record->message =  'El usuario ' . Auth::user()->username . ' Valido el trámite.';
-            $wf_record->save();
+            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 1,'El usuario ' . Auth::user ()->username . ' Validó el trámite.'));
         }
         if ($old->inbox_state == true && $rf->inbox_state == false && $rf->wf_state_current_id == $old->wf_state_current_id  ) {
-            $wf_record = new WorkflowRecord;
-            $wf_record->user_id = Auth::user()->id;
-            $wf_record->wf_state_id = $rf->wf_state_current_id;
-            $wf_record->ret_fun_id = $rf->id;
-            $wf_record->date = Carbon::now();
-            $wf_record->record_type_id = 1;
-            $wf_record->message =  'El usuario ' . Auth::user()->username . ' cancelo el trámite.';
-            $wf_record->save();
+            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 1, 'El usuario ' . Auth::user()->username . ' Canceló el trámite.'));
         }
     }
 }

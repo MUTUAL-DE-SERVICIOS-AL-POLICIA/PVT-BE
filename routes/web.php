@@ -21,6 +21,7 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunTemplate;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -62,7 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('/update_affiliate_police/{affiliate}', 'AffiliateController@update_affiliate_police')->name('update_affiliate_police');
 
 		Route::patch('/update_beneficiaries/{retirement_fund}', 'RetirementFundController@updateBeneficiaries')->name('update_beneficiaries');
-		Route::patch('/update_beneficiary_testimony/{retirement_fund}', 'RetirementFundController@updateBeneficiaryTestimony')->name('update_beneficiary_testimony');
+		Route::patch('/update_beneficiary_testimony_ret_fun/{retirement_fund}', 'RetirementFundController@updateBeneficiaryTestimony')->name('update_beneficiary_testimony');
 		Route::get('/ret_fun_beneficiaries_testimonies/{ret_fun_id}', 'RetirementFundController@getTestimonies')->name('ret_fun_beneficiaries_testimonies');
 
 		//SpouseControler
@@ -122,13 +123,33 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
 		Route::get('quota_aid/{affiliate}/print/quota_aid_voucher/{voucher}', 'QuotaAidCertificationController@printVoucherQuoteAid')->name('quota_aid_print_voucher');
 		Route::get('print_contributions_quote_aid', 'QuotaAidCertificationController@printDirectContributionQuoteAid');
+		Route::get('quota_aid/{quota_aid}/print/qualification', 'QuotaAidCertificationController@printAllQualification')->name('quota_aid_print_all_qualification');
 
 		Route::get('quota_aid/{quota_aid}/print/reception', 'QuotaAidCertificationController@printReception')->name('quota_aid_print_reception');
+		Route::post('quota_aid/{quota_aid}/save_certification_note', 'QuotaAidCertificationController@saveCertificationNote')->name('save_certification_note');
+		Route::get('quota_aid/{quota_aid_id}/correlative/{wf_state_id}', 'QuotaAidCertificationController@getCorrelative')->name('quota_aid_get_correlative');
+		Route::patch('/update_beneficiaries_quota_aid/{quota_aid_id}', 'QuotaAidMortuaryController@updateBeneficiaries')->name('update_beneficiaries_quota_aid');
+		Route::patch('/update_beneficiary_testimony_quota_aid/{quota_aid_id}', 'QuotaAidMortuaryController@updateBeneficiaryTestimony')->name('update_beneficiary_testimony_quota_aid');
+		Route::get('/quota_aid_beneficiaries_testimonies/{ret_fun_id}', 'QuotaAidMortuaryController@getTestimonies')->name('ret_fun_beneficiaries_testimonies_quota_aid');
+		Route::get('quota_aid/{quota_aid_id}/qualification', 'QuotaAidMortuaryController@qualification')->name('quota_aid_qualification');
+		// Route::get('quota_aid/{quota_aid_id}/save_subtotal', 'QuotaAidMortuaryController@saveSubtotal')->name('quota_aid_save_subtotal');
+		Route::patch('quota_aid/{quota_aid_id}/calculate_total', 'QuotaAidMortuaryController@calculateTotal')->name('quota_aid_calculate_total');
+		Route::patch('quota_aid/{quota_aid_id}/save_discounts', 'QuotaAidMortuaryController@saveDiscounts')->name('quota_aid_save_discounts');
+		Route::patch('quota_aid/{quota_aid_id}/save_percentages', 'QuotaAidMortuaryController@savePercentages')->name('quota_aid_save_percentages');
 
 		Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->middleware('affiliate_has_ret_fun')->name('create_ret_fun');
 		Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
 		Route::patch('/update_information_rf', 'RetirementFundController@updateInformation')->name('update_information_rf');
+		Route::post('quota_aid/{quota_aid}/legal_review/create', 'QuotaAidMortuaryController@storeLegalReview')->name('store_quota_aid_legal_review_create');
+		Route::get('quota_aid/{quota_aid}/print/legal_review', 'QuotaAidCertificationController@printLegalReview')->name('quota_aid_print_legal_review');
+		Route::get('affiliate/{affiliate}/print/quota_aid_file', 'QuotaAidCertificationController@printFile')->name('quota_aid_print_file');
+		Route::get('quota_aid/{quota_aid}/print/certification', 'QuotaAidCertificationController@printCertification')->name('quota_aid_print_certification');
+		Route::get('quota_aid/{quota_aid}/print/legal_dictum', 'QuotaAidCertificationController@printLegalDictum')->name('quota_aid_print_legal_dictum');
+		Route::get('quota_aid/{quota_aid}/print/headship_review', 'QuotaAidCertificationController@printHeadshipReview')->name('quota_aid_print_headship_review');
+		Route::get('quota_aid/{quota_aid}/print/legal_resolution', 'QuotaAidCertificationController@printLegalResolution')->name('quota_aid_print_legal_resolution');
+		
+																															 
 		// tags
 		Route::resource('/tag', "TagController");
 		Route::get('/tag_wf_state', "TagController@wfState")->name('tag_wf_state');
@@ -139,6 +160,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/tag_wf_state_list', 'TagController@tagWfState');
 		Route::get('/get_tag_wf_state', 'TagController@getTagWfState');
 		Route::post('/update_tag_wf_state', 'TagController@updateTagWfState');
+		Route::get('/tag_quota_aid/{quota_aid_id}', "TagController@quotaAid")->name('tag_quota_aid');
+		Route::post('/update_tag_quota_aid/{quota_aid_id}', "TagController@updateQuotaAid")->name('update_tag_quota_aid');
 
 		//QuotaAidMortuory
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
@@ -150,7 +173,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('editFolder', 'AffiliateFolderController@editFolder')->name('editFolder');
 		Route::post('deleteFolder', 'AffiliateFolderController@destroy')->name('deleteFolder');
 		Route::post('updateFileCode', 'AffiliateFolderController@updateFileCode')->name('updateFileCode');
-			
+
 			//searcherController
 		Route::get('search/{ci}', 'SearcherController@search');
 		Route::get('search_ajax', 'SearcherController@searchAjax');
@@ -220,6 +243,9 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('aid_commitment', 'AidCommitmentController');
 		Route::get('calculate_aid_reimbursement/{affiliate}/{amount}/{month}', 'AidReimbursementController@caculateContribution');
 
+		// Contribution process
+
+		Route::resource('contribution_process', 'ContributionProcessController');
 
 			//inbox
 		Route::get('inbox', function () {
@@ -452,7 +478,6 @@ foreach (array_keys($retirement_funds) as $value) {
 				'date' => $date,
 				'retirement_funds' => $retirement_funds1,
 				'year' => $year,
-
 				'title' => $title,
 				'institution' => $institution,
 				'direction' => $direction,
@@ -468,6 +493,7 @@ foreach (array_keys($retirement_funds) as $value) {
 				->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
 				->stream("pre-calificados.pdf");
 		})->name('print_be');
+
 		Route::get('test', function ()
 		{
 			return Util::getNextAreaCode(102);
@@ -475,6 +501,9 @@ foreach (array_keys($retirement_funds) as $value) {
 		});
 		Route::get('get_next_area_code_ret_fun/{ret_fun_id}', function ($retirement_fund_id) {
 			return Util::getNextAreaCode($retirement_fund_id, false);
+		});
+		Route::get('get_next_area_code_quota_aid/{quota_aid_id}', function ($quota_aid_id) {
+			return Util::getNextAreaCodeQuotaAid($quota_aid_id, false);
 		});
 	});
 });
