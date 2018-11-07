@@ -16,7 +16,7 @@ class WorkflowState extends Model
     }
     public function tags()
     {
-        return $this->belongsToMany('Muserpol\Models\Tag', 'tag_wf_state','wf_state_id');
+        return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id', 'date'])->withTimestamps();
     }
     public function rol()
     {

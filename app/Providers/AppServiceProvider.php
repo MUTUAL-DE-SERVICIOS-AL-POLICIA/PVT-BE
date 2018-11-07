@@ -11,7 +11,9 @@ use Muserpol\Observers\RetirementFundObservationObserver;
 use Muserpol\Models\RetirementFund\RetFunObservation;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Observers\QuotaAidMortuaryObserver;
-
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Muserpol\Models\Contribution\ContributionProcess;
+use Muserpol\Observers\ContributionProcessObserver;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -26,6 +28,13 @@ class AppServiceProvider extends ServiceProvider
         RetirementFund::observe(RetirementFundObserver::class);
         QuotaAidMortuary::observe(QuotaAidMortuaryObserver::class);
         RetFunObservation::observe(RetirementFundObservationObserver::class);
+        ContributionProcess::observe(ContributionProcessObserver::class);
+        Relation::morphMap([
+            'retirement_funds' => 'Muserpol\Models\RetirementFund\RetirementFund',
+            'quota_aid_mortuaries' => 'Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary',
+            'contribution_processes' => 'Muserpol\Models\Contribution\ContributionProcess',
+            'wf_states' => 'Muserpol\Models\Workflow\WorkflowState',
+        ]);
     }
 
     /**

@@ -112,7 +112,12 @@ class TagController extends Controller
     {
         $wf_state = WorkflowState::find($request->wf_state_id);
         if ($wf_state) {
-            $wf_state->tags()->sync($request->ids);
+
+            $ids = $request->ids;
+            $pivotData = array_fill(0, count($ids), ['date' => Carbon::now(), 'user_id' => Util::getAuthUser()->id]);
+            $syncData = array_combine($ids, $pivotData);
+
+            $wf_state->tags()->sync($syncData);
             return response('updated tag wf state',202);
         }
         abort(500,'WorkflowState not found.');
@@ -144,7 +149,7 @@ class TagController extends Controller
             if ($request->wf_state_id) {
                 $wf_state = WorkflowState::find($request->wf_state_id);
                 if ($wf_state) {
-                    $wf_state->tags()->save($t);
+                    $wf_state->tags()->save($t, ['date' => Carbon::now(), 'user_id' => Util::getAuthUser()->id]);
                 }
             }
             return response('Created tag',201);
