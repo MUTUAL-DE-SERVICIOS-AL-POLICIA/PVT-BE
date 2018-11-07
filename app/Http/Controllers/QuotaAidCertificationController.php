@@ -825,7 +825,11 @@ class QuotaAidCertificationController extends Controller
         
         $beneficiaries_count = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->count();            
         if($quota_aid->procedure_modality_id != 14) {
-            $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios DE LA VIUDA ":($applicant->gender?"el beneficiario ":"la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??'Sin extencion')."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";
+            if($quota_aid->procedure_modality_id == 15) {
+                $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios de ":($applicant->gender?"el Viudo ":"la Viuda ")).($affiliate->spouse()->first()->gender=='M'?"el Sr. ":"la Sra. ").Util::fullName($affiliate->spouse()->first())." con C.I. N° ".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion')."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";
+            } else {
+                $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios de ":($applicant->gender?"el beneficiario ":"la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??'Sin extencion')."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";
+            }
         } else 
         {
             $payment .= " de: ";
