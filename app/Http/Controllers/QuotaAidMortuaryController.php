@@ -535,7 +535,9 @@ class QuotaAidMortuaryController extends Controller
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
-
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
+        
         $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->with(['kinship', 'city_identity_card'])->orderByDesc('type')->orderBy('id')->get();
 
         foreach ($beneficiaries as $b) {
@@ -651,7 +653,7 @@ class QuotaAidMortuaryController extends Controller
         $can_cancel = ($quota_aid->user_id == $user->id && $quota_aid->inbox_state == true);
 
         // workflow record
-        $workflow_records = WorkflowRecord::where('quota_aid_id', $id)->orderBy('created_at', 'desc')->get();
+        $workflow_records = $quota_aid->wf_records()->orderBy('date', 'desc')->get();
         $first_wf_state = QuotaAidRecord::whereRaw("message like '%creo el Tr%'")->first();
         if ($first_wf_state) {
             $re = '/(?<= usuario )(.*)(?= cr.* )/mi';

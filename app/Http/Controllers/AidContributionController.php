@@ -205,6 +205,7 @@ class AidContributionController extends Controller
 
     public function getAffiliateContributions(Affiliate $affiliate)
     {                                
+
         $date_derelict = $affiliate->date_derelict;                
         if(!$date_derelict){
             Session::flash('message','Verifique la fecha desvinculación del afiliado antes de continuar');
@@ -234,6 +235,14 @@ class AidContributionController extends Controller
         $year_end = $end[0];
         
         $death_date = Util::parseBarDate($affiliate->date_death);
+        if($affiliate->date_death) {
+            $death_date = Util::parseBarDate($affiliate->date_death);
+        }
+        $spouse_death = $affiliate->spouse()->whereDate('date_death','>',$death_date)->first();
+        if(isset($spouse_death)) {
+            $death_date = Util::parseBarDate($spouse_death->date_death);
+        }
+        
         //return $death_date;
         if(!$death_date) {            
             $month_start = (date('m') - 1);
