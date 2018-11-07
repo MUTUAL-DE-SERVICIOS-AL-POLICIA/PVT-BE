@@ -609,9 +609,31 @@ class QuotaAidCertificationController extends Controller
             $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->ret_fun_legal_guardian_id)->first();
             $person .= ($legal_guardian->gender=='M'?"El señor ":"La señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del (la) Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
         } else {
-            $person .= ($affiliate->gender=='M'?"El señor ":"La señora ");
-        }        
-        $person .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt() .", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO ":" ")."del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
+            if($quota_aid->procedure_modality_id == 15) {
+                $person .= ($affiliate->spouse()->first()->gender=='M'?"El señor ":"La señora ");
+            } else {
+                $person .= ($affiliate->gender=='M'?"El señor ":"La señora ");
+            }
+        }
+
+        if($quota_aid->procedure_modality_id == 15) {            
+            $person .= Util::fullName($affiliate->spouse()->first()) ." con C.I. N° ". $affiliate->spouse()->first()->identity_card." ".$affiliate->spouse()->first()->city_identity_card->first_shortened;
+        } else {
+            $person .= $affiliate->fullNameWithDegree() ." con C.I. N° ". $affiliate->ciWithExt();
+        }
+
+        if($quota_aid->procedure_modality_id == 15) {
+            $person .= ", como TITULAR FALLECIDA ";
+        } else {
+            if($affiliate->gender == "F") {
+                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDA ":" ");
+            } else {
+                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO ":" ");
+            }            
+        }
+        
+
+        $person .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
         if($quota_aid->procedure_modality_id != 14) {
             //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) .", a lo cual considera lo siguiente:";
        
@@ -713,7 +735,18 @@ class QuotaAidCertificationController extends Controller
             } else {
                 $body_file .= "no ";
             }
-            $body_file .= "tiene expediente del "."POLICIA(viuda fallecida) / REFERIDO"." titular fallecido.";
+            $body_file .= "tiene expediente del ";
+            switch($quota_aid->procedure_modality_id) {
+                case 14: 
+                    $body_file .= "referido titular.";
+                break;
+                case 15: 
+                    $body_file .= "titular fallecido.";   
+                break;                    
+                default:                
+                $body_file .= "referido titular fallecido.";
+
+            }
         }        
         ///---ENDIFLE--////
 
@@ -751,8 +784,13 @@ class QuotaAidCertificationController extends Controller
             '6'  =>  'de su retiro.',
             '7'  =>  'de su retiro.',
         ];
-        $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."12"." aportes antes del fallecimiento del titular / VIUDA.";
-        
+        $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."12"." aportes antes del fallecimiento";
+
+        if($quota_aid->procedure_modality_id == 14) {
+            $body_accounts .= " de la cónyuge.";  
+        } else {
+            $body_accounts .= " del titular.";  
+        }
         ////------- INDIVIDUAL ACCOUTNS ------////
 
         //----- QUALIFICATION -----////      
@@ -807,11 +845,14 @@ class QuotaAidCertificationController extends Controller
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
                 if(date('Y') -$birth_date->format('Y') > 18) {
-                $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
+                    $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 } else {
                     $payment .='Menor ';
                 }
                 $payment .= $beneficiary->fullName();
+                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state) {
+                    $payment .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
+                }
                 if($beneficiary->identity_card)
                 $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");
                 $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
