@@ -25,14 +25,14 @@
                     @if($item->type == 'R')
                         R.
                     @endif
-                    {!! strtoupper(Util::printMonthYear($item->year."-".$item->month."-01")) !!}
+                    {!! strtoupper(Util::printMonthYear($item->month_year)) !!}
                 </td>
-                <td class='text-right px-10'>{!! $util::formatMoney($item->sueldo) !!} </td>
-                <td class='text-right px-10'>{!! $util::formatMoney($item->fr + $item->cm) !!} </td>
-                <td class='text-right px-10'>{!! $util::formatMoney($item->fr) !!} </td>
-                <td class='text-right px-10'>{!! $util::formatMoney($item->cm) !!} </td>
-                <td class='text-right px-10'>{!! $util::formatMoney($item->interes) ?? '0.00' !!} </td>
-                <td class='text-right px-10'>{!! $util::formatMoney($item->subtotal) !!} </td>
+                <td class='text-right px-10'>{!! $util::formatMoney($item->quotable) !!} </td>
+                <td class='text-right px-10'>{!! $util::formatMoney($item->total) !!} </td>
+                <td class='text-right px-10'>{!! $util::formatMoney($item->retirement_fund) !!} </td>
+                <td class='text-right px-10'>{!! $util::formatMoney($item->mortuary_quota) !!} </td>
+                <td class='text-right px-10'>{!! $util::formatMoney($item->interest) ?? '0.00' !!} </td>
+                <td class='text-right px-10'>{!! $util::formatMoney($item->total) !!} </td>
             </tr>
         @endforeach
             <tr class="font-bold text-lg bg-grey-lightest">

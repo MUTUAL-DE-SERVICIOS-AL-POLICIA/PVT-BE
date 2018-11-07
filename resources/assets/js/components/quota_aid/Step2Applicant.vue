@@ -63,6 +63,7 @@ export default {
       spouse_city_birth_id: null ,
       spouse_civil_status: null ,
       spouse_date_death: null ,
+      spouse_reason_death: null ,
     }
   },
   mounted(){

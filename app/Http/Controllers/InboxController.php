@@ -15,50 +15,16 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Exception;
 use Muserpol\Models\Workflow\WorkflowRecord;
 use Carbon\Carbon;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\Contribution\ContributionProcess;
 class InboxController extends Controller
 {
     public function received()
     {
-        $module_id = Util::getRol()->module->id;
-        switch ($module_id) {
-            case 2:
-                # eco com
-                break;
-            case 3:
-                # ret fun
-                // return "hola";
-                break;
-            case 4:
-                # cm
-                break;
-            case 5:
-                # am
-            default:
-                # code...
-                break;
-        }
         return view('inbox.received');
     }
     public function edited()
     {
-        $module_id = Util::getRol()->module->id;
-        switch ($module_id) {
-            case 2:
-                # eco com
-                break;
-            case 3:
-                # ret fun
-                // return "hola";
-                break;
-            case 4:
-                # cm
-                break;
-            case 5:
-                # am
-            default:
-                # code...
-                break;
-        }
         return view('inbox.edited');
     }
     public function sendForward(Request $request)
@@ -104,6 +70,22 @@ class InboxController extends Controller
                 //     ]);
                 $retirement_funds = RetirementFund::whereIn('id', $doc_ids)->get();
                 foreach ($retirement_funds as $ret_fun) {
+                    $ret_fun->wf_state_current_id = $wf_state_next_id;
+                    $ret_fun->inbox_state = false;
+                    $ret_fun->save();
+                }
+                break;
+            case 4:
+                $quota_aids = QuotaAidMortuary::whereIn('id', $doc_ids)->get();
+                foreach ($quota_aids as $ret_fun) {
+                    $ret_fun->wf_state_current_id = $wf_state_next_id;
+                    $ret_fun->inbox_state = false;
+                    $ret_fun->save();
+                }
+                break;
+            case 11:
+                $contribution_processes = ContributionProcess::whereIn('id', $doc_ids)->get();
+                foreach ($contribution_processes as $ret_fun) {
                     $ret_fun->wf_state_current_id = $wf_state_next_id;
                     $ret_fun->inbox_state = false;
                     $ret_fun->save();
@@ -159,14 +141,22 @@ class InboxController extends Controller
                     $ret_fun->wf_state_current_id = $wf_state_back_id;
                     $ret_fun->inbox_state = false;
                     $ret_fun->save();
-                    $wf_record = new WorkflowRecord() ;
-                    $wf_record->user_id = Auth::user()->id;
-                    $wf_record->wf_state_id = $wf_state_back_id;
-                    $wf_record->ret_fun_id = $ret_fun->id;
-                    $wf_record->date = Carbon::now();
-                    $wf_record->record_type_id = 2;
-                    $wf_record->message = "El usuario " . Auth::user()->username . " devolvió el trámite " . $ret_fun->code . " con nota: " . $request->message . ".";
-                    $wf_record->save();
+                }
+                break;
+            case 4:
+                $quota_aids = QuotaAidMortuary::whereIn('id', $doc_ids)->get();
+                foreach ($quota_aids as $quota_aid) {
+                    $quota_aid->wf_state_current_id = $wf_state_back_id;
+                    $quota_aid->inbox_state = false;
+                    $quota_aid->save();
+                }
+                break;
+            case 11:
+                $contribution_processes = ContributionProcess::whereIn('id', $doc_ids)->get();
+                foreach ($contribution_processes as $doc) {
+                    $doc->wf_state_current_id = $wf_state_back_id;
+                    $doc->inbox_state = false;
+                    $doc->save();
                 }
                 break;
             default:
@@ -182,42 +172,89 @@ class InboxController extends Controller
     {
         $rol_id = Util::getRol()->id;
         $module = Role::find($rol_id)->module;
-        switch ($module->id) {
-            case 1:
-            break;
-            case 2:
-            break;
-            case 3:
-                try {
+        try {
+            switch ($module->id) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
                     $ret_fun = RetirementFund::find($doc_id);
                     if ($ret_fun->inbox_state == true) {
                         throw new Exception('Trámite ya validado.');
                     }
                     $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id', '=', $module->id)->first();
-                    if($wf_current_state->id != $ret_fun->wf_state_current_id){
+                    if ($wf_current_state->id != $ret_fun->wf_state_current_id) {
                         throw new Exception('Error al validar el Trámite, verifique que el trámite este en unas de las bandejas.');
                     }
                     $ret_fun->inbox_state = true;
                     $ret_fun->user_id = Auth::user()->id;
 
                     $correlative = Util::getNextAreaCode($ret_fun->id);
+                    /* TODO
+                    * adicionar fechas de revision calificacion etc.
+                    */
+                    $ret_fun->save();
 
+                    return response()->json([
+                        'doc' => $ret_fun,
+                        'correlative' => $correlative,
+                    ], 200);
+                    break;
+                case 4:
+                    $quota_aid = QuotaAidMortuary::find($doc_id);
+                    if ($quota_aid->inbox_state == true) {
+                        throw new Exception('Trámite ya validado.');
+                    }
+                    $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id', '=', $module->id)->first();
+                    if ($wf_current_state->id != $quota_aid->wf_state_current_id) {
+                        throw new Exception('Error al validar el Trámite, verifique que el trámite este en unas de las bandejas.');
+                    }
+                    $quota_aid->inbox_state = true;
+                    $quota_aid->user_id = Auth::user()->id;
+
+                    $correlative = Util::getNextAreaCodeQuotaAid($quota_aid->id);
+
+                    /* TODO
+                    * adicionar fechas de revision calificacion etc.
+                    */
+                    $quota_aid->save();
+                    return response()->json([
+                        'doc' => $quota_aid,
+                        'correlative' => $correlative,
+                    ], 200);
+
+                    break;
+                case 11:
+                    $doc = ContributionProcess::find($doc_id);
+                    if ($doc->inbox_state == true) {
+                        throw new Exception('Trámite ya validado.');
+                    }
+                    $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id', '=', $module->id)->first();
+                    if ($wf_current_state->id != $doc->wf_state_current_id) {
+                        throw new Exception('Error al validar el Trámite, verifique que el trámite este en unas de las bandejas.');
+                    }
+                    $doc->inbox_state = true;
+                    $doc->user_id = Auth::user()->id;
+
+                    // $correlative = Util::getNextAreaCodeQuotaAid($doc->id);
+                    $correlative = null;
 
                     /* TODO
                      * adicionar fechas de revision calificacion etc.
                      */
-                    $ret_fun->save();
-                } catch (Exception $exception) {
-                    return response()->json([
-                        'status' => 'error',
-                        'errors' => $exception->getMessage(),
-                    ], 422);
-                }
-                return response()->json([
-                    'ret_fun' => $ret_fun,
-                    'correlative' => $correlative,
-                ], 200);
-            break;
+                    $doc->save();
+                    break;
+            }
+            return response()->json([
+                'doc' => $doc,
+                'correlative' => $correlative,
+            ], 200);
+        } catch (Exception $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $exception->getMessage(),
+            ], 422);
         }
     }
     public function invalidateDoc(Request $request, $doc_id)
@@ -251,7 +288,30 @@ class InboxController extends Controller
                     ], 422);
                 }
                 return response()->json($ret_fun, 200);
-                break;
+            break;
+            case 4:
+                try {
+                    $quota_aid = QuotaAidMortuary::find($doc_id);
+                    if ($quota_aid->inbox_state == false) {
+                        throw new Exception('Trámite aun no validado.');
+                    }
+                    $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id', '=', $module->id)->first();
+                    if ($wf_current_state->id != $quota_aid->wf_state_current_id) {
+                        throw new Exception('Error al validar el Trámite, verifique que el trámite este en unas de las bandejas.');
+                    }
+                    $quota_aid->inbox_state = false;
+                    /* TODO
+                     * adicionar fechas de revision calificacion etc.
+                     */
+                    $quota_aid->save();
+                } catch (Exception $exception) {
+                    return response()->json([
+                        'status' => 'error',
+                        'errors' => $exception->getMessage(),
+                    ], 422);
+                }
+                return response()->json($quota_aid, 200);
+            break;
         }
     }
 }

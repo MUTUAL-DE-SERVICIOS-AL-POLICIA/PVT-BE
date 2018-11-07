@@ -12,6 +12,7 @@
             return{
                 editing: false,
                 requirementList: [],
+                aditionalRequirements: [],
                 modality: null,
                 show_spinner: false,
                 city_end_id:this.user.city_id,
@@ -30,6 +31,7 @@
                 })
                 this.modality = null;
                 this.getRequirements();
+                //this.getAditionalRequirements();
             },
             onChooseModality(event){
                 const options = event.target.options;
@@ -43,11 +45,12 @@
                     this.$store.commit('quotaAidForm/setModality',object);//solo se puede enviar un(1) argumento 
                 }
                 this.getRequirements();
+                this.getAditionalRequirements();
             },
             getRequirements(){
                 if(!this.modality){ this.requirementList = [] }
                 this.requirementList = this.requirements.filter((r) => {
-                    if (r.modality_id == this.modality) {
+                    if (r.modality_id == this.modality && r.number != 0) {
                         r['status'] = false;
                         r['background'] = '';
                         return r;
@@ -62,6 +65,19 @@
                     }, {})
                 }
                 this.requirementList =  this.requirementList.groupBy('number')
+            },
+            getAditionalRequirements(){
+                if(!this.modality){this.aditionalRequirements = []}                
+                this.aditionalRequirements = this.requirements.filter((requirement) => {
+                    if (requirement.modality_id == this.modality && requirement.number == 0) {
+                        return requirement;
+                    }
+                });                
+                console.log("requerimientos");
+                console.log(this.aditionalRequirements.length  );
+                setTimeout(() => {
+                    $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+                }, 500);                
             },
             checked(index, i){
                 for(var k = 0; k < this.requirementList[index].length; k++ ){

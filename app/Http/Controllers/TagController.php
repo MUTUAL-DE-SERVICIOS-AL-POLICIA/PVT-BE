@@ -10,6 +10,8 @@ use Log;
 use Muserpol\Models\Tag;
 use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\Module;
 class TagController extends Controller
 {
     public function wfState()
@@ -20,6 +22,10 @@ class TagController extends Controller
     public function retFun($ret_fun_id)
     {
         return RetirementFund::find($ret_fun_id)->tags;
+    }
+    public function quotaAid($quota_aid_id)
+    {
+        return QuotaAidMortuary::find($quota_aid_id)->tags;
     }
     public function updateRetFun(Request $request, $ret_fun_id)
     {
@@ -43,6 +49,29 @@ class TagController extends Controller
             }
         }
         return $retirement_fund->tags;
+    }
+    public function updateQuotaAid(Request $request, $quota_aid_id)
+    {
+
+        $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+        $tags_wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first()->tags;
+        foreach ($tags_wf_state as $tag_wf_state) {
+            $found = array_filter($request->ids, function ($id) use ($tag_wf_state) {
+                return $id == $tag_wf_state['id'];
+            });
+            if ($found) {
+                if ($quota_aid->tags->contains($tag_wf_state->id)) {
+                    // $quota_aid->tags()->updateExistingPivot($tag_wf_state->id);
+                }else{
+                    $quota_aid->tags()->save($tag_wf_state, ['date'=>Carbon::now(), 'user_id'=>Util::getAuthUser()->id]);
+                }
+            }else{
+                if ($quota_aid->tags->contains($tag_wf_state->id)) {
+                    $quota_aid->tags()->detach($tag_wf_state->id);
+                }
+            }
+        }
+        return $quota_aid->tags;
     }
     public function getTags()
     {
@@ -68,11 +97,13 @@ class TagController extends Controller
     }
     public function tagWfState()
     {
-        $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
-        $wf_states = WorkflowState::where('module_id', 3)->get();
+        $modules = Module::all();
+        $wf_states = WorkflowState::all();
+        // $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
         $tags = Tag::all();
         $data =[
             'tags'=> $tags,
+            'modules'=> $modules,
             'wf_states'=> $wf_states,
         ];
         return view('tags.wf_state',$data);
@@ -81,7 +112,12 @@ class TagController extends Controller
     {
         $wf_state = WorkflowState::find($request->wf_state_id);
         if ($wf_state) {
-            $wf_state->tags()->sync($request->ids);
+
+            $ids = $request->ids;
+            $pivotData = array_fill(0, count($ids), ['date' => Carbon::now(), 'user_id' => Util::getAuthUser()->id]);
+            $syncData = array_combine($ids, $pivotData);
+
+            $wf_state->tags()->sync($syncData);
             return response('updated tag wf state',202);
         }
         abort(500,'WorkflowState not found.');
@@ -92,9 +128,11 @@ class TagController extends Controller
     }
     public function create()
     {
-        $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
-        $wf_states = WorkflowState::where('module_id', 3)->get();
+        // $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
+        $modules = Module::all();
+        $wf_states = WorkflowState::all();
         $data = [
+            'modules'=> $modules,
             'wf_states'=> $wf_states,
         ];
         return view('tags.create',$data);
@@ -111,7 +149,7 @@ class TagController extends Controller
             if ($request->wf_state_id) {
                 $wf_state = WorkflowState::find($request->wf_state_id);
                 if ($wf_state) {
-                    $wf_state->tags()->save($t);
+                    $wf_state->tags()->save($t, ['date' => Carbon::now(), 'user_id' => Util::getAuthUser()->id]);
                 }
             }
             return response('Created tag',201);

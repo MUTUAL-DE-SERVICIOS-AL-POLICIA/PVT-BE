@@ -5,7 +5,7 @@
 @section('content')
 
 
-    <div>
+    <div class="m-b-lg">
         <div>
 
             <h1 class="logo-name">M+</h1>
@@ -61,8 +61,11 @@
                 </span>
                 
                 @endif
-                
-               
+                @if($role->module_id == 11)
+                <span class="info-box-icon bg-green">
+                    <i class="fa  fa-map "></i>
+                </span>
+                @endif
 
             <div class="info-box-content">
                 <input type="hidden" name="rol_id" value={!! $role->id !!}>
@@ -84,7 +87,7 @@
                 <button type="submit" class="btn btn-block btn-raised btn-success">  {{$role->name}} <i class="glyphicon glyphicon-share-alt"></i></a>
                 
                 @endif
-                @if($role->module_id==4 ||$role->module_id==5 ||$role->module_id==7 ||$role->module_id==10 )
+                @if($role->module_id==4 ||$role->module_id==5 ||$role->module_id==7 ||$role->module_id==10 || $role->module_id==11)
                 <button type="submit" class="btn btn-block btn-raised btn-success">  {{$role->name}} <i class="glyphicon glyphicon-share-alt"></i></a>
                 
                 @endif

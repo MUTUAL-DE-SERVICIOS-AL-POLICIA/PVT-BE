@@ -70,4 +70,9 @@ class QuotaAidMortuaryPolicy
         $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);
         return $permission?true:false;
     }
+    public function qualify(User $user, QuotaAidMortuary $quotaAidMortuary)
+    {
+        return $quotaAidMortuary->wf_state_current_id == 37 && Util::getRol()->id == 37 && $quotaAidMortuary->inbox_state == false ;
+        // && !$quotaAidMortuary->affiliate->selectedContributions() > 0;
+    }
 }

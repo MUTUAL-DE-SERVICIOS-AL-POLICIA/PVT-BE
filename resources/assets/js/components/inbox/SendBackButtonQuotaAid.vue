@@ -1,7 +1,7 @@
 <template>
     <transition name="fade" mode="out-in" duration="600" enter-active-class="animated bounceInDown" leave-active-class="animated fadeOutRight">
     <div class="input-group"
-         v-if="!clickShow && !retFun.isValidated "
+         v-if="!clickShow && !doc.isValidated "
          key="clickButton"
          data-toggle="tooltip"
         data-placement="top"
@@ -13,7 +13,7 @@
         </button>
     </div>
     <div class="input-group"
-         v-else-if="! retFun.isValidated && show && clickShow"
+         v-else-if="! doc.isValidated && show && clickShow"
          :class="{ 'has-error': errors.has('wf-sequence-back')}"
          key="selectOptions"
          >
@@ -42,18 +42,21 @@
     import { mapGetters } from "vuex";
     import { flashErrors } from "../../helper.js";
     export default {
-      props: ["wfSequenceBackList", "docId", "wfCurrentStateName"],
+      props: ["wfSequenceBackList", "docId", "wfCurrentStateName", 'type'],
       data() {
         return {
           wfSequenceBack: null,
           show: true,
-          clickShow: false
+          clickShow: false,
         };
       },
       computed: {
-        ...mapGetters("retFunForm", {
-          retFun: "getData"
-        })
+        doc(){
+          return this.$store.state[`${this.type}Form`];
+        }
+        // ...mapGetters('quotaAidForm', {
+        //   doc: "getData"
+        // })
       },
       methods: {
         async validateBeforeSubmit() {

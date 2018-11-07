@@ -17,6 +17,7 @@ use Validator;
 use DateTime;
 use App;
 use Muserpol\Helpers\Util;
+use Muserpol\Helpers\ID;
 use Muserpol\Models\Contribution\ContributionCommitment;
 use Yajra\Datatables\DataTables;
 use Muserpol\Models\Contribution\Reimbursement;
@@ -29,6 +30,7 @@ use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 use Muserpol\Models\Contribution\ContributionType;
 use Muserpol\Policies\ReimbursementPolicy;
 use Muserpol\Models\Contribution\ContributionRate;
+use Muserpol\Models\Contribution\ContributionProcess;
 use DateInterval;
 class ContributionController extends Controller
 {
@@ -58,7 +60,7 @@ class ContributionController extends Controller
         $json = '';
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if($c_start_date->gt($c_end_date))
-            $foo = "0,00";        
+            $foo = "0,00";                    
         //if( ($json = curl_exec($ch) ) === false)
         if( $foo === false)
         {
@@ -187,30 +189,43 @@ class ContributionController extends Controller
         
          //*********END VALIDATOR************//                                 
         // Se guarda voucher fecha, total 1 reg
-        $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
-        if (!isset($voucher_code->id))
-            $code = Util::getNextCode(""); 
-        else
-            $code = Util::getNextCode($voucher_code->code);
+        // $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
+        // if (!isset($voucher_code->id))
+        //     $code = Util::getNextCode(""); 
+        // else
+        //     $code = Util::getNextCode($voucher_code->code);
 
-        $voucher = new Voucher();
-        $voucher->user_id = Auth::user()->id;
-        $voucher->affiliate_id = $request->afid;
-        $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
-        $voucher->total = $request->total;
-        $voucher->payment_date = Carbon::now();
-        $voucher->code = $code;
-        $voucher->paid_amount = $request->paid;
-        $voucher->bank = $request->bank;
-        $voucher->bank_pay_number = $request->bank_pay_number;
-        $voucher->save();      
-        
+        // $voucher = new Voucher();
+        // $voucher->user_id = Auth::user()->id;
+        // $voucher->affiliate_id = $request->afid;
+        // $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
+        // $voucher->total = $request->total;
+        // $voucher->payment_date = Carbon::now();
+        // $voucher->code = $code;
+        // $voucher->paid_amount = $request->paid;
+        // $voucher->bank = $request->bank;
+        // $voucher->bank_pay_number = $request->bank_pay_number;
+        // $voucher->save();      
+                
         $affiliate = Affiliate::find($request->afid);
         $affiliate->affiliate_state_id = $request->tipo;
         $affiliate->save();
-       
+
+        $process = new ContributionProcess();
+        $process->affiliate_id = $affiliate->id;
+        $process->user_id = Auth::user()->id;
+        $process->city_id = Auth::user()->city_id;
+        $process->wf_state_current_id = 50;
+        $process->workflow_id = 7;
+        $process->procedure_modality_id = 1;
+        $process->date = date('Y-m-d');
+        $process->code = "1/2018";
+        $process->inbox_state = true;
+        $process->save();
+        
         $result = [];
-        $stored_contributions = [];        
+        $stored_contributions = [];
+        $contribution_ids = [];  
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte=(object)$ap;            
@@ -274,7 +289,7 @@ class ContributionController extends Controller
                 $contribution->breakdown_id = 3;
                 $contribution->save();
             }
-
+            array_push($contribution_ids,$contribution->id);
             array_push($result, [
                 'total'=>$contribution->total,
                 'month_year'=>$aporte->year.'-'.$aporte->month.'-01',
@@ -282,10 +297,11 @@ class ContributionController extends Controller
             array_push($stored_contributions,$contribution);            
         }
         
+        $process->contributions()->attach($contribution_ids);
         $data = [
             'contribution'  =>  $result,
             'contributions'  =>  $stored_contributions,
-            'voucher_id'    => $voucher->id,
+            //'voucher_id'    => $voucher->id,
             'affiliate_id'  =>  $affiliate->id,
         ];
         return $data;

@@ -23,13 +23,15 @@ import { flashErrors } from "../../helper.js";
                     last_name: this.affiliate.last_name,
                     mothers_last_name: this.affiliate.mothers_last_name,
                     birth_date: this.affiliate.birth_date,
+                    date_death: this.affiliate.date_death,
+                    reason_death: this.affiliate.reason_death,
                     phone_number: this.affiliate.phone_number,
                     cell_phone_number: this.affiliate.cell_phone_number,
                     gender: this.affiliate.gender,
                     civil_status: this.affiliate.civil_status,
                     surname_husband: this.affiliate.surname_husband,
                     address: this.affiliate.address,
-                    registration: this.affiliate.registration
+                    registration: this.affiliate.registration                    
                 },
                 loadingButton: false,
             }
@@ -123,6 +125,8 @@ import { flashErrors } from "../../helper.js";
                     this.form.last_name =  this.values.last_name;
                     this.form.mothers_last_name =  this.values.mothers_last_name;
                     this.form.birth_date =  this.values.birth_date;
+                    this.form.date_death =  this.values.date_death;
+                    this.form.reason_death =  this.values.reason_death;
                     this.form.phone_number =  this.values.phone_number;
                     this.form.cell_phone_number =  this.values.cell_phone_number;
                     this.form.gender = this.values.gender;
@@ -151,6 +155,7 @@ import { flashErrors } from "../../helper.js";
                         this.show_spinner=false;
                         this.form = response.data.affiliate;
                         this.city_birth = response.data.city_birth;
+                        this.death_birth = response.data.death_birth;
                         this.city_identity_card = response.data.city_identity_card;
                         this.values.identity_card = response.data.affiliate.identity_card;
                         this.values.first_name =  response.data.affiliate.first_name;
@@ -158,12 +163,15 @@ import { flashErrors } from "../../helper.js";
                         this.values.last_name =  response.data.affiliate.last_name;
                         this.values.mothers_last_name =  response.data.affiliate.mothers_last_name;
                         this.values.birth_date =  response.data.affiliate.birth_date;
+                        this.values.date_death =  response.data.affiliate.date_death;
+                        this.values.reason_death =  response.data.affiliate.reason_death;
                         this.values.phone_number =  response.data.affiliate.phone_number;
                         this.values.cell_phone_number =  response.data.affiliate.cell_phone_number;
                         this.values.gender = response.data.affiliate.gender;
                         this.values.civil_status = response.data.affiliate.civil_status;
                         this.values.surname_husband = response.data.affiliate.surname_husband;
                         this.values.address = response.data.affiliate.address;
+                        this.pension_entity = response.data.pension_entity;
                         flash('Informacion del Afiliado Actualizada');
                         this.loadingButton=false;
                     }).catch((error)=>{

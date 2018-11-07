@@ -15,6 +15,8 @@
         data(){
             return{
                 requirementList: [],
+                aditionalRequirements: [],
+                aditionalRequirementsSelected: [],
                 modality: null,
                 show_spinner: false,
                 modality_id: 14,
@@ -24,7 +26,8 @@
                 my_index: 1,
                 modalitiesFilter: [],
                 quota_aid_id: 428,
-                editing:false
+                editing:false,
+                counter_aditional_document: 1000
             }
         },
         created(){
@@ -48,28 +51,37 @@
                 this.modality = null;
             },
             onChooseModality(event){
-                const options = event.target.options;
-                const selectedOption = options[options.selectedIndex];
-                if (selectedOption) {
-                    const selectedText = selectedOption.textContent;
-                    var object={
-                        name:selectedText,
-                        id: this.modality
-                    }
+                // const options = event.target.options;
+                // const selectedOption = options[options.selectedIndex];
+                // if (selectedOption) {
+                //     const selectedText = selectedOption.textContent;
+                //     var object={
+                //         name:selectedText,
+                //         id: this.modality
+                //     }
                     //this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
-                }
+                //}
                 //this.getRequirements();
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
+                setTimeout(() => {
+                    $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+                }, 500);
             },
-            getRequirements(){                
+            getRequirements(){                               
                 this.requirementList = this.requirements.filter((r) => {
-                    if (r.modality_id == this.modality) {
+                    if(r.number == 0 && this.rol == 38) {
+                        r.number = r.number+this.counter_aditional_document;
+                        this.counter_aditional_document++;
+                    }
+
+                    if (r.modality_id == this.modality && r.number != 0) {
                         //if(this.submitted[r.number] == r.id){
                             // console.log('match 1'+this.modality_id);
                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });                       
-                        if(this.rol!=11){ //revision legal
+                       console.log(this.rol);
+                        if(this.rol!=38){ //revision legal
                         
                             if(submit_document){
                                 r['status'] = true;
@@ -86,13 +98,13 @@
                         }else{                            
                             if(submit_document)
                             {                                
-                                if(submit_document.is_valid){
+                                if(submit_document.is_valid){                                    
                                     r['status'] = true;
                                     r['background'] = 'bg-success-green';
                                     r['comment'] = submit_document.comment;
                                     r['submit_document_id'] = submit_document.id;
                                 }
-                                else{
+                                else{                                    
                                      r['status'] = false;
                                     r['background'] = '';
                                     r['comment'] = submit_document.comment;
@@ -120,12 +132,13 @@
                 }
                 
 
-                this.requirementList =  this.requirementList.groupBy('number')       
-                var size = 0, key;
-                for (key in this.requirementList) {
-                if (this.requirementList.hasOwnProperty(key)) size++;
-            }
-            console.log(size);         
+                this.requirementList =  this.requirementList.groupBy('number');
+                this.getAditionalRequirements();
+                // var size = 0, key;
+                // for (key in this.requirementList) {
+                // if (this.requirementList.hasOwnProperty(key)) size++;
+            // }
+            // console.log(size);         
                 // this.requirementList = this.requirementList.reduce(function(r, v) {
                 //     r[v.number] = r[v.number] || [];
                 //     r[v.number].push(v);
@@ -133,6 +146,28 @@
                 // }, Object.create(null));
                 
             },
+            getAditionalRequirements(){
+                if(!this.modality){this.aditionalRequirements = []}
+                if(!this.modality){this.aditionalRequirementsSelected = []}
+                this.aditionalRequirements = this.requirements.filter((requirement) => {                    
+                    if (requirement.modality_id == this.modality && requirement.number == 0) {
+                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === requirement.id });
+                        if(!submit_document)
+                            return requirement;
+                    }
+                });
+                this.aditionalRequirementsSelected = this.requirements.filter((requirement) => {                    
+                    if (requirement.modality_id == this.modality && requirement.number == 0) {
+                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === requirement.id });
+                        if(submit_document)
+                            return requirement;
+                    }
+                });
+                
+                setTimeout(() => {
+                    $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+                }, 500);                
+            }, 
             checked(index, i){
                 if(this.editing){
                     for(var k = 0; k < this.requirementList[index].length; k++ ){
@@ -159,7 +194,7 @@
             },
             isVisible(requeriment){
                 // console.log(requeriment)
-                if(this.rol!=11)
+                if(this.rol!=38)
                 {
                     if(this.editing){
                     return true; 
@@ -186,7 +221,7 @@
                 return false;
             },
             store(quota_aid){
-                if(this.rol!=11){
+                if(this.rol!=38){
                     let uri = `/quota_aid/${this.quota_aid.id}/edit_requirements`;                
                     console.log(uri);
                     axios.post(uri,

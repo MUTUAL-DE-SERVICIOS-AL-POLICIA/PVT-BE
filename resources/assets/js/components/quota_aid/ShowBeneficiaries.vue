@@ -7,7 +7,7 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
 			'originalBeneficiariesBackend',
             'cities',
             'kinships',
-            'quotaAid',
+            'quotaAidId',
             'procedureModalityId',
 		],
         data(){
@@ -58,7 +58,7 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
                 return "S/N";
             },
             update () {
-                let uri = `/update_beneficiaries/${this.retFunId}`;
+                let uri = `/update_beneficiaries_quota_aid/${this.quotaAidId}`;
                 this.show_spinner=true;
                 console.log(this.beneficiaries);
                 

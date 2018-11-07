@@ -18,6 +18,7 @@
                                       :testimony="testimony"
                                       :editable="editing"
                                       :beneficiaries="beneficiaries"
+                                      :type="type"
                                       @remove="removeTestimony(index)"></BeneficiaryTestimony>
             </div>
                 <div class="row"
@@ -41,13 +42,14 @@
 </template>
 
 <script>
+    import { camelCaseToSnakeCase } from '../../helper.js'
     import { scroller } from "vue-scrollto/src/scrollTo";
     import BeneficiaryTestimony from "./BeneficiaryTestimony.vue";
     export default {
       components: {
         BeneficiaryTestimony
       },
-      props: ["beneficiaries", 'retFunId'],
+      props: ["beneficiaries", 'docId' , 'type'],
       data() {
         return {
           testimonies: [],
@@ -59,7 +61,7 @@
       },
       methods: {
         getTestimonies(){
-          axios.get(`/ret_fun_beneficiaries_testimonies/${this.retFunId}`)
+          axios.get(`/${camelCaseToSnakeCase(this.type)}_beneficiaries_testimonies/${this.docId}`)
           .then(response => {
             this.testimonies = response.data
           }).catch(error => {
@@ -75,7 +77,8 @@
             court: null,
             place: null,
             notary: null,
-            ret_fun_beneficiaries:[]
+            ret_fun_beneficiaries:[],
+            quota_aid_beneficiaries:[],
           };
           if (this.testimonies.length > 0) {
             let lastTestimony = this.testimonies[this.testimonies.length - 1];
@@ -99,12 +102,13 @@
           this.testimonies.splice(index, 1);
         },
         update(){
-            axios.patch(`/update_beneficiary_testimony/${this.retFunId}`, this.testimonies)
+            axios.patch(`/update_beneficiary_testimony_${camelCaseToSnakeCase(this.type)}/${this.docId}`, this.testimonies)
             .then(response => {
                 flash('Testimonios Actualizados');
                 this.getTestimonies();
                 this.editing = false;
             }).catch(error=>{
+                flash('Ocurrio un error al actualizar los testimonios', 'error');
                 this.editing = false;
                 console.log(error);
             })
