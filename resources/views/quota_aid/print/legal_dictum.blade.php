@@ -56,10 +56,7 @@
                     </li>
                     <li class="text-justify">
                         {!! $body_qualification !!}
-                    </li>
-                    <li class="text-justify">
-                        {{ $body_due }}
-                    </li>
+                    </li>                    
                     @if($correlative->note!="")
                         <li class="text-justify">
                             {{ $correlative->note }}
@@ -114,8 +111,7 @@
                 <p class="text-justify">
                     {!! $payment !!}
                 </p>
-                <br>
-                <br>
+                
                 @include('ret_fun.print.signature_footer',['user'=>$user])
             </div>
             <footer>

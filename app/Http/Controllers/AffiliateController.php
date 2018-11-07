@@ -25,6 +25,7 @@ use Validator;
 use Muserpol\Models\Spouse;
 use Carbon\Carbon;
 use Muserpol\Models\Entities;
+use Auth;
 
 class AffiliateController extends Controller
 {
@@ -34,8 +35,14 @@ class AffiliateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {                                        
-        //$affiliate->registration = Util::getRegistration(Util::parseBarDate($affiliate->birth_date),$affiliate->last_name,$affiliate->mothers_last_name,$affiliate->first_name,$affiliate->gender);
+    {           
+        // $affiliates = Affiliate::where('registration',null)->where('birth_date','!=',null)->get();        
+        // foreach($affiliates as $affiliate) {            
+        //     $affiliate->registration = Util::getRegistration(Util::parseBarDate($affiliate->birth_date),$affiliate->last_name,$affiliate->mothers_last_name,$affiliate->first_name,$affiliate->gender);
+        //     $affiliate->save();
+        // }
+        // return ;
+
         return view('affiliates.index');
     }
     public function getAllAffiliates(Request $request)
@@ -111,7 +118,10 @@ class AffiliateController extends Controller
      */
     public function create()
     {
-        //
+        $cities = City::all()->pluck('name', 'id');
+        $birth_cities = City::all()->pluck('name', 'id');
+        $degrees = Degree::all()->pluck('name', 'id');
+        return view('affiliates.create', compact('cities', 'birth_cities', 'degrees'));
     }
 
     /**
@@ -122,7 +132,67 @@ class AffiliateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $verificate = true;
+        $due_date = null;
+        $rules = [
+            'identity_card' => 'required|unique:affiliates',
+            'city_identity_card_id' => 'required|min:1',
+            'first_name' => 'required|min:1',
+            'gender' => 'required',
+            'birth_date' => 'required',
+            'category_id' => 'required',
+            'degree_id' => 'required',
+            'last_name' => '',
+            'mothers_last_name' => '',
+            'city_birth_id' => 'required'
+        ];
+
+        $messages = [
+            'identity_card.required' => 'Se requiere llenar este campo',
+            'identity_card.unique' => 'El carnet introducido ya existe',
+            'city_identity_card_id.required' => 'Debe seleccionar una opción',
+            'first_name.required' => 'Se requiere llenar este campo',
+            'gender.required' => 'Debe seleccionar una opción',
+            'birth_date.required' => 'Debe seleccionar una opción',
+            'category_id' => 'Debe seleccionar una opción',
+            'degree_id' => 'Debe seleccionar una opción'
+        ];
+        if(!$request->is_duedate_undefined){
+            $due_date = $request->due_date;
+            $verificate = false;
+        }
+        if (! $request->last_name && !$request->mothers_last_name) {
+            //only for flash message
+            $rules['last_name'] .='required';
+            $messages =[
+                'last_name.required' => 'El campo Apellido Paterno o Materno es requerido.',
+            ];
+        }
+        $this->validate($request, $rules, $messages);
+        Affiliate::create([
+            'user_id' => Auth::user()->id,
+            'identity_card' => $request->identity_card,
+            'last_name' => $request->last_name,
+            'mothers_last_name' => $request->mothers_last_name,
+            'first_name' => $request->first_name,
+            'second_name' => $request->second_name,
+            'city_identity_card_id' => $request->city_identity_card_id,
+            'surname_husband' => $request->surname_husband,
+            'nua' => $request->nua,
+            'phone_number' => $request->phone_number,
+            'cell_phone_number' => $request->cell_phone_number,
+            'due_date' => $due_date,
+            'gender' => $request->gender,
+            'birth_date' => $request->birth_date,
+            'civil_status' => $request->civil_status,
+            'type' => $request->type,
+            'category_id' => $request->category_id,
+            'pension_entity_id' => $request->pension_entity_id,
+            'degree_id' => $request->degree_id,
+            'is_duedate_undefined' => $verificate,
+            'city_birth_id' => $request->city_birth_id
+        ]);
+        return redirect()->route('affiliate.index');
     }
 
     /**telefono
@@ -227,10 +297,10 @@ class AffiliateController extends Controller
         $month_death = $death[1];
         $year_death = $death[2];
         
-        $is_editable = "0";
-        if(isset($retirement_fund->id) && ($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 2))
+        $is_editable = "1";
+        if(isset($retirement_fund->id) && $retirement_fund->procedure_modality_id != 4 && $retirement_fund->procedure_modality_id != 2)
         {
-            $is_editable = "1";
+            $is_editable = "0";
         }
         $quota_aid = $affiliate->quota_aid_mortuaries->last();
         $pension_entities = PensionEntity::all()->pluck('name', 'id');

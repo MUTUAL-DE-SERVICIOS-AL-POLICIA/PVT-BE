@@ -535,7 +535,9 @@ class QuotaAidMortuaryController extends Controller
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
-
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
+        
         $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->with(['kinship', 'city_identity_card'])->orderByDesc('type')->orderBy('id')->get();
 
         foreach ($beneficiaries as $b) {
@@ -671,9 +673,9 @@ class QuotaAidMortuaryController extends Controller
 
         $steps = [];
         //$data = $retirement_fund->getReceptionSummary();
-        $is_editable = "1";
-        if(isset($quota_aid->id))
-            $is_editable = ID::getNonEditableId();
+        $is_editable = 1;        
+        //if(isset($quota_aid->id))
+            //$is_editable = ID::getNonEditableId();
 
 
         $wf_sequences_back = DB::table("wf_states")
