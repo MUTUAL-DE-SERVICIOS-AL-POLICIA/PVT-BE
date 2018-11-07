@@ -16,19 +16,19 @@ class AddedTablesQuotaAid extends Migration
         Schema::table('quota_aid_mortuaries', function (Blueprint $table) {
             $table->boolean('inbox_state')->default(false);
         });
-        Schema::create('quota_aid_mortuary_tag', function (Blueprint $table) {
-            $table->bigInteger('quota_aid_mortuary_id')->unsigned();
-            $table->bigInteger('tag_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
-            $table->unique(['quota_aid_mortuary_id', 'tag_id']);
-            $table->dateTime('date');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
-            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
-        });
-        Schema::table('wf_records', function (Blueprint $table) {
-            $table->bigInteger('quota_aid_id')->nullable();
-        });
+        // Schema::create('quota_aid_mortuary_tag', function (Blueprint $table) {
+        //     $table->bigInteger('quota_aid_mortuary_id')->unsigned();
+        //     $table->bigInteger('tag_id')->unsigned();
+        //     $table->bigInteger('user_id')->unsigned();
+        //     $table->unique(['quota_aid_mortuary_id', 'tag_id']);
+        //     $table->dateTime('date');
+        //     $table->foreign('user_id')->references('id')->on('users');
+        //     $table->foreign('quota_aid_mortuary_id')->references('id')->on('quota_aid_mortuaries')->onDelete('cascade');
+        //     $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
+        // });
+        // Schema::table('wf_records', function (Blueprint $table) {
+        //     $table->bigInteger('quota_aid_id')->nullable();
+        // });
         Schema::create('quota_aid_beneficiary_testimony', function (Blueprint $table) {
             $table->bigInteger('quota_aid_beneficiary_id')->unsigned();
             $table->bigInteger('testimony_id')->unsigned();
@@ -69,21 +69,24 @@ class AddedTablesQuotaAid extends Migration
             $table->bigInteger('procedure_type_id')->unsigned()->nullable();
             $table->foreign('procedure_type_id')->references('id')->on('procedure_types');
         });
-        Schema::create('contribution_voucher', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('contribution_id')->unsigned();
-            $table->bigInteger('voucher_id')->unsigned();
-            $table->foreign('contribution_id')->references('id')->on('contributions');
-            $table->foreign('voucher_id')->references('id')->on('vouchers');
-            $table->timestamps();
-        });
-        Schema::create('aid_contribution_voucher', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('aid_contribution_id')->unsigned();
-            $table->bigInteger('voucher_id')->unsigned();
-            $table->foreign('aid_contribution_id')->references('id')->on('aid_contributions');
-            $table->foreign('voucher_id')->references('id')->on('vouchers');
-            $table->timestamps();
+        // Schema::create('contribution_voucher', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->bigInteger('contribution_id')->unsigned();
+        //     $table->bigInteger('voucher_id')->unsigned();
+        //     $table->foreign('contribution_id')->references('id')->on('contributions');
+        //     $table->foreign('voucher_id')->references('id')->on('vouchers');
+        //     $table->timestamps();
+        // });
+        // Schema::create('aid_contribution_voucher', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->bigInteger('aid_contribution_id')->unsigned();
+        //     $table->bigInteger('voucher_id')->unsigned();
+        //     $table->foreign('aid_contribution_id')->references('id')->on('aid_contributions');
+        //     $table->foreign('voucher_id')->references('id')->on('vouchers');
+        //     $table->timestamps();
+        // });
+        Schema::table('quota_aid_submitted_documents', function (Blueprint $table) {
+            $table->boolean('is_valid')->default(false);
         });
     }
 
@@ -94,6 +97,9 @@ class AddedTablesQuotaAid extends Migration
      */
     public function down()
     {
+        Schema::table('quota_aid_submitted_documents', function (Blueprint $table) {
+            $table->dropColumn('is_valid');
+        });
         Schema::dropIfExists('aid_contribution_voucher');
         Schema::dropIfExists('contribution_voucher');
         Schema::table('quota_aid_correlatives', function (Blueprint $table) {

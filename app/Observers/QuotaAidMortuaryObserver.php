@@ -63,17 +63,17 @@ class QuotaAidMortuaryObserver
         $old_wf_state_sequence = WorkflowState::find($old->wf_state_current_id)->sequence_number;
 
         if ($qa->wf_state_current_id != $old->wf_state_current_id && $wf_state_sequence > $old_wf_state_sequence) {
-            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id,1,"El usuario " . Auth::user()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $qa->wf_state->name . " con nota: " . request()->message . "."));
+            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id, 3, "El usuario " . Auth::user()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $qa->wf_state->name));
 
         }
         if ($qa->wf_state_current_id != $old->wf_state_current_id && $wf_state_sequence < $old_wf_state_sequence) {
-            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id,1,"El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $qa->wf_state->name . "."));
+            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id,4,"El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $qa->wf_state->name ." con nota: " . request()->message . "."));
         }
         if ($old->inbox_state == false && $qa->inbox_state == true && $qa->wf_state_current_id == $old->wf_state_current_id) {
             $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id,1,'El usuario ' . Auth::user()->username . ' Validó el trámite.'));
         }
         if ($old->inbox_state == true && $qa->inbox_state == false && $qa->wf_state_current_id == $old->wf_state_current_id) {
-            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id, 1, 'El usuario ' . Auth::user()->username . ' Canceló el trámite.'));
+            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id, 2, 'El usuario ' . Auth::user()->username . ' Canceló el trámite.'));
         }
     }
 }

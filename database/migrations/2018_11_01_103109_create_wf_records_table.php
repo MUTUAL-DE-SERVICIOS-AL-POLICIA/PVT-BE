@@ -13,10 +13,6 @@ class CreateWfRecordsTable extends Migration
      */
     public function up()
     {
-        Schema::table('quota_aid_submitted_documents', function (Blueprint $table)
-        {
-            $table->boolean('is_valid')->default(false);
-        });
         Schema::create('record_types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
@@ -46,9 +42,6 @@ class CreateWfRecordsTable extends Migration
      */
     public function down()
     {
-        Schema::table('quota_aid_submitted_documents', function (Blueprint $table) {
-            $table->dropColumn('is_valid');
-        });
         Schema::dropIfExists('wf_records');
         Schema::dropIfExists('record_types');
     }

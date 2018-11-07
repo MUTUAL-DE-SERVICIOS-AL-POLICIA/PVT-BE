@@ -33,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
             'retirement_funds' => 'Muserpol\Models\RetirementFund\RetirementFund',
             'quota_aid_mortuaries' => 'Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary',
             'contribution_processes' => 'Muserpol\Models\Contribution\ContributionProcess',
+            'wf_states' => 'Muserpol\Models\Workflow\WorkflowState',
         ]);
     }
 
