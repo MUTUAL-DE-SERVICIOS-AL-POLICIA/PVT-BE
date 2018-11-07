@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Log;
 use Session;
 use Ldap;
+use Muserpol\User;
 
 class LoginController extends Controller
 {
@@ -23,6 +24,14 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
+    public function username()
+    {
+        return 'username';
+    }
     protected function attemptLogin(Request $request)
     {
         return $this->guard()->attempt(
@@ -35,7 +44,6 @@ class LoginController extends Controller
                 $this->validateLogin($request);
                 if ($this->hasTooManyLoginAttempts($request)) {
                     $this->fireLockoutEvent($request);
-
                     return $this->sendLockoutResponse($request);
                 }
                 if ($this->attemptLogin($request)) {
@@ -45,12 +53,9 @@ class LoginController extends Controller
                 return $this->sendFailedLoginResponse($request);
             } 
             else {
-                
                 $ldap = new Ldap();
                 if ($ldap->connection && $ldap->verify_open_port()) {
-                    
                     if ($ldap->bind($request['username'], $request['password'])) {
-                        return $request;
                         $ldap->unbind();
                         $user = User::where('username', $request['username'])->where('status', 'active')->first();
                         if ($user) {
@@ -86,14 +91,7 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
-    public function username()
-    {
-        return 'username';
-    }
+    
     
     public function logout () {
         //logout user
