@@ -713,7 +713,7 @@ class RetirementFundController extends Controller
         $can_cancel = ($retirement_fund->user_id == $user->id && $retirement_fund->inbox_state == true);
 
         //workflow record
-        $workflow_records = WorkflowRecord::where('ret_fun_id', $id)->orderBy('created_at', 'desc')->get();
+        $workflow_records = $retirement_fund->wf_records()->orderBy('date', 'desc')->get();
 
         $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
         if ($first_wf_state) {

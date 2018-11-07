@@ -653,7 +653,7 @@ class QuotaAidMortuaryController extends Controller
         $can_cancel = ($quota_aid->user_id == $user->id && $quota_aid->inbox_state == true);
 
         // workflow record
-        $workflow_records = WorkflowRecord::where('quota_aid_id', $id)->orderBy('created_at', 'desc')->get();
+        $workflow_records = $quota_aid->wf_records()->orderBy('date', 'desc')->get();
         $first_wf_state = QuotaAidRecord::whereRaw("message like '%creo el Tr%'")->first();
         if ($first_wf_state) {
             $re = '/(?<= usuario )(.*)(?= cr.* )/mi';

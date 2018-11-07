@@ -634,6 +634,7 @@ class QuotaAidCertificationController extends Controller
         
 
         $person .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
+
         if($quota_aid->procedure_modality_id != 14) {
             //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) .", a lo cual considera lo siguiente:";
        

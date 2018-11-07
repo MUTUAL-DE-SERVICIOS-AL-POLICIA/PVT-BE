@@ -67,7 +67,7 @@ class RetirementFund extends Model
     }
     public function tags()
     {
-        return $this->belongsToMany('Muserpol\Models\Tag')->withPivot(['date', 'user_id']);
+        return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id','date'])->withTimestamps();
     }
     public function contribution_types()
     {
@@ -76,6 +76,10 @@ class RetirementFund extends Model
     public function ret_fun_correlative()
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetFunCorrelative');
+    }
+    public function wf_records()
+    {
+        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
     }
     public function getBasicInfoCode()
     {

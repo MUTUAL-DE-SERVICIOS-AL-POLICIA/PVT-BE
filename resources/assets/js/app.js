@@ -278,6 +278,7 @@ Vue.component('ret-fun-procedure', require('./components/setting/RetFunProcedure
 Vue.component('affiliate-index', require('./components/affiliate/Index.vue'));
 Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vue'));
 Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
+//Vue.component('affiliate-create', require('./components/affiliate/CreateAffiliate.vue'));
 Vue.component('spouse-show', require('./components/spouse/ShowSpouse.vue'));
 //retirement Fund
 
