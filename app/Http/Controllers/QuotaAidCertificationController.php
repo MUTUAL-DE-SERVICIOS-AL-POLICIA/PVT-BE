@@ -745,7 +745,7 @@ class QuotaAidCertificationController extends Controller
                     $body_file .= "titular fallecido.";   
                 break;                    
                 default:                
-                $body_file .= "referido titular fallecido.";
+                    $body_file .= "referido titular fallecido.";
 
             }
         }        
@@ -839,8 +839,7 @@ class QuotaAidCertificationController extends Controller
         } else 
         {
             $payment .= " de: ";
-        }
-        
+        }        
         if($quota_aid->procedure_modality_id != 14) {
             $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->orderBy('kinship_id')->orderByDesc('state')->get();
             foreach($beneficiaries as $beneficiary){                
