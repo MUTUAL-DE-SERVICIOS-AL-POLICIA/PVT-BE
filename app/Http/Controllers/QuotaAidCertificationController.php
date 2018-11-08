@@ -830,14 +830,15 @@ class QuotaAidCertificationController extends Controller
         $discounts_number = $discounts->where('amount','>','0')->count();
         
         $beneficiaries_count = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->count();            
-        if($quota_aid->procedure_modality_id != 14) {
-            if($quota_aid->procedure_modality_id == 15) {
-                $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios de ":($applicant->gender?"el Viudo ":"la Viuda ")).($affiliate->spouse()->first()->gender=='M'?"el Sr. ":"la Sra. ").Util::fullName($affiliate->spouse()->first())." con C.I. N° ".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion')."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";
+        
+        if($quota_aid->procedure_modality_id != 14) {            
+            
+            if($quota_aid->procedure_modality_id == 15) {                
+                $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"del Viudo ":"de la Viuda ")).($affiliate->spouse()->first()->gender=='M'?"el Sr. ":"la Sra. ").Util::fullName($affiliate->spouse()->first())." con C.I. N° ".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion')."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";
             } else {
-                $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios de ":($applicant->gender?"el beneficiario ":"la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??'Sin extencion')."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";
+                $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"del beneficiario ":"de la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??'Sin extencion')."., en el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong> de la siguiente manera: <br><br>";                
             }
-        } else 
-        {
+        } else {            
             $payment .= " de: ";
         }        
         if($quota_aid->procedure_modality_id != 14) {
@@ -929,7 +930,7 @@ class QuotaAidCertificationController extends Controller
 
     public function printLegalResolution($quota_aid_id){
 
-        return 0;
+        
         $quota_aid =  QuotaAidMortuary::find($quota_aid_id);        
         $affiliate = Affiliate::find($quota_aid->affiliate_id);
         
@@ -941,57 +942,16 @@ class QuotaAidCertificationController extends Controller
             7 =>  31
         ];
 
-        $law = 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
-        NATURALEZA JURÍDICA, Parágrafo I establece: <i>“Se crea la Mutual de Servicios al Policía –
-        MUSERPOL, como institución pública descentralizada, de duración indefinida y patrimonio
-        propio, con autonomía de gestión administrativa, financiera, legal y técnica, bajo tuición del
-        Ministerio de Gobierno.”</i> El Artículo 5 del ÁMBITO DE APLICACIÓN, Parágrafos I y II, refiere: <i>“I.
-        El presente Decreto Supremo es aplicable a todas y todos los afiliados activos y pasivos de la
-        Policía Boliviana, así como a sus beneficiarios de acuerdo a reglamento. II. Para los afiliados
-        activos y pasivos de la Policía Boliviana que hayan sido dados de baja, de forma voluntaria o
-        forzosa, los beneficios establecidos en el presente Decreto Supremo estarán sujetos a
-        reglamentación interna”</i>.<br><br>
-        Que, el Decreto Supremo N° 2829, de 06 de julio de 2016, modificatorio al Decreto Supremo Nº
-        1446 de 19 de diciembre de 2012, en el Artículo 2 de las MODIFICACIONES, Parágrafo III
-        señala: <i>“Se modifica el Parágrafo II del Artículo 14 del Decreto supremo Nº 1446, de 19 de
-        diciembre de 2012, con el siguiente texto: II. El aporte y pago de los beneficios establecidos en
-        los incisos a) (Fondo de Retiro) y b) del Parágrafo precedente, serán objeto de un estudio
-        técnico financiero y estudio actuarial que asegure su sostenibilidad, en el marco del principio de
-        solidaridad”</i>.<br><br>
-        Que, el Decreto Supremo N°3231, de 28 de junio de 2017, modificatoria al Decreto Supremo Nº
-        1446 de 19 de diciembre de 2012, en el Artículo 2 de las MODIFICACIONES, Parágrafos I, III,
-        IV, V y VI señala: <i>“I. Se modifica el inciso c) del Artículo 3 del Decreto Supremo N°1446, de 19
-        de diciembre de 2012, con el siguiente texto: “c) Otorgar el beneficio variable del Fondo de
-        Retiro Policial Solidario, en el marco del principio de Solidaridad; III. Se modifica el inciso a) del
-        Parágrafo I del Artículo 12 del Decreto Supremo N°1446, de 19 de diciembre de 2012, con el
-        siguiente texto: a) Los aportes de los afiliados del sector activo de la Policía Boliviana
-        transferidos por el Comando General de acuerdo a estudio actuarial aprobado; IV. Se modifica
-        el inciso a) del Parágrafo I del Artículo 14 del Decreto Supremo N°1446, de 19 de diciembre de
-        2012, con el siguiente texto: “a) Fondo de Retiro Policial Solidario; V. Se modifica el Parágrafo
-        III del Artículo 14 del Decreto Supremo N°1446, de 19 de diciembre de 2012, con el siguiente
-        texto: “III. Los beneficios señalados en el presente Artículo se rigen por los principios de
-        equidad y solidaridad, debiendo ser otorgados a todos los afiliados, aportantes de la Policía
-        Boliviana en sus diferentes sectores y niveles sin ninguna distinción; VI. Se modifica el Artículo
-        15 del Decreto Supremo N°1446, de 19 de diciembre de 2012, con el siguiente texto:
-        ARTICULO 15 (FONDO DE RETIRO POLICIAL SOLIDARIO). Es el beneficio que brinda
-        protección a los miembros del servicio activo y sus derechohabientes, mediante el
-        reconocimiento de un pago único, con motivo y oportunidad del retiro definitivo de la actividad
-        remunerada dependiente de la Policía Boliviana, el cual será administrado por la MUSERPOL; a
-        ser otorgado en el marco del principio de solidaridad, cuando el retiro se produzca por: a)
-        Jubilación, b) Fallecimiento del titular, c) Retiro forzoso, d) Retiro voluntario”</i>.<br><br>
-        Que, el Estudio Matemático Actuarial 2016 – 2020, aprobado mediante Resolución de Directorio
-        Nº 26/2017, de 11 de agosto de 2017, determina la modalidad y parámetros de calificación para
-        la otorgación del beneficio de Fondo de Retiro Policial Solidario.
+        $law = 'Que, el Decreto Supremo N° 2829, de 06 de julio de 2016, modificatorio al Decreto Supremo Nº 1446 de 19 de diciembre de 2012, en su Artículo 2 de las MODIFICACIONES, Parágrafos I, II, III y IV señalan: <i>“I. Se modifica el inciso d) del Artículo 3 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “d) Otorgar el beneficio de Cuota Mortuoria y Auxilio Mortuorio a favor del sector activo y pasivo de la Policía Boliviana, de acuerdo a reglamentos emitidos por MUSERPOL”; “II. Se modifica el inciso b) del Parágrafo I del Artículo 14 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “b) Cuota Mortuoria y Auxilio Mortuorio”; “III. Se modifica el Parágrafo II del Artículo 14 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “II. El aporte y pago de los beneficios establecidos en los incisos a) y b) del parágrafo precedente, serán objeto de un estudio técnico financiero y estudio actuarial que asegure su sostenibilidad, en el marco del principio de solidaridad”; “IV. Se modifica el Artículo 16 del Decreto Supremo Nº1446, de 19 de diciembre de 2012, con el siguiente texto: “ARTÌCULO 16.- (CUOTA MORTUORIA Y AUXILIO MORTUORIO) I. La Cuota Mortuoria es un beneficio que se otorga a los derechohabientes de los afiliados a MUSERPOL de la Policía Boliviana del sector activo, que consiste en el pago de un monto único y por una sola vez”</i>. 
+        <br> <br>
+        Que, el Estudio Matemático Actuarial 2016 – 2020, aprobado mediante Resolución de Directorio Nº 26/2017, de 11 de agosto de 2017, determina las cuantías para la otorgación del beneficio de Cuota Mortuoria.
         <br><br>
-        Que, el Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de
-        Directorio Nº 31/2017 de 24 de agosto de 2017 y modificado mediante Resolución de Directorio
-        Nº 36/2017 de 20 de septiembre de 2017, Artículos 2,3,5,7,8,10,12,13,15,26,27,'.$art[$retirement_fund->procedure_modality_id].',37,41,44,45 y 55 reconocen el derecho de la otorgación del pago de Fondo de Retiro Policial Solidario.
+        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017, en sus Artículos 2,3,5,7,8,10,12,13,20,21,22,23,24,25,43 y 51 reconocen el derecho de la otorgación del beneficio de <strong>Cuota Mortuoria</strong>.
         <br><br>
-        Que, el Reglamento de Fondo de Retiro Policial Solidario, Artículo 15 del RECONOCIMIENTO
-        DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a
-        partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía
-        Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”</i>.
-        <br><br>';
+        Que, el Reglamento los beneficios de Cuota y Auxilio Mortuorio, en su Artículo 15 del RECONOCIMIENTO DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”</i>.
+        <br><br>
+        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 en su Artículo 55 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento administrativo para la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 014/2018 de 8 de mayo de 2018, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.';
+        return $law;
         $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();        
         if($number->note != "")
         {
