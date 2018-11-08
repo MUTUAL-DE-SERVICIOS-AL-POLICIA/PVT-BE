@@ -787,11 +787,16 @@ class QuotaAidCertificationController extends Controller
         ];
         $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."12"." aportes antes del fallecimiento";
 
-        if($quota_aid->procedure_modality_id == 14) {
-            $body_accounts .= " de la cónyuge.";  
-        } else {
-            $body_accounts .= " del titular.";  
-        }
+        switch($quota_aid->procedure_modality_id) {            
+            case 14:
+                $body_accounts .= " de la cónyuge.";
+            break;
+            case 15:
+                $body_accounts .= " de la viuda.";
+            break;
+            default:
+                $body_accounts .= " del titular.";
+        }        
         ////------- INDIVIDUAL ACCOUTNS ------////
 
         //----- QUALIFICATION -----////      
