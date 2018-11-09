@@ -247,6 +247,7 @@ Route::group(['middleware' => ['auth']], function () {
 		// Contribution process
 
 		Route::resource('contribution_process', 'ContributionProcessController');
+		Route::get('get_all_contribution_process', 'ContributionProcessController@getAllContributionProcess');
 
 			//inbox
 		Route::get('inbox', function () {

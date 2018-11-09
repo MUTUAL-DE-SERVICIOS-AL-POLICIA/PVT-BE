@@ -7,6 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 class ContributionProcess extends Model
 {
     protected $guarded = [];
+    public function affiliate()
+    {
+        return $this->belongsTo('Muserpol\Models\Affiliate');
+    }
+    public function city()
+    {
+        return $this->belongsTo('Muserpol\Models\City');
+    }
+    public function procedure_modality()
+    {
+        return $this->belongsTo('Muserpol\Models\ProcedureModality');
+    }
+    public function workflow()
+    {
+        return $this->belongsTo('Muserpol\Models\Workflow\Workflow');
+    }
     public function contributions()
     {
         return $this->morphedByMany('Muserpol\Models\Contribution\Contribution', 'quotable')->withTimestamps();
