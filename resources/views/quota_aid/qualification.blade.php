@@ -62,7 +62,7 @@
                                 </tr>
                                 <tr>
                                     <td>Causa de Fallecimiento del {{ ($quota_aid->getDeceased() instanceof Muserpol\Models\Affiliate) ? 'Titular' : ' o de la Esposa (o)' }} </td>
-                                    <td>{{ $affiliate->reason_death }}</td>
+                                    <td>{{ $quota_aid->getDeceased()->reason_death }}</td>
                                 </tr>
                                 <tr class="font-bold">
                                     <td>Total {{ $quota_aid->procedure_modality->procedure_type->name }}</td>

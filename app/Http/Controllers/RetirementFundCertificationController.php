@@ -1649,7 +1649,7 @@ class RetirementFundCertificationController extends Controller
             $payment .= " de:<br><br>";
         }
         if ($retirement_fund->procedure_modality_id == 4) {
-            $beneficiaries = RetFunBeneficiary::where('retirement_fund_id', $retirement_fund->id)->orderBy('kinship_id')->orderByDesc('state')->get();
+            $beneficiaries = RetFunBeneficiary::where('retirement_fund_id', $retirement_fund->id)->orderByDesc('state')->orderBy('kinship_id')->get();
             foreach ($beneficiaries as $beneficiary) {
                 if (!$beneficiary->state) {
                     $reserved_quantity = RetFunBeneficiary::where('retirement_fund_id', $retirement_fund->id)->where('state', false)->count();
