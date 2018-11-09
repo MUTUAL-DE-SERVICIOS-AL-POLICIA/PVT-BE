@@ -971,23 +971,18 @@ class QuotaAidCertificationController extends Controller
             }            
             $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>';
             
-
         }
 
 
-        $reception.= ', solicita el pago de Fondo de Retiro Policial Solidario, adjuntando documentación solicitada
-        por la Unidad; por consiguiente, habiéndose cumplido con los requisitos de orden establecido
-        en el Reglamento de Fondo de Retiro Policial Solidario, se dio curso al trámite.<br>';
+        $reception.= ', solicita el pago de <strong>'.$quota_aid->procedure_modality->procedure_type->second_name.'</strong>, adjuntando documentación solicitada por la Unidad según el Reglamento. Por consiguiente, habiéndose cumplido con los requisitos de orden establecido en el Artículo 43 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se dio curso con el trámite.<br>';
 
         if($number->note != "") {
             $reception = $number->note."<br>";
-        }
-        return $reception;
+        }        
         //----- QUALIFICATION -----////      
         $body_qualification = "";
-        $qualification_id = 33;
-        $qualification = QuotaAidCorrelative::where('quota_aid_id',$quota_aid->id)->where('wf_state_id',$qualification_id)->first();
-        return $qualification;
+        $qualification_id = 37;
+        $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$qualification_id)->first();        
         $months  = $affiliate->getTotalQuotes();        
         $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario <b>N° ".$qualification->code."</b> de fecha <strong>".Util::getStringDate($qualification->date)."</strong>, de la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente ".($affiliate->gender=='M'?'al':'a la')."<strong>&nbsp; "
         .$affiliate->fullNameWithDegree()."</strong> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened."</b>, determina el monto de <b>". Util::formatMoneyWithLiteral($quota_aid->subtotal_ret_fun)."</b>";
