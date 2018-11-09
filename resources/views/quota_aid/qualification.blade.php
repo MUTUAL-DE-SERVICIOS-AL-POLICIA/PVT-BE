@@ -65,7 +65,7 @@
                                     <td>{{ $affiliate->reason_death }}</td>
                                 </tr>
                                 <tr class="font-bold">
-                                    <td>Total Cuota Mortuoria</td>
+                                    <td>Total {{ $quota_aid->procedure_modality->procedure_type->name }}</td>
                                     <td>Bs {{ Util::formatMoney($procedure->amount) ?? '-' }}</td>
                                 </tr>
                             </tbody>
