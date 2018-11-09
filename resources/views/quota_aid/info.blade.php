@@ -62,7 +62,7 @@
                         <strong>Estado:</strong>
                     </div>
                     <div class="col-md-4">
-                        <select class="form-control" v-model="form.ret_fun_state_id" ref="modality" name="ret_fun_state_id" :disabled='!editing' >
+                        <select class="form-control" v-model="form.procedure_state_id" ref="modality" name="procedure_state_id" :disabled='!editing' >
                             <option v-for="(state, index) in states" :value="state.id" :key="index">@{{state.name}}</option>
                         </select>
                     </div>

@@ -104,7 +104,7 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
                 }, 100);
             },
             canAddBeneficiary(){
-                return this.procedureModalityId == 1 || this.procedureModalityId == 4;
+                return this.procedureModalityId != 14;
             },
             removeBeneficiary(index){
                 this.beneficiaries.splice(index,1);
