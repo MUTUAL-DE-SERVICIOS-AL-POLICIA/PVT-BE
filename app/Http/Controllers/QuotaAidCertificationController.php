@@ -888,7 +888,7 @@ class QuotaAidCertificationController extends Controller
         $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
         /*HEADER FOOTER*/
         $footerHtml = view()->make('ret_fun.print.legal_footer', ['bar_code' => $bar_code])->render();
-        $headerHtml = view()->make('ret_fun.print.legal_header')->render();
+        $headerHtml = view()->make('ret_fun.print.legal_header', ['quota_aid' => $quota_aid])->render();
         $user = User::find($number->user_id);
         $data = [
             'quota_aid' => $quota_aid,
