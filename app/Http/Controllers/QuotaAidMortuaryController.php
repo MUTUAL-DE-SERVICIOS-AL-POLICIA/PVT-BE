@@ -1227,6 +1227,42 @@ class QuotaAidMortuaryController extends Controller
                 }
         }
 
+        $procedure_requirements = ProcedureRequirement::
+        select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
+        ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
+        ->where('procedure_requirements.number','0')
+        ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+        ->orderBy('procedure_requirements.number','ASC')
+        ->get();
+
+        $quota_aid = QuotaAidMortuary::select('id','procedure_modality_id')->find($id);
+    
+        $aditional =  $request->aditional_requirements;
+        $num ="";
+        
+        foreach($procedure_requirements as $requirement){
+        $needle = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id',$id)
+        ->where('procedure_requirement_id',$requirement->id)
+        ->first();
+        if(isset($needle)) {
+        if(!in_array($requirement->id,$aditional)){
+        $num.=$requirement->id.' ';
+        $needle->delete();
+        $needle->forceDelete();
+        }
+        } else {
+        if(in_array($requirement->id,$aditional)) {
+        $submit = new QuotaAidSubmittedDocument();
+        $submit->quota_aid_mortuary_id = $quota_aid->id;
+        $submit->procedure_requirement_id = $requirement->id;
+        $submit->reception_date = date('Y-m-d');
+        $submit->comment = "";
+        $submit->save();
+        }
+        }
+
+        }
+
         return $num;
     }
     public function getTestimonies($quota_aid_id)
