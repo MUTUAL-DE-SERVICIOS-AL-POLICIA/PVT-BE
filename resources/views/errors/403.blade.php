@@ -1,4 +1,4 @@
-@extends('layouts.sinmenu')
+@extends('layouts.login')
 
 @section('title', 'Acceso Restringido')
 
