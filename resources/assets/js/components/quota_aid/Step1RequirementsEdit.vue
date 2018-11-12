@@ -223,10 +223,12 @@
             store(quota_aid){
                 if(this.rol!=38){
                     let uri = `/quota_aid/${this.quota_aid.id}/edit_requirements`;                
+                    let req = $('#aditional_requirements').val();
                     console.log(uri);
                     axios.post(uri,
                         {
-                        requirements: this.requirementList
+                        requirements: this.requirementList,
+                        aditional_requirements: req
                         }
                     ).then(response =>{
                         flash("Verificacion Correcta");
