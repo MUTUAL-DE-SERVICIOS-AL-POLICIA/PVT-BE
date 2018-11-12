@@ -10,7 +10,7 @@
     <div class="row text-center">
         @php
             $count = count($roles);
-            $style = "";  
+            $style = "";
         @endphp
         @if($count == 1)
             @php

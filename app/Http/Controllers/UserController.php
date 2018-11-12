@@ -250,9 +250,7 @@ class UserController extends Controller
 
     public function changerol()
     {
-        $roles = Auth::user()->roles;
-        // return $roles;
-        // dd($roles);
+        $roles = Auth::user()->roles->sortBy('module_id');
         $new_roles = array();
         foreach ($roles as $role) {
             # code...
@@ -261,7 +259,6 @@ class UserController extends Controller
             }
         }
         //return $new_roles;
-
         return view('auth.change')->with('roles', $new_roles);
     }
     public function postchangerol(Request $request)
@@ -270,7 +267,6 @@ class UserController extends Controller
 
 
         $roles = Auth::user()->roles;
-
         foreach ($roles as $rol) {
             # code...
             if ($request->rol_id == $rol->id) {
