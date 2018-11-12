@@ -984,12 +984,8 @@ class QuotaAidCertificationController extends Controller
         $qualification_id = 37;
         $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$qualification_id)->first();        
         $months  = $affiliate->getTotalQuotes();        
-        $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario <b>N° ".$qualification->code."</b> de fecha <strong>".Util::getStringDate($qualification->date)."</strong>, de la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente ".($affiliate->gender=='M'?'al':'a la')."<strong>&nbsp; "
-        .$affiliate->fullNameWithDegree()."</strong> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened."</b>, determina el monto de <b>". Util::formatMoneyWithLiteral($quota_aid->subtotal_ret_fun)."</b>";
-        if($affiliate->hasAvailability()) {
-            $body_qualification .=", de la misma forma realizó el cálculo por el reconocimiento de aportes laborales durante el periodo de disponibilidad, por no ser considerados en la calificación del beneficio de Fondo de Retiro Policial Solidario, 
-            de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 – 2020; correspondiéndole el monto de <b>".Util::formatMoneyWithLiteral($quota_aid->total_availability)."</b>, haciendo un monto total de<strong> ".Util::formatMoneyWithLiteral($quota_aid->total_availability+$quota_aid->subtotal_ret_fun)."</strong>";
-        }
+        $body_qualification .= "Que, mediante Calificación de ".$quota_aid->procedure_modality->procedure_type->second_name." <b>N° ".$qualification->code."</b> de fecha ".Util::getStringDate($qualification->date).", de la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente ".($affiliate->gender=='M'?'al':'a la')."<strong>&nbsp; "
+        .$affiliate->fullNameWithDegree()."</strong> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened."</b>, determina la cuant&iacute;a de <b>". Util::formatMoneyWithLiteral($quota_aid->total)."</b>";    
         return $body_qualification;
         $discounts = $quota_aid->discount_types();
         $discount = $discounts->where('discount_type_id','1')->first();        
