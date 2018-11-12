@@ -433,26 +433,28 @@ class QuotaAidMortuaryController extends Controller
 
         if($account_type == ID::applicant()->legal_guardian_id)
         {
-            $legal_guardian = new QuotaAidLegalGuardian();
-            $legal_guardian->retirement_fund_id = $retirement_found->id;
-            $legal_guardian->city_identity_card_id = $request->applicant_city_identity_card;
-            $legal_guardian->identity_card = $request->applicant_identity_card  ;
-            $legal_guardian->last_name = $request->applicant_last_name;
-            $legal_guardian->mothers_last_name = $request->applicant_mothers_last_name;
-            $legal_guardian->first_name = $request->applicant_first_name;
-            $legal_guardian->second_name = $request->applicant_second_name;
-            $legal_guardian->surname_husband = $request->applicant_surname_husband;
-            //$legal_guardian->gender = "M";
-            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));
-            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+            
+            $legal_guardian = new QuotaAidLegalGuardian();            
+            $legal_guardian->city_identity_card_id = $request->legal_guardian_identity_card_id;
+            $legal_guardian->identity_card = strtoupper(trim($request->legal_guardian_identity_card));
+            $legal_guardian->last_name = strtoupper(trim($request->legal_guardian_last_name));
+            $legal_guardian->mothers_last_name = strtoupper(trim($request->legal_guardian_mothers_last_name));
+            $legal_guardian->first_name = strtoupper(trim($request->legal_guardian_first_name));
+            $legal_guardian->second_name = strtoupper(trim($request->legal_guardian_second_name));
+            $legal_guardian->surname_husband = strtoupper(trim($request->legal_guardian_surname_husband));
+            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
+            //$legal_guardian->date_authority = Util::verifyBarDate($request->legal_guardian_date_authority) ? Util::parseBarDate($request->legal_guardian_date_authority) : $request->legal_guardian_date_authority;
+            $legal_guardian->gender = $request->legal_guardian_gender;
             $legal_guardian->save();
 
-            $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
-            $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
-            $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
+
+            $beneficiary_legal_guardian = new QuotaAidBeneficiaryLegalGuardian();
+            $beneficiary_legal_guardian->quota_aid_beneficiary_id = $beneficiary->id;
+            $beneficiary_legal_guardian->quota_aid_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
             //$beneficiary->type = "N";
         }
