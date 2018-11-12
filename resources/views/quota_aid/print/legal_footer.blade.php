@@ -42,7 +42,7 @@
             <div style="float:left; font-family:sans-serif; font-size:14px;">
                 <span>PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL &nbsp;</span>
             </div>
-            <div style="float:right; font-family:sans-serif; font-size:14px;">
+            <div style="float:right; font-family:sans-serif; font-size:14px; text-transform: uppercase">
                 {{-- <span class="page"></span> --}}
                 <span class="">DICTAMEN LEGAL - {{ optional(optional($quota_aid->procedure_modality)->procedure_type)->second_name }}</span>
             </div>
