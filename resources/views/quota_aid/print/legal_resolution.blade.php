@@ -18,7 +18,7 @@
         </div>
         <div class="block">
                 <div class="text-center text-2 font-bold underline uppercase">
-                        REF: {{$quota_aid->procedure_modality->procedure_type->name}}-{{$quota_aid->procedure_modality->name}}
+                        REF: {{$quota_aid->procedure_modality->procedure_type->second_name}}-{{$quota_aid->procedure_modality->name}}
                     </div>
             <span class="block text-center">
                     <td>{{ $actual_city }}, <b>{{ $actual_date }}</b></td>

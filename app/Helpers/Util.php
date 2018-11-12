@@ -201,7 +201,7 @@ class Util
         $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();  
         $quota_aid = QuotaAidMortuary::find($quota_aid_mortuary_id);
         Log::info("role_id: ". Session::get('rol_id'));
-        $reprint = QuotaAidCorrelative::where('procedure_type_id',$quota_aid->procedure_type_id)->where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
+        $reprint = QuotaAidCorrelative::where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)->where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
         
         $last_quota_aid = QuotaAidCorrelative::
                                 where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)                                
