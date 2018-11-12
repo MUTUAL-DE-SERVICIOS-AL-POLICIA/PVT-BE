@@ -248,6 +248,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::resource('contribution_process', 'ContributionProcessController');
 		Route::get('get_all_contribution_process', 'ContributionProcessController@getAllContributionProcess');
+		Route::get('affiliate/{affiliate}/contribution_process/create', 'ContributionProcessController@create')->name('create_contribution_process');
 
 			//inbox
 		Route::get('inbox', function () {

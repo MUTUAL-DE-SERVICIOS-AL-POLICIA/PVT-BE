@@ -89,6 +89,8 @@ use Muserpol\Models\Contribution\ContributionCommitment;
 use Muserpol\Policies\ContributionCommitmentPolicy;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Policies\QuotaAidMortuaryPolicy;
+use Muserpol\Policies\ContributionProcessPolicy;
+use Muserpol\Models\Contribution\ContributionProcess;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -143,6 +145,7 @@ class AuthServiceProvider extends ServiceProvider
          /** quota aid */
          QuotaAidMortuary::class => QuotaAidMortuaryPolicy::class,
 
+         ContributionProcess::class => ContributionProcessPolicy::class,
     ];
 
     /**
