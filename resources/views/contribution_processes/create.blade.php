@@ -19,29 +19,34 @@
                         @endforeach
                     </ol>
                 </div>
-                @endif {!! Form::open(['url' => 'ret_fun', 'method' => 'POST', 'id'=>'ret-fun-form']) !!}
+                @endif {!! Form::open(['url' => 'contribution_process', 'method' => 'POST', 'id'=>'contribution-process-form']) !!}
                 <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
-                <contribution-process-form inline-template>
+                <contribution-process-form affiliate-id="{{$affiliate->id}}" inline-template>
                     <form-wizard color="#1AB394" title="" subtitle="" back-button-text="Volver" next-button-text="Siguiente" finish-button-text="Finalizar"
                         error-color="#ED5565" @on-complete="onFinish" @on-loading="setLoading">
                         <ret-fun-create-info></ret-fun-create-info>
                         <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
-                            <contribution-process-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}"
-                            :procedure-types="{{$procedure_types}}" :show-requirements-error="showRequirementsError" inline-template>
+                            <contribution-process-step1-requirements
+                                :modalities="{{ $modalities }}"
+                                :requirements="{{ $requirements }}"
+                                :user="{{ $user }}"
+                                :cities="{{ $cities }}"
+                                :procedure-types="{{$procedure_types}}"
+                                :show-requirements-error="showRequirementsError"
+                                inline-template>
                                 @include('contribution_processes.step1_requirements')
                             </contribution-process-step1-requirements>
-                            <contribution-process-step2-contributor :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}"
-                                inline-template>
+                        </tab-content>
+                        <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
+                            <contribution-process-step2-contributor :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template :today="`{{ now()->format('d/m/Y') }}`">
                                 @include('contribution_processes.step2_contributor')
                             </contribution-process-step2-contributor>
                         </tab-content>
-                        <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
+                        <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
+                            <contribution-process-step3-letter inline-template >
+                                @include('contribution_processes.step3_letter')
+                            </contribution-process-step3-letter>
                         </tab-content>
-                        {{-- <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
-                            <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
-                                @include('ret_fun.step3_beneficiaries')
-                            </ret-fun-step3-beneficiaries>
-                        </tab-content> --}}
                     </form-wizard>
                 </contribution-process-form>
                 {!! Form::close() !!}

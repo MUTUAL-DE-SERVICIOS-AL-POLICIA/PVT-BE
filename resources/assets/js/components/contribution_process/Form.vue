@@ -1,6 +1,9 @@
 <script>
 import {scroller} from 'vue-scrollto/src/scrollTo'
 export default {
+    props:[
+        'affiliateId'
+    ],
     data(){
         return{
             pass:false,
@@ -11,11 +14,12 @@ export default {
             email:null,
             phone:null,
             url:null,
+            hola: 'hola'
         }
     },
     methods: {
         onFinish() {
-            document.getElementById("ret-fun-form").submit();
+            document.getElementById("contribution-process-form").submit();
         },
         setLoading: function(value) {
             this.loadingWizard = value;
@@ -25,12 +29,12 @@ export default {
         },
         validateFirstStep() {
             this.showRequirementsError = false;
-            if (!this.$refs.uno.$children[0].city_end_id) {
+            if (!this.$refs.uno.$children[0].city_id) {
                 return false;
             }
-            if (!this.$refs.uno.$children[0].modality) {
-                return false;
-            }
+            // if (!this.$refs.uno.$children[0].modality) {
+            //     return false;
+            // }
             let x=this.$refs.uno.$children[0].requirementList;
             var someRequirement=true;
             Object.keys(x).forEach(function(key) {
@@ -48,39 +52,63 @@ export default {
 
         },
         validateSecondStep() {
-            if (!this.$refs.dos.$children[0].applicant_type) {
-                return false;
-            }
-            if (!this.$refs.dos.$children[0].applicant_identity_card) {
-                return false;
-            }
-            if (!this.$refs.dos.$children[0].applicant_first_name) {
-                return false;
-            }
-            if (!this.$refs.dos.$children[0].applicant_kinship_id) {
-                return false;
-            }
-            if (!this.$refs.dos.$children[0].applicant_city_identity_card_id) {
-                return false;
-            }
-            if (!this.$refs.dos.$children[0].applicant_gender) {
-                return false;
-            }
-            if (!this.$refs.dos.$children[0].date_derelict) {
-                return false;
-            }
+            // if (!this.$refs.dos.$children[0].applicant_type) {
+            //     return false;
+            // }
+            // if (!this.$refs.dos.$children[0].applicant_identity_card) {
+            //     return false;
+            // }
+            // if (!this.$refs.dos.$children[0].applicant_first_name) {
+            //     return false;
+            // }
+            // if (!this.$refs.dos.$children[0].applicant_kinship_id) {
+            //     return false;
+            // }
+            // if (!this.$refs.dos.$children[0].applicant_city_identity_card_id) {
+            //     return false;
+            // }
+            // if (!this.$refs.dos.$children[0].applicant_gender) {
+            //     return false;
+            // }
+            // if (!this.$refs.dos.$children[0].date_derelict) {
+            //     return false;
+            // }
 
-            if (this.$refs.dos.$children[0].applicant_type == 3) {
-                // 3 id de Apoderado
-                if (!this.$refs.dos.$children[0].legal_guardian_first_name) {
-                    return false;
-                }
-                if (!this.$refs.dos.$children[0].legal_guardian_identity_card) {
-                    return false;
-                }
+            // if (this.$refs.dos.$children[0].applicant_type == 3) {
+            //     // 3 id de Apoderado
+            //     if (!this.$refs.dos.$children[0].legal_guardian_first_name) {
+            //         return false;
+            //     }
+            //     if (!this.$refs.dos.$children[0].legal_guardian_identity_card) {
+            //         return false;
+            //     }
+            // }
+            let commitment = {
+                commitment_type: this.$refs.dos.$children[0].commitment_type,
+                number: this.$refs.dos.$children[0].number,
+                commision_date: this.$refs.dos.$children[0].commision_date,
+                destination: this.$refs.dos.$children[0].destination,
+                commitment_date: this.$refs.dos.$children[0].commitment_date,
+                pension_declaration: this.$refs.dos.$children[0].pension_declaration,
+                pension_declaration_date: this.$refs.dos.$children[0].pension_declaration_date,
+                date_commitment: this.$refs.dos.$children[0].date_commitment,
+                start_contribution_date: this.$refs.dos.$children[0].start_contribution_date,
+                contributorType: this.$refs.dos.$children[0].contributorType,
             }
+            this.$store.commit("contributionProcessForm/updateCommitment", commitment);
+            let procedure_modality_id= this.$store.state.contributionProcessForm.modality_id;
+            axios.post(`/affiliate/${this.affiliateId}/contribution_process/save_commitment`,{
+                commitment: commitment,
+                procedure_modality_id: procedure_modality_id,
+                affiliate_id: this.affiliateId
+            }).then(response => {
+                console.log(response.data);
+            }).catch(error => {
+                console.log(error);
+            });
 
-            this.sendApplicant();
+
+
             const scrollToFooterCreateBeneficiaries = scroller();
             scrollToFooterCreateBeneficiaries('#ret-fun-form-header');
             return true;

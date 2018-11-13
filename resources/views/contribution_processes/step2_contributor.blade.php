@@ -2,6 +2,7 @@
     <div class="ibox float-e-margins">
         <div class="ibox-content">
             <legend>Datos del afiliado</legend>
+            {{--
             <div class="row">
                 <div class="col-md-6" :class="{'has-error': errors.has('date_death') }" v-if="canAddDataAffiliate">
                     <div class="form-group">
@@ -27,7 +28,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
     <div class="ibox float-e-margins">
@@ -36,50 +37,50 @@
                 <div class="col-md-12">
                     <legend>Datos del Aportante</legend>
                     <div class="row">
-                        <div class="col-md-6" :class="{'has-error': errors.has('accountType') }">
+                        <div class="col-md-6" :class="{'has-error': errors.has('contributorType') }">
                             <div class="col-md-4">
-                                <label class="control-label">Tipo de Solicitante</label>
+                                <label class="control-label">Tipo de Aportante</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control" autofocus name="accountType" @change="change_applicant()" v-model.trim="applicant_type" v-validate.initial="'required'">
+                                <select class="form-control" autofocus name="contributorType" @change="changeContributor()" v-model.trim="contributorType" v-validate.initial="'required'">
                                     <option :value="null"></option>
-                                    <option v-for="(applicant_type,index) in applicant_types" :value="applicant_type.id">@{{applicant_type.name}}</option>
+                                    <option v-for="(ct,index) in contributorTypes" :value="ct.id">@{{ct.name}}</option>
                                 </select>
-                                <i v-show="errors.has('accountType')" class="fa fa-warning text-danger"></i>
-                                <span v-show="errors.has('accountType')" class="text-danger">@{{ errors.first('accountType') }}</span>
+                                <i v-show="errors.has('contributorType')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('contributorType')" class="text-danger">@{{ errors.first('contributorType') }}</span>
                             </div>
                         </div>
                     </div>
                     <br>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group" :class="{'has-error': errors.has('applicant_identity_card') }">
+                            <div class="form-group" :class="{'has-error': errors.has('contributor_identity_card') }">
                                 <div class="col-md-4">
                                     <label class="control-label">cédula de identidad</label>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <input type="text" name="applicant_identity_card" v-model.trim="applicant_identity_card" class="form-control" v-validate.initial="'required'">
+                                        <input type="text" name="contributor_identity_card" v-model.trim="contributor_identity_card" class="form-control" v-validate.initial="'required'">
                                         <span class="input-group-btn">
-                                            <button class="btn" :class="errors.has('applicant_identity_card') ? 'btn-danger' : 'btn-primary' " type="button" @click="searchApplicant" type="button" role="button"><i class="fa fa-search"></i></button>
+                                            <button class="btn" :class="errors.has('contributor_identity_card') ? 'btn-danger' : 'btn-primary' " type="button" @click="searchcontributor" type="button" role="button"><i class="fa fa-search"></i></button>
                                         </span>
                                     </div>
-                                    <i v-show="errors.has('applicant_identity_card')" class="fa fa-warning text-danger"></i>
-                                    <span v-show="errors.has('applicant_identity_card')" class="text-danger">@{{ errors.first('applicant_identity_card') }}</span>
+                                    <i v-show="errors.has('contributor_identity_card')" class="fa fa-warning text-danger"></i>
+                                    <span v-show="errors.has('contributor_identity_card')" class="text-danger">@{{ errors.first('contributor_identity_card') }}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6" :class="{'has-error': errors.has('applicant_city_identity_card') }">
+                        <div class="col-md-6" :class="{'has-error': errors.has('contributor_city_identity_card') }">
                             <div class="col-md-4">
                                 <label class="control-label">Ciudad de Expedición</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control" name="applicant_city_identity_card" v-model.trim="applicant_city_identity_card_id" v-validate.initial="'required'">
+                                <select class="form-control" name="contributor_city_identity_card" v-model.trim="contributor_city_identity_card_id" v-validate.initial="'required'">
                                     <option :value="null"></option>
                                     <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
                                 </select>
-                                <i v-show="errors.has('applicant_city_identity_card')" class="fa fa-warning text-danger"></i>
-                                <span v-show="errors.has('applicant_city_identity_card')" class="text-danger">@{{ errors.first('applicant_city_identity_card') }}</span>
+                                <i v-show="errors.has('contributor_city_identity_card')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('contributor_city_identity_card')" class="text-danger">@{{ errors.first('contributor_city_identity_card') }}</span>
                             </div>
                         </div>
                     </div>
@@ -90,7 +91,7 @@
                                 <label class="control-label">Primer Nombre</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="applicant_first_name" v-model.trim="applicant_first_name" class="form-control">
+                                <input type="text" name="contributor_first_name" v-model.trim="contributor_first_name" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -98,7 +99,7 @@
                                 <label class="control-label">Segundo Nombre</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="applicant_second_name" v-model.trim="applicant_second_name" class="form-control">
+                                <input type="text" name="contributor_second_name" v-model.trim="contributor_second_name" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -109,7 +110,7 @@
                                 <label class="control-label">Apellido Paterno</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="applicant_last_name" v-model.trim="applicant_last_name" class="form-control">
+                                <input type="text" name="contributor_last_name" v-model.trim="contributor_last_name" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -117,7 +118,7 @@
                                 <label class="control-label">Apellido Materno</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="applicant_mothers_last_name" v-model.trim="applicant_mothers_last_name" class="form-control">
+                                <input type="text" name="contributor_mothers_last_name" v-model.trim="contributor_mothers_last_name" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -128,7 +129,7 @@
                                 <label class="control-label">Apellido de Casada</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" :disabled="applicantIsMale" name="applicant_surname_husband" v-model.trim="applicant_surname_husband"
+                                <input type="text" :disabled="contributorIsMale" name="contributor_surname_husband" v-model.trim="contributor_surname_husband"
                                     class="form-control">
                             </div>
                         </div>
@@ -143,29 +144,29 @@
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-md-6" :class="{'has-error': errors.has('applicant_birth_date') }">
+                        <div class="col-md-6" :class="{'has-error': errors.has('contributor_birth_date') }">
                             <div class="col-md-4">
                                 <label class="control-label">Fecha de Nacimiento</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" data-date="true" name="applicant_birth_date" v-model.trim="applicant_birth_date"
+                                <input type="text" class="form-control" data-date="true" name="contributor_birth_date" v-model.trim="contributor_birth_date"
                                     v-validate.initial="'required|date_format:DD/MM/YYYY'">
-                                <i v-show="errors.has('applicant_birth_date')" class="fa fa-warning text-danger"></i>
-                                <span v-show="errors.has('applicant_birth_date')" class="text-danger">@{{ errors.first('applicant_birth_date') }}</span>
+                                <i v-show="errors.has('contributor_birth_date')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('contributor_birth_date')" class="text-danger">@{{ errors.first('contributor_birth_date') }}</span>
                             </div>
                         </div>
-                        <div class="col-md-6" :class="{'has-error': errors.has('applicant_gender') }">
+                        <div class="col-md-6" :class="{'has-error': errors.has('contributor_gender') }">
                             <div class="col-md-4">
                                 <label class="control-label">Genero</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control m-b" name="applicant_gender" v-model.trim="applicant_gender" v-validate.initial="'required'">
+                                <select class="form-control m-b" name="contributor_gender" v-model.trim="contributor_gender" v-validate.initial="'required'">
                                     <option :value="null"></option>
                                     <option value="M">Masculino</option>
                                     <option value="F">Femenino</option>
                                 </select>
-                                <i v-show="errors.has('applicant_gender')" class="fa fa-warning text-danger"></i>
-                                <span v-show="errors.has('applicant_gender')" class="text-danger">@{{ errors.first('applicant_gender') }}</span>
+                                <i v-show="errors.has('contributor_gender')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('contributor_gender')" class="text-danger">@{{ errors.first('contributor_gender') }}</span>
                             </div>
                         </div>
                     </div>
@@ -173,7 +174,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-4">
-                                <label class="control-label">Teléfono del Solicitante</label>
+                                <label class="control-label">Teléfono del Aportante</label>
                             </div>
                             <div class="col-md-8">
                                 <div class="row">
@@ -181,11 +182,11 @@
                                         <button class="btn btn-success" type="button" @click="addPhoneNumber"><i class="fa fa-plus"></i></button>
                                     </div>
                                     <div class="col-md-10">
-                                        <div v-for="(phone,index) in applicant_phone_numbers">
+                                        <div v-for="(phone,index) in contributor_phone_numbers">
                                             <div class="input-group">
-                                                <input type="text" name="applicant_phone_number[]" v-model.trim="phone.value" :key="index" class="form-control" data-phone="true">
+                                                <input type="text" name="contributor_phone_number[]" v-model.trim="phone.value" :key="index" class="form-control" data-phone="true">
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-danger" v-show="applicant_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
+                                                    <button class="btn btn-danger" v-show="contributor_phone_numbers.length > 1" @click="deletePhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                                 </span>
                                             </div>
                                             <!-- /input-group -->
@@ -198,7 +199,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="col-md-4">
-                                <label class="control-label">Celular del Solicitante</label>
+                                <label class="control-label">Celular del Aportante</label>
                             </div>
                             <div class="col-md-8">
                                 <div class="row">
@@ -206,12 +207,12 @@
                                         <button class="btn btn-success" type="button" @click="addCellPhoneNumber"><i class="fa fa-plus"></i></button>
                                     </div>
                                     <div class="col-md-10">
-                                        <div v-for="(cell_phone,index) in applicant_cell_phone_numbers">
+                                        <div v-for="(cell_phone,index) in contributor_cell_phone_numbers">
                                             <div class="input-group">
-                                                <input type="text" name="applicant_cell_phone_number[]" v-model.trim="cell_phone.value" :key="index" class="form-control"
+                                                <input type="text" name="contributor_cell_phone_number[]" v-model.trim="cell_phone.value" :key="index" class="form-control"
                                                     data-cell-phone="true">
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-danger" v-show="applicant_cell_phone_numbers.length > 1" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
+                                                    <button class="btn btn-danger" v-show="contributor_cell_phone_numbers.length > 1" @click="deleteCellPhoneNumber(index)" type="button"><i class="fa fa-trash"></i></button>
                                                 </span>
                                             </div>
                                             <!-- /input-group -->
@@ -384,169 +385,131 @@
             </form>
         </div>
     </div>
-    <div class="ibox float-e-margins">
+    <div class="ibox float-e-margins" v-if="contributionProcess.modality_id == 18" key="pasivo">
         <div class="ibox-content">
-            <legend>Direccion del Solicitante (@{{ applicant_type }})</legend>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group"><label class="col-sm-4 control-label">Zona</label>
-                        <div class="col-sm-8"><input type="text" name="beneficiary_zone" v-model.trim="beneficiary_zone" class="form-control"></div>
+            <div class="col-md-12">
+                <legend>Datos para la carta de compromiso</legend>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Declaración de Pensión</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="pension_declaration" v-model.trim="pension_declaration" class="form-control">
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group"><label class="col-sm-4 control-label">Calle</label>
-                        <div class="col-sm-8"><input type="text" name="beneficiary_street" v-model.trim="beneficiary_street" class="form-control"></div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6" :class="{'has-error': errors.has('pension_declaration_date') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Fecha de Declaración</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" v-date name="pension_declaration_date" v-model.trim="pension_declaration_date" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
+                            <i v-show="errors.has('pension_declaration_date')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('pension_declaration_date')" class="text-danger">@{{ errors.first('pension_declaration_date') }}</span>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group"><label class="col-sm-4 control-label">Nro</label>
-                        <div class="col-sm-8"><input type="text" name="beneficiary_number_address" v-model.trim="beneficiary_number_address" class="form-control"></div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6" :class="{'has-error': errors.has('date_commitment') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Fecha de compromiso</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" v-date name="date_commitment" v-model.trim="date_commitment" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
+                            <i v-show="errors.has('date_commitment')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('date_commitment')" class="text-danger">@{{ errors.first('date_commitment') }}</span>
+                        </div>
                     </div>
                 </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6" :class="{'has-error': errors.has('start_contribution_date') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Periodo de primer aporte</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" v-date name="start_contribution_date" v-model.trim="start_contribution_date" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
+                            <i v-show="errors.has('start_contribution_date')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('start_contribution_date')" class="text-danger">@{{ errors.first('start_contribution_date') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
             </div>
+            <div class="row"></div>
         </div>
     </div>
-    <div class="ibox float-e-margins" v-if="canAddDataSpouse">
+    <div class="ibox float-e-margins" v-if="contributionProcess.modality_id == 19" key="activo">
         <div class="ibox-content">
-            <legend>Datos del o de la Conyugue</legend>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_identity_card')  }">
-                        <div class="col-md-4"><label class="control-label">Cédula de identidad:</label></div>
-                        <div class="col-md-8"><input name="spouse_identity_card" type="text" v-model="spouse_identity_card" class="form-control"
-                                v-validate.initial="'required'">
-                            <div v-show="errors.has('spouse_identity_card')">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_identity_card') }}</span>
-                            </div>
+            <div class="col-md-12">
+                <legend>Datos para el compromiso pago</legend>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Tipo</label>
                         </div>
-                    </div>
-                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_city_identity_card_id')  }">
-                        <div class="col-md-4"><label class="control-label">Lugar de expedición:</label></div>
                         <div class="col-md-8">
-                            <select class="form-control" name="spouse_city_identity_card_id" v-model.trim="spouse_city_identity_card_id" v-validate.initial="'required'">
-                                <option :value="null"></option>
-                                <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
-                            </select>
-                            <div v-show="errors.has('spouse_city_identity_card_id')">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_city_identity_card_id') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_first_name')  }">
-                        <div class="col-md-4"><label class="control-label">Primer Nombre:</label></div>
-                        <div class="col-md-8"><input type="text" name="spouse_first_name" v-model="spouse_first_name" class="form-control" v-validate.initial="'required|alpha_space_quote'">
-                            <div v-show="errors.has('spouse_first_name')">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_first_name') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_second_name')  }">
-                        <div class="col-md-4"><label class="control-label">Segundo Nombre:</label></div>
-                        <div class="col-md-8"><input type="text" name="spouse_second_name" v-model="spouse_second_name" class="form-control" v-validate.initial="'alpha_space_quote'">
-                            <div v-show="errors.has('spouse_second_name')">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_second_name') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_last_name')  }">
-                        <div class="col-md-4"><label class="control-label">Apellido Paterno:</label></div>
-                        <div class="col-md-8"><input type="text" name="spouse_last_name" v-model="spouse_last_name" class="form-control" v-validate.initial="'alpha_space_quote'">
-                            <div v-show="errors.has('spouse_last_name') ">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_last_name') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_mothers_last_name')  }">
-                        <div class="col-md-4"><label class="control-label">Apellido Materno:</label></div>
-                        <div class="col-md-8"><input name="spouse_mothers_last_name" type="text" v-model="spouse_mothers_last_name" class="form-control"
-                                v-validate.initial="'alpha_space_quote'">
-                            <div v-show="errors.has('spouse_mothers_last_name') ">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_mothers_last_name') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_surname_husband')  }">
-                        <div class="col-md-4"><label class="control-label">Apellido de Casada:</label></div>
-                        <div class="col-md-8"><input name="spouse_surname_husband" type="text" class="form-control" v-model="spouse_surname_husband"
-                                v-validate.initial="'alpha_space_quote'">
-                            <div v-show="errors.has('spouse_surname_husband') ">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_surname_husband') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    {{--
-                    <div class="row m-b-md" :class="{ 'has-error': errors.has('gender')  }">
-                        <div class="col-md-4"><label class="control-label">Genero:</label></div>
-                        <div class="col-md-8">{!! Form::select('gender', ['F'=>'Femenino','M'=>'Masculino'], null, ['placeholder' => 'Seleccione
-                            genero', 'class' => 'form-control','v-model' => 'spouse_gender',':disabled' => '!editing', 'v-validate.initial'=>"'required'"])
-                            !!}
-                            <div v-show="errors.has('gender') ">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('gender') }}</span>
-                            </div>
-                        </div>
-                    </div> --}}
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('spouse_birth_date')  }">
-                        <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
-                        <div class="col-md-5"><input name="spouse_birth_date" v-model="spouse_birth_date" data-date="true" type="text" class="form-control"
-                                v-validate.initial="'required|date_format:DD/MM/YYYY'">
-                            <div v-show="errors.has('spouse_birth_date') ">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_birth_date') }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4"><input v-model="age" type="text" class="form-control" disabled></div>
-                        {{--
-                        <div class="col-md-1">Años</div> --}}
-                    </div>
-                    <div class="row m-b-md">
-                        <div class="col-md-3" :class="{'has-error': errors.has('spouse_city_birth_id') }"><label class="control-label">Lugar de Nacimiento:</label></div>
-                        <div class="col-md-9">
-                            <select class="form-control" name="spouse_city_birth_id" v-model.trim="spouse_city_birth_id" v-validate.initial="'required'">
-                                <option :value="null"></option>
-                                <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
-                            </select>
-                            <i v-show="errors.has('spouse_city_birth_id')" class="fa fa-warning text-danger"></i>
-                            <span v-show="errors.has('spouse_city_birth_id')" class="text-danger">@{{ errors.first('spouse_city_birth_id') }}</span>
-                        </div>
-                    </div>
-                    <div class="row m-b-md">
-                        <div class="col-md-3"><label class="control-label">Estado Civil:</label></div>
-                        <div class="col-md-9"> {!! Form::select('spouse_civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'],
-                            null, ['placeholder'=> 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'spouse_civil_status'
-                            ]) !!}
-                        </div>
-                    </div>
-                    <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('spouse_date_death')  }">
-                        <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Fallecimiento:</label></div>
-                        <div class="col-md-9"><input name="spouse_date_death" v-model="spouse_date_death" data-date="true" type="text" class="form-control"
-                                v-validate.initial="'required|date_format:DD/MM/YYYY'">
-                            <div v-show="errors.has('spouse_date_death') ">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_date_death') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('spouse_reason_death')  }">
-                        <div class="col-sm-3 col-form-label"><label class="control-label">Causa de Fallecimiento:</label></div>
-                        <div class="col-md-9"><input name="spouse_reason_death" v-model="spouse_reason_death" data-reason="true" type="text" class="form-control">
-                            <div v-show="errors.has('spouse_reason_death') ">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('spouse_reason_death') }}</span>
-                            </div>
+                            <select name="commitment_type" v-model="commitment_type" class="form-control">
+                                    <option v-for="(ct, index) in commitment_types" :value="ct.id">@{{ ct.name }} </option>
+                                </select>
                         </div>
                     </div>
                 </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Memorandum</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="number" v-model.trim="number" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6" :class="{'has-error': errors.has('commision_date') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Fecha de Memorandum</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" v-date name="commision_date" v-model.trim="commision_date" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
+                            <i v-show="errors.has('commision_date')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('commision_date')" class="text-danger">@{{ errors.first('commision_date') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">Destino</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="destination" v-model.trim="destination" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6" :class="{'has-error': errors.has('commitment_date') }">
+                        <div class="col-md-4">
+                            <label class="control-label">Fecha de compromiso</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" v-date name="commitment_date" v-model.trim="commitment_date" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
+                            <i v-show="errors.has('commitment_date')" class="fa fa-warning text-danger"></i>
+                            <span v-show="errors.has('commitment_date')" class="text-danger">@{{ errors.first('commitment_date') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
             </div>
+            <div class="row"></div>
         </div>
     </div>
 </div>

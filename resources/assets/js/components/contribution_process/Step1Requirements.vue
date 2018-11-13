@@ -15,18 +15,28 @@ import { mapState, mapMutations } from 'vuex';
                 editing: false,
                 requirementList: [],
                 aditionalRequirements: [],
-                modality: null,
                 show_spinner: false,
-                modality_id: 3,
+                procedure_modality_id: null,
                 actual_target: 1,
-                city_end_id:this.user.city_id,
-                procedure_type_id:2,
+                city_id:this.user.city_id,
+                procedure_type_id:6,
                 my_index: 1,
                 modalitiesFilter: [],
+                contribution_process_type: null,
+                contribution_process_types: [
+                    {
+                        id: 'N',
+                        name: 'Nuevo'
+                    },
+                    {
+                        id: 'A',
+                        name: 'Antiguo'
+                    }
+                ]
             }
         },
         mounted(){
-            // this.$store.commit('retFunForm/setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
+            this.$store.commit('contributionProcessForm/setCity',this.cities.filter(city => city.id == this.city_id)[0].name);
             this.onChooseProcedureType();
         },
         methods:{
@@ -34,7 +44,7 @@ import { mapState, mapMutations } from 'vuex';
                 this.modalitiesFilter = this.modalities.filter((m) => {
                     return m.procedure_type_id == this.procedure_type_id;
                 })
-                this.modality = null;
+                this.procedure_modality_id = null;
                 this.getRequirements();
             },
             onChooseModality(event){
@@ -44,17 +54,20 @@ import { mapState, mapMutations } from 'vuex';
                     const selectedText = selectedOption.textContent;
                     var object={
                         name:selectedText,
-                        id: this.modality
+                        id: this.procedure_modality_id
                     }
-                    this.$store.commit('retFunForm/setModality',object);//solo se puede enviar un(1) argumento 
+                    this.$store.commit('contributionProcessForm/setModality',object);//solo se puede enviar un(1) argumento 
                 }
                 this.getRequirements();
                 this.getAditionalRequirements();
             },
+            onChooseContributionProcessType(){
+                return;
+            },
             getRequirements(){
-                if(!this.modality){this.requirementList = []}
+                if(!this.procedure_modality_id){this.requirementList = []}
                 this.requirementList = this.requirements.filter((r) => {
-                    if (r.modality_id == this.modality && r.number != 0) {
+                    if (r.modality_id == this.procedure_modality_id && r.number != 0) {
                         r['status'] = false;
                         r['background'] = '';
                         return r;
@@ -72,9 +85,9 @@ import { mapState, mapMutations } from 'vuex';
                 this.requirementList =  this.requirementList.groupBy('number');
             },
             getAditionalRequirements(){
-                if(!this.modality){this.aditionalRequirements = []}                
+                if(!this.procedure_modality_id){this.aditionalRequirements = []}                
                 this.aditionalRequirements = this.requirements.filter((requirement) => {                    
-                    if (requirement.modality_id == this.modality && requirement.number == 0) {
+                    if (requirement.modality_id == this.procedure_modality_id && requirement.number == 0) {
                         return requirement;
                     }
                 });                

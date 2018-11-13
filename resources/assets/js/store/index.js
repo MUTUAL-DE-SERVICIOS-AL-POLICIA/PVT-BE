@@ -5,11 +5,13 @@ import Vuex from 'vuex';
 import retFunForm from './modules/retFun/form'
 import quotaAidForm from './modules/quotaAid/form'
 import inbox from './modules/inbox'
+import contributionProcessForm from './modules/contributionProcess/form'
 
 export default new Vuex.Store({
     modules: {
       retFunForm: retFunForm,
       inbox: inbox,
       quotaAidForm, //quotaAidForm: quotaAidForm
+      contributionProcessForm, //quotaAidForm: quotaAidForm
     }
   })

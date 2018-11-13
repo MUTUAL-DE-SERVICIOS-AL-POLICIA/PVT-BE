@@ -17,43 +17,43 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            <div class="form-group" :class="{'has-error': errors.has('city_end_id') }">
+            <div class="form-group" :class="{'has-error': errors.has('city_id') }">
                 <label class="col-sm-4 control-label">Regional</label>
                 <div class="col-sm-8">
-                    <select class="form-control m-b" ref="city_end" name="city_end_id" @change="onChooseCity" v-model="city_end_id" v-validate.initial="'required'">
+                    <select class="form-control m-b" ref="city_end" name="city_id" @change="onChooseCity" v-model="city_id" v-validate.initial="'required'">
                         <option :value="null"></option>
                         <option v-for="city in cities" :value="city.id" :key="city.id">@{{ city.name }}</option>
                     </select>
-                    <i v-show="errors.has('city_end_id')" class="fa fa-warning text-danger"></i>
-                    <span v-show="errors.has('city_end_id')" class="text-danger">@{{ errors.first('city_end_id') }}</span>
+                    <i v-show="errors.has('city_id')" class="fa fa-warning text-danger"></i>
+                    <span v-show="errors.has('city_id')" class="text-danger">@{{ errors.first('city_id') }}</span>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="form-group" :class="{'has-error': errors.has('ret_fun_modality') }">
+            <div class="form-group" :class="{'has-error': errors.has('procedure_modality_id') }">
                 <label class="col-sm-4 control-label">Modalidad</label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality" name="ret_fun_modality" id="ret_fun_modality"
-                        v-validate.initial="'required'">
+                    <select class="form-control" v-model="procedure_modality_id" v-on:change="onChooseModality" ref="modality" name="procedure_modality_id"
+                        id="procedure_modality_id" v-validate.initial="'required'">
                         <option :value="null"></option>
                         <option v-for="(modality, index) in modalitiesFilter" :value="modality.id" :key="index">@{{modality.name}}</option>
                     </select>
-                    <i v-show="errors.has('ret_fun_modality')" class="fa fa-warning text-danger"></i>
-                    <span v-show="errors.has('ret_fun_modality')" class="text-danger">@{{ errors.first('ret_fun_modality') }}</span>
+                    <i v-show="errors.has('procedure_modality_id')" class="fa fa-warning text-danger"></i>
+                    <span v-show="errors.has('procedure_modality_id')" class="text-danger">@{{ errors.first('procedure_modality_id') }}</span>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="form-group" :class="{'has-error': errors.has('ret_fun_modality') }">
+            <div class="form-group" :class="{'has-error': errors.has('contribution_process_type') }">
                 <label class="col-sm-4 control-label">Tipo</label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality" name="ret_fun_modality" id="ret_fun_modality"
-                        v-validate.initial="'required'">
+                    <select class="form-control" v-model="contribution_process_type" v-on:change="onChooseContributionProcessType" ref="contribution_process_type" name="contribution_process_type"
+                        id="contribution_process_type" v-validate.initial="'required'">
                         <option :value="null"></option>
-                        <option v-for="(modality, index) in modalitiesFilter" :value="modality.id" :key="index">@{{modality.name}}</option>
+                        <option v-for="(t, index) in contribution_process_types" :value="t.id" :key="index">@{{t.name}}</option>
                     </select>
-                    <i v-show="errors.has('ret_fun_modality')" class="fa fa-warning text-danger"></i>
-                    <span v-show="errors.has('ret_fun_modality')" class="text-danger">@{{ errors.first('ret_fun_modality') }}</span>
+                    <i v-show="errors.has('contribution_process_type')" class="fa fa-warning text-danger"></i>
+                    <span v-show="errors.has('contribution_process_type')" class="text-danger">@{{ errors.first('contribution_process_type') }}</span>
                 </div>
             </div>
         </div>

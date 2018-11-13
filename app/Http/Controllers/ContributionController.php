@@ -32,6 +32,7 @@ use Muserpol\Policies\ReimbursementPolicy;
 use Muserpol\Models\Contribution\ContributionRate;
 use Muserpol\Models\Contribution\ContributionProcess;
 use DateInterval;
+use Muserpol\Models\Workflow\WorkflowState;
 class ContributionController extends Controller
 {
     /**
@@ -469,49 +470,44 @@ class ContributionController extends Controller
                 
     }
     public function directContributions(Affiliate $affiliate = null){
-        
-         $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();                                            
+        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
         $user = Auth::user();
          if (!isset($commitment->id) &&  !$user->can('create', ContributionCommitment::class)) {
             Session::flash('message','No se encontró compromiso de pago');
             return redirect('affiliate/'.$affiliate->id);    
         }
-        
-        if(!isset($commitment->id))
-        {
-            $commitment = new ContributionCommitment();
-            $commitment->id = 0;
-            $commitment->affiliate_id = $affiliate->id;
-        }
-        
-        $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();        
-        $last_contribution = Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year','desc')->first();
-        $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();
-        
-        $summary = array(
-           'fondoret' => $contributions->sum('retirement_fund'),
-           'quotaaid' => $contributions->sum('mortuary_quota'),
-           'total' => $contributions->sum('total'),
-           'interest'  =>  $contributions->sum('interest'),
-           'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
-        ); 
-        $is_regional = false;
-        $role = Util::getRol()->id;        
-        $regional_roles = [30,31,32,33,34,35];
-        if( in_array($role,$regional_roles) ) {            
-            $is_regional = true;
-        }
+        // if(!isset($commitment->id))
+        // {
+        //     $commitment = new ContributionCommitment();
+        //     $commitment->id = 0;
+        //     $commitment->affiliate_id = $affiliate->id;
+        // }
+
+        $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
+        $last_contribution = $contributions->first();
+
+        // $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();
+
+        // $summary = array(
+        //    'fondoret' => $contributions->sum('retirement_fund'),
+        //    'quotaaid' => $contributions->sum('mortuary_quota'),
+        //    'total' => $contributions->sum('total'),
+        //    'interest'  =>  $contributions->sum('interest'),
+        //    'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
+        // );
+
+        //  0 is sequence number of regional
+        $is_regional = in_array(0, WorkflowState::where('role_id', Util::getRol()->id)->pluck('sequence_number')->toArray());
         $data = [
             // 'new_contributions' => $this->getMonthContributions($affiliate->id),            
             'commitment'    =>  $commitment,
             'affiliate' =>  $affiliate,
-            'summary'   =>  $summary,
+            // 'summary'   =>  $summary,
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
             'is_regional'   =>  $is_regional,
             // 'rate'  =>  $rate,        
         ];
-
         return view('contribution.affiliate_direct_contributions', $data);        
     }
     public function getContributionsByMonth(Affiliate $affiliate = null){

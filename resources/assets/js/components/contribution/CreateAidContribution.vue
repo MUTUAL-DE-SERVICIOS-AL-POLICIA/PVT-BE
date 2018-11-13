@@ -209,12 +209,12 @@ export default {
       ],
   mounted() {
     // this.contributions = this.aidContributions;    
-    this.afi_id = this.afid;
-    window.addEventListener("load", function(event) {
-        moneyInputMaskAll();
-        dateInputMaskAll();
-    });
-    this.refresh();
+    // this.afi_id = this.afid;
+    // window.addEventListener("load", function(event) {
+    //     moneyInputMaskAll();
+    //     dateInputMaskAll();
+    // });
+    // this.refresh();
   },
   data() {
     return {
