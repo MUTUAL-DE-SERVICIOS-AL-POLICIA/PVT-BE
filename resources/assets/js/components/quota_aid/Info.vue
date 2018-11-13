@@ -54,7 +54,7 @@ export default {
           }
       },
       update: function () {  
-        let uri = `/update_information_rf`;
+        let uri = `/update_information_quota_aid`;
         this.show_spinner=true;
         axios.patch(uri,this.form)
           .then(response=>{
