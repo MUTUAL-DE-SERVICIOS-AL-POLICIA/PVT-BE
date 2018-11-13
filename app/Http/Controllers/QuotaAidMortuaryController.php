@@ -38,6 +38,7 @@ use Muserpol\Models\Workflow\WorkflowRecord;
 use Muserpol\Models\Testimony;
 use Muserpol\Models\InfoLoan;
 use Muserpol\Models\DiscountType;
+use Muserpol\Models\ProcedureState;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -357,6 +358,7 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->wf_state_current_id = 33;
         $quota_aid->subtotal = 0;
         $quota_aid->total = 0;
+        $quota_aid->procedure_state_id = 1;
         $quota_aid->save();
 
         foreach ($requirements  as  $requirement)
@@ -634,7 +636,7 @@ class QuotaAidMortuaryController extends Controller
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
 
-        $states = RetFunState::get();
+        $states = ProcedureState::all();
 
 
         $quota_aid_records =  QuotaAidRecord::where('quota_aid_id', $id)->orderBy('id','desc')->get();
@@ -1520,5 +1522,20 @@ class QuotaAidMortuaryController extends Controller
             'quota_aid' => $quota_aid,
         ];
         return $data;
+    }
+    public function updateInformation(Request $request)
+    {
+        $quota_aid = QuotaAidMortuary::find($request->id);
+        $this->authorize('update', $quota_aid);
+        $quota_aid->city_end_id = $request->city_end_id;
+        $quota_aid->city_start_id = $request->city_start_id;
+        $quota_aid->reception_date = $request->reception_date;
+        $quota_aid->procedure_state_id = $request->procedure_state_id;
+        if ($quota_aid->procedure_state_id == ID::state()->eliminado) {
+            $quota_aid->code .= "A";
+        }
+        $quota_aid->save();
+        $datos = array('quota_aid' => $quota_aid, 'procedure_modality' => $quota_aid->procedure_modality, 'city_start' => $quota_aid->city_start, 'city_end' => $quota_aid->city_end);
+        return $datos;
     }
 }

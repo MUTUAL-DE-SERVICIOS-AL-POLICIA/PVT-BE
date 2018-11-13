@@ -136,8 +136,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('quota_aid/{quota_aid_id}/calculate_total', 'QuotaAidMortuaryController@calculateTotal')->name('quota_aid_calculate_total');
 		Route::patch('quota_aid/{quota_aid_id}/save_discounts', 'QuotaAidMortuaryController@saveDiscounts')->name('quota_aid_save_discounts');
 		Route::patch('quota_aid/{quota_aid_id}/save_percentages', 'QuotaAidMortuaryController@savePercentages')->name('quota_aid_save_percentages');
-		Route::patch('/update_information_quota_aid', 'QuotaAidMortuaryController@updateInformation')->name('QuotaAidMortuaryController');
-
+		Route::patch('/update_information_quota_aid', 'QuotaAidMortuaryController@updateInformation')->name('update_information_quota_aid');
 		Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->middleware('affiliate_has_ret_fun')->name('create_ret_fun');
 		Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
@@ -247,6 +246,9 @@ Route::group(['middleware' => ['auth']], function () {
 		// Contribution process
 
 		Route::resource('contribution_process', 'ContributionProcessController');
+		Route::get('get_all_contribution_process', 'ContributionProcessController@getAllContributionProcess');
+		Route::get('affiliate/{affiliate}/contribution_process/create', 'ContributionProcessController@create')->name('create_contribution_process');
+		Route::post('affiliate/{affiliate}/contribution_process/save_commitment', 'ContributionProcessController@saveCommitment')->name('save_commitment');
 
 			//inbox
 		Route::get('inbox', function () {
@@ -479,7 +481,6 @@ foreach (array_keys($retirement_funds) as $value) {
 				'date' => $date,
 				'retirement_funds' => $retirement_funds1,
 				'year' => $year,
-
 				'title' => $title,
 				'institution' => $institution,
 				'direction' => $direction,

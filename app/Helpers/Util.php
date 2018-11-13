@@ -427,6 +427,8 @@ class Util
                 break;
             case 10:
                 $class_icon = 'fa fa-map';
+            case 11:
+                $class_icon = 'fa fa-dollar';
                 break;
         }
         return $class_icon;

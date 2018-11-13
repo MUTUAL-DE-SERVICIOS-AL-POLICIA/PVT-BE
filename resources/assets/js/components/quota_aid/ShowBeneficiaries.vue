@@ -86,6 +86,34 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
                         birth_date: null,
                         kinship: null,
                         state: false,
+                        legal_representative: null,
+                        advisor_identity_card: null,
+                        advisor_city_identity_card_id: null,
+                        advisor_first_name: null,
+                        advisor_second_name: null,
+                        advisor_last_name: null,
+                        advisor_mothers_last_name: null,
+                        advisor_surname_husband: null,
+                        advisor_birth_date: null,
+                        advisor_gender: null,
+                        // phone.value
+                        // cell_phone.value
+                        advisor_name_court: null,
+                        advisor_resolution_number: null,
+                        advisor_resolution_date: null,
+
+                        legal_guardian_identity_card: null,
+                        legal_guardian_city_identity_card: null,
+                        legal_guardian_first_name: null,
+                        legal_guardian_second_name: null,
+                        legal_guardian_last_name: null,
+                        legal_guardian_mothers_last_name: null,
+                        legal_guardian_surname_husband: null,
+                        legal_guardian_gender: null,
+                        legal_guardian_number_authority: null,
+                        legal_guardian_notary_of_public_faith: null,
+                        legal_guardian_notary: null,
+                        legal_guardian_date_authority: null,
                 }
                 if(this.beneficiaries.length >= 0){
                     let last_beneficiary=this.beneficiaries[this.beneficiaries.length-1];
@@ -104,7 +132,7 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
                 }, 100);
             },
             canAddBeneficiary(){
-                return this.procedureModalityId == 1 || this.procedureModalityId == 4;
+                return this.procedureModalityId != 14;
             },
             removeBeneficiary(index){
                 this.beneficiaries.splice(index,1);

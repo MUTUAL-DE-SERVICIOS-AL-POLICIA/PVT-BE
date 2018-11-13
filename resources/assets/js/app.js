@@ -362,6 +362,12 @@ Vue.component('contribution-commitment', require('./components/contribution/Comm
 Vue.component('contribution-select', require('./components/contribution/SelectContributions.vue'));
 Vue.component('buttons-print-contributions', require('./components/contribution/ButtonsPrintContributions.vue'));
 
+// contribution process
+Vue.component("contribution-process-form", require("./components/contribution_process/Form.vue"));
+Vue.component("contribution-process-step1-requirements", require("./components/contribution_process/Step1Requirements.vue"));
+Vue.component("contribution-process-step2-contributor", require("./components/contribution_process/Step2Contributor.vue"));
+Vue.component("contribution-process-step3-letter", require("./components/contribution_process/Step3Letter.vue"));
+
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));

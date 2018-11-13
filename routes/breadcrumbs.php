@@ -104,6 +104,11 @@ Breadcrumbs::register('show_contribution_process', function ($breadcrumbs, $cont
 	$breadcrumbs->parent('contribution_process');
 	$breadcrumbs->push("Trámite Nro. " . $contribution_process->code, URL::to('contribution_process/' . $contribution_process->id));
 });
+Breadcrumbs::register('create_contribution_process', function ($breadcrumbs, $affiliate) {
+	$breadcrumbs->parent('contribution_process');
+	$breadcrumbs->push("Nuevo Trámite");
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
+});
 
 
 
