@@ -136,11 +136,12 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('quota_aid/{quota_aid_id}/calculate_total', 'QuotaAidMortuaryController@calculateTotal')->name('quota_aid_calculate_total');
 		Route::patch('quota_aid/{quota_aid_id}/save_discounts', 'QuotaAidMortuaryController@saveDiscounts')->name('quota_aid_save_discounts');
 		Route::patch('quota_aid/{quota_aid_id}/save_percentages', 'QuotaAidMortuaryController@savePercentages')->name('quota_aid_save_percentages');
+		Route::patch('/update_information_quota_aid', 'QuotaAidMortuaryController@updateInformation')->name('QuotaAidMortuaryController');
 
 		Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->middleware('affiliate_has_ret_fun')->name('create_ret_fun');
 		Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 
-		Route::patch('/update_information_rf', 'RetirementFundController@updateInformation')->name('update_information_rf');
+		Route::patch('/update_information_rf', 'RetirementFundController@updateInformation')->name('update_information_rf');				
 		Route::post('quota_aid/{quota_aid}/legal_review/create', 'QuotaAidMortuaryController@storeLegalReview')->name('store_quota_aid_legal_review_create');
 		Route::get('quota_aid/{quota_aid}/print/legal_review', 'QuotaAidCertificationController@printLegalReview')->name('quota_aid_print_legal_review');
 		Route::get('affiliate/{affiliate}/print/quota_aid_file', 'QuotaAidCertificationController@printFile')->name('quota_aid_print_file');
