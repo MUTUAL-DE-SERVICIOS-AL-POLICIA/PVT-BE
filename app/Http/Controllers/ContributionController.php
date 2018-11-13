@@ -508,6 +508,7 @@ class ContributionController extends Controller
             'is_regional'   =>  $is_regional,
             // 'rate'  =>  $rate,        
         ];
+        return $data;
         return view('contribution.affiliate_direct_contributions', $data);        
     }
     public function getContributionsByMonth(Affiliate $affiliate = null){
