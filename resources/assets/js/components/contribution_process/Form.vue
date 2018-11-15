@@ -106,8 +106,9 @@ export default {
             }).catch(error => {
                 console.log(error);
             });
-
-
+            console.log(
+                this.$refs.tres.$children[0].$children[0].refresh()
+            );
 
             const scrollToFooterCreateBeneficiaries = scroller();
             scrollToFooterCreateBeneficiaries('#ret-fun-form-header');
