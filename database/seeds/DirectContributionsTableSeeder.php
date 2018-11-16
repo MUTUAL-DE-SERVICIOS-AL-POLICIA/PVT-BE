@@ -19,7 +19,7 @@ class DirectContributionsTableSeeder extends Seeder
             ['module_id' => 11, 'name' => 'Pago de Aportes Pasivos', 'second_name' => null],
         ];
         foreach ($statuses as $status) {
-            // ProcedureType::create($status);
+            ProcedureType::create($status);
         }
         $statuses = [
             ['procedure_type_id' => 6, 'name' => 'Agregado Policial', 'shortened' => ''],
@@ -29,11 +29,11 @@ class DirectContributionsTableSeeder extends Seeder
             ['procedure_type_id' => 7, 'name' => 'Cónyuge', 'shortened' => ''],
         ];
         foreach ($statuses as $status) {
-            // ProcedureModality::create($status);
+            ProcedureModality::create($status);
         }
         $statuses = [
-            // ['module_id' => 11, 'name' => 'Affiliate'],
-            // ['module_id' => 11, 'name' => 'ContributionProcess'],
+            ['module_id' => 11, 'name' => 'Affiliate'],
+            ['module_id' => 11, 'name' => 'ContributionProcess'],
             ['module_id' => 11, 'name' => 'ContributionProcessSubmittedDocument'],
             ['module_id' => 11, 'name' => 'Spouse'],
             ['module_id' => 11, 'name' => 'Contribution'],
