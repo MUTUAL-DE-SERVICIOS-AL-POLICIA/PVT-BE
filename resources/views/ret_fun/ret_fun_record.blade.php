@@ -48,8 +48,8 @@
                                         @foreach($workflow_records as $w)
                                         <tr>
                                             <td class="col-md-9 text-left">{{$w->message}}</td>
-                                            <td class="col-md-2">{{date("d/m/Y", strtotime($w->created_at))}}</td>
-                                            <td class="col-md-2">{{date("H:i", strtotime($w->created_at))}}</td>
+                                            <td class="col-md-2">{{date("d/m/Y", strtotime($w->date))}}</td>
+                                            <td class="col-md-2">{{date("H:i", strtotime($w->date))}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>

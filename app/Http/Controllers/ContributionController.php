@@ -208,9 +208,7 @@ class ContributionController extends Controller
         // $voucher->bank_pay_number = $request->bank_pay_number;
         // $voucher->save();      
                 
-        $affiliate = Affiliate::find($request->afid);
-        $affiliate->affiliate_state_id = $request->tipo;
-        $affiliate->save();
+        
 
         $process = new ContributionProcess();
         $process->affiliate_id = $affiliate->id;
@@ -297,8 +295,7 @@ class ContributionController extends Controller
                     ]);
             array_push($stored_contributions,$contribution);            
         }
-        
-        $process->contributions()->attach($contribution_ids);
+        // $process->contributions()->attach($contribution_ids);
         $data = [
             'contribution'  =>  $result,
             'contributions'  =>  $stored_contributions,

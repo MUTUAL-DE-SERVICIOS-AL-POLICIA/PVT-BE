@@ -238,7 +238,6 @@ export default {
       contributions: [],
       total: 0,
       paid: 0,
-      tipo:null,
       ufv:0,
       estado: true,
       afi_id:null,
@@ -274,24 +273,6 @@ export default {
         // moneyInputMaskAll();
         // dateInputMaskAll();
     });
-    // if(this.commitment.id == 0){
-    //       this.tipo=null;
-    // }else{
-    //     if(this.commitment.commitment_type=="COMISION")
-    //         {
-    //           this.tipo=2;
-    //         }else{
-    //             if(this.commitment.commitment_type=="BAJA TEMPORAL")
-    //             {
-    //             this.tipo=9;
-    //             }else{
-    //                 if(this.commitment.commitment_type=="AGREGADO POLICIAL")
-    //                 {
-    //                     this.tipo=10;
-    //                 } 
-    //             }
-    //         }        
-    //     }
     // this.refresh();
   },
   created(){    
@@ -557,7 +538,7 @@ export default {
             }).then((result) => {    
                 if (result.value) {                    
                 var aportes = this.contributions;                    
-                axios.post('/contribution_save',{aportes,total:this.total,tipo:this.tipo,afid:this.afid,paid:parseMoney(this.paid),bank:this.bank,bank_pay_number:this.bank_pay_number})
+                axios.post('/contribution_save',{aportes,total:this.total,afid:this.afid,paid:parseMoney(this.paid),bank:this.bank,bank_pay_number:this.bank_pay_number})
                 .then(response => {                  
                 this.enableDC();
                 var i;

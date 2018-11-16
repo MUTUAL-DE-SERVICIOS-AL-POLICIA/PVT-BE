@@ -42,7 +42,7 @@
                                 @include('contribution_processes.step2_contributor')
                             </contribution-process-step2-contributor>
                         </tab-content>
-                        <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
+                        <tab-content title="Datos de los Derechohabientes" ref="tres" icon="mdi mdi-account-multiple-plus">
                             <contribution-process-step3-letter inline-template >
                                 @include('contribution_processes.step3_letter')
                             </contribution-process-step3-letter>
