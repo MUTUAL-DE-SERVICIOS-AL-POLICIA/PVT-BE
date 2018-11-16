@@ -36,16 +36,16 @@
                                 inline-template>
                                 @include('direct_contributions.step1_requirements')
                             </direct-contribution-step1-requirements>
-                            <direct-contribution-step2-contributor :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template :today="`{{ now()->format('d/m/Y') }}`">
-                                @include('direct_contributions.step2_contributor')
-                            </direct-contribution-step2-contributor>
-                            <direct-contribution-step3-letter inline-template >
-                                @include('direct_contributions.step3_letter')
-                            </direct-contribution-step3-letter>
                         </tab-content>
                         <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
+                            <direct-contribution-step2-contributor :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
+                                @include('direct_contributions.step2_contributor')
+                            </direct-contribution-step2-contributor>
                         </tab-content>
                         <tab-content title="Datos de los Derechohabientes" ref="tres" icon="mdi mdi-account-multiple-plus">
+                            <direct-contribution-step3-letter inline-template :today="`{{ now()->format('d/m/Y') }}`">
+                                @include('direct_contributions.step3_letter')
+                            </direct-contribution-step3-letter>
                         </tab-content>
                     </form-wizard>
                 </direct-contribution-form>

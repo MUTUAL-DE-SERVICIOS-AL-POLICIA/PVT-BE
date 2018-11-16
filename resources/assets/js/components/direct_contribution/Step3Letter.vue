@@ -6,7 +6,10 @@ export default {
     ],
     data(){
         return {
-            
+            document_number: null,
+            document_date: null,
+            commitment_date: this.today,
+            start_contribution_date: null,
         }
     },
     computed: {

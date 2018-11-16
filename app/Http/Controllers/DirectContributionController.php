@@ -5,12 +5,15 @@ use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\Contribution\DirectContribution;
 use Auth;
+use Log;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\ProcedureModality;
 use Muserpol\Models\Spouse;
 use Muserpol\Models\Kinship;
 use Muserpol\Models\City;
+use Muserpol\Helpers\Util;
+
 class DirectContributionController extends Controller
 {
     /**
@@ -47,7 +50,7 @@ class DirectContributionController extends Controller
             $spouse = new Spouse();
         }
         $modalities = ProcedureModality::whereIn('procedure_type_id', $procedure_types->pluck('id'))->select('id', 'name', 'procedure_type_id')->get();
-        $kinships = Kinship::get();
+        $kinships = Kinship::whereIn('id', [1,2])->get();
         $cities = City::get();
         $searcher = new SearcherController();
 
@@ -74,7 +77,20 @@ class DirectContributionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $direct_contribution = new DirectContribution();
+        $direct_contribution->affiliate_id = $request->affiliate_id;
+        $direct_contribution->user_id = Auth::user()->id;
+        $direct_contribution->city_id = $request->city_id;
+        $direct_contribution->procedure_modality_id = $request->procedure_modality_id;
+        $direct_contribution->procedure_state_id = 1;
+        $direct_contribution->contributor_type_id = $request->contributor_type_id;
+        $direct_contribution->commitment_date = Util::verifyBarDate($request->commitment_date) ? Util::parseBarDate($request->commitment_date) : $request->commitment_date;
+        $direct_contribution->document_number = $request->document_number;
+        $direct_contribution->document_date = Util::verifyBarDate($request->document_date) ? Util::parseBarDate($request->document_date) : $request->document_date;
+        $direct_contribution->start_contribution_date = Util::verifyBarDate($request->start_contribution_date) ? Util::parseBarDate($request->start_contribution_date) : $request->start_contribution_date;
+        $direct_contribution->date = now();
+        $direct_contribution->save();
+        return redirect()->route('direct_contributions.show',$direct_contribution->id );
     }
 
     /**
