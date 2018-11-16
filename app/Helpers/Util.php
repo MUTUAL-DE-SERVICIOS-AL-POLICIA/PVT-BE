@@ -21,6 +21,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
 use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\ContributionProcess;
 class Util
 {
     public static function isRegionalRole()
@@ -830,5 +831,9 @@ class Util
             ['text' => "Regional", 'value' => "city"],
             ['text' => "Fecha", 'value' => "date_reception"],
         ];
+    }
+    public static function getLastCode($model)
+    {
+        return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
     }
 }

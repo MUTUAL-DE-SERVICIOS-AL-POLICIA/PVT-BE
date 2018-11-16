@@ -118,10 +118,11 @@ class ContributionProcessController extends Controller
         $contribution_process->workflow_id = 7;
         $contribution_process->procedure_modality_id = $request->procedure_modality_id;
         $contribution_process->date = now();
-        $contribution_process->code = '1/2018';
+        $contribution_process->code = Util::getNextCode(Util::getLastCode(ContributionProcess::class), '1');
         $contribution_process->inbox_state = false;
         $contribution_process->type = $request->contribution_process_type;
         $contribution_process->save();
+        return redirect()->route('contribution_process.show',$contribution_process->id );
     }
     public function saveCommitment(Request $request)
     {
@@ -148,6 +149,20 @@ class ContributionProcessController extends Controller
             $commitment->commision_date = Util::verifyBarDate($request->commitment['commision_date']) ? Util::parseBarDate($request->commitment['commision_date']) : $request->commitment['commision_date'];
             $commitment->state = "ALTA";
             $commitment->save();
+            switch ($commitment->commitment_type) {
+                case 'COMISION':
+                    $affiliate->affiliate_state_id = 2;
+                    break;
+                case 'BAJA TEMPORAL':
+                    $affiliate->affiliate_state_id = 9;
+                    break;
+                case 'AGREGADO POLICIAL':
+                    $affiliate->affiliate_state_id = 10;
+                    break;
+                default:
+                    break;
+            }
+            $affiliate->save();
             return $commitment;
         } else {
             return "error";

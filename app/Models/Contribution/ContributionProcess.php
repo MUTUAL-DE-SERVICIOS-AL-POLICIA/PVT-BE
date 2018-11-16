@@ -11,14 +11,6 @@ class ContributionProcess extends Model
     {
         return $this->belongsTo('Muserpol\Models\Affiliate');
     }
-    public function city()
-    {
-        return $this->belongsTo('Muserpol\Models\City');
-    }
-    public function procedure_modality()
-    {
-        return $this->belongsTo('Muserpol\Models\ProcedureModality');
-    }
     public function workflow()
     {
         return $this->belongsTo('Muserpol\Models\Workflow\Workflow');
