@@ -505,21 +505,21 @@ class QuotaAidMortuaryController extends Controller
         return redirect('quota_aid/'.$quota_aid->id);
     }
 
-    public function updateInformation(Request $request)
-    {
-        $quota_aid = QuotaAidMortuary::find($request->id);
-        $this->authorize('update', $quota_aid);
-        $quota_aid->city_end_id = $request->city_end_id;
-        $quota_aid->city_start_id = $request->city_start_id;
-        $quota_aid->reception_date = $request->reception_date;
-        $quota_aid->procedure_state_id = $request->procedure_state_id;
-        if($quota_aid->quota_aid_mortuary_id == ID::state()->eliminado){
-            $quota_aid->code.="A";
-        }
-        $quota_aid->save();
-        $datos = array('quota_aid' => $quota_aid, 'procedure_modality'=>$quota_aid->procedure_modality,'city_start'=>$quota_aid->city_start,'city_end'=>$quota_aid->city_end );
-        return $datos;
-    }
+    // public function updateInformation(Request $request)
+    // {
+    //     $quota_aid = QuotaAidMortuary::find($request->id);
+    //     $this->authorize('update', $quota_aid);
+    //     $quota_aid->city_end_id = $request->city_end_id;
+    //     $quota_aid->city_start_id = $request->city_start_id;
+    //     $quota_aid->reception_date = $request->reception_date;
+    //     $quota_aid->procedure_state_id = $request->procedure_state_id;
+    //     if($quota_aid->quota_aid_mortuary_id == ID::state()->eliminado){
+    //         $quota_aid->code.="A";
+    //     }
+    //     $quota_aid->save();
+    //     $datos = array('quota_aid' => $quota_aid, 'procedure_modality'=>$quota_aid->procedure_modality,'city_start'=>$quota_aid->city_start,'city_end'=>$quota_aid->city_end );
+    //     return $datos;
+    // }
 
     /**
      * Display the specified resource.
