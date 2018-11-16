@@ -243,6 +243,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('aid_commitment', 'AidCommitmentController');
 		Route::get('calculate_aid_reimbursement/{affiliate}/{amount}/{month}', 'AidReimbursementController@caculateContribution');
 
+		//Direct Contributions 
+		Route::resource('direct_contribution', 'DirectContributionController');
 		// Contribution process
 
 		Route::resource('contribution_process', 'ContributionProcessController');

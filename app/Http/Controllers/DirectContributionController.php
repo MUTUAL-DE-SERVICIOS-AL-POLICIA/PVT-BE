@@ -2,7 +2,7 @@
 
 namespace Muserpol\Http\Controllers;
 
-use Muserpol\DirectContribution;
+use Muserpol\Models\Contribution\DirectContribution;
 use Illuminate\Http\Request;
 
 class DirectContributionController extends Controller
@@ -44,9 +44,10 @@ class DirectContributionController extends Controller
      * @param  \Muserpol\DirectContribution  $directContribution
      * @return \Illuminate\Http\Response
      */
+    //public function show(DirectContribution $directContribution)
     public function show(DirectContribution $directContribution)
     {
-        //
+        return 12342;
     }
 
     /**
