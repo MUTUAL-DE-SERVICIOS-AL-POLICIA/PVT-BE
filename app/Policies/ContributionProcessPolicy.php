@@ -3,11 +3,11 @@
 namespace Muserpol\Policies;
 
 use Muserpol\User;
-use Muserpol\Models\Contribution\DirectContribution;
+use Muserpol\ContributionProcess;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Muserpol\Helpers\Util;
 
-class DirectContributionPolicy
+class ContributionProcessPolicy
 {
     use HandlesAuthorization;
     const ClASS_NAME = 'ContributionProcess';
@@ -15,21 +15,20 @@ class DirectContributionPolicy
     const READ = 'read';
     const UPDATE = 'update';
     const DELETE = 'delete';
-
     /**
-     * Determine whether the user can view the directContribution.
+     * Determine whether the user can view the contributionProcess.
      *
      * @param  \Muserpol\User  $user
-     * @param  \Muserpol\DirectContribution  $directContribution
+     * @param  \Muserpol\ContributionProcess  $contributionProcess
      * @return mixed
      */
-    public function view(User $user, DirectContribution $directContribution)
+    public function view(User $user, ContributionProcess $contributionProcess)
     {
         //
     }
 
     /**
-     * Determine whether the user can create directContributions.
+     * Determine whether the user can create contributionProcesses.
      *
      * @param  \Muserpol\User  $user
      * @return mixed
@@ -41,25 +40,25 @@ class DirectContributionPolicy
     }
 
     /**
-     * Determine whether the user can update the directContribution.
+     * Determine whether the user can update the contributionProcess.
      *
      * @param  \Muserpol\User  $user
-     * @param  \Muserpol\DirectContribution  $directContribution
+     * @param  \Muserpol\ContributionProcess  $contributionProcess
      * @return mixed
      */
-    public function update(User $user, DirectContribution $directContribution)
+    public function update(User $user, ContributionProcess $contributionProcess)
     {
         //
     }
 
     /**
-     * Determine whether the user can delete the directContribution.
+     * Determine whether the user can delete the contributionProcess.
      *
      * @param  \Muserpol\User  $user
-     * @param  \Muserpol\DirectContribution  $directContribution
+     * @param  \Muserpol\ContributionProcess  $contributionProcess
      * @return mixed
      */
-    public function delete(User $user, DirectContribution $directContribution)
+    public function delete(User $user, ContributionProcess $contributionProcess)
     {
         //
     }

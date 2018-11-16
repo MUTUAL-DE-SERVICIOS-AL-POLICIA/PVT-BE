@@ -401,7 +401,7 @@ class Affiliate extends Model
             'is_continuous' => false,
             'contributions' => []
         ];
-        if (! $date_death  = $this->quota_aid_mortuaries->last()->getDeceased()->date_death){
+        if (! $date_death  = optional(optional($this->quota_aid_mortuaries->last())->getDeceased())->date_death){
             return $null_data;
         }
         $number_contributions = Util::getQuotaAidCurrentProcedure()->first()->months;
@@ -446,7 +446,8 @@ class Affiliate extends Model
     }
     public function getContributionsPlus($with_reimbursements = true)
     {
-        if ($this->selectedContributions() > 0 || $this->contributions()->count() == 0)  {
+
+        if ($this->selectedContributions() > 0 || $this->contributions()->count() == 0) {
             return [];
         }
         $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;

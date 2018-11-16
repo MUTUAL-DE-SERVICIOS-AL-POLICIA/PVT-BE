@@ -38,6 +38,7 @@ use Muserpol\Models\Workflow\WorkflowRecord;
 use Muserpol\Models\Testimony;
 use Muserpol\Models\InfoLoan;
 use Muserpol\Models\DiscountType;
+use Muserpol\Models\ProcedureState;
 class QuotaAidMortuaryController extends Controller
 {
     /**
@@ -357,6 +358,7 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->wf_state_current_id = 33;
         $quota_aid->subtotal = 0;
         $quota_aid->total = 0;
+        $quota_aid->procedure_state_id = 1;
         $quota_aid->save();
 
         foreach ($requirements  as  $requirement)
@@ -431,26 +433,28 @@ class QuotaAidMortuaryController extends Controller
 
         if($account_type == ID::applicant()->legal_guardian_id)
         {
-            $legal_guardian = new QuotaAidLegalGuardian();
-            $legal_guardian->retirement_fund_id = $retirement_found->id;
-            $legal_guardian->city_identity_card_id = $request->applicant_city_identity_card;
-            $legal_guardian->identity_card = $request->applicant_identity_card  ;
-            $legal_guardian->last_name = $request->applicant_last_name;
-            $legal_guardian->mothers_last_name = $request->applicant_mothers_last_name;
-            $legal_guardian->first_name = $request->applicant_first_name;
-            $legal_guardian->second_name = $request->applicant_second_name;
-            $legal_guardian->surname_husband = $request->applicant_surname_husband;
-            //$legal_guardian->gender = "M";
-            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number));
-            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
+            
+            $legal_guardian = new QuotaAidLegalGuardian();            
+            $legal_guardian->city_identity_card_id = $request->legal_guardian_identity_card_id;
+            $legal_guardian->identity_card = strtoupper(trim($request->legal_guardian_identity_card));
+            $legal_guardian->last_name = strtoupper(trim($request->legal_guardian_last_name));
+            $legal_guardian->mothers_last_name = strtoupper(trim($request->legal_guardian_mothers_last_name));
+            $legal_guardian->first_name = strtoupper(trim($request->legal_guardian_first_name));
+            $legal_guardian->second_name = strtoupper(trim($request->legal_guardian_second_name));
+            $legal_guardian->surname_husband = strtoupper(trim($request->legal_guardian_surname_husband));
+            $legal_guardian->phone_number = trim(implode(",", $request->applicant_phone_number ?? []));
+            $legal_guardian->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number ?? []));
             $legal_guardian->number_authority = $request->legal_guardian_number_authority;
             $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
             $legal_guardian->notary = $request->legal_guardian_notary;
+            //$legal_guardian->date_authority = Util::verifyBarDate($request->legal_guardian_date_authority) ? Util::parseBarDate($request->legal_guardian_date_authority) : $request->legal_guardian_date_authority;
+            $legal_guardian->gender = $request->legal_guardian_gender;
             $legal_guardian->save();
 
-            $beneficiary_legal_guardian = new RetFunLegalGuardianBeneficiary();
-            $beneficiary_legal_guardian->ret_fun_beneficiary_id = $beneficiary->id;
-            $beneficiary_legal_guardian->ret_fun_legal_guardian_id = $legal_guardian->id;
+
+            $beneficiary_legal_guardian = new QuotaAidBeneficiaryLegalGuardian();
+            $beneficiary_legal_guardian->quota_aid_beneficiary_id = $beneficiary->id;
+            $beneficiary_legal_guardian->quota_aid_legal_guardian_id = $legal_guardian->id;
             $beneficiary_legal_guardian->save();
             //$beneficiary->type = "N";
         }
@@ -500,6 +504,7 @@ class QuotaAidMortuaryController extends Controller
         ];
         return redirect('quota_aid/'.$quota_aid->id);
     }
+
 
     /**
      * Display the specified resource.
@@ -616,7 +621,7 @@ class QuotaAidMortuaryController extends Controller
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
 
-        $states = RetFunState::get();
+        $states = ProcedureState::all();
 
 
         $quota_aid_records =  QuotaAidRecord::where('quota_aid_id', $id)->orderBy('id','desc')->get();
@@ -1223,6 +1228,42 @@ class QuotaAidMortuaryController extends Controller
                 }
         }
 
+        $procedure_requirements = ProcedureRequirement::
+        select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
+        ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
+        ->where('procedure_requirements.number','0')
+        ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+        ->orderBy('procedure_requirements.number','ASC')
+        ->get();
+
+        $quota_aid = QuotaAidMortuary::select('id','procedure_modality_id')->find($id);
+    
+        $aditional =  $request->aditional_requirements;
+        $num ="";
+        
+        foreach($procedure_requirements as $requirement){
+        $needle = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id',$id)
+        ->where('procedure_requirement_id',$requirement->id)
+        ->first();
+        if(isset($needle)) {
+        if(!in_array($requirement->id,$aditional)){
+        $num.=$requirement->id.' ';
+        $needle->delete();
+        $needle->forceDelete();
+        }
+        } else {
+        if(in_array($requirement->id,$aditional)) {
+        $submit = new QuotaAidSubmittedDocument();
+        $submit->quota_aid_mortuary_id = $quota_aid->id;
+        $submit->procedure_requirement_id = $requirement->id;
+        $submit->reception_date = date('Y-m-d');
+        $submit->comment = "";
+        $submit->save();
+        }
+        }
+
+        }
+
         return $num;
     }
     public function getTestimonies($quota_aid_id)
@@ -1466,5 +1507,20 @@ class QuotaAidMortuaryController extends Controller
             'quota_aid' => $quota_aid,
         ];
         return $data;
+    }
+    public function updateInformation(Request $request)
+    {
+        $quota_aid = QuotaAidMortuary::find($request->id);
+        $this->authorize('update', $quota_aid);
+        $quota_aid->city_end_id = $request->city_end_id;
+        $quota_aid->city_start_id = $request->city_start_id;
+        $quota_aid->reception_date = $request->reception_date;
+        $quota_aid->procedure_state_id = $request->procedure_state_id;
+        if ($quota_aid->procedure_state_id == ID::state()->eliminado) {
+            $quota_aid->code .= "A";
+        }
+        $quota_aid->save();
+        $datos = array('quota_aid' => $quota_aid, 'procedure_modality' => $quota_aid->procedure_modality, 'city_start' => $quota_aid->city_start, 'city_end' => $quota_aid->city_end);
+        return $datos;
     }
 }

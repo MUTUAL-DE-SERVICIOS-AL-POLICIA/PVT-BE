@@ -21,6 +21,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
 use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\ContributionProcess;
 class Util
 {
     public static function isRegionalRole()
@@ -201,7 +202,7 @@ class Util
         $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();  
         $quota_aid = QuotaAidMortuary::find($quota_aid_mortuary_id);
         Log::info("role_id: ". Session::get('rol_id'));
-        $reprint = QuotaAidCorrelative::where('procedure_type_id',$quota_aid->procedure_type_id)->where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
+        $reprint = QuotaAidCorrelative::where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)->where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
         
         $last_quota_aid = QuotaAidCorrelative::
                                 where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)                                
@@ -427,6 +428,8 @@ class Util
                 break;
             case 10:
                 $class_icon = 'fa fa-map';
+            case 11:
+                $class_icon = 'fa fa-dollar';
                 break;
         }
         return $class_icon;
@@ -828,5 +831,9 @@ class Util
             ['text' => "Regional", 'value' => "city"],
             ['text' => "Fecha", 'value' => "date_reception"],
         ];
+    }
+    public static function getLastCode($model)
+    {
+        return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
     }
 }

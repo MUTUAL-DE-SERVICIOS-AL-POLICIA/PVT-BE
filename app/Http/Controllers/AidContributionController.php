@@ -165,12 +165,12 @@ class AidContributionController extends Controller
            Session::flash('message','No se encontró compromiso de pago');
            return redirect('affiliate/'.$affiliate->id);    
         }
-       if(!isset($commitment->id))
-       {
-           $commitment = new AidCommitment();
-           $commitment->id = 0;
-           $commitment->affiliate_id = $affiliate->id;
-       }
+    //    if(!isset($commitment->id))
+    //    {
+    //        $commitment = new AidCommitment();
+    //        $commitment->id = 0;
+    //        $commitment->affiliate_id = $affiliate->id;
+    //    }
 
 
         // if(!isset($commitment->id))
@@ -183,18 +183,18 @@ class AidContributionController extends Controller
 
         $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();        
 
-        $summary = array(
-            'aid' => $contributions->sum('total'),
-            'total' => $contributions->sum('total'),
-            'interest'  =>  $contributions->sum('interest'),
-            'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
-        );
+        // $summary = array(
+        //     'aid' => $contributions->sum('total'),
+        //     'total' => $contributions->sum('total'),
+        //     'interest'  =>  $contributions->sum('interest'),
+        //     'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
+        // );
 
         $data = [
             // 'new_contributions' => $this->getContributionDebt($affiliate->id,4),            
             'commitment'    =>  $commitment,
             'affiliate' =>  $affiliate,
-            'summary'   =>  $summary,
+            // 'summary'   =>  $summary,
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
             // 'rate'  =>  $rate,

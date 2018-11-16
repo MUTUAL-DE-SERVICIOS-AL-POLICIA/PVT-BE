@@ -50,20 +50,20 @@
 
 <div class="row">
 
-    {{-- <div class="col-md-3" style="padding-right: 3px">
+    <div class="col-md-3" style="padding-right: 3px">
         <div class="widget-head-color-box yellow-bg p-lg text-center">
             <div class="m-b-md">
                 <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Afiliado ">
-                    <a href="{{route('affiliate.show', $affiliate->id)}}" style="color: #fff"> {{ $retirement_fund->affiliate->fullNameWithDegree() }}</a>
+                    <a href="{{route('affiliate.show', $affiliate->id)}}" style="color: #fff"> {{ $contribution_process->affiliate->fullNameWithDegree() }}</a>
                 </h2>
-                <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $retirement_fund->affiliate->ciWithExt() }}</strong></h3>
-                <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $retirement_fund->affiliate->registration }}</strong></h4>
+                <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $contribution_process->affiliate->ciWithExt() }}</strong></h3>
+                <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $contribution_process->affiliate->registration }}</strong></h4>
             </div>
         </div>
         <div class="widget-text-box">
             <ul class="list-group elements-list">
                 <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Fondo de Retiro</a></li>
-                @if($retirement_fund->procedure_modality_id == 4)
+                @if($contribution_process->procedure_modality_id == 4)
                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-user"></i> Afiliado </a></li>
                 @endif
                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
@@ -75,8 +75,8 @@
             </ul>
         </div>
         <br>
-        <tag-list :doc-id="{{ $contribution_process->id }}" type="retFun"></tag-list>
-    </div> --}}
+        <tag-list :doc-id="{{ $contribution_process->id }}" type="contributionProcess"></tag-list>
+    </div>
     <br>
     <div class="col-md-9" style="padding-left: 6px">
         <div class="tab-content">
