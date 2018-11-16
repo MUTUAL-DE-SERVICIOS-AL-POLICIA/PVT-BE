@@ -36,7 +36,7 @@ import { mapState, mapMutations } from 'vuex';
             }
         },
         mounted(){
-            this.$store.commit('contributionProcessForm/setCity',this.cities.filter(city => city.id == this.city_id)[0].name);
+            this.$store.commit('directContributionForm/setCity',this.cities.filter(city => city.id == this.city_id)[0].name);
             this.onChooseProcedureType();
         },
         methods:{
@@ -44,7 +44,7 @@ import { mapState, mapMutations } from 'vuex';
                 this.modalitiesFilter = this.modalities.filter((m) => {
                     return m.procedure_type_id == this.procedure_type_id;
                 })
-                this.procedure_modality_id = null;
+                this.$store.commit('directContributionForm/setProcedureType',{id:this.procedure_modality_id });
                 this.getRequirements();
             },
             onChooseModality(event){
@@ -56,7 +56,7 @@ import { mapState, mapMutations } from 'vuex';
                         name:selectedText,
                         id: this.procedure_modality_id
                     }
-                    this.$store.commit('contributionProcessForm/setModality',object);//solo se puede enviar un(1) argumento 
+                    this.$store.commit('directContributionForm/setModality',object);//solo se puede enviar un(1) argumento 
                 }
                 this.getRequirements();
                 this.getAditionalRequirements();
