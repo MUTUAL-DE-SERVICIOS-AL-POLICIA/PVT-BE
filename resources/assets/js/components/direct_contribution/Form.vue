@@ -82,7 +82,6 @@ export default {
             //         return false;
             //     }
             // }
-
             const scrollToFooterCreateBeneficiaries = scroller();
             scrollToFooterCreateBeneficiaries('#ret-fun-form-header');
             return true;
