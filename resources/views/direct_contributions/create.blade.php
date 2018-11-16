@@ -19,14 +19,14 @@
                         @endforeach
                     </ol>
                 </div>
-                @endif {!! Form::open(['url' => 'contribution_process', 'method' => 'POST', 'id'=>'contribution-process-form']) !!}
+                @endif {!! Form::open(['url' => 'direct_contribution', 'method' => 'POST', 'id'=>'direct-contribution-form']) !!}
                 <input type="hidden" name="affiliate_id" value="{{$affiliate->id}}">
-                <contribution-process-form affiliate-id="{{$affiliate->id}}" inline-template>
+                <direct-contribution-form affiliate-id="{{$affiliate->id}}" inline-template>
                     <form-wizard color="#1AB394" title="" subtitle="" back-button-text="Volver" next-button-text="Siguiente" finish-button-text="Finalizar"
                         error-color="#ED5565" @on-complete="onFinish" @on-loading="setLoading">
                         <ret-fun-create-info></ret-fun-create-info>
                         <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
-                            <contribution-process-step1-requirements
+                            <direct-contribution-step1-requirements
                                 :modalities="{{ $modalities }}"
                                 :requirements="{{ $requirements }}"
                                 :user="{{ $user }}"
@@ -34,21 +34,21 @@
                                 :procedure-types="{{$procedure_types}}"
                                 :show-requirements-error="showRequirementsError"
                                 inline-template>
-                                @include('contribution_processes.step1_requirements')
-                            </contribution-process-step1-requirements>
+                                @include('direct_contributions.step1_requirements')
+                            </direct-contribution-step1-requirements>
+                            <direct-contribution-step2-contributor :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template :today="`{{ now()->format('d/m/Y') }}`">
+                                @include('direct_contributions.step2_contributor')
+                            </direct-contribution-step2-contributor>
+                            <direct-contribution-step3-letter inline-template >
+                                @include('direct_contributions.step3_letter')
+                            </direct-contribution-step3-letter>
                         </tab-content>
                         <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
-                            <contribution-process-step2-contributor :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template :today="`{{ now()->format('d/m/Y') }}`">
-                                @include('contribution_processes.step2_contributor')
-                            </contribution-process-step2-contributor>
                         </tab-content>
                         <tab-content title="Datos de los Derechohabientes" ref="tres" icon="mdi mdi-account-multiple-plus">
-                            <contribution-process-step3-letter inline-template >
-                                @include('contribution_processes.step3_letter')
-                            </contribution-process-step3-letter>
                         </tab-content>
                     </form-wizard>
-                </contribution-process-form>
+                </direct-contribution-form>
                 {!! Form::close() !!}
             </div>
         </div>

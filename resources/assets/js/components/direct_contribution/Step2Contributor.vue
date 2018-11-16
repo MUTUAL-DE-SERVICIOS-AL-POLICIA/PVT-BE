@@ -105,8 +105,8 @@ export default {
     dateInputMaskAll();
   },
   computed:{
-    ...mapGetters('contributionProcessForm', {
-      contributionProcess: 'getData',
+    ...mapGetters('directContributionForm', {
+      directContribution: 'getData',
     }),
     contributorIsMale(){
       return this.contributor_gender == 'M';

@@ -14,12 +14,11 @@ export default {
             email:null,
             phone:null,
             url:null,
-            hola: 'hola'
         }
     },
     methods: {
         onFinish() {
-            document.getElementById("contribution-process-form").submit();
+            document.getElementById("direct-contribution-form").submit();
         },
         setLoading: function(value) {
             this.loadingWizard = value;
@@ -83,32 +82,6 @@ export default {
             //         return false;
             //     }
             // }
-            let commitment = {
-                commitment_type: this.$refs.dos.$children[0].commitment_type,
-                number: this.$refs.dos.$children[0].number,
-                commision_date: this.$refs.dos.$children[0].commision_date,
-                destination: this.$refs.dos.$children[0].destination,
-                commitment_date: this.$refs.dos.$children[0].commitment_date,
-                pension_declaration: this.$refs.dos.$children[0].pension_declaration,
-                pension_declaration_date: this.$refs.dos.$children[0].pension_declaration_date,
-                date_commitment: this.$refs.dos.$children[0].date_commitment,
-                start_contribution_date: this.$refs.dos.$children[0].start_contribution_date,
-                contributorType: this.$refs.dos.$children[0].contributorType,
-            }
-            this.$store.commit("contributionProcessForm/updateCommitment", commitment);
-            let procedure_modality_id= this.$store.state.contributionProcessForm.modality_id;
-            axios.post(`/affiliate/${this.affiliateId}/contribution_process/save_commitment`,{
-                commitment: commitment,
-                procedure_modality_id: procedure_modality_id,
-                affiliate_id: this.affiliateId
-            }).then(response => {
-                console.log(response.data);
-            }).catch(error => {
-                console.log(error);
-            });
-            console.log(
-                this.$refs.tres.$children[0].$children[0].refresh()
-            );
 
             const scrollToFooterCreateBeneficiaries = scroller();
             scrollToFooterCreateBeneficiaries('#ret-fun-form-header');
