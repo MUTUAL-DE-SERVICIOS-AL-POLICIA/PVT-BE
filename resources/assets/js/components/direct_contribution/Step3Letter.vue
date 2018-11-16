@@ -10,8 +10,8 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('contributionProcessForm', {
-            contributionProcess: 'getData',
+        ...mapGetters('directContributionForm', {
+            directContribution: 'getData',
         }),
     }
 }
