@@ -72,57 +72,9 @@ class ContributionProcessController extends Controller
     }
     public function create(Affiliate $affiliate)
     {
-        $this->authorize('create', ContributionProcess::class);
-        $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id', 'identity_card', 'city_identity_card_id', 'registration', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband', 'birth_date', 'gender', 'degrees.name as degree', 'civil_status', 'affiliate_states.name as affiliate_state', 'phone_number', 'cell_phone_number', 'date_derelict', 'date_death', 'reason_death')
-            ->leftJoin('degrees', 'affiliates.id', '=', 'degrees.id')
-            ->leftJoin('affiliate_states', 'affiliates.affiliate_state_id', '=', 'affiliate_states.id')
-            ->find($affiliate->id);
-
-        $procedure_types = ProcedureType::where('module_id', 11)->get();
-        $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
-            ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-            ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
-            ->orderBy('procedure_requirements.number', 'ASC')
-            ->get();
-        $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
-        if (!isset($spouse->id)) {
-            $spouse = new Spouse();
-        }
-        $modalities = ProcedureModality::where('procedure_type_id', '=', 6)->select('id', 'name', 'procedure_type_id')->get();
-        $kinships = Kinship::get();
-        $cities = City::get();
-        $searcher = new SearcherController();
-
-        $data = [
-            'user' => $user,
-            'requirements' => $procedure_requirements,
-            'procedure_types' => $procedure_types,
-            'modalities' => $modalities,
-            'affiliate' => $affiliate,
-            'kinships' => $kinships,
-            'cities' => $cities,
-            'spouse' => $spouse,
-            'searcher' => $searcher,
-        ];
-
-        return view('contribution_processes.create', $data);
     }
     public function store(Request $request)
     {
-        $contribution_process = new ContributionProcess();
-        $contribution_process->affiliate_id = $request->affiliate_id;
-        $contribution_process->user_id = Auth::user()->id;
-        $contribution_process->city_id = $request->city_id;
-        $contribution_process->wf_state_current_id = 52;
-        $contribution_process->workflow_id = 7;
-        $contribution_process->procedure_modality_id = $request->procedure_modality_id;
-        $contribution_process->date = now();
-        $contribution_process->code = Util::getNextCode(Util::getLastCode(ContributionProcess::class), '1');
-        $contribution_process->inbox_state = false;
-        $contribution_process->type = $request->contribution_process_type;
-        $contribution_process->save();
-        return redirect()->route('contribution_process.show',$contribution_process->id );
     }
     public function saveCommitment(Request $request)
     {

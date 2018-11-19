@@ -12,29 +12,6 @@ export default {
   ],
   data(){
     return{
-      commitment_type:null,
-      commitment_types:[
-          {
-              id: 'COMISION',
-              name: 'Comisión'
-          },
-          {
-              id: 'BAJA TEMPORAL',
-              name: 'Baja Temporal'
-          },
-          {
-              id: 'AGREGADO POLICIAL',
-              name: 'Agregado Policial'
-          },
-      ],
-      number: null,
-      commision_date: null,
-      destination: null,
-      commitment_date: null,
-      pension_declaration: null,
-      pension_declaration_date: null,
-      date_commitment: this.today,
-      start_contribution_date: null,
       contributor_first_name: '',
       contributor_second_name: '',
       contributor_last_name: '',
@@ -69,15 +46,7 @@ export default {
       beneficiary_number_address: '',
       show_advisor_form: false,
       show_apoderado_form: false,
-      contributorType: null,
-      contributorTypes:[
-        {
-          id: 'T',
-          name: 'Titular'
-        },{
-          id: 'C',
-          name: 'Cónyuge'
-        }],
+      contributor_type_id: null,
       date_death: this.affiliate.date_death,
       error:{
         contributor_identity_card: false,
@@ -238,11 +207,11 @@ export default {
     //   cellPhoneInputMaskAll();
     // phoneInputMaskAll();
       // let modality_id=this.quotaAid.modality_id;
-      if(this.contributorType  == 'T'){
+      if(this.contributor_type_id  == 1){
         this.setDataAffilate();
         return;
       }
-      if(this.contributorType  == 'C'){
+      if(this.contributor_type_id  == 2){
         this.setDataSpouse();
         return;
       }
