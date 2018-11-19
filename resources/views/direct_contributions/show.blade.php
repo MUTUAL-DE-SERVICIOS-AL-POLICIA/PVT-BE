@@ -10,7 +10,7 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
-            {{-- <correlative doc-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}" type="retFun"></correlative> --}}
+            {{-- <correlative doc-id="{{ $direct_contribution->id }}" wf-state-id="{{ $direct_contribution->wf_state_current_id }}" type="retFun"></correlative> --}}
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
@@ -21,10 +21,10 @@
         <div class="pull-right">
             <div class="form-inline">
                 {{-- @if ($can_validate)
-                <inbox-send-back-button-ret-fun :wf-sequence-back-list="{{ $wf_sequences_back }}" :doc-id="{{$retirement_fund->id}}" :wf-current-state-name="`{{$retirement_fund->wf_state->name}}`"
+                <inbox-send-back-button-ret-fun :wf-sequence-back-list="{{ $wf_sequences_back }}" :doc-id="{{$direct_contribution->id}}" :wf-current-state-name="`{{$direct_contribution->wf_state->name}}`"
                     type="retFun"></inbox-send-back-button-ret-fun>
-                <sweet-alert-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}"
-                    :doc-user-id="{{$retirement_fund->user_id}}" :auth-id="{{ $user->id}}" type="retFun">
+                <sweet-alert-modal inline-template :doc-id="{{$direct_contribution->id}}" :inbox-state="{{$direct_contribution->inbox_state ? 'true' : 'false'}}"
+                    :doc-user-id="{{$direct_contribution->user_id}}" :auth-id="{{ $user->id}}" type="retFun">
                     <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                         <div style="display:inline-block" v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
                             <button class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
@@ -78,12 +78,12 @@
     <div class="col-md-9" style="padding-left: 6px">
         <div class="tab-content">
             <div id="tab-ret-fun" class="tab-pane active">
-                {{-- @can('update',$retirement_fund)
-                <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}"
-                    :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" inline-template>
-                    @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
-                </ret-fun-info>
-                @endcan --}}
+                {{-- @can('update',$direct_contribution) --}}
+                <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{$direct_contribution->city_start}}" :city_end="{{$direct_contribution->city_end}}"
+                    :procedure_modality=" {{$direct_contribution->procedure_modality}}" :states="{{ $states }}" inline-template>
+                    @include('direct_contributions.info', ['direct_contribution'=>$direct_contribution,'cities'=>$birth_cities])
+                </direct-contribution-info>
+                {{-- @endcan --}}
             </div>
             <div id="tab-affiliate" class="tab-pane">
                 <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
@@ -101,7 +101,7 @@
             <div id="tab-summited-document" class="tab-pane">
 
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) 
-                <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}"
+                <ret-fun-step1-requirements-edit :ret_fun="{{ $direct_contribution }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}"
                     :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}"
                     :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
                     @include('ret_fun.step1_requirements_edit')
@@ -113,7 +113,7 @@
             <div id="tab-individual-accounts" class="tab-pane">
             </div>
             <div id="tab-qualification" class="tab-pane">
-                {{-- @include('ret_fun.summary_qualification', ['retirement_fund'=>$retirement_fund,'affiliate'=>$affiliate]) --}}
+                {{-- @include('ret_fun.summary_qualification', ['direct_contribution'=>$direct_contribution,'affiliate'=>$affiliate]) --}}
             </div>
             <div id="tab-folder" class="tab-pane">
                 @can('view',new Muserpol\Models\AffiliateFolder)

@@ -15,7 +15,7 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\Kinship;
 use Muserpol\Models\City;
 use Muserpol\Helpers\Util;
-
+use Muserpol\Models\ProcedureState;
 class DirectContributionController extends Controller
 {
     public function getAllDirectContribution(DataTables $datatables)
@@ -132,11 +132,11 @@ class DirectContributionController extends Controller
     //public function show(DirectContribution $directContribution)
     public function show(DirectContribution $directContribution)
     {
-        $affiliate = Affiliate::find($directContribution->affiliate_id);
-
+        $affiliate = Affiliate::find($directContribution->affiliate_id);        
         $cities = City::get();
         $cities_pluck = $cities->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
+        $states = ProcedureState::get();
         $data = [
             'direct_contribution'   =>  $directContribution,
             'affiliate' =>  $affiliate,
@@ -144,6 +144,7 @@ class DirectContributionController extends Controller
             'cities_pluck'  =>  $cities_pluck,
             'birth_cities'  =>  $birth_cities,
             'is_editable'   =>  true,
+            'states'    =>  $states,
         ];
         return view('direct_contributions.show', $data);
     }
