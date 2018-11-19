@@ -54,7 +54,7 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $num=$num+1}}</td>                    
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->degree->shortened??$affiliate->degree->shortened }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain > 0 ? Util::formatMoney($contribution->gain) : Util::formatMoney($contribution->base_wage) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->quotable) }}</td>                    
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->mortuary_quota) }}</td>
@@ -65,7 +65,7 @@
                             <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($reimbursement->month_year)) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->degree->shortened??$affiliate->degree->shortened  }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened  }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->gain > 0 ? Util::formatMoney($reimbursement->gain) : Util::formatMoney($reimbursement->base_wage) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->quotable) }}</td>                            
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->mortuary_quota) }}</td>
