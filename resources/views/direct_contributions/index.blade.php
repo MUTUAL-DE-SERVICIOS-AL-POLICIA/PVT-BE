@@ -3,7 +3,7 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {{ Breadcrumbs::render('contribution_process') }}
+        {{ Breadcrumbs::render('direct_contribution') }}
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">

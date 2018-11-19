@@ -31,6 +31,7 @@ class DropContributionProcessTables extends Migration
             $table->date('start_contribution_date')->nullable();
             $table->date('date');
             $table->string('code');
+            $table->boolean('status')->default('true');
             $table->foreign('affiliate_id')->references('id')->on('affiliates');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('contributor_type_id')->references('id')->on('kinships');
@@ -55,14 +56,14 @@ class DropContributionProcessTables extends Migration
             $table->foreign('direct_contribution_id')->references('id')->on('direct_contributions');
             $table->timestamps();
         });
-        Schema::create('contribution_process_submitted_documents', function (Blueprint $table) {
+        Schema::create('direct_contribution_submitted_documents', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('contribution_process_id');
+            $table->unsignedBigInteger('direct_contribution_id');
             $table->unsignedBigInteger('procedure_requirement_id');
             $table->date('reception_date');
             $table->date('comment')->nullable();
             $table->boolean('is_valid')->default(false);
-            $table->foreign('contribution_process_id')->references('id')->on('contribution_processes');
+            $table->foreign('direct_contribution_id')->references('id')->on('direct_contributions');
             $table->foreign('procedure_requirement_id')->references('id')->on('procedure_requirements');
             $table->timestamps();
         });
@@ -93,7 +94,7 @@ class DropContributionProcessTables extends Migration
     {
         Schema::dropIfExists('payables');
         Schema::dropIfExists('quotables');
-        Schema::dropIfExists('contribution_process_submitted_documents');
+        Schema::dropIfExists('direct_contribution_submitted_documents');
         Schema::dropIfExists('contribution_processes');
         Schema::dropIfExists('direct_contributions');
     }

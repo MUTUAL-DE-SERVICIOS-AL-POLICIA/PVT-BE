@@ -15,6 +15,7 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\Kinship;
 use Muserpol\Models\City;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\Contribution\DirectContributionSubmittedDocument;
 
 class DirectContributionController extends Controller
 {
@@ -117,8 +118,28 @@ class DirectContributionController extends Controller
         $direct_contribution->document_date = Util::verifyBarDate($request->document_date) ? Util::parseBarDate($request->document_date) : $request->document_date;
         $direct_contribution->start_contribution_date = Util::verifyBarDate($request->start_contribution_date) ? Util::parseBarDate($request->start_contribution_date) : $request->start_contribution_date;
         $direct_contribution->date = now();
-        $direct_contribution->code = Util::getNextCode(Util::getLastCode(DirectContribution::class));
+        $direct_contribution->code = Util::getNextCode(Util::getLastCode(DirectContribution::class), "1");
         $direct_contribution->save();
+
+        $requirements = ProcedureRequirement::select('id')->get();
+        foreach ($requirements as $requirement) {
+            if ($request->input('document' . $requirement->id) == 'checked') {
+                $submit = new DirectContributionSubmittedDocument();
+                $submit->direct_contribution_id = $direct_contribution->id;
+                $submit->procedure_requirement_id = $requirement->id;
+                $submit->reception_date = now();
+                $submit->comment = $request->input('comment' . $requirement->id);
+                $submit->save();
+            }
+        }
+
+        $affiliate = $direct_contribution->affiliate;
+        // save contributor
+        if ($request->contributor_type_id == 1) { // affiliate
+            $affiliate::updatePersonalInfo($affiliate->id, Util::parseRequest($request->all(), 'contributor'));
+        } elseif ($request->contributor_type_id == 2) { // spouse
+            $affiliate::updateSpouse($affiliate->id, Util::parseRequest($request->all(), 'contributor'));
+        }
         return redirect()->route('direct_contribution.show',$direct_contribution->id );
     }
 
