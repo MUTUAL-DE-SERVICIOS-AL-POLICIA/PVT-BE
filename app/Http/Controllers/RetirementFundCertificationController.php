@@ -171,7 +171,8 @@ class RetirementFundCertificationController extends Controller
             'retirement_fund'=> $retirement_fund,
         ];
         $pages = [];
-        for ($i = 1; $i <= 2; $i++) {
+        $number_pages = Util::isRegionalRole() ? 3 : 2;
+        for ($i = 1; $i <= $number_pages; $i++) {
             $pages[] = \View::make('ret_fun.print.reception', $data)->render();
         }
         $pdf = \App::make('snappy.pdf.wrapper');

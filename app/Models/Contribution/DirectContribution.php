@@ -14,6 +14,10 @@ class DirectContribution extends Model
     {
         return $this->belongsTo("Muserpol\Models\Affiliate");
     }
+    public function city()
+    {
+        return $this->belongsTo("Muserpol\Models\City");
+    }
     public function contributor_type()
     {
         return $this->belongsTo("Muserpol\Models\Kinship");
