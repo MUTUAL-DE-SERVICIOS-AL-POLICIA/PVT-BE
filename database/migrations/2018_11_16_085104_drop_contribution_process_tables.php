@@ -31,7 +31,7 @@ class DropContributionProcessTables extends Migration
             $table->date('start_contribution_date')->nullable();
             $table->date('date');
             $table->string('code');
-            $table->boolean('status')->default('true');
+            $table->boolean('status')->default(true);
             $table->foreign('affiliate_id')->references('id')->on('affiliates');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('contributor_type_id')->references('id')->on('kinships');
