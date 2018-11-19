@@ -786,7 +786,6 @@ class QuotaAidMortuaryController extends Controller
                 $old_ben->birth_date = Util::verifyBarDate($new_ben['birth_date']) ? Util::parseBarDate($new_ben['birth_date']) : $new_ben['birth_date'];
                 $old_ben->gender = $new_ben['gender'];
                 $old_ben->state = $new_ben['state'] ?? false;
-
                 if (is_null($new_ben['legal_representative'])) {
                     if ($ben_advisor = $old_ben->quota_aid_advisors->first()) {
                         // delete

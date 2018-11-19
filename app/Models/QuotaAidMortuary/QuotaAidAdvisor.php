@@ -4,6 +4,7 @@ namespace Muserpol\Models\QuotaAidMortuary;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 class QuotaAidAdvisor extends Model
 {
     use SoftDeletes;
@@ -35,5 +36,12 @@ class QuotaAidAdvisor extends Model
     public function quota_aid_beneficiary()
     {
         return $this->belongsToMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary', 'quota_aid_advisor_beneficiary', 'quota_aid_beneficiary_id', 'quota_aid_advisor_id');
+    }
+    public function getResolutionDateAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
     }
 }
