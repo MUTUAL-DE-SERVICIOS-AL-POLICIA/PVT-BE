@@ -3,6 +3,7 @@
 namespace Muserpol\Models\QuotaAidMortuary;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class QuotaAidLegalGuardian extends Model
 {
@@ -14,5 +15,12 @@ class QuotaAidLegalGuardian extends Model
     public function quota_aid_beneficiary()
     {
         return $this->belongsToMany('Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary', 'quota_aid_beneficiary_legal_guardian', 'quota_aid_beneficiary_id', 'quota_aid_legal_guardian_id');
+    }
+    public function getDateAuthorityAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
     }
 }
