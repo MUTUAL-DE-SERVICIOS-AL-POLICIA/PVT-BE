@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="row">
-    <h1 class="text-navy text-center">Plataforma Virtual de Trámites</h1>
+    <h1 class="text-navy text-center"><b>Plataforma Virtual de Trámites</b></h1>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row text-center">
@@ -38,21 +38,21 @@
                 <button class="widget red-bg px-1 text-center" style="height: 200px; width: 100%">
                 <span class="info-box-icon bg-red">
                     <i class="glyphicon glyphicon-hdd fa-4x"></i><br>
-                    <b>{{$role->name}}</b>
+                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
                 </span>
                 @endif
                 @if($role->module_id==2 || $role->module_id==8 )
                 <button class="widget lazur-bg px-1 text-center" style="height: 200px; width: 100%">
                 <span class="info-box-icon bg-aqua">
                     <i class="fa fa-puzzle-piece fa-5x"></i><br>
-                    <b>{{$role->name}}</b>
+                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
                 </span>
                 @endif     
                 @if($role->module_id==3)
                 <button class="widget yellow-bg px-1 text-center" style="height: 200px; width: 100%">
                 <span class="info-box-icon bg-yellow">
                     <i class="glyphicon glyphicon-piggy-bank fa-4x"></i><br>
-                    <b>{{$role->name}}</b>
+                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
                 </span>
                 
                 @endif
@@ -61,7 +61,7 @@
                 <button class="widget blue-bg px-1 text-center" style="height: 200px; width: 100%">
                 <span class="info-box-icon bg-green">
                     <i class="fa fa-money fa-5x"></i><br>
-                    <b>{{$role->name}}</b>
+                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
                 </span>
                 
                 @endif
@@ -69,7 +69,7 @@
                 <button class="widget blue-bg px-1 text-center" style="height: 200px; width: 100%">
                 <span class="info-box-icon bg-green">
                     <i class="fa fa-heartbeat fa-5x"></i><br>
-                    <b>{{$role->name}}</b>
+                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
                 </span>
                 
                 @endif
@@ -78,7 +78,7 @@
                 <button class="widget blue-bg px-1 text-center" style="height: 200px; width: 100%">
                 <span class="info-box-icon bg-green">
                     <i class="fa fa-balance-scale fa-5x"></i><br>
-                    <b>{{$role->name}}</b>
+                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
                 </span>
                 
                 @endif
@@ -86,7 +86,7 @@
                 <button class="widget green-bg px-1 text-center" style="height: 200px; width: 100%">
                 <span class="info-box-icon bg-green">
                     <i class="fa  fa-map fa-5x"></i><br>
-                    <b>{{$role->name}}</b>
+                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
                 </span>
                 
                 @endif
@@ -94,14 +94,14 @@
                 <button class="widget green-bg px-1 text-center" style="height: 200px; width: 100%">
                 <span class="info-box-icon bg-green">
                     <i class="fa  fa-map fa-5x"></i><br>
-                    <b>{{$role->name}}</b>
+                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
                 </span>
                 @endif
 
             <div class="info-box-content">
                 <input type="hidden" name="rol_id" value={!! $role->id !!}>
                 <b>
-                <span class="info-box-text"> {!! $role->module->name !!} </span>
+                <span class="info-box-text"><p style="font-size: 1.3em">{!! $role->module->name !!}</p>  </span>
                 </b>
                 <br>
             </div>
