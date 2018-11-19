@@ -4,6 +4,7 @@ namespace Muserpol\Models\QuotaAidMortuary;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Muserpol\Helpers\Util;
 
 class QuotaAidLegalGuardian extends Model
 {
@@ -22,5 +23,12 @@ class QuotaAidLegalGuardian extends Model
             return null;
         }
         return Carbon::parse($value)->format('d/m/Y');
+    }
+    /**
+     * Methods
+     */
+    public function fullName($style = "uppercase")
+    {
+        return Util::fullName($this, $style);
     }
 }
