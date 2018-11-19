@@ -1,10 +1,10 @@
 <?php
 
 namespace Muserpol\Models\QuotaAidMortuary;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use Muserpol\Helpers\Util;
 class QuotaAidAdvisor extends Model
 {
     use SoftDeletes;
@@ -43,5 +43,12 @@ class QuotaAidAdvisor extends Model
             return null;
         }
         return Carbon::parse($value)->format('d/m/Y');
+    }
+    /**
+     * Methods
+     */
+    public function fullName($style = "uppercase")
+    {
+        return Util::fullName($this, $style);
     }
 }
