@@ -4,7 +4,9 @@ namespace Muserpol\Http\Controllers;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\Contribution\DirectContribution;
+use Yajra\Datatables\DataTables;
 use Auth;
+use DB;
 use Log;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\ProcedureRequirement;
@@ -16,6 +18,32 @@ use Muserpol\Helpers\Util;
 
 class DirectContributionController extends Controller
 {
+    public function getAllDirectContribution(DataTables $datatables)
+    {
+        $direct_contributions = DirectContribution::with([
+            'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id',
+            'city:id,name,first_shortened',
+            'procedure_modality:id,name,shortened,procedure_type_id',
+        ])->select(
+            'id',
+            'code',
+            'date',
+            'affiliate_id',
+            'city_id',
+            'procedure_modality_id'
+        )
+            ->where('code', 'not like', '%A')
+            ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"));
+        return $datatables->eloquent($direct_contributions)
+            ->editColumn('affiliate.city_identity_card_id', function ($direct_contribution) {
+                $city = City::find($direct_contribution->affiliate->city_identity_card_id);
+                return $city ? $city->first_shortened : null;
+            })
+            ->addColumn('action', function ($direct_contribution) {
+                return "<a href='/direct_contribution/" . $direct_contribution->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
+            })
+            ->make(true);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -23,7 +51,7 @@ class DirectContributionController extends Controller
      */
     public function index()
     {
-        //
+        return view('direct_contributions.index');
     }
 
     /**
@@ -89,6 +117,7 @@ class DirectContributionController extends Controller
         $direct_contribution->document_date = Util::verifyBarDate($request->document_date) ? Util::parseBarDate($request->document_date) : $request->document_date;
         $direct_contribution->start_contribution_date = Util::verifyBarDate($request->start_contribution_date) ? Util::parseBarDate($request->start_contribution_date) : $request->start_contribution_date;
         $direct_contribution->date = now();
+        $direct_contribution->code = Util::getLastCode(DirectContribution::class);
         $direct_contribution->save();
         
         return redirect()->route('direct_contributions.show',$direct_contribution->id );
