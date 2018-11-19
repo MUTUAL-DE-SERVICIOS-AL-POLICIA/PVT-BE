@@ -195,6 +195,7 @@ class RetirementFundCertificationController extends Controller
         // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
         $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 20)->first();
         $code = $retirement_fund->code;
+        
         $area = $next_area_code->wf_state->first_shortened;
         $user = $next_area_code->user;
         $date = Util::getDateFormat($next_area_code->date);
