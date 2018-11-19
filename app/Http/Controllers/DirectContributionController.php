@@ -90,6 +90,7 @@ class DirectContributionController extends Controller
         $direct_contribution->start_contribution_date = Util::verifyBarDate($request->start_contribution_date) ? Util::parseBarDate($request->start_contribution_date) : $request->start_contribution_date;
         $direct_contribution->date = now();
         $direct_contribution->save();
+        
         return redirect()->route('direct_contributions.show',$direct_contribution->id );
     }
 
@@ -99,9 +100,23 @@ class DirectContributionController extends Controller
      * @param  \Muserpol\DirectContribution  $directContribution
      * @return \Illuminate\Http\Response
      */
+    //public function show(DirectContribution $directContribution)
     public function show(DirectContribution $directContribution)
     {
-        //
+        $affiliate = Affiliate::find($directContribution->affiliate_id);
+
+        $cities = City::get();
+        $cities_pluck = $cities->pluck('first_shortened', 'id');
+        $birth_cities = City::all()->pluck('name', 'id');
+        $data = [
+            'direct_contribution'   =>  $directContribution,
+            'affiliate' =>  $affiliate,
+            'cities'    =>  $cities,
+            'cities_pluck'  =>  $cities_pluck,
+            'birth_cities'  =>  $birth_cities,
+            'is_editable'   =>  true,
+        ];
+        return view('direct_contributions.show', $data);
     }
 
     /**

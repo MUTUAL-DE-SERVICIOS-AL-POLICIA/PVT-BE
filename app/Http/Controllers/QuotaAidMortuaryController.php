@@ -505,7 +505,6 @@ class QuotaAidMortuaryController extends Controller
         return redirect('quota_aid/'.$quota_aid->id);
     }
 
-
     /**
      * Display the specified resource.
      *

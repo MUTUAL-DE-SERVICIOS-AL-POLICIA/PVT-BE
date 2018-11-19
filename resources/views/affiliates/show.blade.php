@@ -52,7 +52,7 @@ th.ellipsis-text {
             </a>
         @endcan
         @can('create', new Muserpol\Models\Contribution\ContributionProcess)
-            <a href="{{route('create_contribution_process', $affiliate->id)}}">
+            <a href="{{route('create_direct_contribution', $affiliate->id)}}">
                 <button class="btn btn-warning btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Aportes"><i class="fa fa-dollar" style="font-size:15px;"></i> </button>
             </a>
         @endcan
