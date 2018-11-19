@@ -117,10 +117,9 @@ class DirectContributionController extends Controller
         $direct_contribution->document_date = Util::verifyBarDate($request->document_date) ? Util::parseBarDate($request->document_date) : $request->document_date;
         $direct_contribution->start_contribution_date = Util::verifyBarDate($request->start_contribution_date) ? Util::parseBarDate($request->start_contribution_date) : $request->start_contribution_date;
         $direct_contribution->date = now();
-        $direct_contribution->code = Util::getLastCode(DirectContribution::class);
+        $direct_contribution->code = Util::getNextCode(Util::getLastCode(DirectContribution::class));
         $direct_contribution->save();
-        
-        return redirect()->route('direct_contributions.show',$direct_contribution->id );
+        return redirect()->route('direct_contribution.show',$direct_contribution->id );
     }
 
     /**

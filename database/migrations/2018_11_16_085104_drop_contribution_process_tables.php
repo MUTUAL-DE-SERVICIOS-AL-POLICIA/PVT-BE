@@ -44,6 +44,7 @@ class DropContributionProcessTables extends Migration
             $table->unsignedBigInteger('wf_state_current_id');
             $table->unsignedBigInteger('workflow_id');
             $table->unsignedBigInteger('procedure_state_id');
+            $table->unsignedBigInteger('direct_contribution_id');
             $table->date('date');
             $table->string('code');
             $table->boolean('inbox_state')->default(false);
@@ -51,6 +52,7 @@ class DropContributionProcessTables extends Migration
             $table->foreign('wf_state_current_id')->references('id')->on('wf_states');
             $table->foreign('workflow_id')->references('id')->on('workflows');
             $table->foreign('procedure_state_id')->references('id')->on('procedure_states');
+            $table->foreign('direct_contribution_id')->references('id')->on('direct_contributions');
             $table->timestamps();
         });
         Schema::create('contribution_process_submitted_documents', function (Blueprint $table) {
