@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title', 'Contribuciones ...')
+@section('title', 'Contribuciones')
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-md-7">
-        {!!Breadcrumbs::render('show_contribution_process', $contribution_process)!!}
+        {!!Breadcrumbs::render('show_direct_contribution', $direct_contribution)!!}
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
@@ -54,10 +54,10 @@
         <div class="widget-head-color-box yellow-bg p-lg text-center">
             <div class="m-b-md">
                 <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Afiliado ">
-                    <a href="{{route('affiliate.show', $affiliate->id)}}" style="color: #fff"> {{ $contribution_process->affiliate->fullNameWithDegree() }}</a>
+                    <a href="{{route('affiliate.show', $affiliate->id)}}" style="color: #fff"> {{ $direct_contribution->affiliate->fullNameWithDegree() }}</a>
                 </h2>
-                <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $contribution_process->affiliate->ciWithExt() }}</strong></h3>
-                <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $contribution_process->affiliate->registration }}</strong></h4>
+                <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $direct_contribution->affiliate->ciWithExt() }}</strong></h3>
+                <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $direct_contribution->affiliate->registration }}</strong></h4>
             </div>
         </div>
         <div class="widget-text-box">
@@ -72,7 +72,7 @@
             </ul>
         </div>
         <br>
-        <tag-list :doc-id="{{ $contribution_process->id }}" type="contributionProcess"></tag-list>
+        <tag-list :doc-id="{{ $direct_contribution->id }}" type="contributionProcess"></tag-list>
     </div>
     <br>
     <div class="col-md-9" style="padding-left: 6px">
