@@ -247,7 +247,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::resource('direct_contribution', 'DirectContributionController');
 		Route::get('affiliate/{affiliate}/direct_contribution/create', 'DirectContributionController@create')->name('create_direct_contribution');
-		// Route::get('get_all_contribution_process', 'ContributionProcessController@getAllContributionProcess');
+		Route::get('get_all_direct_contribution', 'DirectContributionController@getAllDirectContribution');
 		// Route::post('affiliate/{affiliate}/contribution_process/save_commitment', 'ContributionProcessController@saveCommitment')->name('save_commitment');
 
 			//inbox

@@ -25,8 +25,6 @@
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th></th>
                         </tr>
                     </tfoot>
@@ -42,9 +40,7 @@
                             <th>Apellido Materno</th>
                             <th>Apellido de Casada</th>
                             <th>Modalidad</th>
-                            <th>Ubicacion</th>
                             <th>Regional</th>
-                            <th>Estado de Bandeja</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
@@ -104,7 +100,7 @@
             },
             responsive: true,
             order: [],
-            ajax: "{{ url('get_all_contribution_process') }}",
+            ajax: "{{ url('get_all_direct_contribution') }}",
             lengthMenu: [[10, 25, 50,100, -1], [10, 25, 50,100, "Todos"]],
             dom: '< "html5buttons"B>Tgitp',
             buttons:[
@@ -125,9 +121,7 @@
                 { data: 'affiliate.mothers_last_name' },
                 { data: 'affiliate.surname_husband' },
                 { data: 'procedure_modality.name' },
-                { data: 'wf_state.first_shortened' },
                 { data: 'city.name' },
-                { data: 'inbox_state' },
                 { data: 'action' },
             ],
         });
