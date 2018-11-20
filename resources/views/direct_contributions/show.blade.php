@@ -64,7 +64,7 @@
             <ul class="list-group elements-list">
                 <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Aporte Directo</a></li>                
                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-user"></i> Afiliado</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-user"></i> Cónyuge</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-spouse-info"><a href="#"><i class="fa fa-user"></i> Cónyuge</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Contribuciones</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-folder"><a href="#"><i class="fa fa-copy"></i> Pagos</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>                
@@ -86,9 +86,9 @@
                 {{-- @endcan --}}
             </div>
             <div id="tab-affiliate" class="tab-pane">
-                {{-- <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
+                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
-                </affiliate-show> --}}
+                </affiliate-show>
 
             </div>
             <div id="tab-beneficiaries" class="tab-pane">
@@ -98,7 +98,12 @@
                 @endcan
 
             </div>
-            <div id="tab-summited-document" class="tab-pane">
+            <div id="tab-spouse-info" class="tab-pane">
+                <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $cities }}" inline-template>
+                    @include('spouses.spouse_personal_information', ['spouse'=>$spouse])
+                </spouse-show>
+            </div>
+            {{-- <div id="tab-summited-document" class="tab-pane"> --}}
 
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) 
                 <ret-fun-step1-requirements-edit :ret_fun="{{ $direct_contribution }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}"
@@ -108,7 +113,7 @@
                 </ret-fun-step1-requirements-edit>
                 @endcan --}}
 
-            </div>
+            {{-- </div> --}}
 
             <div id="tab-individual-accounts" class="tab-pane">
             </div>

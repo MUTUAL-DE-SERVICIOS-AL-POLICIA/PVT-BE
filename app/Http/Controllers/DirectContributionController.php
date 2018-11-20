@@ -18,6 +18,7 @@ use Muserpol\Helpers\Util;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\ProcedureState;
 use Muserpol\Models\Contribution\DirectContributionSubmittedDocument;
+use Muserpol\Models\Address;
 class DirectContributionController extends Controller
 {
     public function getAllDirectContribution(DataTables $datatables)
@@ -158,9 +159,12 @@ class DirectContributionController extends Controller
         $cities_pluck = $cities->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         $states = ProcedureState::get();
+        $spouse = $affiliate->spouse()->first();
+        $affiliate->address = new Address();
         $data = [
             'direct_contribution'   =>  $directContribution,
             'affiliate' =>  $affiliate,
+            'spouse'    =>  $spouse,
             'cities'    =>  $cities,
             'cities_pluck'  =>  $cities_pluck,
             'birth_cities'  =>  $birth_cities,
