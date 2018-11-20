@@ -11,7 +11,7 @@
                 <a href="{{route('show_aid_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Detalle de Aportes"><i class="fa fa-eye"></i> Detalle </a>
                 <a href="{{route('edit_aid_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edici&oacute;n de aportes"><i class="fa fa-key"></i> Editar </a>
             {{-- @endcan --}}
-            <a href="{{route('direct_aid_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes Directos"><i class="fa fa-pencil"></i> Aporte Directo </a>
+            {{-- <a href="{{route('direct_aid_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes Directos"><i class="fa fa-pencil"></i> Aporte Directo </a> --}}
         </div>
         <br>
         <table class="table table-striped-1 table-bordered table-hover size-13"  id="fixedheight">

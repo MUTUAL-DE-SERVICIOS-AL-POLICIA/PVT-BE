@@ -19,6 +19,10 @@ use Muserpol\Helpers\ID;
 use Muserpol\Models\ProcedureState;
 use Muserpol\Models\Contribution\DirectContributionSubmittedDocument;
 use Muserpol\Models\Address;
+use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\Contribution\Reimbursement;
+use Muserpol\Models\Contribution\AidReimbursement;
 class DirectContributionController extends Controller
 {
     public function getAllDirectContribution(DataTables $datatables)
@@ -152,12 +156,61 @@ class DirectContributionController extends Controller
     //public function show(DirectContribution $directContribution)
     public function show(DirectContribution $directContribution)
     {
-        $affiliate = Affiliate::find($directContribution->affiliate_id);        
+        $affiliate = Affiliate::find($directContribution->affiliate_id);
+        if (!sizeOf($affiliate->address) > 0) {
+            $affiliate->address[] = new Address();
+        }
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
+
         $cities = City::get();
         $cities_pluck = $cities->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
+        
         $states = ProcedureState::get();
-        $spouse = $affiliate->spouse()->first();
+        
+        $spouse = $affiliate->spouse->first();
+        if (!$spouse) {
+            $spouse = new Spouse();
+        }else{
+            $spouse->load([
+                'city_identity_card:id,first_shortened',
+                'city_birth:id,name',
+            ]);
+        }
+
+
+        //GETTIN CONTRIBUTIONS
+        $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+
+        if($affiliate->date_entry)
+            $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
+        else
+            $end = explode('-', '1976-05-01');
+        $month_end = $end[1];
+        $year_end = $end[0];
+
+        if($affiliate->date_derelict)
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));
+        else
+            $start = explode('-', date('Y-m-d'));
+        $month_start = $start[1];
+        $year_start = $start[0];
+
+        $aid_contributions = AidContribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        $aid_reimbursement = AidReimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        //return  $affiliate->date_death;//Util::parseMonthYearDate($affiliate->date_death);
+        
+        if($affiliate->date_death)
+            $death = explode('/', $affiliate->date_death);
+        else
+            $death = explode('/', date('d/m/Y'));
+        
+        $month_death = $death[1];
+        $year_death = $death[2];
+
+
         $affiliate->address = new Address();
         $data = [
             'direct_contribution'   =>  $directContribution,
@@ -168,6 +221,16 @@ class DirectContributionController extends Controller
             'birth_cities'  =>  $birth_cities,
             'is_editable'   =>  true,
             'states'    =>  $states,
+            'contributions' =>  $contributions,
+            'aid_contributions' =>  $aid_contributions,
+            'month_end' =>  $month_end,
+            'month_start'  =>   $month_start,
+            'year_end'  =>  $year_end,
+            'year_start'    =>  $year_start,
+            'month_death'   =>  $month_death,
+            'year_death'    =>  $year_death,
+            'reimbursements'    =>  $reimbursements,
+            'aid_reimbursements'    =>  $aid_reimbursement,
         ];
         return view('direct_contributions.show', $data);
     }
