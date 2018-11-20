@@ -202,4 +202,33 @@ class DirectContributionController extends Controller
     {
         //
     }
+
+    /**
+     * Edit basic information from direct contribution process
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Muserpol\DirectContribution  $directContribution
+     */
+    public function updateInformation(Request $request)
+    {
+        $direct_contribution = DirectContribution::find($request->id);
+        // $this->authorize('update', $direct_contribution);
+        $direct_contribution->city_id = $request->city_id;
+        if($direct_contribution->ret_fun_state_id == ID::state()->eliminado){
+            $direct_contribution->code.="A";
+        }
+        $direct_contribution->commitment_date = $request->commitment_date;
+        $direct_contribution->document_number = $request->document_number;
+        $direct_contribution->document_date = $request->document_date;
+        $direct_contribution->start_contribution_date = $request->start_contribution_date;
+        $direct_contribution->date = $request->date;                
+        $direct_contribution->save();
+        $data = [
+            'retirement_fund' => $direct_contribution, 
+            'procedure_modality'=>$direct_contribution->procedure_modality,
+            'city_start'=>$direct_contribution->city_start,
+            'city_end'=>$retirement_fund->city_end
+        ];        
+        return $data;
+    }
 }

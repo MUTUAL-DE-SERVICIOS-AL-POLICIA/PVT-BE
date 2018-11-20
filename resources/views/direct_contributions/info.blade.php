@@ -28,23 +28,11 @@
                     </div>
                     <div class="col-md-4">
                         @if(Session::get('rol_id') == 28)
-                            <input type="date" v-model="form.date" class="form-control" > 
+                            <input type="date" v-model="form.commitment_date" class="form-control" > 
                         @else
-                            <input type="date" v-model="form.date" class="form-control" disabled> 
+                            <input type="date" v-model="form.commitment_date" class="form-control" disabled> 
                         @endif
-                    </div>
-                    {{-- <div class="col-md-2">
-                        <strong> Nro de Documento:</strong>
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" v-model="document_number" disabled="">
-                    </div> --}}
-                    {{-- <div class="col-md-2">
-                        <strong>Ciudad de Recepci&oacute;n:</strong>
-                    </div>
-                    <div class="col-md-4">
-                        {!! Form::select('city_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_id',':disabled'=>'!editing']) !!}
-                    </div>                     --}}
+                    </div>                    
                 </div>
                 <br>
                 <div class="row">                
@@ -59,12 +47,30 @@
                         @endif
                     </div>
                     <div class="col-md-2">
-                        <strong>Regional:</strong>&nbsp;
+                        <strong> Nro de Documento:</strong>
                     </div>
                     <div class="col-md-4">
-                        {!! Form::select('city_end_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_end_id',':disabled'=>'!editing'])
-                        !!}
-                    </div>                
+                        <input type="text" class="form-control" v-model="document_number" disabled="">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-2">
+                        <strong>Ciudad de Recepci&oacute;n:</strong>
+                    </div>
+                    <div class="col-md-4">
+                        {!! Form::select('city_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_id',':disabled'=>'!editing']) !!}
+                    </div>
+                    <div class="col-md-2">
+                            <strong> Fecha de documento:</strong>&nbsp;
+                        </div>
+                    <div class="col-md-4">
+                        @if(Session::get('rol_id') == 28)
+                            <input type="date" v-model="form.document_date" class="form-control" > 
+                        @else
+                            <input type="date" v-model="form.document_date" class="form-control" disabled> 
+                        @endif
+                    </div>
                 </div>
                 <br>
                 <div class="row">                
@@ -76,9 +82,16 @@
                             <option v-for="(state, index) in states" :value="state.id" :key="index">@{{state.name}}</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-        
-                    </div>                
+                    <div class="col-md-2">
+                            <strong> Periodo primer aporte:</strong>&nbsp;
+                        </div>
+                    <div class="col-md-4">
+                        @if(Session::get('rol_id') == 28)
+                            <input type="date" v-model="form.start_contribution_date" class="form-control" > 
+                        @else
+                            <input type="date" v-model="form.start_contribution_date" class="form-control" disabled> 
+                        @endif
+                    </div>               
                 </div>
                 <br>
             

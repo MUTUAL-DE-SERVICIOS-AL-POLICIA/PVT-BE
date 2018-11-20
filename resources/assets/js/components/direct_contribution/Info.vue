@@ -14,7 +14,7 @@ export default {
           form: this.direct_contribution,
           document_number: this.direct_contribution.document_number,
           date: this.direct_contribution.date,
-          document_date: this.document_date,
+          document_date: this.document_date,          
           //city_end: this.city_end,
           //city_id: this.city_id,
           //procedure_modality: this.procedure_modality,          
