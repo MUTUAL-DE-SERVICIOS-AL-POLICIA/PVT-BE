@@ -15,8 +15,10 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\Kinship;
 use Muserpol\Models\City;
 use Muserpol\Helpers\Util;
+use Muserpol\Helpers\ID;
+use Muserpol\Models\ProcedureState;
 use Muserpol\Models\Contribution\DirectContributionSubmittedDocument;
-
+use Muserpol\Models\Address;
 class DirectContributionController extends Controller
 {
     public function getAllDirectContribution(DataTables $datatables)
@@ -150,18 +152,22 @@ class DirectContributionController extends Controller
     //public function show(DirectContribution $directContribution)
     public function show(DirectContribution $directContribution)
     {
-        $affiliate = Affiliate::find($directContribution->affiliate_id);
-
+        $affiliate = Affiliate::find($directContribution->affiliate_id);        
         $cities = City::get();
         $cities_pluck = $cities->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
+        $states = ProcedureState::get();
+        $spouse = $affiliate->spouse()->first();
+        $affiliate->address = new Address();
         $data = [
             'direct_contribution'   =>  $directContribution,
             'affiliate' =>  $affiliate,
+            'spouse'    =>  $spouse,
             'cities'    =>  $cities,
             'cities_pluck'  =>  $cities_pluck,
             'birth_cities'  =>  $birth_cities,
             'is_editable'   =>  true,
+            'states'    =>  $states,
         ];
         return view('direct_contributions.show', $data);
     }
@@ -198,5 +204,33 @@ class DirectContributionController extends Controller
     public function destroy(DirectContribution $directContribution)
     {
         //
+    }
+
+    /**
+     * Edit basic information from direct contribution process
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Muserpol\DirectContribution  $directContribution
+     */
+    public function updateInformation(Request $request)
+    {
+        $direct_contribution = DirectContribution::find($request->id);
+        // $this->authorize('update', $direct_contribution);
+        $direct_contribution->city_id = $request->city_id;
+        if($direct_contribution->ret_fun_state_id == ID::state()->eliminado){
+            $direct_contribution->code.="A";
+        }
+        $direct_contribution->commitment_date = $request->commitment_date;
+        $direct_contribution->document_number = $request->document_number;
+        $direct_contribution->document_date = $request->document_date;
+        $direct_contribution->start_contribution_date = $request->start_contribution_date;
+        $direct_contribution->date = $request->date;                
+        $direct_contribution->save();
+        $data = [
+            'direct_contribution' => $direct_contribution, 
+            'procedure_modality'=>$direct_contribution->procedure_modality,
+            'city'=>$direct_contribution->city,            
+        ];        
+        return $data;
     }
 }
