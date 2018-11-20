@@ -224,7 +224,7 @@ class DirectContributionController extends Controller
             select('direct_contribution_submitted_documents.id','procedure_requirements.number','direct_contribution_submitted_documents.procedure_requirement_id','direct_contribution_submitted_documents.comment','direct_contribution_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements','direct_contribution_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
-            ->where('direct_contribution_submitted_documents.direct_contribution_id',$directContribution->id);        
+            ->where('direct_contribution_submitted_documents.direct_contribution_id',$directContribution->id);
         $data = [
             'direct_contribution'   =>  $directContribution,
             'affiliate' =>  $affiliate,
