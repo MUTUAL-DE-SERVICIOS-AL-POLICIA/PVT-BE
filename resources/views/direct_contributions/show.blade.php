@@ -65,13 +65,8 @@
                 <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Aporte Directo</a></li>                
                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-user"></i> Afiliado</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-spouse-info"><a href="#"><i class="fa fa-user"></i> Cónyuge</a></li>
-<<<<<<< HEAD
-                <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Contribuciones</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-payment"><a href="#"><i class="fa fa-dollar"></i> Pagos</a></li>
-=======
                 <li class="list-group-item " data-toggle="tab" href="#tab-contributions"><a href="#"><i class="fa fa-users"></i> Contribuciones</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-folder"><a href="#"><i class="fa fa-copy"></i> Pagos</a></li>
->>>>>>> upstream/development
+                <li class="list-group-item " data-toggle="tab" href="#tab-payment"><a href="#"><i class="fa fa-dollar"></i> Pagos</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>                
                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
             </ul>
@@ -97,11 +92,7 @@
 
             </div>            
             <div id="tab-spouse-info" class="tab-pane">
-<<<<<<< HEAD
-                {{-- <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $cities }}" inline-template>
-=======
-                <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $birth_cities }}" inline-template>
->>>>>>> upstream/development
+                {{-- <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $birth_cities }}" inline-template>
                     @include('spouses.spouse_personal_information', ['spouse'=>$spouse])
                 </spouse-show> --}}
             </div>
@@ -129,7 +120,7 @@
                 </div>
             <div id="tab-summited-document" class="tab-pane">
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)  --}}
-                <direct-contribution-step1-requirements-edit 
+                {{-- <direct-contribution-step1-requirements-edit 
                     :direct_contribution="{{ $direct_contribution }}" 
                     :modalities="{{ $modalities }}" 
                     :requirements="{{ $requirements }}"
@@ -138,20 +129,12 @@
                     :procedure_types="{{$procedure_types}}" 
                     :submitted="{{json_encode($submitted_documents)}}"
                     :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
-                    @include('ret_fun.step1_requirements_edit')
-                </ret-fun-step1-requirements-edit>
+                    @include('direct_contributions.step1_requirements_edit')
+                </direct_contribution-step1-requirements-edit> --}}
                 {{-- @endcan --}}
-
-            {{-- </div> --}}
-
-            <div id="tab-individual-accounts" class="tab-pane">
-            </div>
-            <div id="tab-qualification" class="tab-pane">
-                {{-- @include('ret_fun.summary_qualification', ['direct_contribution'=>$direct_contribution,'affiliate'=>$affiliate]) --}}
             </div>
             <div id="tab-payment" class="tab-pane">
                 @include('direct_contributions.payments', ['contribution_processes' => $contribution_processes, 'affiliate_id'=>$affiliate->id])
-
             </div>
             <div id="tab-observations" class="tab-pane">
                 {{-- @include('ret_fun.observation') --}}
