@@ -119,15 +119,19 @@
                 @endif
                 </div>
             <div id="tab-summited-document" class="tab-pane">
-
-                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) 
-                <ret-fun-step1-requirements-edit :ret_fun="{{ $direct_contribution }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}"
-                    :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}"
+                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)  --}}
+                <direct-contribution-step1-requirements-edit 
+                    :direct_contribution="{{ $direct_contribution }}" 
+                    :modalities="{{ $modalities }}" 
+                    :requirements="{{ $requirements }}"
+                    :user="{{ json_encode($direct_contribution->user) }}" 
+                    :cities="{{ $cities }}" 
+                    :procedure_types="{{$procedure_types}}" 
+                    :submitted="{{json_encode($submitted_documents)}}"
                     :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
-                    @include('ret_fun.step1_requirements_edit')
-                </ret-fun-step1-requirements-edit>
-                @endcan --}}
-
+                    @include('direct_contributions.step1_requirements_edit')
+                </direct_contribution-step1-requirements-edit>
+                {{-- @endcan --}}
             </div>
             <div id="tab-observations" class="tab-pane">
                 {{-- @include('ret_fun.observation') --}}

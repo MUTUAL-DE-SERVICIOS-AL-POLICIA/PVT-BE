@@ -209,9 +209,23 @@ class DirectContributionController extends Controller
         
         $month_death = $death[1];
         $year_death = $death[2];
-
-
-        $affiliate->address = new Address();
+        $procedure_types = ProcedureType::where('module_id', 11)->get();
+        $modalities = ProcedureModality::whereIn('procedure_type_id', $procedure_types->pluck('id'))->select('id','name', 'procedure_type_id')->get();
+        
+        $requirements = ProcedureRequirement::
+                                    select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')                                    
+                                    ->whereIn('procedure_requirements.procedure_modality_id',$modalities->pluck('id'))
+                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')                                    
+                                    ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+                                    ->orderBy('procedure_requirements.number','ASC')
+                                    ->get();        
+                                    
+        $submitted = DirectContributionSubmittedDocument::
+            select('direct_contribution_submitted_documents.id','procedure_requirements.number','direct_contribution_submitted_documents.procedure_requirement_id','direct_contribution_submitted_documents.comment','direct_contribution_submitted_documents.is_valid')
+            ->leftJoin('procedure_requirements','direct_contribution_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+            ->orderby('procedure_requirements.number','ASC')
+            ->where('direct_contribution_submitted_documents.direct_contribution_id',$directContribution->id);
+        
         $data = [
             'direct_contribution'   =>  $directContribution,
             'affiliate' =>  $affiliate,
@@ -231,6 +245,10 @@ class DirectContributionController extends Controller
             'year_death'    =>  $year_death,
             'reimbursements'    =>  $reimbursements,
             'aid_reimbursements'    =>  $aid_reimbursement,
+            'modalities'    =>  $modalities,
+            'requirements'  =>  $requirements,
+            'procedure_types'   =>  $procedure_types,
+            'submitted_documents'   =>  $submitted
         ];
         return view('direct_contributions.show', $data);
     }
