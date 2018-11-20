@@ -65,8 +65,13 @@
                 <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Aporte Directo</a></li>                
                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-user"></i> Afiliado</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-spouse-info"><a href="#"><i class="fa fa-user"></i> Cónyuge</a></li>
+<<<<<<< HEAD
                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Contribuciones</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-payment"><a href="#"><i class="fa fa-dollar"></i> Pagos</a></li>
+=======
+                <li class="list-group-item " data-toggle="tab" href="#tab-contributions"><a href="#"><i class="fa fa-users"></i> Contribuciones</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-folder"><a href="#"><i class="fa fa-copy"></i> Pagos</a></li>
+>>>>>>> upstream/development
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>                
                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
             </ul>
@@ -90,28 +95,52 @@
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
                 </affiliate-show> --}}
 
-            </div>
-            <div id="tab-beneficiaries" class="tab-pane">
-
-                @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
-                    {{-- @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships]) --}}
-                @endcan
-
-            </div>
+            </div>            
             <div id="tab-spouse-info" class="tab-pane">
+<<<<<<< HEAD
                 {{-- <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $cities }}" inline-template>
+=======
+                <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $birth_cities }}" inline-template>
+>>>>>>> upstream/development
                     @include('spouses.spouse_personal_information', ['spouse'=>$spouse])
                 </spouse-show> --}}
             </div>
-            {{-- <div id="tab-summited-document" class="tab-pane"> --}}
-
-                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) 
-                <ret-fun-step1-requirements-edit :ret_fun="{{ $direct_contribution }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}"
-                    :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}"
+            <div id="tab-contributions" class="tab-pane">
+                @if($direct_contribution->procedure_modality->procedure_type_id == 6)
+                    @include('contribution.affiliate_contribution_show',
+                    [
+                        'contributions' =>  $contributions,
+                        'month_end' =>  $month_end,
+                        'month_start'  =>   $month_start,
+                        'year_end'  =>  $year_end,
+                        'year_start'    =>  $year_start
+                    ])
+                @endif
+                @if($direct_contribution->procedure_modality->procedure_type_id == 7)
+                    @include('contribution.affiliate_aid_contribution_show',
+                    [
+                        'contributions' =>  $aid_contributions,
+                        'month_end' =>  $month_death,
+                        'month_start'  =>   $month_end,
+                        'year_end'  =>  $year_death,
+                        'year_start'    =>  $year_end
+                    ])
+                @endif
+                </div>
+            <div id="tab-summited-document" class="tab-pane">
+                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)  --}}
+                <direct-contribution-step1-requirements-edit 
+                    :direct_contribution="{{ $direct_contribution }}" 
+                    :modalities="{{ $modalities }}" 
+                    :requirements="{{ $requirements }}"
+                    :user="{{ json_encode($direct_contribution->user) }}" 
+                    :cities="{{ $cities }}" 
+                    :procedure_types="{{$procedure_types}}" 
+                    :submitted="{{json_encode($submitted_documents)}}"
                     :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
                     @include('ret_fun.step1_requirements_edit')
                 </ret-fun-step1-requirements-edit>
-                @endcan --}}
+                {{-- @endcan --}}
 
             {{-- </div> --}}
 
@@ -122,6 +151,7 @@
             </div>
             <div id="tab-payment" class="tab-pane">
                 @include('direct_contributions.payments', ['contribution_processes' => $contribution_processes, 'affiliate_id'=>$affiliate->id])
+
             </div>
             <div id="tab-observations" class="tab-pane">
                 {{-- @include('ret_fun.observation') --}}
@@ -133,7 +163,34 @@
 @endsection
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
+<style>
+    .elements-list .list-group-item:hover{ cursor: pointer; }
+</style>
 @endsection
 @section('jss')
 <script src="{{ asset('/js/datatables.js')}}"></script>
+<script>
+$(document).ready(function() {
+
+    function moneyInputMask() {
+
+            return {
+                alias: "numeric",
+                groupSeparator: ",",
+                autoGroup: true,
+                digits: 2,
+                digitsOptional: false,
+                placeholder: "0"
+            };
+        }
+        $('.numberformat').each(function(i, obj) {
+            Inputmask(moneyInputMask()).mask(obj);
+        });
+    //revisar dependecias XD
+    //revisar dependecias XD
+    // $('.file-box').each(function() {
+    //     animationHover(this, 'pulse');
+    // });
+} );
+</script>
 @endsection

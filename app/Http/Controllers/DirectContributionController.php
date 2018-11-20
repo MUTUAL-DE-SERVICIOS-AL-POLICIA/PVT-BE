@@ -19,6 +19,10 @@ use Muserpol\Helpers\ID;
 use Muserpol\Models\ProcedureState;
 use Muserpol\Models\Contribution\DirectContributionSubmittedDocument;
 use Muserpol\Models\Address;
+use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\Contribution\Reimbursement;
+use Muserpol\Models\Contribution\AidReimbursement;
 class DirectContributionController extends Controller
 {
     public function getAllDirectContribution(DataTables $datatables)
@@ -152,13 +156,76 @@ class DirectContributionController extends Controller
     //public function show(DirectContribution $directContribution)
     public function show(DirectContribution $directContribution)
     {
-        $affiliate = Affiliate::find($directContribution->affiliate_id);        
+        $affiliate = Affiliate::find($directContribution->affiliate_id);
+        if (!sizeOf($affiliate->address) > 0) {
+            $affiliate->address[] = new Address();
+        }
+        $affiliate->phone_number = explode(',', $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
+
         $cities = City::get();
         $cities_pluck = $cities->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
+        
         $states = ProcedureState::get();
-        $spouse = $affiliate->spouse()->first();
-        $affiliate->address = new Address();
+        
+        $spouse = $affiliate->spouse->first();
+        if (!$spouse) {
+            $spouse = new Spouse();
+        }else{
+            $spouse->load([
+                'city_identity_card:id,first_shortened',
+                'city_birth:id,name',
+            ]);
+        }
+
+
+        //GETTIN CONTRIBUTIONS
+        $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+
+        if($affiliate->date_entry)
+            $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
+        else
+            $end = explode('-', '1976-05-01');
+        $month_end = $end[1];
+        $year_end = $end[0];
+
+        if($affiliate->date_derelict)
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));
+        else
+            $start = explode('-', date('Y-m-d'));
+        $month_start = $start[1];
+        $year_start = $start[0];
+
+        $aid_contributions = AidContribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        $aid_reimbursement = AidReimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        //return  $affiliate->date_death;//Util::parseMonthYearDate($affiliate->date_death);
+        
+        if($affiliate->date_death)
+            $death = explode('/', $affiliate->date_death);
+        else
+            $death = explode('/', date('d/m/Y'));
+        
+        $month_death = $death[1];
+        $year_death = $death[2];
+        $procedure_types = ProcedureType::where('module_id', 11)->get();
+        $modalities = ProcedureModality::whereIn('procedure_type_id', $procedure_types->pluck('id'))->select('id','name', 'procedure_type_id')->get();
+        
+        $requirements = ProcedureRequirement::
+                                    select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')                                    
+                                    ->whereIn('procedure_requirements.procedure_modality_id',$modalities->pluck('id'))
+                                    ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')                                    
+                                    ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+                                    ->orderBy('procedure_requirements.number','ASC')
+                                    ->get();        
+                                    
+        $submitted = DirectContributionSubmittedDocument::
+            select('direct_contribution_submitted_documents.id','procedure_requirements.number','direct_contribution_submitted_documents.procedure_requirement_id','direct_contribution_submitted_documents.comment','direct_contribution_submitted_documents.is_valid')
+            ->leftJoin('procedure_requirements','direct_contribution_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+            ->orderby('procedure_requirements.number','ASC')
+            ->where('direct_contribution_submitted_documents.direct_contribution_id',$directContribution->id);
+        
         $data = [
             'direct_contribution'   =>  $directContribution,
             'affiliate' =>  $affiliate,
@@ -168,6 +235,20 @@ class DirectContributionController extends Controller
             'birth_cities'  =>  $birth_cities,
             'is_editable'   =>  true,
             'states'    =>  $states,
+            'contributions' =>  $contributions,
+            'aid_contributions' =>  $aid_contributions,
+            'month_end' =>  $month_end,
+            'month_start'  =>   $month_start,
+            'year_end'  =>  $year_end,
+            'year_start'    =>  $year_start,
+            'month_death'   =>  $month_death,
+            'year_death'    =>  $year_death,
+            'reimbursements'    =>  $reimbursements,
+            'aid_reimbursements'    =>  $aid_reimbursement,
+            'modalities'    =>  $modalities,
+            'requirements'  =>  $requirements,
+            'procedure_types'   =>  $procedure_types,
+            'submitted_documents'   =>  $submitted
         ];
         return view('direct_contributions.show', $data);
     }

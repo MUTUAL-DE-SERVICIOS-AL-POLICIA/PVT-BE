@@ -366,6 +366,7 @@ Vue.component('buttons-print-contributions', require('./components/contribution/
 Vue.component('direct-contribution-info', require('./components/direct_contribution/Info.vue'));
 Vue.component("direct-contribution-form", require("./components/direct_contribution/Form.vue"));
 Vue.component("direct-contribution-step1-requirements", require("./components/direct_contribution/Step1Requirements.vue"));
+Vue.component('direct-contribution-step1-requirements-edit', require('./components/direct_contribution/Step1RequirementsEdit.vue'));
 Vue.component("direct-contribution-step2-contributor", require("./components/direct_contribution/Step2Contributor.vue"));
 Vue.component("direct-contribution-step3-letter", require("./components/direct_contribution/Step3Letter.vue"));
 
