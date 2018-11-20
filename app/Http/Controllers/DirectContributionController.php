@@ -225,7 +225,6 @@ class DirectContributionController extends Controller
             ->leftJoin('procedure_requirements','direct_contribution_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
             ->orderby('procedure_requirements.number','ASC')
             ->where('direct_contribution_submitted_documents.direct_contribution_id',$directContribution->id);
-        
         $data = [
             'direct_contribution'   =>  $directContribution,
             'affiliate' =>  $affiliate,
@@ -248,8 +247,8 @@ class DirectContributionController extends Controller
             'modalities'    =>  $modalities,
             'requirements'  =>  $requirements,
             'procedure_types'   =>  $procedure_types,
-            'submitted_documents'   =>  $submitted
-        ];
+            'submitted_documents'   =>  $submitted->get(),
+        ];        
         return view('direct_contributions.show', $data);
     }
 
@@ -313,5 +312,76 @@ class DirectContributionController extends Controller
             'city'=>$direct_contribution->city,            
         ];        
         return $data;
+    }
+
+    /**
+     * This function edit recepcioned documents
+     *
+     * @param object Request, int id
+     * @return Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary
+     */
+    public function editRequirements(Request $request, $id) {
+        $documents = DirectContributionSubmittedDocument::
+            select('procedure_requirements.number','direct_contribution_submitted_documents.procedure_requirement_id')
+            ->leftJoin('procedure_requirements','direct_contribution_submitted_documents.procedure_requirement_id','=','procedure_requirements.id')
+            ->orderby('procedure_requirements.number','ASC')
+            ->where('direct_contribution_submitted_documents.direct_contribution_id',$id)
+            ->pluck('direct_contribution_submitted_documents.procedure_requirement_id','procedure_requirements.number');
+
+        $num = $num2 = 0;
+
+        foreach($request->requirements as $requirement){
+                $from = $to = 0;
+                $comment = null;
+                for($i=0;$i<count($requirement);$i++){
+                    $from = $requirement[$i]['number'];
+                    if($requirement[$i]['status'] == true)
+                    {
+                        $to = $requirement[$i]['id'];
+                        $comment = $requirement[$i]['comment'];
+                        $doc = DirectContributionSubmittedDocument::where('direct_contribution_id',$id)->where('procedure_requirement_id',$documents[$from])->first();
+                        $doc->procedure_requirement_id = $to;
+                        $doc->comment = $comment;
+                        $doc->save();
+                    }
+                }
+        }
+
+        // $procedure_requirements = ProcedureRequirement::
+        // select('procedure_requirements.id','procedure_documents.name as document','number','procedure_modality_id as modality_id')
+        // ->leftJoin('procedure_documents','procedure_requirements.procedure_document_id','=','procedure_documents.id')
+        // ->where('procedure_requirements.number','0')
+        // ->orderBy('procedure_requirements.procedure_modality_id','ASC')
+        // ->orderBy('procedure_requirements.number','ASC')
+        // ->get();
+
+        // $quota_aid = QuotaAidMortuary::select('id','procedure_modality_id')->find($id);
+    
+        // $aditional =  $request->aditional_requirements;
+        // $num ="";
+        
+        // foreach($procedure_requirements as $requirement){
+        // $needle = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id',$id)
+        // ->where('procedure_requirement_id',$requirement->id)
+        // ->first();
+        // if(isset($needle)) {
+        // if(!in_array($requirement->id,$aditional)){
+        //     $num.=$requirement->id.' ';
+        //     $needle->delete();
+        //     $needle->forceDelete();
+        // }
+        // } else {
+        //     if(in_array($requirement->id,$aditional)) {
+        //         $submit = new QuotaAidSubmittedDocument();
+        //         $submit->quota_aid_mortuary_id = $quota_aid->id;
+        //         $submit->procedure_requirement_id = $requirement->id;
+        //         $submit->reception_date = date('Y-m-d');
+        //         $submit->comment = "";
+        //         $submit->save();
+        //     }
+        // }
+        // }
+
+        return $num;
     }
 }

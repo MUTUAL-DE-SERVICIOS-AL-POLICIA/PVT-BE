@@ -1,11 +1,9 @@
 <?php
 
 namespace Muserpol\Models\QuotaAidMortuary;
-
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Muserpol\Helpers\Util;
-
 class QuotaAidLegalGuardian extends Model
 {
     protected $table = "quota_aid_legal_guardians";
@@ -24,6 +22,7 @@ class QuotaAidLegalGuardian extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+
     /**
      * Methods
      */
@@ -31,4 +30,5 @@ class QuotaAidLegalGuardian extends Model
     {
         return Util::fullName($this, $style);
     }
+
 }

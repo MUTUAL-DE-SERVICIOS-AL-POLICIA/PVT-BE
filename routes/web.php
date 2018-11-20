@@ -247,6 +247,7 @@ Route::group(['middleware' => ['auth']], function () {
 		//Direct Contributions 
 		Route::resource('direct_contribution', 'DirectContributionController');
 		Route::patch('/update_information_direct_contribution', 'DirectContributionController@updateInformation')->name('update_information_direct_contribution');
+		Route::post('direct_contribution/{direct_contribution_id}/edit_requirements', 'DirectContributionController@editRequirements');
 		// Contribution process
 
 		Route::resource('direct_contribution', 'DirectContributionController');
