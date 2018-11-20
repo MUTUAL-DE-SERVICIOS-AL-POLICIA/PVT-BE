@@ -22,17 +22,6 @@ import { mapState, mapMutations } from 'vuex';
                 procedure_type_id:6,
                 my_index: 1,
                 modalitiesFilter: [],
-                contribution_process_type: null,
-                contribution_process_types: [
-                    {
-                        id: 'N',
-                        name: 'Nuevo'
-                    },
-                    {
-                        id: 'A',
-                        name: 'Antiguo'
-                    }
-                ]
             }
         },
         mounted(){
