@@ -46,7 +46,6 @@ export default {
       beneficiary_number_address: '',
       show_advisor_form: false,
       show_apoderado_form: false,
-      contributor_type_id: null,
       date_death: this.affiliate.date_death,
       error:{
         contributor_identity_card: false,
@@ -77,13 +76,16 @@ export default {
     ...mapGetters('directContributionForm', {
       directContribution: 'getData',
     }),
+    contributorType() {
+      if(this.directContribution.modality_id  == 22){
+        this.setDataSpouse();
+        return 'Viuda (o)';
+      }
+      this.setDataAffilate();
+      return 'Titular';
+    },
     contributorIsMale(){
       return this.contributor_gender == 'M';
-    },
-    kinshipsFilter(){
-      return this.kinships.filter((k) => {
-        return !(this.quotaAid.modality_id == 4 && k.id == 1);
-      })
     },
     canAddDataSpouse(){
       setTimeout(() => {
@@ -207,11 +209,12 @@ export default {
     //   cellPhoneInputMaskAll();
     // phoneInputMaskAll();
       // let modality_id=this.quotaAid.modality_id;
-      if(this.contributor_type_id  == 1){
+
+      if(this.directContribution.modality_id  != 22){
         this.setDataAffilate();
         return;
       }
-      if(this.contributor_type_id  == 2){
+      if(this.directContribution.modality_id  == 22){
         this.setDataSpouse();
         return;
       }

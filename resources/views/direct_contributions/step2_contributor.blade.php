@@ -37,17 +37,12 @@
                 <div class="col-md-12">
                     <legend>Datos del Aportante</legend>
                     <div class="row">
-                        <div class="col-md-6" :class="{'has-error': errors.has('contributor_type_id') }">
+                        <div class="col-md-6">
                             <div class="col-md-4">
                                 <label class="control-label">Tipo de Aportante</label>
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control" autofocus name="contributor_type_id" @change="changeContributor()" v-model.trim="contributor_type_id" v-validate.initial="'required'">
-                                    <option :value="null"></option>
-                                    <option v-for="(k,index) in kinships" :value="k.id">@{{k.name}}</option>
-                                </select>
-                                <i v-show="errors.has('contributor_type_id')" class="fa fa-warning text-danger"></i>
-                                <span v-show="errors.has('contributor_type_id')" class="text-danger">@{{ errors.first('contributor_type_id') }}</span>
+                                <input type="text" v-model="contributorType" class="form-control" disabled>
                             </div>
                         </div>
                     </div>

@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="form-group" :class="{'has-error': errors.has('city_id') }">
                 <label class="col-sm-4 control-label">Regional</label>
                 <div class="col-sm-8">
@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="form-group" :class="{'has-error': errors.has('procedure_modality_id') }">
                 <label class="col-sm-4 control-label">Modalidad</label>
                 <div class="col-sm-8">
@@ -40,20 +40,6 @@
                     </select>
                     <i v-show="errors.has('procedure_modality_id')" class="fa fa-warning text-danger"></i>
                     <span v-show="errors.has('procedure_modality_id')" class="text-danger">@{{ errors.first('procedure_modality_id') }}</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group" :class="{'has-error': errors.has('contribution_process_type') }">
-                <label class="col-sm-4 control-label">Tipo</label>
-                <div class="col-sm-8">
-                    <select class="form-control" v-model="contribution_process_type" v-on:change="onChooseContributionProcessType" ref="contribution_process_type" name="contribution_process_type"
-                        id="contribution_process_type" v-validate.initial="'required'">
-                        <option :value="null"></option>
-                        <option v-for="(t, index) in contribution_process_types" :value="t.id" :key="index">@{{t.name}}</option>
-                    </select>
-                    <i v-show="errors.has('contribution_process_type')" class="fa fa-warning text-danger"></i>
-                    <span v-show="errors.has('contribution_process_type')" class="text-danger">@{{ errors.first('contribution_process_type') }}</span>
                 </div>
             </div>
         </div>
