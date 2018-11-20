@@ -12,12 +12,6 @@ export default {
       return{
           editing: false,
           form: this.direct_contribution,
-          document_number: this.direct_contribution.document_number,
-          date: this.direct_contribution.date,
-          document_date: this.document_date,          
-          //city_end: this.city_end,
-          //city_id: this.city_id,
-          //procedure_modality: this.procedure_modality,          
           values:{
               date: this.direct_contribution.date
           }
@@ -27,12 +21,9 @@ export default {
     //   console.log(this.read);
   },
   computed:{
-     city_id_name: function(){
+     city_name: function(){
           return !!this.city_id? this.city_id.name:'';
-     },
-     city_end_name: function(){
-          return !!this.city_end? this.city_end.name:'';
-     },
+     },     
      procedure_modality_name: function(){
           return !!this.procedure_modality? this.procedure_modality.name:'';
      } 
@@ -43,10 +34,9 @@ export default {
         if(this.editing==false)
         {
             this.form.date = this.values.date;
-            this.form.city_end_id = this.city_end.id;
-            this.form.city_id_id = this.city_id.id;
-            this.form.procedure_modality_id = this.procedure_modality.id; 
-            this.form.document_number = this.document_number;
+            this.form.city_id = this.city.id;
+            //this.form.procedure_modality_id = this.procedure_modality.id; 
+            this.form.document_number = this.document_number;            
         }
 		  },
       getState: function(state_id){
@@ -63,14 +53,12 @@ export default {
           .then(response=>{
             this.editing = false;
             this.show_spinner = false;
-            this.procedure_modality = response.data.procedure_modality;
-            this.city_end = response.data.city_end;
+            //this.procedure_modality = response.data.procedure_modality;
             this.city_id = response.data.city_id;
-            this.form = response.data.direct_contribution;
-            this.values.date = response.data.direct_contribution.date;
-            flash('Informacion Policial Actualizada');
+            this.form = response.data.direct_contribution;            
+            flash('Informacion actualizada');
           }).catch((response)=>{
-            flash('Error al actualizar Informacion Policial: '+response.message,'error');
+            flash('Error al actualizar Información: '+response.message,'error');
             this.show_spinner = false;
           });
       }

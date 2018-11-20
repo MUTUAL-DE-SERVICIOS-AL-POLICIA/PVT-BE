@@ -15,6 +15,7 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\Kinship;
 use Muserpol\Models\City;
 use Muserpol\Helpers\Util;
+use Muserpol\Helpers\ID;
 use Muserpol\Models\ProcedureState;
 use Muserpol\Models\Contribution\DirectContributionSubmittedDocument;
 class DirectContributionController extends Controller
@@ -224,10 +225,9 @@ class DirectContributionController extends Controller
         $direct_contribution->date = $request->date;                
         $direct_contribution->save();
         $data = [
-            'retirement_fund' => $direct_contribution, 
+            'direct_contribution' => $direct_contribution, 
             'procedure_modality'=>$direct_contribution->procedure_modality,
-            'city_start'=>$direct_contribution->city_start,
-            'city_end'=>$retirement_fund->city_end
+            'city'=>$direct_contribution->city,            
         ];        
         return $data;
     }

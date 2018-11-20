@@ -26,12 +26,8 @@
                     <div class="col-md-2">
                         <strong> Fecha de carta de compromiso:</strong>&nbsp;
                     </div>
-                    <div class="col-md-4">
-                        @if(Session::get('rol_id') == 28)
-                            <input type="date" v-model="form.commitment_date" class="form-control" > 
-                        @else
-                            <input type="date" v-model="form.commitment_date" class="form-control" disabled> 
-                        @endif
+                    <div class="col-md-4">                        
+                        <input type="date" v-model="form.commitment_date" class="form-control" :disabled='!editing'>
                     </div>                    
                 </div>
                 <br>
@@ -39,18 +35,14 @@
                     <div class="col-md-2">
                         <strong> Fecha:</strong>&nbsp;
                     </div>
-                    <div class="col-md-4">
-                        @if(Session::get('rol_id') == 28)
-                            <input type="date" v-model="form.date" class="form-control" > 
-                        @else
-                            <input type="date" v-model="form.date" class="form-control" disabled> 
-                        @endif
+                    <div class="col-md-4">                        
+                        <input type="date" v-model="form.date" class="form-control" :disabled='!editing'>                         
                     </div>
                     <div class="col-md-2">
                         <strong> Nro de Documento:</strong>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" v-model="document_number" disabled="">
+                        <input type="text" class="form-control" v-model="form.document_number" :disabled='!editing'>
                     </div>
                 </div>
                 <br>
@@ -68,7 +60,7 @@
                         @if(Session::get('rol_id') == 28)
                             <input type="date" v-model="form.document_date" class="form-control" > 
                         @else
-                            <input type="date" v-model="form.document_date" class="form-control" disabled> 
+                            <input type="date" v-model="form.document_date" class="form-control" :disabled='!editing'> 
                         @endif
                     </div>
                 </div>
@@ -85,12 +77,8 @@
                     <div class="col-md-2">
                             <strong> Periodo primer aporte:</strong>&nbsp;
                         </div>
-                    <div class="col-md-4">
-                        @if(Session::get('rol_id') == 28)
-                            <input type="date" v-model="form.start_contribution_date" class="form-control" > 
-                        @else
-                            <input type="date" v-model="form.start_contribution_date" class="form-control" disabled> 
-                        @endif
+                    <div class="col-md-4">                        
+                        <input type="date" v-model="form.start_contribution_date" class="form-control" :disabled='!editing'>
                     </div>               
                 </div>
                 <br>
