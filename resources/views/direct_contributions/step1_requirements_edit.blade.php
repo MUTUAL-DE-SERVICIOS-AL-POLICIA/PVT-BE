@@ -14,37 +14,11 @@
             </div>
         </div>
     </div>
-<<<<<<< HEAD
     <div class="row" style="display: none;">        
         <div class="col-md-6">
             <div class="form-group" :class="{'has-error': errors.has('ret_fun_modality') }">
                 <label class="col-sm-4 control-label">Modalidad</label>
                 <div class="col-sm-8">                    
-=======
-    <div class="row" style="display: none;">
-        <div class="col-md-6">
-            <div class="form-group" :class="{'has-error': errors.has('city_end_id') }">
-                <label class="col-sm-4 control-label">Regional</label>
-                <div class="col-sm-8">
-                    <select class="form-control m-b" ref="city_end" name="city_end_id" @change="onChooseCity" v-model="city_end_id" v-validate.initial="'required'">
-                        <option :value="null"></option>
-                        <option v-for="city in cities" :value="city.id" :key="city.id">@{{ city.name }}</option>
-                    </select>
-                    <i v-show="errors.has('city_end_id')" class="fa fa-warning text-danger"></i>
-                    <span v-show="errors.has('city_end_id')" class="text-danger">@{{ errors.first('city_end_id') }}</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group" :class="{'has-error': errors.has('ret_fun_modality') }">
-                <label class="col-sm-4 control-label">Modalidad</label>
-                <div class="col-sm-8">
-                    <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality" name="ret_fun_modality" id="ret_fun_modality"
-                        v-validate.initial="'required'">
-                        <option :value="null"></option>
-                        <option v-for="(modality, index) in modalitiesFilter" :value="modality.id" :key="index">@{{modality.name}}</option>
-                    </select>
->>>>>>> upstream/development
                     <i v-show="errors.has('ret_fun_modality')" class="fa fa-warning text-danger"></i>
                     <span v-show="errors.has('ret_fun_modality')" class="text-danger">@{{ errors.first('ret_fun_modality') }}</span>
                 </div>
@@ -99,29 +73,17 @@
                     </div>
                     <br>
                     <br>
-<<<<<<< HEAD
                     {{-- <div v-if='rol != 11'> 
-=======
-                    <div v-if='rol != 11'> 
->>>>>>> upstream/development
                         <h4>Documentos adicionales</h4>
                         <select data-placeholder="Documentos adicionales..." class="chosen-select" id="aditional_requirements" name="aditional_requirements[]" multiple="" style="width: 350px; display: none;" tabindex="-1" v-bind:disabled="!editing">
                             <option v-for="(requirement, index) in aditionalRequirements"  :value="requirement.id" :key="`nonselected-${index}`">@{{ requirement.document }} </option>
                             <option v-for="(requirement, index) in aditionalRequirementsSelected"  :value="requirement.id" :key="`selected-${index}`" selected>@{{ requirement.document }} </option>
                         </select>
-<<<<<<< HEAD
                     </div> --}}
                     <br><br><br>
                     <div class="text-center" v-if="editing" >     
                         <button class="btn btn-danger" type="button" @click="toggle_editing"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span cla   ss="bold">Cancelar</span></button>           
                         <button type="button" class="btn btn-primary" type="button" @click="store(direct_contribution_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
-=======
-                    </div>
-                    <br><br><br>
-                    <div class="text-center" v-if="editing" >     
-                        <button class="btn btn-danger" type="button" @click="toggle_editing"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span cla   ss="bold">Cancelar</span></button>           
-                        <button type="button" class="btn btn-primary" type="button" @click="store(quota_aid_id)"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
->>>>>>> upstream/development
                     </div>
                 </form>
             </div>
