@@ -1,16 +1,13 @@
 <script>
-//import { mapState, mapMutations } from 'vuex';
 	export default{
 		props:[
-            'quota_aid',
+            'direct_contribution',
 			'modalities',
-            'requirements',
-            'user',
+            'requirements',            
             'cities',
             'procedureTypes',
             'submitted',
-            'rol'
-            //'showRequirementsError',            
+            'rol'            
 		],
         data(){
             return{
@@ -20,28 +17,23 @@
                 modality: null,
                 show_spinner: false,
                 modality_id: 14,
-                actual_target: 1,
-                city_end_id:this.user.city_id,
+                actual_target: 1,                
                 procedure_type_id:2,
                 my_index: 1,
                 modalitiesFilter: [],
-                quota_aid_id: 428,
+                direct_contribution_id: 428,
                 editing:false,
                 counter_aditional_document: 1000
             }
         },
         created(){
-            // this.submitted.forEach(item => {
-            //     console.log(item.procedure_requirement_id);
-            // });
+            
         },
         mounted(){
-            //this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
+            console.log(this.submitted);
             this.onChooseProcedureType();
-            this.modality = this.quota_aid.procedure_modality_id;            
-            this.getRequirements();
-            console.log('dataaa');
-            console.log(this.requirementList[0]);
+            this.modality = this.direct_contribution.procedure_modality_id;            
+            this.getRequirements();            
         },
         methods:{
             onChooseProcedureType(){
@@ -49,20 +41,7 @@
                     return m.procedure_type_id == this.procedure_type_id;
                 })
                 this.modality = null;
-            },
-            onChooseModality(event){
-                // const options = event.target.options;
-                // const selectedOption = options[options.selectedIndex];
-                // if (selectedOption) {
-                //     const selectedText = selectedOption.textContent;
-                //     var object={
-                //         name:selectedText,
-                //         id: this.modality
-                //     }
-                    //this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
-                //}
-                //this.getRequirements();
-            },
+            },           
             toggle_editing:function () {
                 this.editing = !this.editing;
                 setTimeout(() => {
@@ -220,9 +199,9 @@
                 }
                 return false;
             },
-            store(quota_aid){
+            store(direct_contribution){
                 if(this.rol!=38){
-                    let uri = `/quota_aid/${this.quota_aid.id}/edit_requirements`;                
+                    let uri = `/direct_contribution/${this.direct_contribution.id}/edit_requirements`;                
                     let req = $('#aditional_requirements').val();
                     console.log(uri);
                     axios.post(uri,
@@ -241,7 +220,7 @@
                         //this.showEconomicData = false;
                     });                
                 }else{
-                    let uri = `/quota_aid/${this.quota_aid.id}/legal_review/create`;                
+                    let uri = `/direct_contribution/${this.direct_contribution.id}/legal_review/create`;                
                         axios.post(uri,
                             {
                             submit_documents: this.requirementList
