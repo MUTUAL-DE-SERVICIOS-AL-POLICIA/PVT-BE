@@ -355,7 +355,12 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->code = $code;
         $quota_aid->reception_date = date('Y-m-d');
         $quota_aid->workflow_id = 5;
-        $quota_aid->wf_state_current_id = 33;
+        $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
+        if (!$wf_state) {
+            Log::info("error al crear el tramite");
+            return;
+        }
+        $quota_aid->wf_state_current_id = $wf_state->id;
         $quota_aid->subtotal = 0;
         $quota_aid->total = 0;
         $quota_aid->procedure_state_id = 1;

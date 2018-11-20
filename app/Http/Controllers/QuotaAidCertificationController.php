@@ -495,7 +495,7 @@ class QuotaAidCertificationController extends Controller
         $valid_contributions = null;
         if($quota_aid->procedure_modality->procedure_type_id == 3) {
             Util::completQuotaContributions($affiliate->id,$start_date->copy(),$end_date->copy());
-            $contributions = Contribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
+            $contributions = Contribution::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderBy('month_year')->get();
             $valid_contributions = $contributions;
             $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->where('month_year','>=',$start_date->format('Y-m')."-01")->whereDate('month_year','<=',$end_date->format('Y-m')."-01")->orderByDesc('month_year')->get();
         }   
