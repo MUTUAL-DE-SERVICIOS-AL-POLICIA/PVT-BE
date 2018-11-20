@@ -22,7 +22,7 @@ class DropContributionProcessTables extends Migration
             $table->unsignedBigInteger('affiliate_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('city_id');
-            $table->unsignedBigInteger('contributor_type_id'); // (kinship_id)
+            // $table->unsignedBigInteger('contributor_type_id'); // (kinship_id)
             $table->unsignedBigInteger('procedure_modality_id');
             $table->unsignedBigInteger('procedure_state_id');
             $table->date('commitment_date');
@@ -34,7 +34,8 @@ class DropContributionProcessTables extends Migration
             $table->boolean('status')->default(true);
             $table->foreign('affiliate_id')->references('id')->on('affiliates');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('contributor_type_id')->references('id')->on('kinships');
+            $table->foreign('city_id')->references('id')->on('cities');
+            // $table->foreign('contributor_type_id')->references('id')->on('kinships');
             $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
             $table->foreign('procedure_state_id')->references('id')->on('procedure_states');
             $table->timestamps();

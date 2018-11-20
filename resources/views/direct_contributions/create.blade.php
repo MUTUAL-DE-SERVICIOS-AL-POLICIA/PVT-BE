@@ -38,7 +38,7 @@
                             </direct-contribution-step1-requirements>
                         </tab-content>
                         <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
-                            <direct-contribution-step2-contributor :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
+                            <direct-contribution-step2-contributor :cities="{{ $cities }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
                                 @include('direct_contributions.step2_contributor')
                             </direct-contribution-step2-contributor>
                         </tab-content>
