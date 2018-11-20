@@ -715,5 +715,28 @@ class Affiliate extends Model
     //     }
     //     Log::info('contributions not found');
     //     return 'error';
-    // }    
+    // }
+    public static function updatePersonalInfo($affiliate_id, $object)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        $affiliate->identity_card = $object['identity_card'];
+        $affiliate->city_identity_card_id = $object['city_identity_card_id'];
+        $affiliate->first_name = $object['first_name'];
+        $affiliate->second_name = $object['second_name'];
+        $affiliate->last_name = $object['last_name'];
+        $affiliate->mothers_last_name = $object['mothers_last_name'];
+        $affiliate->gender = $object['gender'];
+        if ($object['gender'] == 'F') {
+            $affiliate->surname_husband = $object['surname_husband'];
+        }
+        $affiliate->phone_number = implode(',', $object['phone_number']);
+        $affiliate->cell_phone_number = implode(',', $object['cell_phone_number']);
+        $affiliate->birth_date = Util::verifyBarDate($object['birth_date']) ? Util::parseBarDate($object['birth_date']) : $object['birth_date'];
+        $affiliate->save();
+    }
+    public static function updateSpouse($affiliate_id, $object)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        Spouse::updatePersonalInfo($affiliate_id, $object);
+    }
 }

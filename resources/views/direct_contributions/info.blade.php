@@ -4,7 +4,7 @@
                 <div  class="pull-left">
                     <legend>Aportes Directos</legend>
                 </div>
-                @can('update',new Muserpol\Models\Contribution\DirectContribution)
+                {{-- @can('update',new Muserpol\Models\Contribution\DirectContribution) --}}
                 <div class="text-right" v-if="!read">
                     <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
                 </div>
@@ -12,12 +12,11 @@
                 <a href="{{ url('direct_contribution/'.$direct_contribution->id)}}" class="btn btn-primary"> <i class="fa fa-eye"></i> Ver</a>
                     {{-- <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button> --}}
                 </div>
-                @else
+                {{-- @else
                 <br>
-                    @endcan
+                    @endcan --}}
                 <br>                                   
-                <div class="row">
-                    {{-- <div class="col-md-1"></div> --}}
+                <div class="row">                
                     <div class="col-md-2">
                         <strong> Modalidad:</strong>
                     </div>
@@ -25,25 +24,38 @@
                         <input type="text" class="form-control" v-model="procedure_modality_name" disabled="">
                     </div>
                     <div class="col-md-2">
-                        <strong>Ciudad de Recepci&oacute;n:</strong>
-                    </div>
-                    <div class="col-md-4">
-                        {!! Form::select('city_start_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_start_id',':disabled'=>'!editing'])
-                        !!}
-                    </div>
-                    {{-- <div class="col-md-1"></div> --}}
-                </div>
-                <br>
-                <div class="row">
-                    {{-- <div class="col-md-1"></div> --}}
-                    <div class="col-md-2">
-                        <strong> Fecha de Recepcion:</strong>&nbsp;
+                        <strong> Fecha de carta de compromiso:</strong>&nbsp;
                     </div>
                     <div class="col-md-4">
                         @if(Session::get('rol_id') == 28)
-                            <input type="date" v-model="form.reception_date" class="form-control" > 
+                            <input type="date" v-model="form.date" class="form-control" > 
                         @else
-                            <input type="date" v-model="form.reception_date" class="form-control" disabled> 
+                            <input type="date" v-model="form.date" class="form-control" disabled> 
+                        @endif
+                    </div>
+                    {{-- <div class="col-md-2">
+                        <strong> Nro de Documento:</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" v-model="document_number" disabled="">
+                    </div> --}}
+                    {{-- <div class="col-md-2">
+                        <strong>Ciudad de Recepci&oacute;n:</strong>
+                    </div>
+                    <div class="col-md-4">
+                        {!! Form::select('city_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_id',':disabled'=>'!editing']) !!}
+                    </div>                     --}}
+                </div>
+                <br>
+                <div class="row">                
+                    <div class="col-md-2">
+                        <strong> Fecha:</strong>&nbsp;
+                    </div>
+                    <div class="col-md-4">
+                        @if(Session::get('rol_id') == 28)
+                            <input type="date" v-model="form.date" class="form-control" > 
+                        @else
+                            <input type="date" v-model="form.date" class="form-control" disabled> 
                         @endif
                     </div>
                     <div class="col-md-2">
@@ -52,12 +64,10 @@
                     <div class="col-md-4">
                         {!! Form::select('city_end_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_end_id',':disabled'=>'!editing'])
                         !!}
-                    </div>
-                    {{-- <div class="col-md-1"></div> --}}
+                    </div>                
                 </div>
                 <br>
-                <div class="row">
-                    {{-- <div class="col-md-1"></div> --}}
+                <div class="row">                
                     <div class="col-md-2">
                         <strong>Estado:</strong>
                     </div>
@@ -68,8 +78,7 @@
                     </div>
                     <div class="col-md-6">
         
-                    </div>
-                    {{-- <div class="col-md-1"></div> --}}
+                    </div>                
                 </div>
                 <br>
             

@@ -2,7 +2,7 @@
 export default {
   props:[
       'direct_contribution',
-      'city_start',
+      'city_id',
       'city_end',
       'procedure_modality',
       'states',
@@ -11,12 +11,15 @@ export default {
   data(){
       return{
           editing: false,
-          form:this.direct_contribution,
-          city_end: this.city_end,
-          city_start: this.city_start,
-          procedure_modality: this.procedure_modality,          
+          form: this.direct_contribution,
+          document_number: this.direct_contribution.document_number,
+          date: this.direct_contribution.date,
+          document_date: this.document_date,
+          //city_end: this.city_end,
+          //city_id: this.city_id,
+          //procedure_modality: this.procedure_modality,          
           values:{
-              reception_date: this.direct_contribution.reception_date
+              date: this.direct_contribution.date
           }
       }
   },
@@ -24,8 +27,8 @@ export default {
     //   console.log(this.read);
   },
   computed:{
-     city_start_name: function(){
-          return !!this.city_start? this.city_start.name:'';
+     city_id_name: function(){
+          return !!this.city_id? this.city_id.name:'';
      },
      city_end_name: function(){
           return !!this.city_end? this.city_end.name:'';
@@ -33,17 +36,17 @@ export default {
      procedure_modality_name: function(){
           return !!this.procedure_modality? this.procedure_modality.name:'';
      } 
-
   },
   methods:{
       toggle_editing: function () {
 			this.editing = !this.editing;
         if(this.editing==false)
         {
-            this.form.reception_date = this.values.reception_date;
+            this.form.date = this.values.date;
             this.form.city_end_id = this.city_end.id;
-            this.form.city_start_id = this.city_start.id;
+            this.form.city_id_id = this.city_id.id;
             this.form.procedure_modality_id = this.procedure_modality.id; 
+            this.form.document_number = this.document_number;
         }
 		  },
       getState: function(state_id){
@@ -62,9 +65,9 @@ export default {
             this.show_spinner = false;
             this.procedure_modality = response.data.procedure_modality;
             this.city_end = response.data.city_end;
-            this.city_start = response.data.city_start;
+            this.city_id = response.data.city_id;
             this.form = response.data.direct_contribution;
-            this.values.reception_date = response.data.direct_contribution.reception_date;
+            this.values.date = response.data.direct_contribution.date;
             flash('Informacion Policial Actualizada');
           }).catch((response)=>{
             flash('Error al actualizar Informacion Policial: '+response.message,'error');

@@ -79,16 +79,16 @@
         <div class="tab-content">
             <div id="tab-ret-fun" class="tab-pane active">
                 {{-- @can('update',$direct_contribution) --}}
-                <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{$direct_contribution->city_start}}" :city_end="{{$direct_contribution->city_end}}"
-                    :procedure_modality=" {{$direct_contribution->procedure_modality}}" :states="{{ $states }}" inline-template>
+                <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
+                    :procedure_modality="{{$direct_contribution->procedure_modality}}" :states="{{ $states }}" inline-template>
                     @include('direct_contributions.info', ['direct_contribution'=>$direct_contribution,'cities'=>$birth_cities])
                 </direct-contribution-info>
                 {{-- @endcan --}}
             </div>
             <div id="tab-affiliate" class="tab-pane">
-                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
+                {{-- <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
-                </affiliate-show>
+                </affiliate-show> --}}
 
             </div>
             <div id="tab-beneficiaries" class="tab-pane">

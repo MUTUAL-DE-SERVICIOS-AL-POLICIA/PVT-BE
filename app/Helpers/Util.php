@@ -836,4 +836,15 @@ class Util
     {
         return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
     }
+    public static function parseRequest($data, $prefix)
+    {
+        $values = array();
+        foreach ($data as $key => $val) {
+            if ($prefix == explode('_', $key)[0]) {
+                $new_key = preg_replace('#'.$prefix.'_(.+)#i', '$1', $key);
+                $values[$new_key] = $val;
+            }
+        }
+        return $values;
+    }
 }
