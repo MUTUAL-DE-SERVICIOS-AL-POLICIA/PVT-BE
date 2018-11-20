@@ -118,27 +118,15 @@
                     ])
                 @endif
                 </div>
-<<<<<<< HEAD
             <div id="tab-summited-document" class="tab-pane">                
-=======
-            <div id="tab-summited-document" class="tab-pane">
->>>>>>> upstream/development
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)  --}}
                 <direct-contribution-step1-requirements-edit 
                     :direct_contribution="{{ $direct_contribution }}" 
                     :modalities="{{ $modalities }}" 
-<<<<<<< HEAD
                     :requirements="{{ $requirements }}"                    
                     :cities="{{ $cities }}" 
                     :procedure-types="{{$procedure_types}}" 
                     :submitted="{{ json_encode($submitted_documents) }}"
-=======
-                    :requirements="{{ $requirements }}"
-                    :user="{{ json_encode($direct_contribution->user) }}" 
-                    :cities="{{ $cities }}" 
-                    :procedure_types="{{$procedure_types}}" 
-                    :submitted="{{json_encode($submitted_documents)}}"
->>>>>>> upstream/development
                     :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
                     @include('direct_contributions.step1_requirements_edit')
                 </direct_contribution-step1-requirements-edit>
