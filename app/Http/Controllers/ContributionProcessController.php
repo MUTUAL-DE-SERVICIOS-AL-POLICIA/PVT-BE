@@ -107,11 +107,14 @@ class ContributionProcessController extends Controller
     public function aidContributionSave(Request $request)
     {
         $contribution_process = $this->store($request);
+        $contribution_process->aid_contributions()->attach([
+            
+        ]);
         Log::info($contribution_process);
     }
     public function contributionSave(Request $request)
     {
-        $this->store($request);
+        $contribution_process = $this->store($request);
         Log::info($request->all());
     }
 }
