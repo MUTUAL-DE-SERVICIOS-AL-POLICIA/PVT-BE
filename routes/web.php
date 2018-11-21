@@ -243,14 +243,15 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('aid_commitment', 'AidCommitmentController');
 		Route::get('calculate_aid_reimbursement/{affiliate}/{amount}/{month}', 'AidReimbursementController@caculateContribution');
 
-		//Direct Contributions 
+		//Direct Contributions
 		Route::resource('direct_contribution', 'DirectContributionController');
 		Route::patch('/update_information_direct_contribution', 'DirectContributionController@updateInformation')->name('update_information_direct_contribution');
-		
-		Route::resource('direct_contribution', 'DirectContributionController');
+
+		Route::post('direct_contribution/{direct_contribution_id}/edit_requirements', 'DirectContributionController@editRequirements');
 		Route::get('affiliate/{affiliate}/direct_contribution/create', 'DirectContributionController@create')->name('create_direct_contribution');
 		Route::get('get_all_direct_contribution', 'DirectContributionController@getAllDirectContribution');
 		// Route::post('affiliate/{affiliate}/contribution_process/save_commitment', 'ContributionProcessController@saveCommitment')->name('save_commitment');
+
 		// Contribution process
 		Route::post('contribution_process/aid_contribution_save', 'ContributionProcessController@aidContributionSave')->name('aid_contribution_save');
 
