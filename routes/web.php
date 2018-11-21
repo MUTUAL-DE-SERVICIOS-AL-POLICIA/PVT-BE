@@ -246,12 +246,13 @@ Route::group(['middleware' => ['auth']], function () {
 		//Direct Contributions 
 		Route::resource('direct_contribution', 'DirectContributionController');
 		Route::patch('/update_information_direct_contribution', 'DirectContributionController@updateInformation')->name('update_information_direct_contribution');
-		// Contribution process
-
+		
 		Route::resource('direct_contribution', 'DirectContributionController');
 		Route::get('affiliate/{affiliate}/direct_contribution/create', 'DirectContributionController@create')->name('create_direct_contribution');
 		Route::get('get_all_direct_contribution', 'DirectContributionController@getAllDirectContribution');
 		// Route::post('affiliate/{affiliate}/contribution_process/save_commitment', 'ContributionProcessController@saveCommitment')->name('save_commitment');
+		// Contribution process
+		Route::post('contribution_process/aid_contribution_save', 'ContributionProcessController@aidContributionSave')->name('aid_contribution_save');
 
 			//inbox
 		Route::get('inbox', function () {

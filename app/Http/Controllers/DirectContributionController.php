@@ -228,9 +228,11 @@ class DirectContributionController extends Controller
 
 
         $contribution_processes = $directContribution->contribution_processes()->where('procedure_state_id', 1)->get();
+        $procedure_type = $directContribution->procedure_modality->procedure_type;
         $data = [
             'direct_contribution'   =>  $directContribution,
             'contribution_processes'   =>  $contribution_processes,
+            'procedure_type'   =>  $procedure_type,
             'affiliate' =>  $affiliate,
             'spouse'    =>  $spouse,
             'cities'    =>  $cities,

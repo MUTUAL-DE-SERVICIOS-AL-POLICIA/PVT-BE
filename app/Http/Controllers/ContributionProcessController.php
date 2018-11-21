@@ -19,6 +19,8 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\Kinship;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Contribution\ContributionCommitment;
+use Muserpol\Models\Workflow\WorkflowState;
+use Carbon\Carbon;
 class ContributionProcessController extends Controller
 {
     public function index()
@@ -41,6 +43,22 @@ class ContributionProcessController extends Controller
     }
     public function store(Request $request)
     {
+        $contribution_process = new ContributionProcess();
+        $contribution_process->user_id = Auth::user()->id;
+        $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
+        if (!$wf_state) {
+            Log::info("error al crear el tramite");
+            return;
+        }
+        $contribution_process->wf_state_current_id = $wf_state->id;
+        $contribution_process->workflow_id = 7;
+        $contribution_process->procedure_state_id = 1;
+        $contribution_process->direct_contribution_id = $request->direct_contribution_id;
+        $contribution_process->date = Carbon::now()->toDateString();
+        $contribution_process->code = Util::getNextCode(Util::getLastCode(ContributionProcess::class), '1');
+        $contribution_process->inbox_state = false;
+        $contribution_process->save();
+        return $contribution_process;
     }
     public function saveCommitment(Request $request)
     {
@@ -85,5 +103,15 @@ class ContributionProcessController extends Controller
         } else {
             return "error";
         }
+    }
+    public function aidContributionSave(Request $request)
+    {
+        $contribution_process = $this->store($request);
+        Log::info($contribution_process);
+    }
+    public function contributionSave(Request $request)
+    {
+        $this->store($request);
+        Log::info($request->all());
     }
 }

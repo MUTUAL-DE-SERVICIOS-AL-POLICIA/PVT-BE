@@ -4,6 +4,21 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Datos de la calificacion</h2>
+                    @if ($procedure_type->id == 6)
+                        <contribution-create
+                            :afid="{{ $affiliate->id }}"
+                            {{-- :last_quotable="{{$last_quotable}}"
+                            :commitment="{{ $commitment }}"
+                            :is_regional="`{{ $is_regional }}`" --}}
+                            >
+                        </contribution-create>
+                    @endif
+                    @if ($procedure_type->id == 7)
+                        <aid-contribution-create
+                            direct-contribution-id="{{ $direct_contribution->id }}"
+                            :afid="{{ $affiliate->id }}"
+                        ></aid-contribution-create>
+                    @endif
                 </div>
             </div>
         </div>
