@@ -18,11 +18,13 @@ mix
   .sass("resources/assets/sass/wkhtml.scss", "public/css")
   .sass("resources/assets/sass/materialicons.scss", "public/css")
   .sass("resources/assets/sass/datatable.scss", "public/css")
-  .stylus('resources/assets/stylus/vuetify.styl', 'public/css');
+  .stylus('resources/assets/stylus/vuetify.styl', 'public/css')
+
 switch (app) {
   case 'prod':
     mix
     .sass("resources/assets/sass/app.scss", "public/css")
+    .version()
     // .purgeCss({
     //   enabled: true,
 

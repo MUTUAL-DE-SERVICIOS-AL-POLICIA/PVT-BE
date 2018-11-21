@@ -431,8 +431,8 @@ class QuotaAidMortuaryController extends Controller
             $advisor->save();
 
             $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
-            $advisor_beneficiary->ret_fun_beneficiary_id = $beneficiary->id;
-            $advisor_beneficiary->ret_fun_advisor_id = $advisor->id;
+            $advisor_beneficiary->quota_aid_beneficiary_id = $beneficiary->id;
+            $advisor_beneficiary->quota_aid_advisor_id = $advisor->id;
             $advisor_beneficiary->save();
         }
 
@@ -595,7 +595,7 @@ class QuotaAidMortuaryController extends Controller
         $beneficiary_avdisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$applicant->id)->first();
 
         if(isset($beneficiary_avdisor->id))
-            $advisor= QuotaAidAdvisor::find($beneficiary_avdisor->ret_fun_advisor_id);
+            $advisor= QuotaAidAdvisor::find($beneficiary_avdisor->quota_aid_advisor_id);
         else
             $advisor = new QuotaAidAdvisor();
 
@@ -734,7 +734,7 @@ class QuotaAidMortuaryController extends Controller
             'modalities'    =>  $modalities,
             'observation_types' => $observation_types,
             //'observations' => $retirement_fund->ret_fun_observations,
-            'submitted' =>  $submitted->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number'),
+            'submitted' =>  $submitted->pluck('quota_aid_submitted_documents.procedure_requirement_id','procedure_requirements.number'),
             'submit_documents' => $submitted->get(),
             'can_validate' =>  $can_validate,
             'can_cancel' =>  $can_cancel,
