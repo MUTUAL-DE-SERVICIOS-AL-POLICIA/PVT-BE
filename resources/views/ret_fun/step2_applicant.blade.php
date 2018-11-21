@@ -3,6 +3,17 @@
         <div class="ibox-content">
             <legend>Datos del afiliado</legend>
             <div class="row">
+                <div class="col-md-3" :class="{'has-error': errors.has('date_entry') }">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            Fecha de Ingreso</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="date_entry" v-model="date_entry" v-month-year class="form-control" v-validate.initial="'required|max_current_date_month_year'">
+                            <i v-show="errors.has('date_entry')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('date_entry')" class="text-danger">@{{ errors.first('date_entry') }}</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-3" :class="{'has-error': errors.has('date_derelict') }">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">
