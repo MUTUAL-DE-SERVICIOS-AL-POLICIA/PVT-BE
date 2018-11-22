@@ -605,18 +605,11 @@ class QuotaAidCertificationController extends Controller
         $affiliate = Affiliate::find($quota_aid->affiliate_id);                        
         $quota_aid_beneficiaries = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
         
-
-        if(isset($quota_aid_beneficiaries->id)) {            
-            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
-            $person .= ($legal_guardian->gender=='M'?"El señor ":"La señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del (la) Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
+        if($quota_aid->procedure_modality_id == 15) {
+            $person .= ($affiliate->spouse()->first()->gender=='M'?"El señor ":"La señora ");
         } else {
-            if($quota_aid->procedure_modality_id == 15) {
-                $person .= ($affiliate->spouse()->first()->gender=='M'?"El señor ":"La señora ");
-            } else {
-                $person .= ($affiliate->gender=='M'?"El señor ":"La señora ");
-            }
-        }
-
+            $person .= ($affiliate->gender=='M'?"El señor ":"La señora ");
+        }               
         if($quota_aid->procedure_modality_id == 15) {            
             $person .= Util::fullName($affiliate->spouse()->first()) ." con C.I. N° ". $affiliate->spouse()->first()->identity_card." ".$affiliate->spouse()->first()->city_identity_card->first_shortened;
         } else {
@@ -627,12 +620,17 @@ class QuotaAidCertificationController extends Controller
             $person .= ", como TITULAR FALLECIDA ";
         } else {
             if($affiliate->gender == "F") {
-                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDA ":" ");
+                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDA":" ");
             } else {
-                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO ":" ");
+                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO":" ");
             }            
         }
-        
+        if(isset($quota_aid_beneficiaries->id)) {            
+            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
+            $person .= ($legal_guardian->gender=='M'?", el señor ":", la señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del (la) Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
+        } else {
+            $person .= " ";
+        }
 
         $person .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
 
@@ -864,12 +862,14 @@ class QuotaAidCertificationController extends Controller
                     $payment .='Menor ';
                 }
                 $payment .= $beneficiary->fullName();
-                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state) {
+
+                if($beneficiary->identity_card) {
+                    $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");                
+                }   
+                $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
+                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
                     $payment .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
-                if($beneficiary->identity_card)
-                $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");
-                $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
                 if(isset($beneficiary_advisor->id))
                 {
                     $advisor = QuotaAidAdvisor::where('id',$beneficiary_advisor->quota_aid_advisor_id)->first();
@@ -954,17 +954,12 @@ class QuotaAidCertificationController extends Controller
         $quota_aid_beneficiaries = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
         $head = "<p>Señora Directora:</p><p class='text-justify'>En atención a solicitud de fecha ".Util::getStringDate($quota_aid->reception_date).", del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name.", ";
 
-        if(isset($quota_aid_beneficiaries->id)) {
-            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
-            $head .= ($legal_guardian->gender=='M'?"El señor ":"La señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del (la) Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
-        } else {
-            if($quota_aid->procedure_modality_id == 15) {
-                $head .= ($affiliate->spouse()->first()->gender=='M'?"El señor ":"La señora ");
-            } else {
-                $head .= ($affiliate->gender=='M'?"El señor ":"La señora ");
-            }
-        }
 
+        if($quota_aid->procedure_modality_id == 15) {
+            $head .= ($affiliate->spouse()->first()->gender=='M'?"El señor ":"La señora ");
+        } else {
+            $head .= ($affiliate->gender=='M'?"el señor ":"la señora ");
+        }               
         if($quota_aid->procedure_modality_id == 15) {            
             $head .= Util::fullName($affiliate->spouse()->first()) ." con C.I. N° ". $affiliate->spouse()->first()->identity_card." ".$affiliate->spouse()->first()->city_identity_card->first_shortened;
         } else {
@@ -975,13 +970,18 @@ class QuotaAidCertificationController extends Controller
             $head .= ", como TITULAR FALLECIDA ";
         } else {
             if($affiliate->gender == "F") {
-                $head .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDA ":" ");
+                $head .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDA":" ");
             } else {
-                $head .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO ":" ");
+                $head .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO":" ");
             }            
         }
+        if(isset($quota_aid_beneficiaries->id)) {            
+            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
+            $head .= ($legal_guardian->gender=='M'?", el señor ":", la señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del (la) Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
+        } else {
+            $head .= " ";
+        }
         
-
         $head .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
 
         if($quota_aid->procedure_modality_id != 14) {
@@ -1240,13 +1240,14 @@ class QuotaAidCertificationController extends Controller
                 } else {
                     $payment .='Menor ';
                 }
-                $payment .= $beneficiary->fullName();
-                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state) {
+                $payment .= $beneficiary->fullName();                
+                if($beneficiary->identity_card) {
+                    $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");
+                }
+                $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
+                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
                     $payment .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
-                if($beneficiary->identity_card)
-                $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");
-                $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
                 if(isset($beneficiary_advisor->id))
                 {
                     $advisor = QuotaAidAdvisor::where('id',$beneficiary_advisor->quota_aid_advisor_id)->first();
