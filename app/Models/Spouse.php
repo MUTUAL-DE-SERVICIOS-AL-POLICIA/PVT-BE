@@ -66,4 +66,25 @@ class Spouse extends Model
     {
         return Util::getCivilStatus($this->civil_status, $this->gender);
     }
+    public static function updatePersonalInfo($affiliate_id, $object)
+    {
+        $spouse = Spouse::where('affiliate_id', $affiliate_id)->first();
+        if (!$spouse) {
+            $spouse = new Spouse();
+            $spouse->affiliate_id = $affiliate_id;
+            $spouse->registration = 0;
+        }
+        $spouse->user_id = Util::getAuthUser()->id;
+        $spouse->identity_card = $object['identity_card'];
+        $spouse->first_name = $object['first_name'];
+        $spouse->second_name = $object['second_name'];
+        $spouse->last_name = $object['last_name'];
+        $spouse->mothers_last_name = $object['mothers_last_name'];
+        if ($object['gender'] == 'F') {
+            $spouse->surname_husband = $object['surname_husband'];
+        }
+        $spouse->birth_date = Util::verifyBarDate($object['birth_date']) ? Util::parseBarDate($object['birth_date']) : $object['birth_date'];
+        $spouse->city_identity_card_id = $object['city_identity_card_id'];
+        $spouse->save();
+    }
 }

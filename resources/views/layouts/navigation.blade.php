@@ -39,6 +39,9 @@
             <li class="{{ isActiveRoute('quota_aid.index') }}" data-toggle="tooltip" data-placement="right" title="Cuota y Auxilio Mortuorio">
                 <a href="{{ url('/quota_aid') }}"><i class="{{Muserpol\Helpers\Util::IconModule(4)}}"></i> <span class="nav-label">Cuota y Auxilio Mortuorio</span></a>
             </li>
+            <li class="{{ isActiveRoute('direct_contribution.index') }}" data-toggle="tooltip" data-placement="right" title="Aportes">
+                <a href="{{ url('/direct_contribution') }}"><i class="{{Util::IconModule(11)}}"></i> <span class="nav-label">Aportes</span></a>
+            </li>
         </ul>
 
     </div>

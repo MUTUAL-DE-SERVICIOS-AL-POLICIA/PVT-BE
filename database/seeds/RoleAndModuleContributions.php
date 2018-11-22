@@ -37,15 +37,14 @@ class RoleAndModuleContributions extends Seeder
             Workflow::create($status);
         }
         $statuses = [
-            ['module_id' => 11, 'role_id' => 56, 'name' => 'Cuentas Individuales Aportes', 'first_shortened' => 'Cuentas Individuales', 'sequence_number' => 1],
-            ['module_id' => 11, 'role_id' => 57, 'name' => 'Tesorería Aportes', 'first_shortened' => 'Tesorería', 'sequence_number' => 2],
-            // ['module_id' => 11, 'role_id' => 58, 'name' => 'Archivo Aportes', 'first_shortened' => 'Archivo', 'sequence_number' => 3],
+            // ['module_id' => 11, 'role_id' => 55, 'name' => 'Cuentas Individuales Aportes', 'first_shortened' => 'Cuentas Individuales', 'sequence_number' => 1],
+            ['module_id' => 11, 'role_id' => 56, 'name' => 'Tesorería Aportes', 'first_shortened' => 'Tesorería', 'sequence_number' => 2],
+            // ['module_id' => 11, 'role_id' => 57, 'name' => 'Archivo Aportes', 'first_shortened' => 'Archivo', 'sequence_number' => 3],
         ];
         foreach ($statuses as $status) {
             WorkflowState::create($status);
         }
         $statuses = [
-            ['workflow_id' => 7, 'wf_state_current_id' => 49, 'wf_state_next_id' => 50, 'action'=>'Aprobar'],
             ['workflow_id' => 7, 'wf_state_current_id' => 50, 'wf_state_next_id' => 51, 'action'=>'Aprobar'],
             // ['workflow_id' => 7, 'wf_state_current_id' => 51, 'wf_state_next_id' => 52, 'action'=>'Aprobar'],
         ];

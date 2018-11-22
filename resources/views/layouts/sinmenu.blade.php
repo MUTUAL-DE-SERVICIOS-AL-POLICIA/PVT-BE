@@ -8,14 +8,13 @@
 
     <link rel="stylesheet" href="{!! asset('css/vendor.css') !!}" />
     <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
-
 </head>
 <body class="gray-bg">
 
-    <div class="middle-box text-center loginscreen animated fadeInDown">
-        
-            @yield('content')
-    </div>
+        <div class="container-fluid">
+                @yield('content')
+        </div>
+            
        
    
 
