@@ -66,35 +66,35 @@
                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-user"></i> Afiliado</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-spouse-info"><a href="#"><i class="fa fa-user"></i> Cónyuge</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-contributions"><a href="#"><i class="fa fa-users"></i> Contribuciones</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-folder"><a href="#"><i class="fa fa-copy"></i> Pagos</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-payment"><a href="#"><i class="fa fa-dollar"></i> Pagos</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>                
                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
             </ul>
         </div>
         <br>
-        <tag-list :doc-id="{{ $direct_contribution->id }}" type="contributionProcess"></tag-list>
+        {{-- <tag-list :doc-id="{{ $direct_contribution->id }}" type="contributionProcess"></tag-list> --}}
     </div>
     <br>
     <div class="col-md-9" style="padding-left: 6px">
         <div class="tab-content">
             <div id="tab-ret-fun" class="tab-pane active">
                 {{-- @can('update',$direct_contribution) --}}
-                <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
+                {{-- <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
                     :procedure_modality="{{$direct_contribution->procedure_modality}}" :states="{{ $states }}" inline-template>
                     @include('direct_contributions.info', ['direct_contribution'=>$direct_contribution,'cities'=>$birth_cities])
-                </direct-contribution-info>
+                </direct-contribution-info> --}}
                 {{-- @endcan --}}
             </div>
             <div id="tab-affiliate" class="tab-pane">
-                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
+                {{-- <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
-                </affiliate-show>
+                </affiliate-show> --}}
 
             </div>            
             <div id="tab-spouse-info" class="tab-pane">
-                <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $birth_cities }}" inline-template>
+                {{-- <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $birth_cities }}" inline-template>
                     @include('spouses.spouse_personal_information', ['spouse'=>$spouse])
-                </spouse-show>
+                </spouse-show> --}}
             </div>
             <div id="tab-contributions" class="tab-pane">
                 @if($direct_contribution->procedure_modality->procedure_type_id == 6)
@@ -120,7 +120,7 @@
                 </div>
             <div id="tab-summited-document" class="tab-pane">                
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)  --}}
-                <direct-contribution-step1-requirements-edit 
+                {{-- <direct-contribution-step1-requirements-edit 
                     :direct_contribution="{{ $direct_contribution }}" 
                     :modalities="{{ $modalities }}" 
                     :requirements="{{ $requirements }}"                    
@@ -129,8 +129,11 @@
                     :submitted="{{ json_encode($submitted_documents) }}"
                     :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
                     @include('direct_contributions.step1_requirements_edit')
-                </direct_contribution-step1-requirements-edit>
+                </direct_contribution-step1-requirements-edit> --}}
                 {{-- @endcan --}}
+            </div>
+            <div id="tab-payment" class="tab-pane">
+                @include('direct_contributions.payments', ['contribution_processes' => $contribution_processes, 'affiliate_id'=>$affiliate->id])
             </div>
             <div id="tab-observations" class="tab-pane">
                 {{-- @include('ret_fun.observation') --}}

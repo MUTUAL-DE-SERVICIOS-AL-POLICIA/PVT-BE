@@ -19,7 +19,10 @@ mix
   .sass("resources/assets/sass/materialicons.scss", "public/css")
   .sass("resources/assets/sass/datatable.scss", "public/css")
   .stylus('resources/assets/stylus/vuetify.styl', 'public/css')
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/development
 switch (app) {
   case 'prod':
     mix
