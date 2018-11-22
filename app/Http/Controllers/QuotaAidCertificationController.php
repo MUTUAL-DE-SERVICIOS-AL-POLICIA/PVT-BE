@@ -22,6 +22,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisorBeneficiary;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidLegalGuardian;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiaryLegalGuardian;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidAdvisor;
 use Muserpol\Models\Workflow\WorkflowState;
@@ -605,8 +606,8 @@ class QuotaAidCertificationController extends Controller
         $quota_aid_beneficiaries = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
         
 
-        if(isset($quota_aid_beneficiaries->id)) {
-            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->ret_fun_legal_guardian_id)->first();
+        if(isset($quota_aid_beneficiaries->id)) {            
+            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
             $person .= ($legal_guardian->gender=='M'?"El señor ":"La señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del (la) Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
         } else {
             if($quota_aid->procedure_modality_id == 15) {
@@ -841,12 +842,15 @@ class QuotaAidCertificationController extends Controller
         } else {            
             $payment .= " de: ";
         }        
+        $reserved = false;
         if($quota_aid->procedure_modality_id != 14) {
             $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->orderBy('kinship_id')->orderByDesc('state')->get();
             foreach($beneficiaries as $beneficiary){                
-                if(!$beneficiary->state) {
+                if(!$beneficiary->state && !$reserved) {
+                    $reserved = true;
                     $reserved_quantity = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
+                    //return $certification;
                     $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
                     la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes ":" la Cuota Parte ")." salvando los derechos del beneficiario ".
                     ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
@@ -951,7 +955,7 @@ class QuotaAidCertificationController extends Controller
         $head = "<p>Señora Directora:</p><p class='text-justify'>En atención a solicitud de fecha ".Util::getStringDate($quota_aid->reception_date).", del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name.", ";
 
         if(isset($quota_aid_beneficiaries->id)) {
-            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->ret_fun_legal_guardian_id)->first();
+            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
             $head .= ($legal_guardian->gender=='M'?"El señor ":"La señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del (la) Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
         } else {
             if($quota_aid->procedure_modality_id == 15) {
@@ -1216,10 +1220,12 @@ class QuotaAidCertificationController extends Controller
         } else {            
             $payment .= " de: ";
         }        
+        $reserved = false;
         if($quota_aid->procedure_modality_id != 14) {
             $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->orderBy('kinship_id')->orderByDesc('state')->get();
             foreach($beneficiaries as $beneficiary){                
-                if(!$beneficiary->state) {
+                if(!$beneficiary->state && !$reserved) {
+                    $reserved = true;
                     $reserved_quantity = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
                     $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
@@ -1352,7 +1358,7 @@ class QuotaAidCertificationController extends Controller
         $reception = 'Que, en fecha <b>'.Util::getStringDate($quota_aid->reception_date).'</b>, ';
         
         if(isset($quota_aid_beneficiary->id)) {
-            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiary->ret_fun_legal_guardian_id)->first();
+            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiary->quota_aid_legal_guardian_id)->first();
             $reception .= ($legal_guardian->gender=="M"?" el Sr. ":"la Sra. ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.",".($legal_guardian->gender=="M"?" Apoderado ":" Apoderada ")."Legal ";
             $reception.= ($affiliate->gender=='M'?'del':'de la').' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b> y en favor '.($affiliate->gender=="M"?"del mismo":"de la misma");
         } else {            
@@ -1439,11 +1445,12 @@ class QuotaAidCertificationController extends Controller
         } else {                        
             $body_resolution .=($affiliate->gender=='M'?"del beneficiario de la <strong>Sra. ":"de la beneficiaria del <strong> Sr. ").Util::fullName($affiliate->spouse()->first())."</strong> con C.I. N° <strong>".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion').".</strong>, en el siguiente tenor: <br><br>";
         }        
-        
+        $reserved = false;
         if($quota_aid->procedure_modality_id != 14) {
             $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->orderBy('kinship_id')->orderByDesc('state')->get();
             foreach($beneficiaries as $beneficiary){                
-                if(!$beneficiary->state) {
+                if(!$beneficiary->state && !$reserved) {
+                    $reserved = true;
                     $reserved_quantity = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();                    
                     $body_resolution .= "Mantener en reserva la(s) Cuota(s) Parte(s) salvando los derechos, hasta que presente(n) la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos del Reglamento de Cuota Mortuaria y Auxilio Mortuorio, de la siguiente manera:<br><br>";
