@@ -35,77 +35,102 @@
                     echo $style;    
                 @endphp
                 @if($role->module_id==1)
-                <button class="widget red-bg px-1 text-center" style="height: 200px; width: 100%">
-                <span class="info-box-icon bg-red">
-                    <i class="glyphicon glyphicon-hdd fa-4x"></i><br>
-                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
-                </span>
+                <button class="widget style1 red-bg px-1 text-center" style="height: 100px; width: 100%; border: none">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="glyphicon glyphicon-hdd fa-4x"></i>
+                        </div>
+                        <div class="col-xs-9">
+                            <span>
+                                <b><p style="font-size: 1.5em;">{{$role->name}}</p></b>
+                            </span>
                 @endif
                 @if($role->module_id==2 || $role->module_id==8 )
-                <button class="widget lazur-bg px-1 text-center" style="height: 200px; width: 100%">
-                <span class="info-box-icon bg-aqua">
-                    <i class="fa fa-puzzle-piece fa-5x"></i><br>
-                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
-                </span>
+                <button class="widget style1 lazur-bg px-1 text-center" style="height: 100px; width: 100%; border: none">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-puzzle-piece fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9">
+                                <span>
+                                    <b><p style="font-size: 1.5em;">{{$role->name}}</p></b>
+                                </span>
                 @endif     
                 @if($role->module_id==3)
-                <button class="widget yellow-bg px-1 text-center" style="height: 200px; width: 100%">
-                <span class="info-box-icon bg-yellow">
-                    <i class="glyphicon glyphicon-piggy-bank fa-4x"></i><br>
-                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
-                </span>
-                
+                <button class="widget style1 yellow-bg px-1 text-center" style="height: 100px; width: 100%; border: none">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-piggy-bank fa-4x"></i>
+                            </div>
+                            <div class="col-xs-9">
+                                <span>
+                                    <b><p style="font-size: 1.5em;">{{$role->name}}</p></b>
+                                </span>
                 @endif
-
                 @if($role->module_id==6 || $role->module_id==9)
-                <button class="widget blue-bg px-1 text-center" style="height: 200px; width: 100%">
-                <span class="info-box-icon bg-green">
-                    <i class="fa fa-money fa-5x"></i><br>
-                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
-                </span>
-                
+                <button class="widget style1 blue-bg px-1 text-center" style="height: 100px; width: 100%; border: none">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-money fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9">
+                                <span>
+                                    <b><p style="font-size: 1.5em;">{{$role->name}}</p></b>
+                                </span>
                 @endif
                 @if($role->module_id==4 ||$role->module_id==5 )
-                <button class="widget blue-bg px-1 text-center" style="height: 200px; width: 100%">
-                <span class="info-box-icon bg-green">
-                    <i class="fa fa-heartbeat fa-5x"></i><br>
-                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
-                </span>
-                
+                <button class="widget style1 blue-bg px-1 text-center" style="height: 100px; width: 100%; border: none">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-heartbeat fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9">
+                                <span>
+                                    <b><p style="font-size: 1.5em;">{{$role->name}}</p></b>
+                                </span>
                 @endif
-
                 @if($role->module_id==7)
-                <button class="widget blue-bg px-1 text-center" style="height: 200px; width: 100%">
-                <span class="info-box-icon bg-green">
-                    <i class="fa fa-balance-scale fa-5x"></i><br>
-                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
-                </span>
-                
+                <button class="widget style1 blue-bg px-1 text-center" style="height: 100px; width: 100%; border: none">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-balance-scale fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9">
+                                <span>
+                                    <b><p style="font-size: 1.5em;">{{$role->name}}</p></b>
+                                </span>
                 @endif
                 @if($role->module_id==10)
-                <button class="widget green-bg px-1 text-center" style="height: 200px; width: 100%">
-                <span class="info-box-icon bg-green">
-                    <i class="fa  fa-map fa-5x"></i><br>
-                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
-                </span>
-                
+                <button class="widget style1 green-bg px-1 text-center" style="height: 100px; width: 100%; border: none">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa  fa-map fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9">
+                                <span>
+                                    <b><p style="font-size: 1.5em;">{{$role->name}}</p></b>
+                                </span>
                 @endif
                 @if($role->module_id == 11)
-                <button class="widget green-bg px-1 text-center" style="height: 200px; width: 100%">
-                <span class="info-box-icon bg-green">
-                    <i class="fa  fa-map fa-5x"></i><br>
-                    <b><p style="font-size: 2em;">{{$role->name}}</p></b>
-                </span>
+                <button class="widget style1 green-bg px-1 text-center" style="height: 100px; width: 100%; border: none">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa  fa-map fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9">
+                                <span>
+                                    <b><p style="font-size: 1.5em;">{{$role->name}}</p></b>
+                                </span>
                 @endif
 
-            <div class="info-box-content">
                 <input type="hidden" name="rol_id" value={!! $role->id !!}>
                 <b>
-                <span class="info-box-text"><p style="font-size: 1.3em">{!! $role->module->name !!}</p>  </span>
+                <span class="info-box-text"><p style="font-size: 1em">{!! $role->module->name !!}</p>  </span>
                 </b>
                 <br>
-            </div>
             <!-- /.info-box-content -->
+        </div>
+        </div>
         </button>
     </div>
         {!! Form::close() !!}
