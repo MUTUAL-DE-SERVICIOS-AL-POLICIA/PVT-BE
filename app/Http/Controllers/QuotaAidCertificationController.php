@@ -1365,7 +1365,7 @@ class QuotaAidCertificationController extends Controller
         Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017, en sus Artículos 
         2,3,5,7,8,10,12,13,'.$art[$quota_aid->procedure_modality->procedure_type_id].' reconocen el derecho de la otorgación del beneficio de <strong>'.$quota_aid->procedure_modality->procedure_type->second_name.'</strong>.
         <br><br>
-        Que, el Reglamento los beneficios de Cuota y Auxilio Mortuorio, en su Artículo 15 del RECONOCIMIENTO DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”</i>.
+        Que, el Reglamento de los beneficios de Cuota y Auxilio Mortuorio, en su Artículo 15 del RECONOCIMIENTO DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”</i>.
         <br><br>
         Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, ';
         if($quota_aid->procedure_modality->procedure_type_id == 3) { 
@@ -1414,7 +1414,7 @@ class QuotaAidCertificationController extends Controller
             3 => 43,
             4 => 44,
         ];
-        $reception.= ', solicita el pago del beneficio de<strong> &nbsp;'.$quota_aid->procedure_modality->procedure_type->second_name.'</strong>, adjuntando documentación solicitada por la Unidad según el Reglamento. Por consiguiente, habiéndose cumplido con los requisitos de orden establecido en el Artículo 
+        $reception.= ', solicita el pago del beneficio de<strong> &nbsp;'.$quota_aid->procedure_modality->procedure_type->second_name.'</strong>, adjuntando documentación solicitada por la Unidad según el Reglamento. Por consiguiente, habiéndose cumplido con los requisitos de orden establecidos en el Artículo 
         '.$art[$quota_aid->procedure_modality->procedure_type_id].' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se dio curso con el trámite.<br>';
 
         if($number->note != "") {
