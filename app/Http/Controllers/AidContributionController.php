@@ -232,17 +232,18 @@ class AidContributionController extends Controller
         $end = explode('-', $dateentry);
         $newcontributions = [];
         $month_end = $end[1];
-        $year_end = $end[0];
-        
-        $death_date = Util::parseBarDate($affiliate->date_death);
+        $year_end = $end[0];        
+                
         if($affiliate->date_death) {
             $death_date = Util::parseBarDate($affiliate->date_death);
+            $spouse_death = $affiliate->spouse()->whereDate('date_death','>',$death_date)->first();
+            if(isset($spouse_death)) {
+                $death_date = Util::parseBarDate($spouse_death->date_death);
+            }
+        } else {
+            $death_date = Util::parseBarDate($affiliate->spouse()->first()->date_death);
         }
-        $spouse_death = $affiliate->spouse()->whereDate('date_death','>',$death_date)->first();
-        if(isset($spouse_death)) {
-            $death_date = Util::parseBarDate($spouse_death->date_death);
-        }
-        
+                        
         //return $death_date;
         if(!$death_date) {            
             $month_start = (date('m') - 1);
@@ -261,12 +262,12 @@ class AidContributionController extends Controller
         $cities_objects = City::all();
         $birth_cities = City::all()->pluck('name', 'id');
         //get Commitment data
-        $aid_commitment = AidCommitment::where('affiliate_id', $affiliate->id)->first();
-        if (!isset($aid_commitment->id)) {
-            $aid_commitment = new AidCommitment();
-            $aid_commitment->id = 0;
-            $aid_commitment->affiliate_id = $affiliate->id;
-        }
+        // $aid_commitment = AidCommitment::where('affiliate_id', $affiliate->id)->first();
+        // if (!isset($aid_commitment->id)) {
+        //     $aid_commitment = new AidCommitment();
+        //     $aid_commitment->id = 0;
+        //     $aid_commitment->affiliate_id = $affiliate->id;
+        // }
         $date = date('Y-m-d');
         $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();               
         $data = [
@@ -280,7 +281,7 @@ class AidContributionController extends Controller
             'cities_objects' => $cities_objects,
             'birth_cities' => $birth_cities,
             'new_contributions' => $this->getContributionDebt($affiliate->id, 3,$date),
-            'aid_commitment' => $aid_commitment,
+            //'aid_commitment' => $aid_commitment,
             'spouse' => $spouse,
             'today_date' => date('Y-m-d'),
         ];
