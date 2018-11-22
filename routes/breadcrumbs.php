@@ -97,12 +97,17 @@ Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliat
 });
 
 
-Breadcrumbs::register('contribution_process', function ($breadcrumbs) {
-	$breadcrumbs->push('Tramites de Contribuciones', URL::to('contribution_process'));
+Breadcrumbs::register('direct_contribution', function ($breadcrumbs) {
+	$breadcrumbs->push('Tramites de Contribuciones', URL::to('direct_contribution'));
 });
-Breadcrumbs::register('show_contribution_process', function ($breadcrumbs, $contribution_process) {
-	$breadcrumbs->parent('contribution_process');
-	$breadcrumbs->push("Trámite Nro. " . $contribution_process->code, URL::to('contribution_process/' . $contribution_process->id));
+Breadcrumbs::register('show_direct_contribution', function ($breadcrumbs, $direct_contribution) {
+	$breadcrumbs->parent('direct_contribution');
+	$breadcrumbs->push("Trámite Nro. " . $direct_contribution->code, URL::to('direct_contribution/' . $direct_contribution->id));
+});
+Breadcrumbs::register('create_direct_contribution', function ($breadcrumbs, $affiliate) {
+	$breadcrumbs->parent('direct_contribution');
+	$breadcrumbs->push("Nuevo Trámite");
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
 
 

@@ -70,11 +70,10 @@
             <br>
             <div class="row">
                 <div class="text-center">
-                    <button type="button" class="btn btn-danger" >Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="cyk()">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
-            
             {!! Form::close() !!}
         </div>
     </div>
@@ -107,8 +106,6 @@
                         </tbody>
                     </table>
             </div>
-
-            
         </div>
         </div>
     </div>
@@ -118,6 +115,11 @@
 <link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
 @endsection
 @section('jss')
+<script>
+    function cyk() {
+        window.history.back();
+    }
+</script>
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
 $(document).ready(function() {
