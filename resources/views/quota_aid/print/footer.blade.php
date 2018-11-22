@@ -15,7 +15,7 @@
             </div>
             <div style="float:right; text-align:right;font-family:sans-serif; font-size:14px; text-transform: uppercase">
                 <span>PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL &nbsp;</span><br>
-                </span>{{ optional(optional($quota_aid->procedure_modality)->procedure_type)->second_name }} &nbsp;&nbsp;</span>
+                {{-- </span>{{ optional(optional($quota_aid->procedure_modality)->procedure_type)->second_name }} &nbsp;&nbsp;</span> --}}
             </div>
         </div>
     </div>
