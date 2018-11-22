@@ -624,18 +624,7 @@ class QuotaAidCertificationController extends Controller
             } else {
                 $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO":" ");
             }            
-<<<<<<< HEAD
         }       
-=======
-        }
-        if(isset($quota_aid_beneficiaries->id)) {            
-            $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
-            $person .= ($legal_guardian->gender=='M'?", el señor ":", la señora ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.". a través de Testimonio Notarial N° ".$legal_guardian->number_authority." de fecha ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." sobre poder especial, bastante y suficiente emitido por ".$legal_guardian->notary_of_public_faith." a cargo del (la) Notario ".$legal_guardian->notary." en representación ".($affiliate->gender=='M'?"del señor ":"de la señora ");
-        } else {
-            $person .= " ";
-        }
-
->>>>>>> upstream/master
         $person .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
         $with_art = false;
         if(isset($quota_aid_beneficiaries->id)) {            
