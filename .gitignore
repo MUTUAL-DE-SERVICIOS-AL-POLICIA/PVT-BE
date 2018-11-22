@@ -6,6 +6,7 @@ public/css/app.css
 public/css/datatable.css
 public/css/materialicons.css
 public/css/wkhtml.css
+public/mix-manifest.json
 /public/storage
 /storage/*.key
 /vendor

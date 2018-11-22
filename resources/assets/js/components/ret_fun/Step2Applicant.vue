@@ -49,6 +49,7 @@ export default {
       show_advisor_form: false,
       show_apoderado_form: false,
       applicant_types:[{name:'Beneficiario', id:1}, {name:'Tutor', id:2}, {name:'Apoderado', id:3}],
+      date_entry: this.affiliate.date_entry,
       date_derelict: this.affiliate.date_derelict,
       date_death: this.affiliate.date_death,
       reason_death: this.affiliate.reason_death,
