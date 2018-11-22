@@ -625,7 +625,7 @@ class QuotaAidCertificationController extends Controller
                 $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO":" ");
             }            
         }       
-        $person .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
+        $person .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de<strong class='uppercase'> &nbsp;". $quota_aid->procedure_modality->name ."</strong>,";
         $with_art = false;
         if(isset($quota_aid_beneficiaries->id)) {            
             $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
@@ -1397,12 +1397,12 @@ class QuotaAidCertificationController extends Controller
                 $reception.= "".($affiliate->gender=='M'?'el':'la');                
             }            
             if($quota_aid->procedure_modality_id == 15) { 
-                $reception.= ' <b>'.Util::fullName($affiliate->spouse()->first()).'</b> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
+                $reception.= ' <b>'.($affiliate->spouse()->first()->gender == 'M'?' Sr. ':'Sra. ').Util::fullName($affiliate->spouse()->first()).'</b> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
             } 
             else {
                 if($quota_aid->procedure_modality_id == 14){
                     $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>, en calidad de '.($affiliate->gender=='M'?'viudo de la fallecida: ':'viuda del fallecido: ');
-                    $reception.= ' <b>'.Util::fullName($affiliate->spouse()->first()).'</b> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
+                    $reception.= ' <b>'.($affiliate->spouse()->first()->gender == 'M'?' Sr. ':'Sra. ').Util::fullName($affiliate->spouse()->first()).'</b> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
                 } else {
                     $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>';
                 }
@@ -1427,12 +1427,12 @@ class QuotaAidCertificationController extends Controller
         $months  = $affiliate->getTotalQuotes();        
         $body_qualification .= "Que, mediante Calificación del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." <b>N° ".$qualification->code."</b> de fecha ".Util::getStringDate($qualification->date).", la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente ";
         if($quota_aid->procedure_modality_id == 15) {
-            $body_qualification .= 'al fallecimiento '.($affiliate->spouse()->first()->gender=='M'?'del&nbsp;<b>Sr. ':'de la&nbsp;<b>Sra. ').Util::fullName($affiliate->spouse()->first()).'</b> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened;
+            $body_qualification .= 'al fallecimiento '.($affiliate->spouse()->first()->gender=='M'?'del<strong> &nbsp;Sr. ':'de la<strong> &nbsp;Sra. ').Util::fullName($affiliate->spouse()->first()).'</strong> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened;
         } else {
             if($quota_aid->procedure_modality_id == 14) {
-                $body_qualification .= 'al fallecimiento '.($affiliate->spouse()->first()->gender=='M'?'del&nbsp;<b>Sr. ':'de la&nbsp;<b>Sra. ').Util::fullName($affiliate->spouse()->first()).'</b> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
+                $body_qualification .= 'al fallecimiento '.($affiliate->spouse()->first()->gender=='M'?'del<strong> &nbsp;Sr. ':'de la<strong> &nbsp;Sra. ').Util::fullName($affiliate->spouse()->first()).'</strong> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
             } else {
-                $body_qualification .= "al fallecimiento ".($affiliate->gender=='M'?'del':'de la')."<strong>&nbsp; ".$affiliate->fullNameWithDegree()."</strong> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened;
+                $body_qualification .= "al fallecimiento ".($affiliate->gender=='M'?'del':'de la')."<strong> &nbsp;".$affiliate->fullNameWithDegree()."</strong> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened;
             }
         }
         $body_qualification .= "</b>, determinando la cuant&iacute;a de <b>". Util::formatMoneyWithLiteral($quota_aid->total)."</b>.";
@@ -1441,7 +1441,7 @@ class QuotaAidCertificationController extends Controller
 
         $legal_dictum_id = 39;
         $legal_dictum = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$legal_dictum_id)->first();
-        $body_legal_dictum = 'Que, habiéndose verificado el procesamiento establecido en el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se procedió con la emisión de DICTAMEN LEGAL <strong> Nº '.$legal_dictum->code.'</strong> de '.Util::getStringDate($legal_dictum->date).', para la otorgación del beneficio de '.$quota_aid->procedure_modality->procedure_type->name.'.<br>';
+        $body_legal_dictum = 'Que, habiéndose verificado el procesamiento establecido en el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se procedió con la emisión de DICTAMEN LEGAL <strong> Nº '.$legal_dictum->code.'</strong> de '.Util::getStringDate($legal_dictum->date).', para la otorgación del beneficio de '.$quota_aid->procedure_modality->procedure_type->name.'.';
 
 
         $then = 'La Comisión de Beneficios Económicos de la Mutual de Servicios al Policía “MUSERPOL” en
@@ -1466,7 +1466,7 @@ class QuotaAidCertificationController extends Controller
                 $body_resolution .=" de ".($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"del beneficiario ":"de la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??'Sin extencion')."., en el siguiente tenor: <br><br>";
             }
         } else {                        
-            $body_resolution .=($affiliate->gender=='M'?"del beneficiario de la <strong> &nbsp;Sra. ":"de la beneficiaria del <strong> Sr. ").Util::fullName($affiliate->spouse()->first())."</strong> con C.I. N° <strong>".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion').".</strong>, en el siguiente tenor: <br><br>";
+            $body_resolution .=($affiliate->gender=='M'?"del beneficiario de la <strong> &nbsp;Sra. ":"de la beneficiaria del <strong> &nbsp;Sr. ").Util::fullName($affiliate->spouse()->first())."</strong> con C.I. N° <strong>".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion').".</strong>, en el siguiente tenor: <br><br>";
         }        
         $reserved = false;
         if($quota_aid->procedure_modality_id != 14) {
@@ -1476,7 +1476,7 @@ class QuotaAidCertificationController extends Controller
                     $reserved = true;
                     $reserved_quantity = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();                    
-                    $body_resolution .= "Mantener en reserva la(s) Cuota(s) Parte(s) salvando los derechos, hasta que presente(n) la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos del Reglamento de Cuota Mortuaria y Auxilio Mortuorio, de la siguiente manera:<br><br>";
+                    $body_resolution .= "Mantener en reserva la(s) Cuota(s) Parte(s) salvando derechos, hasta que presente(n) la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos del Reglamento de Cuota Mortuaria y Auxilio Mortuorio, de la siguiente manera:<br><br>";
                 }
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
@@ -1504,7 +1504,7 @@ class QuotaAidCertificationController extends Controller
                     $body_resolution .= " por si o representada legamente por ".($legal_guardian->gender=='M'?"el Sr.":"la Sra. ")." ".Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".($legal_guardian->city_identity_card->first_shortened??"sin extencion").". 
                     conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° ".$legal_guardian->number_authority." de ".Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority))." emitido por ".$legal_guardian->notary.".";
                 }
-                $body_resolution .= ', en el monto de<strong> '.Util::formatMoneyWithLiteral($beneficiary->paid_amount).'</strong> '.'en calidad de '.$beneficiary->kinship->name.".</li><br><br>";
+                $body_resolution .= ', en el monto de<strong> '.Util::formatMoneyWithLiteral($beneficiary->paid_amount).'</strong> '.'en calidad de '.$beneficiary->kinship->name.".</li><br>";
             
             }
         } else {            
