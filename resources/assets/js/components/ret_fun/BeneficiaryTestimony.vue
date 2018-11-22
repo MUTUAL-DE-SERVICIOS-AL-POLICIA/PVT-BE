@@ -27,7 +27,7 @@
                             :hide-selected="true"
                             :disabled="!editable"
                             placeholder="Seleccione la cedula de identidad del beneficiario"
-                            track-by="identity_card"
+                            track-by="id"
                             :custom-label="customLabel"
                             :show-labels="false"
                             >
