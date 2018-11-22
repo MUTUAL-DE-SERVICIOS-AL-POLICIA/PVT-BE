@@ -5,10 +5,16 @@ namespace Muserpol\Policies;
 use Muserpol\User;
 use Muserpol\Models\Contribution\DirectContribution;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Muserpol\Helpers\Util;
 
 class DirectContributionPolicy
 {
     use HandlesAuthorization;
+    const ClASS_NAME = 'ContributionProcess';
+    const CREATE = 'create';
+    const READ = 'read';
+    const UPDATE = 'update';
+    const DELETE = 'delete';
 
     /**
      * Determine whether the user can view the directContribution.
@@ -30,7 +36,8 @@ class DirectContributionPolicy
      */
     public function create(User $user)
     {
-        //
+        $permission = Util::CheckPermission(self::ClASS_NAME, self::CREATE);
+        return $permission ? true : false;
     }
 
     /**

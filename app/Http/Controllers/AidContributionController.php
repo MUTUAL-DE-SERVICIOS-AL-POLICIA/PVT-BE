@@ -165,12 +165,12 @@ class AidContributionController extends Controller
            Session::flash('message','No se encontró compromiso de pago');
            return redirect('affiliate/'.$affiliate->id);    
         }
-       if(!isset($commitment->id))
-       {
-           $commitment = new AidCommitment();
-           $commitment->id = 0;
-           $commitment->affiliate_id = $affiliate->id;
-       }
+    //    if(!isset($commitment->id))
+    //    {
+    //        $commitment = new AidCommitment();
+    //        $commitment->id = 0;
+    //        $commitment->affiliate_id = $affiliate->id;
+    //    }
 
 
         // if(!isset($commitment->id))
@@ -183,18 +183,18 @@ class AidContributionController extends Controller
 
         $rate = ContributionRate::where('month_year',date('Y').'-'.date('m').'-01')->first();        
 
-        $summary = array(
-            'aid' => $contributions->sum('total'),
-            'total' => $contributions->sum('total'),
-            'interest'  =>  $contributions->sum('interest'),
-            'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
-        );
+        // $summary = array(
+        //     'aid' => $contributions->sum('total'),
+        //     'total' => $contributions->sum('total'),
+        //     'interest'  =>  $contributions->sum('interest'),
+        //     'dateentry' => Util::getStringDate(Util::parseMonthYearDate($affiliate->date_entry))
+        // );
 
         $data = [
             // 'new_contributions' => $this->getContributionDebt($affiliate->id,4),            
             'commitment'    =>  $commitment,
             'affiliate' =>  $affiliate,
-            'summary'   =>  $summary,
+            // 'summary'   =>  $summary,
             'last_quotable' =>  $last_contribution->quotable ?? 0,
             'today_date'    =>  date('Y-m-d'),
             // 'rate'  =>  $rate,
@@ -289,23 +289,21 @@ class AidContributionController extends Controller
     }
 
     public function storeContributions(Request $request)
-    {                
+    {
         //*********START VALIDATOR************//
-        
         $rules = [];
         $messages = [];
         $input_data = $request->all();
         if(!empty($request->iterator))
-        { 
-            foreach ($request->iterator as $key => $iterator) 
-            {   
+        {
+            foreach ($request->iterator as $key => $iterator)
+            {
                 if(isset($input_data['rent'][$key]))
                     $input_data['rent'][$key]= strip_tags($request->rent[$key]);
                 if(isset($input_data['dignity_rent'][$key]))
                 $input_data['dignity_rent'][$key]= strip_tags($request->dignity_rent[$key]);
-                
                 $input_data['total'][$key]= strip_tags($request->total[$key]);
-                $array_rules = [                       
+                $array_rules = [
                     'rent.'.$key =>  'numeric',
                     'dignity_rent.'.$key =>  'numeric|min:0',
                     'total.'.$key =>  'required|numeric|min:1'
@@ -323,41 +321,40 @@ class AidContributionController extends Controller
             $contribution = AidContribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
-               
-                if(!isset($request->rent[$key]) || $request->rent[$key] == "")
+                if(!isset($request->rent[$key]) || $request->rent[$key] == ""){
                     $contribution->rent = 0;
-                else
-                     $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
-                                
-                if(!isset($request->dignity_rent[$key]) || $contribution->dignity_rent == "")
+                }else{
+                    $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
+                }
+                if(!isset($request->dignity_rent[$key]) || $contribution->dignity_rent == ""){
                     $contribution->dignity_rent = 0;
-                else 
+                }else{
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
-
+                }
                 $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
                 $contribution->interest = 0;
                 $contribution->save();
             } else {
                 $contribution = new AidContribution();
                 $contribution->user_id = Auth::user()->id;
-                $contribution->affiliate_id = $request->affiliate_id;                
+                $contribution->affiliate_id = $request->affiliate_id;
                 if(!isset($request->rent[$key]) || $request->rent[$key] == "") {
                     $contribution->rent = 0;
                 } else {
-                    $contribution->rent = strip_tags($request->rent[$key]) ?? 0;                    
-                }                    
+                    $contribution->rent = strip_tags($request->rent[$key]) ?? 0;
+                }
                 $contribution->month_year = $key;
-                
-                if(!(isset($request->dignity_rent[$key])) || $contribution->dignity_rent == "")
+                if(!(isset($request->dignity_rent[$key])) || $contribution->dignity_rent == ""){
                     $contribution->dignity_rent = 0;
-                else
+                }else{
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;
+                }
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
                 $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
                 $contribution->type = 'PLANILLA';
                 $contribution->interest = 0;
                 $contribution->save();
-            }            
+            }
             array_push($contributions, $contribution);
         }
         return $contributions;

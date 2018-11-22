@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Muserpol\Models\ProcedureState;
 
 class ProcedureStatesTableSeeder extends Seeder
 {
