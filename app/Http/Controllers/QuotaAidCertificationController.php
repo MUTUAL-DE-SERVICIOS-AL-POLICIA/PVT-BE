@@ -625,7 +625,7 @@ class QuotaAidCertificationController extends Controller
                 $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO":" ");
             }            
         }       
-        $person .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
+        $person .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de<strong class='uppercase'> &nbsp;". $quota_aid->procedure_modality->name ."</strong>,";
         $with_art = false;
         if(isset($quota_aid_beneficiaries->id)) {            
             $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
