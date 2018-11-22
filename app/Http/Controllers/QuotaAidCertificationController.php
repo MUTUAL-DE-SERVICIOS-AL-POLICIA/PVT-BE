@@ -17,7 +17,7 @@ use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
 use Muserpol\Models\Spouse;
 use Muserpol\Models\Contribution\AidContribution;
-use Muserpol\Models\Contribution\AidCommitment;
+use Muserpol\Models\Contribution\DirectContribution;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
@@ -503,7 +503,7 @@ class QuotaAidCertificationController extends Controller
         //return $start_date->format('Y-m');     
         
         if($quota_aid->procedure_modality->procedure_type_id == 4) {            
-            $aid_commitment = AidCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();
+            $aid_commitment = DirectContribution::where('affiliate_id',$affiliate->id)->where('status',true)->first();
             
             if(!isset($aid_commitment->id) && $affiliate->pension_entity_id!=5) {
                 Session::flash('message','No se encontró compromiso de pago');
