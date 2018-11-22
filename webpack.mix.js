@@ -18,7 +18,8 @@ mix
   .sass("resources/assets/sass/wkhtml.scss", "public/css")
   .sass("resources/assets/sass/materialicons.scss", "public/css")
   .sass("resources/assets/sass/datatable.scss", "public/css")
-  .stylus('resources/assets/stylus/vuetify.styl', 'public/css');
+  .stylus('resources/assets/stylus/vuetify.styl', 'public/css')
+  .version();
 switch (app) {
   case 'prod':
     mix
