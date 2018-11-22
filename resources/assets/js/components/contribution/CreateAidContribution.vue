@@ -24,7 +24,7 @@
                         <div class="row col-lg-12" v-if="toggle">
                             <div class="form-inline">
                                 <div class="form-group">
-                                    <input type="text" data-date="true" v-model="dateEnd" @keypress.enter="refresh()" class="form-control">
+                                    <input type="text" v-date v-model="dateEnd" @keypress.enter="refresh()" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <button @click="refresh()" class="btn btn-primary"> <i class="fa fa-arrow-right"></i> Continuar</button>
@@ -37,10 +37,10 @@
                         <div v-if="contributions.length > 0">
                             <div class="row" >                                            
                                 <div class="col-md-3" >                            
-                                    <input type="text" class="form-control"  data-money='true' v-model="general_rent">
+                                    <input type="text" class="form-control"  v-money v-model="general_rent">
                                 </div>
                                 <div class="col-md-3" >                            
-                                    <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_dignity_rent">
+                                    <input type="text" class="form-control"  v-money @keyup.enter="repeatSalary" v-model="general_dignity_rent">
                                 </div>               
                                 <div class="col-md-3" >
                                     <button class="btn btn-primary " type="button" @click="repeatSalary()"><i class="fa fa-money"></i>&nbsp;Repetir Renta</button>
@@ -65,19 +65,19 @@
                                             <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                         </td>
                                         <td>
-                                            <input type="text" v-model = "con.sueldo" data-money='true' ref="s1" autofocus class="form-control" >
+                                            <input type="text" v-model = "con.sueldo" v-money ref="s1" autofocus class="form-control" >
                                         </td>
                                         <td>
-                                            <input type="text"  v-model = "con.dignity_rent" data-money='true' @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
+                                            <input type="text"  v-model = "con.dignity_rent" v-money @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                         </td>
                                         <td>
-                                            <input type="text" v-model = "con.auxilio_mortuorio" disabled data-money='true' class="form-control">
+                                            <input type="text" v-model = "con.auxilio_mortuorio" disabled v-money class="form-control">
                                         </td>
                                         <td>
-                                            <input type="text" v-model = "con.interes" disabled data-money='true' class="form-control">
+                                            <input type="text" v-model = "con.interes" disabled v-money class="form-control">
                                         </td>
                                         <td>
-                                            <input type="text"  v-model = "con.subtotal" disabled data-money='true' class="form-control">
+                                            <input type="text"  v-model = "con.subtotal" disabled v-money class="form-control">
                                         </td>
                                         <td class="row">                                    
                                             <div class="col-md-6">
@@ -90,7 +90,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes de Auxilio Mortuorio:</label></td>
-                                        <td colspan="3"><input type="text" data-money='true' v-model ="total" disabled class="form-control"></td>
+                                        <td colspan="3"><input type="text" v-money v-model ="total" disabled class="form-control"></td>
                                         <td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>
                                     </tr>
                                 </tbody>
@@ -166,7 +166,7 @@
                                 <input type="text" v-model = "reim_pay.amount" data-money="true" disabled class="form-control" >
                             </td>
                             <td>
-                                <input type="text"  v-model = "reim_pay.auxilio_mortuorio" data-money='true' disabled class="form-control">
+                                <input type="text"  v-model = "reim_pay.auxilio_mortuorio" v-money disabled class="form-control">
                             </td>                            
                             <td>
                                 <input type="text"  v-model = "reim_pay.subtotal" data-money="true" disabled class="form-control">
@@ -194,26 +194,17 @@
 </template>
 <script>
 import {
-    dateInputMask,
-    moneyInputMask,
     parseMoney,
-    moneyInputMaskAll,
-    dateInputMaskAll
 }
 from "../../helper.js";
 export default {
   props: [
     // "aidContributions", 
     "afid",
+    "directContributionId",
     // "rate"
       ],
   mounted() {
-    // this.contributions = this.aidContributions;    
-    this.afi_id = this.afid;
-    window.addEventListener("load", function(event) {
-        moneyInputMaskAll();
-        dateInputMaskAll();
-    });
     this.refresh();
   },
   data() {
@@ -271,10 +262,6 @@ export default {
         }).catch(error =>{
             console.log(error)
         });
-        setTimeout(() => {
-            moneyInputMaskAll();
-            dateInputMaskAll();
-        }, 300);
         this.showContributions =  true;
     },
     repeatSalary(){
@@ -447,7 +434,6 @@ export default {
     this.contributions = update_contributions;
     this.CalcularAporte(newcontribution,index);          
       $('#reimbursement_modal').modal('toggle');            
-      moneyInputMaskAll();
     },
     Guardar() {        
       this.contributions = this.contributions.filter(item => {
@@ -470,36 +456,36 @@ export default {
           if (result.value) {
             var aportes = this.contributions;            
             axios
-              .post("/aid_contribution_save", {
+              .post("/contribution_process/aid_contribution_save", {
                 aportes,
                 total: this.total,
-                afid: this.afid
+                direct_contribution_id: this.directContributionId
               })
               .then(response => {                
               //this.enableDC();
-              var i;
-                for(i=0;i<response.data.aid_contribution.length;i++){                        
-                    this.setDataToTable(response.data.aid_contribution[i].month_year,response.data.aid_contribution[i].total);
-                }
-              this.$swal({
-              title: "Pago realizado",
-              showConfirmButton: false,
-              timer: 6000,
-              type: "success"
-              });
-              var json_aid_contribution = JSON.stringify(response.data.aid_contributions);              
-              this.reprint = response.data;
-              console.log(json_aid_contribution);
-              printJS({
-                  printable:
-                    "/quota_aid/" +
-                    response.data.affiliate_id +
-                    "/print/quota_aid_voucher/" +
-                    response.data.voucher_id + "?aid_contributions="+json_aid_contribution,
-                  type: "pdf",
-                  showModal: true
-                });
-                this.contributions = [];
+            //   var i;
+            //     for(i=0;i<response.data.aid_contribution.length;i++){                        
+            //         this.setDataToTable(response.data.aid_contribution[i].month_year,response.data.aid_contribution[i].total);
+            //     }
+            //   this.$swal({
+            //   title: "Pago realizado",
+            //   showConfirmButton: false,
+            //   timer: 6000,
+            //   type: "success"
+            //   });
+            //   var json_aid_contribution = JSON.stringify(response.data.aid_contributions);              
+            //   this.reprint = response.data;
+            //   console.log(json_aid_contribution);
+            //   printJS({
+            //       printable:
+            //         "/quota_aid/" +
+            //         response.data.affiliate_id +
+            //         "/print/quota_aid_voucher/" +
+            //         response.data.voucher_id + "?aid_contributions="+json_aid_contribution,
+            //       type: "pdf",
+            //       showModal: true
+            //     });
+            //     this.contributions = [];
             }).catch(error => {              
               console.log('with error message');
               

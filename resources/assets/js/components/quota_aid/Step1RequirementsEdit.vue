@@ -36,12 +36,13 @@
             // });
         },
         mounted(){
+            console.log(this.submitted);
             //this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
             this.onChooseProcedureType();
             this.modality = this.quota_aid.procedure_modality_id;            
             this.getRequirements();
-            console.log('dataaa');
-            console.log(this.requirementList[0]);
+            //console.log('dataaa');
+            //console.log(this.requirementList[0]);
         },
         methods:{
             onChooseProcedureType(){
@@ -120,8 +121,8 @@
                 // });
                 
 
-                console.log("datos up");
-                console.log(this.requirements);
+                //console.log("datos up");
+                //console.log(this.requirements);
                 Array.prototype.groupBy = function(prop) {
                     return this.reduce(function(groups, item) {
                         const val = item[prop]
