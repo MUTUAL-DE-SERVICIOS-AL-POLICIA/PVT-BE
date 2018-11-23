@@ -35,4 +35,8 @@ class ContributionProcess extends Model
     {
         return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
     }
+    public function direct_contribution()
+    {
+        return $this->belongsTo('Muserpol\Models\Contribution\DirectContribution');
+    }
 }
