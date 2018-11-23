@@ -988,7 +988,11 @@ class QuotaAidCertificationController extends Controller
         } else {
             $head .= " ";
         }
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> upstream/master
         
         $head .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
         $with_art = false;
@@ -1070,21 +1074,21 @@ class QuotaAidCertificationController extends Controller
         }
         $head .= " la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) ." y en cumplimiento al numeral 8
         del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión";
-        
+        $past = 'Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 2829 de 06 de julio de 2016, referente al beneficio de Cuota Mortuoria en el artículo 2, (MODIFICACIONES) establece:
+            <br><br>
+            I. Se modifica el inciso d) del artículo 3 del Decreto Supremo N° 1446, de 19 de diciembre de 2012, con el siguiente texto: <strong><i>“Otorgar el beneficio de Cuota Mortuoria y Auxilio Mortuorio a favor del sector activo y pasivo de la Policía Boliviana, de acuerdo a reglamentos emitidos por MUSERPOL.”</i></strong> 
+            <br><br>
+            II. Se modifica el inciso b) del Parágrafo I del artículo 14 del Decreto Supremo N° 1446, del 19 de diciembre de 2012, con el siguiente texto: <strong><i>“b) Cuota Mortuoria y Auxilio Mortuorio”</i></strong>, 
+            <br><br>
+            IV. Se modifica el Artículo 16 del Decreto Supremo N° 1446, del 19 de diciembre de 2012, con el siguiente texto: <strong><i>“artículo 16.- (CUOTA MORTUORIA Y AUXILIO MORTUORIO): ';        
+        if($quota_aid->procedure_modality->procedure_type->id == 3) {
+            $past .='I. La Cuota Mortuoria es un beneficio que se otorga a los derechohabientes de los afiliados a MUSERPOL de la Policía Boliviana del sector activo, que consiste en el pago de un monto único y por una sola vez.”</i></strong>';
+        } else {
+            $past .= 'II. El Auxilio Mortuorio es un beneficio que se otorga a los derechohabientes de los afiliados a MUSERPOL de la Policía Boliviana del sector pasivo, tanto al fallecimiento del titular como del cónyuge, consistente en el pago de un monto único y por una sola vez.”</i></strong>';
+        }
 
-        $past = "Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 3231 de 28 de junio de 2017, referente al beneficio de Fondo de Retiro Policial en el artículo 2, (MODIFICACIONES) establece:
-            <br><br>
-            I. Se modifica el inciso c) del artículo 3 del Decreto Supremo N° 1446, de 19 de diciembre de 2012, con el siguiente texto: <b>“Otorgar el beneficio variable del Fondo de Retiro Policial Solidario, en el marco del principio de solidaridad”</b>
-            <br><br>
-            IV. Se modifica el inciso a) del Parágrafo I del artículo 14 del Decreto Supremo N° 1446, del 19 de diciembre de 2012, con el siguiente texto: <b>“a) Fondo de Retiro Policial Solidario”</b>, 
-            <br><br>
-            V. Se modifica el parágrafo III del artículo 14 del Decreto Supremo N° 1446, del 19 de diciembre de 2012, con el siguiente texto: <b><em>“III. Los beneficios señalados en el presente artículo se rigen por los principios de equidad y solidaridad, debiendo ser otorgados a todos los afiliados, aportantes de la Policía Boliviana en sus diferentes sectores y niveles sin ninguna distinción”</em></b>
-            <br><br>
-            VI. Se modifica el artículo 15 del Decreto Supremo N° 1446, del 19 de diciembre de 2012, con el siguiente texto: <i><b>“Articulo 15.- (FONDO DE RETIRO POLICIAL SOLIDARIO). Es el beneficio que brinda protección a los miembros del servicio activo y a sus derechohabientes, mediante el reconocimiento del pago único, con motivo y oportunidad del retiro definitivo de la actividad remunerada dependiente de la Policía Boliviana, el cual será administrado por la MUSERPOL; a ser otorgado en el marco del principio de solidaridad, cuando el retiro se produzca por: </b></i>
-            <br><br>
-            <b><i>a) Jubilación; b) Fallecimiento del titular; c) Retiro forzoso; d) Retiro voluntario.” </i></b>
-            <p class='text-justify m-l-35'>
-            Asimismo, como dispone en su Disposición Transitoria Única. – <b><em>“I. Los tramites ingresados y pendientes hasta la gestión 2015, serán determinados bajo los parámetros establecidos por el Estudio Matemático Actuarial 2016-2020 y pagados con los saldos acumulados hasta la fecha de publicación del presente Decreto Supremo. II. Para realizar el pago referido en el Parágrafo anterior, el Directorio aprobara el Reglamento respectivo y el Estudio Técnico Financiero en un plazo no mayor a sesenta (60) días calendario, a partir de la publicación del presente Decreto Supremo”</em></b> y conforme a la aprobación por el Honorable Directorio de la MUSERPOL, del Estudio Matemático Actuarial 2016-2020, mediante Resolución de Directorio N° 26/2017 de fecha 11 de agosto de 2017 y Reglamentación de Fondo de Retiro Policial Solidario con Resolución de Directorio N° 31/2017 de 24 de agosto de 2017, modificado mediante Resolución de Directorio Nº 36/2017 de 20 de septiembre de 2017, adicionando la DISPOSICIÓN TRANSITORIA SEGUNDA (incluida mediante Resolución de Directorio Nº 36/2017 de 20 de septiembre de 2017), refiere: <em>“Corresponderá la devolución de aportes realizados con prima de 1.85% durante la permanencia en la reserva activa, más el 5% anual de rendimiento, toda vez que estos aportes no forman parte de los parámetros de calificación establecidos en el Estudio Matemático Actuarial 2016 – 2020 considerado por el Decreto Supremo Nº 3231 de 28 de junio de 2017”</em> y mediante nota con cite: DIRECTORIO/MUSERPOL/247/2017 de fecha 31 de octubre de 2017 concluye: <em>“…sin embargo, para no dejar a interpretaciones el Directorio recomienda a la Dirección General Ejecutiva aplicar para el cálculo de los rendimientos a los aportes no calificados en el Beneficio de Fondo de Retiro la opción uno (1) de su propuesta, que señala: <b>la fecha del último aporte efectivizado en el periodo de la disponibilidad.”</b></em> y modificado mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017 en la que se incorporan dos artículos referidos a la <b>“EXCEPCIÓN EN EL TRÁMITE DE FONDO DE RETIRO POR ENFERMEDADES TERMINALES” y a “FONDO DE RETIRO POR REINCORPORACIÓN”,</b> además de una disposición transitoria referida al pago de cuotas parte de trámites que cuenten con Resolución de la Comisión de Beneficios a partir de la puesta en vigencia de la MUSERPOL hasta la emisión de la Resolución de Directorio N° 50/2015.</p>";
+        $past .='<br><br>
+            Conforme a las disposiciones adicionales, en su DISPOSICIÓN ADICIONAL ÚNICA, establece: <i>“A partir de la publicación del presente Decreto Supremo, los aportes de los afiliados a MUSERPOL destinados al seguro de vida establecido por el Decreto Supremo N° 1446, realizados desde mayo de 2013 a la fecha de vigencia de la presente norma, son acreditados a los beneficios de cuota mortuoria y auxilio mortuorio establecido en la presente disposición normativa”</i>';
         $past_footer = "En cumplimiento a la normativa Técnica – Legal vigente y aprobada por el Honorable Directorio de la MUSERPOL, se procedió a realizar el procesamiento del trámite para la otorgación del beneficio de Fondo de Retiro Policial Solidario al solicitante.";
 
 
