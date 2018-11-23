@@ -578,13 +578,13 @@ class ContributionController extends Controller
         $start = explode('-', date('Y-m-d'));              
         $month_start = $start[1];
         $year_start = $start[0];                
-        $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
-        if(!isset($commitment->id))
-        {
-            $commitment = new ContributionCommitment();
-            $commitment->id = 0;
-            $commitment->affiliate_id = $affiliate->id;
-        }
+        // $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
+        // if(!isset($commitment->id))
+        // {
+        //     $commitment = new ContributionCommitment();
+        //     $commitment->id = 0;
+        //     $commitment->affiliate_id = $affiliate->id;
+        // }
         //direccion del afiliado
         if (! sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
@@ -602,7 +602,7 @@ class ContributionController extends Controller
             'cities' => $cities,
             'cities_objects' => $cities_objects,
             'birth_cities' => $birth_cities,                      
-            'commitment'    =>  $commitment,
+        //    'commitment'    =>  $commitment,
             'today_date'         =>  date('Y-m-d'),            
         ];        
          return view('contribution.affiliate_contributions_edit', $data);
