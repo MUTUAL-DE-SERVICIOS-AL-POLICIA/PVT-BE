@@ -988,7 +988,7 @@ class QuotaAidCertificationController extends Controller
         } else {
             $head .= " ";
         }
-        
+
         
         $head .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de <strong class='uppercase'>". $quota_aid->procedure_modality->name ."</strong>,";
         $with_art = false;
