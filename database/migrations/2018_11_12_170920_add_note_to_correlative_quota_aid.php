@@ -14,7 +14,7 @@ class AddNoteToCorrelativeQuotaAid extends Migration
     public function up()
     {
         Schema::table('quota_aid_correlatives', function (Blueprint $table) {
-            $table->text('note')->nullable();
+            // $table->text('note')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddNoteToCorrelativeQuotaAid extends Migration
     public function down()
     {
         Schema::table('quota_aid_correlatives', function (Blueprint $table) {
-            $table->dropColumn(['note']);
+            // $table->dropColumn(['note']);
         });
     }
 }
