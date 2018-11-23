@@ -620,9 +620,9 @@ class QuotaAidCertificationController extends Controller
             $person .= ", como TITULAR FALLECIDA ";
         } else {
             if($affiliate->gender == "F") {
-                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDA":" ");
+                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDA ":" ");
             } else {
-                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO":" ");
+                $person .= ", como TITULAR ".($quota_aid->procedure_modality_id != 14?"FALLECIDO ":" ");
             }            
         }       
         $person .=  "del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." en su modalidad de<strong class='uppercase'> &nbsp;". $quota_aid->procedure_modality->name ."</strong>,";
