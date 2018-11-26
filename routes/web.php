@@ -250,10 +250,11 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('direct_contribution/{direct_contribution_id}/edit_requirements', 'DirectContributionController@editRequirements');
 		Route::get('affiliate/{affiliate}/direct_contribution/create', 'DirectContributionController@create')->name('create_direct_contribution');
 		Route::get('get_all_direct_contribution', 'DirectContributionController@getAllDirectContribution');
-		// Route::post('affiliate/{affiliate}/contribution_process/save_commitment', 'ContributionProcessController@saveCommitment')->name('save_commitment');
 
 		// Contribution process
+		Route::resource('contribution_process', 'ContributionProcessController');
 		Route::post('contribution_process/aid_contribution_save', 'ContributionProcessController@aidContributionSave')->name('aid_contribution_save');
+		Route::post('contribution_process/contribution_save', 'ContributionProcessController@contributionSave')->name('contribution_save');
 
 			//inbox
 		Route::get('inbox', function () {

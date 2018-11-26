@@ -10,7 +10,9 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
-            <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
+            @if ($contribution_process)
+                <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
+            @endif
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite

@@ -233,28 +233,30 @@ class DirectContributionController extends Controller
          !! Agregar id de estado pagado
         */
         $contribution_processes = $directContribution->contribution_processes()->where('procedure_state_id', 6)->get();
-        $contribution_process =  $directContribution->contribution_processes()->where('procedure_state_id', 1)->first();
         $procedure_type = $directContribution->procedure_modality->procedure_type;
-
+        
         /**for validate doc*/
         $user = Auth::user();
-        $rol = Util::getRol();
-        $module = Role::find($rol->id)->module;
-        $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
-        $can_validate = $wf_current_state->id == $contribution_process->wf_state_current_id;
-        $can_cancel = ($contribution_process->user_id == $user->id && $contribution_process->inbox_state == true);
-        /* workflow */
-        $wf_sequences_back = DB::table("wf_states")
-            ->where("wf_states.module_id", "=", $module->id)
-            ->where('wf_states.sequence_number', '<', WorkflowState::find($contribution_process->wf_state_current_id)->sequence_number)
-            ->select(
-                'wf_states.id as wf_state_id',
-                'wf_states.first_shortened as wf_state_name'
-            )
-            ->get();
+        if ($directContribution->hasActiveContributionProcess()) {
+            $contribution_process =  $directContribution->contribution_processes()->where('procedure_state_id', 1)->first();
+            $rol = Util::getRol();
+            $module = Role::find($rol->id)->module;
+            $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
+            $can_validate = $wf_current_state->id == $contribution_process->wf_state_current_id;
+            $can_cancel = ($contribution_process->user_id == $user->id && $contribution_process->inbox_state == true);
+            /* workflow */
+            $wf_sequences_back = DB::table("wf_states")
+                ->where("wf_states.module_id", "=", $module->id)
+                ->where('wf_states.sequence_number', '<', WorkflowState::find($contribution_process->wf_state_current_id)->sequence_number)
+                ->select(
+                    'wf_states.id as wf_state_id',
+                    'wf_states.first_shortened as wf_state_name'
+                )
+                ->get();
+        }
         $data = [
             'direct_contribution'   =>  $directContribution,
-            'contribution_process'   =>  $contribution_process,
+            'contribution_process'   =>  $contribution_process ?? null,
             'contribution_processes'   =>  $contribution_processes,
             'procedure_type'   =>  $procedure_type,
             'affiliate' =>  $affiliate,
@@ -279,9 +281,9 @@ class DirectContributionController extends Controller
             'procedure_types'   =>  $procedure_types,
             'submitted_documents'   =>  $submitted->get(),
 
-            'can_validate' => $can_validate,
-            'can_cancel' => $can_cancel,
-            'wf_sequences_back' => $wf_sequences_back,
+            'can_validate' => $can_validate ?? false,
+            'can_cancel' => $can_cancel ?? false,
+            'wf_sequences_back' => $wf_sequences_back ?? null,
             'user' => $user,
             // 'workflow_records' => $workflow_records,
             // 'first_wf_state' => $first_wf_state,
