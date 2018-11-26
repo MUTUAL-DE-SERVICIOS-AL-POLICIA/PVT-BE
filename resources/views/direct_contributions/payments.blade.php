@@ -15,7 +15,7 @@
                     @endif
                     @if ($procedure_type->id == 7)
                     {{-- PASIVO --}}
-                        @if ( $direct_contribution->contribution_process()->where('procedure_state_id', 1)->first())
+                        @if ( $direct_contribution->contribution_processes()->where('procedure_state_id', 1)->first())
                             <aid-contribution-show
                                 disable="true"
                                 direct-contribution-id="{{ $direct_contribution->id }}"
