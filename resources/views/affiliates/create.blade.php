@@ -190,7 +190,7 @@
                                                             </div>
                                                             <div class="row m-b-md">
                                                                 <div class="col-md-3"><label class="control-label">Estado Civil:</label></div>
-                                                                <div class="col-md-9"> {!! Form::select('civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'], null, ['placeholder'=> 'Seleccione estado civil', 'class' => 'form-control', 'value' => '{{ old("civil_status")}}']) !!}
+                                                                <div class="col-md-9"> {!! Form::select('civil_status', ['C'=>'Casado (a)','S'=>'Soltero(a)','V'=>'Viudo (a)','D'=>'Divorciado (a)'], null, ['placeholder'=> 'Seleccione estado civil', 'class' => 'form-control', 'value' => '{{ old("civil_status")}}']) !!}
                                                                     @if( $errors->has('civil_status') )
                                                                     <div>
                                                                         <i class="fa fa-warning text-danger"></i>
