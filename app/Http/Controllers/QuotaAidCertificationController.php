@@ -1382,8 +1382,10 @@ class QuotaAidCertificationController extends Controller
         
         if(isset($quota_aid_beneficiary->id)) {
             $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiary->quota_aid_legal_guardian_id)->first();
-            $reception .= ($legal_guardian->gender=="M"?" el Sr. ":"la Sra. ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.",".($legal_guardian->gender=="M"?" Apoderado ":" Apoderada ")."Legal ";
-            $reception.= ($applicant->gender=='M'?'del<strong> &nbsp;Sr':'de la Sra.<strong> &nbsp;').' '.Util::fullName($applicant).'</strong> con C.I.<b>'.$applicant->identity_card.' '.$applicant->city_identity_card->first_shortened.'</b> y en favor '.($applicant->gender=="M"?"del mismo":"de la misma");
+            $reception .= ($legal_guardian->gender=="M"?" el Sr. ":"la Sra. ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.",".($legal_guardian->gender=="M"?" Apoderado ":" Apoderada ")."Legal ";            
+            $reception.= ($applicant->gender=='M'?'del<strong> &nbsp;Sr':'de la Sra.<strong> &nbsp;').' '.Util::fullName($applicant).'</strong> con C.I.<b>'.$applicant->identity_card.' '.$applicant->city_identity_card->first_shortened.'</b>. en calidad de '.$applicant->kinship->name;//.($applicant->gender=="M"?"del mismo":"de la misma");
+            $reception.= ($affiliate->gender=='M'?' del afiliado fallecido: ':' de la afiliada fallecida: ');
+            $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>';            
         } else {            
             if($quota_aid->procedure_modality_id != 14) {
                 $reception.= ($applicant->gender=='M'?'el Sr. ':'la Sra. ').' <b>'.Util::fullName($applicant).'</b> con C.I.<b>'.$applicant->identity_card.' '.$applicant->city_identity_card->first_shortened.'</b>, en calidad de '.$applicant->kinship->name." ";
