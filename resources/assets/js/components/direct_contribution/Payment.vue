@@ -11,10 +11,10 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <strong> TOTAL a pagar:</strong>&nbsp;
+                <strong> TOTAL cobrado:</strong>&nbsp;
             </div>
             <div class="col-md-4">                        
-                <input type="text" v-model="total" class="form-control" :disabled='!editing'>
+                <input type="text" v-model="total" class="form-control" :disabled='!editing' v-money>
             </div>                    
         </div>
         <br>
@@ -29,7 +29,7 @@
                 <strong v-if="payment_type==1"> Efectivo:</strong>
             </div>
             <div class="col-md-4">
-                <input v-if="payment_type==1" type="text" class="form-control" v-model="paid" :disabled='!editing'>
+                <input v-if="payment_type==1" type="text" class="form-control" v-model="paid" :disabled='!editing' v-money>
             </div>
         </div>
         <br>        
@@ -44,7 +44,7 @@
                     <strong v-if="payment_type==1"> Cambio:</strong>&nbsp;
                 </div>
             <div class="col-md-4">                
-                <input v-if="payment_type==1" type="text" v-model="getExchange" class="form-control" :disabled='true'>
+                <input v-if="payment_type==1" type="text" v-model="getExchange" class="form-control" :disabled='true' v-money>
             </div>
         </div>    
     
@@ -57,9 +57,13 @@
     </div>         
 </template>
 <script>
+    import {
+        parseMoney,        
+    }
+    from "../../helper.js";
     export default {
           props:[
-            'direct_contribution',
+            'contribution_process',
         ],
         data(){
             return{
@@ -70,26 +74,32 @@
                 bank_pay_number: '',
                 paid_amount: 0,
                 exchange: 0,
-                total: 50.09,    
+                total: this.contribution_process.total,    
             }
         },
         created(){
             console.log("FORM");
-               console.log(this.form);
+               console.log(this.contribution_process);
         },
         methods:{
             store: function(){
-                axios.post('/contribution_save',{aportes,total:this.total,afid:this.afid,paid:parseMoney(this.paid),bank:this.bank,bank_pay_number:this.bank_pay_number})
-                .then(response => {                  
+                process = this.contribution_process;
+                axios.post('/contribution_process/'+this.contribution_process.id+'/contribution_pay',                
+                {   
+                    process,
+                    total:this.total,                    
+                    paid:parseMoney(this.paid),
+                    bank:this.bank,
+                    bank_pay_number:this.bank_pay_number})
+                .then(response => {
                 this.enableDC();
                 var i;});
             },            
-
         },
         computed: {
             getExchange: function() {
                 console.log('calculatin exchagne');
-                this.exchage = this.paid - this.total;
+                this.exchage = parseMoney(this.paid) - parseMoney(this.total);
                 return this.exchage;
             }
         }

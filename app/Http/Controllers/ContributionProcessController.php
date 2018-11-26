@@ -20,9 +20,11 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\Kinship;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Contribution\ContributionCommitment;
+use Muserpol\Models\Contribution\DirectContribution;
 use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
 use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\Voucher;
 class ContributionProcessController extends Controller
 {
     public function index()
@@ -222,5 +224,21 @@ class ContributionProcessController extends Controller
     {
         $contribution_process = $this->store($request);
         Log::info($request->all());
+    }
+
+    public function contributionPay(Request $request){
+        $direct_contribution = DirectContribution::find($request->process['direct_contribution_id']);
+        
+        $voucher = new Voucher();
+        $voucher->user_id = Auth::user()->id;
+        $voucher->affiliate_id = $direct_contribution->affiliate_id;
+        $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
+        $voucher->total = $request->process['total'];
+        $voucher->payment_date = Carbon::now();
+        $voucher->code = "1";
+        $voucher->paid_amount = $request->total;
+        $voucher->bank = $request->bank;
+        $voucher->bank_pay_number = $request->bank_pay_number;
+        $voucher->save();                      
     }
 }

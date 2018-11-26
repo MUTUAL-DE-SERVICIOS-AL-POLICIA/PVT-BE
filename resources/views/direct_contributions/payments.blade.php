@@ -45,7 +45,7 @@
                 <div class="ibox-title">
                     <h2>Cobro</h2>                                            
                         <direct-contribution-payment
-                            :direct_contribution="{{ $direct_contribution }}"                                
+                            :contribution_process="{{ $contribution_process }}"                                
                         ></direct-contribution-payment>                    
                 </div>
             </div>
