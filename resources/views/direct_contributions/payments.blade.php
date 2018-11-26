@@ -5,13 +5,29 @@
                 <div class="ibox-title">
                     <h2>Datos de la calificacion</h2>
                     @if ($procedure_type->id == 6)
-                        <contribution-create
-                            :afid="{{ $affiliate->id }}"
-                            {{-- :last_quotable="{{$last_quotable}}"
-                            :commitment="{{ $commitment }}"
-                            :is_regional="`{{ $is_regional }}`" --}}
-                            >
-                        </contribution-create>
+                        @if ($direct_contribution->hasActiveContributionProcess())
+                            <contribution-edit
+                                :disable="true"
+                                :direct-contribution-id="{{ $direct_contribution->id }}"
+                                :affiliate-id="{{ $affiliate->id }}"
+                                :contributions="{{ $contribution_process->contributions }}"
+                                :total="{{ $contribution_process->total }}"
+                            ></contribution-edit>
+                            @if (Util::getRol()->id == 62)
+                                <div class="row text-center">
+                                    <button class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                                </div>
+                            @endif
+                        @else
+                            <contribution-create
+                                :afid="{{ $affiliate->id }}"
+                                :direct-contribution-id="{{ $direct_contribution->id }}"
+                                {{-- :is_regional="`{{ $is_regional }}`" --}}
+                                {{-- :last_quotable="{{$last_quotable}}"
+                                :commitment="{{ $commitment }}" --}}
+                                >
+                            </contribution-create>
+                        @endif
                     @endif
                     @if ($procedure_type->id == 7)
                     {{-- PASIVO --}}
@@ -21,7 +37,7 @@
                                 :direct-contribution-id="{{ $direct_contribution->id }}"
                                 :affiliate-id="{{ $affiliate->id }}"
                                 :aid-contributions="{{ ($contribution_process->aid_contributions) }}"
-                                :total="{{ $contribution_process->aid_contributions()->sum('total') }}"
+                                :total="{{ $contribution_process->total }}"
                             ></aid-contribution-edit>
                             @if (Util::getRol()->id == 62)
                                 <div class="row text-center">

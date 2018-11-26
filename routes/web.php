@@ -255,7 +255,9 @@ Route::group(['middleware' => ['auth']], function () {
 		// Route::post('affiliate/{affiliate}/contribution_process/save_commitment', 'ContributionProcessController@saveCommitment')->name('save_commitment');
 
 		// Contribution process
+		Route::resource('contribution_process', 'ContributionProcessController');
 		Route::post('contribution_process/aid_contribution_save', 'ContributionProcessController@aidContributionSave')->name('aid_contribution_save');
+		Route::post('contribution_process/contribution_save', 'ContributionProcessController@contributionSave')->name('contribution_save');
 
 			//inbox
 		Route::get('inbox', function () {

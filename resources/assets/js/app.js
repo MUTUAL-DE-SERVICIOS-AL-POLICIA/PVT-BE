@@ -371,6 +371,7 @@ Vue.component("direct-contribution-step2-contributor", require("./components/dir
 Vue.component("direct-contribution-step3-letter", require("./components/direct_contribution/Step3Letter.vue"));
 Vue.component("direct-contribution-payment", require("./components/direct_contribution/Payment.vue"));
 Vue.component("aid-contribution-edit", require("./components/direct_contribution/AidContributionEdit.vue"));
+Vue.component("contribution-edit", require("./components/direct_contribution/ContributionEdit.vue"));
 
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));

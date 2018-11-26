@@ -25,6 +25,8 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
 use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Voucher;
+use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\Contribution\Reimbursement;
 class ContributionProcessController extends Controller
 {
     public function index()
@@ -33,14 +35,15 @@ class ContributionProcessController extends Controller
     }
     public function show(ContributionProcess $contribution_process)
     {
-        $affiliate = $contribution_process->affiliate;
-        $cities = City::all();
-        $data = [
-            'affiliate' => $affiliate,
-            'cities' => $cities,
-            'contribution_process' => $contribution_process,
-        ];
-        return view('contribution_processes.show', $data);
+        return redirect()->route('direct_contribution.show', $contribution_process->direct_contribution->id);
+        // $affiliate = $contribution_process->affiliate;
+        // $cities = City::all();
+        // $data = [
+        //     'affiliate' => $affiliate,
+        //     'cities' => $cities,
+        //     'contribution_process' => $contribution_process,
+        // ];
+        // return view('contribution_processes.show', $data);
     }
     public function create(Affiliate $affiliate)
     {
@@ -161,6 +164,7 @@ class ContributionProcessController extends Controller
          //*********END VALIDATOR************//
         $result = [];
         $ids = [];
+        $total = 0;
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte = (object)$ap;
@@ -187,6 +191,7 @@ class ContributionProcessController extends Controller
                 //     'total' => $aid_contribution->total,
                 //     'month_year' => $aporte->year . '-' . $aporte->month . '-01',
                 // ]);
+                $total = $total + $aid_contribution->total;
                 array_push($ids, $aid_contribution->id);
             }
         }
@@ -206,14 +211,10 @@ class ContributionProcessController extends Controller
         // $voucher->code = $code;
         // $voucher->save();
 
-
-        $data = [
-            // 'aid_contribution' => $result,
-            // 'aid_contributions' => $ids,
-            // 'voucher_id' => $voucher->id,s
-            // 'affiliate_id' => $affiliate->id,
-        ];
         $contribution_process->aid_contributions()->attach($ids);
+        $contribution_process->total = $total;
+        $contribution_process->save();
+
         $data = [
             'contribution_process' => $contribution_process,
             'aid_contributions' => $contribution_process->aid_contributions,
@@ -223,7 +224,148 @@ class ContributionProcessController extends Controller
     public function contributionSave(Request $request)
     {
         $contribution_process = $this->store($request);
-        Log::info($request->all());
+        $commitment = $contribution_process->direct_contribution;
+        $affiliate = $commitment->affiliate;
+
+        //*********START VALIDATOR************//
+        $rules = [];
+        $has_commitment = true;
+        $datediff = 0;
+        if (!isset($commitment->id)){
+            $has_commitment = false;
+        }else {
+            $commision_date = strtotime($commitment->commision_date);
+            $commtiment_date = strtotime($commitment->commitment_date);
+            $datediff = $commtiment_date - $commision_date;
+            $datediff = round($datediff / (60 * 60 * 24));
+        }
+
+        $biz_rules = [
+            'has_commitment' => $has_commitment ? '' : 'required',
+            'valid_commitment' => $datediff > 90 ? 'required' : ''
+        ];
+
+        foreach ($request->aportes as $key => $ap) {
+            $aporte = (object)$ap;
+            $cont = Contribution::where('affiliate_id', $request->afid)->where('month_year', $aporte->year . '-' . $aporte->month . '-01')->first();
+            $has_contribution = false;
+            if (isset($cont->id))
+                $has_contribution = true;
+
+            $biz_rules = [
+                'has_contribution.' . $key => $has_contribution ? 'required' : '',
+            ];
+
+            $rules = array_merge($rules, $biz_rules);
+                //$aporte=(object)$ap;
+            $array_rules = [
+                'aportes.' . $key . '.sueldo' => 'required|numeric|min:0',
+                'aportes.' . $key . '.fr' => 'required|numeric',
+                'aportes.' . $key . '.cm' => 'required|numeric',
+                'aportes.' . $key . '.subtotal' => 'required|numeric',
+                'aportes.' . $key . '.interes' => 'required|numeric',
+                'aportes.' . $key . '.year' => 'required|numeric|min:1700',
+                'aportes.' . $key . '.month' => 'required|numeric|min:1|max:12',
+            ];
+            $rules = array_merge($rules, $array_rules);
+        }
+
+        $rules = array_merge($rules, $biz_rules);
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 406);
+        }
+         //*********END VALIDATOR************//
+        // Se guarda voucher fecha, total 1 reg
+        // $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
+        // if (!isset($voucher_code->id))
+        //     $code = Util::getNextCode(""); 
+        // else
+        //     $code = Util::getNextCode($voucher_code->code);
+
+        // $voucher = new Voucher();
+        // $voucher->user_id = Auth::user()->id;
+        // $voucher->affiliate_id = $request->afid;
+        // $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
+        // $voucher->total = $request->total;
+        // $voucher->payment_date = Carbon::now();
+        // $voucher->code = $code;
+        // $voucher->paid_amount = $request->paid;
+        // $voucher->bank = $request->bank;
+        // $voucher->bank_pay_number = $request->bank_pay_number;
+        // $voucher->save();
+
+        $total = 0;
+        $contribution_ids = [];
+        foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
+        {
+            $aporte = (object)$ap;
+            if ($aporte->type == 'R') {
+                $contribution = new Reimbursement();
+                $contribution->user_id = Auth::user()->id;
+                $contribution->affiliate_id = $affiliate->id;
+                $contribution->month_year = $aporte->year . '-' . $aporte->month . '-01';
+                $contribution->type = "Directo";
+                $contribution->base_wage = $aporte->sueldo;
+                $contribution->seniority_bonus = 0;
+                $contribution->study_bonus = 0;
+                $contribution->position_bonus = 0;
+                $contribution->border_bonus = 0;
+                $contribution->east_bonus = 0;
+                $contribution->public_security_bonus = 0;
+                $contribution->gain = $aporte->sueldo;
+                $contribution->payable_liquid = 0;
+                $contribution->quotable = $aporte->sueldo;
+                $contribution->retirement_fund = $aporte->fr;
+                $contribution->mortuary_quota = $aporte->cm;
+                $contribution->total = $aporte->subtotal;
+                $contribution->interest = $aporte->interes;
+                $contribution->subtotal = 0;
+                $contribution->save();
+                $contribution->type = "R";
+            } else {
+                $contribution = new Contribution();
+                $contribution->user_id = Auth::user()->id;
+                $contribution->affiliate_id = $affiliate->id;
+                $contribution->degree_id = $affiliate->degree_id;
+                $contribution->unit_id = $affiliate->unit_id;
+                $contribution->breakdown_id = $affiliate->breakdown_id;
+                $contribution->category_id = $affiliate->category_id;
+                $contribution->month_year = $aporte->year . '-' . $aporte->month . '-01';
+                $contribution->type = 'Directo';
+                $contribution->base_wage = $aporte->sueldo;
+                $contribution->seniority_bonus = 0;
+                $contribution->study_bonus = 0;
+                $contribution->position_bonus = 0;
+                $contribution->border_bonus = 0;
+                $contribution->east_bonus = 0;
+                $contribution->public_security_bonus = 0;
+                $contribution->deceased = 0;
+                $contribution->natality = 0;
+                $contribution->lactation = 0;
+                $contribution->prenatal = 0;
+                $contribution->subsidy = 0;
+                $contribution->gain = $aporte->sueldo;
+                $contribution->payable_liquid = 0;
+                $contribution->quotable = $aporte->sueldo;
+                $contribution->retirement_fund = $aporte->fr;
+                $contribution->mortuary_quota = $aporte->cm;
+                $contribution->total = $aporte->subtotal;
+                $contribution->interest = $aporte->interes;
+                $contribution->breakdown_id = 3;
+                $contribution->save();
+            }
+            $total = $total + $contribution->total;
+            array_push($contribution_ids, $contribution->id);
+        }
+        $contribution_process->contributions()->attach($contribution_ids);
+        $contribution_process->total = $total;
+        $contribution_process->save();
+        $data = [
+            'contribution_process' => $contribution_process,
+            'contributions' => $contribution_process->contributions,
+        ];
+        return $data;
     }
 
     public function contributionPay(Request $request){
