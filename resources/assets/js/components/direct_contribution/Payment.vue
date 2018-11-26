@@ -14,7 +14,7 @@
                 <strong> TOTAL a pagar:</strong>&nbsp;
             </div>
             <div class="col-md-4">                        
-                <input type="text" v-model="total" class="form-control" :disabled='!editing' @keyup="getExchange">
+                <input type="text" v-model="total" class="form-control" :disabled='!editing'>
             </div>                    
         </div>
         <br>
@@ -29,7 +29,7 @@
                 <strong v-if="payment_type==1"> Efectivo:</strong>
             </div>
             <div class="col-md-4">
-                <input v-if="payment_type==1" type="text" class="form-control" v-model="paid" :disabled='!editing' @keyup="getExchange">
+                <input v-if="payment_type==1" type="text" class="form-control" v-model="paid" :disabled='!editing'>
             </div>
         </div>
         <br>        
@@ -44,14 +44,13 @@
                     <strong v-if="payment_type==1"> Cambio:</strong>&nbsp;
                 </div>
             <div class="col-md-4">                
-                <input v-if="payment_type==1" type="text" v-model="exchange" class="form-control" :disabled='true'>
+                <input v-if="payment_type==1" type="text" v-model="getExchange" class="form-control" :disabled='true'>
             </div>
         </div>    
     
         <div v-show="editing">
-            <div class="text-center">
-                <!-- <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button> -->
-                <button class="btn btn-primary" type="button" @click="update"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+            <div class="text-center">                
+                <button class="btn btn-primary" type="button" @click="store"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
             </div>
         </div>
         <br>        
@@ -79,14 +78,20 @@
                console.log(this.form);
         },
         methods:{
-            update: function(){
+            store: function(){
+                axios.post('/contribution_save',{aportes,total:this.total,afid:this.afid,paid:parseMoney(this.paid),bank:this.bank,bank_pay_number:this.bank_pay_number})
+                .then(response => {                  
+                this.enableDC();
+                var i;});
+            },            
 
-            },
+        },
+        computed: {
             getExchange: function() {
                 console.log('calculatin exchagne');
-                this.exchage = this.paid - this.total;                
+                this.exchage = this.paid - this.total;
+                return this.exchage;
             }
-
         }
     }
 </script>
