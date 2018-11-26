@@ -10,7 +10,7 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
-            {{-- <correlative doc-id="{{ $direct_contribution->id }}" wf-state-id="{{ $direct_contribution->wf_state_current_id }}" type="retFun"></correlative> --}}
+            <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
@@ -20,11 +20,11 @@
         </div>
         <div class="pull-right">
             <div class="form-inline">
-                {{-- @if ($can_validate)
-                <inbox-send-back-button-ret-fun :wf-sequence-back-list="{{ $wf_sequences_back }}" :doc-id="{{$direct_contribution->id}}" :wf-current-state-name="`{{$direct_contribution->wf_state->name}}`"
+                @if ($can_validate)
+                <inbox-send-back-button-ret-fun :wf-sequence-back-list="{{ $wf_sequences_back }}" :doc-id="{{$contribution_process->id}}" :wf-current-state-name="`{{$contribution_process->wf_state->name}}`"
                     type="retFun"></inbox-send-back-button-ret-fun>
-                <sweet-alert-modal inline-template :doc-id="{{$direct_contribution->id}}" :inbox-state="{{$direct_contribution->inbox_state ? 'true' : 'false'}}"
-                    :doc-user-id="{{$direct_contribution->user_id}}" :auth-id="{{ $user->id}}" type="retFun">
+                <sweet-alert-modal inline-template :doc-id="{{$contribution_process->id}}" :inbox-state="{{$contribution_process->inbox_state ? 'true' : 'false'}}"
+                    :doc-user-id="{{$contribution_process->user_id}}" :auth-id="{{ $user->id}}" type="contributionProcess">
                     <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                         <div style="display:inline-block" v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
                             <button class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
@@ -34,7 +34,7 @@
                         </div>
                     </transition>
                 </sweet-alert-modal>
-                @endif --}}
+                @endif
             </div>
         </div>
     </div>

@@ -71,7 +71,7 @@
                                             <input type="text"  v-model = "con.dignity_rent" v-money @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                         </td>
                                         <td>
-                                            <input type="text" v-model = "con.auxilio_mortuorio" disabled v-money class="form-control">
+                                            <input type="text" v-model = "con.mortuary_aid" disabled v-money class="form-control">
                                         </td>
                                         <td>
                                             <input type="text" v-model = "con.interes" disabled v-money class="form-control">
@@ -130,7 +130,7 @@
                                                 <input type="text"  v-model = "con.dignity_rent" v-money @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                             </td>
                                             <td>
-                                                <input type="text" v-model = "con.auxilio_mortuorio" disabled v-money class="form-control">
+                                                <input type="text" v-model = "con.mortuary_aid" disabled v-money class="form-control">
                                             </td>
                                             <td>
                                                 <input type="text" v-model = "con.interes" disabled v-money class="form-control">
@@ -214,7 +214,7 @@
                                 <input type="text" v-model = "reim_pay.amount" v-money disabled class="form-control" >
                             </td>
                             <td>
-                                <input type="text"  v-model = "reim_pay.auxilio_mortuorio" v-money disabled class="form-control">
+                                <input type="text"  v-model = "reim_pay.mortuary_aid" v-money disabled class="form-control">
                             </td>                            
                             <td>
                                 <input type="text"  v-model = "reim_pay.subtotal" v-money disabled class="form-control">
@@ -337,7 +337,7 @@ export default {
                 var new_info = {
                     'month_year' : date.format('MM-YYYY'),
                     'amount'    :   parseFloat(subtotal).toFixed(2),
-                    'auxilio_mortuorio'   :   aid_amount,                    
+                    'mortuary_aid'   :   aid_amount,                    
                     'subtotal'  :   parseFloat(aid_amount).toFixed(2),
                 };
                 this.reimbursement_pays.push(new_info);                                 
@@ -350,7 +350,7 @@ export default {
                     var new_info = {
                         'month_year' : this.contributions[i].monthyear,
                         'amount'    :   parseFloat(subtotal).toFixed(2),
-                        'auxilio_mortuorio'   :   aid_amount,
+                        'mortuary_aid'   :   aid_amount,
                         'subtotal'  :   parseFloat(aid_amount).toFixed(2),
                     };                
                     this.reimbursement_pays.push(new_info);                            
@@ -379,9 +379,9 @@ export default {
              this.ufv = parseFloat(response.data[0].replace(",", "."));
                 if(this.ufv < 0)
                     this.ufv = 0;
-              con.auxilio_mortuorio = ((con.sueldo - con.dignity_rent) * response.data[1].mortuary_aid/100).toFixed(2);
+              con.mortuary_aid = ((con.sueldo - con.dignity_rent) * response.data[1].mortuary_aid/100).toFixed(2);
               con.interes = parseFloat(this.ufv).toFixed(2);
-              con.subtotal = (parseFloat(con.auxilio_mortuorio) + parseFloat(con.interes)).toFixed(2);
+              con.subtotal = (parseFloat(con.mortuary_aid) + parseFloat(con.interes)).toFixed(2);
               console.log(con.subtotal);
               this.show_spinner = false;              
               this.SumTotal();                                            
@@ -413,7 +413,7 @@ export default {
       this.contributions = this.contributions.filter(item => {
         return (
           item.sueldo != 0 &&
-          item.auxilio_mortuorio != 0 &&
+          item.mortuary_aid != 0 &&
           item.subtotal != 0
         );
       });
@@ -488,7 +488,7 @@ export default {
         item.sueldo = parseMoney(item.sueldo);
         item.dignity_rent = parseMoney(item.dignity_rent);
         return (          
-          item.sueldo != 0 && item.auxilio_mortuorio != 0 && item.subtotal != 0
+          item.sueldo != 0 && item.mortuary_aid != 0 && item.subtotal != 0
         );
       });      
        if (this.contributions.length > 0) {

@@ -30,4 +30,8 @@ class DirectContribution extends Model
     {
         return $this->belongsTo("Muserpol\Models\ProcedureModality");
     }
+    public function hasActiveContributionProcess()
+    {
+        return !! $this->contribution_processes()->where('procedure_state_id', 1)->first();
+    }
 }
