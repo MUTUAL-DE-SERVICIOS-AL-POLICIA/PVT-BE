@@ -1468,7 +1468,7 @@ class QuotaAidCertificationController extends Controller
                 $body_resolution .=($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"del beneficiario ":"de la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??'Sin extencion')."., en el siguiente tenor: <br><br>";
             }
         } else {                        
-            $body_resolution .=($affiliate->gender=='M'?"del beneficiario de la <strong> &nbsp;Sra. ":"de la beneficiaria del <strong> &nbsp;Sr. ").Util::fullName($affiliate->spouse()->first())."</strong> con C.I. N° <strong>".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion').".</strong>, en el siguiente tenor: <br><br>";
+            $body_resolution .=($applicant->gender=='M'?"del beneficiario de la <strong> &nbsp;Sra. ":"de la beneficiaria del <strong> &nbsp;Sr. ").Util::fullName($affiliate->spouse()->first())."</strong> con C.I. N° <strong>".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion').".</strong>, en el siguiente tenor: <br><br>";
         }        
         $reserved = false;
         if($quota_aid->procedure_modality_id != 14) {
@@ -1489,13 +1489,13 @@ class QuotaAidCertificationController extends Controller
                     $body_resolution .='Menor ';
                 }
                 $body_resolution .= $beneficiary->fullName();
-                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state) {
+                if(false && date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state) {
                     $body_resolution .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if($beneficiary->identity_card)
                 $body_resolution .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");
                 $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
-                if(false && isset($beneficiary_advisor->id))
+                if(isset($beneficiary_advisor->id))
                 {
                     $advisor = QuotaAidAdvisor::where('id',$beneficiary_advisor->quota_aid_advisor_id)->first();
                     $body_resolution .= ", a través de su tutor".($advisor->gender=='M'?'':'a')." natural ".($advisor->gender=='M'?'Sr.':'Sra.')." ".Util::fullName($advisor)." con C.I. N°".$advisor->identity_card." ".($advisor->city_identity_card->first_shortened??"Sin Extencion").".";

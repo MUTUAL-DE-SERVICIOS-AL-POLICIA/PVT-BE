@@ -109,7 +109,7 @@
                             </div>
                             <div class="row m-b-md">
                                 <div class="col-md-3"><label class="control-label">Estado Civil:</label></div>
-                                <div class="col-md-9"> {!! Form::select('civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'], null, ['placeholder'=> 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'form.civil_status',':disabled'=>'!editing' ]) !!}</div>
+                                <div class="col-md-9"> {!! Form::select('civil_status', ['C'=>'Casado (a)','S'=>'Soltero (a)','V'=>'Viudo (a)','D'=>'Divorciado (a)'], null, ['placeholder'=> 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'form.civil_status',':disabled'=>'!editing' ]) !!}</div>
                             </div>
 
                             <div class="row m-b-md">
