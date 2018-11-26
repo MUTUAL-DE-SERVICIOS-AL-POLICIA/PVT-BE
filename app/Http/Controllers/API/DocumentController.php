@@ -154,7 +154,7 @@ class DocumentController extends Controller
                 $documents = ContributionProcess::with('tags')->select(
                     DB::raw(
                         "
-                        contribution_processes.id as id,
+                        direct_contributions.id as id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
                         contribution_processes.code as code,
@@ -162,7 +162,7 @@ class DocumentController extends Controller
                         contribution_processes.date as reception_date,
                         contribution_processes.workflow_id as workflow_id,
                         procedure_modalities.name as modality,
-                        concat('/contribution_process/', contribution_processes.id) as path
+                        concat('/direct_contribution/', direct_contributions.id) as path
                         "
                     )
                 )
@@ -354,7 +354,7 @@ class DocumentController extends Controller
                 $documents = ContributionProcess::with('tags')->select(
                     DB::raw(
                         "
-                        contribution_processes.id as id,
+                        direct_contributions.id as id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
                         contribution_processes.code as code,
@@ -362,7 +362,7 @@ class DocumentController extends Controller
                         procedure_modalities.name as modality,
                         contribution_processes.date as reception_date,
                         contribution_processes.workflow_id as workflow_id,
-                        concat('/contribution_process/', contribution_processes.id) as path,
+                        concat('/direct_contribution/', direct_contributions.id) as path,
                         false as status
                         "
                     )
