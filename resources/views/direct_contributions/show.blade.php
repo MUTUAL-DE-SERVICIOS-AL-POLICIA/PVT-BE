@@ -81,22 +81,22 @@
         <div class="tab-content">
             <div id="tab-ret-fun" class="tab-pane active">
                 {{-- @can('update',$direct_contribution) --}}
-                {{-- <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
+                <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
                     :procedure_modality="{{$direct_contribution->procedure_modality}}" :states="{{ $states }}" inline-template>
                     @include('direct_contributions.info', ['direct_contribution'=>$direct_contribution,'cities'=>$birth_cities])
-                </direct-contribution-info> --}}
+                </direct-contribution-info>
                 {{-- @endcan --}}
             </div>
             <div id="tab-affiliate" class="tab-pane">
-                {{-- <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
+                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
-                </affiliate-show> --}}
+                </affiliate-show>
 
             </div>            
             <div id="tab-spouse-info" class="tab-pane">
-                {{-- <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $birth_cities }}" inline-template>
+                <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $birth_cities }}" inline-template>
                     @include('spouses.spouse_personal_information', ['spouse'=>$spouse])
-                </spouse-show> --}}
+                </spouse-show>
             </div>
             <div id="tab-contributions" class="tab-pane">
                 @if($direct_contribution->procedure_modality->procedure_type_id == 6)
@@ -122,7 +122,7 @@
                 </div>
             <div id="tab-summited-document" class="tab-pane">                
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)  --}}
-                {{-- <direct-contribution-step1-requirements-edit 
+                <direct-contribution-step1-requirements-edit 
                     :direct_contribution="{{ $direct_contribution }}" 
                     :modalities="{{ $modalities }}" 
                     :requirements="{{ $requirements }}"                    
@@ -131,7 +131,7 @@
                     :submitted="{{ json_encode($submitted_documents) }}"
                     :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
                     @include('direct_contributions.step1_requirements_edit')
-                </direct_contribution-step1-requirements-edit> --}}
+                </direct_contribution-step1-requirements-edit>
                 {{-- @endcan --}}
             </div>
             <div id="tab-payment" class="tab-pane">
