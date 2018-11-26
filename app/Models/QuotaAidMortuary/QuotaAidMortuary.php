@@ -91,6 +91,14 @@ class QuotaAidMortuary extends Model
     {
         return $this->procedure_modality->procedure_type_id == 4;
     }
+    public function getCorrelative($area_id)
+    {
+        return QuotaAidCorrelative::where('quota_aid_mortuary_id', $this->id)->where('wf_state_id', $area_id)->first()->code ?? 'SIN NÚMERO';
+    }
+    public function getApplicant()
+    {
+        return $this->quota_aid_beneficiaries()->where('type', 'like','S')->first();
+    }
     public function getDeceased()
     {
         if ( $this->isQuota() ) {
