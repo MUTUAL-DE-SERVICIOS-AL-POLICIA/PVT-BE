@@ -15,13 +15,19 @@
                     @endif
                     @if ($procedure_type->id == 7)
                     {{-- PASIVO --}}
-                        @if ( $direct_contribution->contribution_process()->where('procedure_state_id', 1)->first())
-                            <aid-contribution-show
-                                disable="true"
-                                direct-contribution-id="{{ $direct_contribution->id }}"
-                                affiliate-id="{{ $affiliate->id }}"
-                                aid-contribution="{{ json_encode($contribution_process->ai_contributions) }}"
-                            ></aid-contribution-show>
+                        @if ( $direct_contribution->hasActiveContributionProcess())
+                            <aid-contribution-edit
+                                :disable="true"
+                                :direct-contribution-id="{{ $direct_contribution->id }}"
+                                :affiliate-id="{{ $affiliate->id }}"
+                                :aid-contributions="{{ ($contribution_process->aid_contributions) }}"
+                                :total="{{ $contribution_process->aid_contributions()->sum('total') }}"
+                            ></aid-contribution-edit>
+                            @if (Util::getRol()->id == 62)
+                                <div class="row text-center">
+                                    <button class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                                </div>
+                            @endif
                         @else
                             <aid-contribution-create
                                 direct-contribution-id="{{ $direct_contribution->id }}"

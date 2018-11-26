@@ -513,6 +513,10 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::get('get_next_area_code_quota_aid/{quota_aid_id}', function ($quota_aid_id) {
 			return Util::getNextAreaCodeQuotaAid($quota_aid_id, false);
 		});
+		Route::get('get_next_area_code_contribution_process/{contribution_process_id}', function ($contribution_process_id) {
+			return \Muserpol\Models\RetirementFund\RetFunCorrelative::find(1);
+			return Util::getNextAreaCodeQuotaAid($contribution_process_id, false);
+		});
 	});
 });
 

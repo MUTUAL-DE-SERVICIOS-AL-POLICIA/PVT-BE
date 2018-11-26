@@ -177,6 +177,7 @@ class ContributionProcessController extends Controller
                     $aid_contribution->quotable = $aporte->sueldo;
                 }
                 $aid_contribution->rent = $aporte->sueldo;
+                $aid_contribution->mortuary_aid = $aporte->mortuary_aid;
                 $aid_contribution->total = $aporte->subtotal;
                 $aid_contribution->interest = $aporte->interes;
                 $aid_contribution->save();
