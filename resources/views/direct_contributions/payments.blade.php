@@ -42,6 +42,18 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Cobro</h2>                                            
+                        <direct-contribution-payment
+                            :direct_contribution="{{ $direct_contribution }}"                                
+                        ></direct-contribution-payment>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
                 <div class="ibox-content forum-container">
                     <div class="row">
                         <table class="table table-stripped toggle-arrow-tiny">
@@ -68,7 +80,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
 </div>
 
 @section('scripts')
