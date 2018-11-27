@@ -264,6 +264,8 @@ export default {
       refresh() {
           axios.get(`/affiliate/${this.afid}/get_month_contributions/${moment(this.dateEnd, 'DD/MM/YYYY').format('YYYY-MM-DD')}`)
           .then(response =>{
+              console.log("response contribution");
+              console.log(response.data);
               this.contributions = response.data
           }).catch(error =>{
               console.log(error)

@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Datos de la calificacion</h2>
+                    <h2>Liquidaci&oacute;n</h2>
                     @if ($procedure_type->id == 6)
                         @if ($direct_contribution->hasActiveContributionProcess())
                             <contribution-edit
@@ -55,6 +55,7 @@
             </div>
         </div>
     </div>
+    @if(isset($contribution_process->id) && $contribution_process->wf_state_current_id == 55)
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
@@ -67,6 +68,7 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">

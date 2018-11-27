@@ -44,7 +44,7 @@
                     <strong v-if="payment_type==1"> Cambio:</strong>&nbsp;
                 </div>
             <div class="col-md-4">                
-                <input v-if="payment_type==1" type="text" v-model="getExchange" class="form-control" :disabled='true' v-money>
+                <input v-if="payment_type==1" v-money='true' type="text" v-model="getExchange" class="form-control" :disabled='true'>
             </div>
         </div>    
     
@@ -58,7 +58,8 @@
 </template>
 <script>
     import {
-        parseMoney,        
+        parseMoney,
+        moneyInputMaskAll,
     }
     from "../../helper.js";
     export default {
@@ -92,14 +93,15 @@
                     bank:this.bank,
                     bank_pay_number:this.bank_pay_number})
                 .then(response => {
+                    this.editing = false;
                 this.enableDC();
                 var i;});
             },            
         },
         computed: {
-            getExchange: function() {
-                console.log('calculatin exchagne');
-                this.exchage = parseMoney(this.paid) - parseMoney(this.total);
+            getExchange: function() {                               
+                this.exchage = parseMoney(this.paid)-parseMoney(this.total);                
+                this.exchage = Math.round(this.exchage * 100) / 100
                 return this.exchage;
             }
         }

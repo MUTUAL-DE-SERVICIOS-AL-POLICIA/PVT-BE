@@ -370,14 +370,14 @@ class ContributionProcessController extends Controller
 
     public function contributionPay(Request $request){
         $direct_contribution = DirectContribution::find($request->process['direct_contribution_id']);
-        
+        $last_code = Util::getLastCode('Voucher');
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $direct_contribution->affiliate_id;
         $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
         $voucher->total = $request->process['total'];
         $voucher->payment_date = Carbon::now();
-        $voucher->code = "1";
+        $voucher->code = Util::getNextCode($last_code);
         $voucher->paid_amount = $request->total;
         $voucher->bank = $request->bank;
         $voucher->bank_pay_number = $request->bank_pay_number;

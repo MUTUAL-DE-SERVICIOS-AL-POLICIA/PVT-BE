@@ -253,7 +253,7 @@ class DirectContributionController extends Controller
                     'wf_states.first_shortened as wf_state_name'
                 )
                 ->get();
-        }
+        }        
         $data = [
             'direct_contribution'   =>  $directContribution,
             'contribution_process'   =>  $contribution_process ?? null,
