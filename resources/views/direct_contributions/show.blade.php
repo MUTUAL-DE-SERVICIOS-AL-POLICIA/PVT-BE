@@ -13,6 +13,13 @@
             @if ($contribution_process)
                 <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
             @endif
+            <certification-button
+                type="contributionProcess"
+                title="Imprimir Cotizacion"
+                doc-id="{{ $contribution_process->id }}"
+                url-print="{{ route('contribution_process_print_quotation', [$direct_contribution->id,$contribution_process->id]) }}"
+            >
+            </certification-button> 
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
@@ -23,8 +30,12 @@
         <div class="pull-right">
             <div class="form-inline">
                 @if ($can_validate)
-                <inbox-send-back-button-ret-fun :wf-sequence-back-list="{{ $wf_sequences_back }}" :doc-id="{{$contribution_process->id}}" :wf-current-state-name="`{{$contribution_process->wf_state->name}}`"
-                    type="retFun"></inbox-send-back-button-ret-fun>
+                <inbox-send-back-button-quota-aid
+                    :wf-sequence-back-list="{{ $wf_sequences_back }}"
+                    :doc-id="{{$contribution_process->id}}"
+                    :wf-current-state-name="`{{$contribution_process->wf_state->name}}`"
+                    type="contributionProcess"
+                ></inbox-send-back-button-quota-aid>
                 <sweet-alert-modal inline-template :doc-id="{{$contribution_process->id}}" :inbox-state="{{$contribution_process->inbox_state ? 'true' : 'false'}}"
                     :doc-user-id="{{$contribution_process->user_id}}" :auth-id="{{ $user->id}}" type="contributionProcess">
                     <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
