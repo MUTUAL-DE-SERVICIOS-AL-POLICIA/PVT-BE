@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunTemplate;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\Contribution\ContributionProcess;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -255,6 +256,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('contribution_process', 'ContributionProcessController');
 		Route::post('contribution_process/aid_contribution_save', 'ContributionProcessController@aidContributionSave')->name('aid_contribution_save');
 		Route::post('contribution_process/contribution_save', 'ContributionProcessController@contributionSave')->name('contribution_save');
+		Route::get('contribution_process/{contribution_process_id}/correlative/{wf_state_id}', 'ContributionProcessController@getCorrelative')->name('contribution_process_get_correlative');
 
 			//inbox
 		Route::get('inbox', function () {
@@ -605,8 +607,7 @@ foreach (array_keys($retirement_funds) as $value) {
 			return Util::getNextAreaCodeQuotaAid($quota_aid_id, false);
 		});
 		Route::get('get_next_area_code_contribution_process/{contribution_process_id}', function ($contribution_process_id) {
-			return \Muserpol\Models\RetirementFund\RetFunCorrelative::find(1);
-			return Util::getNextAreaCodeQuotaAid($contribution_process_id, false);
+			return ContributionProcess::find($contribution_process_id);
 		});
 	});
 });

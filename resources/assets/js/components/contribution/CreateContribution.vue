@@ -500,33 +500,34 @@ export default {
                     bank_pay_number:this.bank_pay_number
                 })
                 .then(response => {
-                this.enableDC();
-                var i;
-                for(i=0;i<response.data.contribution.length;i++){
-                    this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
-                }
-                this.$swal({
-                title: 'Pago realizado',
-                showConfirmButton: false,
-                timer: 6000,
-                type: 'success'
-                })
-                var json_contribution= JSON.stringify(response.data.contributions);
-                this.reprint = response.data;                
-                var total = this.total;        
-                printJS({printable:
-                            '/print_contributions_quote?contributions='+json_contribution+
-                            '&affiliate_id='+response.data.affiliate_id+
-                            '&total='+total,
-                            type:'pdf',
-                        showModal:true});
+                    location.reload();
+                // this.enableDC();
+                // var i;
+                // for(i=0;i<response.data.contribution.length;i++){
+                //     this.setDataToTable(response.data.contribution[i].month_year,response.data.contribution[i].total);
+                // }
+                // this.$swal({
+                // title: 'Pago realizado',
+                // showConfirmButton: false,
+                // timer: 6000,
+                // type: 'success'
+                // })
+                // var json_contribution= JSON.stringify(response.data.contributions);
+                // this.reprint = response.data;                
+                // var total = this.total;        
+                // printJS({printable:
+                //             '/print_contributions_quote?contributions='+json_contribution+
+                //             '&affiliate_id='+response.data.affiliate_id+
+                //             '&total='+total,
+                //             type:'pdf',
+                //         showModal:true});
                 // printJS({printable:
                 //         '/ret_fun/'+
                 //         response.data.affiliate_id+
                 //         '/print/voucher/'+
                 //         response.data.voucher_id + "?contributions="+json_contribution, 
                 //         type:'pdf', showModal:true});
-                this.contributions = [];
+                // this.contributions = [];
                 })
                 .catch(error => {
                 this.show_spinner = false;
