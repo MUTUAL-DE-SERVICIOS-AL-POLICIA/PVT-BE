@@ -1069,7 +1069,7 @@ class QuotaAidCertificationController extends Controller
             $head .= " presenta";
         }
         $head .= " la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) ." y en cumplimiento al numeral 8
-        del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión";
+        del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión<br><br>";
         $past = 'Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 2829 de 06 de julio de 2016, referente al beneficio de Cuota Mortuoria en el artículo 2, (MODIFICACIONES) establece:
             <br><br>
             I. Se modifica el inciso d) del artículo 3 del Decreto Supremo N° 1446, de 19 de diciembre de 2012, con el siguiente texto: <strong><i>“Otorgar el beneficio de Cuota Mortuoria y Auxilio Mortuorio a favor del sector activo y pasivo de la Policía Boliviana, de acuerdo a reglamentos emitidos por MUSERPOL.”</i></strong> 
@@ -1085,7 +1085,7 @@ class QuotaAidCertificationController extends Controller
 
         $past .='<br><br>
             Conforme a las disposiciones adicionales, en su DISPOSICIÓN ADICIONAL ÚNICA, establece: <i>“A partir de la publicación del presente Decreto Supremo, los aportes de los afiliados a MUSERPOL destinados al seguro de vida establecido por el Decreto Supremo N° 1446, realizados desde mayo de 2013 a la fecha de vigencia de la presente norma, son acreditados a los beneficios de cuota mortuoria y auxilio mortuorio establecido en la presente disposición normativa”</i>';
-        $past_footer = "En cumplimiento a la normativa Técnica – Legal vigente y aprobada por el Honorable Directorio de la MUSERPOL, se procedió a realizar el procesamiento del trámite para la otorgación del beneficio de Fondo de Retiro Policial Solidario al solicitante.";
+        $past_footer = "En cumplimiento a la normativa Técnica – Legal vigente y aprobada por el Honorable Directorio de la MUSERPOL, se procedió a realizar el procesamiento del trámite para la otorgación del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." al solicitante.<br><br>";
 
 
         $process = "Conforme a Dictamen Legal de la Unidad de Fondo de Retiro Policial, Cuota y Auxilio Mortuorio de la Dirección de Beneficios Económicos, mediante <b>Cite: ";
@@ -1207,24 +1207,24 @@ class QuotaAidCertificationController extends Controller
             $conclusion .= " el Señor ";
         }
         $conclusion .= "<strong>".$affiliate->fullNameWithDegree ()."</strong> con <strong>C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".</strong> cumple con los 
-        requisitos de acuerdo a Reglamento y se le reconocen los derechos para otorgar el beneficio de <strong>".$quota_aid->procedure_modality->procedure_type->second_name."</strong> por <strong> ".$quota_aid->procedure_modality->name."</strong> por el periodo de&nbsp; <strong>". Util::getStringDate($start_contribution,true) ." a ".Util::getStringDate($end_contribution,true) ."</strong>, determinando el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong>, ";
+        requisitos de acuerdo a Reglamento y se le reconocen los derechos para otorgar el beneficio de <strong>".$quota_aid->procedure_modality->procedure_type->second_name."</strong> por <strong> ".$quota_aid->procedure_modality->name."</strong> por el periodo de&nbsp; <strong>". Util::getStringDate($start_contribution,true) ." a ".Util::getStringDate($end_contribution,true) ."</strong>, determinando el monto de <strong>".Util::formatMoneyWithLiteral($quota_aid->total)."</strong>, de la siguiente manera:";
         ///------ PAYMENT ------////
         $payment = "";
-        $discounts = $quota_aid->discount_types(); //DiscountType::where('quota_aid_id',$quota_aid->id)->orderBy('discount_type_id','ASC')->get();                
-        //$loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-        $payment = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal - Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
-        Cuota y Auxilio Mortuorio, autorizado por Jefatura de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
-        Cuota y Auxilio Mortuorio conforme a los ";
-        if($quota_aid->procedure_modality_id == 8 || $quota_aid->procedure_modality_id == 9) {
-            $payment .= "Art. 2, 3, 5, 6, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 43, 45, 47, 48, 51 ";
-        } else {
-            $payment .= "Art. 2, 3, 5, 6, 10, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42, 44, 45, 47, 48, 52 ";
-        }        
-        $start_contribution = $affiliate->getContributionsWithTypeQuotaAid()[0]->start;
-        $end_contribution = $affiliate->getContributionsWithTypeQuotaAid()[0]->end;
-        $payment .="y la Disposición Transitoria Única del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y 
-        modificado mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017. Se <strong>DICTAMINA</strong> en merito a la documentación de respaldo contenida en el presente reconocer 
-        los derechos y se otorgue el beneficio de <strong>".strtoupper($quota_aid->procedure_modality->procedure_type->second_name)."</strong> por <strong>".strtoupper($quota_aid->procedure_modality->name)."</strong> a favor ";
+        // $discounts = $quota_aid->discount_types(); //DiscountType::where('quota_aid_id',$quota_aid->id)->orderBy('discount_type_id','ASC')->get();                
+        // //$loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
+        // $payment = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal - Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
+        // Cuota y Auxilio Mortuorio, autorizado por Jefatura de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
+        // Cuota y Auxilio Mortuorio conforme a los ";
+        // if($quota_aid->procedure_modality_id == 8 || $quota_aid->procedure_modality_id == 9) {
+        //     $payment .= "Art. 2, 3, 5, 6, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 43, 45, 47, 48, 51 ";
+        // } else {
+        //     $payment .= "Art. 2, 3, 5, 6, 10, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42, 44, 45, 47, 48, 52 ";
+        // }        
+        // $start_contribution = $affiliate->getContributionsWithTypeQuotaAid()[0]->start;
+        // $end_contribution = $affiliate->getContributionsWithTypeQuotaAid()[0]->end;
+        // $payment .="y la Disposición Transitoria Única del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y 
+        // modificado mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017. Se <strong>DICTAMINA</strong> en merito a la documentación de respaldo contenida en el presente reconocer 
+        // los derechos y se otorgue el beneficio de <strong>".strtoupper($quota_aid->procedure_modality->procedure_type->second_name)."</strong> por <strong>".strtoupper($quota_aid->procedure_modality->name)."</strong> a favor ";
                         
         $flagy = 0;
         $discounts = $quota_aid->discount_types();
@@ -1331,14 +1331,14 @@ class QuotaAidCertificationController extends Controller
 
         $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
         $headerHtml = view()->make('ret_fun.print.legal_header')->render();
-        $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();        
+        $footerHtml = view()->make('quota_aid.print.resolution_footer', ['quota_aid'=>$quota_aid, 'bar_code' => $bar_code])->render();        
 
             return \PDF::loadView('quota_aid.print.headship_review', $data)
             ->setOption('encoding', 'utf-8')
             ->setOption('header-html', $headerHtml)
             ->setOption('footer-html', $footerHtml)
             ->setOption('margin-top', 40)
-            ->setOption('margin-bottom', 15)
+            ->setOption('margin-bottom', 30)
             ->stream("jefaturaRevision.pdf");
     }
     public function printLegalResolution($quota_aid_id){
