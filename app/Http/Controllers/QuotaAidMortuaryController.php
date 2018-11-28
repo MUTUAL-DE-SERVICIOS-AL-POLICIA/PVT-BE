@@ -465,9 +465,9 @@ class QuotaAidMortuaryController extends Controller
         }
 
 
-        if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
+        if ($request->beneficiary_city_address_id || $request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
             $address = new Address();
-            $address->city_address_id = 1;
+            $address->city_address_id = $request->beneficiary_city_address_id ?? 1;
             $address->zone = $request->beneficiary_zone;
             $address->street = $request->beneficiary_street;
             $address->number_address = $request->beneficiary_number_address;
