@@ -12,14 +12,15 @@
         <div class="pull-left">
             @if ($contribution_process)
                 <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
-            @endif
-            <certification-button
+                <certification-button
                 type="contributionProcess"
                 title="Imprimir Cotizacion"
                 doc-id="{{ $contribution_process->id }}"
                 url-print="{{ route('contribution_process_print_quotation', [$direct_contribution->id,$contribution_process->id]) }}"
             >
             </certification-button> 
+            @endif
+            
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
