@@ -163,7 +163,6 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('/update_tag_wf_state', 'TagController@updateTagWfState');
 		Route::get('/tag_quota_aid/{quota_aid_id}', "TagController@quotaAid")->name('tag_quota_aid');
 		Route::post('/update_tag_quota_aid/{quota_aid_id}', "TagController@updateQuotaAid")->name('update_tag_quota_aid');
-
 		//QuotaAidMortuory
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
 		Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
@@ -244,16 +243,17 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('aid_commitment', 'AidCommitmentController');
 		Route::get('calculate_aid_reimbursement/{affiliate}/{amount}/{month}', 'AidReimbursementController@caculateContribution');
 
-		//Direct Contributions 
+		//Direct Contributions
 		Route::resource('direct_contribution', 'DirectContributionController');
 		Route::patch('/update_information_direct_contribution', 'DirectContributionController@updateInformation')->name('update_information_direct_contribution');
-		Route::post('direct_contribution/{direct_contribution_id}/edit_requirements', 'DirectContributionController@editRequirements');
-		// Contribution process
 
-		Route::resource('direct_contribution', 'DirectContributionController');
+		Route::post('direct_contribution/{direct_contribution_id}/edit_requirements', 'DirectContributionController@editRequirements');
 		Route::get('affiliate/{affiliate}/direct_contribution/create', 'DirectContributionController@create')->name('create_direct_contribution');
 		Route::get('get_all_direct_contribution', 'DirectContributionController@getAllDirectContribution');
 		// Route::post('affiliate/{affiliate}/contribution_process/save_commitment', 'ContributionProcessController@saveCommitment')->name('save_commitment');
+
+		// Contribution process
+		Route::post('contribution_process/aid_contribution_save', 'ContributionProcessController@aidContributionSave')->name('aid_contribution_save');
 
 			//inbox
 		Route::get('inbox', function () {
@@ -502,6 +502,96 @@ foreach (array_keys($retirement_funds) as $value) {
 				->stream("pre-calificados.pdf");
 		})->name('print_be');
 
+		Route::get('quota_aid/print/send-daa', function () {
+			$area = WorkflowState::find(40)->first_shortened;
+			$user = Auth::user();
+			$date = Util::getDateFormat(Carbon::now());
+			$year = Carbon::now()->year;
+			$institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+			$direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+			$unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+			$title = "TRÁMITES BENEFICIOS ECONÓMICOS - AUXILIO MORTUORIO";
+			$quota_aids = QuotaAidMortuary::leftJoin('quota_aid_correlatives', 'quota_aid_mortuaries.id', '=', 'quota_aid_correlatives.quota_aid_mortuary_id')
+				->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
+				->leftJoin('procedure_types', 'procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
+				->where('procedure_types.id', '=', 4)
+				->where('quota_aid_mortuaries.wf_state_current_id', 40)
+				->where('quota_aid_mortuaries.inbox_state', true)
+				->where('quota_aid_correlatives.wf_state_id', 40)
+				->where('quota_aid_mortuaries.code', 'not like', '%A')
+				->select('quota_aid_mortuaries.id', 'quota_aid_correlatives.code')
+				->groupBy('quota_aid_mortuaries.id', 'quota_aid_correlatives.code')
+				->orderBy(DB::raw("split_part(quota_aid_correlatives.code, '/',1)::integer"))
+				->pluck('quota_aid_correlatives.code', 'quota_aid_mortuaries.id')->toArray();
+
+			$quota_aids1 = [];
+
+			foreach (array_keys($quota_aids) as $value) {
+				array_push($quota_aids1, QuotaAidMortuary::find($value));
+			}
+
+			$data = [
+				'area' => $area,
+				'user' => $user,
+				'date' => $date,
+				'docs' => $quota_aids1,
+				'year' => $year,
+
+				'title' => $title,
+				'institution' => $institution,
+				'direction' => $direction,
+				'unit' => $unit,
+			];
+			if (count($quota_aids1)) {
+				$pages[] = \View::make('print_global.send_daa_quota_aid', $data)->render();
+			}
+			$title = "TRÁMITES BENEFICIOS ECONÓMICOS - CUOTA MORTUORIA";
+			$quota_aids = QuotaAidMortuary::leftJoin('quota_aid_correlatives', 'quota_aid_mortuaries.id', '=', 'quota_aid_correlatives.quota_aid_mortuary_id')
+				->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
+				->leftJoin('procedure_types', 'procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
+				->where('procedure_types.id', '=', 3)
+				->where('quota_aid_mortuaries.wf_state_current_id', 40)
+				->where('quota_aid_mortuaries.inbox_state', true)
+				->where('quota_aid_correlatives.wf_state_id', 40)
+				->where('quota_aid_mortuaries.code', 'not like', '%A')
+				->select('quota_aid_mortuaries.id', 'quota_aid_correlatives.code')
+				->groupBy('quota_aid_mortuaries.id', 'quota_aid_correlatives.code')
+				->orderBy(DB::raw("split_part(quota_aid_correlatives.code, '/',1)::integer"))
+				->pluck('quota_aid_correlatives.code', 'quota_aid_mortuaries.id')->toArray();
+
+			$quota_aids1 = [];
+
+			foreach (array_keys($quota_aids) as $value) {
+				array_push($quota_aids1, QuotaAidMortuary::find($value));
+			}
+
+			$data = [
+				'area' => $area,
+				'user' => $user,
+				'date' => $date,
+				'docs' => $quota_aids1,
+				'year' => $year,
+
+				'title' => $title,
+				'institution' => $institution,
+				'direction' => $direction,
+				'unit' => $unit,
+			];
+			if (count($quota_aids1)) {
+				$pages[] = \View::make('print_global.send_daa_quota_aid', $data)->render();
+			}
+			$pdf = \App::make('snappy.pdf.wrapper');
+			$pdf->loadHTML($pages);
+			return $pdf->setOption('encoding', 'utf-8')
+				->setOption('margin-bottom', '15mm')
+				->setOrientation('landscape')
+				// ->setOption('footer-center', 'Pagina [page] de [toPage]')
+				->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+				->stream("pre-calificados.pdf");
+
+			return view('print_global.report', $data);
+			return $filter->all();
+		})->name('print_send_daa_quota_aid');
 		Route::get('test', function ()
 		{
 			return Util::getNextAreaCode(102);

@@ -232,17 +232,18 @@ class AidContributionController extends Controller
         $end = explode('-', $dateentry);
         $newcontributions = [];
         $month_end = $end[1];
-        $year_end = $end[0];
-        
-        $death_date = Util::parseBarDate($affiliate->date_death);
+        $year_end = $end[0];        
+                
         if($affiliate->date_death) {
             $death_date = Util::parseBarDate($affiliate->date_death);
+            $spouse_death = $affiliate->spouse()->whereDate('date_death','>',$death_date)->first();
+            if(isset($spouse_death)) {
+                $death_date = Util::parseBarDate($spouse_death->date_death);
+            }
+        } else {
+            $death_date = Util::parseBarDate($affiliate->spouse()->first()->date_death);
         }
-        $spouse_death = $affiliate->spouse()->whereDate('date_death','>',$death_date)->first();
-        if(isset($spouse_death)) {
-            $death_date = Util::parseBarDate($spouse_death->date_death);
-        }
-        
+                        
         //return $death_date;
         if(!$death_date) {            
             $month_start = (date('m') - 1);
@@ -261,12 +262,12 @@ class AidContributionController extends Controller
         $cities_objects = City::all();
         $birth_cities = City::all()->pluck('name', 'id');
         //get Commitment data
-        $aid_commitment = AidCommitment::where('affiliate_id', $affiliate->id)->first();
-        if (!isset($aid_commitment->id)) {
-            $aid_commitment = new AidCommitment();
-            $aid_commitment->id = 0;
-            $aid_commitment->affiliate_id = $affiliate->id;
-        }
+        // $aid_commitment = AidCommitment::where('affiliate_id', $affiliate->id)->first();
+        // if (!isset($aid_commitment->id)) {
+        //     $aid_commitment = new AidCommitment();
+        //     $aid_commitment->id = 0;
+        //     $aid_commitment->affiliate_id = $affiliate->id;
+        // }
         $date = date('Y-m-d');
         $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();               
         $data = [
@@ -280,7 +281,7 @@ class AidContributionController extends Controller
             'cities_objects' => $cities_objects,
             'birth_cities' => $birth_cities,
             'new_contributions' => $this->getContributionDebt($affiliate->id, 3,$date),
-            'aid_commitment' => $aid_commitment,
+            //'aid_commitment' => $aid_commitment,
             'spouse' => $spouse,
             'today_date' => date('Y-m-d'),
         ];
@@ -289,23 +290,21 @@ class AidContributionController extends Controller
     }
 
     public function storeContributions(Request $request)
-    {                
+    {
         //*********START VALIDATOR************//
-        
         $rules = [];
         $messages = [];
         $input_data = $request->all();
         if(!empty($request->iterator))
-        { 
-            foreach ($request->iterator as $key => $iterator) 
-            {   
+        {
+            foreach ($request->iterator as $key => $iterator)
+            {
                 if(isset($input_data['rent'][$key]))
                     $input_data['rent'][$key]= strip_tags($request->rent[$key]);
                 if(isset($input_data['dignity_rent'][$key]))
                 $input_data['dignity_rent'][$key]= strip_tags($request->dignity_rent[$key]);
-                
                 $input_data['total'][$key]= strip_tags($request->total[$key]);
-                $array_rules = [                       
+                $array_rules = [
                     'rent.'.$key =>  'numeric',
                     'dignity_rent.'.$key =>  'numeric|min:0',
                     'total.'.$key =>  'required|numeric|min:1'
@@ -323,41 +322,40 @@ class AidContributionController extends Controller
             $contribution = AidContribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
-               
-                if(!isset($request->rent[$key]) || $request->rent[$key] == "")
+                if(!isset($request->rent[$key]) || $request->rent[$key] == ""){
                     $contribution->rent = 0;
-                else
-                     $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
-                                
-                if(!isset($request->dignity_rent[$key]) || $contribution->dignity_rent == "")
+                }else{
+                    $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
+                }
+                if(!isset($request->dignity_rent[$key]) || $contribution->dignity_rent == ""){
                     $contribution->dignity_rent = 0;
-                else 
+                }else{
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
-
+                }
                 $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
                 $contribution->interest = 0;
                 $contribution->save();
             } else {
                 $contribution = new AidContribution();
                 $contribution->user_id = Auth::user()->id;
-                $contribution->affiliate_id = $request->affiliate_id;                
+                $contribution->affiliate_id = $request->affiliate_id;
                 if(!isset($request->rent[$key]) || $request->rent[$key] == "") {
                     $contribution->rent = 0;
                 } else {
-                    $contribution->rent = strip_tags($request->rent[$key]) ?? 0;                    
-                }                    
+                    $contribution->rent = strip_tags($request->rent[$key]) ?? 0;
+                }
                 $contribution->month_year = $key;
-                
-                if(!(isset($request->dignity_rent[$key])) || $contribution->dignity_rent == "")
+                if(!(isset($request->dignity_rent[$key])) || $contribution->dignity_rent == ""){
                     $contribution->dignity_rent = 0;
-                else
+                }else{
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;
+                }
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
                 $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
                 $contribution->type = 'PLANILLA';
                 $contribution->interest = 0;
                 $contribution->save();
-            }            
+            }
             array_push($contributions, $contribution);
         }
         return $contributions;

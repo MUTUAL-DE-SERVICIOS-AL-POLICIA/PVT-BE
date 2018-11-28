@@ -24,7 +24,7 @@
                         <div class="row col-lg-12" v-if="toggle">
                             <div class="form-inline">
                                 <div class="form-group">
-                                    <input type="text" data-date="true" v-model="dateEnd" @keypress.enter="refresh()" class="form-control">
+                                    <input type="text" v-date v-model="dateEnd" @keypress.enter="refresh()" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <button @click="refresh()" class="btn btn-primary"> <i class="fa fa-arrow-right"></i> Continuar</button>
@@ -37,10 +37,10 @@
                         <div v-if="contributions.length > 0">
                             <div class="row" >                                            
                                 <div class="col-md-3" >                            
-                                    <input type="text" class="form-control"  data-money='true' v-model="general_rent">
+                                    <input type="text" class="form-control"  v-money v-model="general_rent">
                                 </div>
                                 <div class="col-md-3" >                            
-                                    <input type="text" class="form-control"  data-money='true' @keyup.enter="repeatSalary" v-model="general_dignity_rent">
+                                    <input type="text" class="form-control"  v-money @keyup.enter="repeatSalary" v-model="general_dignity_rent">
                                 </div>               
                                 <div class="col-md-3" >
                                     <button class="btn btn-primary " type="button" @click="repeatSalary()"><i class="fa fa-money"></i>&nbsp;Repetir Renta</button>
@@ -50,12 +50,12 @@
                             <table class="table table-striped" data-page-size="15">
                                 <thead>
                                 <tr>
-                                    <th class="footable-visible footable-first-column footable-sortable">Mes/Año<span class="footable-sort-indicator"></span></th>
-                                    <th data-hide="phone" class="footable-visible footable-sortable">Renta Bs.<span class="footable-sort-indicator"></span></th>
-                                    <th data-hide="phone" class="footable-visible footable-sortable">Renta Dignidad Bs.<span class="footable-sort-indicator"></span></th>
-                                    <th data-hide="phone" class="footable-visible footable-sortable">Auxilio Mortuorio (2.03 %)<span class="footable-sort-indicator"></span></th>
-                                    <th data-hide="phone" class="footable-visible footable-sortable">Ajuste UFV Bs.<span class="footable-sort-indicator"></span></th>
-                                    <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-first-column footable-sortable">Mes/Año</th>
+                                    <th class="footable-visible footable-sortable">Renta Bs.</th>
+                                    <th class="footable-visible footable-sortable">Renta Dignidad Bs.</th>
+                                    <th class="footable-visible footable-sortable">Auxilio Mortuorio (2.03 %)</th>
+                                    <th class="footable-visible footable-sortable">Ajuste UFV Bs.</th>
+                                    <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte</th>
                                     <th>Opciones</th>
                                 </tr>
                                 </thead>
@@ -65,19 +65,19 @@
                                             <input type="text"  v-model="con.monthyear" disabled class="form-control">
                                         </td>
                                         <td>
-                                            <input type="text" v-model = "con.sueldo" data-money='true' ref="s1" autofocus class="form-control" >
+                                            <input type="text" v-model = "con.sueldo" v-money ref="s1" autofocus class="form-control" >
                                         </td>
                                         <td>
-                                            <input type="text"  v-model = "con.dignity_rent" data-money='true' @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
+                                            <input type="text"  v-model = "con.dignity_rent" v-money @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                         </td>
                                         <td>
-                                            <input type="text" v-model = "con.auxilio_mortuorio" disabled data-money='true' class="form-control">
+                                            <input type="text" v-model = "con.auxilio_mortuorio" disabled v-money class="form-control">
                                         </td>
                                         <td>
-                                            <input type="text" v-model = "con.interes" disabled data-money='true' class="form-control">
+                                            <input type="text" v-model = "con.interes" disabled v-money class="form-control">
                                         </td>
                                         <td>
-                                            <input type="text"  v-model = "con.subtotal" disabled data-money='true' class="form-control">
+                                            <input type="text"  v-model = "con.subtotal" disabled v-money class="form-control">
                                         </td>
                                         <td class="row">                                    
                                             <div class="col-md-6">
@@ -90,7 +90,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes de Auxilio Mortuorio:</label></td>
-                                        <td colspan="3"><input type="text" data-money='true' v-model ="total" disabled class="form-control"></td>
+                                        <td colspan="3"><input type="text" v-money v-model ="total" disabled class="form-control"></td>
                                         <td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>
                                     </tr>
                                 </tbody>
@@ -106,7 +106,55 @@
                         <div v-else class="row">
                             <div class="text-center">
                                 <h2>No tiene Pagos Pendientes</h2>
-                                <button v-if="reprint" @click="reprintButton()" class="btn btn-primary"> <i class="fa fa-print"></i> Reimprimir </button>
+                                <table class="table table-striped" data-page-size="15">
+                                    <thead>
+                                    <tr>
+                                        <th class="footable-visible footable-first-column footable-sortable">Mes/Año</th>
+                                        <th class="footable-visible footable-sortable">Renta Bs.</th>
+                                        <th class="footable-visible footable-sortable">Renta Dignidad Bs.</th>
+                                        <th class="footable-visible footable-sortable">Auxilio Mortuorio (2.03 %)</th>
+                                        <th class="footable-visible footable-sortable">Ajuste UFV Bs.</th>
+                                        <th class="footable-visible footable-sortable">Subtotal Aporte</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(con, index) in contributions" :key="index" id="form" v-bind:style="getStyleColor(index)" :class="{'danger': error(con.subtotal)}">
+                                            <td>
+                                                <input type="text"  v-model="con.monthyear" disabled class="form-control">
+                                            </td>
+                                            <td>
+                                                <input type="text" v-model = "con.sueldo" v-money ref="s1" autofocus class="form-control" >
+                                            </td>
+                                            <td>
+                                                <input type="text"  v-model = "con.dignity_rent" v-money @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
+                                            </td>
+                                            <td>
+                                                <input type="text" v-model = "con.auxilio_mortuorio" disabled v-money class="form-control">
+                                            </td>
+                                            <td>
+                                                <input type="text" v-model = "con.interes" disabled v-money class="form-control">
+                                            </td>
+                                            <td>
+                                                <input type="text"  v-model = "con.subtotal" disabled v-money class="form-control">
+                                            </td>
+                                            <td class="row">                                    
+                                                <div class="col-md-6">
+                                                    <button class="btn btn-warning btn-circle" @click="RemoveRow(index)" type="button"><i class="fa fa-times"></i>  </button>
+                                                </div>
+                                                <div class="col-md-6" v-if="con.sueldo>0 && con.type!='R'">
+                                                    <button class="btn btn-warning btn-circle" @click="createReimbursement(con.month)" type="button"><i class=""></i> R </button>
+                                                </div>
+                                            </td> 
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"><label for="total">Total a Pagar por Concepto de Aportes de Auxilio Mortuorio:</label></td>
+                                            <td colspan="3"><input type="text" v-money v-model ="total" disabled class="form-control"></td>
+                                            <td> <button class="btn btn-success btn-circle" onClick="window.location.reload()" type="button"><i class="fa fa-link"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- <button v-if="reprint" @click="reprintButton()" class="btn btn-primary"> <i class="fa fa-print"></i> Reimprimir </button> -->
                             </div>
                             <br>
                         </div>
@@ -152,10 +200,10 @@
                     <table class="table table-striped" data-page-size="15">
                         <thead>
                             <tr>
-                            <th class="footable-visible footable-first-column footable-sortable">Mes<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Monto<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone" class="footable-visible footable-sortable">Auxilio Mortuorio (1.5 %)<span class="footable-sort-indicator"></span></th>
-                            <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte<span class="footable-sort-indicator"></span></th>
+                            <th class="footable-visible footable-first-column footable-sortable">Mes</th>
+                            <th class="footable-visible footable-sortable">Monto</th>
+                            <th class="footable-visible footable-sortable">Auxilio Mortuorio (1.5 %)</th>
+                            <th data-hide="phone,tablet" class="footable-visible footable-sortable">Subtotal Aporte</th>
                             </tr>
                         </thead>
                         <tr style="" v-for="(reim_pay, index3) in reimbursement_pays" :key="index3" id="reimbursement_pays">
@@ -163,20 +211,20 @@
                                 <input type="text"  v-model = "reim_pay.month_year" disabled class="form-control">
                             </td>
                             <td>
-                                <input type="text" v-model = "reim_pay.amount" data-money="true" disabled class="form-control" >
+                                <input type="text" v-model = "reim_pay.amount" v-money disabled class="form-control" >
                             </td>
                             <td>
-                                <input type="text"  v-model = "reim_pay.auxilio_mortuorio" data-money='true' disabled class="form-control">
+                                <input type="text"  v-model = "reim_pay.auxilio_mortuorio" v-money disabled class="form-control">
                             </td>                            
                             <td>
-                                <input type="text"  v-model = "reim_pay.subtotal" data-money="true" disabled class="form-control">
+                                <input type="text"  v-model = "reim_pay.subtotal" v-money disabled class="form-control">
                             </td>                            
                         </tr>
                         <tr>
                             <td><label for="total">Total:</label></td>
-                            <td><input type="text" v-model="info_amount" data-money="true" disabled class="form-control"></td>
-                            <td><input type="text" v-model="info_aid" data-money="true" disabled class="form-control"></td>                            
-                            <td><input type="text" v-model="info_total" data-money="true" disabled class="form-control"></td>
+                            <td><input type="text" v-model="info_amount" v-money disabled class="form-control"></td>
+                            <td><input type="text" v-model="info_aid" v-money disabled class="form-control"></td>                            
+                            <td><input type="text" v-model="info_total" v-money disabled class="form-control"></td>
                         </tr>
                     </table>
                 </div>
@@ -194,27 +242,18 @@
 </template>
 <script>
 import {
-    dateInputMask,
-    moneyInputMask,
     parseMoney,
-    moneyInputMaskAll,
-    dateInputMaskAll
 }
 from "../../helper.js";
 export default {
   props: [
     // "aidContributions", 
     "afid",
+    "directContributionId",
     // "rate"
       ],
   mounted() {
-    // this.contributions = this.aidContributions;    
-    // this.afi_id = this.afid;
-    // window.addEventListener("load", function(event) {
-    //     moneyInputMaskAll();
-    //     dateInputMaskAll();
-    // });
-    // this.refresh();
+    this.refresh();
   },
   data() {
     return {
@@ -271,10 +310,6 @@ export default {
         }).catch(error =>{
             console.log(error)
         });
-        setTimeout(() => {
-            moneyInputMaskAll();
-            dateInputMaskAll();
-        }, 300);
         this.showContributions =  true;
     },
     repeatSalary(){
@@ -447,7 +482,6 @@ export default {
     this.contributions = update_contributions;
     this.CalcularAporte(newcontribution,index);          
       $('#reimbursement_modal').modal('toggle');            
-      moneyInputMaskAll();
     },
     Guardar() {        
       this.contributions = this.contributions.filter(item => {
@@ -470,36 +504,36 @@ export default {
           if (result.value) {
             var aportes = this.contributions;            
             axios
-              .post("/aid_contribution_save", {
+              .post("/contribution_process/aid_contribution_save", {
                 aportes,
                 total: this.total,
-                afid: this.afid
+                direct_contribution_id: this.directContributionId
               })
               .then(response => {                
               //this.enableDC();
-              var i;
-                for(i=0;i<response.data.aid_contribution.length;i++){                        
-                    this.setDataToTable(response.data.aid_contribution[i].month_year,response.data.aid_contribution[i].total);
-                }
-              this.$swal({
-              title: "Pago realizado",
-              showConfirmButton: false,
-              timer: 6000,
-              type: "success"
-              });
-              var json_aid_contribution = JSON.stringify(response.data.aid_contributions);              
-              this.reprint = response.data;
-              console.log(json_aid_contribution);
-              printJS({
-                  printable:
-                    "/quota_aid/" +
-                    response.data.affiliate_id +
-                    "/print/quota_aid_voucher/" +
-                    response.data.voucher_id + "?aid_contributions="+json_aid_contribution,
-                  type: "pdf",
-                  showModal: true
-                });
-                this.contributions = [];
+            //   var i;
+            //     for(i=0;i<response.data.aid_contribution.length;i++){                        
+            //         this.setDataToTable(response.data.aid_contribution[i].month_year,response.data.aid_contribution[i].total);
+            //     }
+            //   this.$swal({
+            //   title: "Pago realizado",
+            //   showConfirmButton: false,
+            //   timer: 6000,
+            //   type: "success"
+            //   });
+            //   var json_aid_contribution = JSON.stringify(response.data.aid_contributions);              
+            //   this.reprint = response.data;
+            //   console.log(json_aid_contribution);
+            //   printJS({
+            //       printable:
+            //         "/quota_aid/" +
+            //         response.data.affiliate_id +
+            //         "/print/quota_aid_voucher/" +
+            //         response.data.voucher_id + "?aid_contributions="+json_aid_contribution,
+            //       type: "pdf",
+            //       showModal: true
+            //     });
+            //     this.contributions = [];
             }).catch(error => {              
               console.log('with error message');
               
