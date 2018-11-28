@@ -509,7 +509,8 @@ export default {
                 total: this.total,
                 direct_contribution_id: this.directContributionId
               })
-              .then(response => {                
+              .then(response => {
+                  location.reload();
               //this.enableDC();
             //   var i;
             //     for(i=0;i<response.data.aid_contribution.length;i++){                        
