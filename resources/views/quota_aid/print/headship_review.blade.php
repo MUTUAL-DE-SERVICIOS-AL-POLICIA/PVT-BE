@@ -106,7 +106,7 @@
                     <p class="text-justify">
                         {!! $conclusion !!}
                     </p>
-                    <ul class="m-l-30">
+                    <ul class="m-l-30 text-justify">
                         {!! $payment !!}
                         {{-- @foreach($payments as $payment)
                             <li class="text-justify">
