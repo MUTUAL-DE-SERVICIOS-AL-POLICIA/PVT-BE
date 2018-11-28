@@ -5,17 +5,17 @@
                 <strong> Tipo de Pago:</strong>
             </div>
             <div class="col-md-4">
-                <select class="form-control" v-model="payment_type">
+                <select class="form-control" v-model="payment_type" :disabled='!editing'>
                     <option value="1">Al contado</option>
                     <option value="2">Deposito Bancario</option>                    
                 </select>
             </div>
             <div class="col-md-2">
-                <strong> TOTAL cobrado:</strong>&nbsp;
+                <strong v-if="payment_type==1"> Efectivo:</strong>
             </div>
-            <div class="col-md-4">                        
-                <input type="text" v-model="total" class="form-control" :disabled='!editing' v-money>
-            </div>                    
+            <div class="col-md-4">
+                <input v-if="payment_type==1" type="text" class="form-control" v-model="paid" :disabled='!editing' v-money>
+            </div>               
         </div>
         <br>
         <div class="row">
@@ -24,13 +24,13 @@
             </div>
             <div class="col-md-4">   
                 <input v-if="payment_type==2" type="text" v-model="bank" class="form-control" :disabled='!editing'>
-            </div>
+            </div>            
             <div class="col-md-2">
-                <strong v-if="payment_type==1"> Efectivo:</strong>
+                <strong> TOTAL cobrado:</strong>&nbsp;
             </div>
-            <div class="col-md-4">
-                <input v-if="payment_type==1" type="text" class="form-control" v-model="paid" :disabled='!editing' v-money>
-            </div>
+            <div class="col-md-4">                        
+                <input type="text" v-model="total" class="form-control" :disabled='!editing' v-money>
+            </div> 
         </div>
         <br>        
         <div class="row">

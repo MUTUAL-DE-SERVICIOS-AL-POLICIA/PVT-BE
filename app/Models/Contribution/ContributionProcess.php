@@ -23,6 +23,9 @@ class ContributionProcess extends Model
     {
         return $this->morphedByMany('Muserpol\Models\Contribution\AidContribution', 'quotable')->withTimestamps();
     }
+    public function voucher() {
+
+    }
     public function wf_state()
     {
         return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_state_current_id', 'id');

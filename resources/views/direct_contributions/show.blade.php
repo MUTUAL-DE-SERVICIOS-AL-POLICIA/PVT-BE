@@ -136,7 +136,12 @@
             </div>
             
             <div id="tab-payment" class="tab-pane">                
-                @include('direct_contributions.payments', ['contribution_processes' => $contribution_processes, 'affiliate_id'=>$affiliate->id])                
+                @include('direct_contributions.payments', 
+                [
+                    'contribution_processes' => $contribution_processes, 
+                    'affiliate_id'=>$affiliate->id,
+                    'voucher'   =>  $voucher,
+                ]) 
             </div>
             <div id="tab-observations" class="tab-pane">
                 {{-- @include('ret_fun.observation') --}}

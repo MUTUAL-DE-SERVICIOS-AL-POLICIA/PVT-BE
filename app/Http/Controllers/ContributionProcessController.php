@@ -370,7 +370,7 @@ class ContributionProcessController extends Controller
 
     public function contributionPay(Request $request){
         $direct_contribution = DirectContribution::find($request->process['direct_contribution_id']);
-        $last_code = Util::getLastCode('Voucher');
+        $last_code = Util::getLastCode(Voucher::class);
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $direct_contribution->affiliate_id;
