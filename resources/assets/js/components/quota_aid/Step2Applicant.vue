@@ -49,6 +49,7 @@ export default {
       show_apoderado_form: false,
       applicant_types:['Beneficiario', 'Tutor', 'Apoderado'],
       date_death: this.affiliate.date_death,
+      beneficiary_city_address_id: null,
       error:{
         applicant_identity_card: false,
       },
