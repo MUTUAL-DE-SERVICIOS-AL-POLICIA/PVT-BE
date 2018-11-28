@@ -529,7 +529,7 @@
                     </div>
                     <div class="row m-b-md">
                         <div class="col-md-3"><label class="control-label">Estado Civil:</label></div>
-                        <div class="col-md-9"> {!! Form::select('spouse_civil_status', ['C'=>'Casado(a)','S'=>'Soltero(a)','V'=>'Viuido(a)','D'=>'Divorciado(a)'],
+                        <div class="col-md-9"> {!! Form::select('spouse_civil_status', ['C'=>'Casado (a)','S'=>'Soltero (a)','V'=>'Viudo (a)','D'=>'Divorciado (a)'],
                             null, ['placeholder'=> 'Seleccione estado civil', 'class' => 'form-control','v-model' => 'spouse_civil_status'
                             ]) !!}
                         </div>

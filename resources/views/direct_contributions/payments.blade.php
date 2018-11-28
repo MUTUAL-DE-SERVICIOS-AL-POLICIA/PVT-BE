@@ -14,10 +14,20 @@
                         </contribution-create>
                     @endif
                     @if ($procedure_type->id == 7)
-                        <aid-contribution-create
-                            direct-contribution-id="{{ $direct_contribution->id }}"
-                            :afid="{{ $affiliate->id }}"
-                        ></aid-contribution-create>
+                    {{-- PASIVO --}}
+                        @if ( $direct_contribution->contribution_processes()->where('procedure_state_id', 1)->first())
+                            <aid-contribution-show
+                                disable="true"
+                                direct-contribution-id="{{ $direct_contribution->id }}"
+                                affiliate-id="{{ $affiliate->id }}"
+                                aid-contribution="{{ json_encode($contribution_process->ai_contributions) }}"
+                            ></aid-contribution-show>
+                        @else
+                            <aid-contribution-create
+                                direct-contribution-id="{{ $direct_contribution->id }}"
+                                :afid="{{ $affiliate->id }}"
+                            ></aid-contribution-create>
+                        @endif
                     @endif
                 </div>
             </div>
