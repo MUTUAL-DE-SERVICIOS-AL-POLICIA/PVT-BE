@@ -43,8 +43,7 @@ class QuotaAidCertificationController extends Controller
             Util::getNextAreaCodeQuotaAid($quota_aid_id);
             $ret_fun_correlative = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid_id)->where('wf_state_id', $wf_state->id)->first();
             $ret_fun_correlative->note = $request->note;
-            $ret_fun_correlative->save();
-            Log::info('note saved');
+            $ret_fun_correlative->save();            
         }
         return $retirement_fund;
     }
