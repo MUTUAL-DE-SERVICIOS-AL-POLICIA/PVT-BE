@@ -36,9 +36,9 @@
     </thead>
     <tr class="text-sm" >
         @if(isset($spouse->id) && ($quota_aid->procedure_modality_id = 5 || $quota_aid->procedure_modality_id == 4)) 
-            <td class="text-center uppercase font-bold px-5 py-3"> {!! $affiliate->date_death !!}</td>    
+            <td class="text-center uppercase font-bold px-5 py-3"> {!! $spouse->date_death !!}</td>    
         @else    
-            <td class="text-center uppercase font-bold px-5 py-3"> {!! $spouse->date_derelict !!}  </td>    
+            <td class="text-center uppercase font-bold px-5 py-3"> {!! $affiliate->date_derelict !!}  </td>    
         @endif
         <td class="text-center uppercase font-bold px-5 py-3"> {!! $quota_aid->procedure_modality->name !!}  </td>    
     </tr>
