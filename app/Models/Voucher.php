@@ -24,4 +24,8 @@ class Voucher extends Model
     {
         return $this->belongsToMany('Muserpol\Models\Contribution\AidContribution')->withTimestamps();
     }
+
+    public function payable () {
+        return $this->morphTo();
+    }
 }

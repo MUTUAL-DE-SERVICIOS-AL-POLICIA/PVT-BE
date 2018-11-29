@@ -20,9 +20,11 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\Kinship;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Contribution\ContributionCommitment;
+use Muserpol\Models\Contribution\DirectContribution;
 use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
 use Muserpol\Models\Contribution\AidContribution;
+use Muserpol\Models\Voucher;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\Reimbursement;
 class ContributionProcessController extends Controller
@@ -365,6 +367,28 @@ class ContributionProcessController extends Controller
         ];
         return $data;
     }
+
+    public function contributionPay(Request $request){
+        $direct_contribution = DirectContribution::find($request->process['direct_contribution_id']);
+        $contribution_process = $direct_contribution->contribution_processes()->where('procedure_state_id', 1)->first();
+        //return $contribution_process;
+        $last_code = Util::getLastCode(Voucher::class);
+        $voucher = new Voucher();
+        $voucher->user_id = Auth::user()->id;
+        $voucher->affiliate_id = $direct_contribution->affiliate_id;
+        $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
+        $voucher->total = $request->process['total'];
+        $voucher->payment_date = Carbon::now();
+        $voucher->code = Util::getNextCode($last_code);
+        $voucher->paid_amount = $request->total;
+        $voucher->bank = $request->bank;
+        $voucher->bank_pay_number = $request->bank_pay_number;
+        $voucher->save();
+        //$contribution_process->attach($voucher->id);
+        //$contribution_process->save();
+        $contribution_process->voucher->save($voucher);
+    }
+    
     public function getCorrelative($contribution_process_id, $wf_state_id)
     {
         $correlative = ContributionProcess::find($contribution_process_id);

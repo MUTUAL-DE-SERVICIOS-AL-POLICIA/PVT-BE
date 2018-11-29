@@ -146,8 +146,14 @@
                 </direct_contribution-step1-requirements-edit>
                 {{-- @endcan --}}
             </div>
-            <div id="tab-payment" class="tab-pane">
-                @include('direct_contributions.payments', ['contribution_processes' => $contribution_processes, 'affiliate_id'=>$affiliate->id])
+            
+            <div id="tab-payment" class="tab-pane">                
+                @include('direct_contributions.payments', 
+                [
+                    'contribution_processes' => $contribution_processes, 
+                    'affiliate_id'=>$affiliate->id,
+                    //'voucher'   =>  $voucher,
+                ]) 
             </div>
             <div id="tab-observations" class="tab-pane">
                 {{-- @include('ret_fun.observation') --}}
