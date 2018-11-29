@@ -388,4 +388,14 @@ class ContributionProcessController extends Controller
         //$contribution_process->save();
         $contribution_process->voucher->save($voucher);
     }
+    
+    public function getCorrelative($contribution_process_id, $wf_state_id)
+    {
+        $correlative = ContributionProcess::find($contribution_process_id);
+
+        if ($correlative) {
+            return $correlative;
+        }
+        return null;
+    }
 }

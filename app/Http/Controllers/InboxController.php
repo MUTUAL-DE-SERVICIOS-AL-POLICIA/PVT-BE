@@ -238,7 +238,7 @@ class InboxController extends Controller
                     $doc->user_id = Auth::user()->id;
 
                     // $correlative = Util::getNextAreaCodeQuotaAid($doc->id);
-                    $correlative = null;
+                    $correlative = $doc;
 
                     /* TODO
                      * adicionar fechas de revision calificacion etc.

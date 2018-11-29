@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class ContributionProcess extends Model
 {
     protected $guarded = [];
+    public function user()
+    {
+        return $this->belongsTo('Muserpol\User');
+    }
     public function affiliate()
     {
         return $this->belongsTo('Muserpol\Models\Affiliate');
