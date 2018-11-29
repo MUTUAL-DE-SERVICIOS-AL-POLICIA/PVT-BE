@@ -140,7 +140,7 @@
                 [
                     'contribution_processes' => $contribution_processes, 
                     'affiliate_id'=>$affiliate->id,
-                    'voucher'   =>  $voucher,
+                    //'voucher'   =>  $voucher,
                 ]) 
             </div>
             <div id="tab-observations" class="tab-pane">

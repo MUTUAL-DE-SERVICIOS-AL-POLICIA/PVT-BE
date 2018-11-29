@@ -254,7 +254,7 @@ class DirectContributionController extends Controller
                 )
                 ->get();                        
         }        
-        return $contribution_process;
+        //return $contribution_process;
         
         $data = [
             'direct_contribution'   =>  $directContribution,
