@@ -257,6 +257,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('contribution_process/aid_contribution_save', 'ContributionProcessController@aidContributionSave')->name('aid_contribution_save');
 		Route::post('contribution_process/contribution_save', 'ContributionProcessController@contributionSave')->name('contribution_save');
 		Route::get('contribution_process/{contribution_process_id}/correlative/{wf_state_id}', 'ContributionProcessController@getCorrelative')->name('contribution_process_get_correlative');
+		Route::get('direct_contribution/{direct_contribution_id}/contribution_process/{contribution_process_id}/print/quotation', 'ContributionProcessCertificationController@printQuotation')->name('contribution_process_print_quotation');
 
 			//inbox
 		Route::get('inbox', function () {

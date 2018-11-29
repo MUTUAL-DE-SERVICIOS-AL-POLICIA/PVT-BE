@@ -360,6 +360,18 @@ tr {
 	padding-left: 2px;
 	padding-right: 2px;
 }
+.pt-45{
+	padding-top:45px
+}
+.pt-50{
+	padding-top:50px
+}
+.pt-60{
+	padding-top:60px
+}
+.pt-65{
+	padding-top:65px
+}
 
 .my-75 {
 	margin-top: 75px;
@@ -394,6 +406,12 @@ tr {
 }
 .m-b-25 {
 	margin-bottom: 25px;
+}
+.m-b-30 {
+	margin-bottom: 30px;
+}
+.m-b-35 {
+	margin-bottom: 35px;
 }
 .m-b-50 {
 	margin-bottom: 50px;
@@ -476,6 +494,15 @@ tr {
 .m-l-50 {
 	margin-left: 50px;
 }
+.my-auto {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+.mx-auto {
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .no-paddings{
 	padding: 0px;
 }
