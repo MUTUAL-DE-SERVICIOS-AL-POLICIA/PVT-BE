@@ -43,8 +43,7 @@ class QuotaAidCertificationController extends Controller
             Util::getNextAreaCodeQuotaAid($quota_aid_id);
             $ret_fun_correlative = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid_id)->where('wf_state_id', $wf_state->id)->first();
             $ret_fun_correlative->note = $request->note;
-            $ret_fun_correlative->save();
-            Log::info('note saved');
+            $ret_fun_correlative->save();            
         }
         return $retirement_fund;
     }
@@ -481,12 +480,11 @@ class QuotaAidCertificationController extends Controller
         $number = $next_area_code->code;
         $affiliate = Affiliate::find($quota_aid->affiliate_id);
         
-
-        if(($quota_aid->procedure_modality_id == 15 && $affiliate->pension_entity->id != 5) || $quota_aid->procedure_modality_id == 14 ) {
-            $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();            
+        if(($quota_aid->procedure_modality_id == 15 && $affiliate->pension_entity_id == 5) || $quota_aid->procedure_modality_id == 14 ) {
+            $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
             $end_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($spouse->date_death));
-            $start_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($spouse->date_death));            
-        } else {
+            $start_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($spouse->date_death));
+        } else {            
             $end_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
             $start_date = Carbon::createFromFormat('d/m/Y', $affiliate->date_death);
         }        
@@ -1443,7 +1441,9 @@ class QuotaAidCertificationController extends Controller
 
         $legal_dictum_id = 39;
         $legal_dictum = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$legal_dictum_id)->first();
-        $body_legal_dictum = 'Que, habiéndose verificado el procesamiento establecido en el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se procedió con la emisión de DICTAMEN LEGAL <strong> Nº '.$legal_dictum->code.'</strong> de '.Util::getStringDate($legal_dictum->date).', para la otorgación del beneficio de '.$quota_aid->procedure_modality->procedure_type->second_name.'.';
+        $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 40)->first();
+        $body_legal_dictum = $number->note."<br><br>";
+        $body_legal_dictum .= 'Que, habiéndose verificado el procesamiento establecido en el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se procedió con la emisión de DICTAMEN LEGAL <strong> Nº '.$legal_dictum->code.'</strong> de '.Util::getStringDate($legal_dictum->date).', para la otorgación del beneficio de '.$quota_aid->procedure_modality->procedure_type->second_name.'.';
 
 
         $then = 'La Comisión de Beneficios Económicos de la Mutual de Servicios al Policía “MUSERPOL” en
@@ -1516,7 +1516,7 @@ class QuotaAidCertificationController extends Controller
         $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>";
         
         // $number = Util::getNextAreaCode($quota_aid->id);
-        $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 40)->first();
+        
 
         $user = User::find($number->user_id);
         $body_resolution .= "<div class='text-xs italic'>cc. Arch.<br>CONTABILIDAD<br>COMISIÓN</div>";        
