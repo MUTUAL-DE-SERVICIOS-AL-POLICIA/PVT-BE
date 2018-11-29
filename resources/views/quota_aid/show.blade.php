@@ -116,8 +116,9 @@
             @if(Util::getRol()->id == 41)
                 <quota-aid-certification-button
                     title="Imprimir Dictamen Legal"
-                    quota-adi-id="{{ $quota_aid->id }}"
+                    quota-aid-id="{{ $quota_aid->id }}"
                     url-print="{{ route('quota_aid_print_legal_dictum', $quota_aid->id) }}"
+                    message="true"
                 >
                 </quota-aid-certification-button>
             @endif
@@ -134,8 +135,9 @@
             @if(Util::getRol()->id == 44)
                 <quota-aid-certification-button
                     title="Imprimir Resoluci&oacute;n Legal"
-                    quota-adi-id="{{ $quota_aid->id }}"
+                    quota-aid-id="{{ $quota_aid->id }}"
                     url-print="{{ route('quota_aid_print_legal_resolution', $quota_aid->id) }}"
+                    message="true"
                 >
                 </quota-aid-certification-button>
             @endif
