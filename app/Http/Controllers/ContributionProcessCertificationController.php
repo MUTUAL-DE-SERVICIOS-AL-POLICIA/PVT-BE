@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Muserpol\Models\Contribution\DirectContribution;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Helpers\Util;
+use Carbon\Carbon;
 
 class ContributionProcessCertificationController extends Controller
 {
@@ -55,5 +56,59 @@ class ContributionProcessCertificationController extends Controller
             // ->setOption('footer-right', 'Pagina [page] de [toPage]')
             ->stream("cotizacion.pdfs");
         return view('contribution_process.print.quotation', $data);
+    }
+    public function printVoucher($direct_contribution_id, $contribution_process_id)
+    {
+        $contribution_process = ContributionProcess::find($contribution_process_id);
+        $direct_contribution = $contribution_process->direct_contribution;
+        $affiliate = $direct_contribution->affiliate;
+
+        $voucher =  $contribution_process->voucher;
+
+        if ($direct_contribution->procedure_modality->procedure_type_id == 6) {
+            $contributions = $contribution_process->contributions;
+            $applicant = $affiliate;
+        } else {
+            $contributions = $contribution_process->aid_contributions;
+            $applicant = $direct_contribution->procedure_modality_id == 2 ? $affiliate->spouse : $affiliate;
+        }
+        $description = $direct_contribution->procedure_modality->procedure_type->name . ' correspondiente a los meses de: ';
+
+        $months = join(', ', ContributionProcess::find(46)->contributions->pluck('month_year')->map(function ($month) {
+            return Util::printMonthYear($month);
+        })->toArray());
+        $pos = strrpos($months, ', ');
+        if ($pos !== false) {
+            $months = substr_replace($months, ' y ', $pos, strlen(', '));
+        }
+        $description.=$months.'.';
+        $title = "RECIBO OFICIAL";
+
+        $code = $voucher->code;
+        $user = $voucher->user;
+        $date = Util::getDateFormat($voucher->payment_date);
+        $number = $code;
+
+        $data = [
+            'code' => $code,
+            'user' => $user,
+            'date' => $date,
+
+            'title' => $title,
+
+            'direct_contribution' => $direct_contribution,
+            'contribution_process' => $contribution_process,
+            'voucher' => $voucher,
+            'description' => $description,
+            'applicant' => $applicant,
+            'affiliate' => $affiliate,
+        ];
+        $pages[] = \View::make('voucher.print.main', $data)->render();
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-top', '0mm')
+            ->setOption('margin-bottom', '0mm')
+            ->stream("voucher.pdf");
     }
 }

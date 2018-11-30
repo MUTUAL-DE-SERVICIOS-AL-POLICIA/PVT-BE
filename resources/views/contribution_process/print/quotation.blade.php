@@ -27,8 +27,8 @@
                     <th class="w-50 align-top">
                         <div class="font-semibold uppercase leading-tight text-sm">
                         {{ $institution ?? 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"' }} <br>
-                        {{ $direction ?? 'DIRECCIÓN DE BENEFICIOS ECONÓMICOS' }} <br>
-                        {{ $unit ?? 'UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO' }}
+                        {{ $direction ?? '' }} <br>
+                        {{ $unit ?? '' }}
                         </div>
                     </th>
                     <th class="w-20 no-padding no-margins align-top">
