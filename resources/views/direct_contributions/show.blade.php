@@ -148,11 +148,12 @@
             </div>
             
             <div id="tab-payment" class="tab-pane">                
+                    {{ print_r($contribution_process->voucher->paid_amount) }}
                 @include('direct_contributions.payments', 
                 [
                     'contribution_processes' => $contribution_processes, 
                     'affiliate_id'=>$affiliate->id,
-                    //'voucher'   =>  $voucher,
+                    'voucher'   =>  $contribution_process->voucher,
                 ]) 
             </div>
             <div id="tab-observations" class="tab-pane">

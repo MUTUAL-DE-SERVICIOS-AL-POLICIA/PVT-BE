@@ -370,8 +370,7 @@ class ContributionProcessController extends Controller
 
     public function contributionPay(Request $request){
         $direct_contribution = DirectContribution::find($request->process['direct_contribution_id']);
-        $contribution_process = $direct_contribution->contribution_processes()->where('procedure_state_id', 1)->first();
-        //return $contribution_process;
+        $contribution_process = $direct_contribution->contribution_processes()->where('procedure_state_id', 1)->first();        
         $last_code = Util::getLastCode(Voucher::class);
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
@@ -383,10 +382,10 @@ class ContributionProcessController extends Controller
         $voucher->paid_amount = $request->total;
         $voucher->bank = $request->bank;
         $voucher->bank_pay_number = $request->bank_pay_number;
-        $voucher->save();
+        $voucher->save();        
         //$contribution_process->attach($voucher->id);
         //$contribution_process->save();
-        $contribution_process->voucher->save($voucher);
+        $contribution_process->voucher()->save($voucher);
     }
     
     public function getCorrelative($contribution_process_id, $wf_state_id)

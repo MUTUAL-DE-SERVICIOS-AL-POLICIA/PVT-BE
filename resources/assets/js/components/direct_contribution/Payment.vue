@@ -6,7 +6,7 @@
             </div>
             <div class="col-md-4">
                 <select class="form-control" v-model="payment_type" :disabled='!editing'>
-                    <option value="1">Al contado</option>
+                    <option value="1">Efectivo</option>
                     <option value="2">Deposito Bancario</option>                    
                 </select>
             </div>
@@ -65,6 +65,7 @@
     export default {
           props:[
             'contribution_process',
+            'voucher',
         ],
         data(){
             return{
@@ -80,7 +81,8 @@
         },
         created(){
             console.log("FORM");
-               console.log(this.contribution_process);
+               console.log(this.voucher);
+            this.completeVoucher();
         },
         methods:{
             store: function(){
@@ -96,7 +98,17 @@
                     this.editing = false;
                 this.enableDC();
                 var i;});
-            },            
+            },           
+            completeVoucher(){
+                if(this.voucher !== null){
+                    this.paid = this.voucher.paid_amount;
+                    this.bank = this.voucher.back;
+                    this.bank_pay_number = this.voucher.bank_pay_number;
+                    this.paid_amount = this.voucher.total;
+                    this.payment_type = this.voucher.payment_type
+                    this.pay
+                }
+            } 
         },
         computed: {
             getExchange: function() {                               
