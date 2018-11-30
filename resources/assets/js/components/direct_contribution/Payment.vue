@@ -66,6 +66,7 @@
           props:[
             'contribution_process',
             'voucher',
+            'payment_types',
         ],
         data(){
             return{
