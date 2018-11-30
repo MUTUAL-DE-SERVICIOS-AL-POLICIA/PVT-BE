@@ -12,13 +12,24 @@
         <div class="pull-left">
             @if ($contribution_process)
                 <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
-                <certification-button
-                type="contributionProcess"
-                title="Imprimir Cotizacion"
-                doc-id="{{ $contribution_process->id }}"
-                url-print="{{ route('contribution_process_print_quotation', [$direct_contribution->id,$contribution_process->id]) }}"
-            >
-            </certification-button> 
+                @if (Util::getRol()->id == 61)
+                    <certification-button
+                        type="contributionProcess"
+                        title="Imprimir Cotizacion"
+                        doc-id="{{ $contribution_process->id }}"
+                        url-print="{{ route('contribution_process_print_quotation', [$direct_contribution->id,$contribution_process->id]) }}"
+                    >
+                    </certification-button>
+                @endif
+                @if (Util::getRol()->id == 62)
+                    <certification-button
+                        type="contributionProcess"
+                        title="Imprimir Voucher"
+                        doc-id="{{ $contribution_process->id }}"
+                        url-print="{{ route('contribution_process_print_voucher', [$direct_contribution->id,$contribution_process->id]) }}"
+                    >
+                    </certification-button>
+                @endif
             @endif
             
             <span data-toggle="modal" data-target="#ModalRecordRetFun">

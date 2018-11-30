@@ -15,7 +15,10 @@ class Voucher extends Model
         'total',
         'payment_date'
     ];
-
+    public function user()
+    {
+        return $this->belongsTo("Muserpol\User");
+    }
     public function contributions()
     {
         return $this->belongsToMany('Muserpol\Models\Contribution\Contribution')->withTimestamps();
