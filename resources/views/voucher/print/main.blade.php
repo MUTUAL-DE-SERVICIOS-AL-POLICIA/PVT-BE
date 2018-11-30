@@ -82,7 +82,7 @@
                 <div class="font-bold m-b-5 w-15 inline-block align-top">
                     Por concepto de:
                 </div>
-                <div class="border rounded px-10 py-5 inline-block w-80 align-top text-justify" style="height:50px;">
+                <div class="border rounded px-10 py-5 inline-block w-80 align-top text-justify uppercase" style="height:50px;">
                     {{ $description }}
                 </div>
             </div>

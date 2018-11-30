@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Muserpol\Models\Contribution\DirectContribution;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Helpers\Util;
+use Carbon\Carbon;
 
 class ContributionProcessCertificationController extends Controller
 {
@@ -63,9 +64,24 @@ class ContributionProcessCertificationController extends Controller
         $affiliate = $direct_contribution->affiliate;
 
         $voucher =  $contribution_process->voucher;
-        $applicant = $affiliate;
-        $description = "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem, eaque.";
 
+        if ($direct_contribution->procedure_modality->procedure_type_id == 6) {
+            $contributions = $contribution_process->contributions;
+            $applicant = $affiliate;
+        } else {
+            $contributions = $contribution_process->aid_contributions;
+            $applicant = $direct_contribution->procedure_modality_id == 2 ? $affiliate->spouse : $affiliate;
+        }
+        $description = $direct_contribution->procedure_modality->procedure_type->name . ' correspondiente a los meses de: ';
+
+        $months = join(', ', ContributionProcess::find(46)->contributions->pluck('month_year')->map(function ($month) {
+            return Util::printMonthYear($month);
+        })->toArray());
+        $pos = strrpos($months, ', ');
+        if ($pos !== false) {
+            $months = substr_replace($months, ' y ', $pos, strlen(', '));
+        }
+        $description.=$months.'.';
         $title = "RECIBO OFICIAL";
 
         $code = $voucher->code;
