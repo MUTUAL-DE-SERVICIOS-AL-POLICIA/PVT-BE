@@ -24,7 +24,7 @@
                 @if (Util::getRol()->id == 62)
                     <certification-button
                         type="contributionProcess"
-                        title="Imprimir Voucher"
+                        title="Imprimir Comprobante de Pago"
                         doc-id="{{ $contribution_process->id }}"
                         url-print="{{ route('contribution_process_print_voucher', [$direct_contribution->id,$contribution_process->id]) }}"
                     >
@@ -158,12 +158,13 @@
                 {{-- @endcan --}}
             </div>
             
-            <div id="tab-payment" class="tab-pane">                
+            <div id="tab-payment" class="tab-pane">                                    
                 @include('direct_contributions.payments', 
                 [
                     'contribution_processes' => $contribution_processes, 
                     'affiliate_id'=>$affiliate->id,
-                    //'voucher'   =>  $voucher,
+                    'voucher'   =>  $contribution_process->voucher ?? 0,
+                    'payment_types' =>  $payment_types
                 ]) 
             </div>
             <div id="tab-observations" class="tab-pane">
