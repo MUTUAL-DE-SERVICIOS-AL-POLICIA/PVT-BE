@@ -11,11 +11,8 @@
             <div class="col-md-2">
                 <strong> Tipo de Pago:</strong>
             </div>
-            <div class="col-md-4">
-                <!-- <select class="form-control" v-model="payment_type_id" :disabled='!editing'>
-                    <option value=""></option>                
-                </select> -->
-                <select class="form-control m-b" name="city_id" v-model="payment_type_id" :disabled='!editing'>                    
+            <div class="col-md-4">                
+                <select class="form-control m-b" name="payment_type_id" v-model="payment_type_id" :disabled='!editing'>
                     <option v-for="payment_type in payment_types" :value="payment_type.id" :key="payment_type.id">{{ payment_type.name }}</option>
                 </select>                
             </div>
@@ -111,12 +108,15 @@
                 var i;});
             },           
             completeVoucher(){
-                if(this.voucher !== null){
+                console.log("voucher");
+                console.log(this.voucher);
+                if(this.voucher !== null && this.voucher != 0){
                     this.paid = this.voucher.paid_amount;
                     this.bank = this.voucher.back;
                     this.bank_pay_number = this.voucher.bank_pay_number;
                     this.paid_amount = this.voucher.total;
                     this.payment_type_id = this.voucher.payment_type_id;                
+                    this.editing = false;
                 }
             },
             toggle_editing() {

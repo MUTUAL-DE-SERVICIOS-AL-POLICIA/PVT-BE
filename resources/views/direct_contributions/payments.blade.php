@@ -55,12 +55,11 @@
             </div>
         </div>
     </div>
-    @if(isset($contribution_process->id) && $contribution_process->wf_state_current_id == 55)
+    @if(isset($contribution_process->id))
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-                <div class="ibox-title">
-                    {{-- <h2>Cobro</h2>                                             --}}
+                <div class="ibox-title">                    
                         <direct-contribution-payment
                             :contribution_process="{{ $contribution_process }}"
                             :voucher = "{{ $voucher }}"

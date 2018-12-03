@@ -384,6 +384,7 @@ class ContributionProcessController extends Controller
         $voucher->payment_date = Carbon::now();
         $voucher->code = Util::getNextCode($last_code);
         $voucher->paid_amount = $request->total;
+        $voucher->payment_type_id = $request->payment_type_id;
         if($request->payment_type_id == 1) {
             $voucher->bank = $request->bank;
             $voucher->bank_pay_number = $request->bank_pay_number;
