@@ -5,10 +5,12 @@
                 <strong> Tipo de Pago:</strong>
             </div>
             <div class="col-md-4">
-                <select class="form-control" v-model="payment_type" :disabled='!editing'>
-                    <option value="1">Efectivo</option>
-                    <option value="2">Deposito Bancario</option>                    
-                </select>
+                <!-- <select class="form-control" v-model="payment_type_id" :disabled='!editing'>
+                    <option value=""></option>                
+                </select> -->
+                <select class="form-control m-b" name="city_id" v-model="payment_type_id">                    
+                    <option v-for="payment_type in payment_types" :value="payment_type.id" :key="payment_type.id">@{{ payment_type.name }}</option>
+                </select>                
             </div>
             <div class="col-md-2">
                 <strong v-if="payment_type==1"> Efectivo:</strong>
@@ -77,12 +79,13 @@
                 bank_pay_number: '',
                 paid_amount: 0,
                 exchange: 0,
-                total: this.contribution_process.total,    
+                total: this.contribution_process.total,
+                payment_type_id: 1,
             }
         },
         created(){
             console.log("FORM");
-               console.log(this.voucher);
+               console.log(this.payment_types);
             this.completeVoucher();
         },
         methods:{
@@ -106,8 +109,7 @@
                     this.bank = this.voucher.back;
                     this.bank_pay_number = this.voucher.bank_pay_number;
                     this.paid_amount = this.voucher.total;
-                    this.payment_type = this.voucher.payment_type
-                    this.pay
+                    this.payment_type_id = this.voucher.payment_type_id;                
                 }
             } 
         },

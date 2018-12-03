@@ -154,6 +154,7 @@
                     'contribution_processes' => $contribution_processes, 
                     'affiliate_id'=>$affiliate->id,
                     'voucher'   =>  $contribution_process->voucher,
+                    'payment_types' =>  $payment_types
                 ]) 
             </div>
             <div id="tab-observations" class="tab-pane">
