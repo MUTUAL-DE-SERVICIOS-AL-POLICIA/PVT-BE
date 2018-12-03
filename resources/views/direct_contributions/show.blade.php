@@ -12,12 +12,22 @@
         <div class="pull-left">
             @if ($contribution_process)
                 <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
-                <certification-button
-                type="contributionProcess"
-                title="Imprimir Cotizacion"
-                doc-id="{{ $contribution_process->id }}"
-                url-print="{{ route('contribution_process_print_quotation', [$direct_contribution->id,$contribution_process->id]) }}"
-            >
+                @if ($contribution_process->wf_state_current_id == 54)       
+                    <certification-button
+                    type="contributionProcess"
+                    title="Imprimir Cotizacion"
+                    doc-id="{{ $contribution_process->id }}"
+                    url-print="{{ route('contribution_process_print_quotation', [$direct_contribution->id,$contribution_process->id]) }}"
+                    >
+                @endif
+                @if ($contribution_process->wf_state_current_id == 55)
+                    <certification-button
+                    type="contributionProcess"
+                    title="Imprimir Comprobante"
+                    doc-id="{{ $contribution_process->id }}"
+                    url-print="{{ route('contribution_process_print_voucher', [$direct_contribution->id,$contribution_process->id]) }}"
+                    > 
+                @endif
             </certification-button> 
             @endif
             
@@ -147,13 +157,12 @@
                 {{-- @endcan --}}
             </div>
             
-            <div id="tab-payment" class="tab-pane">                
-                    {{ print_r($contribution_process->voucher->paid_amount) }}
+            <div id="tab-payment" class="tab-pane">                                    
                 @include('direct_contributions.payments', 
                 [
                     'contribution_processes' => $contribution_processes, 
                     'affiliate_id'=>$affiliate->id,
-                    'voucher'   =>  $contribution_process->voucher,
+                    'voucher'   =>  $contribution_process->voucher ?? 0,
                     'payment_types' =>  $payment_types
                 ]) 
             </div>

@@ -47,7 +47,7 @@
                         @else
                             <aid-contribution-create
                                 direct-contribution-id="{{ $direct_contribution->id }}"
-                                :afid="{{ $affiliate->id }}"                                
+                                :afid="{{ $affiliate->id }}"
                             ></aid-contribution-create>
                         @endif
                     @endif
@@ -60,10 +60,11 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Cobro</h2>                                            
+                    {{-- <h2>Cobro</h2>                                             --}}
                         <direct-contribution-payment
                             :contribution_process="{{ $contribution_process }}"
-                            :voucher = "{{ $voucher }}"                      
+                            :voucher = "{{ $voucher }}"
+                            :payment_types = "{{ $payment_types }}"             
                         ></direct-contribution-payment>                    
                 </div>
             </div>

@@ -1,5 +1,12 @@
 <template>    
-    <div class="ibox-content">                    
+    <div class="ibox-content">
+        <div  class="pull-left">
+            <legend>Pago</legend>
+        </div>                
+        <div class="text-right">
+            <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
+        </div>        
+        <br>
         <div class="row">                
             <div class="col-md-2">
                 <strong> Tipo de Pago:</strong>
@@ -8,8 +15,8 @@
                 <!-- <select class="form-control" v-model="payment_type_id" :disabled='!editing'>
                     <option value=""></option>                
                 </select> -->
-                <select class="form-control m-b" name="city_id" v-model="payment_type_id">                    
-                    <option v-for="payment_type in payment_types" :value="payment_type.id" :key="payment_type.id">@{{ payment_type.name }}</option>
+                <select class="form-control m-b" name="city_id" v-model="payment_type_id" :disabled='!editing'>                    
+                    <option v-for="payment_type in payment_types" :value="payment_type.id" :key="payment_type.id">{{ payment_type.name }}</option>
                 </select>                
             </div>
             <div class="col-md-2">
@@ -94,8 +101,8 @@
                 axios.post('/contribution_process/'+this.contribution_process.id+'/contribution_pay',                
                 {   
                     process,
-                    total:this.total,                    
-                    paid:parseMoney(this.paid),
+                    total: parseMoney(this.total),
+                    paid: parseMoney(this.paid),
                     bank:this.bank,
                     bank_pay_number:this.bank_pay_number})
                 .then(response => {
@@ -111,7 +118,10 @@
                     this.paid_amount = this.voucher.total;
                     this.payment_type_id = this.voucher.payment_type_id;                
                 }
-            } 
+            },
+            toggle_editing() {
+                this.editing = !this.editing;
+            }
         },
         computed: {
             getExchange: function() {                               

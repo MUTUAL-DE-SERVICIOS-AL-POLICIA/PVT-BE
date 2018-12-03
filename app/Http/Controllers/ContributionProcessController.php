@@ -372,7 +372,11 @@ class ContributionProcessController extends Controller
         $direct_contribution = DirectContribution::find($request->process['direct_contribution_id']);
         $contribution_process = $direct_contribution->contribution_processes()->where('procedure_state_id', 1)->first();        
         $last_code = Util::getLastCode(Voucher::class);
-        $voucher = new Voucher();
+        if($contribution_process->voucher) {
+            $voucher = $contribution_process->voucher;
+        } else {
+            $voucher = new Voucher();
+        }        
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $direct_contribution->affiliate_id;
         $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
@@ -380,11 +384,11 @@ class ContributionProcessController extends Controller
         $voucher->payment_date = Carbon::now();
         $voucher->code = Util::getNextCode($last_code);
         $voucher->paid_amount = $request->total;
-        $voucher->bank = $request->bank;
-        $voucher->bank_pay_number = $request->bank_pay_number;
-        $voucher->save();        
-        //$contribution_process->attach($voucher->id);
-        //$contribution_process->save();
+        if($request->payment_type_id == 1) {
+            $voucher->bank = $request->bank;
+            $voucher->bank_pay_number = $request->bank_pay_number;
+        }
+        $voucher->save();                
         $contribution_process->voucher()->save($voucher);
     }
     
