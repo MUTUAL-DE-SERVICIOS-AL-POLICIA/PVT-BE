@@ -42,13 +42,27 @@ import { mapGetters } from 'vuex';
               inputAttributes: {
                 autocapitalize: "off"
               },
+              html: `Tamaño del texto <br>
+              <label class="label-control" for="small">Pequeño</label><input id="small" value="text-sm-1" type="radio" name="size">
+              <label class="label-control" for="normal">Normal</label><input id="normal" value="text-base" type="radio" name="size" checked>
+              <label class="label-control" for="large">Grande</label><input id="large" value="text-base-1" type="radio" name="size">
+              `,
               showCancelButton: true,
               confirmButtonText: "Imprimir",
               showLoaderOnConfirm: true,
               preConfirm: note => {
+                let size = null;
+                var radios = document.getElementsByName('size');
+                for (var i = 0, length = radios.length; i < length; i++) {
+                    if (radios[i].checked) {
+                        size = radios[i].value;
+                      break;
+                    }
+                }
                 return axios
                   .post(`/quota_aid/${this.quotaAidId}/save_certification_note`, {
-                    note: note
+                    note: note,
+                    size: size
                   })
                   .then(response => {
                     if (!response.data) {

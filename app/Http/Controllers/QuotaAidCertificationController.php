@@ -38,6 +38,7 @@ class QuotaAidCertificationController extends Controller
     public function saveCertificationNote(Request $request, $quota_aid_id)
     {
         $retirement_fund =  QuotaAidMortuary::find($quota_aid_id);
+        Session::put('size', $request->size);
         if ($request->note) {
             $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first();
             Util::getNextAreaCodeQuotaAid($quota_aid_id);

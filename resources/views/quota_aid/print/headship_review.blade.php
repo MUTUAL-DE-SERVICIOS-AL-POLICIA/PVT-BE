@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
 </head>
 
-<body style="padding:0 70px 0 60px; " class="no-border text-base">
+<body style="padding:0 70px 0 60px;" class="no-border {{ Session::get('size') ?? 'text-base' }}">
     <div class="page-break">
         <div class="block">
             <div class="text-right">

@@ -14,7 +14,7 @@
     </style>
 </head>
 
-<body style="padding:0 65px 0px 65px; " class="no-border @if($quota_aid->procedure_modality_id == 14) text-base @else text-base-1 @endif">
+<body style="padding:0 65px 0px 65px; " class="no-border {{ Session::get('size') ?? 'text-base' }}">
     <div class="page-break">     
         <div class="block">
             <div class="text-right">
