@@ -238,7 +238,7 @@ class InboxController extends Controller
                     $doc->user_id = Auth::user()->id;
 
                     // $correlative = Util::getNextAreaCodeQuotaAid($doc->id);
-                    $correlative = null;
+                    $correlative = $doc;
 
                     /* TODO
                      * adicionar fechas de revision calificacion etc.
@@ -311,6 +311,29 @@ class InboxController extends Controller
                     ], 422);
                 }
                 return response()->json($quota_aid, 200);
+            break;
+            case 11:
+                try {
+                    $doc = ContributionProcess::find($doc_id);
+                    if ($doc->inbox_state == false) {
+                        throw new Exception('Trámite aun no validado.');
+                    }
+                    $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id', '=', $module->id)->first();
+                    if ($wf_current_state->id != $doc->wf_state_current_id) {
+                        throw new Exception('Error al validar el Trámite, verifique que el trámite este en unas de las bandejas.');
+                    }
+                    $doc->inbox_state = false;
+                    /* TODO
+                     * adicionar fechas de revision calificacion etc.
+                     */
+                    $doc->save();
+                } catch (Exception $exception) {
+                    return response()->json([
+                        'status' => 'error',
+                        'errors' => $exception->getMessage(),
+                    ], 422);
+                }
+                return response()->json($doc, 200);
             break;
         }
     }

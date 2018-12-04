@@ -22,6 +22,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
 use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\ContributionProcess;
+use Muserpol\Models\Voucher;
 class Util
 {
     public static function isRegionalRole()

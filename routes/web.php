@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunTemplate;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\Contribution\ContributionProcess;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -250,10 +251,17 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('direct_contribution/{direct_contribution_id}/edit_requirements', 'DirectContributionController@editRequirements');
 		Route::get('affiliate/{affiliate}/direct_contribution/create', 'DirectContributionController@create')->name('create_direct_contribution');
 		Route::get('get_all_direct_contribution', 'DirectContributionController@getAllDirectContribution');
+		Route::post('contribution_process/{contribution_process_id}/contribution_pay', 'ContributionProcessController@contributionPay');
+		
 		// Route::post('affiliate/{affiliate}/contribution_process/save_commitment', 'ContributionProcessController@saveCommitment')->name('save_commitment');
 
 		// Contribution process
+		Route::resource('contribution_process', 'ContributionProcessController');
 		Route::post('contribution_process/aid_contribution_save', 'ContributionProcessController@aidContributionSave')->name('aid_contribution_save');
+		Route::post('contribution_process/contribution_save', 'ContributionProcessController@contributionSave')->name('contribution_save');
+		Route::get('contribution_process/{contribution_process_id}/correlative/{wf_state_id}', 'ContributionProcessController@getCorrelative')->name('contribution_process_get_correlative');
+		Route::get('direct_contribution/{direct_contribution_id}/contribution_process/{contribution_process_id}/print/quotation', 'ContributionProcessCertificationController@printQuotation')->name('contribution_process_print_quotation');
+		Route::get('direct_contribution/{direct_contribution_id}/contribution_process/{contribution_process_id}/print/voucher', 'ContributionProcessCertificationController@printVoucher')->name('contribution_process_print_voucher');
 
 			//inbox
 		Route::get('inbox', function () {
@@ -602,6 +610,9 @@ foreach (array_keys($retirement_funds) as $value) {
 		});
 		Route::get('get_next_area_code_quota_aid/{quota_aid_id}', function ($quota_aid_id) {
 			return Util::getNextAreaCodeQuotaAid($quota_aid_id, false);
+		});
+		Route::get('get_next_area_code_contribution_process/{contribution_process_id}', function ($contribution_process_id) {
+			return ContributionProcess::find($contribution_process_id);
 		});
 	});
 });

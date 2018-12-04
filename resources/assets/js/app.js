@@ -369,8 +369,9 @@ Vue.component("direct-contribution-step1-requirements", require("./components/di
 Vue.component('direct-contribution-step1-requirements-edit', require('./components/direct_contribution/Step1RequirementsEdit.vue'));
 Vue.component("direct-contribution-step2-contributor", require("./components/direct_contribution/Step2Contributor.vue"));
 Vue.component("direct-contribution-step3-letter", require("./components/direct_contribution/Step3Letter.vue"));
-
+Vue.component("direct-contribution-payment", require("./components/direct_contribution/Payment.vue"));
 Vue.component("aid-contribution-edit", require("./components/direct_contribution/AidContributionEdit.vue"));
+Vue.component("contribution-edit", require("./components/direct_contribution/ContributionEdit.vue"));
 
 //aid-contributions
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
@@ -379,6 +380,7 @@ Vue.component('contribution-aid-commitment',require('./components/contribution/A
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));
+Vue.component('certification-button', require('./components/utils/CertificationButton.vue'));
 
 
 const app = new Vue({

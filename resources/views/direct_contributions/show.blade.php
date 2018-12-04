@@ -10,7 +10,28 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
-            {{-- <correlative doc-id="{{ $direct_contribution->id }}" wf-state-id="{{ $direct_contribution->wf_state_current_id }}" type="retFun"></correlative> --}}
+            @if ($contribution_process)
+                <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
+                @if (Util::getRol()->id == 61)
+                    <certification-button
+                        type="contributionProcess"
+                        title="Imprimir Cotizacion"
+                        doc-id="{{ $contribution_process->id }}"
+                        url-print="{{ route('contribution_process_print_quotation', [$direct_contribution->id,$contribution_process->id]) }}"
+                    >
+                    </certification-button>
+                @endif
+                @if (Util::getRol()->id == 62)
+                    <certification-button
+                        type="contributionProcess"
+                        title="Imprimir Comprobante de Pago"
+                        doc-id="{{ $contribution_process->id }}"
+                        url-print="{{ route('contribution_process_print_voucher', [$direct_contribution->id,$contribution_process->id]) }}"
+                    >
+                    </certification-button>
+                @endif
+            @endif
+            
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
@@ -20,11 +41,15 @@
         </div>
         <div class="pull-right">
             <div class="form-inline">
-                {{-- @if ($can_validate)
-                <inbox-send-back-button-ret-fun :wf-sequence-back-list="{{ $wf_sequences_back }}" :doc-id="{{$direct_contribution->id}}" :wf-current-state-name="`{{$direct_contribution->wf_state->name}}`"
-                    type="retFun"></inbox-send-back-button-ret-fun>
-                <sweet-alert-modal inline-template :doc-id="{{$direct_contribution->id}}" :inbox-state="{{$direct_contribution->inbox_state ? 'true' : 'false'}}"
-                    :doc-user-id="{{$direct_contribution->user_id}}" :auth-id="{{ $user->id}}" type="retFun">
+                @if ($can_validate)
+                <inbox-send-back-button-quota-aid
+                    :wf-sequence-back-list="{{ $wf_sequences_back }}"
+                    :doc-id="{{$contribution_process->id}}"
+                    :wf-current-state-name="`{{$contribution_process->wf_state->name}}`"
+                    type="contributionProcess"
+                ></inbox-send-back-button-quota-aid>
+                <sweet-alert-modal inline-template :doc-id="{{$contribution_process->id}}" :inbox-state="{{$contribution_process->inbox_state ? 'true' : 'false'}}"
+                    :doc-user-id="{{$contribution_process->user_id}}" :auth-id="{{ $user->id}}" type="contributionProcess">
                     <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                         <div style="display:inline-block" v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
                             <button class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
@@ -34,7 +59,7 @@
                         </div>
                     </transition>
                 </sweet-alert-modal>
-                @endif --}}
+                @endif
             </div>
         </div>
     </div>
@@ -79,22 +104,22 @@
         <div class="tab-content">
             <div id="tab-ret-fun" class="tab-pane active">
                 {{-- @can('update',$direct_contribution) --}}
-                {{-- <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
+                <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
                     :procedure_modality="{{$direct_contribution->procedure_modality}}" :states="{{ $states }}" inline-template>
                     @include('direct_contributions.info', ['direct_contribution'=>$direct_contribution,'cities'=>$birth_cities])
-                </direct-contribution-info> --}}
+                </direct-contribution-info>
                 {{-- @endcan --}}
             </div>
             <div id="tab-affiliate" class="tab-pane">
-                {{-- <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
+                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
                     @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
-                </affiliate-show> --}}
+                </affiliate-show>
 
             </div>            
             <div id="tab-spouse-info" class="tab-pane">
-                {{-- <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $birth_cities }}" inline-template>
+                <spouse-show :spouse="{{ $spouse }}" :affiliate-id="{{ $affiliate->id }}" :cities="{{ $birth_cities }}" inline-template>
                     @include('spouses.spouse_personal_information', ['spouse'=>$spouse])
-                </spouse-show> --}}
+                </spouse-show>
             </div>
             <div id="tab-contributions" class="tab-pane">
                 @if($direct_contribution->procedure_modality->procedure_type_id == 6)
@@ -120,7 +145,7 @@
                 </div>
             <div id="tab-summited-document" class="tab-pane">                
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)  --}}
-                {{-- <direct-contribution-step1-requirements-edit 
+                <direct-contribution-step1-requirements-edit 
                     :direct_contribution="{{ $direct_contribution }}" 
                     :modalities="{{ $modalities }}" 
                     :requirements="{{ $requirements }}"                    
@@ -129,11 +154,18 @@
                     :submitted="{{ json_encode($submitted_documents) }}"
                     :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
                     @include('direct_contributions.step1_requirements_edit')
-                </direct_contribution-step1-requirements-edit> --}}
+                </direct_contribution-step1-requirements-edit>
                 {{-- @endcan --}}
             </div>
-            <div id="tab-payment" class="tab-pane">
-                @include('direct_contributions.payments', ['contribution_processes' => $contribution_processes, 'affiliate_id'=>$affiliate->id])
+            
+            <div id="tab-payment" class="tab-pane">                                    
+                @include('direct_contributions.payments', 
+                [
+                    'contribution_processes' => $contribution_processes, 
+                    'affiliate_id'=>$affiliate->id,
+                    'voucher'   =>  $contribution_process->voucher ?? 0,
+                    'payment_types' =>  $payment_types
+                ]) 
             </div>
             <div id="tab-observations" class="tab-pane">
                 {{-- @include('ret_fun.observation') --}}

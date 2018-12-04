@@ -8,14 +8,14 @@
         de la señora: 
     @endif
 </div>
-{{-- <div class="font-bold uppercase m-b-5 counter">
+<div class="font-bold uppercase m-b-5">
     Datos del Titular
-</div> --}}
+</div> 
 <div class="my-10">
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
 </div>
-@if(isset($spouse->id) && false) 
-    <div class="font-bold uppercase m-b-5 counter">
+@if(isset($spouse->id) && ($quota_aid->procedure_modality_id = 5 || $quota_aid->procedure_modality_id == 4)) 
+    <div class="font-bold uppercase m-b-5">
         Datos del fallecido
     </div>
     <div class="my-10">
@@ -25,16 +25,22 @@
 <strong>CERTIFICA:</strong> Que los &uacute;ltimos doce (12) aportes establecidos en el Reglamento de Couta Mortuoria y Auxilio Mortuorio, corresponden al siguiente detalle:
 <table class="table-info w-100 my-10">
     <thead class="bg-grey-darker">
-        <tr class="font-medium text-white text-sm uppercase">            
-                <td class="text-center uppercase font-bold px-5 py-3">FECHA DE PASE A LA JUBILACI&Oacute;N</td>                
+        <tr class="font-medium text-white text-sm uppercase">
+                @if(isset($spouse->id) && ($quota_aid->procedure_modality_id = 5 || $quota_aid->procedure_modality_id == 4)) 
+                    <td class="text-center uppercase font-bold px-5 py-3">FECHA DE FALLECIMIENTO</td>              
+                @else 
+                    <td class="text-center uppercase font-bold px-5 py-3">FECHA DE PASE A LA JUBILACI&Oacute;N</td>
+                @endif   
                 <td class="text-center uppercase font-bold px-5 py-3">MODALIDAD</td>
         </tr>
     </thead>
     <tr class="text-sm" >
-            
-            <td class="text-center uppercase font-bold px-5 py-3"> {!! $affiliate->date_derelict !!}</td>    
-            
-            <td class="text-center uppercase font-bold px-5 py-3"> {!! $quota_aid->procedure_modality->name !!}  </td>    
+        @if(isset($spouse->id) && ($quota_aid->procedure_modality_id = 5 || $quota_aid->procedure_modality_id == 4)) 
+            <td class="text-center uppercase font-bold px-5 py-3"> {!! $spouse->date_death !!}</td>    
+        @else    
+            <td class="text-center uppercase font-bold px-5 py-3"> {!! $affiliate->date_derelict !!}  </td>    
+        @endif
+        <td class="text-center uppercase font-bold px-5 py-3"> {!! $quota_aid->procedure_modality->name !!}  </td>    
     </tr>
 </table>
 

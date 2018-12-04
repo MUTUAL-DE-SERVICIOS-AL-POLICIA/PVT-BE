@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class ContributionProcess extends Model
 {
     protected $guarded = [];
+    public function user()
+    {
+        return $this->belongsTo('Muserpol\User');
+    }
     public function affiliate()
     {
         return $this->belongsTo('Muserpol\Models\Affiliate');
@@ -22,6 +26,9 @@ class ContributionProcess extends Model
     public function aid_contributions()
     {
         return $this->morphedByMany('Muserpol\Models\Contribution\AidContribution', 'quotable')->withTimestamps();
+    }
+    public function voucher() {
+        return $this->morphOne('Muserpol\Models\Voucher','payable');
     }
     public function wf_state()
     {
