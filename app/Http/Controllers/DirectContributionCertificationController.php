@@ -9,6 +9,10 @@ class DirectContributionCertificationController extends Controller
 {
     public function printCommitmentLetter(DirectContribution $direct_contribution)
     {
-        
+        $affiliate = $direct_contribution->affiliate;
+        $user = $direct_contribution->user;
+        // if ($direct_contribution->procedure_modality-> ) {
+        //     # code...
+        // }
     }
 }

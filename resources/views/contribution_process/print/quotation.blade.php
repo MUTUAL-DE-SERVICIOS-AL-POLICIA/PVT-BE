@@ -16,7 +16,7 @@
 </head>
 <body class="no-border text-xs">
     @for ($i = 0; $i < 3; $i++)
-        <div class="m-b-20" style="height:490px !important; ">
+        <div class="m-b-20" style="height:490px !important; border-bottom: 1px dashed #3c3c3c">
             <table class="w-100 ">
                 <tr>
                     <th class="w-20 text-left no-padding no-margins align-middle">
@@ -27,8 +27,8 @@
                     <th class="w-50 align-top">
                         <div class="font-semibold uppercase leading-tight text-sm">
                         {{ $institution ?? 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"' }} <br>
-                        {{ $direction ?? 'PAGO DE APORTES ACTIVO' }} <br>
-                        {{ $unit ?? 'AGREGADO POLICIAL' }}
+                        {{ $direction ?? '' }} <br>
+                        {{ $unit ?? '' }}
                         </div>
                     </th>
                     <th class="w-20 no-padding no-margins align-top">
@@ -51,12 +51,11 @@
                     </th>
                 </tr>
                 <tr>
-                    <td colspan="3" style=""></td>
+                    <td colspan="3" style="border-bottom: 1px solid #22292f;"></td>
                 </tr>
                 <tr>
                     <td colspan="3" class="font-bold text-center text-lg uppercase">
-                        {{-- {{ $title }} @if (isset($subtitle))
-                        <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span> @endif --}}
+                        {{-- {{ $title }} --}}
                     </td>
                 </tr>
             </table>
@@ -194,8 +193,8 @@
                         </table>
                     @endif
                 </div>
-                <div style="width:500px;height:120px;" class="mx-auto border rounded text-xs m-t-5">
-                        <table class="pt-45">
+                <div style="width:500px;height:150px;" class="mx-auto border rounded text-xs m-t-10">
+                        <table class="pt-70">
                             <tr>
                                 <td class="no-border text-center w-100 align-bottom">
                                     <span class="font-bold">&nbsp;

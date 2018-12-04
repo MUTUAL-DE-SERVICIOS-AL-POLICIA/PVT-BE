@@ -297,6 +297,7 @@ class ContributionProcessController extends Controller
 
         $total = 0;
         $contribution_ids = [];
+        $reimbursement_ids = [];
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte = (object)$ap;
@@ -323,6 +324,7 @@ class ContributionProcessController extends Controller
                 $contribution->subtotal = 0;
                 $contribution->save();
                 $contribution->type = "R";
+                array_push($reimbursement_ids, $contribution->id);
             } else {
                 $contribution = new Contribution();
                 $contribution->user_id = Auth::user()->id;
@@ -354,11 +356,12 @@ class ContributionProcessController extends Controller
                 $contribution->interest = $aporte->interes;
                 $contribution->breakdown_id = 3;
                 $contribution->save();
+                array_push($contribution_ids, $contribution->id);
             }
             $total = $total + $contribution->total;
-            array_push($contribution_ids, $contribution->id);
         }
         $contribution_process->contributions()->attach($contribution_ids);
+        $contribution_process->reimbursements()->attach($reimbursement_ids);
         $contribution_process->total = $total;
         $contribution_process->save();
         $data = [

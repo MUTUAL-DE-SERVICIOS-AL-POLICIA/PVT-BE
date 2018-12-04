@@ -47,7 +47,7 @@
                         @else
                             <aid-contribution-create
                                 direct-contribution-id="{{ $direct_contribution->id }}"
-                                :afid="{{ $affiliate->id }}"
+                                :affiliate-id="{{ $affiliate->id }}"
                             ></aid-contribution-create>
                         @endif
                     @endif
