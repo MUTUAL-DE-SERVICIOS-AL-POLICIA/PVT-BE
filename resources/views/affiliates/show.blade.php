@@ -110,7 +110,7 @@ th.ellipsis-text {
                         <li class="list-group-item " data-toggle="tab" href="#tab-documents-scanned"><a href="#" ><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-quota-aid-mortuory"><a href="#"><i class="{{ Util::IconModule(4)}}"></i> Cuota y Auxilio Mortuorio</a></li>
-                        <li class="list-group-item " data-toggle="tab" href="#tab-direct-contributions"><a href="#"><i class="{{ Util::IconModule(4)}}"></i> Aportes directos</a></li>
+                        {{-- <li class="list-group-item " data-toggle="tab" href="#tab-direct-contributions"><a href="#"><i class="{{ Util::IconModule(4)}}"></i> Aportes directos</a></li> --}}
                         <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Util::IconModule(2)}}"></i> Complemento Económico</a></li>
                         {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
