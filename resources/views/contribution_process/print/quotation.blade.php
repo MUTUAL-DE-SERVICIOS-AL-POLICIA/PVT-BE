@@ -16,7 +16,7 @@
 </head>
 <body class="no-border text-xs">
     @for ($i = 0; $i < 3; $i++)
-        <div class="m-b-20" style="height:490px !important; border-bottom: 1px dashed #3c3c3c ">
+        <div class="m-b-20" style="height:490px !important; ">
             <table class="w-100 ">
                 <tr>
                     <th class="w-20 text-left no-padding no-margins align-middle">
@@ -27,8 +27,8 @@
                     <th class="w-50 align-top">
                         <div class="font-semibold uppercase leading-tight text-sm">
                         {{ $institution ?? 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"' }} <br>
-                        {{ $direction ?? '' }} <br>
-                        {{ $unit ?? '' }}
+                        {{ $direction ?? 'PAGO DE APORTES ACTIVO' }} <br>
+                        {{ $unit ?? 'AGREGADO POLICIAL' }}
                         </div>
                     </th>
                     <th class="w-20 no-padding no-margins align-top">
@@ -51,12 +51,12 @@
                     </th>
                 </tr>
                 <tr>
-                    <td colspan="3" style="border-bottom: 1px solid #22292f;"></td>
+                    <td colspan="3" style=""></td>
                 </tr>
                 <tr>
                     <td colspan="3" class="font-bold text-center text-lg uppercase">
-                        {{ $title }} @if (isset($subtitle))
-                        <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span> @endif
+                        {{-- {{ $title }} @if (isset($subtitle))
+                        <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span> @endif --}}
                     </td>
                 </tr>
             </table>
@@ -67,26 +67,26 @@
                 <table class="table-info w-100 m-b-5">
                     <thead class="bg-grey-darker">
                         <tr class="font-medium text-white text-xs">
-                            <td class="px-15 text-left uppercase">
+                            <td class="px-15 text-center uppercase">
                                 NOMBRE COMPLETO
                             </td>
-                            <td class="px-15 text-left uppercase w-30">
+                            <td class="px-15 text-center uppercase w-30">
                                 Cédula de identidad
                             </td>
-                            <td class="w-10 px-15 text-right uppercase">
+                            <td class="w-10 px-15 text-center uppercase">
                                 NUP
                             </td>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="text-xs">
-                            <td class="text-left uppercase font-bold px-10 py-3">
+                            <td class="text-center uppercase font-bold px-10 py-3">
                                 {{ $applicant->fullName() }}
                             </td>
-                            <td class="text-left uppercase font-bold px-10 py-3">
+                            <td class="text-center uppercase font-bold px-10 py-3">
                                 {{ $applicant->ciWithExt() }}
                             </td>
-                            <td class="text-right uppercase font-bold px-10 py-3">
+                            <td class="text-center uppercase font-bold px-10 py-3">
                                 {{ $applicant instanceof Muserpol\Models\Affiliate ?  $applicant->id : $applicant->affiliate_id }}
                             </td>
                         </tr>

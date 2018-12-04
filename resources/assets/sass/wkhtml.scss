@@ -30,7 +30,7 @@ html {
 body {
 	@extend %extend_1;
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-	border-radius: 0.75em;
+	border-radius: 0.5em;
 	border: 1px solid $color_shark_approx;
 	// page-break-after: avoid;
 }
@@ -49,7 +49,7 @@ tr {
 }
 .table-info {
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-	border-radius: .75em;
+	border-radius: 0.5em;
 	overflow: hidden;
 	border-spacing: 0;
 	thead tr td {
@@ -64,12 +64,12 @@ tr {
 		}
 		&:last-child {
 			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-			border-radius: 0 0.75em 0 0;
+			border-radius: 0 0.5em 0 0;
 			border-right: 1px solid $color_shuttle_gray_approx;
 		}
 		&:only-child {
 			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-			border-radius: 0.75em 0.75em 0 0;
+			border-radius: 0.5em 0.5em 0 0;
 		}
 	}
 	table thead tr td:last-child {
@@ -87,11 +87,11 @@ tr {
 			&:last-child {
 				border-right: 1px solid $color_shuttle_gray_approx;
 				//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-				border-radius: 0 0 0.75em 0;
+				border-radius: 0 0 0.5em 0;
 			}
 			&:first-child {
 				//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-				border-radius: 0 0 0 0.75em;
+				border-radius: 0 0 0 0.5em;
 			}
 			&:only-child {
 				//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
@@ -102,7 +102,7 @@ tr {
 }
 .table-code {
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-	border-radius: .75em;
+	border-radius: 0.5em;
 	border-spacing: 0;
 	tbody tr {
 		td {
@@ -121,31 +121,31 @@ tr {
 		&:first-child td {
 			&:last-child {
 				//Instead of the line below you could use @include border-top-right-radius($radius)
-				border-top-right-radius: .75em;
+				border-top-right-radius: 0.5em;
 				border-top: 1px solid $color_shuttle_gray_approx;
 				border-right: 1px solid $color_shuttle_gray_approx;
 			}
 			&:first-child {
 				//Instead of the line below you could use @include border-top-left-radius($radius)
-				border-top-left-radius: .75em;
+				border-top-left-radius: 0.5em;
 			}
 		}
 		&:last-child td {
 			&:first-child {
 				//Instead of the line below you could use @include border-bottom-left-radius($radius)
-				border-bottom-left-radius: .75em;
+				border-bottom-left-radius: 0.5em;
 				border-bottom: none;
 			}
 			&:last-child {
 				//Instead of the line below you could use @include border-bottom-right-radius($radius)
-				border-bottom-right-radius: .75em;
+				border-bottom-right-radius: 0.5em;
 				border-right: 1px solid $color_shuttle_gray_approx;
 			}
 			&:only-child {
 				//Instead of the line below you could use @include border-bottom-right-radius($radius)
-				border-bottom-right-radius: .75em;
+				border-bottom-right-radius: 0.5em;
 				//Instead of the line below you could use @include border-bottom-left-radius($radius)
-				border-bottom-left-radius: .75em;
+				border-bottom-left-radius: 0.5em;
 				border-right: 1px solid $color_shuttle_gray_approx;
 				border-left: 1px solid $color_shuttle_gray_approx;
 				border-bottom: 1px solid $color_shuttle_gray_approx;
