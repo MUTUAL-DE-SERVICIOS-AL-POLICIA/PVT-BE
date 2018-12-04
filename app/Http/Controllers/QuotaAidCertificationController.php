@@ -862,7 +862,7 @@ class QuotaAidCertificationController extends Controller
                 }
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
-                if(date('Y') -$birth_date->format('Y') > 18) {
+                if(date('Y') -$birth_date->format('Y') >= 18) {
                     $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 } else {
                     $payment .='Menor ';
@@ -873,7 +873,7 @@ class QuotaAidCertificationController extends Controller
                     $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");                
                 }   
                 $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
-                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
+                if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
                     $payment .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if(isset($beneficiary_advisor->id))
@@ -1256,7 +1256,7 @@ class QuotaAidCertificationController extends Controller
                 }
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
-                if(date('Y') -$birth_date->format('Y') > 18) {
+                if(date('Y') -$birth_date->format('Y') >= 18) {
                     $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 } else {
                     $payment .='Menor ';
@@ -1266,7 +1266,7 @@ class QuotaAidCertificationController extends Controller
                     $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");
                 }
                 $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
-                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
+                if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
                     $payment .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if(isset($beneficiary_advisor->id))
@@ -1484,13 +1484,13 @@ class QuotaAidCertificationController extends Controller
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
                 $body_resolution .= "<li class='text-justify'>";
-                if(date('Y') -$birth_date->format('Y') > 18) {
+                if(date('Y') -$birth_date->format('Y') >= 18) {
                     $body_resolution .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 } else {
                     $body_resolution .='Menor ';
                 }
                 $body_resolution .= $beneficiary->fullName();
-                if(false && date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state) {
+                if(false && date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state) {
                     $body_resolution .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if($beneficiary->identity_card)
@@ -1511,7 +1511,7 @@ class QuotaAidCertificationController extends Controller
             
             }
         } else {            
-            $body_resolution .= "<br><br><li class='text-justify'>".$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI")."., el monto de &nbsp;<strong>".Util::formatMoneyWithLiteral($quota_aid->total).".</strong></li><br><br>";
+            $body_resolution .= "<li class='text-justify'>".$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI")."., el monto de &nbsp;<strong>".Util::formatMoneyWithLiteral($quota_aid->total).".</strong></li><br><br>";
         }
 
         $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>";
