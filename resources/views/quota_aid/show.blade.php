@@ -126,8 +126,9 @@
             @if(Util::getRol()->id == 43)
                 <quota-aid-certification-button
                     title="Imprimir Revisi&oacute;n de Jefatura"
-                    quota-adi-id="{{ $quota_aid->id }}"
+                    quota-aid-id="{{ $quota_aid->id }}"
                     url-print="{{ route('quota_aid_print_headship_review', $quota_aid->id) }}"
+                    message="true"
                 >
                 </quota-aid-certification-button>
             @endif

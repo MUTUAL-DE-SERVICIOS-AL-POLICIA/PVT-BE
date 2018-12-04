@@ -38,6 +38,7 @@ class QuotaAidCertificationController extends Controller
     public function saveCertificationNote(Request $request, $quota_aid_id)
     {
         $retirement_fund =  QuotaAidMortuary::find($quota_aid_id);
+        Session::put('size', $request->size);
         if ($request->note) {
             $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first();
             Util::getNextAreaCodeQuotaAid($quota_aid_id);
@@ -827,7 +828,7 @@ class QuotaAidCertificationController extends Controller
         }        
         $payment .="y la Disposición Transitoria Única del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y 
         modificado mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017. Se <strong>DICTAMINA</strong> en merito a la documentación de respaldo contenida en el presente reconocer 
-        los derechos y se otorgue el beneficio de <strong>".strtoupper($quota_aid->procedure_modality->procedure_type->second_name)."</strong> por <strong>".strtoupper($quota_aid->procedure_modality->name)."</strong> a favor ";
+        los derechos y se otorgue el beneficio de <strong>".strtoupper($quota_aid->procedure_modality->procedure_type->second_name)."</strong> por <strong class='uppercase'>".$quota_aid->procedure_modality->name."</strong> a favor ";
                         
         $flagy = 0;
         $discounts = $quota_aid->discount_types();

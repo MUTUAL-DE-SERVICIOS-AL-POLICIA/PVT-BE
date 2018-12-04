@@ -240,8 +240,12 @@ class AidContributionController extends Controller
             if(isset($spouse_death)) {
                 $death_date = Util::parseBarDate($spouse_death->date_death);
             }
-        } else {
-            $death_date = Util::parseBarDate($affiliate->spouse()->first()->date_death);
+        } else {            
+            if(isset($affiliate->spouse()->first()->date_death)) {
+                $death_date = Util::parseBarDate($affiliate->spouse()->first()->date_death);
+            } else {
+                $death_date = date('Y-m-d');
+            }
         }
                         
         //return $death_date;
