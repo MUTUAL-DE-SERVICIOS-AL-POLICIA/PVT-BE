@@ -79,7 +79,7 @@ class ContributionProcessCertificationController extends Controller
         }
         $description = $direct_contribution->procedure_modality->procedure_type->name . ' correspondiente a los meses de: ';
 
-        $months = join(', ', ContributionProcess::find(46)->contributions->pluck('month_year')->map(function ($month) {
+        $months = join(', ', ContributionProcess::find($contribution_process_id)->contributions->pluck('month_year')->map(function ($month) {
             return Util::printMonthYear($month);
         })->toArray());
         $pos = strrpos($months, ', ');
