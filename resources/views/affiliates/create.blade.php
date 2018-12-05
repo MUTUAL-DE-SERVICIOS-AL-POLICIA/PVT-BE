@@ -104,7 +104,7 @@
                                                             </div>
                                                             <div class="row m-b-md">
                                                                 <div class="col-md-4"><label class="control-label">CUA/NUA:</label></div>
-                                                                <div class="col-md-8"><input name="nua" type="text" class="form-control" value="{{ old('nua')}}">
+                                                                <div class="col-md-8"><input name="nua" type="number" class="form-control" value="{{ old('nua')}}">
                                                                     @if( $errors->has('nua') )
                                                                     <div>
                                                                         <i class="fa fa-warning text-danger"></i>
@@ -150,7 +150,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group row m-b-md">
                                                                 <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de vencimiento del CI:</label></div>
-                                                                <div class="col-md-5"><input name="due_date" v-date id="due_date" type="text" class="form-control" value="{{ old('due_date')}}">
+                                                                <div class="col-md-5"><input name="due_date" id="due_date" type="date" class="form-control" value="{{ old('due_date')}}">
                                                                     @if( $errors->has('due_date') )
                                                                     <div>
                                                                         <i class="fa fa-warning text-danger"></i>
@@ -179,7 +179,7 @@
                                                             </div>
                                                             <div class="row m-b-md">
                                                                 <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
-                                                                <div class="col-md-9"><input name="birth_date" v-date type="text" class="form-control" value="{{ old('birth_date')}}">
+                                                                <div class="col-md-9"><input name="birth_date" type="date" class="form-control" value="{{ old('birth_date')}}">
                                                                     @if( $errors->has('birth_date') )
                                                                     <div>
                                                                         <i class="fa fa-warning text-danger"></i>
