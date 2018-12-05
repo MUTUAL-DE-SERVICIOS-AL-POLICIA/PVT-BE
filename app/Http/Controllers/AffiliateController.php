@@ -144,7 +144,8 @@ class AffiliateController extends Controller
             'degree_id' => 'required',
             'last_name' => '',
             'mothers_last_name' => '',
-            'city_birth_id' => 'required'
+            'city_birth_id' => 'required',
+            'nua' => 'integer|nullable'
         ];
 
         $messages = [
@@ -155,7 +156,8 @@ class AffiliateController extends Controller
             'gender.required' => 'Debe seleccionar una opción',
             'birth_date.required' => 'Debe seleccionar una opción',
             'category_id' => 'Debe seleccionar una opción',
-            'degree_id' => 'Debe seleccionar una opción'
+            'degree_id' => 'Debe seleccionar una opción',
+            'nua.integer' => 'Debe introducir solo números o cero'
         ];
         if(!$request->is_duedate_undefined){
             $due_date = $request->due_date;
