@@ -57,7 +57,7 @@
                         <td>GRADO</td>
                         <td>Nº C.I.</td>
                         <td>EXTENCION</td>
-                        <td>SOLICITANTE O BENEFICARIO</td>                        
+                        <td>TITULAR</td>                        
                         <td>CONCEPTO</td>
                         <td>CIUDAD</td>
                     <tr></tr>
@@ -75,9 +75,9 @@
                             <td class="uppercase px-5 text-right">{{ $q->getCorrelative(38) }}</td>
                             <td class="uppercase px-5 text-right">{{ $q->getCorrelative(40) }}</td>
                             <td class="uppercase px-15 text-left">{{ $q->affiliate->degree->shortened }}</td>
-                            <td class="uppercase px-15 text-right">{{ $q->getApplicant()->identity_card }}</td>
-                            <td class="uppercase px-15 text-left">{{ $q->getApplicant()->city_identity_card->first_shortened ?? null }}</td>
-                            <td class="uppercase px-15 text-left">{{ $q->getApplicant()->fullName() }}</td>
+                            <td class="uppercase px-15 text-right">{{ $q->affiliate->identity_card }}</td>
+                            <td class="uppercase px-15 text-left">{{ $q->affiliate->city_identity_card->first_shortened ?? null }}</td>
+                            <td class="uppercase px-15 text-left">{{ $q->affiliate->fullName() }}</td>
                             <td class="uppercase px-15 text-left">{{ $q->procedure_modality->name }}</td>
                             <td class="uppercase px-15 text-left">{{ $q->city_end->name }}</td>
                         </tr>

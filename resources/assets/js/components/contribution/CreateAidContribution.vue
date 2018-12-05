@@ -248,7 +248,7 @@ from "../../helper.js";
 export default {
   props: [
     // "aidContributions", 
-    "afid",
+    "affiliateId",
     "directContributionId",
     // "rate"
       ],
@@ -262,7 +262,6 @@ export default {
       tipo: null,
       ufv: 0,
       estado: true,
-      afi_id: null,
       show_spinner: false,
       count: 3,
       general_rent: 0,
@@ -298,7 +297,7 @@ export default {
         }
     },
     refresh() {
-      axios.get(`/affiliate/${this.afid}/get_contribution_debt/${this.number}/${moment(this.dateEnd, 'DD/MM/YYYY').format('YYYY-MM-DD')}`)
+      axios.get(`/affiliate/${this.affiliateId}/get_contribution_debt/${this.number}/${moment(this.dateEnd, 'DD/MM/YYYY').format('YYYY-MM-DD')}`)
         .then(response =>{
             this.contributions = response.data
         }).catch(error =>{
@@ -321,7 +320,7 @@ export default {
       }              
     },
       calculateReimbursement(){                       
-        axios.get('/calculate_aid_reimbursement/'+this.afi_id+'/'+this.reimbursement_amount+'/'+this.reimbursement_month)
+        axios.get('/calculate_aid_reimbursement/'+this.affiliateId+'/'+this.reimbursement_amount+'/'+this.reimbursement_month)
         .then(response => {            
             this.reimbursement_quotable = this.reimbursement_amount;// response.data.quotable;   
             var i;
@@ -419,7 +418,7 @@ export default {
       });
       var contributions = this.contributions;
       var con = JSON.stringify(contributions);
-      var affiliate_id = this.afid;
+      var affiliate_id = this.affiliateId;
       var total = this.total;
       printJS({
         printable:

@@ -7,6 +7,7 @@ use Muserpol\Models\Contribution\DirectContribution;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Helpers\Util;
 use Carbon\Carbon;
+use Log;
 
 class ContributionProcessCertificationController extends Controller
 {
@@ -16,7 +17,7 @@ class ContributionProcessCertificationController extends Controller
         $direct_contribution = $contribution_process->direct_contribution;
         $affiliate = $direct_contribution->affiliate;
         if ($direct_contribution->procedure_modality->procedure_type_id == 6) {
-            $contributions = $contribution_process->contributions;
+            $contributions = $contribution_process->contributionsWithReimbursements($contribution_process_id);
             $applicant = $affiliate;
         }else{
             $contributions = $contribution_process->aid_contributions;
@@ -24,6 +25,8 @@ class ContributionProcessCertificationController extends Controller
         }
 
         $title = $direct_contribution->procedure_modality->procedure_type->name. ' -  '. $direct_contribution->procedure_modality->name;
+        $direction = $direct_contribution->procedure_modality->procedure_type->name;
+        $unit = $direct_contribution->procedure_modality->name;
 
         $code = $contribution_process->code;
         $area = $contribution_process->wf_state->first_shortened;
@@ -37,6 +40,8 @@ class ContributionProcessCertificationController extends Controller
             'date' => $date,
 
             'title' => $title,
+            'direction' => $direction,
+            'unit' => $unit,
 
             'direct_contribution' => $direct_contribution,
             'contribution_process' => $contribution_process,
