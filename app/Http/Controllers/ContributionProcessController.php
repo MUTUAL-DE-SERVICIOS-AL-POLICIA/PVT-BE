@@ -392,7 +392,7 @@ class ContributionProcessController extends Controller
             $voucher->bank = $request->bank;
             $voucher->bank_pay_number = $request->bank_pay_number;
         }
-        $voucher->save();                
+        $voucher->save();
         $contribution_process->voucher()->save($voucher);
     }
     
