@@ -128,13 +128,19 @@
             toggle_editing() {
                 this.editing = !this.editing;
             },            
-            switchPayment() {
-                console.log('switched');                
-                if(this.payment_type_id == 1) {switchPayment
-                    this.total = this.contribution_process.total.toFixed(1);
+            switchPayment() {                                
+                if(this.payment_type_id == 1) {
+                    this.total = this.roudOneDecimal(this.contribution_process.total);
                 } else {
                     this.total = this.contribution_process.total;
                 }
+                console.log(this.total);
+            },
+            roudOneDecimal(number) {
+                var result = number*10;
+                result = Math.ceil(result);
+                result = result/10;
+                return result;
             }
         },
         computed: {
