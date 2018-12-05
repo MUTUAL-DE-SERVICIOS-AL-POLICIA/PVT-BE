@@ -25,10 +25,10 @@
                         <img src="{{ asset('images/logo.jpg') }}" class="w-75">
                     </div>
                 </th>
-                <th class="w-50 align-top">
-                    <div class="font-semibold uppercase leading-tight text-sm">
-                        {{ $institution ?? 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"' }} <br>
-                        {{ $direction ?? '' }} <br>
+                <th class="w-50 align-middle">
+                    <div class="font-semibold uppercase leading-tight text-lg">
+                        {{ $institution ?? 'MUTUAL DE SERVICIOS AL POLICÍA' }} <br>
+                        {{ $direction ?? '"MUSERPOL"' }} <br>
                         {{ $unit ?? '' }}
                     </div>
                 </th>
@@ -36,7 +36,7 @@
                     <table class="table-code no-padding no-margins">
                         <tbody>
                             <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
+                                <td class="text-center bg-grey-darker text-xxs text-white">Nº de Recibo</td>
                                 <td class="text-bold text-base">{!! $code !!}</td>
                             </tr>
                             <tr>
@@ -56,64 +56,64 @@
             </tr>
             <tr>
                 <td colspan="3" class="font-bold text-center text-lg uppercase">
-                    {{ $title }} @if (isset($subtitle))
-                    <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span> @endif
+                    {{ $title }}
                 </td>
             </tr>
         </table>
-        <div class="inline-block w-75 align-top">
-            <div class="block m-b-10">
-                <div class="font-bold m-b-5 w-15 inline-block align-top">
-                    Recibimos de:
-                </div>
-                <div class="border rounded px-10 py-5 inline-block w-80 align-top">
+        <div class="block m-b-10">
+            <div class="font-bold m-b-5 w-15 inline-block align-bottom uppercase">
+                Recibimos de:
+            </div>
+            <div class="inline-block align-top" style="width:84.8%;">
+                <div class="border rounded px-10 py-5 inline-block w-68 align-bottom m-r-7">
                     {{ $applicant->fullName() }}
+                    {{-- <br> <span class="uppercase">{{ $applicant->ciWithExt() }} </span> --}}
                 </div>
-            </div>
-            <div class="block m-b-10">
-                <div class="font-bold m-b-5 w-15 inline-block align-top">
-                    La suma de:
-                </div>
-                <div class="border rounded px-10 py-5 inline-block w-80 align-top">
-                    {{ Util::convertir($voucher->paid_amount) }} Bolivianos
-                </div>
-            </div>
-            <div class="block m-b-10">
-                <div class="font-bold m-b-5 w-15 inline-block align-top">
-                    Por concepto de:
-                </div>
-                <div class="border rounded px-10 py-5 inline-block w-80 align-top text-justify uppercase" style="height:50px;">
-                    {{ $description }}
-                </div>
-            </div>
-            <div class="block m-b-10">
-                <div class="font-bold m-b-5 w-15 inline-block align-top">
-                    Forma de pago
-                </div>
-                <div class="border rounded px-10 py-5 inline-block w-20 align-top m-r-15 text-center">
-                    {!! optional($voucher->payment_type)->name ?? "&nbsp;" !!}
-                </div>
-                <div class="font-bold m-b-5 m-r-10 inline-block align-top">
-                    BANCO
-                </div>
-                <div class="border rounded px-10 py-5 inline-block w-20 align-top m-r-15 text-center">
-                    {!! $voucher->bank ?? "&nbsp;" !!}
-                </div>
-                <div class="font-bold m-b-5 m-r-10 inline-block align-top">
-                    Nro.
-                </div>
-                <div class="border rounded px-10 py-5 w-15 inline-block align-top text-center">
-                    {!! $voucher->bank_pay_number ?? "&nbsp;" !!}
+                <div class="inline-block " style="width: 212px;">
+                    <div class="border rounded font-bold text-2xl px-15 py-5 text-center">
+                        Bs. {{ Util::formatMoney($voucher->paid_amount) }}
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="inline-block " style="width: 200px;">
-            <div class="border rounded font-bold text-2xl px-15 py-5 text-center">
-                {{ Util::formatMoney($voucher->paid_amount) }} Bs.
+        <div class="block m-b-10">
+            <div class="font-bold m-b-5 w-15 inline-block align-middle uppercase">
+                La suma de:
+            </div>
+            <div class="border rounded py-5 inline-block px-10 w-82 align-top">
+                {{ Util::convertir($voucher->paid_amount) }} Bolivianos
             </div>
         </div>
-
-        <div style="width: 850px;" class="mx-auto border rounded text-xs m-t-15 block text-center uppercase">
+        <div class="block m-b-10 w-100">
+            <div class="font-bold m-b-5 w-15 inline-block align-top uppercase">
+                Por concepto de:
+            </div>
+            <div class="border rounded py-5 inline-block px-10 w-82 align-top text-justify uppercase" style="height:35px;">
+                {{ $description }}
+                
+            </div>
+        </div>
+        <div class="block m-b-10 uppercase">
+            <div class="font-bold m-b-5 w-15 inline-block align-top">
+                Forma de pago
+            </div>
+            <div class="border rounded px-10 py-5 inline-block w-20 align-top m-r-15 text-center">
+                {!! optional($voucher->payment_type)->name ?? "&nbsp;" !!}
+            </div>
+            <div class="font-bold m-b-5 m-r-10 inline-block align-top">
+                BANCO
+            </div>
+            <div class="border rounded px-10 py-5 inline-block w-20 align-top m-r-15 text-center">
+                {!! $voucher->bank ?? "&nbsp;" !!}
+            </div>
+            <div class="font-bold m-b-5 m-r-10 inline-block align-top">
+                Nro.
+            </div>
+            <div class="border rounded px-10 py-5 w-15 inline-block align-top text-center">
+                {!! $voucher->bank_pay_number ?? "&nbsp;" !!}
+            </div>
+        </div>
+        <div class="mx-auto w-99 border rounded text-xs m-t-15 block text-center uppercase">
             <div class="text-center w-49 inline-block  align-top" style="height:150px;border-right: 1px solid #5d6975;">
                 <div class="font-bold block m-t-100 ">{!! $user->fullName() !!}</div>
                 <div class="block text-xxs" >{!! $user->position !!}</div>
@@ -122,8 +122,6 @@
                 <span class="font-bold block m-t-100 ">{!! $applicant->fullName() !!}</span>
                 <div class="text-center " >{!! $applicant->ciWithExt() !!}</div>
             </div>
-        </div>
-
         </div>
     </div>
     @endfor

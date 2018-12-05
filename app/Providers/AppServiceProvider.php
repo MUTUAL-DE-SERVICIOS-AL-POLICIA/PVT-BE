@@ -35,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
             'contribution_processes' => 'Muserpol\Models\Contribution\ContributionProcess',
             'contributions' => 'Muserpol\Models\Contribution\Contribution',
             'aid_contributions' => 'Muserpol\Models\Contribution\AidContribution',
+            'reimbursements' => 'Muserpol\Models\Contribution\Reimbursement',
+            'aid_reimbursements' => 'Muserpol\Models\Contribution\AidReimbursement',
             'wf_states' => 'Muserpol\Models\Workflow\WorkflowState',
         ]);
     }
