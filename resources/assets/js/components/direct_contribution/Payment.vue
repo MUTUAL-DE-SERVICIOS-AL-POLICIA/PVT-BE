@@ -12,7 +12,7 @@
                 <strong> Tipo de Pago:</strong>
             </div>
             <div class="col-md-4">                
-                <select class="form-control m-b" name="payment_type_id" v-model="payment_type_id" :disabled='!editing'>
+                <select class="form-control m-b" name="payment_type_id" @change="switchPayment" v-model="payment_type_id" :disabled='!editing'>
                     <option v-for="payment_type in payment_types" :value="payment_type.id" :key="payment_type.id">{{ payment_type.name }}</option>
                 </select>                
             </div>
@@ -32,7 +32,7 @@
                 <input v-if="payment_type==2" type="text" v-model="bank" class="form-control" :disabled='!editing'>
             </div>            
             <div class="col-md-2">
-                <strong> TOTAL cobrado:</strong>&nbsp;
+                <strong> TOTAL a cobrar:</strong>&nbsp;
             </div>
             <div class="col-md-4">                        
                 <input type="text" v-model="total" class="form-control" :disabled='!editing' v-money>
@@ -89,11 +89,17 @@
         },
         created(){
             console.log("FORM");
-               console.log(this.payment_types);
+            console.log(this.payment_types);
             this.completeVoucher();
+            this.switchPayment();
         },
         methods:{
             store: function(){
+                if(parseMoney(this.paid) < parseMoney(this.total))
+                {
+                    flash("El monto pagado es menor al monto total", "error",6000);
+                    return;
+                }
                 process = this.contribution_process;
                 axios.post('/contribution_process/'+this.contribution_process.id+'/contribution_pay',                
                 {   
@@ -106,7 +112,7 @@
                     this.editing = false;
                 this.enableDC();
                 var i;});
-            },           
+            },
             completeVoucher(){
                 console.log("voucher");
                 console.log(this.voucher);
@@ -121,6 +127,14 @@
             },
             toggle_editing() {
                 this.editing = !this.editing;
+            },            
+            switchPayment() {
+                console.log('switched');                
+                if(this.payment_type_id == 1) {switchPayment
+                    this.total = this.contribution_process.total.toFixed(1);
+                } else {
+                    this.total = this.contribution_process.total;
+                }
             }
         },
         computed: {

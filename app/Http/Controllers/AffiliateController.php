@@ -26,7 +26,7 @@ use Muserpol\Models\Spouse;
 use Carbon\Carbon;
 use Muserpol\Models\Entities;
 use Auth;
-
+use Muserpol\Models\Contribution\DirectContribution;
 class AffiliateController extends Controller
 {
     /**
@@ -250,7 +250,7 @@ class AffiliateController extends Controller
             'category',
             'degree'
         ]);
-
+        $has_direct_contribution = DirectContribution::where('affiliate_id',$affiliate->id)->where('procedure_state_id','1')->first();            
         if (! sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
         }
@@ -334,6 +334,7 @@ class AffiliateController extends Controller
             'aid_reimbursements'    =>  $aid_reimbursement,
             'is_editable'   =>  $is_editable,
             'pension_entities' => $pension_entities,
+            'has_direct_contribution' => isset($has_direct_contribution)?true:false,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);
