@@ -110,7 +110,7 @@ th.ellipsis-text {
                         <li class="list-group-item " data-toggle="tab" href="#tab-documents-scanned"><a href="#" ><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-quota-aid-mortuory"><a href="#"><i class="{{ Util::IconModule(4)}}"></i> Cuota y Auxilio Mortuorio</a></li>
-                        {{-- <li class="list-group-item " data-toggle="tab" href="#tab-direct-contributions"><a href="#"><i class="{{ Util::IconModule(4)}}"></i> Aportes directos</a></li> --}}
+                        <li class="list-group-item " data-toggle="tab" href="#tab-direct-contribution"><a href="#"><i class="{{ Util::IconModule(11)}}"></i> Aportes directos</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Util::IconModule(2)}}"></i> Complemento Económico</a></li>
                         {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
@@ -204,7 +204,14 @@ th.ellipsis-text {
                         </quota-aid-info>
                         @endcan
                     </div>
-
+                    <div id="tab-direct-contribution" class="tab-pane">
+                        {{-- @can('update',$direct_contribution) --}}
+                            <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
+                                :procedure_modality="{{$direct_contribution->procedure_modality}}" :states="{{ $states }}" :read="true"  inline-template>
+                                @include('direct_contributions.info', ['direct_contribution'=>$direct_contribution,'cities'=>$birth_cities])
+                            </direct-contribution-info>
+                        {{-- @endcan --}}
+                    </div>
                     {{-- <div id="tab-aid-mortuory" class="tab-pane"> //auxilio mortuorio
 
 

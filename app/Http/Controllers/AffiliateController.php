@@ -252,7 +252,7 @@ class AffiliateController extends Controller
             'category',
             'degree'
         ]);
-        $has_direct_contribution = DirectContribution::where('affiliate_id',$affiliate->id)->where('procedure_state_id','1')->first();            
+        $direct_contribution = DirectContribution::where('affiliate_id',$affiliate->id)->where('procedure_state_id','1')->first();            
         if (! sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
         }
@@ -306,6 +306,9 @@ class AffiliateController extends Controller
         }
         $quota_aid = $affiliate->quota_aid_mortuaries->last();
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
+
+        
+
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -336,7 +339,8 @@ class AffiliateController extends Controller
             'aid_reimbursements'    =>  $aid_reimbursement,
             'is_editable'   =>  $is_editable,
             'pension_entities' => $pension_entities,
-            'has_direct_contribution' => isset($has_direct_contribution)?true:false,
+            'has_direct_contribution' => isset($direct_contribution)?true:false,
+            'direct_contribution'   =>  $direct_contribution,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);
