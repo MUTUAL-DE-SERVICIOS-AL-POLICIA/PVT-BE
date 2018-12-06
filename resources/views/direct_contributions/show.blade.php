@@ -87,7 +87,7 @@
         </div>
         <div class="widget-text-box">
             <ul class="list-group elements-list">
-                <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Aporte Directo</a></li>                
+                <li class="list-group-item active" data-toggle="tab" href="#tab-direct-contribution"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Aporte Directo</a></li>                
                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-user"></i> Afiliado</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-spouse-info"><a href="#"><i class="fa fa-user"></i> Cónyuge</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-contributions"><a href="#"><i class="fa fa-users"></i> Contribuciones</a></li>
@@ -102,7 +102,7 @@
     <br>
     <div class="col-md-9" style="padding-left: 6px">
         <div class="tab-content">
-            <div id="tab-ret-fun" class="tab-pane active">
+            <div id="tab-direct-contribution" class="tab-pane active">
                 {{-- @can('update',$direct_contribution) --}}
                 <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
                     :procedure_modality="{{$direct_contribution->procedure_modality}}" :states="{{ $states }}" inline-template>
