@@ -55,7 +55,7 @@
             </div>
         </div>
     </div>
-    @if(isset($contribution_process->id))
+    @if(isset($contribution_process->id)  && Util::getRol()->id == 62)
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">

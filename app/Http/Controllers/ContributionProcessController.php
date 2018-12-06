@@ -371,7 +371,7 @@ class ContributionProcessController extends Controller
         return $data;
     }
 
-    public function contributionPay(Request $request){
+    public function contributionPay(Request $request){        
         $direct_contribution = DirectContribution::find($request->process['direct_contribution_id']);
         $contribution_process = $direct_contribution->contribution_processes()->where('procedure_state_id', 1)->first();        
         $last_code = Util::getLastCode(Voucher::class);
@@ -388,7 +388,7 @@ class ContributionProcessController extends Controller
         $voucher->code = Util::getNextCode($last_code);
         $voucher->paid_amount = $request->total;
         $voucher->payment_type_id = $request->payment_type_id;
-        if($request->payment_type_id == 1) {
+        if($request->payment_type_id == 2) {
             $voucher->bank = $request->bank;
             $voucher->bank_pay_number = $request->bank_pay_number;
         }
