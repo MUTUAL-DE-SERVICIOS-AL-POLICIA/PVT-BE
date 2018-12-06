@@ -94,7 +94,7 @@ export default {
                   axios.delete('/contribution_process/'+id)
                   .then(response => {
                     console.log(response.data);
-                      //location.reload();
+                    location.reload();
                   })
                   .catch(error => {
                   this.show_spinner = false;                    

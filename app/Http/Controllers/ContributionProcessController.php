@@ -322,7 +322,7 @@ class ContributionProcessController extends Controller
                 $contribution->total = $aporte->subtotal;
                 $contribution->interest = $aporte->interes;
                 $contribution->subtotal = 0;
-                $contribution->active = false;
+                $contribution->valid = false;
                 $contribution->save();
                 $contribution->type = "R";
                 array_push($reimbursement_ids, $contribution->id);
@@ -356,7 +356,7 @@ class ContributionProcessController extends Controller
                 $contribution->total = $aporte->subtotal;
                 $contribution->interest = $aporte->interes;
                 $contribution->breakdown_id = 3;
-                $contribution->active = false;
+                $contribution->valid = false;
                 $contribution->save();
                 array_push($contribution_ids, $contribution->id);
             }
@@ -417,13 +417,13 @@ class ContributionProcessController extends Controller
     public function destroy(ContributionProcess $contribution_process)
     {
 
-        foreach($contribution_process->contributions as $contribution){
-            //$contribution->dissociate();
-            $contribution->valid = false;
-            $contribution->save();
+        foreach($contribution_process->contributions as $contribution){            
+            $contribution->delete();
+            //$contribution->save();
         }
         $contribution_process->contributions()->detach();
-        return $contribution_process->contributions;
+        $contribution_process->procedure_state_id = 3;
+        $contribution_process->save();        
         return $contribution_process;
     }
 }
