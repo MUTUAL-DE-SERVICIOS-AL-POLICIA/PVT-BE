@@ -1067,8 +1067,8 @@ class QuotaAidCertificationController extends Controller
         } else {
             $head .= " presenta";
         }
-        $head .= " la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) ." y en cumplimiento al numeral 8
-        del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión<br><br>";
+        $head .= " la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) ." y en cumplimiento al numeral 7
+        del artículo 48 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, elevo el presente informe de revisión<br><br>";
         $past = 'Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 2829 de 06 de julio de 2016, referente al beneficio de Cuota Mortuoria en el artículo 2, (MODIFICACIONES) establece:
             <br><br>
             I. Se modifica el inciso d) del artículo 3 del Decreto Supremo N° 1446, de 19 de diciembre de 2012, con el siguiente texto: <strong><i>“Otorgar el beneficio de Cuota Mortuoria y Auxilio Mortuorio a favor del sector activo y pasivo de la Policía Boliviana, de acuerdo a reglamentos emitidos por MUSERPOL.”</i></strong> 
