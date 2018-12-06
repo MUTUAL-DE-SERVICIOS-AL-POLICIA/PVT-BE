@@ -34,7 +34,7 @@ class ContributionProcessController extends Controller
         //
     }
     public function show(ContributionProcess $contribution_process)
-    {
+    {        
         return redirect()->route('direct_contribution.show', $contribution_process->direct_contribution->id);
         // $affiliate = $contribution_process->affiliate;
         // $cities = City::all();
@@ -322,6 +322,7 @@ class ContributionProcessController extends Controller
                 $contribution->total = $aporte->subtotal;
                 $contribution->interest = $aporte->interes;
                 $contribution->subtotal = 0;
+                $contribution->active = false;
                 $contribution->save();
                 $contribution->type = "R";
                 array_push($reimbursement_ids, $contribution->id);
@@ -355,6 +356,7 @@ class ContributionProcessController extends Controller
                 $contribution->total = $aporte->subtotal;
                 $contribution->interest = $aporte->interes;
                 $contribution->breakdown_id = 3;
+                $contribution->active = false;
                 $contribution->save();
                 array_push($contribution_ids, $contribution->id);
             }
@@ -404,5 +406,24 @@ class ContributionProcessController extends Controller
             return $correlative;
         }
         return null;
+    }
+    
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Muserpol\ContributionProcess  $contribution_process
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(ContributionProcess $contribution_process)
+    {
+
+        foreach($contribution_process->contributions as $contribution){
+            //$contribution->dissociate();
+            $contribution->valid = false;
+            $contribution->save();
+        }
+        $contribution_process->contributions()->detach();
+        return $contribution_process->contributions;
+        return $contribution_process;
     }
 }

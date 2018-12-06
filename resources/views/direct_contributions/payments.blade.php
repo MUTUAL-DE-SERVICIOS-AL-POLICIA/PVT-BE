@@ -12,12 +12,13 @@
                                 :affiliate-id="{{ $affiliate->id }}"
                                 :contributions="{{ $contribution_process->contributions }}"
                                 :total="{{ $contribution_process->total }}"
+                                :contribution-process-id = "{{ $contribution_process->id }}"
                             ></contribution-edit>
                             @if (Util::getRol()->id == 62)
                                 <div class="row text-center">
                                     <button class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
                                 </div>
-                            @endif
+                            @endif                            
                         @else
                             <contribution-create
                                 :afid="{{ $affiliate->id }}"
