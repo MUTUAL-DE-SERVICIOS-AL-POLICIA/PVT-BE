@@ -10,6 +10,9 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
+            <button class="btn btn-success dim"
+                onclick="printJS({printable:'{{ route('print_commitment_letter', [$direct_contribution->id,$contribution_process->id]) }}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"
+            > <i class="fa fa-print"></i> Imprimir Carat de Compromiso </button>
             @if ($contribution_process)
                 <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
                 @if (Util::getRol()->id == 61)
