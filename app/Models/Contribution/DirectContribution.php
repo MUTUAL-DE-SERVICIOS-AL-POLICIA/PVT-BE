@@ -10,6 +10,10 @@ class DirectContribution extends Model
     {
         return $this->hasMany("Muserpol\Models\Contribution\ContributionProcess");
     }
+    public function user()
+    {
+        return $this->belongsTo("Muserpol\User");
+    }
     public function affiliate()
     {
         return $this->belongsTo("Muserpol\Models\Affiliate");
@@ -33,5 +37,13 @@ class DirectContribution extends Model
     public function hasActiveContributionProcess()
     {
         return !! $this->contribution_processes()->where('procedure_state_id', 1)->first();
+    }
+    public function isActiveSector()
+    {
+        return $this->procedure_modality->procedure_type_id == 6;
+    }
+    public function isPassiveSector()
+    {
+        return $this->procedure_modality->procedure_type_id == 7;
     }
 }

@@ -15,7 +15,7 @@
             <tbody>
                 <!-- v-bind:style="getStyleColor(index)"
                     :class="{'danger': error(ac.subtotal)}" -->
-                <tr v-for="(ac, index) in aidContributions"
+                <tr v-for="(ac, index) in aidContributionsAndReimbursements"
                     :key="index">
                     <td>
                         <input type="text"
@@ -86,6 +86,7 @@
         "directContributionId",
         "affiliateId",
         "aidContributions",
+        "aidContributions",
         "total",
         "contributionProcessId",
       ],
@@ -117,6 +118,14 @@
                         })
                         }
                     })
+            }
+        },
+        computed: {
+            aidContributionsAndReimbursements(){
+                let temp = JSON.parse(JSON.stringify(this.aidContributions)) ;
+                Array.prototype.push.apply(temp,this.aidContributions);
+                temp.sort((a,b) => (a.month_year > b.month_year) ? 1 : ((b.month_year > a.month_year) ? -1 : 0));
+                return temp;
             }
         }
     };

@@ -11,6 +11,7 @@
                                 :direct-contribution-id="{{ $direct_contribution->id }}"
                                 :affiliate-id="{{ $affiliate->id }}"
                                 :contributions="{{ $contribution_process->contributions }}"
+                                :reimbursements="{{ $contribution_process->reimbursements }}"
                                 :total="{{ $contribution_process->total }}"
                                 :contribution-process-id = "{{ $contribution_process->id }}"
                             ></contribution-edit>
@@ -38,6 +39,7 @@
                                 :direct-contribution-id="{{ $direct_contribution->id }}"
                                 :affiliate-id="{{ $affiliate->id }}"
                                 :aid-contributions="{{ ($contribution_process->aid_contributions) }}"
+                                :aid-reimbursements="{{ ($contribution_process->aid_reimbursements) }}"
                                 :total="{{ $contribution_process->total }}"
                                 :contribution-process-id = "{{ $contribution_process->id }}"
                             ></aid-contribution-edit>

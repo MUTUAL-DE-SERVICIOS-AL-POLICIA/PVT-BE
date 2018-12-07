@@ -406,6 +406,9 @@ class ContributionProcessController extends Controller
         }
 
         $contribution_process->contributions()->detach();
+        $contribution_process->reimbursements()->detach();
+        $contribution_process->aid_contributions()->detach();
+        $contribution_process->aid_reimbursements()->detach();
         $contribution_process->procedure_state_id = 3;
         $contribution_process->save();        
         return $contribution_process;

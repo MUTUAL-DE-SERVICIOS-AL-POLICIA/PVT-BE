@@ -12,7 +12,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(con, index) in contributions"
+        <tr v-for="(con, index) in contributionsAndReimbursements"
             :key="index">
           <td><input type="text"
                    v-model="con.month_year"
@@ -72,6 +72,7 @@ export default {
         'directContributionId',
         'affiliateId',
         'contributions',
+        'reimbursements',
         'total',
         'contributionProcessId'
     ],
@@ -106,6 +107,14 @@ export default {
                   })
                 }
             })
+      }
+    },
+    computed: {
+      contributionsAndReimbursements(){
+        let temp = JSON.parse(JSON.stringify(this.contributions)) ;
+        Array.prototype.push.apply(temp,this.reimbursements);
+        temp.sort((a,b) => (a.month_year > b.month_year) ? 1 : ((b.month_year > a.month_year) ? -1 : 0));
+        return temp;
       }
     }
 }
