@@ -417,9 +417,13 @@ class ContributionProcessController extends Controller
     public function destroy(ContributionProcess $contribution_process)
     {
 
-        foreach($contribution_process->contributions as $contribution){            
+        foreach($contribution_process->contributions as $contribution){
             $contribution->delete();
-            //$contribution->save();
+            $contribution->forceDelete();            
+        }
+        foreach($contribution_process->aid_contributions as $aid_contribution){
+            $aid_contribution->delete();
+            $aid_contribution->forceDelete();            
         }
         $contribution_process->contributions()->detach();
         $contribution_process->procedure_state_id = 3;

@@ -39,6 +39,7 @@
                                 :affiliate-id="{{ $affiliate->id }}"
                                 :aid-contributions="{{ ($contribution_process->aid_contributions) }}"
                                 :total="{{ $contribution_process->total }}"
+                                :contribution-process-id = "{{ $contribution_process->id }}"
                             ></aid-contribution-edit>
                             @if (Util::getRol()->id == 62)
                                 <div class="row text-center">
