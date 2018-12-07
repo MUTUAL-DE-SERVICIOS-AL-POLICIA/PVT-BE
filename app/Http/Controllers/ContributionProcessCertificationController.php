@@ -17,7 +17,7 @@ class ContributionProcessCertificationController extends Controller
         $direct_contribution = $contribution_process->direct_contribution;
         $affiliate = $direct_contribution->affiliate;
         if ($direct_contribution->procedure_modality->procedure_type_id == 6) {
-            $contributions = $contribution_process->contributionsWithReimbursements($contribution_process_id);
+            $contributions = $contribution_process->contributionsWithReimbursements();
             $applicant = $affiliate;
         }else{
             $contributions = $contribution_process->aid_contributions;

@@ -54,12 +54,11 @@ class ContributionProcess extends Model
     {
         return $this->belongsTo('Muserpol\Models\Contribution\DirectContribution');
     }
-    public function contributionsWithReimbursements($contribution_process_id)
+    public function contributionsWithReimbursements()
     {
-        $contribution_ids = join(', ',ContributionProcess::find($contribution_process_id)->contributions->pluck('id')->toArray());
-        $reimbursement_ids = join(', ',ContributionProcess::find($contribution_process_id)->reimbursements->pluck('id')->toArray());
-                
-        if($reimbursement_ids == '')          
+        $contribution_ids = join(', ',ContributionProcess::find($this->id)->contributions->pluck('id')->toArray());
+        $reimbursement_ids = join(', ',ContributionProcess::find($this->id)->reimbursements->pluck('id')->toArray());
+        if($reimbursement_ids == '')
             $reimbursement_ids = '0';
         $contributions = DB::select("
             SELECT
