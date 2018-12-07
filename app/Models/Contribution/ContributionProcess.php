@@ -58,6 +58,9 @@ class ContributionProcess extends Model
     {
         $contribution_ids = join(', ',ContributionProcess::find($contribution_process_id)->contributions->pluck('id')->toArray());
         $reimbursement_ids = join(', ',ContributionProcess::find($contribution_process_id)->reimbursements->pluck('id')->toArray());
+                
+        if($reimbursement_ids == '')          
+            $reimbursement_ids = '0';
         $contributions = DB::select("
             SELECT
                 contributions_reimbursements.month_year,

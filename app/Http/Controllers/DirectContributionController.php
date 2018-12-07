@@ -159,6 +159,11 @@ class DirectContributionController extends Controller
     //public function show(DirectContribution $directContribution)
     public function show(DirectContribution $directContribution)
     {
+        // $d = \Muserpol\Models\Contribution\ContributionProcess::find(55);
+        // return $d->contributions;
+        // return $d;
+        // return 123;
+
         $affiliate = Affiliate::find($directContribution->affiliate_id);
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();

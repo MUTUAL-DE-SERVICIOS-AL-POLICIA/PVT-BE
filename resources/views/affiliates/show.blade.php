@@ -204,14 +204,19 @@ th.ellipsis-text {
                         </quota-aid-info>
                         @endcan
                     </div>
+                    @if(isset($direct_contribution->id))
                     <div id="tab-direct-contribution" class="tab-pane">
-                        {{-- @can('update',$direct_contribution) --}}
-                            <direct-contribution-info :direct_contribution="{{ $direct_contribution }}" :city_start="{{json_encode($direct_contribution->city_start)}}" :city_end="{{json_encode($direct_contribution->city_end)}}"
-                                :procedure_modality="{{$direct_contribution->procedure_modality}}" :states="{{ $states }}" :read="true"  inline-template>
+                        {{-- @can('update',$direct_contribution) --}}                        
+                            <direct-contribution-info 
+                                :direct_contribution="{{ $direct_contribution }}" 
+                                :city="{{json_encode($direct_contribution->city_id)}}"
+                                :procedure_modality="{{$direct_contribution->procedure_modality}}" 
+                                :states="{{ $states }}" :read="true"  inline-template>
                                 @include('direct_contributions.info', ['direct_contribution'=>$direct_contribution,'cities'=>$birth_cities])
                             </direct-contribution-info>
                         {{-- @endcan --}}
                     </div>
+                    @endif
                     {{-- <div id="tab-aid-mortuory" class="tab-pane"> //auxilio mortuorio
 
 

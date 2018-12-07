@@ -252,7 +252,7 @@ class AffiliateController extends Controller
             'category',
             'degree'
         ]);
-        $direct_contribution = DirectContribution::where('affiliate_id',$affiliate->id)->where('procedure_state_id','1')->first();            
+        $direct_contribution = DirectContribution::where('affiliate_id',$affiliate->id)->where('procedure_state_id','1')->first();        
         if (! sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
         }

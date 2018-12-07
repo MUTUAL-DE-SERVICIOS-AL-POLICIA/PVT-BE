@@ -17,22 +17,22 @@
                 </select>                
             </div>
             <div class="col-md-2">
-                <strong v-if="payment_type==1"> Efectivo:</strong>
+                <strong v-if="payment_type_id==1"> Efectivo:</strong>
             </div>
             <div class="col-md-4">
-                <input v-if="payment_type==1" type="text" class="form-control" v-model="paid" :disabled='!editing' v-money>
+                <input v-if="payment_type_id==1" type="text" class="form-control" v-model="paid" :disabled='!editing' v-money>
             </div>               
         </div>
         <br>
         <div class="row">
             <div class="col-md-2">
-                <strong v-if="payment_type==2"> Banco:</strong>&nbsp;
+                <strong v-if="payment_type_id==2"> Banco:</strong>&nbsp;
             </div>
             <div class="col-md-4">   
-                <input v-if="payment_type==2" type="text" v-model="bank" class="form-control" :disabled='!editing'>
+                <input v-if="payment_type_id==2" type="text" v-model="bank" class="form-control" :disabled='!editing'>
             </div>            
             <div class="col-md-2">
-                <strong> TOTAL a cobrar:</strong>&nbsp;
+                <strong> TOTAL COBRO:</strong>&nbsp;
             </div>
             <div class="col-md-4">                        
                 <input type="text" v-model="total" class="form-control" :disabled='!editing' v-money>
@@ -41,16 +41,16 @@
         <br>        
         <div class="row">
             <div class="col-md-2">
-                <strong v-if="payment_type==2"> N&uacute;mero de comprobante:</strong>
+                <strong v-if="payment_type_id==2"> N&uacute;mero de comprobante:</strong>
             </div>
             <div class="col-md-4">
-                <input v-if="payment_type==2" type="text" class="form-control" v-model="bank_pay_number" :disabled='!editing'>
+                <input v-if="payment_type_id==2" type="text" class="form-control" v-model="bank_pay_number" :disabled='!editing'>
             </div>
             <div class="col-md-2">
-                    <strong v-if="payment_type==1"> Cambio:</strong>&nbsp;
+                    <strong v-if="payment_type_id==1"> Cambio:</strong>&nbsp;
                 </div>
             <div class="col-md-4">                
-                <input v-if="payment_type==1" v-money='true' type="text" v-model="getExchange" class="form-control" :disabled='true'>
+                <input v-if="payment_type_id==1" v-money='true' type="text" v-model="getExchange" class="form-control" :disabled='true'>
             </div>
         </div>    
     
@@ -95,9 +95,12 @@
         },
         methods:{
             store: function(){
-                if(parseMoney(this.paid) < parseMoney(this.total))
-                {
+                if(parseMoney(this.paid) < parseMoney(this.contribution_process.total) && this.payment_type_id == 1) {
                     flash("El monto pagado es menor al monto total", "error",6000);
+                    return;
+                }
+                if(parseMoney(this.total) < parseMoney(this.contribution_process.total)) {
+                    flash("El monto total es menor al monto cotizado", "error",6000);
                     return;
                 }
                 process = this.contribution_process;
@@ -107,18 +110,22 @@
                     total: parseMoney(this.total),
                     paid: parseMoney(this.paid),
                     bank:this.bank,
+                    payment_type_id: this.payment_type_id,
                     bank_pay_number:this.bank_pay_number})
                 .then(response => {
                     this.editing = false;
-                this.enableDC();
-                var i;});
+                    this.enableDC();
+                    flash('Cobro realizado exitosamente');
+                    var i;
+                }
+                );
             },
             completeVoucher(){
                 console.log("voucher");
                 console.log(this.voucher);
                 if(this.voucher !== null && this.voucher != 0){
                     this.paid = this.voucher.paid_amount;
-                    this.bank = this.voucher.back;
+                    this.bank = this.voucher.bank;
                     this.bank_pay_number = this.voucher.bank_pay_number;
                     this.paid_amount = this.voucher.total;
                     this.payment_type_id = this.voucher.payment_type_id;                
@@ -130,8 +137,10 @@
             },            
             switchPayment() {                                
                 if(this.payment_type_id == 1) {
-                    this.total = this.roudOneDecimal(this.contribution_process.total);
+                    let rounded = this.contribution_process.total;
+                    this.total = this.roudOneDecimal(rounded);
                 } else {
+                    console.log(this.contribution_process.total);
                     this.total = this.contribution_process.total;
                 }
                 console.log(this.total);

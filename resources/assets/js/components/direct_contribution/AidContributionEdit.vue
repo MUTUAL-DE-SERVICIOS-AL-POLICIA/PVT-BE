@@ -70,6 +70,12 @@
                 </tr>
             </tbody>
         </table>
+        <div class="row text-center">                
+        <button class="btn btn-danger" type="button" title="Anular" @click="deleteProcess()">
+          <i class="fa fa-trash"></i>
+            Anular
+        </button>
+    </div>
     </div>
 </template>
 
@@ -80,8 +86,39 @@
         "directContributionId",
         "affiliateId",
         "aidContributions",
-        "total"
-      ]
+        "total",
+        "contributionProcessId",
+      ],
+        methods: {
+            deleteProcess() {
+                this.$swal({
+                    title: 'Está seguro de anular la liquidación?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.value) {
+                        var id = this.contributionProcessId;
+                        axios.delete('/contribution_process/'+id)
+                        .then(response => {
+                            console.log(response.data);
+                            location.reload();
+                        })
+                        .catch(error => {
+                        this.show_spinner = false;                    
+                            var resp = error.response.data;
+                            $.each(resp, function(index, value)
+                            {
+                                flash(value,'error',6000);
+                            });
+                        })
+                        }
+                    })
+            }
+        }
     };
 </script>
 

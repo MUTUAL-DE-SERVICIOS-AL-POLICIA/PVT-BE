@@ -253,6 +253,7 @@ class ContributionController extends Controller
                 $contribution->total = $aporte->subtotal;
                 $contribution->interest = $aporte->interes;
                 $contribution->subtotal = 0;
+                $contribution->valid = false;
                 $contribution->save();
                 $contribution->type = "R";
             }
@@ -285,6 +286,7 @@ class ContributionController extends Controller
                 $contribution->mortuary_quota = $aporte->cm;
                 $contribution->total = $aporte->subtotal;
                 $contribution->interest = $aporte->interes;        
+                $contribution->valid = false;
                 $contribution->breakdown_id = 3;
                 $contribution->save();
             }

@@ -34,7 +34,7 @@ class ContributionProcessController extends Controller
         //
     }
     public function show(ContributionProcess $contribution_process)
-    {
+    {        
         return redirect()->route('direct_contribution.show', $contribution_process->direct_contribution->id);
         // $affiliate = $contribution_process->affiliate;
         // $cities = City::all();
@@ -322,6 +322,7 @@ class ContributionProcessController extends Controller
                 $contribution->total = $aporte->subtotal;
                 $contribution->interest = $aporte->interes;
                 $contribution->subtotal = 0;
+                $contribution->valid = false;
                 $contribution->save();
                 $contribution->type = "R";
                 array_push($reimbursement_ids, $contribution->id);
@@ -355,6 +356,7 @@ class ContributionProcessController extends Controller
                 $contribution->total = $aporte->subtotal;
                 $contribution->interest = $aporte->interes;
                 $contribution->breakdown_id = 3;
+                $contribution->valid = false;
                 $contribution->save();
                 array_push($contribution_ids, $contribution->id);
             }
@@ -371,7 +373,7 @@ class ContributionProcessController extends Controller
         return $data;
     }
 
-    public function contributionPay(Request $request){
+    public function contributionPay(Request $request){        
         $direct_contribution = DirectContribution::find($request->process['direct_contribution_id']);
         $contribution_process = $direct_contribution->contribution_processes()->where('procedure_state_id', 1)->first();        
         $last_code = Util::getLastCode(Voucher::class);
@@ -388,7 +390,7 @@ class ContributionProcessController extends Controller
         $voucher->code = Util::getNextCode($last_code);
         $voucher->paid_amount = $request->total;
         $voucher->payment_type_id = $request->payment_type_id;
-        if($request->payment_type_id == 1) {
+        if($request->payment_type_id == 2) {
             $voucher->bank = $request->bank;
             $voucher->bank_pay_number = $request->bank_pay_number;
         }
@@ -404,5 +406,37 @@ class ContributionProcessController extends Controller
             return $correlative;
         }
         return null;
+    }
+    
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Muserpol\ContributionProcess  $contribution_process
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(ContributionProcess $contribution_process)
+    {
+
+        foreach($contribution_process->contributions as $contribution){
+            $contribution->delete();
+            $contribution->forceDelete();            
+        }
+        foreach($contribution_process->aid_contributions as $aid_contribution){
+            $aid_contribution->delete();
+            $aid_contribution->forceDelete();            
+        }
+        foreach($contribution_process->reimbursements as $reimbursement){
+            $reimbursement->delete();
+            $reimbursement->forceDelete();            
+        }
+        foreach($contribution_process->aid_reimbursements as $aid_reimbursement){
+            $aid_reimbursement->delete();
+            $aid_reimbursement->forceDelete();            
+        }
+
+        $contribution_process->contributions()->detach();
+        $contribution_process->procedure_state_id = 3;
+        $contribution_process->save();        
+        return $contribution_process;
     }
 }
