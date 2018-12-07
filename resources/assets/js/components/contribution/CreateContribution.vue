@@ -116,9 +116,9 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Monto</label>
-                    <input id="reimbursement_amount" v-model="reimbursement_amount" name="reimbursement_amount" type="text" placeholder="Monto" class="form-control numberformat">
+                    <input id="reimbursement_amount" v-model="reimbursement_amount" name="reimbursement_amount" type="text" placeholder="Monto" class="form-control numberformat" @keyup.enter="calculateReimbursement()">
                     <label>Mes</label>
-                    <select class="form-control" name="month" id="month" v-model="reimbursement_month">
+                    <select class="form-control" name="month" id="month" v-model="reimbursement_month" readonly disabled>
                         <option value="01">Enero</option>
                         <option value="02">Febrero</option>
                         <option value="03">Marzo</option>
@@ -133,12 +133,12 @@
                         <option value="12">Diciembre</option>
                      </select>
                 </div>
-                <button class="btn btn-default" type="button" title="Guardar" @click="calculateReimbursement()">
+                <!-- <button class="btn btn-default" type="button" title="Guardar" @click="calculateReimbursement()">
                     Calcular
-                </button>
+                </button> -->
                 <div class="form-group">
                     <label>Monto Cotizable</label>
-                    <input id="reimbursement_quotable" v-model="reimbursement_quotable" name="reimbursement_quotable" type="text" placeholder="Aporte Total" class="form-control numberformat">
+                    <input id="reimbursement_quotable" readonly v-model="reimbursement_quotable" name="reimbursement_quotable" type="text" placeholder="Aporte Total" class="form-control numberformat">
                     <table class="table table-striped" data-page-size="15">
                         <thead>
                             <tr>
@@ -188,11 +188,11 @@
                     <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat"> -->
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+            <div class="modal-footer text-center">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Cancelar</button>
                 <!--<button type="submit" class="btn btn-primary">Guardar</button>-->
                 <button class="btn btn-default" type="button" title="Guardar" @click="addReimbursement()">
-                    Guardar
+                    Insertar Reintegro
                 </button>
             </div>
         </div>
@@ -285,13 +285,17 @@ export default {
         }
       },
       calculateReimbursement(){
-        axios.get('/calculate_reimbursement/'+this.afi_id+'/'+this.reimbursement_amount+'/'+this.reimbursement_month)
+        this.reimbursement_pays = [];
+        
+        let amount = this.reimbursement_amount;
+        amount = amount.replace(',','');        
+        axios.get('/calculate_reimbursement/'+this.afi_id+'/'+amount+'/'+this.reimbursement_month)
         .then(response => {
-            this.reimbursement_quotable = this.reimbursement_amount;// response.data.quotable;   
+            this.reimbursement_quotable = amount;// response.data.quotable;   
             var i;
             let contributions_number = parseInt(this.reimbursement_month)-1;
-            this.reimbursement_quotable = this.reimbursement_amount/contributions_number;
-            let subtotal = this.reimbursement_amount/contributions_number;
+            this.reimbursement_quotable = amount/contributions_number;
+            let subtotal = amount/contributions_number;
             for(i=0;i<response.data.contributions.length;i++)
             {
                 let date =moment(response.data.contributions[i],"YYYY-MM-DD");
@@ -396,8 +400,8 @@ export default {
             this.info_retirement_fund = 0;
             this.info_quota = 0;
             this.info_total = 0;
-            this.reimbursement_month = month;
-            $('#reimbursement_modal').modal('show');
+            this.reimbursement_month = month;            
+            $('#reimbursement_modal').modal('show');            
         },
         addReimbursement:function(){
             let quotable = this.reimbursement_quotable;

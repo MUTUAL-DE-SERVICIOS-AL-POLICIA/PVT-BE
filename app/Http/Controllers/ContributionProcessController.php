@@ -425,6 +425,15 @@ class ContributionProcessController extends Controller
             $aid_contribution->delete();
             $aid_contribution->forceDelete();            
         }
+        foreach($contribution_process->reimbursements as $reimbursement){
+            $reimbursement->delete();
+            $reimbursement->forceDelete();            
+        }
+        foreach($contribution_process->aid_reimbursements as $aid_reimbursement){
+            $aid_reimbursement->delete();
+            $aid_reimbursement->forceDelete();            
+        }
+
         $contribution_process->contributions()->detach();
         $contribution_process->procedure_state_id = 3;
         $contribution_process->save();        
