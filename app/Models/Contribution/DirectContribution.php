@@ -38,8 +38,12 @@ class DirectContribution extends Model
     {
         return !! $this->contribution_processes()->where('procedure_state_id', 1)->first();
     }
-    public function isActive()
+    public function isActiveSector()
     {
         return $this->procedure_modality->procedure_type_id == 6;
+    }
+    public function isPassiveSector()
+    {
+        return $this->procedure_modality->procedure_type_id == 7;
     }
 }

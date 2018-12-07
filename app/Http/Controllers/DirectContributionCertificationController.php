@@ -22,7 +22,7 @@ class DirectContributionCertificationController extends Controller
         } else {
             $applicant = $direct_contribution->procedure_modality_id == 2 ? $affiliate->spouse : $affiliate;
         }
-        $title = 'COMPROMISO DE PAGO - ' . ($direct_contribution->isActive() ? 'APORTE VOLUNTARIO '. ($direct_contribution->procedure_modality_id == 19 ? 'SUSPENDIDOS TEMPORALMENTE DE FUNCIONES POR PROCESOS DISCIPLINARIOS' : 'COMISIÓN DE SERVICIO ÍTEM "0" O AGREGADOS POLICIALES EN EL EXTERIOR DEL PAÍS')  : 'APORTE PARA SOLICITANTES PARA EL PAGO DE APORTE DIRECTO '. ($direct_contribution->procedure_modality_id == 21 ? 'DEL SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES': 'DE LAS (OS) VIUDAS (OS) DEL  SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES'));
+        $title = 'COMPROMISO DE PAGO - ' . ($direct_contribution->isActiveSector() ? 'APORTE VOLUNTARIO '. ($direct_contribution->procedure_modality_id == 19 ? 'SUSPENDIDOS TEMPORALMENTE DE FUNCIONES POR PROCESOS DISCIPLINARIOS' : 'COMISIÓN DE SERVICIO ÍTEM "0" O AGREGADOS POLICIALES EN EL EXTERIOR DEL PAÍS')  : 'APORTE PARA SOLICITANTES PARA EL PAGO DE APORTE DIRECTO '. ($direct_contribution->procedure_modality_id == 21 ? 'DEL SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES': 'DE LAS (OS) VIUDAS (OS) DEL  SECTOR PASIVO CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES'));
         $state = null;
         $glosa_pago = null;
         switch ($direct_contribution->procedure_modality_id) {
@@ -46,10 +46,10 @@ class DirectContributionCertificationController extends Controller
                 break;
         }
 
-        $head = 'En aplicación del Artículo 18 del Reglamento de '.($direct_contribution->isActive() ? 'Fondo de Retiro Policial Solidario ': 'Cuota Mortuoria y Auxilio Mortuorio').' y a solicitud expresa voluntaria, se suscribe el presente compromiso de pago, al tenor de lo siguiente:';
+        $head = 'En aplicación del Artículo 18 del Reglamento de '.($direct_contribution->isActiveSector() ? 'Fondo de Retiro Policial Solidario ': 'Cuota Mortuoria y Auxilio Mortuorio').' y a solicitud expresa voluntaria, se suscribe el presente compromiso de pago, al tenor de lo siguiente:';
 
         $one = 'Yo, <strong class="uppercase">'.$applicant->fullName().'</strong>, con C.I. N° <strong class="uppercase">'.$applicant->ciWithExt().'</strong> ';
-        if ($direct_contribution->isActive()) {
+        if ($direct_contribution->isActiveSector()) {
             $one.= 'como funcionario de público de la Policía Boliviana, DECLARO encontrarme en la siguiente situación de:';
         }else{
             $applicant_state = ($direct_contribution->procedure_modality_id == 21 ? 'como miembro del servicio pasivo de la Policía Boliviana' : 'en mi calidad de viuda (o)');
@@ -58,9 +58,9 @@ class DirectContributionCertificationController extends Controller
         $one.='<ul><li>';
         $one.=$state;
         $one.='</li></ul>';
-        $one .= 'Mediante '.($direct_contribution->isActive() ? '(resolución o memorándum)' : '(declaración de pensión/contrato N°)'). ' '.$direct_contribution->document_number.', de fecha '.$direct_contribution->document_date.', motivo por el cual y para continuar aportando de manera regular al beneficio de '.($direct_contribution->isActive() ? 'Fondo de Retiro Policial Solidario' : 'Auxilio Mortuorio').', expreso mi voluntad de realizar los aportes de forma'.($direct_contribution->isActive() ? '
+        $one .= 'Mediante '.($direct_contribution->isActiveSector() ? '(resolución o memorándum)' : '(declaración de pensión/contrato N°)'). ' '.$direct_contribution->document_number.', de fecha '.$direct_contribution->document_date.', motivo por el cual y para continuar aportando de manera regular al beneficio de '.($direct_contribution->isActiveSector() ? 'Fondo de Retiro Policial Solidario' : 'Auxilio Mortuorio').', expreso mi voluntad de realizar los aportes de forma'.($direct_contribution->isActiveSector() ? '
         voluntaria,' : '').' directa, continua y mensual previa liquidación en oficina central u oficinas regionales, misma que debe hacerse efectiva en el área de Tesorería de la MUSERPOL, o a través de depósito bancario en las cuentas fiscales de la Institución del Banco Unión, el mismo día de la liquidación.';
-        if ($direct_contribution->isActive()){
+        if ($direct_contribution->isActiveSector()){
             $one.=' Asimismo, a la conclusión de la situación laboral en la que me encuentro, deberé presentar el Memorándum de Repliegue o la Resolución de Restitución de Funciones y/o Derechos Institucionales. Al mismo tiempo declaro que tomé conocimiento de los artículos del reglamento referidos al aporte voluntario (Artículos 12, 13, 16, 17, 18 y 19) y me apego a la modalidad de aportación, hasta la conclusión de la situación antes declarada.';
         }else{
             $one.=' De igual forma declaro que tomé conocimiento de los artículos del reglamento referidos al aporte (Artículos 12, 13, 14, 16, 17, 18 y 19).';
@@ -68,7 +68,7 @@ class DirectContributionCertificationController extends Controller
 
 
         $three = '';
-        if ($direct_contribution->isActive()){
+        if ($direct_contribution->isActiveSector()){
             $three.='Como funcionario público del servicio activo de la Policía Boliviana, expreso mi conformidad de aportar con el 5,86% '.$glosa_pago.', para el Fondo de Retiro Policial Solidario y Cuota Mortuoria, determinado en el Estudio Matemático Actuarial 2016 –  2020.';
         }else{
             $three.= ucfirst($applicant_state).' expreso mi conformidad de aportar con el 2,03 % sobre la totalidad de mi renta o pensión mensual para el beneficio de Auxilio Mortuorio, según lo determinado en el Estudio Matemático Actuarial 2016 –  2020.';
