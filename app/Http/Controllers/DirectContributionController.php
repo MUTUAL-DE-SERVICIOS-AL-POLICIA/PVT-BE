@@ -262,7 +262,7 @@ class DirectContributionController extends Controller
         }        
         $payment_types = PaymentType::get();
         //print_r($contribution_process->voucher);
-        //return 12;
+        //return 12;        
         $data = [
             'direct_contribution'   =>  $directContribution,
             'contribution_process'   =>  $contribution_process ?? null,

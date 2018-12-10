@@ -27,6 +27,7 @@ use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Voucher;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\Reimbursement;
+use Muserpol\Models\Contribution\AidReimbursement;
 class ContributionProcessController extends Controller
 {
     public function index()
@@ -164,17 +165,22 @@ class ContributionProcessController extends Controller
          //*********END VALIDATOR************//
         $result = [];
         $ids = [];
-        $total = 0;
+        $total = 0;        
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte = (object)$ap;
 
             if ($aporte->sueldo > 0) {
-                $aid_contribution = new AidContribution();
+                if(isset($aporte->type) && $aporte->type == 'R') {
+                    $aid_contribution = new AidReimbursement();
+                } else {
+                    $aid_contribution = new AidContribution();
+                    $aid_contribution->type = 'DIRECTO';
+                }
+                
                 $aid_contribution->user_id = Auth::user()->id;
                 $aid_contribution->affiliate_id = $affiliate->id;
-                $aid_contribution->month_year = $aporte->year . '-' . $aporte->month . '-01';
-                $aid_contribution->type = 'DIRECTO';
+                $aid_contribution->month_year = $aporte->year . '-' . $aporte->month . '-01';                
                 if (is_numeric($aporte->dignity_rent)) {
                     $aid_contribution->dignity_rent = $aporte->dignity_rent;
                     $aid_contribution->quotable = $aporte->sueldo - $aporte->dignity_rent;
@@ -195,22 +201,6 @@ class ContributionProcessController extends Controller
                 array_push($ids, $aid_contribution->id);
             }
         }
-
-        // $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
-        // if (!isset($voucher_code->id)){
-        //     $code = Util::getNextCode("");
-        // }else{
-        //     $code = Util::getNextCode($voucher_code->code);
-        // }
-        // $voucher = new Voucher();
-        // $voucher->user_id = Auth::user()->id;
-        // $voucher->affiliate_id = $request->afid;
-        // $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
-        // $voucher->total = $request->total;
-        // $voucher->payment_date = Carbon::now();
-        // $voucher->code = $code;
-        // $voucher->save();
-
         $contribution_process->aid_contributions()->attach($ids);
         $contribution_process->total = $total;
         $contribution_process->save();
@@ -276,25 +266,6 @@ class ContributionProcessController extends Controller
             return response()->json($validator->errors(), 406);
         }
          //*********END VALIDATOR************//
-        // Se guarda voucher fecha, total 1 reg
-        // $voucher_code = Voucher::select('id', 'code')->orderby('id', 'desc')->first();
-        // if (!isset($voucher_code->id))
-        //     $code = Util::getNextCode(""); 
-        // else
-        //     $code = Util::getNextCode($voucher_code->code);
-
-        // $voucher = new Voucher();
-        // $voucher->user_id = Auth::user()->id;
-        // $voucher->affiliate_id = $request->afid;
-        // $voucher->voucher_type_id = 1;//$request->tipo; 1 default as Pago de aporte directo
-        // $voucher->total = $request->total;
-        // $voucher->payment_date = Carbon::now();
-        // $voucher->code = $code;
-        // $voucher->paid_amount = $request->paid;
-        // $voucher->bank = $request->bank;
-        // $voucher->bank_pay_number = $request->bank_pay_number;
-        // $voucher->save();
-
         $total = 0;
         $contribution_ids = [];
         $reimbursement_ids = [];

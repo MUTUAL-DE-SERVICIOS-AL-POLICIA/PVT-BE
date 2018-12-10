@@ -1092,15 +1092,15 @@ class QuotaAidCertificationController extends Controller
         $legal_dictum_id = 39;
         $legal_dictum = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$legal_dictum_id)->first();
         
-        $process .= "DBE/UFRPSCAM/AL-DL N°".$legal_dictum->code."</b> de fecha <b>".Util::getStringDate($legal_dictum->date)."</b> y resultado del procesamiento según normativa Técnica – Legal, en cumplimiento al punto 8 del artículo 45 Procesamiento del Reglamento del beneficio de Fondo de Retiro Policial Solidario. 
+        $process .= "DBE/UFRPSCAM/AL-DL N°".$legal_dictum->code."</b> de fecha <b>".Util::getStringDate($legal_dictum->date)."</b> y resultado del procesamiento según normativa Técnica – Legal, en cumplimiento al punto 8 del artículo 45 Procesamiento del Reglamento del beneficio de Cuota Mortuoria y Auxilio Mortuorio. 
         <br><br>
         Por tanto, el expediente que cursa en esta Jefatura, cuenta con los actuados requeridos.
         <br><br>";
         $reception_id = 33;
         $reception = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$reception_id)->first();
-        $process .= "Conforme normativa, el trámite N°".$quota_aid->code." de la Regional ".ucwords(strtolower($quota_aid->city_start->name))." 
-        ingresado por la Ventanilla de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, verificados los requisitos mediante 
-        solicitud N° ".$quota_aid->code." de Ventanilla, adjuntado documentación según lo señalado en el Art. 39 del Reglamento de Fondo de Retiro Policial Solidario de la gestión 2017 y conforme al Art. 45, se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020 y Reglamento de la gestión 2017, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente: ";
+        $process .= "Conforme normativa, el trámite N°".$quota_aid->code." de la Regional ".ucwords(strtolower($quota_aid->city_start->name)).
+        "ingresado por la Ventanilla de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio Mortuorio, verificados los requisitos mediante 
+        solicitud N° ".$quota_aid->code." de Ventanilla, adjuntado documentación según lo señalado en el Art. 43 del Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio y conforme  al Art. 48, se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020 y Reglamento aprobados, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:";
         $body = "";        
 
         ///---FILE---///
@@ -1490,7 +1490,7 @@ class QuotaAidCertificationController extends Controller
                     $body_resolution .='Menor ';
                 }
                 $body_resolution .= $beneficiary->fullName();
-                if(false && date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state) {
+                if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state) {
                     $body_resolution .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if($beneficiary->identity_card)
