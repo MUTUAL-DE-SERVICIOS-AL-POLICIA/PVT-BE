@@ -306,6 +306,8 @@ Vue.component('ret-fun-beneficiary-testimony', require('./components/ret_fun/Ben
 
 Vue.component('summary-select-contributions', require('./components/contribution/SummarySelectContributions.vue'));
 
+Vue.component('generate-charge', require('./components/voucher/GenerateCharge.vue'));
+
 
 Vue.component("chosen-select", {
   props: {

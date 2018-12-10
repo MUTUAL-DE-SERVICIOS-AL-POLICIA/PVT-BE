@@ -3,6 +3,7 @@
 namespace Muserpol\Http\Controllers;
 
 use Muserpol\Voucher;
+use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
 
 class VoucherController extends Controller
@@ -81,5 +82,9 @@ class VoucherController extends Controller
     public function destroy(Voucher $voucher)
     {
         //
+    }
+
+    public function generateVoucher(Affiliate $affiliate){
+        return $affiliate;
     }
 }
