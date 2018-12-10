@@ -165,22 +165,22 @@ class ContributionProcessController extends Controller
          //*********END VALIDATOR************//
         $result = [];
         $ids = [];
-        $total = 0;
+        $total = 0;        
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
             $aporte = (object)$ap;
 
             if ($aporte->sueldo > 0) {
-                if($aporte->type == 'R') {
+                if(isset($aporte->type) && $aporte->type == 'R') {
                     $aid_contribution = new AidReimbursement();
                 } else {
                     $aid_contribution = new AidContribution();
+                    $aid_contribution->type = 'DIRECTO';
                 }
                 
                 $aid_contribution->user_id = Auth::user()->id;
                 $aid_contribution->affiliate_id = $affiliate->id;
-                $aid_contribution->month_year = $aporte->year . '-' . $aporte->month . '-01';
-                $aid_contribution->type = 'DIRECTO';
+                $aid_contribution->month_year = $aporte->year . '-' . $aporte->month . '-01';                
                 if (is_numeric($aporte->dignity_rent)) {
                     $aid_contribution->dignity_rent = $aporte->dignity_rent;
                     $aid_contribution->quotable = $aporte->sueldo - $aporte->dignity_rent;
