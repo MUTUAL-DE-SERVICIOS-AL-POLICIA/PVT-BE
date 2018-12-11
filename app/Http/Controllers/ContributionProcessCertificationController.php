@@ -20,7 +20,7 @@ class ContributionProcessCertificationController extends Controller
             $contributions = $contribution_process->contributionsWithReimbursements();
             $applicant = $affiliate;
         }else{
-            $contributions = $contribution_process->aid_contributions;
+            $contributions = $contribution_process->aidContributionsWithReimbursements();
             $applicant = $direct_contribution->procedure_modality_id == 2 ? $affiliate->spouse : $affiliate;
         }
 

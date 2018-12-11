@@ -86,7 +86,7 @@
         "directContributionId",
         "affiliateId",
         "aidContributions",
-        "aidContributions",
+        "aidReimbursements",
         "total",
         "contributionProcessId",
       ],
@@ -123,7 +123,7 @@
         computed: {
             aidContributionsAndReimbursements(){
                 let temp = JSON.parse(JSON.stringify(this.aidContributions)) ;
-                Array.prototype.push.apply(temp,this.aidContributions);
+                Array.prototype.push.apply(temp,this.aidReimbursements);
                 temp.sort((a,b) => (a.month_year > b.month_year) ? 1 : ((b.month_year > a.month_year) ? -1 : 0));
                 return temp;
             }
