@@ -59,7 +59,37 @@
                 <button class="btn btn-primary" type="button" @click="store"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
             </div>
         </div>
-        <br>        
+        <br>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-content forum-container">
+                        <div class="row">
+                            <table class="table table-stripped toggle-arrow-tiny">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Concepto</th>
+                                        <th>Monto</th>
+                                        <th>Acci&oacute;n</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- @foreach ($vouchers as $voucher)
+                                        <tr>
+                                            <td>{{ $voucher->code }}</td>
+                                            <td>{{ $voucher->voucher->type }}</td>
+                                            <td>{{ $voucher->total }}</td>
+                                            <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                        </tr>
+                                    @endforeach -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>         
     </div>         
 </template>
 <script>
@@ -71,7 +101,8 @@
     export default {
           props:[     
             'charge',                        
-            'payment_types'
+            'payment_types',
+            'affiliate_id',
         ],
         data(){
             return{
@@ -92,18 +123,18 @@
         },
         methods:{
             store: function(){
-                if(parseMoney(this.paid) < parseMoney(this.contribution_process.total) && this.payment_type_id == 1) {
+                if(parseMoney(this.paid) < parseMoney(this.charge.total) && this.payment_type_id == 1) {
                     flash("El monto pagado es menor al monto total", "error",6000);
                     return;
                 }
-                if(parseMoney(this.total) < parseMoney(this.contribution_process.total)) {
+                if(parseMoney(this.total) < parseMoney(this.charge.total)) {
                     flash("El monto total es menor al monto cotizado", "error",6000);
                     return;
                 }
-                process = this.contribution_process;
-                axios.post('/contribution_process/'+this.contribution_process.id+'/contribution_pay',                
-                {   
-                    process,
+                process = this.charge;
+                axios.post('/voucher',
+                {                       
+                    affiliate_id: this.affiliate_id,
                     total: parseMoney(this.total),
                     paid: parseMoney(this.paid),
                     bank:this.bank,
@@ -117,18 +148,16 @@
                 }
                 );
             },
-            completeVoucher(){
-                console.log("voucher");
-                console.log(this.voucher);
-                if(this.voucher !== null && this.voucher != 0){
-                    this.paid = this.voucher.paid_amount;
-                    this.bank = this.voucher.bank;
-                    this.bank_pay_number = this.voucher.bank_pay_number;
-                    this.paid_amount = this.voucher.total;
-                    this.payment_type_id = this.voucher.payment_type_id;                
-                    this.editing = false;
-                }
-            },
+            // completeVoucher(){                
+            //     if(this.voucher !== null && this.voucher != 0){
+            //         this.paid = this.voucher.paid_amount;
+            //         this.bank = this.voucher.bank;
+            //         this.bank_pay_number = this.voucher.bank_pay_number;
+            //         this.paid_amount = this.voucher.total;
+            //         this.payment_type_id = this.voucher.payment_type_id;                
+            //         this.editing = false;
+            //     }
+            // },
             toggle_editing() {
                 this.editing = !this.editing;
             },            

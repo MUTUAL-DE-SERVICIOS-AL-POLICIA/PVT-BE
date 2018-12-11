@@ -231,6 +231,7 @@ th.ellipsis-text {
                         <generate-charge
                             :charge="{{ $charge }}"
                             :payment_types = "{{ $payment_types }}"
+                            :affiliate_id = "{{ $affiliate->id }}"
                         ></generate-charge>
                     </div>
 
