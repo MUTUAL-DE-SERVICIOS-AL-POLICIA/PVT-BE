@@ -2,8 +2,12 @@
 
 namespace Muserpol\Http\Controllers;
 
-use Muserpol\Voucher;
+use Muserpol\Models\Voucher;
+use Muserpol\Models\Affiliate;
+use Auth;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Muserpol\Helpers\Util;
 
 class VoucherController extends Controller
 {
@@ -35,7 +39,27 @@ class VoucherController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $last_code = Util::getLastCode(Voucher::class);
+        $voucher = new Voucher();
+        $voucher->user_id = Auth::user()->id;
+        $voucher->affiliate_id = $request->affiliate_id;
+        $voucher->voucher_type_id = 1;
+        $voucher->total = $request->total;
+        $voucher->payment_date = Carbon::now();
+        $voucher->code = Util::getNextCode($last_code);
+        $voucher->paid_amount = $request->total;
+        $voucher->payment_type_id = $request->payment_type_id;
+        if($request->payment_type_id == 2) {
+            $voucher->bank = $request->bank;
+            $voucher->bank_pay_number = $request->bank_pay_number;
+        }
+        $voucher->save();
+
+        $data = [
+            'voucher'   =>  $voucher
+        ];
+
+        return response()->json($data);
     }
 
     /**
@@ -81,5 +105,9 @@ class VoucherController extends Controller
     public function destroy(Voucher $voucher)
     {
         //
+    }
+
+    public function generateVoucher(Affiliate $affiliate){
+        return $affiliate;
     }
 }

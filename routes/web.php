@@ -275,6 +275,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('inbox_validate_doc/{doc_id}', 'InboxController@validateDoc')->name('inbox_validate_doc');
 		Route::patch('inbox_invalidate_doc/{doc_id}', 'InboxController@invalidateDoc')->name('inbox_validate_doc');
 
+		//charges
+		Route::get('affiliate/{affiliate}/voucher/create', 'VoucherController@generateVoucher')->name('create_voucher');
+		Route::resource('voucher','VoucherController');
+		//Route::post('affiliate/{affiliate}/voucher', 'VoucherController@storeVoucher')->name('store_voucher');
 
 		Route::get('print/resolution_notification', function ()
 		{
