@@ -58,10 +58,6 @@ class ContributionProcess extends Model
     {
         $contribution_ids = join(', ',ContributionProcess::find($this->id)->aid_contributions->pluck('id')->toArray());
         $reimbursement_ids = join(', ',ContributionProcess::find($this->id)->aid_reimbursements->pluck('id')->toArray());
-        dd(
-            $contribution_ids,
-                $reimbursement_ids
-        );
         if($reimbursement_ids == '')
             $reimbursement_ids = '0';
         if ($contribution_ids == '')
@@ -72,9 +68,11 @@ class ContributionProcess extends Model
                 contributions_reimbursements.affiliate_id,
                 sum(contributions_reimbursements.rent) as rent,
                 sum(contributions_reimbursements.dignity_rent) as dignity_rent,
+                sum(contributions_reimbursements.quotable) as quotable,
                 sum(contributions_reimbursements.mortuary_aid) as mortuary_aid,
                 sum(contributions_reimbursements.interest) as interest,
-                sum(contributions_reimbursements.total) as total
+                sum(contributions_reimbursements.total) as total,
+                contributions_reimbursements.type as type
                 FROM(
                 SELECT
                     aid_reimbursements.id,
@@ -82,9 +80,11 @@ class ContributionProcess extends Model
                     aid_reimbursements.mortuary_aid,
                     aid_reimbursements.rent,
                     aid_reimbursements.dignity_rent,
+                    aid_reimbursements.quotable,
                     aid_reimbursements.month_year,
                     aid_reimbursements.interest,
-                    aid_reimbursements.total
+                    aid_reimbursements.total,
+                    'R' as type
                         FROM aid_reimbursements
                         WHERE aid_reimbursements.deleted_at is null
                             and aid_reimbursements.id in (".$reimbursement_ids. ")
@@ -95,9 +95,11 @@ class ContributionProcess extends Model
                     aid_contributions.mortuary_aid,
                     aid_contributions.rent,
                     aid_contributions.dignity_rent,
+                    aid_contributions.quotable,
                     aid_contributions.month_year,
                     aid_contributions.interest,
-                    aid_contributions.total
+                    aid_contributions.total,
+                    'C' as type
                         FROM aid_contributions
                         WHERE aid_contributions.deleted_at is null
                             and aid_contributions.id in (".$contribution_ids.")
@@ -122,7 +124,8 @@ class ContributionProcess extends Model
                 sum(contributions_reimbursements.retirement_fund) as retirement_fund,
                 sum(contributions_reimbursements.mortuary_quota) as mortuary_quota,
                 sum(contributions_reimbursements.interest) as interest,
-                sum(contributions_reimbursements.total) as total
+                sum(contributions_reimbursements.total) as total,
+                contributions_reimbursements.type as type
                 FROM(
                 SELECT
                     reimbursements.id,
@@ -152,7 +155,8 @@ class ContributionProcess extends Model
                     reimbursements.mortuary_quota,
                     reimbursements.subtotal,
                     reimbursements.total,
-                    reimbursements.interest
+                    reimbursements.interest,
+                    'R' as type
                         FROM reimbursements
                         WHERE reimbursements.deleted_at is null
                             and reimbursements.id in (".$reimbursement_ids. ")
@@ -185,7 +189,8 @@ class ContributionProcess extends Model
                     contributions.mortuary_quota,
                     contributions.subtotal,
                     contributions.total,
-                    contributions.interest
+                    contributions.interest,
+                    'C' as type
                         FROM contributions
                         WHERE contributions.deleted_at is null
                             and contributions.id in (".$contribution_ids.")

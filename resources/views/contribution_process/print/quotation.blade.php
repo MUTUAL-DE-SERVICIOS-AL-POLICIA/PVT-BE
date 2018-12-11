@@ -123,11 +123,11 @@
                                 @foreach ($contributions as $c)
                                 <tr class="courier text-base">
                                     <td class="px-5 text-left uppercase"> {{ Util::printMonthYear($c->month_year) }} </td>
-                                    <td class="px-5 text-right"> {{ $c->quotable }} </td>
-                                    <td class="px-5 text-right"> {{ $c->retirement_fund }} </td>
-                                    <td class="px-5 text-right"> {{ $c->mortuary_quota }} </td>
-                                    <td class="px-5 text-right"> {{ $c->interest }} </td>
-                                    <td class="px-5 text-right"> {{ $c->total }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->quotable) }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->retirement_fund) }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->mortuary_quota) }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->interest) }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->total) }} </td>
                                 </tr>
                                 @endforeach
                                 <tr class="text-base">
@@ -151,10 +151,13 @@
                                         Mes/Año
                                     </td>
                                     <td>
-                                        Renta Bs.
+                                        Pension Bs.
                                     </td>
                                     <td>
                                         Renta Dignidad Bs.
+                                    </td>
+                                    <td>
+                                        Cotizable
                                     </td>
                                     <td>
                                         Auxilio Mortuorio (2.03 %)
@@ -171,16 +174,17 @@
                                 @foreach ($contributions as $c)
                                 <tr class="courier">
                                     <td class="px-5 text-left uppercase"> {{ Util::printMonthYear($c->month_year) }} </td>
-                                    <td class="px-5 text-right"> {{ $c->rent }} </td>
-                                    <td class="px-5 text-right"> {{ $c->dignity_rent }} </td>
-                                    <td class="px-5 text-right"> {{ $c->mortuary_aid }} </td>
-                                    <td class="px-5 text-right"> {{ $c->interest }} </td>
-                                    <td class="px-5 text-right"> {{ $c->total }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->rent) }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->dignity_rent) }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->quotable) }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->mortuary_aid) }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->interest) }} </td>
+                                    <td class="px-5 text-right"> {{ Util::formatMoney($c->total) }} </td>
                                 </tr>
                                 @endforeach
                                 <tr>
                                     <td></td>
-                                    <td colspan="4" class="text-sm text-left px-10 ">
+                                    <td colspan="5" class="text-sm text-left px-10 ">
                                         Son: <span class="font-bold uppercase"> {{ Util::convertir($contribution_process->total) }} </span>
                                     </td>
                                     <td class="text-lg text-right courier font-bold">
