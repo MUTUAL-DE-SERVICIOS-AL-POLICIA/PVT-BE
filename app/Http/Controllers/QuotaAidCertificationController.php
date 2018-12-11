@@ -859,8 +859,8 @@ class QuotaAidCertificationController extends Controller
                     $spouse = $affiliate->spouse()->first();
                     $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
                     la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes  salvando los derechos de los beneficiarios ":" la Cuota Parte salvando los derechos del (de la) beneficiario (a) ");
-                    if($quota_aid->procedure_modality->procedure_type_id == 15) {
-                        $payment .= ($spouse->gender=="M"?"del ":"de la ").Util::fullName($spouse)." con C.I. N° ".$spouse->identity_card." ".($spouse->city_identity_card->first_shortened??"SIN CI");
+                    if($quota_aid->procedure_modality_id == 15) {
+                        $payment .= ($spouse->gender=="M"?"del Sr. ":"de la Sra. ").Util::fullName($spouse)." con C.I. N° ".$spouse->identity_card." ".($spouse->city_identity_card->first_shortened??"SIN CI");
                     } else {
                         $payment .= ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI");
                     }                    
