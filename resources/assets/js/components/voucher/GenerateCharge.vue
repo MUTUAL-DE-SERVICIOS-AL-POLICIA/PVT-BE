@@ -138,16 +138,11 @@
                     bank: this.bank,
                     payment_type_id: this.payment_type_id,
                     bank_pay_number:this.bank_pay_number})
-                .then(response => {
-                    console.log('trying to storess');
-                    this.editing = false;
-                    //this.enableDC();
-                    //flash('Cobro realizado exitosamente');
+                .then(response => {                    
+                    this.editing = false;                    
                     let affiliate_id = this.affiliate_id;
-                    let voucher_id = response.data.voucher.id;
-                    console.log('affiliate/'+affiliate_id+'/voucher/'+voucher_id+'/print');
-                    printJS({printable:'/affiliate/'+affiliate_id+'/voucher/'+voucher_id+'/print', type:'pdf', showModal:true});
-                    console.log('after print');
+                    let voucher_id = response.data.voucher.id;                    
+                    printJS({printable:'/affiliate/'+affiliate_id+'/voucher/'+voucher_id+'/print', type:'pdf', showModal:true});                    
                     var i;
                 }
                 );
