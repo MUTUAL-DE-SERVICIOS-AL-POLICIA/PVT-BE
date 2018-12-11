@@ -93,7 +93,7 @@ class QuotaAidMortuary extends Model
     }
     public function getCorrelative($area_id)
     {
-        return QuotaAidCorrelative::where('quota_aid_mortuary_id', $this->id)->where('wf_state_id', $area_id)->first()->code ?? 'SIN NÚMERO';
+        return QuotaAidCorrelative::where('quota_aid_mortuary_id', $this->id)->where('wf_state_id', $area_id)->first();
     }
     public function getApplicant()
     {
