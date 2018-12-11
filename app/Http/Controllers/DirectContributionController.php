@@ -123,7 +123,7 @@ class DirectContributionController extends Controller
         $direct_contribution->commitment_date = Util::verifyBarDate($request->commitment_date) ? Util::parseBarDate($request->commitment_date) : $request->commitment_date;
         $direct_contribution->document_number = $request->document_number;
         $direct_contribution->document_date = Util::verifyBarDate($request->document_date) ? Util::parseBarDate($request->document_date) : $request->document_date;
-        $direct_contribution->start_contribution_date = Util::verifyBarDate($request->start_contribution_date) ? Util::parseBarDate($request->start_contribution_date) : $request->start_contribution_date;
+        $direct_contribution->start_contribution_date = Util::verifyMonthYearDate($request->start_contribution_date) ? Util::parseMonthYearDate($request->start_contribution_date) : $request->start_contribution_date;
         $direct_contribution->date = now();
         $direct_contribution->code = Util::getNextCode(Util::getLastCode(DirectContribution::class), "1");
         $direct_contribution->save();
