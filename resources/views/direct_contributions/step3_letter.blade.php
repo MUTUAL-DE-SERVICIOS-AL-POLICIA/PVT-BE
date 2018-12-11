@@ -46,7 +46,7 @@
                             <label class="control-label">Periodo de primer aporte</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" v-date name="start_contribution_date" v-model.trim="start_contribution_date" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
+                            <input type="text" class="form-control" v-month-year name="start_contribution_date" v-model.trim="start_contribution_date" v-validate.initial="'required|date_format:MM/YYYY|max_current_date_month_year'">
                             <i v-show="errors.has('start_contribution_date')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('start_contribution_date')" class="text-danger">@{{ errors.first('start_contribution_date') }}</span>
                         </div>

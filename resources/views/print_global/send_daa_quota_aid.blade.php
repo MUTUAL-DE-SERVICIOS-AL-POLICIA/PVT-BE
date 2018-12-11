@@ -45,19 +45,18 @@
         <div class="block">
 
             @yield('content')
-            <table class="table-info w-100 m-b-5">
+            <table class="table-info w-100 m-b-5 text-sm">
                 <thead class="bg-grey-darker">
                     <tr class="font-medium text-white text-sm text-center">
                         <td>Nº</td>
                         <td>GESTION</td>
-                        <td>TRAMITE Nº</td>
-                        <td>DICTAMEN Nº</td>
-                        <td>INF. JEFATURA Nº</td>
+                        <td>FECHA DE SOL.</td>
+                        <td>Nº SOL.</td>
+                        <td>FECHA DE RES.</td>
                         <td>RESOL. COMISION Nº</td>
                         <td>GRADO</td>
                         <td>Nº C.I.</td>
-                        <td>EXTENCION</td>
-                        <td>TITULAR</td>                        
+                        <td>TITULAR</td>
                         <td>CONCEPTO</td>
                         <td>CIUDAD</td>
                     <tr></tr>
@@ -70,13 +69,12 @@
                         <tr>
                             <td class="uppercase px-5 text-right">{{ $index++ }}</td>
                             <td class="uppercase px-5 text-right">{{ $year }}</td>
+                            <td class="uppercase px-5 text-right">{{ $q->reception_date }}</td>
                             <td class="uppercase px-5 text-right">{{ $q->code }}</td>
-                            <td class="uppercase px-5 text-right">{{ $q->getCorrelative(39) }}</td>
-                            <td class="uppercase px-5 text-right">{{ $q->getCorrelative(38) }}</td>
-                            <td class="uppercase px-5 text-right">{{ $q->getCorrelative(40) }}</td>
+                            <td class="uppercase px-5 text-right">{{ $q->getCorrelative(40)->date }}</td>
+                            <td class="uppercase px-5 text-right">{{ $q->getCorrelative(40)->code }}</td>
                             <td class="uppercase px-15 text-left">{{ $q->affiliate->degree->shortened }}</td>
-                            <td class="uppercase px-15 text-right">{{ $q->affiliate->identity_card }}</td>
-                            <td class="uppercase px-15 text-left">{{ $q->affiliate->city_identity_card->first_shortened ?? null }}</td>
+                            <td class="uppercase px-15 text-left">{{ $q->affiliate->ciWithExt() }}</td>
                             <td class="uppercase px-15 text-left">{{ $q->affiliate->fullName() }}</td>
                             <td class="uppercase px-15 text-left">{{ $q->procedure_modality->name }}</td>
                             <td class="uppercase px-15 text-left">{{ $q->city_end->name }}</td>

@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         <tr v-for="(con, index) in contributionsAndReimbursements"
-            :key="index">
+            :key="index" :class="{'warning' : con.is_reimbursement}">
           <td><input type="text"
                    v-model="con.month_year"
                    disabled
@@ -112,7 +112,14 @@ export default {
     computed: {
       contributionsAndReimbursements(){
         let temp = JSON.parse(JSON.stringify(this.contributions)) ;
-        Array.prototype.push.apply(temp,this.reimbursements);
+        temp.forEach(x => {
+            x['is_contribution'] = true;
+        });
+        let temp1 = JSON.parse(JSON.stringify(this.reimbursements));
+        temp1.forEach(x => {
+            x['is_reimbursement'] = true;
+        });
+        Array.prototype.push.apply(temp,temp1);
         temp.sort((a,b) => (a.month_year > b.month_year) ? 1 : ((b.month_year > a.month_year) ? -1 : 0));
         return temp;
       }

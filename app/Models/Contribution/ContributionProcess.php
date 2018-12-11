@@ -54,12 +54,68 @@ class ContributionProcess extends Model
     {
         return $this->belongsTo('Muserpol\Models\Contribution\DirectContribution');
     }
+    public function aidContributionsWithReimbursements()
+    {
+        $contribution_ids = join(', ',ContributionProcess::find($this->id)->aid_contributions->pluck('id')->toArray());
+        $reimbursement_ids = join(', ',ContributionProcess::find($this->id)->aid_reimbursements->pluck('id')->toArray());
+        if($reimbursement_ids == '')
+            $reimbursement_ids = '0';
+        if ($contribution_ids == '')
+            $contribution_ids = '0';
+        $contributions = DB::select("
+            SELECT
+                contributions_reimbursements.month_year,
+                contributions_reimbursements.affiliate_id,
+                sum(contributions_reimbursements.rent) as rent,
+                sum(contributions_reimbursements.dignity_rent) as dignity_rent,
+                sum(contributions_reimbursements.quotable) as quotable,
+                sum(contributions_reimbursements.mortuary_aid) as mortuary_aid,
+                sum(contributions_reimbursements.interest) as interest,
+                sum(contributions_reimbursements.total) as total,
+                contributions_reimbursements.type as type
+                FROM(
+                SELECT
+                    aid_reimbursements.id,
+                    aid_reimbursements.affiliate_id,
+                    aid_reimbursements.mortuary_aid,
+                    aid_reimbursements.rent,
+                    aid_reimbursements.dignity_rent,
+                    aid_reimbursements.quotable,
+                    aid_reimbursements.month_year,
+                    aid_reimbursements.interest,
+                    aid_reimbursements.total,
+                    'R' as type
+                        FROM aid_reimbursements
+                        WHERE aid_reimbursements.deleted_at is null
+                            and aid_reimbursements.id in (".$reimbursement_ids. ")
+                UNION ALL
+                SELECT
+                    aid_contributions.id,
+                    aid_contributions.affiliate_id,
+                    aid_contributions.mortuary_aid,
+                    aid_contributions.rent,
+                    aid_contributions.dignity_rent,
+                    aid_contributions.quotable,
+                    aid_contributions.month_year,
+                    aid_contributions.interest,
+                    aid_contributions.total,
+                    'C' as type
+                        FROM aid_contributions
+                        WHERE aid_contributions.deleted_at is null
+                            and aid_contributions.id in (".$contribution_ids.")
+            ) as contributions_reimbursements
+                GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id
+                ORDER BY month_year DESC");
+        return array_reverse($contributions);
+    }
     public function contributionsWithReimbursements()
     {
         $contribution_ids = join(', ',ContributionProcess::find($this->id)->contributions->pluck('id')->toArray());
         $reimbursement_ids = join(', ',ContributionProcess::find($this->id)->reimbursements->pluck('id')->toArray());
         if($reimbursement_ids == '')
             $reimbursement_ids = '0';
+        if($contribution_ids == '')
+            $contribution_ids = '0';
         $contributions = DB::select("
             SELECT
                 contributions_reimbursements.month_year,
