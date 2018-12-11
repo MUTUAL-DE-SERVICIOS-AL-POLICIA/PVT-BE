@@ -856,7 +856,7 @@ class QuotaAidCertificationController extends Controller
                     $reserved_quantity = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
                     //return $certification;
-                    $spouse = $affiliate->spouse-first();
+                    $spouse = $affiliate->spouse()->first();
                     $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
                     la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes  salvando los derechos de los beneficiarios ":" la Cuota Parte salvando los derechos del (de la) beneficiario (a) ");
                     if($quota_aid->procedure_modality->procedure_type_id == 15) {
