@@ -27,6 +27,8 @@ use Carbon\Carbon;
 use Muserpol\Models\Entities;
 use Auth;
 use Muserpol\Models\Contribution\DirectContribution;
+use Muserpol\Models\ChargeType;
+use Muserpol\Models\PaymentType;
 class AffiliateController extends Controller
 {
     /**
@@ -308,7 +310,8 @@ class AffiliateController extends Controller
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
 
         
-
+        $charge = ChargeType::where('module_id',Util::getRol()->module_id)->first();
+        $payment_types = PaymentType::get();
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -341,6 +344,8 @@ class AffiliateController extends Controller
             'pension_entities' => $pension_entities,
             'has_direct_contribution' => isset($direct_contribution)?true:false,
             'direct_contribution'   =>  $direct_contribution,
+            'charge' => $charge,
+            'payment_types' =>  $payment_types,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);

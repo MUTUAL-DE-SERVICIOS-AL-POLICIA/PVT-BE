@@ -62,6 +62,11 @@ th.ellipsis-text {
                 </a>
             @endif
         @endcan
+        {{-- <a href="{{route('create_voucher', $affiliate->id)}}"> --}}
+            <button class="btn btn-info btn-sm  dim" type="button" href="#tab-charge" data-toggle="tab" data-placement="top" title="Cobro de carpetas"><i class="fa fa-paste"></i> </button>
+        {{-- </a> --}}
+
+        {{-- @if('create', new Muserpol\Models\ChargeType) --}}
         {{-- @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
@@ -121,8 +126,7 @@ th.ellipsis-text {
     <br>
     <div class="col-md-9" style="padding-left: 6px">
 
-            <div class="tab-content">
-
+            <div class="tab-content">         
                     <div id="tab-affiliate" class="tab-pane active">
                         <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template>
                             @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
@@ -222,6 +226,29 @@ th.ellipsis-text {
 
 
                     </div> --}}
+
+                    <div id="tab-charge" class="tab-pane active">
+                        <generate-charge
+                            :charge="{{ $charge }}"
+                            :payment_types = "{{ $payment_types }}"
+                            :affiliate_id = "{{ $affiliate->id }}"
+                        ></generate-charge>
+                    </div>
+
+                    {{-- <div class="row">
+                        <div class="col-lg-12">
+                            <div class="ibox">
+                                <div class="ibox-title">                    
+                                        <direct-contribution-payment
+                                            :contribution_process="{{ $contribution_process }}"
+                                            :voucher = "{{ $voucher }}"
+                                            :payment_types = "{{ $payment_types }}"             
+                                        ></direct-contribution-payment>
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
+                    
 
                     <div id="tab-observations" class="tab-pane">
 
