@@ -856,13 +856,13 @@ class QuotaAidCertificationController extends Controller
                     $certification = $beneficiary->testimonies()->first();
                     //return $certification;
                     $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
-                    la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes ":" la Cuota Parte ")." salvando los derechos del beneficiario ".
+                    la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes  salvando los derechos de los beneficiarios ":" la Cuota Parte salvando los derechos del beneficiario ").
                     ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
                     ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 23, 28 y ".$art[$quota_aid->procedure_modality_id]." del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nro. 51/2017 de fecha 29 de diciembre de 2017, de la siguiente manera:<br><br>";
                 }
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
-                if(date('Y') -$birth_date->format('Y') > 18) {
+                if(date('Y') -$birth_date->format('Y') >= 18) {
                     $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 } else {
                     $payment .='Menor ';
@@ -873,7 +873,7 @@ class QuotaAidCertificationController extends Controller
                     $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");                
                 }   
                 $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
-                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
+                if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
                     $payment .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if(isset($beneficiary_advisor->id))
@@ -1067,8 +1067,8 @@ class QuotaAidCertificationController extends Controller
         } else {
             $head .= " presenta";
         }
-        $head .= " la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) ." y en cumplimiento al numeral 8
-        del artículo 45 del Reglamento de Fondo de Retiro Policial Solidario, elevo el presente informe de revisión<br><br>";
+        $head .= " la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) ." y en cumplimiento al numeral 7
+        del artículo 48 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, elevo el presente informe de revisión<br><br>";
         $past = 'Conforme al Decreto Supremo N°1446 de 19 de diciembre de 2012, modificado por el Decreto Supremo N° 2829 de 06 de julio de 2016, referente al beneficio de Cuota Mortuoria en el artículo 2, (MODIFICACIONES) establece:
             <br><br>
             I. Se modifica el inciso d) del artículo 3 del Decreto Supremo N° 1446, de 19 de diciembre de 2012, con el siguiente texto: <strong><i>“Otorgar el beneficio de Cuota Mortuoria y Auxilio Mortuorio a favor del sector activo y pasivo de la Policía Boliviana, de acuerdo a reglamentos emitidos por MUSERPOL.”</i></strong> 
@@ -1092,15 +1092,15 @@ class QuotaAidCertificationController extends Controller
         $legal_dictum_id = 39;
         $legal_dictum = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$legal_dictum_id)->first();
         
-        $process .= "DBE/UFRPSCAM/AL-DL N°".$legal_dictum->code."</b> de fecha <b>".Util::getStringDate($legal_dictum->date)."</b> y resultado del procesamiento según normativa Técnica – Legal, en cumplimiento al punto 8 del artículo 45 Procesamiento del Reglamento del beneficio de Fondo de Retiro Policial Solidario. 
+        $process .= "DBE/UFRPSCAM/AL-DL N°".$legal_dictum->code."</b> de fecha <b>".Util::getStringDate($legal_dictum->date)."</b> y resultado del procesamiento según normativa Técnica – Legal, en cumplimiento al punto 8 del artículo 45 Procesamiento del Reglamento del beneficio de Cuota Mortuoria y Auxilio Mortuorio. 
         <br><br>
         Por tanto, el expediente que cursa en esta Jefatura, cuenta con los actuados requeridos.
         <br><br>";
         $reception_id = 33;
         $reception = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$reception_id)->first();
-        $process .= "Conforme normativa, el trámite N°".$quota_aid->code." de la Regional ".ucwords(strtolower($quota_aid->city_start->name))." 
-        ingresado por la Ventanilla de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, verificados los requisitos mediante 
-        solicitud N° ".$quota_aid->code." de Ventanilla, adjuntado documentación según lo señalado en el Art. 39 del Reglamento de Fondo de Retiro Policial Solidario de la gestión 2017 y conforme al Art. 45, se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020 y Reglamento de la gestión 2017, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente: ";
+        $process .= "Conforme normativa, el trámite N°".$quota_aid->code." de la Regional ".ucwords(strtolower($quota_aid->city_start->name)).
+        "ingresado por la Ventanilla de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial, Cuota y Auxilio Mortuorio, verificados los requisitos mediante 
+        solicitud N° ".$quota_aid->code." de Ventanilla, adjuntado documentación según lo señalado en el Art. 43 del Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio y conforme  al Art. 48, se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020 y Reglamento aprobados, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:";
         $body = "";        
 
         ///---FILE---///
@@ -1250,13 +1250,13 @@ class QuotaAidCertificationController extends Controller
                     $reserved_quantity = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
                     $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
-                    la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes ":" la Cuota Parte ")." salvando los derechos del beneficiario ".
+                    la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes salvando los derechos de los beneficiarios ":" la Cuota Parte salvando los derechos del beneficiario ").
                     ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
                     ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 23, 28 y ".$art[$quota_aid->procedure_modality_id]." del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nro. 51/2017 de fecha 29 de diciembre de 2017, de la siguiente manera:<br><br>";
                 }
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
-                if(date('Y') -$birth_date->format('Y') > 18) {
+                if(date('Y') -$birth_date->format('Y') >= 18) {
                     $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 } else {
                     $payment .='Menor ';
@@ -1266,7 +1266,7 @@ class QuotaAidCertificationController extends Controller
                     $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");
                 }
                 $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
-                if(date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
+                if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
                     $payment .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if(isset($beneficiary_advisor->id))
@@ -1484,13 +1484,13 @@ class QuotaAidCertificationController extends Controller
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
                 $body_resolution .= "<li class='text-justify'>";
-                if(date('Y') -$birth_date->format('Y') > 18) {
+                if(date('Y') -$birth_date->format('Y') >= 18) {
                     $body_resolution .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 } else {
                     $body_resolution .='Menor ';
                 }
                 $body_resolution .= $beneficiary->fullName();
-                if(false && date('Y') -$birth_date->format('Y') <= 18 && !$beneficiary->state) {
+                if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state) {
                     $body_resolution .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if($beneficiary->identity_card)
@@ -1511,7 +1511,7 @@ class QuotaAidCertificationController extends Controller
             
             }
         } else {            
-            $body_resolution .= "<br><br><li class='text-justify'>".$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI")."., el monto de &nbsp;<strong>".Util::formatMoneyWithLiteral($quota_aid->total).".</strong></li><br><br>";
+            $body_resolution .= "<li class='text-justify'>".$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI")."., el monto de &nbsp;<strong>".Util::formatMoneyWithLiteral($quota_aid->total).".</strong></li><br><br>";
         }
 
         $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>";
