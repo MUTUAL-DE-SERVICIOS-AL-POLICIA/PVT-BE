@@ -859,8 +859,8 @@ class QuotaAidCertificationController extends Controller
                     $spouse = $affiliate->spouse()->first();
                     $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
                     la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes  salvando los derechos de los beneficiarios ":" la Cuota Parte salvando los derechos del (de la) beneficiario (a) ");
-                    if($quota_aid->procedure_modality->procedure_type_id == 15) {
-                        $payment .= ($spouse->gender=="M"?"del ":"de la ").Util::fullName($spouse)." con C.I. N° ".$spouse->identity_card." ".($spouse->city_identity_card->first_shortened??"SIN CI");
+                    if($quota_aid->procedure_modality_id == 15) {
+                        $payment .= ($spouse->gender=="M"?"del Sr. ":"de la Sra. ").Util::fullName($spouse)." con C.I. N° ".$spouse->identity_card." ".($spouse->city_identity_card->first_shortened??"SIN CI");
                     } else {
                         $payment .= ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI");
                     }                    
@@ -1255,10 +1255,16 @@ class QuotaAidCertificationController extends Controller
                     $reserved = true;
                     $reserved_quantity = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
+                    $spouse = $affiliate->spouse()->first();
+                    
                     $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
-                    la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes salvando los derechos de los beneficiarios ":" la Cuota Parte salvando los derechos del beneficiario ").
-                    ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
-                    ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 23, 28 y ".$art[$quota_aid->procedure_modality_id]." del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nro. 51/2017 de fecha 29 de diciembre de 2017, de la siguiente manera:<br><br>";
+                    la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes  salvando los derechos de los beneficiarios ":" la Cuota Parte salvando los derechos del (de la) beneficiario (a) ");
+                    if($quota_aid->procedure_modality_id == 15) {
+                        $payment .= ($spouse->gender=="M"?"del Sr. ":"de la Sra. ").Util::fullName($spouse)." con C.I. N° ".$spouse->identity_card." ".($spouse->city_identity_card->first_shortened??"SIN CI");
+                    } else {
+                        $payment .= ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI");
+                    }                    
+                    $payment .= ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 23, 28 y ".$art[$quota_aid->procedure_modality_id]." del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nro. 51/2017 de fecha 29 de diciembre de 2017, de la siguiente manera:<br><br>";                                        
                 }
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
