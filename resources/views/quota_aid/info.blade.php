@@ -40,10 +40,10 @@
                         <strong> Fecha de Recepcion:</strong>&nbsp;
                     </div>
                     <div class="col-md-4">
-                        @if(Session::get('rol_id') == 28)
-                            <input type="date" v-model="form.reception_date" class="form-control" > 
+                        @if(Session::get('rol_id') == 43)
+                            <input type="date" v-model="form.reception_date" class="form-control" :disabled="!editing" >
                         @else
-                            <input type="date" v-model="form.reception_date" class="form-control" disabled> 
+                            <input type="date" :value="form.reception_date" class="form-control" disabled>
                         @endif
                     </div>
                     <div class="col-md-2">
