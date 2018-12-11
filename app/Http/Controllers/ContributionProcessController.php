@@ -164,7 +164,8 @@ class ContributionProcessController extends Controller
         }
          //*********END VALIDATOR************//
         $result = [];
-        $ids = [];
+        $aid_contributions_ids = [];
+        $aid_reimbursements_ids = [];
         $total = 0;        
         foreach ($request->aportes as $ap)  // guardar 1 a 3 reg en contribuciones
         {
@@ -198,10 +199,11 @@ class ContributionProcessController extends Controller
                 //     'month_year' => $aporte->year . '-' . $aporte->month . '-01',
                 // ]);
                 $total = $total + $aid_contribution->total;
-                array_push($ids, $aid_contribution->id);
+                ($aid_contribution instanceof AidContribution) ? array_push($aid_contributions_ids, $aid_contribution->id) : array_push($aid_reimbursements_ids, $aid_contribution->id);
             }
         }
-        $contribution_process->aid_contributions()->attach($ids);
+        $contribution_process->aid_contributions()->attach($aid_contributions_ids);
+        $contribution_process->aid_reimbursements()->attach($aid_reimbursements_ids);
         $contribution_process->total = $total;
         $contribution_process->save();
 

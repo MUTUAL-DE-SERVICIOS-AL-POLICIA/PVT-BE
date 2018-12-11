@@ -17,7 +17,7 @@
                 <!-- v-bind:style="getStyleColor(index)"
                     :class="{'danger': error(ac.subtotal)}" -->
                 <tr v-for="(ac, index) in aidContributionsAndReimbursements"
-                    :key="index" :class="{'danger' : aidContributionsAndReimbursements.is_reimbursement === true}">
+                    :key="index" :class="{'warning' : ac.is_reimbursement}">
                     <td>
                         <input type="text"
                                v-model="ac.month_year"
@@ -68,7 +68,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3"><label for="total">Total a Pagar por Concepto de Aportes de Auxilio Mortuorio:</label></td>
+                    <td colspan="4"><label for="total">Total a Pagar por Concepto de Aportes de Auxilio Mortuorio:</label></td>
                     <td colspan="3"><input type="text"
                                v-money
                                v-model="total"

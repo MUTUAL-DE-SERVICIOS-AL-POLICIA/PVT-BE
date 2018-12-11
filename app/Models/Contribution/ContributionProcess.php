@@ -124,8 +124,7 @@ class ContributionProcess extends Model
                 sum(contributions_reimbursements.retirement_fund) as retirement_fund,
                 sum(contributions_reimbursements.mortuary_quota) as mortuary_quota,
                 sum(contributions_reimbursements.interest) as interest,
-                sum(contributions_reimbursements.total) as total,
-                contributions_reimbursements.type as type
+                sum(contributions_reimbursements.total) as total
                 FROM(
                 SELECT
                     reimbursements.id,
@@ -155,8 +154,7 @@ class ContributionProcess extends Model
                     reimbursements.mortuary_quota,
                     reimbursements.subtotal,
                     reimbursements.total,
-                    reimbursements.interest,
-                    'R' as type
+                    reimbursements.interest
                         FROM reimbursements
                         WHERE reimbursements.deleted_at is null
                             and reimbursements.id in (".$reimbursement_ids. ")
@@ -189,8 +187,7 @@ class ContributionProcess extends Model
                     contributions.mortuary_quota,
                     contributions.subtotal,
                     contributions.total,
-                    contributions.interest,
-                    'C' as type
+                    contributions.interest
                         FROM contributions
                         WHERE contributions.deleted_at is null
                             and contributions.id in (".$contribution_ids.")
