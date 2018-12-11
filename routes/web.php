@@ -278,6 +278,7 @@ Route::group(['middleware' => ['auth']], function () {
 		//charges
 		Route::get('affiliate/{affiliate}/voucher/create', 'VoucherController@generateVoucher')->name('create_voucher');
 		Route::resource('voucher','VoucherController');
+		Route::get('affiliate/{affiliate}/voucher/{voucher}/print', 'VoucherController@printVoucher')->name('print_voucher');
 		//Route::post('affiliate/{affiliate}/voucher', 'VoucherController@storeVoucher')->name('store_voucher');
 
 		Route::get('print/resolution_notification', function ()

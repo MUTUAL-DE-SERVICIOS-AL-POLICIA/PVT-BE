@@ -107,7 +107,32 @@ class VoucherController extends Controller
         //
     }
 
-    public function generateVoucher(Affiliate $affiliate){
-        return $affiliate;
+    public function printVoucher(Affiliate $affiliate, Voucher $voucher) {               
+
+        $title = "RECIBO OFICIAL";
+        $code = $voucher->code;
+        $user = $voucher->user;
+        $date = Util::getDateFormat($voucher->payment_date);
+        $number = $code;
+        $description = $voucher->type->name;
+
+        $applicant = $affiliate;
+        $data = [
+            'code' => $code,
+            'user' => $user,
+            'date' => $date,
+            'title' => $title,            
+            'voucher' => $voucher,
+            'description' => $description,
+            'applicant' => $applicant,
+//            'affiliate' => $affiliate,
+        ];
+        $pages[] = \View::make('voucher.print.main', $data)->render();
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-top', '0mm')
+            ->setOption('margin-bottom', '0mm')
+            ->stream("voucher.pdf");            
     }
 }
