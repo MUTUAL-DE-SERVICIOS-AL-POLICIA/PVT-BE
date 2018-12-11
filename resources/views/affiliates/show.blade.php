@@ -226,12 +226,13 @@ th.ellipsis-text {
 
 
                     </div> --}}
-
+                    
                     <div id="tab-charge" class="tab-pane active">
                         <generate-charge
                             :charge="{{ $charge }}"
                             :payment_types = "{{ $payment_types }}"
                             :affiliate_id = "{{ $affiliate->id }}"
+                            :vouchers = "{{ $vouchers }}"
                         ></generate-charge>
                     </div>
 

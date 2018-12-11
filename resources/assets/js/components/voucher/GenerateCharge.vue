@@ -74,15 +74,13 @@
                                         <th>Acci&oacute;n</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <!-- @foreach ($vouchers as $voucher)
-                                        <tr>
-                                            <td>{{ $voucher->code }}</td>
-                                            <td>{{ $voucher->voucher->type }}</td>
-                                            <td>{{ $voucher->total }}</td>
-                                            <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
-                                        </tr>
-                                    @endforeach -->
+                                <tbody>                                    
+                                    <tr v-for="voucher in vouchers" :key="voucher.id">
+                                        <td> {{ voucher.code }} </td>
+                                        <td> {{ voucher.type.name }} </td>
+                                        <td> {{ voucher.total }} </td>
+                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    </tr>                                    
                                 </tbody>
                             </table>
                         </div>
@@ -103,6 +101,7 @@
             'charge',                        
             'payment_types',
             'affiliate_id',
+            'vouchers',
         ],
         data(){
             return{
