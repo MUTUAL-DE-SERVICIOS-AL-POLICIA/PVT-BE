@@ -14,6 +14,7 @@ use Muserpol\Observers\QuotaAidMortuaryObserver;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Observers\ContributionProcessObserver;
+use Carbon\Carbon;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -39,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
             'aid_reimbursements' => 'Muserpol\Models\Contribution\AidReimbursement',
             'wf_states' => 'Muserpol\Models\Workflow\WorkflowState',
         ]);
+
+        // carbon settings
+        Carbon::useMonthsOverflow(false);
     }
 
     /**
