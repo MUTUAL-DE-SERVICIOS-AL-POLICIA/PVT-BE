@@ -684,27 +684,33 @@ class Affiliate extends Model
     {
         return sizeOf($this->getContributionsWithType(10)) > 0;
     }
-    public function selectedContributions()
-    {
-        return $this->contributions()->where('contribution_type_id', '=',null)->get()->count();
-    }
     public function hasAid()
     {
-        $aid = $this->quota_aid_mortuaries()
-                    ->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
-                    ->leftJoin('procedure_types', 'procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
-                    ->where('procedure_types.id', 4)
-                    ->get();
-        return $aid->count() > 0;
+        return $this->mortuary_aids()->count() > 0;
     }
     public function hasQuota()
     {
-        $quota = $this->quota_aid_mortuaries()
+        return $this->mortuary_quotas()->count() > 0;
+    }
+    public function mortuary_quotas()
+    {
+        return $this->quota_aid_mortuaries()
             ->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('procedure_types', 'procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
             ->where('procedure_types.id', 3)
+            ->where('quota_aid_mortuaries.procedure_state_id', '<>', 3)
+            ->select('quota_aid_mortuaries.*')
             ->get();
-        return $quota->count() > 0;
+    }
+    public function mortuary_aids()
+    {
+        return $this->quota_aid_mortuaries()
+            ->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
+            ->leftJoin('procedure_types', 'procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
+            ->where('procedure_types.id', 4)
+            ->where('quota_aid_mortuaries.procedure_state_id', '<>', 3)
+            ->select('quota_aid_mortuaries.*')
+            ->get();
     }
 
     // public function getLastDateContribution()
