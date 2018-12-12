@@ -19,6 +19,9 @@ class Voucher extends Model
     {
         return $this->belongsTo("Muserpol\User");
     }
+    public function type() {
+        return $this->belongsTo('Muserpol\Models\VoucherType','voucher_type_id');
+    }
     public function contributions()
     {
         return $this->belongsToMany('Muserpol\Models\Contribution\Contribution')->withTimestamps();
@@ -26,7 +29,7 @@ class Voucher extends Model
     public function aid_contributions()
     {
         return $this->belongsToMany('Muserpol\Models\Contribution\AidContribution')->withTimestamps();
-    }
+    }    
 
     public function payable () {
         return $this->morphTo();

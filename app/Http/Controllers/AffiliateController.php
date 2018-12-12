@@ -29,6 +29,7 @@ use Auth;
 use Muserpol\Models\Contribution\DirectContribution;
 use Muserpol\Models\ChargeType;
 use Muserpol\Models\PaymentType;
+use Muserpol\Models\Voucher;
 class AffiliateController extends Controller
 {
     /**
@@ -312,6 +313,8 @@ class AffiliateController extends Controller
         
         $charge = ChargeType::where('module_id',Util::getRol()->module_id)->first();
         $payment_types = PaymentType::get();
+        $vouchers = Voucher::where('affiliate_id',$affiliate->id)->where('voucher_type_id',2)->with(['type'])->get();
+        //return $vouchers;
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -346,6 +349,7 @@ class AffiliateController extends Controller
             'direct_contribution'   =>  $direct_contribution,
             'charge' => $charge,
             'payment_types' =>  $payment_types,
+            'vouchers'  =>  $vouchers,
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);
@@ -505,5 +509,9 @@ class AffiliateController extends Controller
     {
         //
         $this->authorize('delete', $affiliate);
+    }
+
+    public function printVoucher(){
+        
     }
 }

@@ -74,15 +74,13 @@
                                         <th>Acci&oacute;n</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <!-- @foreach ($vouchers as $voucher)
-                                        <tr>
-                                            <td>{{ $voucher->code }}</td>
-                                            <td>{{ $voucher->voucher->type }}</td>
-                                            <td>{{ $voucher->total }}</td>
-                                            <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
-                                        </tr>
-                                    @endforeach -->
+                                <tbody>                                    
+                                    <tr v-for="voucher in vouchers" :key="voucher.id">
+                                        <td> {{ voucher.code }} </td>
+                                        <td> {{ voucher.type.name }} </td>
+                                        <td> {{ voucher.total }} </td>
+                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    </tr>                                    
                                 </tbody>
                             </table>
                         </div>
@@ -103,6 +101,7 @@
             'charge',                        
             'payment_types',
             'affiliate_id',
+            'vouchers',
         ],
         data(){
             return{
@@ -122,7 +121,7 @@
             //this.switchPayment();
         },
         methods:{
-            store: function(){
+            store: function(){                
                 if(parseMoney(this.paid) < parseMoney(this.charge.total) && this.payment_type_id == 1) {
                     flash("El monto pagado es menor al monto total", "error",6000);
                     return;
@@ -130,20 +129,25 @@
                 if(parseMoney(this.total) < parseMoney(this.charge.total)) {
                     flash("El monto total es menor al monto cotizado", "error",6000);
                     return;
-                }
-                process = this.charge;
+                }                         
                 axios.post('/voucher',
                 {                       
                     affiliate_id: this.affiliate_id,
                     total: parseMoney(this.total),
                     paid: parseMoney(this.paid),
-                    bank:this.bank,
+                    bank: this.bank,
                     payment_type_id: this.payment_type_id,
                     bank_pay_number:this.bank_pay_number})
                 .then(response => {
+                    console.log('trying to storess');
                     this.editing = false;
-                    this.enableDC();
-                    flash('Cobro realizado exitosamente');
+                    //this.enableDC();
+                    //flash('Cobro realizado exitosamente');
+                    let affiliate_id = this.affiliate_id;
+                    let voucher_id = response.data.voucher.id;
+                    console.log('affiliate/'+affiliate_id+'/voucher/'+voucher_id+'/print');
+                    printJS({printable:'/affiliate/'+affiliate_id+'/voucher/'+voucher_id+'/print', type:'pdf', showModal:true});
+                    console.log('after print');
                     var i;
                 }
                 );
@@ -163,11 +167,11 @@
             },            
             switchPayment() {                                
                 if(this.payment_type_id == 1) {
-                    let rounded = this.contribution_process.total;
+                    let rounded = this.voucher.amount;
                     this.total = this.roudOneDecimal(rounded);
                 } else {
-                    console.log(this.contribution_process.total);
-                    this.total = this.contribution_process.total;
+                    console.log(this.voucher.amount);
+                    this.total = this.voucher.amount;
                 }
                 console.log(this.total);
             },
