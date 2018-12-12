@@ -684,6 +684,10 @@ class Affiliate extends Model
     {
         return sizeOf($this->getContributionsWithType(10)) > 0;
     }
+    public function selectedContributions()
+    {
+        return $this->contributions()->where('contribution_type_id', '=', null)->get()->count();
+    }
     public function hasAid()
     {
         return $this->mortuary_aids()->count() > 0;
