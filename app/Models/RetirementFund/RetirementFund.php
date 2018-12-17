@@ -126,7 +126,7 @@ class RetirementFund extends Model
     }
     public function getCorrelative($area_id)
     {
-        return RetFunCorrelative::where('retirement_fund_id', $this->id)->where('wf_state_id', $area_id)->first()->code ?? 'SIN NÚMERO';
+        return RetFunCorrelative::where('retirement_fund_id', $this->id)->where('wf_state_id', $area_id)->first();
     }
     public function info_loans()
     {
