@@ -10,7 +10,7 @@ use Muserpol\Helpers\Util;
 class VoucherPolicy
 {
     use HandlesAuthorization;
-    const ClASS_NAME = 'Spouse';
+    const ClASS_NAME = 'Voucher';
     const CREATE = 'create';
     const READ = 'read';
     const UPDATE = 'update';
