@@ -1,11 +1,11 @@
 <template>    
     <div class="ibox-content">
-        <div  class="pull-left">
-            <legend>Pago</legend>
+        <div  class="pull-left col-md-12">
+            <legend>{{ voucher_type.name }}</legend>
         </div>                
-        <div class="text-right">
+        <!-- <div class="text-right">
             <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
-        </div>        
+        </div>         -->
         <br>
         <div class="row">                
             <div class="col-md-2">
@@ -35,7 +35,7 @@
                 <strong> TOTAL COBRO:</strong>&nbsp;
             </div>
             <div class="col-md-4">                        
-                <input type="text" v-model="total" class="form-control" :disabled='!editing' v-money>
+                <input type="text" v-model="total" class="form-control" :disabled='!editing' v-money readonly>
             </div> 
         </div>
         <br>        
@@ -75,7 +75,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>                                    
-                                    <tr v-for="voucher in vouchers" :key="voucher.id">
+                                    <tr v-for="voucher in vouchers" :key="voucher.id" v-if="voucher.voucher_type_id == voucher_type.id">
                                         <td> {{ voucher.code }} </td>
                                         <td> {{ voucher.type.name }} </td>
                                         <td> {{ voucher.total }} </td>
@@ -97,11 +97,11 @@
     }
     from "../../helper.js";
     export default {
-          props:[     
-            'charge',                        
+          props:[            
             'payment_types',
             'affiliate_id',
             'vouchers',
+            'voucher_type'
         ],
         data(){
             return{
@@ -112,7 +112,7 @@
                 bank_pay_number: '',
                 paid_amount: 0,
                 exchange: 0,
-                total: this.charge.amount,
+                total: this.voucher_type.amount,
                 payment_type_id: 1,
             }
         },
@@ -122,32 +122,28 @@
         },
         methods:{
             store: function(){                
-                if(parseMoney(this.paid) < parseMoney(this.charge.total) && this.payment_type_id == 1) {
+                if(parseMoney(this.paid) < parseMoney(this.voucher_type.total) && this.payment_type_id == 1) {
                     flash("El monto pagado es menor al monto total", "error",6000);
                     return;
                 }
-                if(parseMoney(this.total) < parseMoney(this.charge.total)) {
+                if(parseMoney(this.total) < parseMoney(this.voucher_type.total)) {
                     flash("El monto total es menor al monto cotizado", "error",6000);
                     return;
                 }                         
                 axios.post('/voucher',
-                {                       
+                {
                     affiliate_id: this.affiliate_id,
                     total: parseMoney(this.total),
                     paid: parseMoney(this.paid),
                     bank: this.bank,
                     payment_type_id: this.payment_type_id,
+                    voucher_type_id: this.voucher_type.id,
                     bank_pay_number:this.bank_pay_number})
-                .then(response => {
-                    console.log('trying to storess');
-                    this.editing = false;
-                    //this.enableDC();
-                    //flash('Cobro realizado exitosamente');
+                .then(response => {                    
+                    this.editing = false;                    
                     let affiliate_id = this.affiliate_id;
-                    let voucher_id = response.data.voucher.id;
-                    console.log('affiliate/'+affiliate_id+'/voucher/'+voucher_id+'/print');
-                    printJS({printable:'/affiliate/'+affiliate_id+'/voucher/'+voucher_id+'/print', type:'pdf', showModal:true});
-                    console.log('after print');
+                    let voucher_id = response.data.voucher.id;                    
+                    printJS({printable:'/affiliate/'+affiliate_id+'/voucher/'+voucher_id+'/print', type:'pdf', showModal:true});                    
                     var i;
                 }
                 );

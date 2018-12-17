@@ -880,7 +880,7 @@ class QuotaAidCertificationController extends Controller
                 }   
                 $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
                 if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
-                    $payment .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
+                    $payment .= ", a través de tutor (a) natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if(isset($beneficiary_advisor->id))
                 {
@@ -1279,7 +1279,7 @@ class QuotaAidCertificationController extends Controller
                 }
                 $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
                 if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
-                    $payment .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
+                    $payment .= ", a través de tutor (a) natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if(isset($beneficiary_advisor->id))
                 {
@@ -1455,7 +1455,10 @@ class QuotaAidCertificationController extends Controller
         $legal_dictum_id = 39;
         $legal_dictum = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$legal_dictum_id)->first();
         $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 40)->first();
-        $body_legal_dictum = $number->note."<br><br>";
+        if($number->note != '') {
+            $body_legal_dictum = $number->note."<br><br>";
+        }
+
         $body_legal_dictum .= 'Que, habiéndose verificado el procesamiento establecido en el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se procedió con la emisión de DICTAMEN LEGAL <strong> Nº '.$legal_dictum->code.'</strong> de '.Util::getStringDate($legal_dictum->date).', para la otorgación del beneficio de '.$quota_aid->procedure_modality->procedure_type->second_name.'.';
 
 
@@ -1491,7 +1494,7 @@ class QuotaAidCertificationController extends Controller
                     $reserved = true;
                     $reserved_quantity = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();                    
-                    $body_resolution .= "Mantener en reserva la(s) Cuota(s) Parte(s) salvando derechos, hasta que presente(n) la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos del Reglamento de Cuota Mortuaria y Auxilio Mortuorio, de la siguiente manera:<br><br>";
+                    $body_resolution .= "Mantener en reserva la(s) Cuota(s) Parte(s) salvando derechos, hasta que presente(n) la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, de la siguiente manera:<br><br>";
                 }
                 //return $beneficiary;
                 $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));

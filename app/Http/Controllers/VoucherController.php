@@ -43,7 +43,7 @@ class VoucherController extends Controller
         $voucher = new Voucher();
         $voucher->user_id = Auth::user()->id;
         $voucher->affiliate_id = $request->affiliate_id;
-        $voucher->voucher_type_id = 1;
+        $voucher->voucher_type_id = $request->voucher_type_id;
         $voucher->total = $request->total;
         $voucher->payment_date = Carbon::now();
         $voucher->code = Util::getNextCode($last_code);

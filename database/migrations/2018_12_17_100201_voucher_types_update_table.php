@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateChargeTypesTable extends Migration
+class VoucherTypesUpdateTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateChargeTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('charge_types', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedBigInteger('module_id');            
+        Schema::table('voucher_types', function (Blueprint $table) {            
+            $table->unsignedBigInteger('module_id')->nullable();
             $table->foreign('module_id')->references('id')->on('modules');
-            $table->string('name');
-            $table->decimal('amount', 13, 2);
-            $table->timestamps();
+            $table->decimal('amount', 13, 2)->nullable();
         });
     }
 
@@ -30,6 +27,9 @@ class CreateChargeTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('charge_types');
+        Schema::table('voucher_types', function (Blueprint $table) {
+            $table->dropColumn('module_id');
+            $table->dropColumn('amount');
+        });
     }
 }

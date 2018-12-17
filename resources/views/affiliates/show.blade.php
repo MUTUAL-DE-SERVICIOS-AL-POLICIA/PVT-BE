@@ -62,9 +62,11 @@ th.ellipsis-text {
                 </a>
             @endif
         @endcan
-        {{-- <a href="{{route('create_voucher', $affiliate->id)}}"> --}}
-            <button class="btn btn-info btn-sm  dim" type="button" href="#tab-charge" data-toggle="tab" data-placement="top" title="Cobro de carpetas"><i class="fa fa-paste"></i> </button>
-        {{-- </a> --}}
+        @can('create', new Muserpol\Models\Voucher)
+            @foreach ($voucher_types as $voucher_type)
+            <button class="btn btn-info btn-sm  dim" type="button" href="#tab-charge{{$voucher_type->id}}" data-toggle="tab" data-placement="top" title="{{ $voucher_type->name }}"><i class="fa fa-money"></i> {{ $voucher_type->name }}</button>
+            @endforeach            
+        @endcan
 
         {{-- @if('create', new Muserpol\Models\ChargeType) --}}
         {{-- @can('view',new Muserpol\Models\Contribution\Contribution)
@@ -226,16 +228,18 @@ th.ellipsis-text {
 
 
                     </div> --}}
-                    
-                    <div id="tab-charge" class="tab-pane active">
-                        <generate-charge
-                            :charge="{{ $charge }}"
-                            :payment_types = "{{ $payment_types }}"
-                            :affiliate_id = "{{ $affiliate->id }}"
-                            :vouchers = "{{ $vouchers }}"
-                        ></generate-charge>
-                    </div>
-
+                    @can('create', new Muserpol\Models\Voucher)
+                        @foreach ($voucher_types as $voucher_type)
+                            <div id="tab-charge{{$voucher_type->id}}" class="tab-pane">
+                                <generate-charge
+                                    :payment_types = "{{ $payment_types }}"
+                                    :affiliate_id = "{{ $affiliate->id }}"
+                                    :vouchers = "{{ $vouchers }}"
+                                    :voucher_type = "{{ $voucher_type  }}"
+                                ></generate-charge>
+                            </div>
+                        @endforeach                        
+                    @endcan
                     {{-- <div class="row">
                         <div class="col-lg-12">
                             <div class="ibox">
