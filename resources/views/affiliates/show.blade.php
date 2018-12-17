@@ -62,9 +62,9 @@ th.ellipsis-text {
                 </a>
             @endif
         @endcan
-        {{-- <a href="{{route('create_voucher', $affiliate->id)}}"> --}}
+        @can('create', new Muserpol\Models\Voucher)
             <button class="btn btn-info btn-sm  dim" type="button" href="#tab-charge" data-toggle="tab" data-placement="top" title="Cobro de carpetas"><i class="fa fa-paste"></i> </button>
-        {{-- </a> --}}
+        @endcan
 
         {{-- @if('create', new Muserpol\Models\ChargeType) --}}
         {{-- @can('view',new Muserpol\Models\Contribution\Contribution)
@@ -226,16 +226,15 @@ th.ellipsis-text {
 
 
                     </div> --}}
-                    
-                    <div id="tab-charge" class="tab-pane active">
-                        <generate-charge
-                            :charge="{{ $charge }}"
-                            :payment_types = "{{ $payment_types }}"
-                            :affiliate_id = "{{ $affiliate->id }}"
-                            :vouchers = "{{ $vouchers }}"
-                        ></generate-charge>
-                    </div>
-
+                    @can('create', new Muserpol\Models\Voucher)
+                        <div id="tab-charge" class="tab-pane active">
+                            <generate-charge
+                                :payment_types = "{{ $payment_types }}"
+                                :affiliate_id = "{{ $affiliate->id }}"
+                                :vouchers = "{{ $vouchers }}"
+                            ></generate-charge>
+                        </div>
+                    @endcan
                     {{-- <div class="row">
                         <div class="col-lg-12">
                             <div class="ibox">
