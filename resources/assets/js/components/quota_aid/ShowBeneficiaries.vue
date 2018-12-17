@@ -132,7 +132,8 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
                 }, 100);
             },
             canAddBeneficiary(){
-                return this.procedureModalityId != 14;
+                // return this.procedureModalityId != 14;
+                return true;
             },
             removeBeneficiary(index){
                 this.beneficiaries.splice(index,1);
