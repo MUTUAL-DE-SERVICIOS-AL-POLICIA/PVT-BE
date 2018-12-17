@@ -63,7 +63,9 @@ th.ellipsis-text {
             @endif
         @endcan
         @can('create', new Muserpol\Models\Voucher)
-            <button class="btn btn-info btn-sm  dim" type="button" href="#tab-charge" data-toggle="tab" data-placement="top" title="Cobro de carpetas"><i class="fa fa-paste"></i> </button>
+            @foreach ($voucher_types as $voucher_type)
+            <button class="btn btn-info btn-sm  dim" type="button" href="#tab-charge{{$voucher_type->id}}" data-toggle="tab" data-placement="top" title="{{ $voucher_type->name }}"><i class="fa fa-money"></i> {{ $voucher_type->name }}</button>
+            @endforeach            
         @endcan
 
         {{-- @if('create', new Muserpol\Models\ChargeType) --}}
@@ -227,13 +229,16 @@ th.ellipsis-text {
 
                     </div> --}}
                     @can('create', new Muserpol\Models\Voucher)
-                        <div id="tab-charge" class="tab-pane active">
-                            <generate-charge
-                                :payment_types = "{{ $payment_types }}"
-                                :affiliate_id = "{{ $affiliate->id }}"
-                                :vouchers = "{{ $vouchers }}"
-                            ></generate-charge>
-                        </div>
+                        @foreach ($voucher_types as $voucher_type)
+                            <div id="tab-charge{{$voucher_type->id}}" class="tab-pane">
+                                <generate-charge
+                                    :payment_types = "{{ $payment_types }}"
+                                    :affiliate_id = "{{ $affiliate->id }}"
+                                    :vouchers = "{{ $vouchers }}"
+                                    :voucher_type = "{{ $voucher_type  }}"
+                                ></generate-charge>
+                            </div>
+                        @endforeach                        
                     @endcan
                     {{-- <div class="row">
                         <div class="col-lg-12">

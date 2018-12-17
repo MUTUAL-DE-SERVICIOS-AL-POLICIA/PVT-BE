@@ -30,6 +30,7 @@ use Muserpol\Models\Contribution\DirectContribution;
 use Muserpol\Models\ChargeType;
 use Muserpol\Models\PaymentType;
 use Muserpol\Models\Voucher;
+use Muserpol\Models\VoucherType;
 class AffiliateController extends Controller
 {
     /**
@@ -309,10 +310,9 @@ class AffiliateController extends Controller
         }
         $quota_aid = $affiliate->quota_aid_mortuaries->last();
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
-
-        
-        $charge = ChargeType::where('module_id',Util::getRol()->module_id)->first();
+                
         $payment_types = PaymentType::get();
+        $voucher_types = VoucherType::where('module_id', Util::getRol()->module_id)->where('amount','>','0')->get();
         $vouchers = Voucher::where('affiliate_id',$affiliate->id)->where('voucher_type_id',2)->with(['type'])->get();
         //return $vouchers;
         $data = array(
@@ -346,9 +346,9 @@ class AffiliateController extends Controller
             'is_editable'   =>  $is_editable,
             'pension_entities' => $pension_entities,
             'has_direct_contribution' => isset($direct_contribution)?true:false,
-            'direct_contribution'   =>  $direct_contribution,
-            'charge' => $charge,
+            'direct_contribution'   =>  $direct_contribution,            
             'payment_types' =>  $payment_types,
+            'voucher_types' =>  $voucher_types,
             'vouchers'  =>  $vouchers,
             //'records_message'=>$records_message
         );
