@@ -6,6 +6,7 @@
                     <th class="footable-visible footable-first-column footable-sortable">Mes/Año</th>
                     <th class="footable-visible footable-sortable">Renta Bs.</th>
                     <th class="footable-visible footable-sortable">Renta Dignidad Bs.</th>
+                    <th class="footable-visible footable-sortable">Cotizable Bs.</th>
                     <th class="footable-visible footable-sortable">Auxilio Mortuorio (2.03 %)</th>
                     <th class="footable-visible footable-sortable">Ajuste UFV Bs.</th>
                     <th class="footable-visible footable-sortable">Subtotal Aporte</th>
@@ -16,7 +17,7 @@
                 <!-- v-bind:style="getStyleColor(index)"
                     :class="{'danger': error(ac.subtotal)}" -->
                 <tr v-for="(ac, index) in aidContributionsAndReimbursements"
-                    :key="index">
+                    :key="index" :class="{'warning' : ac.is_reimbursement}">
                     <td>
                         <input type="text"
                                v-model="ac.month_year"
@@ -33,6 +34,13 @@
                     <td>
                         <input type="text"
                                v-model="ac.dignity_rent"
+                               v-money
+                               disabled
+                               class="form-control">
+                    </td>
+                    <td>
+                        <input type="text"
+                               v-model="ac.quotable"
                                v-money
                                disabled
                                class="form-control">
@@ -60,7 +68,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3"><label for="total">Total a Pagar por Concepto de Aportes de Auxilio Mortuorio:</label></td>
+                    <td colspan="4"><label for="total">Total a Pagar por Concepto de Aportes de Auxilio Mortuorio:</label></td>
                     <td colspan="3"><input type="text"
                                v-money
                                v-model="total"
@@ -86,7 +94,7 @@
         "directContributionId",
         "affiliateId",
         "aidContributions",
-        "aidContributions",
+        "aidReimbursements",
         "total",
         "contributionProcessId",
       ],
@@ -122,8 +130,15 @@
         },
         computed: {
             aidContributionsAndReimbursements(){
-                let temp = JSON.parse(JSON.stringify(this.aidContributions)) ;
-                Array.prototype.push.apply(temp,this.aidContributions);
+                let temp = JSON.parse(JSON.stringify(this.aidContributions));
+                temp.forEach(x => {
+                    x['is_contribution'] = true;
+                });
+                let temp1 = JSON.parse(JSON.stringify(this.aidReimbursements));
+                temp1.forEach(x => {
+                    x['is_reimbursement'] = true;
+                });
+                Array.prototype.push.apply(temp,temp1);
                 temp.sort((a,b) => (a.month_year > b.month_year) ? 1 : ((b.month_year > a.month_year) ? -1 : 0));
                 return temp;
             }
