@@ -75,7 +75,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>                                    
-                                    <tr v-for="voucher in vouchers" :key="voucher.id">
+                                    <tr v-for="voucher in vouchers" :key="voucher.id" v-if="voucher.voucher_type_id == voucher_type.id">
                                         <td> {{ voucher.code }} </td>
                                         <td> {{ voucher.type.name }} </td>
                                         <td> {{ voucher.total }} </td>

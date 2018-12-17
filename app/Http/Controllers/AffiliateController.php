@@ -313,7 +313,8 @@ class AffiliateController extends Controller
                 
         $payment_types = PaymentType::get();
         $voucher_types = VoucherType::where('module_id', Util::getRol()->module_id)->where('amount','>','0')->get();
-        $vouchers = Voucher::where('affiliate_id',$affiliate->id)->where('voucher_type_id',2)->with(['type'])->get();
+        $voucher_type_ids = $voucher_types->pluck('id');
+        $vouchers = Voucher::where('affiliate_id',$affiliate->id)->whereIn('voucher_type_id',$voucher_type_ids)->with(['type'])->get();        
         //return $vouchers;
         $data = array(
             'quota_aid'=>$quota_aid,
