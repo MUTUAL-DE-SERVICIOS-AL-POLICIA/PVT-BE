@@ -64,7 +64,18 @@
 </table>
 <br>
 <div>
-    Es cuanto se certifica los últimos 60 salarios efectivamente percibidos previos al destino a la disponibilidad de las letras, para fines consiguientes.
+    @if($retirement_fund->procedure_modality->procedure_type_id == 1)
+        Es cuanto se certifica los últimos {{ sizeof($affiliate->getContributionsPlus()) }} salarios efectivamente percibidos.
+    @else     
+        @if($affiliate->hasAvailability())
+            Es cuanto se certifica los últimos 60 salarios efectivamente percibidos previos al destino a la disponibilidad de las letras, para fines consiguientes.
+        @else
+            Es cuanto se certifica los últimos 60 salarios efectivamente percibidos.
+        @endif 
+        
+    @endif
+
+    
 </div>
 <br>
 @if($retirement_fund->contribution_types()->where('contribution_type_id', 1)->first())
