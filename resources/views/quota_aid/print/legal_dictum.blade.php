@@ -19,7 +19,7 @@
         <div class="block">
             <div class="text-right">
                 <span class="block">
-                    {{ $actual_city }}, {{ $actual_date }}
+                    {!! ucwords(strtolower($actual_city)) !!}, {{ $actual_date }}                    
                  </span>
                 <span class="block">
                    DBE/UFRPSCAM/AL-DL N° {{ $correlative->code }}
