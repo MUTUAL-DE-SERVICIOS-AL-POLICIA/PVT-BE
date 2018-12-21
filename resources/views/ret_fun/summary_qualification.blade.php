@@ -167,7 +167,7 @@
                         <td>{{ Util::formatMoney($retirement_fund->subtotal_availability) }} <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button></td>
                     </tr>
                     <tr>
-                        <td>Con rendimiento del 5.00% Anual</td>
+                        <td>Aportes en disponibilidad con rendimiento</td>
                         <td>{{ Util::formatMoney($retirement_fund->total_availability) }}</td>
                     </tr>
                     <tr>
