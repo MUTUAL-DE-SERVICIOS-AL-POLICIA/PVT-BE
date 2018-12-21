@@ -620,6 +620,7 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::get('get_next_area_code_contribution_process/{contribution_process_id}', function ($contribution_process_id) {
 			return ContributionProcess::find($contribution_process_id);
 		});
+		Route::get('/treasury/report', 'TreasuryController@report');
 	});
 });
 
