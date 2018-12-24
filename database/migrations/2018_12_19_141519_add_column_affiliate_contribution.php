@@ -25,6 +25,8 @@ class AddColumnAffiliateContribution extends Migration
     */
     public function down()
     {
-        //
+        Schema::table('aid_contributions', function (Blueprint $table) {
+            $table->dropColumn(['affiliate_contribution']);
+        });
     }
 }
