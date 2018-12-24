@@ -293,6 +293,7 @@ class Util
     ];
     public static function convertir($number, $moneda = '', $centimos = '')
     {
+        $number = number_format((float)$number, 2, '.', '');
         $converted = '';
         $decimales = '';
         if (($number < 0) || ($number > 999999999)) {
