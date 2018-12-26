@@ -1,4 +1,6 @@
 <?php 
+use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
+
 
 Breadcrumbs::register('affiliate', function($breadcrumbs)
 {
@@ -159,3 +161,11 @@ Breadcrumbs::register('show_qualification_quota_aid', function ($breadcrumbs, $q
 	$breadcrumbs->push($name, URL::to('quota_aid/' . $quota_aid->id . '/qualification'));
 });
 
+/**
+ * Treasury
+ */
+Breadcrumbs::register('treasury_select_report', function($breadcrumbs)
+{
+	$breadcrumbs->push('Tesorería');
+	$breadcrumbs->push('Seleccionar Reporte');
+});

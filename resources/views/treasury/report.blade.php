@@ -7,7 +7,7 @@
     <title>REPORT</title>
     <style>
         .table-info tr:nth-child(2n){
-            background: #f0f0f0
+            background: #f7f7f7
         }
     </style>
 </head>
@@ -48,7 +48,7 @@
             <tr><td colspan="3" style="border-bottom: 1px solid #22292f;"></td></tr>
             <tr>
                 <td colspan="3" class="font-bold text-center text-xl uppercase">
-                    {{ $title }}
+                    {!! $title !!}
                     @if (isset($subtitle))
                     <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span>
                     @endif
@@ -56,28 +56,33 @@
             </tr>
             {{-- <tr><td colspan="3"></td></tr>
             <tr><td colspan="3"></td></tr> --}}
-    
         </table>
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
                 <tr class="text-white text-xs uppercase">
+                    @if ($number_rows)
+                        <td class="font-medium text-center px-10 py-5">Nº</td>
+                    @endif
                     @foreach ($headers as $item => $value)
-                        <td class="font-medium text-center px-10 py-5">{{ $value }}</td>
+                        <td class="font-medium text-center px-10 py-5">{{ $value['text'] }}</td>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
                 @foreach ($rows as $row)
                     <tr>
+                        @if ($number_rows)
+                        <td class="font-medium px-5 py-5 text-right">{{$loop->iteration}}</td>
+                        @endif
                         @foreach ($headers as $item => $h)
-                            <td class="font-medium text-center px-5 py-5">{{ $row[$item] }}</td>
+                            <td class="font-medium px-5 py-5 {{ $h['class'] ?? 'text-center' }} ">{{ $row[$h['key']] }}</td>
                         @endforeach
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
-                <tr>
+                <tr class="text-sm-1">
                     @foreach ($footer as $item)
                         <td class="{{ $item['class'] ?? 'text-center' }} font-bold uppercase " colspan="{{ $item['colspan'] ?? 1 }}">{{ $item['text'] }}</td>
                     @endforeach

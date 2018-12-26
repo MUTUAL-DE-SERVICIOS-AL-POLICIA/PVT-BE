@@ -308,6 +308,10 @@ Vue.component('summary-select-contributions', require('./components/contribution
 
 Vue.component('generate-charge', require('./components/voucher/GenerateCharge.vue'));
 
+/**
+ * Treasury components
+ */
+Vue.component('treasury-select-report', require('./components/treasury/SelectReport.vue'));
 
 Vue.component("chosen-select", {
   props: {
