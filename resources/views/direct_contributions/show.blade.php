@@ -15,7 +15,7 @@
             > <i class="fa fa-print"></i> Carta de Compromiso </button>
             @if ($contribution_process)
                 <correlative doc-id="{{ $contribution_process->id }}" wf-state-id="{{ $contribution_process->wf_state_current_id }}" type="contributionProcess"></correlative>
-                @if (Util::getRol()->id == 61)
+                @if (Util::getRol()->id == 61 || Util::isRegionalRole())
                     <certification-button
                         type="contributionProcess"
                         title="Imprimir Cotizacion"
