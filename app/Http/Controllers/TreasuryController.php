@@ -8,7 +8,9 @@ use Muserpol\Helpers\Util;
 use DB;
 use Log;
 use Muserpol\Models\VoucherType;
-
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
+use Illuminate\Database\Eloquent\Collection;
 class TreasuryController extends Controller
 {
     public function selectReport()
@@ -21,27 +23,42 @@ class TreasuryController extends Controller
     }
     public function report(Request $request)
     {
+        $from = now()->toDateString();
+        $to = now()->toDateString();
+        if($request->has('from')) {
+            $from = Util::verifyBarDate($request->from) ? Util::parseBarDate($request->from) : $request->from;
+        }
+        if($request->has('to')) {
+            $to = Util::verifyBarDate($request->to) ? Util::parseBarDate($request->to) : $request->to;
+        }
+        if($request->type == 'general') {
+            $client = new Client();
+            $guzzle_request = $client->request('GET','http://localhost:5000/api/v1/prestamos',[
+                'query' => [
+                    'from' => $from,
+                    'to' => $to
+                ]
+            ]);
+            $response = (string) $guzzle_request->getBody();
+            $response = json_decode($response, true);
+            $response = $response['recordset'];
+        }
         $rows = Voucher::with(['affiliate',
                         'voucher_type',
                         'payable:contributions'])
                         ->whereNotNull('payment_type_id')
+                        ->whereBetween('payment_date', [$from, $to])
                         ->orderBy(DB::raw("split_part(vouchers.code, '/', 2)::integer, split_part(vouchers.code, '/', 1)::integer"));
-        if ($request->has('type')) {
+        if ($request->has('type') && $request->type != 'general' ) {
             $rows->where('voucher_type_id', $request->type);
-        }
-        if ($request->has('from')) {
-            $rows->whereBetween('payment_date', [$request->from, $request->to ?? now()->toDateString()]);
-        }else{
-            $rows->whereBetween('payment_date', [$request->from ?? now()->toDateString(), $request->to ?? now()->toDateString()]);
         }
         $rows = $rows->get();
         $number_rows = true;
 
-
         foreach ($rows as $r) {
             $r->payment_date = Util::getDateFormat($r->payment_date);
             $r->full_name = $r->affiliate->fullName();
-            $r->voucher_type = $r->voucher_type->name;
+            $r->description = $r->voucher_type->name ?? 'hola' ;
             if ($r->payment_type_id === 1) {
                 $r->caja = $r->total;
                 $r->banco = "0.00";
@@ -50,7 +67,40 @@ class TreasuryController extends Controller
                 $r->banco = $r->total;
             }
         }
+        Log::info($rows->pluck('voucher_type'));
         switch ($request->type) {
+            case 'general':
+                $title = "Detalle de ingresos de Tesoreria";
+                foreach ($response as $key => $value) {
+                    $v = new Voucher();
+                    $v->payment_date = $value['payment_date'];
+                    $v->code = $value['code'];
+                    $v->full_name = Util::removeSpaces($value['full_name']);
+                    $v->description = $value['description'];
+                    $v->caja = $value['caja'];
+                    $v->banco = $value['banco'];
+                    $rows->push($v);
+                }
+
+                Log::info(sizeof($respon9se));
+                // $rows = $rows->union(collect($temp));
+                $headers = [
+                    ['key' => 'payment_date', 'text' => 'Fecha'],
+                    ['key' => 'code', 'text' => 'Recibo'],
+                    ['key' => 'full_name', 'text' => 'afiliado', 'class' => 'text-left'],
+                    ['key' => 'description', 'text' => 'Descripcion', 'class' => 'text-left uppercase'],
+                    ['key' => 'caja', 'text' => 'dpto. caja', 'class' => 'text-right'],
+                    ['key' => 'banco', 'text' => 'dpto. banco', 'class' => 'text-right'],
+                ];
+
+                $total_caja = Util::formatMoney($rows->sum('caja'));
+                $total_banco = Util::formatMoney($rows->sum('banco'));
+                $footer = [
+                    ['key' => 'total', 'text' => 'totales', 'class' => 'pl-70 text-left', 'colspan' => 5],
+                    ['key' => 'total_caja', 'text' => ($total_caja ?? "0.00"), 'class' => 'text-right px-5', 'colspan' => 1],
+                    ['key' => 'total_banco', 'text' => ($total_banco ?? "0.00"), 'class' => 'text-right px-5', 'colspan' => 1],
+                ];
+                break;
             case 1:
                 $title = "Aporte Voluntario<br>".VoucherType::find($request->type)->name."<br>De ".$request->from ." a ".$request->to;  ;
                 foreach ($rows as $r) {
@@ -193,7 +243,6 @@ class TreasuryController extends Controller
             'headers' => $headers,
             'footer' => $footer,
         ];
-
         $pages[] = \View::make('treasury.report', $data)->render();
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);

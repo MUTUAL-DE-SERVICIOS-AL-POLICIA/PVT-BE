@@ -2,6 +2,7 @@
   <div>
     <select v-model="typeReport" class="form-control" v-validate="'required'">
       <option :value="null"></option>
+      <option value="general">Reporte General</option>
       <option v-for="type in types" :key="type.id" :value="type.id">{{ type.name }}</option>
     </select>
     <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('from')}">
@@ -75,10 +76,11 @@ export default {
       //   to: this.to,
       // }})
       // .then(response => {
-      //   console.table(response.data.headers.map(i=>i.text));
-      //   console.table(response.data.footer.map(i=>i.text));
-      //   console.log(response.data.rows);
-      //   console.log(response.data.title);
+      //   // console.table(response.data.headers.map(i=>i.text));
+      //   // console.table(response.data.footer.map(i=>i.text));
+      //   // console.log(response.data.rows);
+      //   // console.log(response.data.title);
+      //   console.log(response.data);
       // })
     }
   }

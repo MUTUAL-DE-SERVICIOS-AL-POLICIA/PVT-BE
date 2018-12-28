@@ -84,6 +84,7 @@
             <tfoot>
                 <tr class="text-sm-1">
                     @foreach ($footer as $item)
+                        {{-- <td class="{{ $item['class'] ?? 'text-center' }} font-bold uppercase " colspan="{{ $item['colspan'] ?? 1 }}">{{ $item['text'] }}</td> --}}
                         <td class="{{ $item['class'] ?? 'text-center' }} font-bold uppercase " colspan="{{ $item['colspan'] ?? 1 }}">{{ $item['text'] }}</td>
                     @endforeach
                 </tr>

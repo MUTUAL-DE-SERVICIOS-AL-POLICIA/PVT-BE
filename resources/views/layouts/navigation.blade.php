@@ -42,6 +42,11 @@
             <li class="{{ isActiveRoute('direct_contribution.index') }}" data-toggle="tooltip" data-placement="right" title="Aportes">
                 <a href="{{ url('/direct_contribution') }}"><i class="{{Util::IconModule(11)}}"></i> <span class="nav-label">Aportes</span></a>
             </li>
+            <li class="{{ isActiveRoute('direct_contribution.index') }}" data-toggle="tooltip" data-placement="right" title="Reportes">
+                @if (Util::getRol()->id == 62)
+                    <a href="{{ url('/treasury/select_report') }}"><i class="fa fa-file-text"></i> <span class="nav-label">Aportes</span></a>
+                @endif
+            </li>
         </ul>
 
     </div>
