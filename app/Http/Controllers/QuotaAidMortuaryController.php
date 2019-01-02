@@ -331,7 +331,9 @@ class QuotaAidMortuaryController extends Controller
             if($request->procedure_type_id == 3){
                 //cuota
                 $quota_aid = QuotaAidMortuary::select('id', 'code')->whereIn('procedure_modality_id', [8,9])->limit(10)->orderBy('id', 'desc')->get();
-                $quota_aid_code = $this->getLastCode($quota_aid);
+                // $quota_aid_code = $this->getLastCode($quota_aid);
+                $quota_aid_code = Util::getLastCode(QuotaAidMortuary::class);
+                // $this->getLastCode($quota_aid);
                 $code = Util::getNextCode($quota_aid_code, '179');
             }elseif($request->procedure_type_id == 4){
                 //auxlio
