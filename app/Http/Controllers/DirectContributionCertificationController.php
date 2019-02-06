@@ -42,7 +42,7 @@ class DirectContributionCertificationController extends Controller
                 $state = 'Recibo una prestación en curso de pago del Sistema Integral de Pensiones.';
                 break;
             case 22:
-                $state = 'Soy beneficiaria(o) (derechohabiente) con una prestación en curso de pago del Sistema Integral de Pensiones (SIP).';
+                $state = 'Soy beneficiaria(o) (derechohabiente) de una prestación en curso de pago del Sistema Integral de Pensiones (SIP).';
                 break;
         }
 
@@ -58,7 +58,7 @@ class DirectContributionCertificationController extends Controller
         $one.='<ul><li>';
         $one.=$state;
         $one.='</li></ul>';
-        $one .= 'Mediante '.($direct_contribution->isActiveSector() ? '(resolución o memorándum)' : '(declaración de pensión/contrato N°)'). ' '.$direct_contribution->document_number.', de fecha '.$direct_contribution->document_date.', motivo por el cual y para continuar aportando de manera regular al beneficio de '.($direct_contribution->isActiveSector() ? 'Fondo de Retiro Policial Solidario' : 'Auxilio Mortuorio').', expreso mi voluntad de realizar los aportes de forma'.($direct_contribution->isActiveSector() ? '
+        $one .= 'Mediante '.($direct_contribution->isActiveSector() ? '(resolución o memorándum)' : '(Declaración de Pensión/Contrato N°)'). ' '.$direct_contribution->document_number.', de fecha '.Util::getStringDate($direct_contribution->document_date).', motivo por el cual y para continuar aportando de manera regular al beneficio de '.($direct_contribution->isActiveSector() ? 'Fondo de Retiro Policial Solidario' : 'Auxilio Mortuorio').', expreso mi voluntad de realizar los aportes de forma'.($direct_contribution->isActiveSector() ? '
         voluntaria,' : '').' directa, continua y mensual previa liquidación en oficina central u oficinas regionales, misma que debe hacerse efectiva en el área de Tesorería de la MUSERPOL, o a través de depósito bancario en las cuentas fiscales de la Institución del Banco Unión, el mismo día de la liquidación.';
         if ($direct_contribution->isActiveSector()){
             $one.=' Asimismo, a la conclusión de la situación laboral en la que me encuentro, deberé presentar el Memorándum de Repliegue o la Resolución de Restitución de Funciones y/o Derechos Institucionales. Al mismo tiempo declaro que tomé conocimiento de los artículos del reglamento referidos al aporte voluntario (Artículos 12, 13, 16, 17, 18 y 19) y me apego a la modalidad de aportación, hasta la conclusión de la situación antes declarada.';
