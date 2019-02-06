@@ -223,7 +223,7 @@
                         <td>{{ $beneficary->fullName() }}</td>
                         <td>{{ $beneficary->percentage }}</td>
                         <td>{{ Util::formatMoney($beneficary->amount_availability) }}</td>
-                        <td>{{ $beneficary->kinship->name }}</td>
+                        <td>{{ $beneficary->kinship->name ?? 'SIN PARENTESCO' }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -262,7 +262,7 @@
                         <td>{{ $beneficary->fullName() }}</td>
                         <td>{{ $beneficary->percentage }}</td>
                         <td>{{ Util::formatMoney($beneficary->amount_total) }}</td>
-                        <td>{{ $beneficary->kinship->name }}</td>
+                        <td>{{ $beneficary->kinship->name ?? 'SIN PARENTESCO' }}</td>
                     </tr>
                     @endforeach
                 </tbody>
