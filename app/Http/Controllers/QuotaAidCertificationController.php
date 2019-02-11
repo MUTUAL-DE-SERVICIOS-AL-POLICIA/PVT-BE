@@ -419,10 +419,11 @@ class QuotaAidCertificationController extends Controller
     }
     public function printFile($id)
     {
-        $affiliate = Affiliate::find($id);
+
+        $quota_aid = QuotaAidMortuary::where('id', $id)->where('code','NOT LIKE','%A')->get()->last();
+        $affiliate = Affiliate::find($quota_aid->affiliate_id);
         $role = Util::getRol();
 
-        $quota_aid = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->where('code','NOT LIKE','%A')->get()->last();
         $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 34)->first();
         $code = $quota_aid->code;
         $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
