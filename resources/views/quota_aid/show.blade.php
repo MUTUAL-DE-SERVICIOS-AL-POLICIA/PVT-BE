@@ -108,7 +108,7 @@
                 <quota-aid-certification-button
                     title="Imprimir Certificacion de Archivo"
                     quota-adi-id="{{ $quota_aid->id }}"
-                    url-print="{!! route('quota_aid_print_file', $affiliate->id) !!}"
+                    url-print="{!! route('quota_aid_print_file', $quota_aid->id) !!}"
                 >
                 </quota-aid-certification-button>
             @endif
