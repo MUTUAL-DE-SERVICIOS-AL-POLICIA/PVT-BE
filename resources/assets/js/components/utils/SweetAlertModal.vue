@@ -26,6 +26,7 @@ import { camelCaseToSnakeCase } from "../../helper.js";
         async confirmModal() {
           await axios.get(`/get_next_area_code_${camelCaseToSnakeCase(this.type)}/${this.docId}`).then(response=>{
             this.nextAreaCode = response.data.code;
+            console.log('ingresa a cambiar next');
           }).catch(error => {
             console.log(error);
           })
@@ -115,6 +116,7 @@ import { camelCaseToSnakeCase } from "../../helper.js";
             showLoaderOnConfirm: true,
             preConfirm: () => {
                 let uri = `/inbox_invalidate_doc/${this.docId}`
+                console.log(uri)
                 return axios.patch(uri)
                 .then(response => {
                     if (!response.data) {
