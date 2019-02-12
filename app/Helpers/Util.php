@@ -152,8 +152,33 @@ class Util
             return $default."/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
+    private static function getNextHole($wf_state_id){
+        $year = date('Y');
+        $model = RetFunCorrelative::
+                            where('wf_state_id',$wf_state_id)
+                            ->where('code','NOT LIKE','%A')
+                            ->where(DB::raw("split_part(code, '/',2)::integer"),$year)
+                            ->orderBy(DB::raw("split_part(code, '/',2)::integer"))
+                            ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+                            ->select('code')
+                            ->get()
+                            ->toArray();
+        if(!isset($model->id)) {
+            return "";
+        }
+        $code = explode('/',$model[0]['code']);
+        for($i = 1; $i<sizeof($model); $i++)
+        {
+            $code = explode('/',$model[$i]['code']);
+            $last_code = explode('/',$model[$i-1]['code']);
+            if($last_code[0]+1 != $code[0] && $last_code[0] != $code[0] && $last_code[1]==$code[1]) {
+                return $last_code[0].'/'.$last_code[1];
+            }
+        }
+        return $code[0].'/'.$code[1];
+    }
     public static function getNextAreaCode($retirement_fund_id, $save = true){
-        $wf_state = WorkflowState::where('module_id',3)->where('role_id', Session::get('rol_id'))->first();        
+        $wf_state = WorkflowState::where('module_id',3)->where('role_id', Session::get('rol_id'))->first();
         $reprint = RetFunCorrelative::where('retirement_fund_id',$retirement_fund_id)->where('wf_state_id',$wf_state->id)->first();
         if(isset($reprint->id)){
             Log::info("reprint ret_fun_id: ". $retirement_fund_id);
@@ -161,27 +186,28 @@ class Util
         }
         $year =  date('Y');
         $role = Role::find($wf_state->role_id);
-
-
+        $hole = self::getNextHole($wf_state->id);
+        $next_correlative='';
         $reception = WorkflowState::where('role_id', Session::get('rol_id'))->whereIn('sequence_number', [0, 1])->first();
         if ($reception) {
-            $role->correlative = RetirementFund::find($retirement_fund_id)->code;
+            $next_correlative = RetirementFund::find($retirement_fund_id)->code;
         }else{
 
-            if($role->correlative == ""){
-                $role->correlative = "1/".$year;
+            if($hole == ""){
+                $next_correlative = "1/".$year;
             }
             else{
-                $data = explode('/', $role->correlative);
+                $data = explode('/', $hole);
                 if(!isset($data[1])){
-                    $role->correlative = "1/".$year;
+                    $next_correlative = "1/".$year;
                 }else{
-                    $role->correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
-                    Log::info("correlative created " . $role->correlative);
+                    $next_correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
+                    Log::info("correlative created " . $next_correlative);
                 }
             }
         }
         if ($save) {
+            $role->correlative = $next_correlative;
             $role->save();
         }
 
@@ -189,7 +215,7 @@ class Util
         $correlative = new RetFunCorrelative();
         $correlative->wf_state_id = $wf_state->id;
         $correlative->retirement_fund_id = $retirement_fund_id;
-        $correlative->code = $role->correlative;
+        $correlative->code = $next_correlative;
         $correlative->date = self::saveDay(Carbon::now()->toDateString());
         $correlative->user_id = self::getAuthUser()->id;
 
@@ -200,13 +226,13 @@ class Util
         return $correlative;
     }
     public static function getNextAreaCodeQuotaAid($quota_aid_mortuary_id, $save = true){
-        $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();  
+        $wf_state = WorkflowState::where('module_id',4)->where('role_id', Session::get('rol_id'))->first();
         $quota_aid = QuotaAidMortuary::find($quota_aid_mortuary_id);
         Log::info("role_id: ". Session::get('rol_id'));
         $reprint = QuotaAidCorrelative::where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)->where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
-        
+
         $last_quota_aid = QuotaAidCorrelative::
-                                where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)                                
+                                where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)
                                 ->where('wf_state_id',$wf_state->id)
                                 ->orderByDesc(DB::raw("split_part(code, '/',2)::integer"))
                                 ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
