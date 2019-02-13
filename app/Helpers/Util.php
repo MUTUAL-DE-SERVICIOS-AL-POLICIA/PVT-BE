@@ -257,9 +257,9 @@ class Util
                 else
                     $correlative = ($year!=$data[1]?"1":($data[0]+1))."/".$year;
             }
-        }        
+        }
 
-        //Correlative 
+        //Correlative
         $quota_aid_correlative = new QuotaAidCorrelative();
         $quota_aid_correlative->wf_state_id = $wf_state->id;
         $quota_aid_correlative->quota_aid_mortuary_id = $quota_aid_mortuary_id;
