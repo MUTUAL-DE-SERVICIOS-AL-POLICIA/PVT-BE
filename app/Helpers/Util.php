@@ -149,11 +149,11 @@ class Util
             return $default."/".$year;  
         $data = explode('/', $actual);
         if(!isset($data[1]))
-            return $default."/".$year;                
+            return $default."/".$year;
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
     private static function getNextHole($model){
-        if(!isset($model->id)) {
+        if(!isset($model[0])) {
             return "";
         }
         $code = explode('/',$model[0]['code']);
@@ -233,17 +233,30 @@ class Util
         Log::info("role_id: ". Session::get('rol_id'));
         $reprint = QuotaAidCorrelative::where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)->where('quota_aid_mortuary_id',$quota_aid_mortuary_id)->where('wf_state_id',$wf_state->id)->first();
 
-        $last_quota_aid = QuotaAidCorrelative::
-                                where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)
-                                ->where('wf_state_id',$wf_state->id)
-                                ->orderByDesc(DB::raw("split_part(code, '/',2)::integer"))
-                                ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
-                                ->first();
+        // $last_quota_aid = QuotaAidCorrelative::
+        //                         where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)
+        //                         ->where('wf_state_id',$wf_state->id)
+        //                         ->orderByDesc(DB::raw("split_part(code, '/',2)::integer"))
+        //                         ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
+        //                         ->first();
         if(isset($reprint->id))
             return $reprint;
         $year =  date('Y');
+        $model = QuotaAidCorrelative::
+                            where('procedure_type_id',$quota_aid->procedure_modality->procedure_type_id)
+                            ->where('wf_state_id',$wf_state->id)
+                            ->where('code','NOT LIKE','%A')
+                            ->where(DB::raw("split_part(code, '/',2)::integer"),$year)
+                            ->orderBy(DB::raw("split_part(code, '/',2)::integer"))
+                            ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+                            ->select('code')
+                            ->get()
+                            ->toArray();
 
-        $correlative = $last_quota_aid->code ?? "";
+        $hole = self::getNextHole($model);
+
+        //$correlative = $last_quota_aid->code ?? "";
+        $correlative = $hole;
         Log::info("type: ". $quota_aid->procedure_modality->procedure_type_id);
         $reception = WorkflowState::where('role_id', Session::get('rol_id'))->whereIn('sequence_number', [0, 1])->first();
         if ($reception) {
