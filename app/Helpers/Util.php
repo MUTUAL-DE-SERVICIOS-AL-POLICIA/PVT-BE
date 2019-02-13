@@ -152,17 +152,7 @@ class Util
             return $default."/".$year;                
         return ($year!=$data[1]?"1":($data[0]+1))."/".$year;
     }
-    private static function getNextHole($wf_state_id){
-        $year = date('Y');
-        $model = RetFunCorrelative::
-                            where('wf_state_id',$wf_state_id)
-                            ->where('code','NOT LIKE','%A')
-                            ->where(DB::raw("split_part(code, '/',2)::integer"),$year)
-                            ->orderBy(DB::raw("split_part(code, '/',2)::integer"))
-                            ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
-                            ->select('code')
-                            ->get()
-                            ->toArray();
+    private static function getNextHole($model){
         if(!isset($model->id)) {
             return "";
         }
@@ -186,7 +176,19 @@ class Util
         }
         $year =  date('Y');
         $role = Role::find($wf_state->role_id);
-        $hole = self::getNextHole($wf_state->id);
+
+        $year = date('Y');
+        $model = RetFunCorrelative::
+                            where('wf_state_id',$wf_state->id)
+                            ->where('code','NOT LIKE','%A')
+                            ->where(DB::raw("split_part(code, '/',2)::integer"),$year)
+                            ->orderBy(DB::raw("split_part(code, '/',2)::integer"))
+                            ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+                            ->select('code')
+                            ->get()
+                            ->toArray();
+
+        $hole = self::getNextHole($model);
         $next_correlative='';
         $reception = WorkflowState::where('role_id', Session::get('rol_id'))->whereIn('sequence_number', [0, 1])->first();
         if ($reception) {
