@@ -4,9 +4,11 @@ namespace Muserpol\Models\QuotaAidMortuary;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QuotaAidCorrelative extends Model
 {
+    use  SoftDeletes;
     public function wf_state()
     {
         return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_state_id');
