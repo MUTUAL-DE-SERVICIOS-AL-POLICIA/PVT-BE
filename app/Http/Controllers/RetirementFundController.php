@@ -1780,10 +1780,9 @@ class RetirementFundController extends Controller
         if ($total_quotes >= $current_procedure->contributions_number && $retirement_fund->procedure_modality->procedure_type->id == 2 ) {
         } else {
             $global_pay = true;
-            $total_aporte = $total_salary_quotable['total_aporte'];
-            $total_aporte = $this->compoundInterest($total_salary_quotable['contributions'],$affiliate);
-
+            $total_aporte = $total_salary_quotable['total_aporte'];        
             $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield)/100);
+            $yield = $this->compoundInterest($total_salary_quotable['contributions'],$affiliate);
             $administrative_expenses = (($yield * $current_procedure->administrative_expenses)/100);
             $less_administrative_expenses = $yield - $administrative_expenses;
 
@@ -1908,8 +1907,8 @@ class RetirementFundController extends Controller
             $total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
         } else {
             $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_aporte'];
-
-            $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
+            //$yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
+            $yield = $this->compoundInterest($affiliate->getContributionsPlus(),$affiliate);
             $administrative_expenses = (($yield * $current_procedure->administrative_expenses) / 100);
             $less_administrative_expenses = $yield - $administrative_expenses;
             $sub_total_ret_fun = $less_administrative_expenses;
@@ -1946,8 +1945,8 @@ class RetirementFundController extends Controller
             $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
         }else{
             $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_aporte'];
-
-            $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
+            $yield = $this->compoundInterest($affiliate->getContributionsPlus(),$affiliate);
+            //$yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
             $administrative_expenses = (($yield * $current_procedure->administrative_expenses) / 100);
             $less_administrative_expenses = $yield - $administrative_expenses;
             $sub_total_ret_fun = $less_administrative_expenses;

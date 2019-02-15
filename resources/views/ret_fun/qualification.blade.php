@@ -232,7 +232,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>+ Rendimiento del 5%</td>
+                                @if($retirement_fund->procedure_modality->procedure_type_id == 2)
+                                    <td>+ Rendimiento del 5% {{$retirement_fund->procedure_modality->procedure_type_id}}</td>
+                                @else
+                                    <td>+ Interes del 1.05% </td>
+                                @endif
                                 <td>@{{ yield | currency}} </td>
                             </tr>
                             <tr>
