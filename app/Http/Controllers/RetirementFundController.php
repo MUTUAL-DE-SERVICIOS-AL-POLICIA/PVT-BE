@@ -1768,7 +1768,7 @@ class RetirementFundController extends Controller
         }
         $current_procedure = Util::getRetFunCurrentProcedure();
         $retirement_fund = RetirementFund::find($id);
-        
+
         $affiliate = $retirement_fund->affiliate;
         $affiliate->service_years = $request->service_years;
         $affiliate->service_months = $request->service_months;
@@ -1781,6 +1781,8 @@ class RetirementFundController extends Controller
         } else {
             $global_pay = true;
             $total_aporte = $total_salary_quotable['total_aporte'];
+            $total_aporte = $this->compoundInterest($total_salary_quotable['contributions'],$affiliate);
+
             $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield)/100);
             $administrative_expenses = (($yield * $current_procedure->administrative_expenses)/100);
             $less_administrative_expenses = $yield - $administrative_expenses;
@@ -1799,6 +1801,21 @@ class RetirementFundController extends Controller
         ];
         $data =  array_merge($data,$temp);
         return $data;
+    }
+    private function compoundInterest($contributions,Affiliate $affiliate) {
+        $total = 0;
+        $date_entry = Carbon::createFromFormat('m/Y', $affiliate->date_entry);
+        $date_derelict = Carbon::createFromFormat('m/Y', $affiliate->date_derelict);
+        $months_entry = ($date_entry->format('Y')*12)+$date_entry->format('m');
+        $months_dereliect = ($date_derelict->format('Y')*12)+$date_derelict->format('m');
+        $frecuency = 0;
+        $interest_rate = 1.05; //replace by procedure interest rate
+        foreach($contributions as $contribution) {
+            $subtotal = round($contribution->total*pow($interest_rate,(($months_dereliect-($months_entry+$frecuency)))/12),2);
+            $frecuency++;
+            $total = round($total+$subtotal,2);
+        }
+        return $total;
     }
     public function getDataQualificationCertification(DataTables $datatables, $retirement_fund_id)
     {
