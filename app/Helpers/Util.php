@@ -890,4 +890,20 @@ class Util
         }
         return $values;
     }
+
+    public static function compoundInterest($contributions,Affiliate $affiliate) {
+        $total = 0;
+        $date_entry = Carbon::createFromFormat('m/Y', $affiliate->date_entry);
+        $date_derelict = Carbon::createFromFormat('m/Y', $affiliate->date_derelict);
+        $months_entry = ($date_entry->format('Y')*12)+$date_entry->format('m');
+        $months_dereliect = ($date_derelict->format('Y')*12)+$date_derelict->format('m');
+        $frecuency = 0;
+        $interest_rate = 1.05; //replace by procedure interest rate
+        foreach($contributions as $contribution) {
+            $subtotal = round($contribution->total*pow($interest_rate,(($months_dereliect-($months_entry+$frecuency)))/12),2);
+            $frecuency++;
+            $total = round($total+$subtotal,2);
+        }
+        return $total;
+    }
 }

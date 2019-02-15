@@ -1782,7 +1782,7 @@ class RetirementFundController extends Controller
             $global_pay = true;
             $total_aporte = $total_salary_quotable['total_aporte'];        
             $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield)/100);
-            $yield = $this->compoundInterest($total_salary_quotable['contributions'],$affiliate);
+            $yield = Util::compoundInterest($total_salary_quotable['contributions'],$affiliate);
             $administrative_expenses = (($yield * $current_procedure->administrative_expenses)/100);
             $less_administrative_expenses = $yield - $administrative_expenses;
 
@@ -1908,7 +1908,7 @@ class RetirementFundController extends Controller
         } else {
             $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_aporte'];
             //$yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
-            $yield = $this->compoundInterest($affiliate->getContributionsPlus(),$affiliate);
+            $yield = Util::compoundInterest($affiliate->getContributionsPlus(),$affiliate);
             $administrative_expenses = (($yield * $current_procedure->administrative_expenses) / 100);
             $less_administrative_expenses = $yield - $administrative_expenses;
             $sub_total_ret_fun = $less_administrative_expenses;
@@ -1945,7 +1945,7 @@ class RetirementFundController extends Controller
             $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
         }else{
             $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_aporte'];
-            $yield = $this->compoundInterest($affiliate->getContributionsPlus(),$affiliate);
+            $yield = Util::compoundInterest($affiliate->getContributionsPlus(),$affiliate);
             //$yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
             $administrative_expenses = (($yield * $current_procedure->administrative_expenses) / 100);
             $less_administrative_expenses = $yield - $administrative_expenses;
