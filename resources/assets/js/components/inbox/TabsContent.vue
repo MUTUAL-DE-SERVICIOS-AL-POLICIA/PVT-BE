@@ -30,7 +30,12 @@ export default {
                 this.workflows =  data.workflows;
                 this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
                 this.area_documents =  data.documents
-                this.documents =  this.area_documents.filter(v => v.user_id == this.user.id);
+                console
+                if(this.inboxState == 'received') {
+                    this.documents = this.area_documents
+                } else {
+                    this.documents =  this.area_documents.filter(v => v.user_id == this.user.id)
+                }
                 this.wfCurrentState =  data.wf_current_state;
                 this.wfSequenceNextL =  data.wf_sequences_next;
                 this.wfSequenceBackL =  data.wf_sequences_back;

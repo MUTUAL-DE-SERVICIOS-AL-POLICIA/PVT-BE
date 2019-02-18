@@ -80,6 +80,7 @@ class DocumentController extends Controller
                     DB::raw(
                         "
                         retirement_funds.id as id,
+                        retirement_funds.user_id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
                         retirement_funds.code as code,
@@ -317,6 +318,7 @@ class DocumentController extends Controller
                     DB::raw(
                         "
                         quota_aid_mortuaries.id as id,
+                        quota_aid_mortuaries.user_id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
                         quota_aid_mortuaries.code as code,
@@ -335,7 +337,7 @@ class DocumentController extends Controller
                     ->leftJoin('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
                     ->where('wf_states.role_id', '=', $rol_id)
                     ->where('quota_aid_mortuaries.inbox_state', '=', true)
-                    ->where('quota_aid_mortuaries.user_id', '=', $user_id)
+                    //->where('quota_aid_mortuaries.user_id', '=', $user_id)
                     ->where('quota_aid_mortuaries.code', 'not like', '%A%')
                     ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
                     ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
