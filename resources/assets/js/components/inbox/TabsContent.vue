@@ -6,6 +6,7 @@ export default {
     data(){
         return{
             workflows: [],
+            area_documents: [],
             documents:[],
             activeWorkflowId:null,
             wfSequenceNextL:[],
@@ -28,7 +29,8 @@ export default {
             axios.get(uri).then(({data})=>{
                 this.workflows =  data.workflows;
                 this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
-                this.documents =  data.documents;
+                this.area_documents =  data.documents
+                this.documents =  this.area_documents.filter(v => v.user_id == this.user.id);
                 this.wfCurrentState =  data.wf_current_state;
                 this.wfSequenceNextL =  data.wf_sequences_next;
                 this.wfSequenceBackL =  data.wf_sequences_back;
@@ -38,6 +40,9 @@ export default {
                 this.showLoading = false;
                 this.$store.commit('inbox/setHeaders', data.headers);
             });
+        },
+        switchShow() {
+            this.documents = this.area_documents
         },
         updateCheckStatus(){
             //first method
@@ -213,4 +218,3 @@ export default {
     }
 }
 </script>
- 
