@@ -112,9 +112,14 @@
                                         </div>
                                     </div>
                                     <div v-else key="refresh">
-                                        <div class="col-md-12 text-center" >
+                                        <div class="col-md-6 text-right" >
                                             <button class="btn btn-default" @click="getData()" data-toggle="tooltip" data-placement="top" title="Actualizar">
                                                 Actualizar <i class="fa fa-refresh"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6 text-right" >
+                                            <button class="btn btn-default" @click="switchShow()" data-toggle="tooltip" data-placement="top " title="Actualizar">
+                                                Mostart todo
                                             </button>
                                         </div>
                                     </div>
