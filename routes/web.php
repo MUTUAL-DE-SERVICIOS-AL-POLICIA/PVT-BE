@@ -23,6 +23,7 @@ use Muserpol\Models\RetirementFund\RetFunTemplate;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\ContributionProcess;
+use Muserpol\Models\RetirementFund\RetFunCorrelative;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -292,6 +293,27 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/dictamen_legal', 'RetirementFundController@dictamenLegal')->name('ret_fun_dictamen_legal');		
 
 			//helpers route
+		Route::get('correlative', function (){
+			$wf_state_id = 19;
+			$model = RetFunCorrelative::
+								where('wf_state_id',$wf_state_id)
+								->where('code','NOT LIKE','%A')
+								->where(DB::raw("split_part(code, '/',2)::integer"),'2019')
+                                ->orderBy(DB::raw("split_part(code, '/',2)::integer"))
+                                ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+                                ->select('code')
+								->get()
+								->toArray();
+			for($i = 1; $i<sizeof($model); $i++)
+			{
+				$code = explode('/',$model[$i]['code']);
+				$last_code = explode('/',$model[$i-1]['code']);
+				if($last_code[0]+1 != $code[0] && $last_code[0] != $code[0] && $last_code[1]==$code[1]) {
+					return $last_code[0].'/'.$last_code[1];
+				}
+			}
+			return $code[0];
+		});
 		Route::get('legal_opinion', function (Request $request) {
 			$ret_fun = RetirementFund::find(4);
 			$affiliate = $ret_fun->affiliate;
