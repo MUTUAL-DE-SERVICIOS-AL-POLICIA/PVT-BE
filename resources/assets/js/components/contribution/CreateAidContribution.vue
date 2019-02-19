@@ -71,7 +71,7 @@
                                             <input type="text"  v-model = "con.dignity_rent" v-money @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                         </td>
                                         <td>
-                                            <input type="text" v-model = "con.auxilio_mortuorio" disabled v-money class="form-control">
+                                            <input type="text" v-model = "con.mortuary_aid" disabled v-money class="form-control">
                                         </td>
                                         <td>
                                             <input type="text" v-model = "con.interes" disabled v-money class="form-control">
@@ -130,7 +130,7 @@
                                                 <input type="text"  v-model = "con.dignity_rent" v-money @keyup.enter="CalcularAporte(con, index)"  ref="s1" autofocus class="form-control" >
                                             </td>
                                             <td>
-                                                <input type="text" v-model = "con.auxilio_mortuorio" disabled v-money class="form-control">
+                                                <input type="text" v-model = "con.mortuary_aid" disabled v-money class="form-control">
                                             </td>
                                             <td>
                                                 <input type="text" v-model = "con.interes" disabled v-money class="form-control">
@@ -173,9 +173,9 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Monto</label>
-                    <input id="reimbursement_amount" v-model="reimbursement_amount" name="reimbursement_amount" type="text" placeholder="Monto" class="form-control numberformat">
+                    <input id="reimbursement_amount" v-model="reimbursement_amount" name="reimbursement_amount" type="text" placeholder="Monto" class="form-control numberformat" @keyup.enter="calculateReimbursement()">
                     <label>Mes</label>
-                    <select class="form-control" name="month" id="month" v-model="reimbursement_month">
+                    <select class="form-control" name="month" id="month" v-model="reimbursement_month" disabled>
                         <option value="01">Enero</option>
                         <option value="02">Febrero</option>
                         <option value="03">Marzo</option>
@@ -190,12 +190,12 @@
                         <option value="12">Diciembre</option>
                      </select>
                 </div>
-                <button class="btn btn-default" type="button" title="Guardar" @click="calculateReimbursement()">
+                <!-- <button class="btn btn-default" type="button" title="Guardar" @click="calculateReimbursement()">
                     Calcular
-                </button>
+                </button> -->
                 <div class="form-group">
                     <label>Monto Cotizable</label>
-                    <input id="reimbursement_quotable" v-model="reimbursement_quotable" name="reimbursement_quotable" type="text" placeholder="Aporte Total" class="form-control numberformat">
+                    <input id="reimbursement_quotable" readonly v-model="reimbursement_quotable" name="reimbursement_quotable" type="text" placeholder="Aporte Total" class="form-control numberformat">
                     
                     <table class="table table-striped" data-page-size="15">
                         <thead>
@@ -214,7 +214,7 @@
                                 <input type="text" v-model = "reim_pay.amount" v-money disabled class="form-control" >
                             </td>
                             <td>
-                                <input type="text"  v-model = "reim_pay.auxilio_mortuorio" v-money disabled class="form-control">
+                                <input type="text"  v-model = "reim_pay.mortuary_aid" v-money disabled class="form-control">
                             </td>                            
                             <td>
                                 <input type="text"  v-model = "reim_pay.subtotal" v-money disabled class="form-control">
@@ -230,9 +230,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>                
+                <button type="button" class="btn btn-white" data-dismiss="modal"> Cancelar</button>                
                 <button class="btn btn-default" type="button" title="Guardar" @click="addReimbursement()">
-                    Guardar
+                    Insertar Reintegro
                 </button>
             </div>
         </div>
@@ -248,7 +248,7 @@ from "../../helper.js";
 export default {
   props: [
     // "aidContributions", 
-    "afid",
+    "affiliateId",
     "directContributionId",
     // "rate"
       ],
@@ -262,7 +262,6 @@ export default {
       tipo: null,
       ufv: 0,
       estado: true,
-      afi_id: null,
       show_spinner: false,
       count: 3,
       general_rent: 0,
@@ -298,7 +297,7 @@ export default {
         }
     },
     refresh() {
-      axios.get(`/affiliate/${this.afid}/get_contribution_debt/${this.number}/${moment(this.dateEnd, 'DD/MM/YYYY').format('YYYY-MM-DD')}`)
+      axios.get(`/affiliate/${this.affiliateId}/get_contribution_debt/${this.number}/${moment(this.dateEnd, 'DD/MM/YYYY').format('YYYY-MM-DD')}`)
         .then(response =>{
             this.contributions = response.data
         }).catch(error =>{
@@ -320,14 +319,16 @@ export default {
           this.CalcularAporte(this.contributions[i],i);
       }              
     },
-      calculateReimbursement(){                       
-        axios.get('/calculate_aid_reimbursement/'+this.afi_id+'/'+this.reimbursement_amount+'/'+this.reimbursement_month)
+      calculateReimbursement(){             
+        let amount = this.reimbursement_amount;
+        amount = amount.replace(',','');          
+        axios.get('/calculate_aid_reimbursement/'+this.affiliateId+'/'+amount+'/'+this.reimbursement_month)
         .then(response => {            
-            this.reimbursement_quotable = this.reimbursement_amount;// response.data.quotable;   
+            this.reimbursement_quotable = amount;// response.data.quotable;   
             var i;
             let contributions_number = parseInt(this.reimbursement_month)-1;            
-            this.reimbursement_quotable = this.reimbursement_amount/contributions_number;
-            let subtotal = this.reimbursement_amount/contributions_number;     
+            this.reimbursement_quotable = amount/contributions_number;
+            let subtotal = amount/contributions_number;     
                         
             for(i=0;i<response.data.contributions.length;i++)
             {
@@ -337,7 +338,7 @@ export default {
                 var new_info = {
                     'month_year' : date.format('MM-YYYY'),
                     'amount'    :   parseFloat(subtotal).toFixed(2),
-                    'auxilio_mortuorio'   :   aid_amount,                    
+                    'mortuary_aid'   :   aid_amount,                    
                     'subtotal'  :   parseFloat(aid_amount).toFixed(2),
                 };
                 this.reimbursement_pays.push(new_info);                                 
@@ -350,7 +351,7 @@ export default {
                     var new_info = {
                         'month_year' : this.contributions[i].monthyear,
                         'amount'    :   parseFloat(subtotal).toFixed(2),
-                        'auxilio_mortuorio'   :   aid_amount,
+                        'mortuary_aid'   :   aid_amount,
                         'subtotal'  :   parseFloat(aid_amount).toFixed(2),
                     };                
                     this.reimbursement_pays.push(new_info);                            
@@ -379,9 +380,9 @@ export default {
              this.ufv = parseFloat(response.data[0].replace(",", "."));
                 if(this.ufv < 0)
                     this.ufv = 0;
-              con.auxilio_mortuorio = ((con.sueldo - con.dignity_rent) * response.data[1].mortuary_aid/100).toFixed(2);
+              con.mortuary_aid = ((con.sueldo - con.dignity_rent) * response.data[1].mortuary_aid/100).toFixed(2);
               con.interes = parseFloat(this.ufv).toFixed(2);
-              con.subtotal = (parseFloat(con.auxilio_mortuorio) + parseFloat(con.interes)).toFixed(2);
+              con.subtotal = (parseFloat(con.mortuary_aid) + parseFloat(con.interes)).toFixed(2);
               console.log(con.subtotal);
               this.show_spinner = false;              
               this.SumTotal();                                            
@@ -413,13 +414,13 @@ export default {
       this.contributions = this.contributions.filter(item => {
         return (
           item.sueldo != 0 &&
-          item.auxilio_mortuorio != 0 &&
+          item.mortuary_aid != 0 &&
           item.subtotal != 0
         );
       });
       var contributions = this.contributions;
       var con = JSON.stringify(contributions);
-      var affiliate_id = this.afid;
+      var affiliate_id = this.affiliateId;
       var total = this.total;
       printJS({
         printable:
@@ -488,7 +489,7 @@ export default {
         item.sueldo = parseMoney(item.sueldo);
         item.dignity_rent = parseMoney(item.dignity_rent);
         return (          
-          item.sueldo != 0 && item.auxilio_mortuorio != 0 && item.subtotal != 0
+          item.sueldo != 0 && item.mortuary_aid != 0 && item.subtotal != 0
         );
       });      
        if (this.contributions.length > 0) {
@@ -509,7 +510,8 @@ export default {
                 total: this.total,
                 direct_contribution_id: this.directContributionId
               })
-              .then(response => {                
+              .then(response => {
+                  location.reload();
               //this.enableDC();
             //   var i;
             //     for(i=0;i<response.data.aid_contribution.length;i++){                        

@@ -23,6 +23,9 @@ use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Contribution\AidReimbursement;
+use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\Models\PaymentType;
 class DirectContributionController extends Controller
 {
     public function getAllDirectContribution(DataTables $datatables)
@@ -120,7 +123,7 @@ class DirectContributionController extends Controller
         $direct_contribution->commitment_date = Util::verifyBarDate($request->commitment_date) ? Util::parseBarDate($request->commitment_date) : $request->commitment_date;
         $direct_contribution->document_number = $request->document_number;
         $direct_contribution->document_date = Util::verifyBarDate($request->document_date) ? Util::parseBarDate($request->document_date) : $request->document_date;
-        $direct_contribution->start_contribution_date = Util::verifyBarDate($request->start_contribution_date) ? Util::parseBarDate($request->start_contribution_date) : $request->start_contribution_date;
+        $direct_contribution->start_contribution_date = Util::verifyMonthYearDate($request->start_contribution_date) ? Util::parseMonthYearDate($request->start_contribution_date) : $request->start_contribution_date;
         $direct_contribution->date = now();
         $direct_contribution->code = Util::getNextCode(Util::getLastCode(DirectContribution::class), "1");
         $direct_contribution->save();
@@ -156,6 +159,11 @@ class DirectContributionController extends Controller
     //public function show(DirectContribution $directContribution)
     public function show(DirectContribution $directContribution)
     {
+        // $d = \Muserpol\Models\Contribution\ContributionProcess::find(55);
+        // return $d->contributions;
+        // return $d;
+        // return 123;
+
         $affiliate = Affiliate::find($directContribution->affiliate_id);
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
@@ -226,10 +234,38 @@ class DirectContributionController extends Controller
             ->orderby('procedure_requirements.number','ASC')
             ->where('direct_contribution_submitted_documents.direct_contribution_id',$directContribution->id);
 
-        $contribution_processes = $directContribution->contribution_processes()->where('procedure_state_id', 1)->get();
+        /*
+         !! TODO
+         !! Agregar id de estado pagado
+        */
+        $contribution_processes = $directContribution->contribution_processes()->where('procedure_state_id', 6)->get();
         $procedure_type = $directContribution->procedure_modality->procedure_type;
+        
+        /**for validate doc*/
+        $user = Auth::user();
+        if ($directContribution->hasActiveContributionProcess()) {
+            $contribution_process =  $directContribution->contribution_processes()->where('procedure_state_id', 1)->first();
+            $rol = Util::getRol();
+            $module = Role::find($rol->id)->module;
+            $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
+            $can_validate = $wf_current_state->id == $contribution_process->wf_state_current_id;
+            $can_cancel = ($contribution_process->user_id == $user->id && $contribution_process->inbox_state == true);
+            /* workflow */
+            $wf_sequences_back = DB::table("wf_states")
+                ->where("wf_states.module_id", "=", $module->id)
+                ->where('wf_states.sequence_number', '<', WorkflowState::find($contribution_process->wf_state_current_id)->sequence_number)
+                ->select(
+                    'wf_states.id as wf_state_id',
+                    'wf_states.first_shortened as wf_state_name'
+                )
+                ->get();                        
+        }        
+        $payment_types = PaymentType::get();
+        //print_r($contribution_process->voucher);
+        //return 12;        
         $data = [
             'direct_contribution'   =>  $directContribution,
+            'contribution_process'   =>  $contribution_process ?? null,
             'contribution_processes'   =>  $contribution_processes,
             'procedure_type'   =>  $procedure_type,
             'affiliate' =>  $affiliate,
@@ -252,7 +288,17 @@ class DirectContributionController extends Controller
             'modalities'    =>  $modalities,
             'requirements'  =>  $requirements,
             'procedure_types'   =>  $procedure_types,
+            'payment_types' =>  $payment_types,
             'submitted_documents'   =>  $submitted->get(),
+
+            'can_validate' => $can_validate ?? false,
+            'can_cancel' => $can_cancel ?? false,
+            'wf_sequences_back' => $wf_sequences_back ?? null,
+            'user' => $user,
+            // 'workflow_records' => $workflow_records,
+            // 'first_wf_state' => $first_wf_state,
+            // 'wf_states' => $wf_states,
+            // 'is_editable' => $is_editable,
         ];        
         return view('direct_contributions.show', $data);
     }

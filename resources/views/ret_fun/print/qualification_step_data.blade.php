@@ -22,7 +22,11 @@
                         <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>
                     <tr class="text-sm">
-                        <td class="text-left px-10 py-3 uppercase">CON RENDIMIENTO DEL 5% ANUAL</td>
+                        @if ($retirement_fund->procedure_modality->procedure_type_id == 1)
+                            <td class="text-left px-10 py-3 uppercase">Interés del 1.05%</td>
+                        @else
+                            <td class="text-left px-10 py-3 uppercase">CON RENDIMIENTO DEL 5% ANUAL</td>
+                        @endif
                         <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($yield) }} </td>
                         <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>

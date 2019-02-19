@@ -11,9 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(AportesDocumentsSeeder::class);
-        $this->call(AportesRequirementsSeeder::class);
-        
+        //$this->call(AportesDocumentsSeeder::class);
+        //$this->call(AportesRequirementsSeeder::class);
+        $this->call(AportesComisionRequirements::class);
         $this->command->info('Todo ok finalizado! DAVID y NADIA'); 
     }
 }

@@ -3,29 +3,55 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Datos de la calificacion</h2>
+                    <h2>Liquidaci&oacute;n</h2>
                     @if ($procedure_type->id == 6)
-                        <contribution-create
-                            :afid="{{ $affiliate->id }}"
-                            {{-- :last_quotable="{{$last_quotable}}"
-                            :commitment="{{ $commitment }}"
-                            :is_regional="`{{ $is_regional }}`" --}}
-                            >
-                        </contribution-create>
+                        @if ($direct_contribution->hasActiveContributionProcess())
+                            <contribution-edit
+                                :disable="true"
+                                :direct-contribution-id="{{ $direct_contribution->id }}"
+                                :affiliate-id="{{ $affiliate->id }}"
+                                :contributions="{{ $contribution_process->contributions }}"
+                                :reimbursements="{{ $contribution_process->reimbursements }}"
+                                :total="{{ $contribution_process->total }}"
+                                :contribution-process-id = "{{ $contribution_process->id }}"
+                            ></contribution-edit>
+                            @if (Util::getRol()->id == 62)
+                                <div class="row text-center">
+                                    <button class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                                </div>
+                            @endif                            
+                        @else
+                            <contribution-create
+                                :afid="{{ $affiliate->id }}"
+                                :direct-contribution-id="{{ $direct_contribution->id }}"
+                                {{-- :is_regional="`{{ $is_regional }}`" --}}
+                                {{-- :last_quotable="{{$last_quotable}}"
+                                :commitment="{{ $commitment }}" --}}
+                                >
+                            </contribution-create>
+                        @endif
                     @endif
                     @if ($procedure_type->id == 7)
                     {{-- PASIVO --}}
-                        @if ( $direct_contribution->contribution_processes()->where('procedure_state_id', 1)->first())
-                            <aid-contribution-show
-                                disable="true"
-                                direct-contribution-id="{{ $direct_contribution->id }}"
-                                affiliate-id="{{ $affiliate->id }}"
-                                aid-contribution="{{ json_encode($contribution_process->ai_contributions) }}"
-                            ></aid-contribution-show>
+                        @if ( $direct_contribution->hasActiveContributionProcess())
+                            <aid-contribution-edit
+                                :disable="true"
+                                :direct-contribution-id="{{ $direct_contribution->id }}"
+                                :affiliate-id="{{ $affiliate->id }}"
+                                :aid-contributions="{{ ($contribution_process->aid_contributions) }}"
+                                :aid-reimbursements="{{ ($contribution_process->aid_reimbursements) }}"
+                                :total="{{ $contribution_process->total }}"
+                                :contribution-process-id = "{{ $contribution_process->id }}"
+                            ></aid-contribution-edit>
+                            @if (Util::getRol()->id == 62)
+                                <div class="row text-center">
+                                    <button class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                                </div>
+                            @endif
                         @else
                             <aid-contribution-create
                                 direct-contribution-id="{{ $direct_contribution->id }}"
-                                :afid="{{ $affiliate->id }}"
+                                :affiliate-id="{{ $affiliate->id }}"
                             ></aid-contribution-create>
                         @endif
                     @endif
@@ -33,6 +59,21 @@
             </div>
         </div>
     </div>
+    @if(isset($contribution_process->id)  && Util::getRol()->id == 62)
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">                    
+                        <direct-contribution-payment
+                            :contribution_process="{{ $contribution_process }}"
+                            :voucher = "{{ $voucher }}"
+                            :payment_types = "{{ $payment_types }}"             
+                        ></direct-contribution-payment>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
@@ -62,7 +103,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
 </div>
 
 @section('scripts')

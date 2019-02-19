@@ -503,7 +503,8 @@ class RetirementFundCertificationController extends Controller
         $temp = [];
         if ($affiliate->globalPayRetFun()){
             $total_aporte = $retirement_fund->average_quotable;
-            $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
+            //$yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
+            $yield = Util::compoundInterest($affiliate->getContributionsPlus(),$affiliate);
             $administrative_expenses = (($yield * $current_procedure->administrative_expenses) / 100);
             $less_administrative_expenses = $yield - $administrative_expenses;
             $temp =[
