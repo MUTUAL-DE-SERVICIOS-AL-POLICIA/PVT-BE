@@ -51,11 +51,24 @@ th.ellipsis-text {
                 <button class="btn btn-warning btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-heartbeat" style="font-size:15px;"></i> </button>
             </a>
         @endcan
-        @can('create', new Muserpol\Models\Contribution\ContributionProcess)
-            <a href="{{route('create_direct_contribution', $affiliate->id)}}">
-                <button class="btn btn-warning btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Aportes"><i class="fa fa-dollar" style="font-size:15px;"></i> </button>
-            </a>
+        @can('create', new Muserpol\Models\Contribution\ContributionProcess)            
+            @if($has_direct_contribution)
+                <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene un tr&aacute;mite de Aportes directos">
+                    <button class="btn btn-warning btn-sm  dim" type="button"  disabled><i class="fa fa-paste"></i> </button>
+                </a>
+            @else
+                <a href="{{route('create_direct_contribution', $affiliate->id)}}">
+                    <button class="btn btn-warning btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Aportes"><i class="fa fa-dollar" style="font-size:15px;"></i> </button>
+                </a>
+            @endif
         @endcan
+        @can('create', new Muserpol\Models\Voucher)
+            @foreach ($voucher_types as $voucher_type)
+            <button class="btn btn-info btn-sm  dim" type="button" href="#tab-charge{{$voucher_type->id}}" data-toggle="tab" data-placement="top" title="{{ $voucher_type->name }}"><i class="fa fa-money"></i> {{ $voucher_type->name }}</button>
+            @endforeach            
+        @endcan
+
+        {{-- @if('create', new Muserpol\Models\ChargeType) --}}
         {{-- @can('view',new Muserpol\Models\Contribution\Contribution)
         <a href="{{route('show_contribution', $affiliate->id)}}" >
             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
@@ -104,6 +117,7 @@ th.ellipsis-text {
                         <li class="list-group-item " data-toggle="tab" href="#tab-documents-scanned"><a href="#" ><i class="fa fa-upload"></i> Documentos Escaneados</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="{{ Util::IconModule(3)}}"></i> Fondo de Retiro</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-quota-aid-mortuory"><a href="#"><i class="{{ Util::IconModule(4)}}"></i> Cuota y Auxilio Mortuorio</a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-direct-contribution"><a href="#"><i class="{{ Util::IconModule(11)}}"></i> Aportes directos</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Util::IconModule(2)}}"></i> Complemento Económico</a></li>
                         {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
@@ -114,8 +128,7 @@ th.ellipsis-text {
     <br>
     <div class="col-md-9" style="padding-left: 6px">
 
-            <div class="tab-content">
-
+            <div class="tab-content">         
                     <div id="tab-affiliate" class="tab-pane active">
                         <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template>
                             @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
@@ -197,12 +210,50 @@ th.ellipsis-text {
                         </quota-aid-info>
                         @endcan
                     </div>
-
+                    @if(isset($direct_contribution->id))
+                    <div id="tab-direct-contribution" class="tab-pane">
+                        {{-- @can('update',$direct_contribution) --}}                        
+                            <direct-contribution-info 
+                                :direct_contribution="{{ $direct_contribution }}" 
+                                :city="{{json_encode($direct_contribution->city_id)}}"
+                                :procedure_modality="{{$direct_contribution->procedure_modality}}" 
+                                :states="{{ $states }}" :read="true"  inline-template>
+                                @include('direct_contributions.info', ['direct_contribution'=>$direct_contribution,'cities'=>$birth_cities])
+                            </direct-contribution-info>
+                        {{-- @endcan --}}
+                    </div>
+                    @endif
                     {{-- <div id="tab-aid-mortuory" class="tab-pane"> //auxilio mortuorio
 
 
 
                     </div> --}}
+                    @can('create', new Muserpol\Models\Voucher)
+                        @foreach ($voucher_types as $voucher_type)
+                            <div id="tab-charge{{$voucher_type->id}}" class="tab-pane">
+                                <generate-charge
+                                    :payment_types = "{{ $payment_types }}"
+                                    :affiliate_id = "{{ $affiliate->id }}"
+                                    :vouchers = "{{ $vouchers }}"
+                                    :voucher_type = "{{ $voucher_type  }}"
+                                ></generate-charge>
+                            </div>
+                        @endforeach                        
+                    @endcan
+                    {{-- <div class="row">
+                        <div class="col-lg-12">
+                            <div class="ibox">
+                                <div class="ibox-title">                    
+                                        <direct-contribution-payment
+                                            :contribution_process="{{ $contribution_process }}"
+                                            :voucher = "{{ $voucher }}"
+                                            :payment_types = "{{ $payment_types }}"             
+                                        ></direct-contribution-payment>
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
+                    
 
                     <div id="tab-observations" class="tab-pane">
 

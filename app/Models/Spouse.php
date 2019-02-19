@@ -87,4 +87,8 @@ class Spouse extends Model
         $spouse->city_identity_card_id = $object['city_identity_card_id'];
         $spouse->save();
     }
+    public function ciWithExt()
+    {
+        return Util::removeSpaces($this->identity_card . ' ' . ($this->city_identity_card->first_shortened ?? ''));
+    }
 }

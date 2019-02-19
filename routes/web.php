@@ -22,6 +22,8 @@ use Carbon\Carbon;
 use Muserpol\Models\RetirementFund\RetFunTemplate;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\Contribution\ContributionProcess;
+use Muserpol\Models\RetirementFund\RetFunCorrelative;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -245,15 +247,23 @@ Route::group(['middleware' => ['auth']], function () {
 
 		//Direct Contributions
 		Route::resource('direct_contribution', 'DirectContributionController');
+		Route::get('direct_contribution/{direct_contribution_id}/print/commitment_letter', 'DirectContributionCertificationController@printCommitmentLetter')->name('print_commitment_letter');
 		Route::patch('/update_information_direct_contribution', 'DirectContributionController@updateInformation')->name('update_information_direct_contribution');
 
 		Route::post('direct_contribution/{direct_contribution_id}/edit_requirements', 'DirectContributionController@editRequirements');
 		Route::get('affiliate/{affiliate}/direct_contribution/create', 'DirectContributionController@create')->name('create_direct_contribution');
 		Route::get('get_all_direct_contribution', 'DirectContributionController@getAllDirectContribution');
+		Route::post('contribution_process/{contribution_process_id}/contribution_pay', 'ContributionProcessController@contributionPay');
+		
 		// Route::post('affiliate/{affiliate}/contribution_process/save_commitment', 'ContributionProcessController@saveCommitment')->name('save_commitment');
 
 		// Contribution process
+		Route::resource('contribution_process', 'ContributionProcessController');
 		Route::post('contribution_process/aid_contribution_save', 'ContributionProcessController@aidContributionSave')->name('aid_contribution_save');
+		Route::post('contribution_process/contribution_save', 'ContributionProcessController@contributionSave')->name('contribution_save');
+		Route::get('contribution_process/{contribution_process_id}/correlative/{wf_state_id}', 'ContributionProcessController@getCorrelative')->name('contribution_process_get_correlative');
+		Route::get('direct_contribution/{direct_contribution_id}/contribution_process/{contribution_process_id}/print/quotation', 'ContributionProcessCertificationController@printQuotation')->name('contribution_process_print_quotation');
+		Route::get('direct_contribution/{direct_contribution_id}/contribution_process/{contribution_process_id}/print/voucher', 'ContributionProcessCertificationController@printVoucher')->name('contribution_process_print_voucher');
 
 			//inbox
 		Route::get('inbox', function () {
@@ -266,6 +276,11 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::patch('inbox_validate_doc/{doc_id}', 'InboxController@validateDoc')->name('inbox_validate_doc');
 		Route::patch('inbox_invalidate_doc/{doc_id}', 'InboxController@invalidateDoc')->name('inbox_validate_doc');
 
+		//charges
+		Route::get('affiliate/{affiliate}/voucher/create', 'VoucherController@generateVoucher')->name('create_voucher');
+		Route::resource('voucher','VoucherController');
+		Route::get('affiliate/{affiliate}/voucher/{voucher}/print', 'VoucherController@printVoucher')->name('print_voucher');
+		//Route::post('affiliate/{affiliate}/voucher', 'VoucherController@storeVoucher')->name('store_voucher');
 
 		Route::get('print/resolution_notification', function ()
 		{
@@ -278,6 +293,27 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/dictamen_legal', 'RetirementFundController@dictamenLegal')->name('ret_fun_dictamen_legal');		
 
 			//helpers route
+		Route::get('correlative', function (){
+			$wf_state_id = 19;
+			$model = RetFunCorrelative::
+								where('wf_state_id',$wf_state_id)
+								->where('code','NOT LIKE','%A')
+								->where(DB::raw("split_part(code, '/',2)::integer"),'2019')
+                                ->orderBy(DB::raw("split_part(code, '/',2)::integer"))
+                                ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+                                ->select('code')
+								->get()
+								->toArray();
+			for($i = 1; $i<sizeof($model); $i++)
+			{
+				$code = explode('/',$model[$i]['code']);
+				$last_code = explode('/',$model[$i-1]['code']);
+				if($last_code[0]+1 != $code[0] && $last_code[0] != $code[0] && $last_code[1]==$code[1]) {
+					return $last_code[0].'/'.$last_code[1];
+				}
+			}
+			return $code[0];
+		});
 		Route::get('legal_opinion', function (Request $request) {
 			$ret_fun = RetirementFund::find(4);
 			$affiliate = $ret_fun->affiliate;
@@ -603,6 +639,10 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::get('get_next_area_code_quota_aid/{quota_aid_id}', function ($quota_aid_id) {
 			return Util::getNextAreaCodeQuotaAid($quota_aid_id, false);
 		});
+		Route::get('get_next_area_code_contribution_process/{contribution_process_id}', function ($contribution_process_id) {
+			return ContributionProcess::find($contribution_process_id);
+		});
+		Route::get('/treasury/report', 'TreasuryController@report');
 	});
 });
 

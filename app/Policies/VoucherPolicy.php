@@ -5,10 +5,16 @@ namespace Muserpol\Policies;
 use Muserpol\User;
 use Muserpol\Models\Voucher;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Muserpol\Helpers\Util;
 
 class VoucherPolicy
 {
     use HandlesAuthorization;
+    const ClASS_NAME = 'Voucher';
+    const CREATE = 'create';
+    const READ = 'read';
+    const UPDATE = 'update';
+    const DELETE = 'delete';
 
     /**
      * Determine whether the user can view the voucher.
@@ -30,7 +36,8 @@ class VoucherPolicy
      */
     public function create(User $user)
     {
-        //
+        $permission = Util::CheckPermission(self::ClASS_NAME,self::CREATE);
+        return $permission?true:false;  
     }
 
     /**

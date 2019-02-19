@@ -7,7 +7,9 @@ use Muserpol\Models\Affiliate;
 use Muserpol\Models\Category;
 use Muserpol\Models\Contribution\Contribution;
 use Auth;
+use Log;
 use Validator;
+use Muserpol\Helpers\Util;
 
 
 class ReimbursementController extends Controller
@@ -161,8 +163,7 @@ class ReimbursementController extends Controller
         $date_start = date('Y')."-01-01";
         $contributions = Contribution::where('affiliate_id',$affiliate->id)->whereDate('month_year','>=',$date_start)->whereDate('month_year','<',$date_end)->orderBy('month_year')->pluck('month_year');
         $number = $contributions->count();
-        $quotable = $amount*$number/($month-1);
-
+        $quotable = Util::parseMoney($amount)*$number/($month-1);
                 
         $data = [
             'quotable'  =>  $quotable,
