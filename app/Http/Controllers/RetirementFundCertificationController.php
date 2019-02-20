@@ -2628,9 +2628,9 @@ class RetirementFundCertificationController extends Controller
         if ($num == ($pos+1))
             return " y ".$text;
 
-        return ", ";                
+        return ", ";
     }
-    
+
     public function printSend($retirement_funds) {
         $retirement_funds = RetirementFund::where('wf_state_current_id',26)->get();
         $wf_state_from = WorkflowState::find(19);

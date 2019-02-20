@@ -185,12 +185,28 @@ export default {
                         })
                         this.getData();
                         this.classification(this.activeWorkflowId);
+                        print.sendCertification()
                     }
                 });
             }else{
                 alert("error");
             }
         },
+        printCertification() {
+            try {
+                let res = await axios({
+                method: "POST",
+                url: `/contract/print/${item.id}/${type}`,
+                responseType: "arraybuffer"
+                });
+                let blob = new Blob([res.data], {
+                type: "application/pdf"
+                });
+                printJS(window.URL.createObjectURL(blob));
+            } catch (e) {
+                console.log(e);
+            }
+        }
     },
     computed:{
         ...mapGetters('inbox',{
