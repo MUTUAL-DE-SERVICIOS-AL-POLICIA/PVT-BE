@@ -1428,6 +1428,8 @@ class RetirementFundCertificationController extends Controller
 
         /** LAW DATA */
         $art = [
+            '1' => 'b)',
+            '2' => 'c.1)',
             '3' => 'a)',
             '4' => 'b)',
             '5' => 'c)',
@@ -1497,16 +1499,25 @@ class RetirementFundCertificationController extends Controller
         $availability_number_contributions = Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$availability_code)->count();
 
         $end_contributions = [
+            '1'  => 'del fallecimiento del Titular.',
+            '2'  =>  'de su retiro.',
             '3'  =>  'de la letra '.($affiliate->gender=='M'?'del':'de la').' titular.',
-            '4'  =>  'antes del fallecimiento del Titular.',
-            '5'  =>  'antes de su retiro.',
-            '6'  =>  'antes de su retiro.',
-            '7'  =>  'antes de su retiro.',
+            '4'  =>  'el fallecimiento del Titular.',
+            '5'  =>  'de su retiro.',
+            '6'  =>  'de su retiro.',
+            '7'  =>  'de su retiro.',
         ];
-        $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes ".$end_contributions[$retirement_fund->procedure_modality_id];
+        if($retirement_fund->procedure_modality->procedure_type_id == 1 ) {
+            $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los ".sizeof($affiliate->getContributionsPlus())." aportes antes ".$end_contributions[$retirement_fund->procedure_modality_id];
+        }
+        else {
+          //$body_accounts =  $retirement_fund->procedure_modality->procedute_type_id."bbbb";
+            $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes ".$end_contributions[$retirement_fund->procedure_modality_id];
+        }
+        //$body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes ".$end_contributions[$retirement_fund->procedure_modality_id];
 
         if($affiliate->hasAvailability()) {
-            $body_accounts .=" Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad ".$end_contributions[$retirement_fund->procedure_modality_id];
+            $body_accounts .=" Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad antes ".$end_contributions[$retirement_fund->procedure_modality_id];
         }
         ////------- INDIVIDUAL ACCOUTNS ------////
 
