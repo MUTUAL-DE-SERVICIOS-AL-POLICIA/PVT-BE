@@ -81,6 +81,7 @@ export default {
             let found = this.dataInbox.workflows.find(w =>{
                 return w.workflow_id == this.activeWorkflowId
             });
+            let procedures = found.docs
             if (found) {
                 if (!this.wfSequenceNextL.find(w=> w.wf_state_id == this.wfSequenceNext)) {
                     flash("Debe seleccionar el destino al donde enviará los Trámites.", "error")
@@ -124,6 +125,7 @@ export default {
                         })
                         this.getData();
                         this.classification(this.activeWorkflowId);
+                        this.printCertification(procedures)
                     }
                 });
             }else{
@@ -185,19 +187,23 @@ export default {
                         })
                         this.getData();
                         this.classification(this.activeWorkflowId);
-                        print.sendCertification()
+                        this.printCertification()
                     }
                 });
             }else{
                 alert("error");
             }
         },
-        printCertification() {
+        async printCertification(procedures) {
+            let found = this.dataInbox.workflows.find(w =>{
+                return w.workflow_id == this.activeWorkflowId
+            });
             try {
                 let res = await axios({
                 method: "POST",
-                url: `/contract/print/${item.id}/${type}`,
-                responseType: "arraybuffer"
+                url: '/procedure/print/send',
+                data: {'procedures' : procedures, from_area:this.wfCurrentState.id, to_area: this.wfSequenceNext},
+                responseType: "arraybuffer",
                 });
                 let blob = new Blob([res.data], {
                 type: "application/pdf"

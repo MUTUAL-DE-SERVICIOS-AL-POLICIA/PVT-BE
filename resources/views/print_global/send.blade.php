@@ -54,7 +54,7 @@
                         <td><strong>CERT. </strong></td>
                         <td><strong>FECHA CERT.</strong></td>
                         <td><strong>C.I.</strong></td>
-                        <td><strong>NOMBRE</strong></td>
+                        <td><strong>AFILIADO</strong></td>
                         <td><strong>MODALIDAD</strong></td>
                         <td><strong>CIUDAD</strong></td>
                     <tr></tr>
@@ -63,17 +63,17 @@
                     @php
                         $index = 1
                     @endphp
-                    @foreach ($retirement_funds as $retirement_fund)
+                    @foreach ($procedures as $procedure)
                         <tr>
                             <td class="uppercase px-5 text-right">{{ $index++ }}</td>
-                            <td class="uppercase px-5 text-right">{{ $retirement_fund->code }}</td>
-                            <td class="uppercase px-5 text-right">{{ date('d/m/Y',strtotime($retirement_fund->reception_date)) }}</td>
-                            <td class="uppercase px-5 text-right">{{ $retirement_fund->getCorrelative($from_area->id)->code }}</td>
-                            <td class="uppercase px-5 text-right">{{ date('d/m/Y',strtotime($retirement_fund->getCorrelative($from_area->id)->date)) }}</td>
-                            <td class="uppercase px-15 text-right">{{ $retirement_fund->affiliate->ciWithExt() }}</td>
-                            <td class="uppercase px-15 text-left">{{ $retirement_fund->affiliate->fullName() }}</td>
-                            <td class="uppercase px-15 text-center">{{ $retirement_fund->procedure_modality->name }}</td>
-                            <td class="uppercase px-15 text-center">{{ $retirement_fund->city_start->name }}</td>
+                            <td class="uppercase px-5 text-right">{{ $procedure->code }}</td>
+                            <td class="uppercase px-5 text-right">{{ date('d/m/Y',strtotime($procedure->reception_date)) }}</td>
+                            <td class="uppercase px-5 text-right">{{ $procedure->getCorrelative($from_area->id)->code }}</td>
+                            <td class="uppercase px-5 text-right">{{ date('d/m/Y',strtotime($procedure->getCorrelative($from_area->id)->date)) }}</td>
+                            <td class="uppercase px-15 text-right">{{ $procedure->affiliate->ciWithExt() }}</td>
+                            <td class="uppercase px-15 text-left">{{ $procedure->affiliate->fullName() }}</td>
+                            <td class="uppercase px-15 text-center">{{ $procedure->procedure_modality->name }}</td>
+                            <td class="uppercase px-15 text-center">{{ $procedure->city_start->name }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -100,7 +100,6 @@
                     </td>
                     <td class="no-border text-center text-base w-50">
                         <span class="font-bold block">{!! mb_strtoupper($to_area->name) !!}</span>
-                        {{-- <div class="text-xs text-center" style="width: 350px; margin:0 auto; font-weight:100">{!! $user->position !!}</div> --}}
                     </td>
                 </tr>
             </table>

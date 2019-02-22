@@ -77,7 +77,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('scanned_documents', 'ScannedDocumentController');
 		Route::get('document_scanned/{affiliate_id}', 'ScannedDocumentController@create_document')->name('document_scanned');	
 
-
+		
 		//retirement fund
 		//RetirementFundRequirements
 		//Route::resource('ret_fun', 'RetirementFundRequirementController@retFun');
@@ -120,6 +120,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('ret_fun/{retirement_fund}/print/legal_resolution', 'RetirementFundCertificationController@printLegalResolution')->name('ret_fun_print_legal_resolution');
 		Route::post('ret_fun/{retirement_fund}/save_message', 'RetirementFundController@saveMessageContributionType')->name('save_message_contribution_type');
 		Route::post('ret_fun/{retirement_fund}/save_certification_note', 'RetirementFundController@saveCertificationNote')->name('save_certification_note');
+		Route::post('procedure/print/send', 'InboxController@printSend')->name('inbox_send');
 
 		//Quota Aid Certification
 		Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');

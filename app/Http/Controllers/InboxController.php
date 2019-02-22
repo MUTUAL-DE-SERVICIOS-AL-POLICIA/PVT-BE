@@ -351,4 +351,49 @@ class InboxController extends Controller
             break;
         }
     }
+
+    public function printSend(Request $request) {
+        $rol_id = Util::getRol()->id;
+        $module = Role::find($rol_id)->module;
+        $procedure_ids = array();
+        foreach($request->procedures as $procedure) {
+            array_push($procedure_ids,$procedure['id']);
+        }
+        $title = '';
+        switch($module->id) {
+            case 3:
+                $procedures = RetirementFund::whereIn('id',$procedure_ids)->get();
+                $title = 'FONDO DE RETIRO POLICIAL SOLIDARIO';
+            break;
+            case 4:
+                $procedures = QuotaAidMortuary::whereIn('id',$procedure_ids)->get();
+                $title = 'CUOTA Y AUXILIO MORTUORIO';
+            break;
+            default:
+                return 0;
+            break;
+        }
+
+        $wf_state_from = WorkflowState::find($request->from_area);
+        $wf_state_to = WorkflowState::find($request->to_area);
+        $user = Auth::user();
+
+        $data = [
+            'procedures'	=>	$procedures,
+            'title'	=>	$title,
+            'subtitle'	=>	$wf_state_from->name,
+            'from_area'	=>	$wf_state_from,
+            'to_area'	=>	$wf_state_to,
+            'user'	=>	$user
+        ];
+        $pages[] = \View::make('print_global.send', $data)->render();
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
+            ->setOrientation('landscape')
+            ->setOption('footer-center', 'Pagina [page] de [toPage]')
+            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            ->stream("documentos enviados.pdf");
+    }
 }
