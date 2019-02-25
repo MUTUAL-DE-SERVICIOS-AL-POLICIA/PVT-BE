@@ -419,10 +419,11 @@ class QuotaAidCertificationController extends Controller
     }
     public function printFile($id)
     {
-        $affiliate = Affiliate::find($id);
+
+        $quota_aid = QuotaAidMortuary::where('id', $id)->where('code','NOT LIKE','%A')->get()->last();
+        $affiliate = Affiliate::find($quota_aid->affiliate_id);
         $role = Util::getRol();
 
-        $quota_aid = QuotaAidMortuary::where('affiliate_id', $affiliate->id)->get()->last();
         $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 34)->first();
         $code = $quota_aid->code;
         $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
@@ -1479,7 +1480,7 @@ class QuotaAidCertificationController extends Controller
         if($quota_aid->procedure_modality_id != 14) {            
             
             if($quota_aid->procedure_modality_id == 15) {                
-                $body_resolution .=" de ".($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"del Viudo ":"de la Viuda ")).($affiliate->spouse()->first()->gender=='M'?"el Sr. ":"la Sra. ").Util::fullName($affiliate->spouse()->first())." con C.I. N° ".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion')."., en el siguiente tenor: <br><br>";
+                $body_resolution .=" de ".($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"del Viudo ":"de la Viuda ")).($affiliate->spouse()->first()->gender=='M'?"del Sr. ":"de la Sra. ").Util::fullName($affiliate->spouse()->first())." con C.I. N° ".$affiliate->spouse()->first()->identity_card." ".($affiliate->spouse()->first()->city_identity_card->first_shortened??'Sin extencion')."., en el siguiente tenor: <br><br>";
             } else {
                 $body_resolution .=($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"del beneficiario ":"de la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??'Sin extencion')."., en el siguiente tenor: <br><br>";
             }

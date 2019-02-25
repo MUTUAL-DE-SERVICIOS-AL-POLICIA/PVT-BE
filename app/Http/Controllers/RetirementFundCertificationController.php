@@ -1428,6 +1428,8 @@ class RetirementFundCertificationController extends Controller
 
         /** LAW DATA */
         $art = [
+            '1' => 'b)',
+            '2' => 'c.1)',
             '3' => 'a)',
             '4' => 'b)',
             '5' => 'c)',
@@ -1497,16 +1499,22 @@ class RetirementFundCertificationController extends Controller
         $availability_number_contributions = Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$availability_code)->count();
 
         $end_contributions = [
+            '1'  => 'del fallecimiento del Titular.',
+            '2'  =>  'de su retiro.',
             '3'  =>  'de la letra '.($affiliate->gender=='M'?'del':'de la').' titular.',
-            '4'  =>  'antes del fallecimiento del Titular.',
-            '5'  =>  'antes de su retiro.',
-            '6'  =>  'antes de su retiro.',
-            '7'  =>  'antes de su retiro.',
+            '4'  =>  'el fallecimiento del Titular.',
+            '5'  =>  'de su retiro.',
+            '6'  =>  'de su retiro.',
+            '7'  =>  'de su retiro.',
         ];
-        $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes ".$end_contributions[$retirement_fund->procedure_modality_id];
+        if($retirement_fund->procedure_modality->procedure_type_id == 1 ) {
+            $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los ".sizeof($affiliate->getContributionsPlus())." aportes antes ".$end_contributions[$retirement_fund->procedure_modality_id];
+        } else {
+            $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes ".$end_contributions[$retirement_fund->procedure_modality_id];
+        }
 
         if($affiliate->hasAvailability()) {
-            $body_accounts .=" Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad ".$end_contributions[$retirement_fund->procedure_modality_id];
+            $body_accounts .=" Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad antes ".$end_contributions[$retirement_fund->procedure_modality_id];
         }
         ////------- INDIVIDUAL ACCOUTNS ------////
 
@@ -1631,14 +1639,14 @@ class RetirementFundCertificationController extends Controller
         } else {
             $payment .= "reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <strong class='uppercase'>".$retirement_fund->procedure_modality->name."</strong> a favor ";
         }
-        if($retirement_fund->procedure_modality_id == 4) {
+        if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
             $beneficiaries_count = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->count();            
             $payment .=" de ".($beneficiaries_count > 1?"los beneficiarios ":($applicant->gender?"el beneficiario ":"la beneficiaria ")).($affiliate->gender=='M'?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., en el monto de <strong>".Util::formatMoneyWithLiteral($retirement_fund->total)."</strong> de la siguiente manera: <br><br>";
 
         } else {
             $payment .=" de:<br><br>";
         }
-        if($retirement_fund->procedure_modality_id == 4) {
+        if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
             $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('kinship_id')->orderByDesc('state')->get();
             foreach($beneficiaries as $beneficiary){
                 if(!$beneficiary->state) {
@@ -1884,13 +1892,19 @@ class RetirementFundCertificationController extends Controller
         $availability_number_contributions = Contribution::where('affiliate_id',$affiliate->id)->where('contribution_type_id',$availability_code)->count();
 
         $end_contributions = [
+            '1'  => 'del fallecimiento del Titular.',
+            '2'  =>  'de su retiro.',
             '3'  =>  'destino a disponibilidad de la letra (reserva activa) del titular.',
             '4'  =>  'fallecimiento.',
             '5'  =>  'retiro.',
             '6'  =>  'retiro.',
             '7'  =>  'retiro.',
         ];
-        $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes de su ".$end_contributions[$retirement_fund->procedure_modality_id];
+        if($retirement_fund->procedure_modality->procedure_type_id == 1 ) {
+            $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los ".sizeof($affiliate->getContributionsPlus())." aportes antes ".$end_contributions[$retirement_fund->procedure_modality_id];
+        } else {
+            $body_accounts = "Que, mediante Certificación de Aportes N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", se verificó los últimos "."60"." aportes antes ".$end_contributions[$retirement_fund->procedure_modality_id];
+        }
 
         if($affiliate->hasAvailability()) {
             $body_accounts .=" Mediante Certificación de Aportes en Disponibilidad N° ".$accounts->code." del Área de Cuentas Individuales de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha ". Util::getStringDate($accounts->date) .", durante la permanencia en la reserva activa se verificó ". $availability_number_contributions ." aportes en disponibilidad.";
@@ -2056,7 +2070,7 @@ class RetirementFundCertificationController extends Controller
 
         $payment = "";
 
-        if($retirement_fund->procedure_modality_id == 4) {
+        if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
             $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('kinship_id')->orderByDesc('state')->get();
             foreach($beneficiaries as $beneficiary){
                 if(!$beneficiary->state) {
@@ -2176,6 +2190,8 @@ class RetirementFundCertificationController extends Controller
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         
         $art = [
+            1  =>  29,
+            2  =>  30,
             3  =>  28,
             4 =>  29,
             5 =>  30,
@@ -2313,7 +2329,7 @@ class RetirementFundCertificationController extends Controller
             $reception .= ($legal_guardian->gender=="M"?" el Sr. ":"la Sra. ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.",".($legal_guardian->gender=="M"?" Apoderado ":" Apoderada ")."Legal ";
             $reception.= ($affiliate->gender=='M'?'del':'de la').' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b> y en favor '.($affiliate->gender=="M"?"del mismo":"de la misma");
         } else {
-            if($retirement_fund->procedure_modality_id == 4) {
+            if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
                 $reception.= ($applicant->gender=='M'?'el señor ':'la señora ').' <b>'.Util::fullName($applicant).'</b> con C.I.<b>'.$applicant->identity_card.' '.$applicant->city_identity_card->first_shortened.'</b>, en calidad de '.$applicant->kinship->name." ".($affiliate->gender=='M'?'del afiliado fallecido: ':'de la afiliada fallecida: ');
             } else {
                 $reception.= ($affiliate->gender=='M'?'el':'la');
@@ -2441,7 +2457,7 @@ class RetirementFundCertificationController extends Controller
         $discount = $discounts->where('discount_type_id','1')->first();        
         if(isset($discount->id) && $discount->pivot->amount > 0){                                        
             $body_resolution.=". Descontando el monto del anticipo, reconocer el pago del beneficio de Fondo de Retiro Policial Solidario, por un TOTAL de <strong>".Util::formatMoneyWithLiteral($retirement_fund->total_availability+$retirement_fund->subtotal_ret_fun-$discount->pivot->amount)."</strong>";
-            if($retirement_fund->procedure_modality_id == 4) {
+            if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
                 $body_resolution.= ".";
             } else {
                 $body_resolution.=", a favor ".($affiliate->gender=='M'?'del ':'de la ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.".";
@@ -2523,7 +2539,7 @@ class RetirementFundCertificationController extends Controller
         //     $body_resolution .= "<li class='text-justify'>".($affiliate->gender=='M'?'Sr. ':'Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.", en calidad de Titular.</li><b><br><br>";
         // } 
 
-        if($retirement_fund->procedure_modality_id == 4) {
+        if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
             
             $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('kinship_id')->orderByDesc('state')->get();
             if($beneficiaries->count() > 1) { 
@@ -2617,7 +2633,7 @@ class RetirementFundCertificationController extends Controller
         if ($num == ($pos+1))
             return " y ".$text;
 
-        return ", ";                
+        return ", ";
     }
 
 }

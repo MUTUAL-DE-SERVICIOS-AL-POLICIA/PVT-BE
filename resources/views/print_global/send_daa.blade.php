@@ -65,19 +65,19 @@
                     @php
                         $index = 1
                     @endphp
-                    @foreach ($retirement_funds as $r)
+                    @foreach ($procedures as $procedure)
                         <tr>
                             <td class="uppercase px-5 text-right">{{ $index++ }}</td>
                             <td class="uppercase px-5 text-right">{{ $year }}</td>
-                            <td class="uppercase px-5 text-right">{{ $r->reception_date }}</td>
-                            <td class="uppercase px-5 text-right">{{ $r->code }}</td>
-                            <td class="uppercase px-5 text-right">{{ $r->getCorrelative(26)->date }}</td>
-                            <td class="uppercase px-5 text-right">{{ $r->getCorrelative(26)->code }}</td>
-                            <td class="uppercase px-15 text-left">{{ $r->affiliate->degree->shortened }}</td>
-                            <td class="uppercase px-15 text-left">{{ $r->affiliate->ciWithExt() }}</td>
-                            <td class="uppercase px-15 text-left">{{ $r->affiliate->fullName() }}</td>
-                            <td class="uppercase px-15 text-left">{{ $r->procedure_modality->name }}</td>
-                            <td class="uppercase px-15 text-left">{{ $r->city_end->name }}</td>
+                            <td class="uppercase px-5 text-right">{{ $procedure->reception_date }}</td>
+                            <td class="uppercase px-5 text-right">{{ $procedure->code }}</td>
+                            <td class="uppercase px-5 text-right">{{ $procedure->getCorrelative(26)->date }}</td>
+                            <td class="uppercase px-5 text-right">{{ $procedure->getCorrelative(26)->code }}</td>
+                            <td class="uppercase px-15 text-left">{{ $procedure->affiliate->degree->shortened }}</td>
+                            <td class="uppercase px-15 text-left">{{ $procedure->affiliate->ciWithExt() }}</td>
+                            <td class="uppercase px-15 text-left">{{ $procedure->affiliate->fullName() }}</td>
+                            <td class="uppercase px-15 text-left">{{ $procedure->procedure_modality->name }}</td>
+                            <td class="uppercase px-15 text-left">{{ $procedure->city_end->name }}</td>
                         </tr>
                     @endforeach
                 </tbody>
