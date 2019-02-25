@@ -1584,26 +1584,26 @@ class RetirementFundCertificationController extends Controller
         Cuota y Auxilio Mortuorio, autorizado por Jefatura de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, conforme a 
         los Arts. 2, 3, 5, 10, 26, 27, 29, 31 Ter., 32, 33, 34, 35, 36, 37, 38, 41, 42, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74, Disposición Transitoria Segunda del 
         Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante 
-        Resoluciones de Directorio Nros. 36/2017 y 51/2017 de fechas 20 de septiembre de 2017 y 29 de diciembre de 2017 respectivamente; y la Disposición Transitoria 
+        Resoluciones de Directorio Nros. 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019; y la Disposición Transitoria
         Segunda del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y modificado 
-        mediante Resolución de Directorio N° 51/2017 de fecha 29 de diciembre de 2017. Se <b>DICTAMINA</b> en merito a la documentación de respaldo contenida en el presente, ";
-                
+        mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019. Se <b>DICTAMINA</b> en merito a la documentación de respaldo contenida en el presente, ";
+
         $flagy = 0;
         $discounts = $retirement_fund->discount_types();
         $discounts_number = $discounts->where('amount','>','0')->count();
         if($discounts_number > 0) {
             $payment .= "proceder a realizar el descuento ";
             $discounts = $retirement_fund->discount_types();
-            $discount = $discounts->where('discount_type_id','1')->first();        
+            $discount = $discounts->where('discount_type_id','1')->first();
             if(isset($discount->id) && $discount->pivot->amount > 0) {
                 $flagy++;
                 $payment.="de <b>".Util::formatMoneyWithLiteral($discount->pivot->amount)."</b> por concepto de anticipo de Fondo de Retiro Policial de conformidad a la Resoluci&oacute;n de la Comisión de Presentaciones Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);
             }
-            
+
             $discounts = $retirement_fund->discount_types();
-            $discount = $discounts->where('discount_type_id','2')->first();                           
+            $discount = $discounts->where('discount_type_id','2')->first();
             $discount_footer = false;
-            if(isset($discount->id) && $discount->pivot->amount > 0) {                                
+            if(isset($discount->id) && $discount->pivot->amount > 0) {
                 $payment .= $this->getFlagy($discounts_number,$flagy);
                 $flagy++;
                 $discount_footer = true;
@@ -1613,11 +1613,11 @@ class RetirementFundCertificationController extends Controller
             //
             $discounts = $retirement_fund->discount_types();
             $discount = $discounts->where('discount_type_id','3')->first();
-            
+
             $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
 
-            if(isset($discount->id) && $discount->pivot->amount > 0) {                 
-                $payment .= $this->getFlagy($discounts_number,$flagy,"la suma ");                
+            if(isset($discount->id) && $discount->pivot->amount > 0) {
+                $payment .= $this->getFlagy($discounts_number,$flagy,"la suma ");
                 $payment.="total de <b>".Util::formatMoneyWithLiteral(($discount->pivot->amount??0))."</b> por concepto de garantía de préstamo, a favor ";
                 $discount_footer = true;
                 $num_loans = $loans->count();
@@ -2309,7 +2309,7 @@ class RetirementFundCertificationController extends Controller
             mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: <i>“ Corresponderá el reconocimiento de aportes laborales realizados con la prima de 
             1.85% durante la permanencia en la reserva activa, más el 5% de rendimiento, toda vez que estos aportes no forman parte de los parámetros de 
             calificación establecidos en el Estudio Matemático Actuarial 2016 – 2020 considerado por el Decreto Supremo Nº 3231 de 28 de junio de 2017”</i>. <br><br>
-            Que, el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: <i>“Generada la desvinculación de la Policía Boliviana, se reconocerá al titular el aporte laboral efectivizado en el destino de la disponibilidad de las letras en función al aporte laboral efectuado (prima de aportación) más rendimiento de 5%, siempre y cuando no se haya suscitado el fallecimiento y el tiempo de aporte en éste destino no haya formado parte de la calificación del beneficio de Fondo de Retiro Policial”</i>.';
+            Que, el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: <i>“Generada la desvinculación de la Policía Boliviana, se reconocerá al titular el aporte laboral efectivizado en el destino de la disponibilidad de las letras en función al aporte laboral efectuado (prima de aportación) más rendimiento de 5%, siempre y cuando no se haya suscitado el fallecimiento y el tiempo de aporte en éste destino no haya formado parte de la calificación del beneficio de Fondo de Retiro Policial”</i>.';
         }
 
         // $due = 'Que, mediante Resolución de la Comisión de Prestaciones Nº de fecha , se otorgó en calidad
