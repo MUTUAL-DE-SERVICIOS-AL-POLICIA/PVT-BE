@@ -2636,32 +2636,4 @@ class RetirementFundCertificationController extends Controller
         return ", ";
     }
 
-    public function printSend(Request $request) {
-        $retirement_fund_ids = array();
-        foreach($request->procedures as $retirement_fund) {
-            array_push($retirement_fund_ids,$retirement_fund['id']);
-        }
-        $retirement_funds = RetirementFund::whereIn('id',$retirement_fund_ids)->get();
-        $wf_state_from = WorkflowState::find($request->from_area);
-        $wf_state_to = WorkflowState::find($request->to_area);
-        $user = Auth::user();
-        $data = [
-            'retirement_funds'	=>	$retirement_funds,
-            'title'	=>	'FONDO DE RETIRO POLICIAL SOLIDARIO',
-            'subtitle'	=>	$wf_state_from->name,
-            'from_area'	=>	$wf_state_from,
-            'to_area'	=>	$wf_state_to,
-            'user'	=>	$user
-        ];
-        $pages[] = \View::make('print_global.send', $data)->render();
-        $pdf = \App::make('snappy.pdf.wrapper');
-        $pdf->loadHTML($pages);
-        return $pdf->setOption('encoding', 'utf-8')
-            ->setOption('margin-bottom', '15mm')
-            ->setOrientation('landscape')
-            ->setOption('footer-center', 'Pagina [page] de [toPage]')
-            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
-            ->stream("documentos enviados.pdf");
-    }
-
 }
