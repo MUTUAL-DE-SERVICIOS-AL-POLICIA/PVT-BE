@@ -1740,6 +1740,9 @@ class RetirementFundCertificationController extends Controller
 
     public function printHeadshipReview($ret_fun_id){
         $retirement_fund =  RetirementFund::find($ret_fun_id);
+        //$correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
+        $wf_states = WorkflowState::where('sequence_number','!=',0)->where('role_id','<','28')->where('module_id',3)->orderBy('sequence_number')->get();
+        return $wf_states;
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
         
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
