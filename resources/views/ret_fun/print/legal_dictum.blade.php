@@ -44,7 +44,7 @@
                     Mortuorio; verificados los requisitos y la documentación presentada por la parte solicitante
                     según lo señalado el Art. 41 inciso {!! $art[$ret_fun->procedure_modality_id] !!} (Fondo de Retiro por {!! ucwords($ret_fun->procedure_modality->name) !!}) del Reglamento de Fondo de Retiro Policial Solidario aprobado mediante Resolución de 
                     Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resoluciones de Directorio Nros. 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de 
-                    diciembre de 2017 y 05/2019 de 20 de febrero de 2019, y conforme el Art. 45 (Procesamiento) de referido Reglamento, se detalla la documentación como resultado de la aplicación de la base 
+                    diciembre de 2017 y 05/2019 de 20 de febrero de 2019, y conforme el Art. 45 (Procedimiento) de referido Reglamento, se detalla la documentación como resultado de la aplicación de la base 
                     técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial 
                     Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente: 
                 </p>
