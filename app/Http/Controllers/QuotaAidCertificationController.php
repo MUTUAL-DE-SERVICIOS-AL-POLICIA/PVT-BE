@@ -1456,6 +1456,7 @@ class QuotaAidCertificationController extends Controller
         $legal_dictum_id = 39;
         $legal_dictum = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->where('wf_state_id',$legal_dictum_id)->first();
         $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 40)->first();
+        $body_legal_dictum = '';
         if($number->note != '') {
             $body_legal_dictum = $number->note."<br><br>";
         }
