@@ -1563,13 +1563,13 @@ class RetirementFundCertificationController extends Controller
         ///------ PAYMENT ------////
         $payment = "";
         $art = [
-            1  =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 20, 21, 22, 29, 32, 34, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
-            2  =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 20, 21, 22, 30, 32, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
-            3  =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 26, 27, 28, 31 Bis, 31 Ter, 32, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
-            4 =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 26, 27, 29, 32, 34, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
-            5 =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 26, 27, 30, 32, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
-            6 =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 26, 27, 30, 32, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
-            7 =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 26, 27, 31, 32, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
+            1 => '2, 3, 5, 6, 7, 8, 10, 12, 13, 15, 20, 21, 22, 29, 32, 34, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
+            2 => '2, 3, 5, 6, 7, 8, 10, 12, 13, 15, 20, 21, 22, 30, 32, 34, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
+            3 => '2, 3, 5, 6, 7, 8, 10, 12, 13, 15, 26, 27, 28, 31, 34, Bis, 31 Ter, 32, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
+            4 => '2, 3, 5, 6, 7, 8, 10, 12, 13, 15, 26, 27, 29, 32, 34, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
+            5 => '2, 3, 5, 6, 7, 8, 10, 12, 13, 15, 26, 27, 30, 32, 34, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
+            6 => '2, 3, 5, 6, 7, 8, 10, 12, 13, 15, 26, 27, 30, 32, 34, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
+            7 => '2, 3, 5, 6, 7, 8, 10, 12, 13, 15, 26, 27, 31, 32, 34, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
         ];
         $discounts = $retirement_fund->discount_types(); //DiscountType::where('retirement_fund_id',$retirement_fund->id)->orderBy('discount_type_id','ASC')->get();                
         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
@@ -2381,7 +2381,7 @@ class RetirementFundCertificationController extends Controller
 
         $legal_dictum_id = 25;
         $legal_dictum = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->where('wf_state_id',$legal_dictum_id)->first();
-        $body_legal_dictum = 'Que, habiéndose verificado el procesamiento establecido en el Reglamento de Fondo de Retiro
+        $body_legal_dictum = 'Que, habiéndose verificado el procedimiento establecido en el Reglamento de Fondo de Retiro
         Policial Solidario, se procedió con la emisión de DICTAMEN LEGAL <strong> Nº '.$legal_dictum->code.'</strong> de fecah '.Util::getStringDate($legal_dictum->date).', para la otorgación del beneficio de Fondo de Retiro Policial Solidario por '.$retirement_fund->procedure_modality->name.'.<br>';
 
         
