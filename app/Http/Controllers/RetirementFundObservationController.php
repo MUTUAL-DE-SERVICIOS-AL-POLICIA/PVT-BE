@@ -43,7 +43,8 @@ class RetirementFundObservationController extends Controller
         $observation->observation_type_id = $request->observation_type_id;
         $observation->retirement_fund_id = $request->retirement_fund_id;
         $observation->is_enabled = $request->is_enabled;
-        $observation->message = $request->message;
+        $observation->message = $request->message.'';
+        $observation->date = date('Y-m-d');
         $observation->save();
         return back();
     }
