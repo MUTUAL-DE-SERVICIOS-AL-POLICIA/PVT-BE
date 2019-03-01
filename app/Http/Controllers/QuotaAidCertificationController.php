@@ -820,17 +820,15 @@ class QuotaAidCertificationController extends Controller
         $discounts = $quota_aid->discount_types(); //DiscountType::where('quota_aid_id',$quota_aid->id)->orderBy('discount_type_id','ASC')->get();                
         //$loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
         $payment = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
-        Cuota y Auxilio Mortuorio, autorizado por Jefatura de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
-        Cuota y Auxilio Mortuorio conforme a los ";
+        Cuota y Auxilio Mortuorio, autorizado por Jefatura de la referida Unidad, conforme a los Art. ";
         $art = [
-            
+            8 => '2, 3, 5, 6, 10, 20, 21, 22, 24, 25, 26, 27, 28, 29, 43, 47, 48 y 51 ',
+            9 => '2, 3, 5, 6, 10, 20, 21, 23, 24, 25, 26, 27, 28, 29, 43, 47, 48 y 51 ',
+            13 => '2, 3, 5, 6, 10, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 ',
+            14 => '2, 3, 5, 6, 10, 31, 32, 34, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 ',
+            15 => '2, 3, 5, 6, 10, 31, 32, 35, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 '
         ];
-        if($quota_aid->procedure_modality_id == 8 || $quota_aid->procedure_modality_id == 9) {
-            $payment .= "Art. 2, 3, 5, 6, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 43, 45, 47, 48, 51 ";
-        } else {
-            $payment .= "Art. 2, 3, 5, 6, 10, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42, 44, 45, 47, 48, 52 ";
-        }        
-        $payment .="y la Disposición Transitoria Única del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y 
+        $payment .=$art[$quota_aid->procedure_modality_id]." del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y 
         modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019. Se <strong>DICTAMINA</strong> en merito a la documentación de respaldo contenida en el presente reconocer 
         los derechos y se otorgue el beneficio de <strong>".strtoupper($quota_aid->procedure_modality->procedure_type->second_name)."</strong> por <strong class='uppercase'>".$quota_aid->procedure_modality->name."</strong> a favor ";
                         
@@ -977,10 +975,12 @@ class QuotaAidCertificationController extends Controller
         
         $quota_aid =  QuotaAidMortuary::find($quota_aid_id);
         $affiliate = Affiliate::find($quota_aid->affiliate_id);
-        
         $art = [
-            3 =>  '20,21,22,23,24,25,43 y 51',
-            4  =>  '31,32,33,34,35,36,37,44, y 52',                        
+            8 => '2, 3, 5, 6, 10, 20, 21, 22, 24, 25, 26, 27, 28, 29, 43, 47, 48 y 51 ',
+            9 => '2, 3, 5, 6, 10, 20, 21, 23, 24, 25, 26, 27, 28, 29, 43, 47, 48 y 51 ',
+            13 => '2, 3, 5, 6, 10, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 ',
+            14 => '2, 3, 5, 6, 10, 31, 32, 34, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 ',
+            15 => '2, 3, 5, 6, 10, 31, 32, 35, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 '
         ];
 
         $law = 'Que, el Decreto Supremo N° 2829, de 06 de julio de 2016, modificatorio al Decreto Supremo Nº 1446 de 19 de diciembre de 2012, en su Artículo 2 de las MODIFICACIONES, Parágrafos I, II, III y IV señalan: <i>“I. Se modifica el inciso d) del Artículo 3 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “d) Otorgar el beneficio de Cuota Mortuoria y Auxilio Mortuorio a favor del sector activo y pasivo de la Policía Boliviana, de acuerdo a reglamentos emitidos por MUSERPOL”; “II. Se modifica el inciso b) del Parágrafo I del Artículo 14 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “b) Cuota Mortuoria y Auxilio Mortuorio”; “III. Se modifica el Parágrafo II del Artículo 14 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “II. El aporte y pago de los beneficios establecidos en los incisos a) y b) del parágrafo precedente, serán objeto de un estudio técnico financiero y estudio actuarial que asegure su sostenibilidad, en el marco del principio de solidaridad”; “IV. Se modifica el Artículo 16 del Decreto Supremo Nº1446, de 19 de diciembre de 2012, con el siguiente texto: “ARTÌCULO 16.- (CUOTA MORTUORIA Y AUXILIO MORTUORIO) 
@@ -995,32 +995,32 @@ class QuotaAidCertificationController extends Controller
         Que, el Estudio Matemático Actuarial 2016 – 2020, aprobado mediante Resolución de Directorio Nº 26/2017, de 11 de agosto de 2017, determina las cuantías para la otorgación del beneficio de '.$quota_aid->procedure_modality->procedure_type->second_name.'.
         <br><br>
         Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, en sus Artículos 
-        2,3,5,7,8,10,12,13,'.$art[$quota_aid->procedure_modality->procedure_type_id].' reconocen el derecho de la otorgación del beneficio de <strong>'.$quota_aid->procedure_modality->procedure_type->second_name.'</strong>.
+        '.$art[$quota_aid->procedure_modality_id].' reconocen el derecho de la otorgación del beneficio de <strong>'.$quota_aid->procedure_modality->procedure_type->second_name.'</strong>.
         <br><br>
-        Que, el Reglamento de los beneficios de Cuota y Auxilio Mortuorio, en su Artículo 15 del RECONOCIMIENTO DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”</i>.
+        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, en su Artículo 15 del RECONOCIMIENTO DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”</i>.
         <br><br>
-        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, ';
+        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, ';
         if($quota_aid->procedure_modality->procedure_type_id == 3) { 
             $law .= 'aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 ';
         }
-        $law .= 'en su Artículo 55 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento administrativo para la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 014/2018 de 8 de mayo de 2018, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.';
+        $law .= 'en su Artículo 55 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento administrativo para la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 004/2019 de 7 de enero de 2019, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.';
         
         $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 33)->first();
         
         $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();        
         $quota_aid_beneficiary = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id',$applicant->id)->first();
                 
-        $reception = 'Que, en fecha <b>'.Util::getStringDate($quota_aid->reception_date).'</b>, ';
+        $reception = '<br>Que, en fecha <b>'.Util::getStringDate($quota_aid->reception_date).'</b>, ';
         
         if(isset($quota_aid_beneficiary->id)) {
             $legal_guardian = QuotaAidLegalGuardian::where('id',$quota_aid_beneficiary->quota_aid_legal_guardian_id)->first();
             $reception .= ($legal_guardian->gender=="M"?" el Sr. ":"la Sra. ").Util::fullName($legal_guardian)." con C.I. N° ".$legal_guardian->identity_card." ".$legal_guardian->city_identity_card->first_shortened.",".($legal_guardian->gender=="M"?" Apoderado ":" Apoderada ")."Legal ";            
-            $reception.= ($applicant->gender=='M'?'del<strong> &nbsp;Sr':'de la Sra.<strong> &nbsp;').' '.Util::fullName($applicant).'</strong> con C.I.<b>'.$applicant->identity_card.' '.$applicant->city_identity_card->first_shortened.'</b>. en calidad de '.$applicant->kinship->name;//.($applicant->gender=="M"?"del mismo":"de la misma");
+            $reception.= ($applicant->gender=='M'?'del<strong> &nbsp;Sr':'de la Sra.<strong> &nbsp;').' '.Util::fullName($applicant).'</strong> con C.I. N° <b>'.$applicant->identity_card.' '.$applicant->city_identity_card->first_shortened.'</b>. en calidad de '.$applicant->kinship->name;//.($applicant->gender=="M"?"del mismo":"de la misma");
             $reception.= ($affiliate->gender=='M'?' del afiliado fallecido: ':' de la afiliada fallecida: ');
-            $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>';            
+            $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I. N° <b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>';            
         } else {            
             if($quota_aid->procedure_modality_id != 14) {
-                $reception.= ($applicant->gender=='M'?'el Sr. ':'la Sra. ').' <b>'.Util::fullName($applicant).'</b> con C.I.<b>'.$applicant->identity_card.' '.$applicant->city_identity_card->first_shortened.'</b>, en calidad de '.$applicant->kinship->name." ";
+                $reception.= ($applicant->gender=='M'?'el Sr. ':'la Sra. ').' <b>'.Util::fullName($applicant).'</b> con C.I. N° <b>'.$applicant->identity_card.' '.$applicant->city_identity_card->first_shortened.'</b>, en calidad de '.$applicant->kinship->name." ";
                 if($quota_aid->procedure_modality_id == 15) {
                     $reception.= ($affiliate->spouse()->first()->gender=='M'?'del viudo fallecido: ':'de la viuda fallecida: ');
                 } else {
@@ -1031,14 +1031,14 @@ class QuotaAidCertificationController extends Controller
                 $reception.= "".($affiliate->gender=='M'?'el':'la');                
             }            
             if($quota_aid->procedure_modality_id == 15) { 
-                $reception.= ' <b>'.($affiliate->spouse()->first()->gender == 'M'?' Sr. ':'Sra. ').Util::fullName($affiliate->spouse()->first()).'</b> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
+                $reception.= ' <b>'.($affiliate->spouse()->first()->gender == 'M'?' Sr. ':'Sra. ').Util::fullName($affiliate->spouse()->first()).'</b> con C.I. N° <b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
             } 
             else {
                 if($quota_aid->procedure_modality_id == 14){
-                    $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>, en calidad de '.($affiliate->gender=='M'?'viudo de la fallecida: ':'viuda del fallecido: ');
-                    $reception.= ' <b>'.($affiliate->spouse()->first()->gender == 'M'?' Sr. ':'Sra. ').Util::fullName($affiliate->spouse()->first()).'</b> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
+                    $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I. N° <b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>, en calidad de '.($affiliate->gender=='M'?'viudo de la fallecida: ':'viuda del fallecido: ');
+                    $reception.= ' <b>'.($affiliate->spouse()->first()->gender == 'M'?' Sr. ':'Sra. ').Util::fullName($affiliate->spouse()->first()).'</b> con C.I. N° <b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
                 } else {
-                    $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I.<b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>';
+                    $reception.= ' <b>'.$affiliate->fullNameWithDegree().'</b> con C.I. N° <b>'.$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened.'</b>';
                 }
             }
             
@@ -1048,7 +1048,7 @@ class QuotaAidCertificationController extends Controller
             3 => 43,
             4 => 44,
         ];
-        $reception.= ', solicita el pago del beneficio de<strong> &nbsp;'.$quota_aid->procedure_modality->procedure_type->second_name.'</strong>, adjuntando documentación solicitada por la Unidad según el Reglamento. Por consiguiente, habiéndose cumplido con los requisitos de orden establecidos en el Artículo 
+        $reception.= ', solicita el pago del beneficio de<strong> &nbsp;'.$quota_aid->procedure_modality->procedure_type->second_name.'</strong>, adjuntando documentación solicitada por la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según el Reglamento. Por consiguiente, habiéndose cumplido con los requisitos de orden establecidos en el Artículo 
         '.$art[$quota_aid->procedure_modality->procedure_type_id].' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se dio curso con el trámite.<br>';
 
         if($number->note != "") {
@@ -1061,15 +1061,15 @@ class QuotaAidCertificationController extends Controller
         $months  = $affiliate->getTotalQuotes();        
         $body_qualification .= "Que, mediante Calificación del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name." <b>N° ".$qualification->code."</b> de fecha ".Util::getStringDate($qualification->date).", la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente ";
         if($quota_aid->procedure_modality_id == 15) {
-            $body_qualification .= 'al fallecimiento '.($affiliate->spouse()->first()->gender=='M'?'del<strong> &nbsp;Sr. ':'de la<strong> &nbsp;Sra. ').Util::fullName($affiliate->spouse()->first()).'</strong> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened;
+            $body_qualification .= 'al fallecimiento '.($affiliate->spouse()->first()->gender=='M'?'del<strong> &nbsp;Sr. ':'de la<strong> &nbsp;Sra. ').Util::fullName($affiliate->spouse()->first()).'</strong> con C.I. N° <b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened;
         } else {
             if($quota_aid->procedure_modality_id == 14) {
-                $body_qualification .= 'al fallecimiento '.($affiliate->spouse()->first()->gender=='M'?'del<strong> &nbsp;Sr. ':'de la<strong> &nbsp;Sra. ').Util::fullName($affiliate->spouse()->first()).'</strong> con C.I.<b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
+                $body_qualification .= 'al fallecimiento '.($affiliate->spouse()->first()->gender=='M'?'del<strong> &nbsp;Sr. ':'de la<strong> &nbsp;Sra. ').Util::fullName($affiliate->spouse()->first()).'</strong> con C.I. N° <b>'.$affiliate->spouse()->first()->identity_card.' '.$affiliate->spouse()->first()->city_identity_card->first_shortened.'</b>';
             } else {
-                $body_qualification .= "al fallecimiento ".($affiliate->gender=='M'?'del':'de la')."<strong> &nbsp;".$affiliate->fullNameWithDegree()."</strong> con C.I. <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened;
+                $body_qualification .= "al fallecimiento ".($affiliate->gender=='M'?'del':'de la')."<strong> &nbsp;".$affiliate->fullNameWithDegree()."</strong> con C.I. N° <b>".$affiliate->identity_card.' '.$affiliate->city_identity_card->first_shortened;
             }
         }
-        $body_qualification .= "</b>, determinando la cuant&iacute;a de <b>". Util::formatMoneyWithLiteral($quota_aid->total)."</b>.";
+        $body_qualification .= "</b>, determinando la cuant&iacute;a de<strong> ". Util::formatMoneyWithLiteral($quota_aid->total)."</strong>.";
                 
         ///----- END QUALIFICATION ----////
 
