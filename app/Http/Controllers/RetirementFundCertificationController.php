@@ -1818,7 +1818,7 @@ class RetirementFundCertificationController extends Controller
             'correlative'   =>  $number,
             'user'  =>  $user,
             'affiliate' =>  $affiliate,
-            'title' =>  $retirement_fund->procedure_modality->procedure_type->name,
+            'title' =>  $retirement_fund->procedure_modality->procedure_type->second_name,
             'area'  =>  $number->wf_state->first_shortened,
             'date'  =>   Util::getDateFormat($number->date),
             'code'  =>  $number->code
