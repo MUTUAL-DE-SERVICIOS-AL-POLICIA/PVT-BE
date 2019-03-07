@@ -954,7 +954,7 @@ class QuotaAidCertificationController extends Controller
         array_push($documents,'CERTIFICACIÓN Y VALIDACIÓN DE DOCUMENTOS POR EL ÁREA LEGAL');
         array_push($documents,'CERTIFICACIÓN DE APORTES EN EL SERVICIO ACTIVO');
         array_push($documents,'CERTIFICACIÓN DE PAGOS ANTERIORES (DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS)');
-        array_push($documents,'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
+        // array_push($documents,'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
         array_push($documents,'CALIFICACIÓN DE FONDO DE RETIRO');
         array_push($documents,'DICTAMEN LEGAL');
 
