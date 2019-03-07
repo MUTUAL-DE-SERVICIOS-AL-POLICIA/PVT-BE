@@ -265,6 +265,7 @@
                                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-individual-accounts"><a href="#"><i class="fa fa-list"></i> Cuentas Individuales</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-headship"><a href="#"><i class="fa fa-dollar"></i> Jefatura</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                             </ul>
                     </div>
@@ -307,6 +308,13 @@
                                     </ret-fun-step1-requirements-edit>
                                 @endcan
 
+                            </div>
+                            <div id="tab-headship" class="tab-pane">
+                                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
+                                    <ret-fun-heaship :ret_fun="{{ $retirement_fund }}" user="{{ $user }}" inline-template>
+                                        @include('ret_fun.headship')
+                                    </ret-fun-heaship>
+                                {{-- @endcan --}}
                             </div>
 
                             <div id="tab-individual-accounts" class="tab-pane">

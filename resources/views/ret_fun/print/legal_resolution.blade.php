@@ -21,7 +21,7 @@
                         REF: FONDO DE RETIRO POLICIAL SOLIDARIO-{{$retirement_fund->procedure_modality->name}}
                     </div>
             <span class="block text-center">
-                    <td>{{ $actual_city }}, <b>{{ $actual_date }}</b></td>
+                    <td>{!! ucwords(strtolower($actual_city)) !!}, <b>{{ $actual_date }}</b></td>
               </span>
         </div>
         <div class="block">
