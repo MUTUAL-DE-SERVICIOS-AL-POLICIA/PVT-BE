@@ -945,32 +945,43 @@ class QuotaAidCertificationController extends Controller
         ->setOption('margin-bottom',15)
         ->stream("dictamenLegal.pdf");
     }
-    public function printHeadshipReview($quota_aid_id){
-        
-        $quota_aid =  QuotaAidMortuary::find($quota_aid_id);
+    public function printHeadshipReview($quota_aid){
+        $quota_aid =  QuotaAidMortuary::find($quota_aid);
         $affiliate = Affiliate::find($quota_aid->affiliate_id);
-        
-
-        $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
-        $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id',$quota_aid->id)->orderByDesc('type')->orderBy('id')->get();
-        return 0;
-
-        $data = [
-            'ret_fun' => $quota_aid
-        ];
+        $documents = array();
+        array_push($documents,'LLENADO DE FORMULARIO CON CARÁCTER DE DECLARACIÓN JURADA');
+        array_push($documents,'CERTIFICACIÓN DE ARCHIVO Y REVISIÓN DE ANTECEDENTES');
+        array_push($documents,'CERTIFICACIÓN Y VALIDACIÓN DE DOCUMENTOS POR EL ÁREA LEGAL');
+        array_push($documents,'CERTIFICACIÓN DE APORTES EN EL SERVICIO ACTIVO');
+        array_push($documents,'CERTIFICACIÓN DE PAGOS ANTERIORES (DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS)');
+        // array_push($documents,'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
+        array_push($documents,'CALIFICACIÓN DE FONDO DE RETIRO');
+        array_push($documents,'DICTAMEN LEGAL');
 
         $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
-        $headerHtml = view()->make('ret_fun.print.legal_header')->render();
-        $footerHtml = view()->make('quota_aid.print.resolution_footer', ['quota_aid'=>$quota_aid, 'bar_code' => $bar_code])->render();        
+        $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
 
-            return \PDF::loadView('quota_aid.print.headship_review', $data)
-            ->setOption('encoding', 'utf-8')
-            ->setOption('header-html', $headerHtml)
-            ->setOption('footer-html', $footerHtml)
-            ->setOption('margin-top', 40)
-            ->setOption('margin-bottom', 30)
-            ->stream("jefaturaRevision.pdf");
+        $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 38)->first();
+        $user = User::find($number->user_id);
+
+        $data = [
+            'quota_aid' => $quota_aid,
+            'documents' =>  $documents,
+            'correlative'   =>  $number,
+            'user'  =>  $user,
+            'affiliate' =>  $affiliate,
+            'title' =>  $quota_aid->procedure_modality->procedure_type->second_name,
+            'area'  =>  $number->wf_state->first_shortened,
+            'date'  =>   Util::getDateFormat($number->date),
+            'code'  =>  $number->code
+        ];
+        return \PDF::loadView('quota_aid.print.headship_review', $data)
+        ->setOption('encoding', 'utf-8')
+        ->setOption('footer-html', $footerHtml)
+        ->setOption('margin-bottom', 15)
+        ->stream("jefaturaRevision.pdf");
     }
+
     public function printLegalResolution($quota_aid_id){
         
         $quota_aid =  QuotaAidMortuary::find($quota_aid_id);

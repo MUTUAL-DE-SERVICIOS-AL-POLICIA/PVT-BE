@@ -1791,7 +1791,6 @@ class RetirementFundCertificationController extends Controller
             array_push($documents,'CERTIFICACIÓN DE PERIODOS SIN APORTES');
         }
         $tag = $retirement_fund->tags->where('name','Trabajo Social')->count();
-        
         array_push($documents,'CERTIFICACIÓN DE PAGOS ANTERIORES (DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS)');
         array_push($documents,'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
         array_push($documents,'CALIFICACIÓN DE FONDO DE RETIRO');
@@ -1823,12 +1822,10 @@ class RetirementFundCertificationController extends Controller
             'date'  =>   Util::getDateFormat($number->date),
             'code'  =>  $number->code
         ];
-        
         return \PDF::loadView('ret_fun.print.headship_review', $data)
         ->setOption('encoding', 'utf-8')
         // ->setOption('header-html', $headerHtml)
         ->setOption('footer-html', $footerHtml)
-        
         ->setOption('margin-bottom', 15)
         ->stream("jefaturaRevision.pdf");
     }
