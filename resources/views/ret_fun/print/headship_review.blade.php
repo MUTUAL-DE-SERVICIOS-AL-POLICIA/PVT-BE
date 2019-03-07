@@ -34,16 +34,16 @@
                                 <td class="text-left uppercase font-bold px-5 py-3"> {{ $affiliate->fullName() }} </td>
                             </tr>
                             <tr class="text-sm">
+                                <td class="text-left px-10 py-3 uppercase">cédula de identidad</td>
+                                <td class="text-left uppercase font-bold px-5 py-3">{!! $affiliate->identity_card !!} {{$affiliate->city_identity_card->first_shortened ?? ''}}</td>
+                            </tr>
+                            <tr class="text-sm">
                                 <td class="text-left px-10 py-3 uppercase">fecha de Nacimiento</td>
                                 <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->getBirthDate() }}</td>
                             </tr>
                             <tr class="text-sm">
                                 <td class="text-left px-10 py-3 uppercase">Matricula</td>
                                 <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->registration }}</td>
-                            </tr>
-                            <tr class="text-sm">
-                                <td class="text-left px-10 py-3 uppercase">cédula de identidad</td>
-                                <td class="text-left uppercase font-bold px-5 py-3">{!! $affiliate->identity_card !!} {{$affiliate->city_identity_card->first_shortened ?? ''}}</td>
                             </tr>
                             <tr class="text-sm">
                                 <td class="text-left px-10 py-3 uppercase">Estado Civil</td>
@@ -57,8 +57,8 @@
                                 <td class="text-left px-10 py-3 uppercase">Dirección Domicilio</td>
                                 <td class="text-left uppercase font-bold px-5 py-3">
                                     {{ $affiliate->address()->first() ? $affiliate->address()->first()->city->name.',' ?? '' : '' }}
-                                    {{ $affiliate->address()->first() ? $affiliate->address()->first()->zone.',' : '' }}
-                                    {{ $affiliate->address()->first() ? $affiliate->address()->first()->street.',' : '' }}
+                                    {{ $affiliate->address()->first() ? 'Zona. '.$affiliate->address()->first()->zone.',' : '' }}
+                                    {{ $affiliate->address()->first() ? 'Av. Calle '.$affiliate->address()->first()->street.',' : '' }}
                                     {{ $affiliate->address()->first() ? '#'.$affiliate->address()->first()->number_address.'.' : '' }}
                                 </td>
                             </tr>
