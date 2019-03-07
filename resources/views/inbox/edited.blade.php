@@ -11,16 +11,6 @@
             onclick="printJS({printable:'{!! route('print_pre_qualification') !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"
             > <i class="fa fa-print"></i> Imprimir Pre calificados </button>
         @endif
-        @if(Util::getRol()->id == 29)
-            <button class="btn btn-warning dim"
-            onclick="printJS({printable:'{!! route('print_send_daa') !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"
-            > <i class="fa fa-print"></i> Imprimir Envio DAA</button>
-        @endif
-        @if(Util::getRol()->id == 44)
-            <button class="btn btn-warning dim"
-            onclick="printJS({printable:'{!! route('print_send_daa_quota_aid') !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"
-            > <i class="fa fa-print"></i> Imprimir Envio DAA</button>
-        @endif
         @if(Util::getRol()->id == 53)
             <button class="btn btn-warning dim" onclick="printJS({printable:'{!! route('print_be') !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"> <i class="fa fa-print"></i> Imprimir </button>
         @endif
