@@ -948,6 +948,7 @@ class QuotaAidCertificationController extends Controller
     public function printHeadshipReview($quota_aid){
         $quota_aid =  QuotaAidMortuary::find($quota_aid);
         $affiliate = Affiliate::find($quota_aid->affiliate_id);
+        $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
         $documents = array();
         array_push($documents,'LLENADO DE FORMULARIO CON CARÁCTER DE DECLARACIÓN JURADA');
         array_push($documents,'CERTIFICACIÓN DE ARCHIVO Y REVISIÓN DE ANTECEDENTES');
@@ -970,6 +971,7 @@ class QuotaAidCertificationController extends Controller
             'correlative'   =>  $number,
             'user'  =>  $user,
             'affiliate' =>  $affiliate,
+            'spouse'  =>  $spouse,
             'title' =>  $quota_aid->procedure_modality->procedure_type->second_name,
             'area'  =>  $number->wf_state->first_shortened,
             'date'  =>   Util::getDateFormat($number->date),
