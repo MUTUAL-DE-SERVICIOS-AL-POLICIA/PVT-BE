@@ -1666,11 +1666,10 @@ class RetirementFundCertificationController extends Controller
                     ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
                     ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 29, 34, 35 y 41 del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resoluciones de Directorio Nros. 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de frebrero de 2019, de la siguiente manera:<br><br>";
                 }
-                $birth_date = Carbon::createFromFormat('d/m/Y', $beneficiary->birth_date);  
-                if(date('Y') -$birth_date->format('Y') > 18) {
-                $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
+                if(Util::isChild($beneficiary->birth_date)) {
+                    $payment .='Menor '.$beneficiary->birth_date;
                 } else {
-                    $payment .='Menor ';
+                    $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 }
                 $payment .= $beneficiary->fullName();
                 if($beneficiary->identity_card)
@@ -1791,7 +1790,6 @@ class RetirementFundCertificationController extends Controller
             array_push($documents,'CERTIFICACIÓN DE PERIODOS SIN APORTES');
         }
         $tag = $retirement_fund->tags->where('name','Trabajo Social')->count();
-        
         array_push($documents,'CERTIFICACIÓN DE PAGOS ANTERIORES (DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS)');
         array_push($documents,'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
         array_push($documents,'CALIFICACIÓN DE FONDO DE RETIRO');
@@ -1823,12 +1821,10 @@ class RetirementFundCertificationController extends Controller
             'date'  =>   Util::getDateFormat($number->date),
             'code'  =>  $number->code
         ];
-        
         return \PDF::loadView('ret_fun.print.headship_review', $data)
         ->setOption('encoding', 'utf-8')
         // ->setOption('header-html', $headerHtml)
         ->setOption('footer-html', $footerHtml)
-        
         ->setOption('margin-bottom', 15)
         ->stream("jefaturaRevision.pdf");
     }
@@ -2169,28 +2165,11 @@ class RetirementFundCertificationController extends Controller
         }        
 
         $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> El monto TOTAL a pagar de&nbsp; <strong>".Util::formatMoneyWithLiteral($retirement_fund->total)."</strong>, a favor ";
-        
-
-        // if($retirement_fund->procedure_modality_id == 4) {
-        //     $body_resolution .= "<br><br>";
-        //     $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->get();
-        //     foreach($beneficiaries as $beneficiary){
-        //         $birth_date = Carbon::createFromFormat('d/m/Y', $beneficiary->birth_date);
-        //         if(date('Y') -$birth_date->format('Y') > 18) {
-        //         $body_resolution .=$beneficiary->gender=='M'?'Sr.':'Sra. ';
-        //         } else {
-        //             $body_resolution .='Menor ';
-        //         }
-        //         $body_resolution .= $beneficiary->fullName()." con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extension").', en el monto de '.Util::formatMoneyWithLiteral($beneficiary->amount_total).' '.'en calidad de '.$beneficiary->kinship->name.".<br><br>"; 
-        //     }
-        // } else {
-        //     $body_resolution .= "<li class='text-justify'>".($affiliate->gender=='M'?'Sr. ':'Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened.", en calidad de Titular.</li><b><br><br>";
-        // } 
 
         if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
             
             $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('kinship_id')->orderByDesc('state')->get();
-            if($beneficiaries->count() > 1) { 
+            if($beneficiaries->count() > 1) {
                 $body_resolution .= "de los beneficiarios";
             } else {
                 $body_resolution .= ($applicant->gender=='M'?'del beneficiario ':'de la beneficiaria ');
@@ -2202,12 +2181,11 @@ class RetirementFundCertificationController extends Controller
                     $certification = $beneficiary->testimonies()->first();
                     $body_resolution .= "Mantener en reserva la Cuota Parte salvando los derechos, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos del Reglamento de Fondo de Retiro Policial Solidario, de la siguiente manera:<br><br>";
                 }
-                $birth_date = Carbon::createFromFormat('d/m/Y', $beneficiary->birth_date);  
                 $body_resolution .= "<li class='text-justify'>";
-                if(date('Y') -$birth_date->format('Y') > 18) {
-                $body_resolution .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
-                } else {
+                if(Util::isChild($beneficiary->birth_date)) {
                     $body_resolution .='Menor ';
+                } else {
+                    $body_resolution .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 }
                 $body_resolution .= $beneficiary->fullName();
                 if($beneficiary->identity_card)

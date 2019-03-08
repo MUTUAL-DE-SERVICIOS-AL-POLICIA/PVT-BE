@@ -72,7 +72,7 @@ class QuotaAidMortuaryPolicy
     }
     public function qualify(User $user, QuotaAidMortuary $quotaAidMortuary)
     {
-        return $quotaAidMortuary->wf_state_current_id == 37 && Util::getRol()->id == 37 && $quotaAidMortuary->inbox_state == false ;
+        return $quotaAidMortuary->wf_state_current_id == 37 && Util::getRol()->id == 37;
         // && !$quotaAidMortuary->affiliate->selectedContributions() > 0;
     }
 }
