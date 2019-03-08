@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    {{ $i = 1 }}
+                    @php $i = 1 @endphp
                     {{ $correlative->code }}
                 </div>
             </div>
