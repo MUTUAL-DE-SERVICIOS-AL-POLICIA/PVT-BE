@@ -880,7 +880,7 @@ class QuotaAidCertificationController extends Controller
                     $payment .=" con C.I. N° ".$beneficiary->identity_card." ".($beneficiary->city_identity_card->first_shortened??"sin extencion");                
                 }   
                 $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id',$beneficiary->id)->first();
-                if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
+                if(Util::isChild($beneficiary->birth_date) && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
                     $payment .= ", a través de tutor (a) natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if(isset($beneficiary_advisor->id))
