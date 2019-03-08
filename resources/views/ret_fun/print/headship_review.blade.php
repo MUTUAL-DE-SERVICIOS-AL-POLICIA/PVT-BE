@@ -13,7 +13,7 @@
                 </div>
                 <div class="text-center">
                     {{ $correlative->code }}
-                    {{ $i = 1 }}
+                    @php  $i = 1 @endphp
                 </div>
             </div>
             <br>
