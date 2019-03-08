@@ -28,7 +28,9 @@ use Muserpol\Models\RetirementFund\RetFunCorrelative;
 
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
-
+Route::get('proof',function() {
+	return Util::isChild('09/03/2001')?'menor':'mayor';
+});
 Auth::routes();
 
 	//afiliates

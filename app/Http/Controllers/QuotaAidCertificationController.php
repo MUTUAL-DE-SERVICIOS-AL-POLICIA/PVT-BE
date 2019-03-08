@@ -869,11 +869,10 @@ class QuotaAidCertificationController extends Controller
                     $payment .= ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 23, 28 y ".$art[$quota_aid->procedure_modality_id]." del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros. 51/2017 de fecha 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, de la siguiente manera:<br><br>";
                 }
                 //return $beneficiary;
-                $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
-                if(date('Y') -$birth_date->format('Y') >= 18) {
-                    $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
-                } else {
+                if(Util::isChild($beneficiary->birth_date)) {
                     $payment .='Menor ';
+                } else {
+                    $payment .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 }
                 $payment .= $beneficiary->fullName();
 
@@ -1132,15 +1131,14 @@ class QuotaAidCertificationController extends Controller
                     $body_resolution .= "Mantener en reserva la(s) Cuota(s) Parte(s) salvando derechos, hasta que presente(n) la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, de la siguiente manera:<br><br>";
                 }
                 //return $beneficiary;
-                $birth_date = Carbon::createFromFormat('Y-m-d', Util::parseBarDate($beneficiary->birth_date));
                 $body_resolution .= "<li class='text-justify'>";
-                if(date('Y') -$birth_date->format('Y') >= 18) {
-                    $body_resolution .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
-                } else {
+                if(Util::isChild($beneficiary->birth_date)) {
                     $body_resolution .='Menor ';
+                } else {
+                    $body_resolution .=$beneficiary->gender=='M'?'Sr. ':'Sra. ';
                 }
                 $body_resolution .= $beneficiary->fullName();
-                if(date('Y') -$birth_date->format('Y') < 18 && !$beneficiary->state) {
+                if(Util::isChild($beneficiary->birth_date) && !$beneficiary->state) {
                     $body_resolution .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
                 }
                 if($beneficiary->identity_card)

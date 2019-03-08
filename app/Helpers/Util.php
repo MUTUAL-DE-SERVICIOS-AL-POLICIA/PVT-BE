@@ -906,4 +906,15 @@ class Util
         }
         return $total;
     }
+
+    public static function isChild($birth_date) {
+        $today = Carbon::now();
+        $birth_date = Carbon::createFromFormat('d/m/Y', $birth_date);
+        $actual = $birth_date->addYear(18);
+        if($birth_date->format('Y-m-d') > $today->format('Y-m-d')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
