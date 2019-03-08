@@ -12,8 +12,8 @@
                     </div>
                 </div>
                 <div class="text-center">
-
                     {{ $correlative->code }}
+                    {{ $i = 1 }}
                 </div>
             </div>
             <br>
@@ -24,7 +24,7 @@
                         <thead class="bg-grey-darker">
                             <tr class="font-medium text-white text-sm uppercase">
                                 <td colspan='2' class="px-15 text-left">
-                                    1. DATOS DEL TITULAR
+                                    {{ $i++ }}. DATOS DEL TITULAR
                                 </td>
                             </tr>
                         </thead>
@@ -81,7 +81,7 @@
                         <thead class="bg-grey-darker">
                             <tr class="font-medium text-white text-sm uppercase">
                                 <td colspan='2' class="px-15 text-left">
-                                    2. DATOS INSTITUCIONALES
+                                    {{ $i++ }}. DATOS INSTITUCIONALES
                                 </td>
                             </tr>
                         </thead>
@@ -118,7 +118,7 @@
                             <thead class="bg-grey-darker">
                                 <tr class="font-medium text-white text-sm uppercase">
                                     <td colspan='2' class="px-15 text-left">
-                                        2. DATOS INSTITUCIONALES
+                                        {{ $i++ }}. PROCEDIMIENTOS REALIZADOS CORRECTAMENTE
                                     </td>
                                 </tr>
                             </thead>
