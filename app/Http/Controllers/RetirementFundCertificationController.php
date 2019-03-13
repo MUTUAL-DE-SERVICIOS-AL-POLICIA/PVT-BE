@@ -1655,10 +1655,12 @@ class RetirementFundCertificationController extends Controller
         } else {
             $payment .=" de:<br><br>";
         }
+        $reserved = false;
         if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
             $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('kinship_id')->orderByDesc('state')->get();
             foreach($beneficiaries as $beneficiary){
-                if(!$beneficiary->state) {
+                if(!$beneficiary->state && !$reserved) {
+                    $reserved = true;
                     $reserved_quantity = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
                     $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
