@@ -749,4 +749,12 @@ class Affiliate extends Model
         $affiliate = Affiliate::find($affiliate_id);
         Spouse::updatePersonalInfo($affiliate_id, $object);
     }
+
+    /**
+     * Economic Complements
+     */
+    public function eco_com_processes()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComProcess');
+    }
 }

@@ -242,7 +242,9 @@ class RetirementFundController extends Controller
             ->orderBy('id','desc')
             ->get();
 
-            $ret_fun_code = $this->getLastCode($ret_fund);
+            // $ret_fun_code = $this->getLastCode($ret_fund);
+            $ret_fun_code = Util::getLastCode(RetirementFund::class);
+            //  $this->getLastCode($ret_fund);
             $code = Util::getNextCode ($ret_fun_code);
         }
         
