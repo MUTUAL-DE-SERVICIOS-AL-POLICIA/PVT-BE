@@ -27,10 +27,6 @@ class EcoComProcess extends Model
     {
         return $this->belongsTo('Muserpol\Models\ProcedureModality');
     }
-    public function eco_com_procedure_start()
-    {
-        return $this->belongsTo('Muserpol\Models\EconomicComplement\EcoComProcedure');
-    }
     public function pension_entity()
     {
         return $this->belongsTo('Muserpol\Models\PensionEntity');
