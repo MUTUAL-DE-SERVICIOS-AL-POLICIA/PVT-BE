@@ -44,14 +44,12 @@ class CreateEcoComTables extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('affiliate_id');
             $table->unsignedBigInteger('procedure_modality_id');
-            $table->unsignedBigInteger('eco_com_procedure_start_id');
             $table->unsignedBigInteger('pension_entity_id');
             $table->boolean('status')->default(true);
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('affiliate_id')->references('id')->on('affiliates');
             $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
             $table->foreign('pension_entity_id')->references('id')->on('pension_entities');
-            $table->foreign('eco_com_procedure_start_id')->references('id')->on('eco_com_procedures');
             $table->timestamps();
         });
 
