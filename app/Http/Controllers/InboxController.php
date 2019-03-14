@@ -19,7 +19,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
-
+use Muserpol\Models\ProcedureType;
 class InboxController extends Controller
 {
     public function received()
@@ -350,5 +350,74 @@ class InboxController extends Controller
                 return response()->json($doc, 200);
             break;
         }
+    }
+
+    public function printSend(Request $request) {
+        $rol_id = Util::getRol()->id;
+        $module = Role::find($rol_id)->module;
+        $procedure_ids = array();
+        foreach($request->procedures as $procedure) {
+            array_push($procedure_ids,$procedure['id']);
+        }
+        $title = '';
+        $wf_state_from = WorkflowState::find($request->from_area);
+        $wf_state_to = WorkflowState::find($request->to_area);
+        $user = Auth::user();
+        $procedures = array();
+        $procedure_types = ProcedureType::where('module_id',$module->id)->get();
+        foreach($procedure_types as $procedure_type) {
+            switch($module->id) {
+                case 3:
+                    $title = 'FONDO DE RETIRO POLICIAL SOLIDARIO';
+                    $procedures = RetirementFund::with(['procedure_modality'])->whereIn('id',$procedure_ids)
+                        ->wherehas('procedure_modality',function ($query) use ($procedure_type){
+                            $query->where('procedure_type_id',$procedure_type->id);
+                        })
+                    ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+					->get();
+
+                break;
+                case 4:
+                    $title = 'CUOTA Y AUXILIO MORTUORIO';
+                    $procedures = QuotaAidMortuary::with(['procedure_modality'])->whereIn('id',$procedure_ids)
+                        ->wherehas('procedure_modality',function ($query) use ($procedure_type){
+                            $query->where('procedure_type_id',$procedure_type->id);
+                        })
+                    ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
+                    ->get();
+                break;
+                default:
+                    return 0;
+                break;
+            }
+            $data = [
+                'procedures'	=>	$procedures,
+                'title'	=>	$title,
+                'subtitle'	=>	$wf_state_from->name,
+                'from_area'	=>	$wf_state_from,
+                'to_area'	=>	$wf_state_to,
+                'user'	=>	$user,
+                'year'  =>  date('Y')
+            ];
+            if($procedures->count()>0) {
+                if($wf_state_from->id == 26) {
+                    $pages[] = \View::make('print_global.send_daa', $data)->render();
+                }
+                if($wf_state_from->id == 40) {
+                    $pages[] = \View::make('print_global.send_daa_quota_aid', $data)->render();
+                }
+                if($wf_state_from->id != 40 && $wf_state_from->id != 26) {
+                    $pages[] = \View::make('print_global.send', $data)->render();
+                }
+            }
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '15mm')
+            ->setOrientation('landscape')
+            ->setOption('footer-center', 'Pagina [page] de [toPage]')
+            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            ->stream("documentos enviados.pdf");
     }
 }
