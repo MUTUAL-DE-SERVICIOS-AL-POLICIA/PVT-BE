@@ -47,10 +47,10 @@
                 NOTIFICACIÓN
             </h1>
             <p class="text-justify text-xl">
-                En fecha ……………………., a horas …………… se NOTIFICA en forma personal al Sr.(a) ……………………………..………………………………………. con C.I. …………………… con la Resolución de la Comisión de Beneficios Económicos Nº …..……….. de fecha ……..……………, quien recibió en mano propia el original de dicho documento.
+                En fecha ……………………, a horas …………… se NOTIFICA en forma personal al (la) Sr.(a) ……………………………..……………………………………… con C.I. Nº …………………… con la Resolución de la Comisión de Beneficios Económicos Nº ……………… de fecha ……………………, quien recibió en mano propia el original de dicho documento.
             </p>
             <p class="text-justify font-bold text-lg">
-                Se le comunica que, a partir de la fecha corre el plazo de 5 (cinco) días hábiles para interponer RECURSO DE RECLAMACIÓN, caso contrario, la mencionada Resolución quedara debidamente ejecutoria conforme establece el Reglamento vigente.
+                Se le comunica que, a partir de la fecha corre el plazo de 5 (cinco) días hábiles para interponer RECURSO DE RECLAMACIÓN, caso contrario, la mencionada Resolución quedara debidamente ejecutoriada conforme establece el Reglamento vigente.
             </p>
         </div>
     </div>
