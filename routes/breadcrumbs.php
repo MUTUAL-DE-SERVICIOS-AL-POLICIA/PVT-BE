@@ -169,3 +169,24 @@ Breadcrumbs::register('treasury_select_report', function($breadcrumbs)
 	$breadcrumbs->push('Tesorería');
 	$breadcrumbs->push('Seleccionar Reporte');
 });
+
+
+/**
+ * Economic Complement
+ */
+
+Breadcrumbs::register('eco_com_process', function($breadcrumbs)
+{
+	$breadcrumbs->push('Complemento Económico Padre', URL::to('quota_aid'));
+});
+Breadcrumbs::register('show_eco_com_process', function($breadcrumbs, $eco_com_process)
+{
+	$breadcrumbs->parent('eco_com_process');
+	$breadcrumbs->push('Complemento Económico Padre', $eco_com_process->procedure_modality->name);
+});
+Breadcrumbs::register('create_eco_com_process', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('eco_com_process');
+	$breadcrumbs->push("Nuevo Trámite Inclusion");
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
+});

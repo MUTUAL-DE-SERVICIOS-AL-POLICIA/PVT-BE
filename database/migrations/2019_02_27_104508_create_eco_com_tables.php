@@ -45,15 +45,18 @@ class CreateEcoComTables extends Migration
             $table->unsignedBigInteger('affiliate_id');
             $table->unsignedBigInteger('procedure_modality_id');
             $table->unsignedBigInteger('pension_entity_id');
+            $table->unsignedBigInteger('procedure_state_id');
             $table->boolean('status')->default(true);
+            $table->date('reception_date');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('affiliate_id')->references('id')->on('affiliates');
             $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
             $table->foreign('pension_entity_id')->references('id')->on('pension_entities');
+            $table->foreign('procedure_state_id')->references('id')->on('procedure_states');
             $table->timestamps();
         });
 
-        Schema::create('eco_com_submitted_documents', function (Blueprint $table) {
+        Schema::create('eco_com_process_submitted_documents', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('eco_com_process_id')->unsigned();
             $table->bigInteger('procedure_requirement_id')->unsigned();
@@ -117,27 +120,36 @@ class CreateEcoComTables extends Migration
             $table->foreign('complementary_factor_id')->references('id')->on('complementary_factors');
             $table->timestamps();
         });
-        // Schema::create('eco_com_beneficiaries', function (Blueprint $table) {
-        //     $table->bigIncrements('id');
-        //     $table->unsignedBigInteger('economic_complement_id');
-        //     $table->unsignedBigInteger('city_identity_card_id')->nullable();
-        //     $table->string('identity_card')->nullable();
-        //     $table->string('last_name')->nullable();
-        //     $table->string('mothers_last_name')->nullable();
-        //     $table->string('first_name')->nullable();
-        //     $table->string('second_name')->nullable();
-        //     $table->string('surname_husband')->nullable();
-        //     $table->date('birth_date')->nullable();
-        //     $table->bigInteger('nua')->nullable();
-        //     $table->enum('gender', ['M', 'F'])->default('M');
-        //     $table->enum('civil_status', ['C', 'S', 'V', 'D'])->nullable();
-        //     $table->string('phone_number')->nullable();
-        //     $table->string('cell_phone_number')->nullable();
-        //     $table->foreign('economic_complement_id')->references('id')->on('economic_complements')->onDelete('cascade');
-        //     $table->foreign('city_identity_card_id')->references('id')->on('cities');
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
+        Schema::create('eco_com_beneficiaries', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('eco_com_process_id');
+            $table->unsignedBigInteger('city_identity_card_id')->nullable();
+            $table->string('identity_card')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('mothers_last_name')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('second_name')->nullable();
+            $table->string('surname_husband')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->bigInteger('nua')->nullable();
+            $table->enum('gender', ['M', 'F'])->default('M');
+            $table->enum('civil_status', ['C', 'S', 'V', 'D'])->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('cell_phone_number')->nullable();
+            $table->foreign('eco_com_process_id')->references('id')->on('eco_com_processes')->onDelete('cascade');
+            $table->foreign('city_identity_card_id')->references('id')->on('cities');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create('address_eco_com_beneficiary', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('eco_com_beneficiary_id');
+            $table->unsignedBigInteger('address_id');
+            $table->foreign('eco_com_beneficiary_id')->references('id')->on('eco_com_beneficiaries');
+            $table->foreign('address_id')->references('id')->on('addresses');
+            $table->timestamps();
+        });
+
 
         // Schema::create('eco_com_legal_guardians', function (Blueprint $table) {
         //     $table->bigIncrements('id');
@@ -156,7 +168,6 @@ class CreateEcoComTables extends Migration
         //     $table->timestamps();
         //     $table->softDeletes();
         // });
-
     }
 
     /**
@@ -167,8 +178,10 @@ class CreateEcoComTables extends Migration
     public function down()
     {
 
+        Schema::drop('address_eco_com_beneficiary');
+        Schema::drop('eco_com_beneficiaries');
         Schema::drop('economic_complements');
-        Schema::drop('eco_com_submitted_documents');
+        Schema::drop('eco_com_process_submitted_documents');
         Schema::drop('eco_com_processes');
     }
 }

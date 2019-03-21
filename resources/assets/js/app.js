@@ -383,6 +383,14 @@ Vue.component("contribution-edit", require("./components/direct_contribution/Con
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
 
+// Eco Com Process
+Vue.component('eco-com-process-form', require('./components/eco_com_process/Form.vue'));
+Vue.component('eco-com-process-step1-requirements', require('./components/eco_com_process/Step1Requirements.vue'));
+Vue.component('eco-com-process-step2-applicant', require('./components/eco_com_process/Step2Applicant.vue'));
+Vue.component('eco-com-process-info', require('./components/eco_com_process/Info.vue'));
+Vue.component('eco-com-process-beneficiary', require('./components/eco_com_process/Beneficiary.vue'));
+Vue.component('eco-com-process-step1-requirements-edit', require('./components/eco_com_process/Step1RequirementsEdit.vue'));
+
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));

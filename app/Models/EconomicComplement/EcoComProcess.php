@@ -13,7 +13,7 @@ class EcoComProcess extends Model
     }
     public function eco_com_beneficiary()
     {
-        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComBeneficiary');
+        return $this->hasOne('Muserpol\Models\EconomicComplement\EcoComBeneficiary');
     }
     public function affiliate()
     {

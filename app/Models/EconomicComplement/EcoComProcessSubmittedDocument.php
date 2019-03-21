@@ -4,7 +4,7 @@ namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EcoComSubmittedDocument extends Model
+class EcoComProcessSubmittedDocument extends Model
 {
     public function eco_com_process()
     {

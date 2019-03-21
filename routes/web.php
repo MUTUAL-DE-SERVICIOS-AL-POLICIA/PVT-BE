@@ -645,6 +645,15 @@ foreach (array_keys($retirement_funds) as $value) {
 		});
 		Route::get('/treasury/select_report', 'TreasuryController@selectReport');
 		Route::get('/treasury/report', 'TreasuryController@report');
+
+		// Economic Complement Process
+		Route::get('eco_com_process/create/{affiliate_id}', 'EcoComProcessController@create');
+		Route::post('eco_com_process_store', 'EcoComProcessController@store')->name('eco_com_process_store');
+		Route::get('eco_com_process/{id}', 'EcoComProcessController@show');
+		Route::post('eco_com_process/{eco_com_process_id}/edit_requirements', 'EcoComProcessController@editRequirements')->name('eco_com_process_edit_requirements');
+		Route::patch('eco_com_process_update_information', 'EcoComProcessController@updateInformation')->name('eco_com_process_update_information');
+		Route::patch('eco_com_process/{eco_com_process_id}/update_beneficiary', 'EcoComProcessController@updateBeneficiary')->name('eco_com_process_update_beneficiary');
+
 	});
 });
 

@@ -11,4 +11,8 @@ class EcoComBeneficiary extends Model
     {
         return $this->belongsTo('Muserpol\Models\EconomicComplement\EcoComProcess');
     }
+    public function address()
+    {
+        return $this->belongsToMany('\Muserpol\Models\Address', 'address_eco_com_beneficiary')->withTimestamps();
+    }
 }
