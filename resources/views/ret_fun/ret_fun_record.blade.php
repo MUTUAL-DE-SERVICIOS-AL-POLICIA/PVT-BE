@@ -8,8 +8,8 @@
                 </div>
                 <div class="tabs-container">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#ret-fun-tab"> Datos del tramite</a></li>
-                        <li class=""><a data-toggle="tab" href="#workflow-tab"> Flujo del tramite</a></li>
+                        <li class="active"><a data-toggle="tab" href="#ret-fun-tab"> Datos del trámite</a></li>
+                        <li class=""><a data-toggle="tab" href="#workflow-tab"> Flujo del trámite</a></li>
                     </ul>
                     <div class="tab-content">
                         <div id="ret-fun-tab" class="tab-pane active">

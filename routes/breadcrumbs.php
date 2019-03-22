@@ -98,7 +98,7 @@ Breadcrumbs::register('create_retirement_fund', function($breadcrumbs, $affiliat
 
 
 Breadcrumbs::register('direct_contribution', function ($breadcrumbs) {
-	$breadcrumbs->push('Tramites de Contribuciones', URL::to('direct_contribution'));
+	$breadcrumbs->push('Trámites de Contribuciones', URL::to('direct_contribution'));
 });
 Breadcrumbs::register('show_direct_contribution', function ($breadcrumbs, $direct_contribution) {
 	$breadcrumbs->parent('direct_contribution');

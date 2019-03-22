@@ -14,7 +14,7 @@ class Records extends Migration
     public function up()
     {
         //
-        Schema::create('affiliate_records_pvt', function (Blueprint $table) {// historial del afiliado como ya existe la tabla affilate_record le puse pvt(plataforma virtual de tramites hdps)
+        Schema::create('affiliate_records_pvt', function (Blueprint $table) {// historial del afiliado como ya existe la tabla affilate_record le puse pvt(plataforma virtual de trámites hdps)
                 $table->bigIncrements('id');
                 $table->bigInteger('user_id')->unsigned();
                 $table->bigInteger('affiliate_id')->unsigned();
@@ -23,7 +23,7 @@ class Records extends Migration
                 $table->foreign('affiliate_id')->references('id')->on('affiliates');
                 $table->timestamps();
         });
-        Schema::create('ret_fun_records', function (Blueprint $table) {// historial para los tramites de fondo de retiro
+        Schema::create('ret_fun_records', function (Blueprint $table) {// historial para los trámites de fondo de retiro
                 $table->bigIncrements('id');
                 $table->bigInteger('user_id')->unsigned();
                 $table->bigInteger('ret_fun_id')->unsigned();

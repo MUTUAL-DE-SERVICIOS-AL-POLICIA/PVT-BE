@@ -829,7 +829,7 @@ class QuotaAidCertificationController extends Controller
             15 => '2, 3, 5, 6, 10, 31, 32, 35, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 '
         ];
         $payment .=$art[$quota_aid->procedure_modality_id]." del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y 
-        modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019. Se <strong>DICTAMINA</strong> en merito a la documentación de respaldo contenida en el presente reconocer 
+        modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019. Se <strong>DICTAMINA</strong> en mérito a la documentación de respaldo contenida en el presente reconocer 
         los derechos y se otorgue el beneficio de <strong>".strtoupper($quota_aid->procedure_modality->procedure_type->second_name)."</strong> por <strong class='uppercase'>".$quota_aid->procedure_modality->name."</strong> a favor ";
                         
         $flagy = 0;

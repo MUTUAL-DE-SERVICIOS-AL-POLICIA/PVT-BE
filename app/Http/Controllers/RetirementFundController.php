@@ -262,7 +262,7 @@ class RetirementFundController extends Controller
         $retirement_fund->workflow_id = 4;
         $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0,1])->first();
         if(!$wf_state){
-            Log::info("error al crear el tramite");
+            Log::info("error al crear el trámite");
             return;
         }
         $retirement_fund->wf_state_current_id = $wf_state->id;
@@ -545,14 +545,14 @@ class RetirementFundController extends Controller
 //         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
 //         $discounts = $retirement_fund->discount_types(); //DiscountType::where('retirement_fund_id',$retirement_fund->id)->orderBy('discount_type_id','ASC')->get();
 //         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-//         $body = "Por consiguiente, habiendo sido remitido el presente tramite al Área Legal Unidad de
+//         $body = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal Unidad de
 //         Otorgación del Fondo de Retiro Policial Solidario, autorizado por Jefatura de la Unidad de
 //         Otorgación del Fondo de Retiro Policial Solidario, conforme a los Art. 2, 3, 5, 10, 26, 27, 28,
 //         32, 36, 37, 38, 41, 42, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74 y la Disposición Transitoria
 //         Segunda, del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante
 //         Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante
 //         Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017. Se DICTAMINA en
-//         merito a la documentación de respaldo contenida en el presente, ";
+//         mérito a la documentación de respaldo contenida en el presente, ";
 
 //         $flagy = 0;
 //         if($discounts->count()>0)
@@ -2393,7 +2393,7 @@ class RetirementFundController extends Controller
             'actual_date'   =>  $actual_date,   //fecha actual (hoy)
             'cite'  =>  $cite,      //codigo identificador de usuario por area
             'beneficiaries'   => $beneficiaries,    //beneficiarios
-            'applicant' =>  $applicant,     //persona que hace el tramite
+            'applicant' =>  $applicant,     //persona que hace el trámite
             'affiliate' =>  $affiliate,     //policia afiliado
             'correlarives'  =>  $correlatives,  //codigos de documentos de cada area
         ];

@@ -30,7 +30,7 @@
                     </tfoot>
                     <thead>
                         <tr>
-                            <th># de Tramite</th>
+                            <th># de Trámite</th>
                             <th>Fecha de Recepción</th>
                             <th>C.I</th>
                             <th>Exp</th>
