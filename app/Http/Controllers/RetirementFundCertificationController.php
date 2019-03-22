@@ -1573,20 +1573,20 @@ class RetirementFundCertificationController extends Controller
         ];
         $discounts = $retirement_fund->discount_types(); //DiscountType::where('retirement_fund_id',$retirement_fund->id)->orderBy('discount_type_id','ASC')->get();                
         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-        $payment = "Por consiguiente, habiendo sido remitido el presente tramite al Área Legal de la Unidad de
+        $payment = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal de la Unidad de
         Otorgación del Fondo de Retiro Policial Solidario, autorizado
          por Jefatura de la referida unidad, conforme a los Art. ".$art[$retirement_fund->procedure_modality_id]." y la Disposición Transitoria
         Segunda, del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante
         Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante
         Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017. Se DICTAMINA en
-        merito a la documentación de respaldo contenida en el presente, ";
-        $payment = "Por consiguiente, habiendo sido remitido el presente tramite al Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
+        mérito a la documentación de respaldo contenida en el presente, ";
+        $payment = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
         Cuota y Auxilio Mortuorio, autorizado por Jefatura de la referida Unidad, conforme a 
         los Arts. ".$art[$retirement_fund->procedure_modality_id].", Disposición Transitoria Segunda del 
         Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante 
         Resoluciones de Directorio Nros. 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019; y la Disposición Transitoria
         Segunda del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y modificado 
-        mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019. Se <b>DICTAMINA</b> en merito a la documentación de respaldo contenida en el presente, ";
+        mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019. Se <b>DICTAMINA</b> en mérito a la documentación de respaldo contenida en el presente, ";
 
         $flagy = 0;
         $discounts = $retirement_fund->discount_types();

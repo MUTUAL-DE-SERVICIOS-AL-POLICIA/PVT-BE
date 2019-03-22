@@ -24,7 +24,7 @@ class ContributionsCorrect extends Command
      *
      * @var string
      */
-    protected $description = 'Corrige los 10 tipos de contribucion en la plataforma virtual de tramites';
+    protected $description = 'Corrige los 10 tipos de contribucion en la plataforma virtual de trámites';
 
     /**
      * Create a new command instance.

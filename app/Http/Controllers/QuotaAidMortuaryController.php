@@ -312,7 +312,7 @@ class QuotaAidMortuaryController extends Controller
         // if(isset($quota_aid->id)) {
         //     $has_quota_aid = true;
         //     return $quota_aid;
-        //     return "ya tiene un tramite";
+        //     return "ya tiene un trámite";
         //     // $biz_rules = [
         //     //     'quota_aid_double'
         //     // ];
@@ -359,7 +359,7 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->workflow_id = 5;
         $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
         if (!$wf_state) {
-            Log::info("error al crear el tramite");
+            Log::info("error al crear el trámite");
             return;
         }
         $quota_aid->wf_state_current_id = $wf_state->id;

@@ -31,7 +31,7 @@ class CreateAidMortuaryTables extends Migration
             $table->bigInteger('affiliate_id')->unsigned(); //identificador afiliado
             $table->bigInteger('quota_aid_procedure_id')->unsigned(); //identificador de cuantia
             $table->bigInteger('procedure_modality_id')->unsigned()->nullable(); //identificador de tipo de modalidad
-            $table->bigInteger('city_start_id')->unsigned()->nullable(); //ciudad donde se inicia el tramite.
+            $table->bigInteger('city_start_id')->unsigned()->nullable(); //ciudad donde se inicia el trámite.
             $table->bigInteger('city_end_id')->unsigned()->nullable(); //ciudad donde se entrega el pago.
             $table->string('code')->unique(); //codigo
             $table->date('reception_date')->nullable(); //fecha de nacimento
@@ -53,7 +53,7 @@ class CreateAidMortuaryTables extends Migration
 
         Schema::create('quota_aid_submitted_documents', function (Blueprint $table) {
             $table->bigIncrements('id'); //identificador
-            $table->bigInteger('quota_aid_mortuary_id')->unsigned();// identificador del tramite
+            $table->bigInteger('quota_aid_mortuary_id')->unsigned();// identificador del trámite
             $table->bigInteger('procedure_requirement_id')->unsigned();// identificador de los requisitos
             $table->date('reception_date'); // fecha de recepcion
             $table->text('comment')->nullable(); // observacion
