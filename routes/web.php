@@ -653,6 +653,9 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::post('eco_com_process/{eco_com_process_id}/edit_requirements', 'EcoComProcessController@editRequirements')->name('eco_com_process_edit_requirements');
 		Route::patch('eco_com_process_update_information', 'EcoComProcessController@updateInformation')->name('eco_com_process_update_information');
 		Route::patch('eco_com_process/{eco_com_process_id}/update_beneficiary', 'EcoComProcessController@updateBeneficiary')->name('eco_com_process_update_beneficiary');
+		// Economic Complement
+		Route::get('eco_com_process/{eco_com_process_id}/economic_complement/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
+		Route::get('economic_complement/{eco_com_id}', 'EconomicComplementController@show');
 
 	});
 });

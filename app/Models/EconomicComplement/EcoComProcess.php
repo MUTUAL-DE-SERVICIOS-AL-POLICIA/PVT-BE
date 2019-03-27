@@ -31,4 +31,8 @@ class EcoComProcess extends Model
     {
         return $this->belongsTo('Muserpol\Models\PensionEntity');
     }
+    public function hasEconomicComplementWithProcedure($eco_com_procedure_id)
+    {
+        return !! $this->economic_complements()->where('eco_com_procedure_id',$eco_com_procedure_id)->get()->count();
+    }
 }

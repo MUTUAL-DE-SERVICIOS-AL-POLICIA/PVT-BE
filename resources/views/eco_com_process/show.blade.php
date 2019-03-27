@@ -11,19 +11,9 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
-            {{--
-            <correlative doc-id="{{ $eco_com_process->id }}" wf-state-id="{{ $eco_com_process->wf_state_current_id }}" type="retFun"></correlative> --}} @if(Util::getRol()->id == 10 || Util::isRegionalRole())
-            <ret-fun-certification-button title="Imprimir recepción" ret-fun-id="{{ $eco_com_process->id }}" url-print="{{ route('ret_fun_print_reception', $eco_com_process->id) }}"
-                type="retFun">
-            </ret-fun-certification-button>
-            @endif @if(Muserpol\Helpers\Util::getRol()->id == 15)
-            <ret-fun-certification-button title="Imprimir Certificacion de Archivo" ret-fun-id="{{ $eco_com_process->id }}" url-print="{{ route('ret_fun_print_file', $affiliate->id) }}">
-            </ret-fun-certification-button>
-            @endif @if(Muserpol\Helpers\Util::getRol()->id == 14)
-            <ret-fun-certification-button title="Imprimir Dictamen Legal" ret-fun-id="{{ $eco_com_process->id }}" url-print="{{ route('ret_fun_print_legal_dictum', $eco_com_process->id)}}"
-                message="true">
-            </ret-fun-certification-button>
-            @endif
+            <eco-com-create-button :eco-com-process="{{ $eco_com_process }}" :eco-com-procedures="{{ json_encode($eco_com_procedures) }}"
+            >
+            </eco-com-create-button>
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite

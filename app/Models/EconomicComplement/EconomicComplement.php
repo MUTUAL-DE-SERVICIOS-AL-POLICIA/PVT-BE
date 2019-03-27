@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class EconomicComplement extends Model
 {
+    // protected $table = 'economic_complements_1';
+    protected $guarded = [];
     public function user()
     {
         return $this->belongsTo('Muserpol\User');

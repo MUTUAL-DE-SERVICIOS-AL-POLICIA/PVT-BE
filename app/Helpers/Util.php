@@ -23,6 +23,8 @@ use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Models\Voucher;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
 class Util
 {
     public static function isRegionalRole()
@@ -879,6 +881,18 @@ class Util
     {
         return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
     }
+    public static function getLastCodeEconomicComplement($eco_com_procedure_id)
+    {
+        $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
+        $has_eco_com= $eco_com_procedure->economic_complements->count();
+        $number_code = 1;
+        if ($has_eco_com) {
+            $code = $eco_com_procedure->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last()->code;
+            $number_code = explode('/',$code)[0] + 1;
+        }
+        $code = $number_code.'/'.(strtoupper($eco_com_procedure->semester[0])).'/'.(Carbon::parse($eco_com_procedure->year)->year);
+        return $code;
+    }
     public static function parseRequest($data, $prefix)
     {
         $values = array();
@@ -916,5 +930,14 @@ class Util
         } else {
             return false;
         }
+    }
+    /**
+     * Economic Complement
+     */
+    public static function getEcoComCurrentProcedure()
+    {
+        $ids = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->get()->pluck('id');
+        $procedure_active = array($ids[0], $ids[1]);
+        return $procedure_active;
     }
 }

@@ -757,4 +757,9 @@ class Affiliate extends Model
     {
         return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComProcess');
     }
+
+    public function hasEcoComProcessActive()
+    {
+        return !! $this->eco_com_processes()->where('status', true)->get()->count();
+    }
 }

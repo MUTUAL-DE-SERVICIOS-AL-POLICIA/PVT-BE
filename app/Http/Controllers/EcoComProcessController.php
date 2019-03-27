@@ -22,6 +22,7 @@ use Muserpol\Helpers\ID;
 use Muserpol\User;
 use Auth;
 use Illuminate\Support\Facades\Log;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
 
 class EcoComProcessController extends Controller
 {
@@ -45,6 +46,9 @@ class EcoComProcessController extends Controller
 
         $user = auth()->user();
         $affiliate = Affiliate::find($affiliate_id);
+        if ($affiliate->hasEcoComProcessActive()) {
+            return "no se puede crear el tramite, porque tiene tramites activos";
+        }
         $degrees = Degree::all();
         $categories = Category::all();
         $pension_entities = PensionEntity::all();
@@ -86,7 +90,7 @@ class EcoComProcessController extends Controller
     public function store(Request $request)
     {
         $affiliate = Affiliate::findOrFail($request->affiliate_id);
-        if ($affiliate->eco_com_processes()->where('status', true)->get()->count()) {
+        if ($affiliate->hasEcoComProcessActive()) {
             return "no se puede crear el tramite, porque tiene tramites activos";
         }
         $eco_com_process = new EcoComProcess();
@@ -210,6 +214,18 @@ class EcoComProcessController extends Controller
             ->leftJoin('procedure_requirements', 'eco_com_process_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
             ->orderby('procedure_requirements.number', 'ASC')
             ->where('eco_com_process_submitted_documents.eco_com_process_id', $id);
+
+        /**
+         ** for economic complement
+         */
+        $eco_com_procedure_ids = Util::getEcoComCurrentProcedure();
+        $has_last = !! $eco_com_process->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_ids[0])->get()->count();
+        $has_before_last = !! $eco_com_process->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_ids[1])->get()->count();
+        $eco_com_procedure_last = EcoComProcedure::find($eco_com_procedure_ids[0]);
+        $eco_com_procedure_last->has = $has_last;
+        $eco_com_procedure_before_last = EcoComProcedure::find($eco_com_procedure_ids[1]);
+        $eco_com_procedure_before_last->has = $has_before_last;
+        $eco_com_procedures = array($eco_com_procedure_last, $eco_com_procedure_before_last);
         $data = [
             'eco_com_process' => $eco_com_process,
             'affiliate' => $affiliate,
@@ -229,6 +245,7 @@ class EcoComProcessController extends Controller
             'submitted' =>  $submitted->pluck('eco_com_process_submitted_documents.procedure_requirement_id', 'procedure_requirements.number'),
             'submit_documents' => $submitted->get(),
 
+            'eco_com_procedures' => $eco_com_procedures,
         ];
         return view('eco_com_process.show', $data);
     }

@@ -107,3 +107,12 @@ export function camelCaseToSnakeCase(myStr) {
     }
     return null;
 }
+export function isPensionEntitySenasir(value){
+    return value == 5
+}
+export function getNamePensionEntity(value){
+    if (value == 5){
+        return 'SENASIR'
+    }
+    return 'APS'
+}

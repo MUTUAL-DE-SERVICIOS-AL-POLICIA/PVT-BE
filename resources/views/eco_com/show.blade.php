@@ -1,0 +1,1 @@
+<h1>@json($economic_complement)</h1>
