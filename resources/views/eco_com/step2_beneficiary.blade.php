@@ -9,7 +9,7 @@
                         <label class="control-label">Tiene Apoderado</label>
                     </div>
                     <div class="col-md-8">
-                        <input type="checkbox" v-model="has_legal_guardian">
+                        <input type="checkbox" v-model="has_legal_guardian" name="has_legal_guardian">
                     </div>
                 </div>
                 <div class="col-md-6" v-if="has_legal_guardian">
@@ -366,7 +366,7 @@
                 <div class="col-md-3">
                     <div class="form-group"><label class="col-sm-4 control-label">Ciudad</label>
                         <div class="col-md-8">
-                            <select name="ecoComBeneficiary.address[0].city_address_id" v-model="ecoComBeneficiary.address[0].city_address_id" class="form-control">
+                            <select name="beneficiary_city_address_id" v-model="ecoComBeneficiary.address[0].city_address_id" class="form-control">
                                 <option :value="null"></option>
                                 <option v-for="(city, index) in cities" :value="city.id" >@{{ city.name }}</option>
                             </select>
@@ -375,19 +375,19 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group"><label class="col-sm-4 control-label">Zona</label>
-                        <div class="col-sm-8"><input type="text" name="ecoComBeneficiary.address[0].zone" v-model.trim="ecoComBeneficiary.address[0].zone"
+                        <div class="col-sm-8"><input type="text" name="beneficiary_zone" v-model.trim="ecoComBeneficiary.address[0].zone"
                                 class="form-control"></div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group"><label class="col-sm-4 control-label">Calle</label>
-                        <div class="col-sm-8"><input type="text" name="ecoComBeneficiary.address[0].street" v-model.trim="ecoComBeneficiary.address[0].street"
+                        <div class="col-sm-8"><input type="text" name="beneficiary_street" v-model.trim="ecoComBeneficiary.address[0].street"
                                 class="form-control"></div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group"><label class="col-sm-4 control-label">Nro</label>
-                        <div class="col-sm-8"><input type="text" name="ecoComBeneficiary.address[0].number_address" v-model.trim="ecoComBeneficiary.address[0].number_address"
+                        <div class="col-sm-8"><input type="text" name="beneficiary_number_address" v-model.trim="ecoComBeneficiary.address[0].number_address"
                                 class="form-control"></div>
                     </div>
                 </div>

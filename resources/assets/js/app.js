@@ -393,6 +393,7 @@ Vue.component('eco-com-process-step1-requirements-edit', require('./components/e
 
 // Eco Com
 Vue.component('eco-com-create-button', require('./components/eco_com/CreateButton.vue'));
+Vue.component('eco-com-form', require('./components/eco_com/Form.vue'));
 Vue.component('eco-com-step1-requirements', require('./components/eco_com/Step1Requirements.vue'));
 Vue.component('eco-com-step2-beneficiary', require('./components/eco_com/Step2Beneficiary.vue'));
 Vue.component('eco-com-step3-rents', require('./components/eco_com/Step3Rents.vue'));

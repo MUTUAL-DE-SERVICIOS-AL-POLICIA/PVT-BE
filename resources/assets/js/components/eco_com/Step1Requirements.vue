@@ -51,7 +51,7 @@ export default {
       "retFunForm/setCity",
       this.cities.filter(city => city.id == this.city_id)[0].name
     );
-    this.onChooseProcedureType();
+    // this.onChooseProcedureType();
   },
   methods: {
     getRequirements() {

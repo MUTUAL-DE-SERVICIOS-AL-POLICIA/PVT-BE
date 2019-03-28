@@ -93,6 +93,11 @@ class EcoComProcessController extends Controller
         if ($affiliate->hasEcoComProcessActive()) {
             return "no se puede crear el tramite, porque tiene tramites activos";
         }
+        /**
+         ** update affiliate info
+         */
+        $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->save();
         $eco_com_process = new EcoComProcess();
         $eco_com_process->user_id = auth()->user()->id;
         $eco_com_process->affiliate_id = $request->affiliate_id;
@@ -126,7 +131,7 @@ class EcoComProcessController extends Controller
             $address->street = $request->beneficiary_street;
             $address->number_address = $request->beneficiary_number_address;
             $address->save();
-            if ($request->procedure_modality_id == 25) {
+            if ($request->procedure_modality_id == 24) {
                 $eco_com_process->affiliate->address()->save($address);
             }
             $eco_com_beneficiary->address()->save($address);
@@ -152,7 +157,6 @@ class EcoComProcessController extends Controller
                 $submit->save();
             }
         }
-
         return redirect()->action('EcoComProcessController@show', ['id' => $eco_com_process->id]);
     }
 

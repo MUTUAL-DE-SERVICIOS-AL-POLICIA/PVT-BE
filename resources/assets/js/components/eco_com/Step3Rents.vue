@@ -11,12 +11,12 @@ export default {
     return {
       aps_total_fsa: this.ecoCom.aps_total_fsa,
       aps_total_cc: this.ecoCom.aps_total_cc,
-      aps_total_ca: this.ecoCom.aps_total_ca,
+      aps_total_fs: this.ecoCom.aps_total_fs,
 
-      aps_disability: this.ecoCom.aps_disability,
+      aps_total_disability: this.ecoCom.aps_total_disability,
       sub_total_rent: this.ecoCom.sub_total_rent,
       reimbursement: this.ecoCom.reimbursement,
-      dignity_pension: this.ecoCom.dignity_pension,
+      dignity_pension: this.ecoCom.dignity_pension
     };
   },
   computed: {
@@ -30,15 +30,16 @@ export default {
       return (
         parseFloat(parseMoney(this.aps_total_fsa)) +
         parseFloat(parseMoney(this.aps_total_cc)) +
-        parseFloat(parseMoney(this.aps_total_ca))
+        parseFloat(parseMoney(this.aps_total_fs)) +
+        parseFloat(parseMoney(this.aps_total_disability))
       );
     },
     totalSumSenasir() {
       return (
         parseFloat(parseMoney(this.sub_total_rent)) -
-        parseFloat(parseMoney(this.reimbursement)) -
+        parseFloat(parseMoney(this.reimbursement)) +
         parseFloat(parseMoney(this.dignity_pension)) +
-        parseFloat(parseMoney(this.aps_disability))
+        parseFloat(parseMoney(this.aps_total_disability))
       );
     }
   }

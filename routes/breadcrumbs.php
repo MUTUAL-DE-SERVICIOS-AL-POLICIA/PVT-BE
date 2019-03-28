@@ -172,7 +172,7 @@ Breadcrumbs::register('treasury_select_report', function($breadcrumbs)
 
 
 /**
- * Economic Complement
+ * eco com process
  */
 
 Breadcrumbs::register('eco_com_process', function($breadcrumbs)
@@ -189,4 +189,16 @@ Breadcrumbs::register('create_eco_com_process', function($breadcrumbs, $affiliat
 	$breadcrumbs->parent('eco_com_process');
 	$breadcrumbs->push("Nuevo Trámite Inclusion");
 	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
+});
+/**
+ * Economic Complement
+ */
+Breadcrumbs::register('eco_com', function($breadcrumbs)
+{
+	$breadcrumbs->push('Complemento Económico', URL::to('quota_aid'));
+});
+Breadcrumbs::register('show_eco_com', function($breadcrumbs, $eco_com)
+{
+	$breadcrumbs->parent('eco_com');
+	$breadcrumbs->push('Tramite N°: '.$eco_com->code);
 });
