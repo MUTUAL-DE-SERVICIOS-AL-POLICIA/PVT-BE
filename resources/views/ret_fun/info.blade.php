@@ -31,7 +31,7 @@
                         <strong>Ciudad de Recepcion:</strong>
                     </div>
                     <div class="col-md-4">
-                        {!! Form::select('city_start_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_start_id',':disabled'=>'!editing'])
+                        {!! Form::select('city_start_id', $cities, null , ['placeholder' => 'Seleccione ciudad', 'class' => 'form-control','v-model'=>'form.city_start_id',':disabled'=>'!editing'])
                         !!}
                     </div>
                     {{-- <div class="col-md-1"></div> --}}
@@ -53,7 +53,7 @@
                         <strong>Regional:</strong>&nbsp;
                     </div>
                     <div class="col-md-4">
-                        {!! Form::select('city_end_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_end_id',':disabled'=>'!editing'])
+                        {!! Form::select('city_end_id', $cities, null , ['placeholder' => 'Seleccione ciudad', 'class' => 'form-control','v-model'=>'form.city_end_id',':disabled'=>'!editing'])
                         !!}
                     </div>
                     {{-- <div class="col-md-1"></div> --}}

@@ -1387,7 +1387,7 @@ class RetirementFundCertificationController extends Controller
                 if($quantity > 1) {
                     $person .=" como herederos legales acreditados mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
                 } else {
-                    $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de la cuidad de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
+                    $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de la ciudad de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
                 }
             //} 
 
@@ -1414,7 +1414,7 @@ class RetirementFundCertificationController extends Controller
                     if($stored_quantity > 1) {
                         $person .=" como herederos legales acreditados mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de ".$testimony->place." a cargo de ".$testimony->notary."";
                     } else {
-                        $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de la cuidad de ".$testimony->place." a cargo de ".$testimony->notary."";
+                        $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de la ciudad de ".$testimony->place." a cargo de ".$testimony->notary."";
                     }                    
                 }
             } 
@@ -1663,7 +1663,7 @@ class RetirementFundCertificationController extends Controller
                     $reserved = true;
                     $reserved_quantity = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
-                    $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
+                    $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la ciudad de ".$certification->place.", se evidencia 
                     la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes ":" la Cuota Parte ")." salvando los derechos del beneficiario ".
                     ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
                     ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 29, 34, 35 y 41 del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resoluciones de Directorio Nros. 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de frebrero de 2019, de la siguiente manera:<br><br>";

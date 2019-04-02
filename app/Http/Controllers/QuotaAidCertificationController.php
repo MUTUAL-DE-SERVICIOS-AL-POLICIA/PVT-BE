@@ -668,7 +668,7 @@ class QuotaAidCertificationController extends Controller
                 if($quantity > 1) {
                     $person .=" como herederos legales acreditados mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por ".$testimony_applicant->court." de ".$testimony_applicant->place." a cargo del (la) ".$testimony_applicant->notary."";
                 } else {
-                    $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por ".$testimony_applicant->court." de la cuidad de ".$testimony_applicant->place." a cargo del (la) ".$testimony_applicant->notary."";
+                    $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por ".$testimony_applicant->court." de la ciudad de ".$testimony_applicant->place." a cargo del (la) ".$testimony_applicant->notary."";
                 }
             //} 
 
@@ -695,7 +695,7 @@ class QuotaAidCertificationController extends Controller
                     if($stored_quantity > 1) {
                         $person .=" como herederos legales acreditados mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por ".$testimony->court." de ".$testimony->place." a cargo de ".$testimony->notary."";
                     } else {
-                        $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por ".$testimony->court." de la cuidad de ".$testimony->place." a cargo de ".$testimony->notary."";
+                        $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por ".$testimony->court." de la ciudad de ".$testimony->place." a cargo de ".$testimony->notary."";
                     }                    
                 }
             } 
@@ -859,7 +859,7 @@ class QuotaAidCertificationController extends Controller
                     $certification = $beneficiary->testimonies()->first();
                     //return $certification;
                     $spouse = $affiliate->spouse()->first();
-                    $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
+                    $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la ciudad de ".$certification->place.", se evidencia 
                     la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes  salvando los derechos de los beneficiarios ":" la Cuota Parte salvando los derechos del (de la) beneficiario (a) ");
                     if($quota_aid->procedure_modality_id == 15) {
                         $payment .= ($spouse->gender=="M"?"del Sr. ":"de la Sra. ").Util::fullName($spouse)." con C.I. N° ".$spouse->identity_card." ".($spouse->city_identity_card->first_shortened??"SIN CI");
