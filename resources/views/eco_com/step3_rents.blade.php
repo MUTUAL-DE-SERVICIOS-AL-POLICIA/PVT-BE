@@ -5,7 +5,7 @@
                 Registrar Rentas de
                 <strong>@{{ namePensionEntity }}</strong>
             </legend>
-            <div class="row">
+            <div class="row" v-if="! isSenasir">
                 <div class="col-md-7 col-xs-offset-3">
                     <div class="row">
                         <div class="form-group">
@@ -52,7 +52,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" v-if="isSenasir">
                 <div class="col-md-8 col-xs-offset-3">
                     <div class="row">
                         <div class="form-group">

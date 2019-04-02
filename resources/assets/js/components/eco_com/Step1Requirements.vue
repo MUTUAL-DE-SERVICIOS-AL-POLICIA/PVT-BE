@@ -42,8 +42,7 @@ export default {
 
 
       procedure_modality_name: this.ecoComProcess.procedure_modality.name,
-    //   pension_entity_name: !! this.affiliate.pension_entity.name ? this.affiliate.pension_entity.name : ""
-      pension_entity_name: "some"
+      pension_entity_name: !! this.affiliate.pension_entity.name ? this.affiliate.pension_entity.name : "",
     };
   },
   mounted() {

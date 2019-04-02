@@ -649,7 +649,7 @@ foreach (array_keys($retirement_funds) as $value) {
 		// Economic Complement Process
 		Route::get('/affiliate/{affiliate_id}/eco_com_process/create', 'EcoComProcessController@create');
 		Route::post('eco_com_process_store', 'EcoComProcessController@store')->name('eco_com_process_store');
-		Route::get('eco_com_process/{id}', 'EcoComProcessController@show');
+		Route::get('eco_com_process/{id}', 'EcoComProcessController@show')->name('eco_com_process_show');
 		Route::post('eco_com_process/{eco_com_process_id}/edit_requirements', 'EcoComProcessController@editRequirements')->name('eco_com_process_edit_requirements');
 		Route::patch('eco_com_process_update_information', 'EcoComProcessController@updateInformation')->name('eco_com_process_update_information');
 		Route::patch('eco_com_process/{eco_com_process_id}/update_beneficiary', 'EcoComProcessController@updateBeneficiary')->name('eco_com_process_update_beneficiary');
@@ -657,6 +657,8 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::get('eco_com_process/{eco_com_process_id}/economic_complement/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 		Route::get('economic_complement/{eco_com_id}', 'EconomicComplementController@show');
 		Route::post('economic_complement_store', 'EconomicComplementController@store')->name('economic_complement_store');
+		Route::patch('economic_complement_update_information', 'EconomicComplementController@updateInformation');
+		Route::patch('/update_affiliate_police_eco_com', 'EconomicComplementController@updateAffiliatePoliceEcoCom');
 
 	});
 });

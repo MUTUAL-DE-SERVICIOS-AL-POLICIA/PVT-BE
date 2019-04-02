@@ -390,6 +390,7 @@ Vue.component('eco-com-process-step2-applicant', require('./components/eco_com_p
 Vue.component('eco-com-process-info', require('./components/eco_com_process/Info.vue'));
 Vue.component('eco-com-process-beneficiary', require('./components/eco_com_process/Beneficiary.vue'));
 Vue.component('eco-com-process-step1-requirements-edit', require('./components/eco_com_process/Step1RequirementsEdit.vue'));
+Vue.component('eco-com-process-eco-coms', require('./components/eco_com_process/EcoComs.vue'));
 
 // Eco Com
 Vue.component('eco-com-create-button', require('./components/eco_com/CreateButton.vue'));
@@ -397,6 +398,7 @@ Vue.component('eco-com-form', require('./components/eco_com/Form.vue'));
 Vue.component('eco-com-step1-requirements', require('./components/eco_com/Step1Requirements.vue'));
 Vue.component('eco-com-step2-beneficiary', require('./components/eco_com/Step2Beneficiary.vue'));
 Vue.component('eco-com-step3-rents', require('./components/eco_com/Step3Rents.vue'));
+Vue.component('eco-com-info', require('./components/eco_com/Info.vue'));
 
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));

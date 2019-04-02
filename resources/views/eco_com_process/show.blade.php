@@ -46,7 +46,7 @@
 @if(Session::has('message'))
 <br>
 <div class="alert alert-danger alert-dismissable">
-    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button> {{Session::get('message')}}
+    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button> {!!Session::get('message') !!}
 </div>
 @endif
 
@@ -90,12 +90,11 @@
                 {{-- @endcan --}}
             </div>
             <div id="tab-eco-coms" class="tab-pane">
-                {{-- @can('update',$eco_com_process)
-                <ret-fun-info :eco_com_process="{{ $eco_com_process }}" :rf_city_start="{{$eco_com_process->city_start}}" :rf_city_end="{{$eco_com_process->city_end}}"
-                    :rf_procedure_modality=" {{$eco_com_process->procedure_modality}}" :states="{{ $states }}" inline-template>
-    @include('ret_fun.info', ['eco_com_process'=>$eco_com_process,'cities'=>$birth_cities])
-                </ret-fun-info>
-                @endcan --}}
+                {{-- @can('update',$eco_com_process) --}}
+                <eco-com-process-eco-coms :eco_com_process="{{ $eco_com_process }}" :eco-coms="{{ $eco_coms }}" inline-template>
+                    @include('eco_com_process.eco_coms')
+                </eco-com-process-eco-coms>
+                {{-- @endcan --}}
             </div>
             <div id="tab-affiliate" class="tab-pane">
                 <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>

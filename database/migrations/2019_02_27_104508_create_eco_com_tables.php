@@ -74,6 +74,7 @@ class CreateEcoComTables extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('eco_com_process_id');
             $table->unsignedBigInteger('eco_com_state_id');
+            $table->unsignedBigInteger('eco_com_modality_id');
             $table->unsignedBigInteger('procedure_state_id');
             $table->unsignedBigInteger('eco_com_procedure_id');
             $table->unsignedBigInteger('workflow_id');
@@ -110,6 +111,7 @@ class CreateEcoComTables extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('eco_com_process_id')->references('id')->on('eco_com_processes');
             $table->foreign('eco_com_state_id')->references('id')->on('eco_com_states');
+            $table->foreign('eco_com_modality_id')->references('id')->on('eco_com_modalities');
             $table->foreign('procedure_state_id')->references('id')->on('procedure_states');
             $table->foreign('eco_com_procedure_id')->references('id')->on('eco_com_procedures');
             $table->foreign('workflow_id')->references('id')->on('workflows');
@@ -120,6 +122,7 @@ class CreateEcoComTables extends Migration
             $table->foreign('base_wage_id')->references('id')->on('base_wages');
             $table->foreign('complementary_factor_id')->references('id')->on('complementary_factors');
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::create('eco_com_beneficiaries', function (Blueprint $table) {
             $table->bigIncrements('id');

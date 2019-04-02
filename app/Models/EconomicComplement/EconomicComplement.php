@@ -4,10 +4,14 @@ namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class EconomicComplement extends Model
 {
     // protected $table = 'economic_complements_1';
     protected $guarded = [];
+    use SoftDeletes;
+
     public function user()
     {
         return $this->belongsTo('Muserpol\User');
@@ -55,5 +59,12 @@ class EconomicComplement extends Model
     public function workflow()
     {
         return $this->belongsTo('Muserpol\Models\Workflow\Workflow');
+    }
+    /**
+     *!! TODO
+     */
+    public function eco_com_modality()
+    {
+        return $this->belongsTo('Muserpol\Models\EconomicComplement\EcoComModality');
     }
 }

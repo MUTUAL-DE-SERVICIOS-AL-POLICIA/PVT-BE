@@ -43,7 +43,7 @@
                     <strong>Ente Gestor:</strong>&nbsp;
                 </div>
                 <div class="col-md-4">
-                    <select class="form-control" v-model="form.pension_entity.id" name="pension_entity_id" :disabled='!editing'>
+                    <select class="form-control" v-model="form.pension_entity_id" name="pension_entity_id" :disabled='!editing'>
                         <option v-for="(p, index) in pensionEntities" :value="p.id" :key="index">@{{p.name}}</option>
                     </select>
                 </div>

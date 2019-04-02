@@ -47,7 +47,9 @@ class EcoComProcessController extends Controller
         $user = auth()->user();
         $affiliate = Affiliate::find($affiliate_id);
         if ($affiliate->hasEcoComProcessActive()) {
-            return "no se puede crear el tramite, porque tiene tramites activos";
+            $eco_com_process = $affiliate->eco_com_processes()->where('status', true)->first();
+            return redirect()->action('EcoComProcessController@show', ['id' => $eco_com_process->id])->with('message', 'Ya existe un tramite inicial Activo<br>Cree un tramite para este semestre aqui o finalice el ciclo de este tramite.');
+            // return "no se puede crear el tramite, porque tiene tramites activos";
         }
         $degrees = Degree::all();
         $categories = Category::all();
@@ -220,7 +222,7 @@ class EcoComProcessController extends Controller
             ->where('eco_com_process_submitted_documents.eco_com_process_id', $id);
 
         /**
-         ** for economic complement
+         ** for eco com procedures
          */
         $eco_com_procedure_ids = Util::getEcoComCurrentProcedure();
         $has_last = !! $eco_com_process->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_ids[0])->get()->count();
@@ -230,6 +232,18 @@ class EcoComProcessController extends Controller
         $eco_com_procedure_before_last = EcoComProcedure::find($eco_com_procedure_ids[1]);
         $eco_com_procedure_before_last->has = $has_before_last;
         $eco_com_procedures = array($eco_com_procedure_last, $eco_com_procedure_before_last);
+        /**
+         ** for eco coms
+         */
+        $eco_coms = $eco_com_process
+            ->economic_complements()
+            ->with([
+                'eco_com_modality:id,name',
+                'city:id,name',
+                'wf_state:id,name',
+                'procedure_state:id,name',
+            ])
+            ->get();
         $data = [
             'eco_com_process' => $eco_com_process,
             'affiliate' => $affiliate,
@@ -250,6 +264,7 @@ class EcoComProcessController extends Controller
             'submit_documents' => $submitted->get(),
 
             'eco_com_procedures' => $eco_com_procedures,
+            'eco_coms' => $eco_coms,
         ];
         return view('eco_com_process.show', $data);
     }

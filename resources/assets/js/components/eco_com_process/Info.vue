@@ -11,7 +11,7 @@ export default {
     };
   },
   created() {
-    //   console.log(this.read);
+      console.log(this.form);
   },
   methods: {
     toggle_editing: function() {

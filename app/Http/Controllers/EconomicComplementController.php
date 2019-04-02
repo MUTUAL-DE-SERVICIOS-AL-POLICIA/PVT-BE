@@ -20,6 +20,10 @@ use Muserpol\User;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\ProcedureModality;
 use Muserpol\Models\EconomicComplement\EcoComProcessSubmittedDocument;
+use Muserpol\Models\Degree;
+use Muserpol\Models\Category;
+use Log;
+use Muserpol\Models\AffiliateState;
 
 class EconomicComplementController extends Controller
 {
@@ -96,6 +100,10 @@ class EconomicComplementController extends Controller
         $economic_complement->user_id = Auth::user()->id;
         $economic_complement->eco_com_process_id = $request->eco_com_process_id;
         $economic_complement->eco_com_state_id = 1;
+        /**
+         * !! TODO eco com modality id
+         */
+        $economic_complement->eco_com_modality_id = 1;
         $economic_complement->procedure_state_id = 1;
         $economic_complement->eco_com_procedure_id = $request->eco_com_procedure_id;
         $economic_complement->workflow_id = 1;
@@ -110,19 +118,19 @@ class EconomicComplementController extends Controller
         $economic_complement->inbox_state = true;
         $economic_complement->inbox_state = true;
         if($affiliate->pension_entity_id == 5){
-            $economic_complement->sub_total_rent = $request->sub_total_rent;
-            $economic_complement->reimbursement = $request->reimbursement;
-            $economic_complement->dignity_pension = $request->dignity_pension;
-            $economic_complement->aps_total_disability=$request->aps_total_disability;
+            $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
+            $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
+            $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
+            $economic_complement->aps_total_disability = Util::parseMoney($request->aps_total_disability);
             $economic_complement->aps_total_fsa= null;
             $economic_complement->aps_total_cc= null;
             $economic_complement->aps_total_fs= null;
 
         }else{
-            $economic_complement->aps_total_fsa=$request->aps_total_fsa;
-            $economic_complement->aps_total_cc=$request->aps_total_cc;
-            $economic_complement->aps_total_fs=$request->aps_total_fs;
-            $economic_complement->aps_total_disability=$request->aps_total_disability;
+            $economic_complement->aps_total_fsa = Util::parseMoney($request->aps_total_fsa);
+            $economic_complement->aps_total_cc = Util::parseMoney($request->aps_total_cc);
+            $economic_complement->aps_total_fs = Util::parseMoney($request->aps_total_fs);
+            $economic_complement->aps_total_disability = Util::parseMoney($request->aps_total_disability);
             $economic_complement->sub_total_rent = null;
             $economic_complement->reimbursement = null;
             $economic_complement->dignity_pension = null;
@@ -199,9 +207,13 @@ class EconomicComplementController extends Controller
      */
     public function show($id)
     {
-        $economic_complement = EconomicComplement::findOrFail($id);
-        $eco_com_process = $economic_complement->eco_com_process;
+        $economic_complement = EconomicComplement::with(['wf_state:id,name', 'workflow:id,name', 'eco_com_modality:id,name'])->findOrFail($id);
+
+        $eco_com_process = $economic_complement->eco_com_process()->with(['procedure_modality:id,name'])->first();
         $affiliate = $eco_com_process->affiliate;
+        $degrees = Degree::all();
+        $categories = Category::all();
+
         $states = ProcedureState::all();
         $pension_entities = PensionEntity::all();
 
@@ -217,6 +229,9 @@ class EconomicComplementController extends Controller
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
+        //police info
+        $affiliate_states = AffiliateState::all()->pluck('name', 'id');
+       
         /**
          ** for beneficiary info
          */
@@ -253,6 +268,10 @@ class EconomicComplementController extends Controller
             'is_editable' => $is_editable,
             'eco_com_beneficiary' => $eco_com_beneficiary,
 
+            'degrees' => $degrees,
+            'categories' => $categories,
+            'affiliate_states' => $affiliate_states,
+            
             'user' => $user,
             'procedure_modalities' => $procedure_modalities,
             'requirements' => $procedure_requirements,
@@ -262,7 +281,41 @@ class EconomicComplementController extends Controller
         ];
         return view('eco_com.show',$data);
     }
-
+    public function updateAffiliatePoliceEcoCom(Request $request)
+    {
+        $affiliate = Affiliate::where('id','=', $request->id)->first();
+        // $this->authorize('update', $affiliate);
+        $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
+        $affiliate->item = $request->item;
+        $affiliate->category_id = $request->category_id;
+        $service_year = $request->service_years;
+        $service_month = $request->service_months;
+        Log::info($service_year);
+        Log::info($service_month);
+        if ($service_year > 0 || $service_month > 0 ) {
+            if ($service_month > 0) {
+                $service_year++;
+            }
+            $category = Category::where('from','<=',$service_year)
+            ->where('to','>=',$service_year)
+            ->first();
+            if ($category) {
+                $affiliate->category_id = $category->id;
+                $affiliate->service_years = $request->service_years;
+                $affiliate->service_months = $request->service_months;
+            }
+        }
+        Log::info($request->all());
+        $affiliate->degree_id = $request->degree_id;
+        $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->save();
+        $economic_complement = EconomicComplement::find($request->eco_com_id);
+        $economic_complement->degree_id = $request->degree_id;
+        $economic_complement->category_id = $affiliate->category_id;
+        $economic_complement->save();
+        Log::info('update affiliate and eco com');
+        return array('affiliate' => $affiliate);
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -286,6 +339,35 @@ class EconomicComplementController extends Controller
         //
     }
 
+    public function updateInformation(Request $request)
+    {
+        $economic_complement = EconomicComplement::findOrFail($request->id);
+
+        if($request->procedure_state_id == 3){
+            $economic_complement->code = $economic_complement->code.'A';
+            $economic_complement->save();
+            $eco_com_process = $economic_complement->eco_com_process;
+            $economic_complement->delete();
+            return response()->json([
+                'message' => 'deleted',
+            ], 204);
+        }
+        $economic_complement->degree_id = $request->degree_id;
+        $economic_complement->category_id = $request->category_id;
+        $economic_complement->city_id = $request->city_id;
+        $economic_complement->procedure_state_id = $request->procedure_state_id;
+        $economic_complement->reception_date = $request->reception_date;
+        $economic_complement->save();
+        /**
+         * update affiliate info
+         */
+        $affiliate = $economic_complement->eco_com_process->affiliate;
+        $affiliate->degree_id = $request->degree_id;
+        $affiliate->category_id = $request->category_id;
+        $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->save();
+        return $economic_complement;
+    }
     /**
      * Remove the specified resource from storage.
      *
