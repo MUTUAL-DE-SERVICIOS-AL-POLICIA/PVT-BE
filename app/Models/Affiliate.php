@@ -753,13 +753,17 @@ class Affiliate extends Model
     /**
      * Economic Complements
      */
-    public function eco_com_processes()
+    public function economic_complements()
     {
-        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComProcess');
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EconomicComplement');
     }
 
     public function hasEcoComProcessActive()
     {
         return !! $this->eco_com_processes()->where('status', true)->get()->count();
+    }
+    public function hasEconomicComplementWithProcedure($eco_com_procedure_id)
+    {
+        return !! $this->economic_complements()->where('eco_com_procedure_id',$eco_com_procedure_id)->get()->count();
     }
 }

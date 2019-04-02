@@ -9,6 +9,7 @@ use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Muserpol\Helpers\Util;
+use Log;
 class SearcherController
 {
     private $tables;
@@ -51,7 +52,33 @@ class SearcherController
     public function searchAjax(Request $request){
         $this->getDefaults();
         return json_encode($this->search($request->ci));        
-    }    
+    }
+    public function searchAjaxOnlyAffiliate(Request $request){
+        $ci = $request->ci;
+        Log::info($ci);
+        $affiliate = Affiliate::where('identity_card',$ci)->first();
+        $eco_com = null;
+        if($affiliate){
+            $affiliate->load([
+                'city_identity_card:id,first_shortened,name',
+                'city_birth:id,name',
+                'affiliate_state',
+                'pension_entity:id,name',
+                'category',
+                'degree',
+            ]);
+            //!! TODO getLast
+            $eco_com = $affiliate->economic_complements()->orderByDesc('id')->first();
+            if($eco_com){
+                $eco_com->load([
+                    'eco_com_modality:id,name',
+                    'eco_com_state:id,name'
+                ]);
+            }
+        }
+        return array('affiliate' => $affiliate , 'eco_com'=>$eco_com );
+    }
+
     
 }
 class Person{

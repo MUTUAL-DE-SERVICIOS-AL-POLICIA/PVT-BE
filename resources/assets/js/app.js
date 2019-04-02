@@ -400,6 +400,8 @@ Vue.component('eco-com-step2-beneficiary', require('./components/eco_com/Step2Be
 Vue.component('eco-com-step3-rents', require('./components/eco_com/Step3Rents.vue'));
 Vue.component('eco-com-info', require('./components/eco_com/Info.vue'));
 
+Vue.component('eco-com-search-affiliate', require('./components/eco_com/SearchAffiliate.vue'));
+
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));

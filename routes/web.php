@@ -179,6 +179,7 @@ Route::group(['middleware' => ['auth']], function () {
 			//searcherController
 		Route::get('search/{ci}', 'SearcherController@search');
 		Route::get('search_ajax', 'SearcherController@searchAjax');
+		Route::get('search_ajax_only_affiliate', 'SearcherController@searchAjaxOnlyAffiliate');
 
 			//Contributions
 		Route::resource('contribution', 'ContributionController');
@@ -660,6 +661,14 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::patch('economic_complement_update_information', 'EconomicComplementController@updateInformation');
 		Route::patch('/update_affiliate_police_eco_com', 'EconomicComplementController@updateAffiliatePoliceEcoCom');
 
+
+		Route::get('economic_complement_first_step', 'EconomicComplementController@firstStep')->name('economic_complement_first_step');
+		Route::get('get_eco_com_procedures_active', 'EcoComProcedureController@getProcedureActives')->name('get_eco_com_procedures_active');
+		Route::get('get_eco_com_reception_type', 'EconomicComplementController@getReceptionType');
+		Route::get('get_eco_com_type_beneficiary', 'EconomicComplementController@getTypeBeneficiary');
+
+		Route::get('/affiliate/{affiliate_id}/eco_com_process/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
+		
 	});
 });
 

@@ -24,6 +24,8 @@ use Muserpol\Models\Degree;
 use Muserpol\Models\Category;
 use Log;
 use Muserpol\Models\AffiliateState;
+use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
+use Muserpol\Models\EconomicComplement\EcoComType;
 
 class EconomicComplementController extends Controller
 {
@@ -42,16 +44,15 @@ class EconomicComplementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($eco_com_process_id, $eco_com_procedure_id)
+    public function create($affiliate_id, $eco_com_procedure_id)
     {
-        $eco_com_process = EcoComProcess::with(['procedure_modality'])->find($eco_com_process_id);
-        $has_economic_complement = $eco_com_process->hasEconomicComplementWithProcedure($eco_com_procedure_id);
+        $affiliate = Affiliate::with(['pension_entity'])->find($affiliate_id);
+        $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($eco_com_procedure_id);
         if($has_economic_complement){
-            return redirect()->action('EconomicComplementController@show', ['id' => $eco_com_process->economic_complements()->where('eco_com_procedure_id',$eco_com_procedure_id)->first()->id]);
+            return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id',$eco_com_procedure_id)->first()->id]);
         }
-        $affiliate = $eco_com_process->affiliate()->with(['pension_entity'])->first();
         $cities = City::all();
-        $eco_com_beneficiary = $eco_com_process->eco_com_beneficiary;
+        $eco_com_beneficiary = new EcoComBeneficiary();
         $eco_com_beneficiary->phone_number = explode(',', $eco_com_beneficiary->phone_number);
         $eco_com_beneficiary->cell_phone_number = explode(',', $eco_com_beneficiary->cell_phone_number);
         if (!sizeOf($eco_com_beneficiary->address) > 0) {
@@ -63,16 +64,23 @@ class EconomicComplementController extends Controller
         ->orderBy('procedure_requirements.number', 'ASC')
         ->get();
         $user = Auth::user();
-        $economic_complement = new EconomicComplement();
+        $last_eco_com = $affiliate->economic_complements()->orderByDesc('id')->get()->first();
+        if($last_eco_com){
+            $last_eco_com->procedure_modality_id = $last_eco_com->eco_com_modality->eco_com_type_id;
+        }
+        $modalities = EcoComType::all();
+        $pension_entities = PensionEntity::all();
         $data = [
-            'eco_com_process' => $eco_com_process,
+            // 'eco_com_process' => $eco_com_process,
             'affiliate' => $affiliate,
             'cities' => $cities,
             'eco_com_beneficiary' => $eco_com_beneficiary,
             'requirements' => $requirements,
             'user' => $user,
-            'economic_complement' => $economic_complement,
+            'last_eco_com' => $last_eco_com,
             'eco_com_procedure_id' => $eco_com_procedure_id,
+            'modalities' => $modalities,
+            'pension_entities' => $pension_entities,
         ];
 
         return view('eco_com.create', $data);
@@ -367,6 +375,65 @@ class EconomicComplementController extends Controller
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->save();
         return $economic_complement;
+    }
+    public function firstStep()
+    {
+        $cities = City::all();
+        $data = [
+            'cities' => $cities,
+        ];
+        return view('eco_com.first_step', $data);
+    }
+
+    public function getReceptionType(Request $request)
+    {
+        Log::info($request->all());
+        $reception_type_id = 1;
+        if(!$request->modality_id){
+            return $reception_type_id;
+        }
+        if ($request->last_eco_com_id) {
+            $eco_com = EconomicComplement::find($request->last_eco_com_id);
+            if ($eco_com->eco_com_modality->eco_com_type_id == $request->modality_id ) {
+                $reception_type_id = 2;
+            }
+        }
+        return $reception_type_id;
+    }
+    public function getTypeBeneficiary(Request $request)
+    {
+        if(!$request->affiliate_id){
+            return null;
+        }
+        $affiliate = Affiliate::find($request->affiliate_id);
+        if($request->last_eco_com_id){
+            Log::info("entre");
+            $eco_com = EconomicComplement::find($request->last_eco_com_id);
+            if($eco_com->eco_com_modality->eco_com_type_id == $request->modality_id){
+                $eco_com_beneficiary = $eco_com->eco_com_beneficiary()->with('address')->first();
+                if (!sizeOf($eco_com_beneficiary->address) > 0) {
+                    $eco_com_beneficiary->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
+                }
+                return $eco_com_beneficiary;
+            }
+        }
+        switch ($request->modality_id) {
+            case 1:
+                return $affiliate->with('address')->first();
+                break;
+            case 2:
+                $spouse = $affiliate->spouse->first();
+                $spouse->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
+                if($spouse) {
+                    return $spouse;
+                }
+                return new Spouse();
+                break;
+            default:
+                return new EcoComBeneficiary();
+                break;
+        }
+        return null;
     }
     /**
      * Remove the specified resource from storage.
