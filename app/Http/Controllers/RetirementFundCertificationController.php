@@ -749,7 +749,7 @@ class RetirementFundCertificationController extends Controller
         $affiliate =$retirement_fund->affiliate;
 
         if ($affiliate->hasAvailability()) {
-            if ($retirement_fund->total_availability >= 0) {
+            if ($retirement_fund->total_availability > 0) {
                 $pages[] =\View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
             }
             // if ($retirement_fund->total > 0) {
@@ -761,7 +761,7 @@ class RetirementFundCertificationController extends Controller
         }
         $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
         if ($affiliate->hasAvailability()) {
-            if ($retirement_fund->total_availability >= 0) {
+            if ($retirement_fund->total_availability > 0) {
                 $pages[] =\View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
             }
             // if ($retirement_fund->total > 0) {
