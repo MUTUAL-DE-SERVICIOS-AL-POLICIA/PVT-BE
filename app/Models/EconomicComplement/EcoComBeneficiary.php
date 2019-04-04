@@ -4,6 +4,7 @@ namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Muserpol\Helpers\Util;
 
 class EcoComBeneficiary extends Model
 {
@@ -29,5 +30,13 @@ class EcoComBeneficiary extends Model
     public function address()
     {
         return $this->belongsToMany('\Muserpol\Models\Address', 'address_eco_com_applicant', 'eco_com_applicant_id', 'address_id')->withTimestamps();
+    }
+    public function fullName($style = "uppercase")
+    {
+        return Util::fullName($this, $style);
+    }
+    public function ciWithExt()
+    {
+        return Util::removeSpaces($this->identity_card . ' ' .($this->city_identity_card->first_shortened ?? ''));
     }
 }

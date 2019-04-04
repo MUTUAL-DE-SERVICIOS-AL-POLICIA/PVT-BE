@@ -26,6 +26,8 @@ use Muserpol\Models\AffiliateState;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\EconomicComplement\EcoComType;
 use Carbon\Carbon;
+use DB; 
+use Yajra\Datatables\DataTables;
 use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
 
 class EconomicComplementController extends Controller
@@ -37,7 +39,62 @@ class EconomicComplementController extends Controller
      */
     public function index()
     {
-        //
+        // $modalities =  ProcedureModality::all()->pluck('name');
+        // $cities =  City::all()->pluck('name');
+        // $wf_states =  WorkflowState::where('module_id', 3)->get()->pluck('first_shortened');
+        $data = [
+            // 'modalities' => $modalities,
+            // 'cities' => $cities,
+            // 'wf_states' => $wf_states,
+        ];
+        return view('eco_com.index',$data);
+    }
+    public function getAllEcoCom(DataTables $datatables)
+    {
+        $eco_coms = EconomicComplement::with([
+            'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id,pension_entity_id',
+            'city:id,name,first_shortened',
+            'wf_state:id,name,first_shortened',
+            'eco_com_modality:id,name,shortened',
+            'eco_com_beneficiary',
+            'workflow:id,name',
+        ])->select(
+            'id',
+            'code',
+            'reception_date',
+            'total',
+            'affiliate_id',
+            'city_id',
+            'state',
+            'total',
+            'wf_current_state_id',
+            'eco_com_modality_id',
+            'eco_com_procedure_id',
+            'workflow_id',
+        )
+            ->where('code', 'not like', '%A')
+            ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
+            ->take(1000);
+        return $datatables->eloquent($eco_coms)
+            ->addColumn('eco_com_beneficiary_ci_with_ext', function ($eco_com) {
+                return $eco_com->eco_com_beneficiary ? $eco_com->eco_com_beneficiary->ciWithExt() : '';
+            })
+            ->addColumn('eco_com_beneficiary_full_name', function ($eco_com) {
+                return $eco_com->eco_com_beneficiary ? $eco_com->eco_com_beneficiary->fullName() : '';
+            })
+            ->addColumn('procedure', function ($eco_com) {
+                return $eco_com->eco_com_procedure ? $eco_com->eco_com_procedure->fullName() : '';
+            })
+            ->editColumn('state', function ($eco_com) {
+                return $eco_com->state == 'Edited' ?'Validado' : 'Pendiente';
+            })
+            ->addColumn('pension_entity', function ($eco_com) {
+                return $eco_com->affiliate->pension_entity->name ?? null;
+            })
+            ->addColumn('action', function ($eco_com) {
+                return "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
+            })
+            ->make(true);
     }
 
     /**
@@ -68,7 +125,7 @@ class EconomicComplementController extends Controller
         $last_eco_com = $affiliate->economic_complements()->orderByDesc('id')->get()->first();
         if ($last_eco_com) {
             $last_eco_com->procedure_modality_id = $last_eco_com->eco_com_modality->eco_com_type_id;
-        }else{
+        } else {
             $last_eco_com = new EconomicComplement();
         }
         $modalities = EcoComType::all();
@@ -176,7 +233,7 @@ class EconomicComplementController extends Controller
             $legal_guardian->surname_husband = $request->legal_guardian_surname_husband;
             $legal_guardian->phone_number = implode(',', $request->legal_guardian_phone_number ?? []);
             $legal_guardian->cell_phone_number = implode(',', $request->legal_guardian_cell_phone_number ?? []);
-            $legal_guardian->due_date = Util::verifyBarDate($request->legal_guardian_due_date) ? Util::parseBarDate($request->legal_guardian_due_date) : $request->legal_guardian_due_date;
+            $legal_guardian->due_date = Util::verifyBarDate($request->legal_guardian_due_date) ?Util::parseBarDate($request->legal_guardian_due_date) : $request->legal_guardian_due_date;
             $legal_guardian->is_duedate_undefined = $request->legal_guardian_is_duedate_undefined == 'on';
             if ($request->legal_guardian_is_duedate_undefined == 'on') {
                 $legal_guardian->due_date = null;
@@ -195,14 +252,14 @@ class EconomicComplementController extends Controller
         $eco_com_beneficiary->first_name = $request->eco_com_beneficiary_first_name;
         $eco_com_beneficiary->second_name = $request->eco_com_beneficiary_second_name;
         $eco_com_beneficiary->surname_husband = $request->eco_com_beneficiary_surname_husband ?? null;
-        $eco_com_beneficiary->birth_date = Util::verifyBarDate($request->eco_com_beneficiary_birth_date) ? Util::parseBarDate($request->eco_com_beneficiary_birth_date) : $request->eco_com_beneficiary_birth_date;
+        $eco_com_beneficiary->birth_date = Util::verifyBarDate($request->eco_com_beneficiary_birth_date) ?Util::parseBarDate($request->eco_com_beneficiary_birth_date) : $request->eco_com_beneficiary_birth_date;
         $eco_com_beneficiary->nua = $request->eco_com_beneficiary_nua;
         $eco_com_beneficiary->gender = $request->eco_com_beneficiary_gender;
         $eco_com_beneficiary->civil_status = $request->eco_com_beneficiary_civil_status;
         $eco_com_beneficiary->phone_number = trim(implode(",", $request->eco_com_beneficiary_phone_number ?? []));
         $eco_com_beneficiary->cell_phone_number = trim(implode(",", $request->eco_com_beneficiary_cell_phone_number ?? []));
         $eco_com_beneficiary->city_birth_id = $request->eco_com_beneficiary_city_birth_id;
-        $eco_com_beneficiary->due_date = Util::verifyBarDate($request->eco_com_beneficiary_due_date) ? Util::parseBarDate($request->eco_com_beneficiary_due_date) : $request->eco_com_beneficiary_due_date;
+        $eco_com_beneficiary->due_date = Util::verifyBarDate($request->eco_com_beneficiary_due_date) ?Util::parseBarDate($request->eco_com_beneficiary_due_date) : $request->eco_com_beneficiary_due_date;
         $eco_com_beneficiary->is_duedate_undefined = $request->eco_com_beneficiary_is_duedate_undefined == 'on';
         if ($request->eco_com_beneficiary_is_duedate_undefined == 'on') {
             $eco_com_beneficiary->due_date = null;
@@ -256,7 +313,7 @@ class EconomicComplementController extends Controller
          ** update affiliate and spouse
          */
         switch ($request->modality_id) {
-            // vejez update affiliate
+                // vejez update affiliate
             case 1:
                 $affiliate->city_identity_card_id = $request->eco_com_beneficiary_city_identity_card_id;
                 $affiliate->identity_card = $request->eco_com_beneficiary_identity_card;
@@ -265,23 +322,23 @@ class EconomicComplementController extends Controller
                 $affiliate->first_name = $request->eco_com_beneficiary_first_name;
                 $affiliate->second_name = $request->eco_com_beneficiary_second_name;
                 $affiliate->surname_husband = $request->eco_com_beneficiary_surname_husband ?? null;
-                $affiliate->birth_date = Util::verifyBarDate($request->eco_com_beneficiary_birth_date) ? Util::parseBarDate($request->eco_com_beneficiary_birth_date) : $request->eco_com_beneficiary_birth_date;
+                $affiliate->birth_date = Util::verifyBarDate($request->eco_com_beneficiary_birth_date) ?Util::parseBarDate($request->eco_com_beneficiary_birth_date) : $request->eco_com_beneficiary_birth_date;
                 $affiliate->nua = $request->eco_com_beneficiary_nua;
                 $affiliate->gender = $request->eco_com_beneficiary_gender;
                 $affiliate->civil_status = $request->eco_com_beneficiary_civil_status;
                 $affiliate->phone_number = trim(implode(",", $request->eco_com_beneficiary_phone_number ?? []));
-                $affiliate->cell_phone_number = trim(implode(",", $request->eco_com_beneficiary_cell_phone_number?? []));
+                $affiliate->cell_phone_number = trim(implode(",", $request->eco_com_beneficiary_cell_phone_number ?? []));
                 $affiliate->city_birth_id = $request->eco_com_beneficiary_city_birth_id;
-                $affiliate->due_date = Util::verifyBarDate($request->eco_com_beneficiary_due_date) ? Util::parseBarDate($request->eco_com_beneficiary_due_date) : $request->eco_com_beneficiary_due_date;
+                $affiliate->due_date = Util::verifyBarDate($request->eco_com_beneficiary_due_date) ?Util::parseBarDate($request->eco_com_beneficiary_due_date) : $request->eco_com_beneficiary_due_date;
                 $affiliate->is_duedate_undefined = $request->eco_com_beneficiary_is_duedate_undefined == 'on';
                 if ($request->eco_com_beneficiary_is_duedate_undefined == 'on') {
                     $affiliate->due_date = null;
                 }
                 $affiliate->save();
                 break;
-            // viudedad update or create spouse
+                // viudedad update or create spouse
             case 2:
-                $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
+                $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
                 if (!$spouse) {
                     $spouse = new Spouse();
                 }
@@ -296,12 +353,12 @@ class EconomicComplementController extends Controller
                 $spouse->second_name = $request->eco_com_beneficiary_second_name;
                 $spouse->surname_husband = $request->eco_com_beneficiary_surname_husband ?? null;
                 $spouse->civil_status = $request->eco_com_beneficiary_civil_status;
-                $spouse->birth_date = Util::verifyBarDate($request->eco_com_beneficiary_birth_date) ? Util::parseBarDate($request->eco_com_beneficiary_birth_date) : $request->eco_com_beneficiary_birth_date;
+                $spouse->birth_date = Util::verifyBarDate($request->eco_com_beneficiary_birth_date) ?Util::parseBarDate($request->eco_com_beneficiary_birth_date) : $request->eco_com_beneficiary_birth_date;
                 $spouse->city_birth_id = $request->eco_com_beneficiary_city_birth_id;
                 // $spouse->gender = $request->eco_com_beneficiary_gender;
                 // $spouse-> = trim(implode(",", $request->eco_com_beneficiary_phone_number));
                 // $spouse-> = trim(implode(",", $request->eco_com_beneficiary_cell_phone_number));
-                $spouse->due_date = Util::verifyBarDate($request->eco_com_beneficiary_due_date) ? Util::parseBarDate($request->eco_com_beneficiary_due_date) : $request->eco_com_beneficiary_due_date;
+                $spouse->due_date = Util::verifyBarDate($request->eco_com_beneficiary_due_date) ?Util::parseBarDate($request->eco_com_beneficiary_due_date) : $request->eco_com_beneficiary_due_date;
                 $spouse->is_duedate_undefined = $request->eco_com_beneficiary_is_duedate_undefined == 'on';
                 if ($request->eco_com_beneficiary_is_duedate_undefined == 'on') {
                     $spouse->due_date = null;
@@ -318,7 +375,7 @@ class EconomicComplementController extends Controller
                 $affiliate->first_name = $request->affiliate_first_name;
                 $affiliate->second_name = $request->affiliate_second_name;
                 $affiliate->surname_husband = $request->affiliate_surname_husband ?? null;
-                $affiliate->birth_date = Util::verifyBarDate($request->affiliate_birth_date) ? Util::parseBarDate($request->affiliate_birth_date) : $request->affiliate_birth_date;
+                $affiliate->birth_date = Util::verifyBarDate($request->affiliate_birth_date) ?Util::parseBarDate($request->affiliate_birth_date) : $request->affiliate_birth_date;
                 $affiliate->gender = $request->affiliate_gender;
                 $affiliate->save();
 
@@ -363,7 +420,7 @@ class EconomicComplementController extends Controller
      */
     public function show($id)
     {
-        $economic_complement = EconomicComplement::with(['wf_state:id,name', 'workflow:id,name', 'eco_com_modality:id,name'])->findOrFail($id);
+        $economic_complement = EconomicComplement::with(['wf_state:id,name', 'workflow:id,name', 'eco_com_modality:id,name,shortened'])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
         $categories = Category::all();
@@ -438,7 +495,7 @@ class EconomicComplementController extends Controller
     {
         $affiliate = Affiliate::where('id', '=', $request->id)->first();
         // $this->authorize('update', $affiliate);
-        $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
+        $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ?Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
         $affiliate->item = $request->item;
         $affiliate->category_id = $request->category_id;
         $service_year = $request->service_years;
@@ -563,7 +620,7 @@ class EconomicComplementController extends Controller
                 return $affiliate;
                 break;
             case 2:
-                $spouse = Spouse::where('affiliate_id',$affiliate->id)->first();
+                $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
                 if (!$spouse) {
                     // $spouse = new Spouse();
                     $spouse = new EcoComBeneficiary();

@@ -36,6 +36,9 @@
             <li class="{{ isActiveRoute('affiliate.index') }}" data-toggle="tooltip" data-placement="right" title="Afiliados">
                 <a href="{{ url('/affiliate') }}"><i class="fa fa-user"></i> <span class="nav-label">Afiliados</span></a>
             </li>
+            <li class="{{ isActiveRoute('eco_com.index') }}" data-toggle="tooltip" data-placement="right" title="Fondo de Retiro">
+                <a href="{{ url('/eco_com') }}"><i class="{{Muserpol\Helpers\Util::IconModule(2)}}"></i> <span class="nav-label">Complemento Economico</span></a>
+            </li>
             <li class="{{ isActiveRoute('ret_fun.index') }}" data-toggle="tooltip" data-placement="right" title="Fondo de Retiro">
                 <a href="{{ url('/ret_fun') }}"><i class="{{Muserpol\Helpers\Util::IconModule(3)}}"></i> <span class="nav-label">Fondo de Retiro</span></a>
             </li>

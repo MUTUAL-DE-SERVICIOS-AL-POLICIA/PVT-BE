@@ -172,30 +172,21 @@ Breadcrumbs::register('treasury_select_report', function($breadcrumbs)
 
 
 /**
- * eco com process
- */
-
-Breadcrumbs::register('eco_com_process', function($breadcrumbs)
-{
-	$breadcrumbs->push('Complemento Económico Padre', URL::to('quota_aid'));
-});
-Breadcrumbs::register('show_eco_com_process', function($breadcrumbs, $eco_com_process)
-{
-	$breadcrumbs->parent('eco_com_process');
-	$breadcrumbs->push('Complemento Económico Padre', $eco_com_process->procedure_modality->name);
-});
-Breadcrumbs::register('create_eco_com_process', function($breadcrumbs, $affiliate)
-{
-	$breadcrumbs->parent('eco_com_process');
-	$breadcrumbs->push("Nuevo Trámite Inclusion");
-	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
-});
-/**
  * Economic Complement
  */
 Breadcrumbs::register('eco_com', function($breadcrumbs)
 {
-	$breadcrumbs->push('Complemento Económico', URL::to('quota_aid'));
+	$breadcrumbs->push('Complemento Económico', URL::to('eco_com'));
+});
+Breadcrumbs::register('create_eco_com_first_step', function($breadcrumbs)
+{
+	$breadcrumbs->parent('eco_com');
+	$breadcrumbs->push("Nuevo Trámite", URL::to('economic_complement_first_step'));
+});
+Breadcrumbs::register('create_eco_com', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('create_eco_com_first_step');
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
 Breadcrumbs::register('show_eco_com', function($breadcrumbs, $eco_com)
 {

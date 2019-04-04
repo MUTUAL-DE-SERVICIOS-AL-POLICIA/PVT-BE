@@ -6,7 +6,7 @@
             </div>
             {{-- @can('update',new Muserpol\Models\RetirementFund\RetirementFund) --}}
             <div class="text-right">
-                <button class="btn btn-danger" @click="deleteEcoCom()" ><i class="fa fa-trash-o"></i></button>
+                <button v-if="editing" class="btn btn-danger" @click="deleteEcoCom()" ><i class="fa fa-trash-o"></i></button>
                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggleEditing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
             </div>
             {{-- @else
@@ -41,6 +41,24 @@
                     {{-- <inpust type="date" v-model="form.reception_date" class="form-control" disabled> @endif --}}
                 </div>
                 <div class="col-md-2">
+                    <strong>Regional:</strong>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" v-model="form.city_id" name="city_id" :disabled='!editing'>
+                        <option v-for="(c, index) in cities" :value="c.id" :key="index">@{{c.name}}</option>
+                    </select>
+                </div>
+            </div>
+            {{-- <div class="row">
+                <div class="col-md-2">
+                    <strong>Estado:</strong>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" v-model="form.procedure_state_id" name="procedure_state_id" :disabled='!editing'>
+                        <option v-for="(state, index) in states" :value="state.id" :key="index">@{{state.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
                     <strong>Ente Gestor:</strong>&nbsp;
                 </div>
                 <div class="col-md-4">
@@ -51,25 +69,6 @@
             </div>
             <br>
             <div class="row">
-                {{-- <div class="col-md-2">
-                    <strong>Estado:</strong>
-                </div>
-                <div class="col-md-4">
-                    <select class="form-control" v-model="form.procedure_state_id" name="procedure_state_id" :disabled='!editing'>
-                        <option v-for="(state, index) in states" :value="state.id" :key="index">@{{state.name}}</option>
-                    </select>
-                </div> --}}
-                <div class="col-md-2">
-                    <strong>Regional:</strong>
-                </div>
-                <div class="col-md-4">
-                    <select class="form-control" v-model="form.city_id" name="city_id" :disabled='!editing'>
-                        <option v-for="(c, index) in cities" :value="c.id" :key="index">@{{c.name}}</option>
-                    </select>
-                </div>
-            </div>
-            <br>
-            {{-- <div class="row">
                 <div class="col-md-2">
                     <strong>Grado:</strong>
                 </div>
@@ -93,7 +92,7 @@
                     <strong>Tipo de Prestacion:</strong>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" :value="ecoCom.eco_com_modality.name" disabled>
+                    <input type="text" class="form-control" :value="ecoCom.eco_com_modality.shortened" disabled>
                 </div>
                 <div class="col-md-2">
                     <strong>Mes Renta:</strong>
@@ -112,14 +111,14 @@
                         @{{ecoCom.wf_state.name}}
                     </span>
                 </div>
-                <div class="col-md-2">
+                {{-- <div class="col-md-2">
                     <strong>Flujo:</strong>
                 </div>
                 <div class="col-md-4">
                     <span>
                         @{{ecoCom.workflow.name}}
                     </span>
-                </div>
+                </div> --}}
             </div>
             <br>
             <div v-show="editing">
@@ -127,11 +126,6 @@
                     <button class="btn btn-danger" type="button" @click="cancel()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
                     <button class="btn btn-primary" type="button" @click="update"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
                 </div>
-            </div>
-        </div>
-        <div v-show="editing">
-            <div>
-                <button class="btn btn-danger btn-block" type="button" @click="cancel()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
             </div>
         </div>
     </div>

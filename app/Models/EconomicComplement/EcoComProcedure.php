@@ -3,6 +3,8 @@
 namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
+use Muserpol\Helpers\Util;
+use Carbon\Carbon;
 
 class EcoComProcedure extends Model
 {
@@ -18,5 +20,9 @@ class EcoComProcedure extends Model
     public function getNextProcedure()
     {
         return EcoComProcedure::where('sequence',$this->sequence +1)->first();
+    }
+    public function fullName()
+    {
+        return  Util::removeSpaces($this->semester.'/'.Carbon::parse($this->year)->year);
     }
 }
