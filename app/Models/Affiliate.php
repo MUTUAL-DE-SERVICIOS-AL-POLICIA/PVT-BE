@@ -58,6 +58,13 @@ class Affiliate extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function getDueDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     public function getDateDeathAttribute($value)
     {
         if(!$value){
@@ -766,4 +773,15 @@ class Affiliate extends Model
     {
         return !! $this->economic_complements()->where('eco_com_procedure_id',$eco_com_procedure_id)->get()->count();
     }
+    public function canCreateEcoComProcedure($eco_com_procedure_id)
+    {
+        /**
+         *!! TODO
+         *!! verificar si se puede crear tramite en esa fecha
+         ** mmmm date_derelict < start date procedure
+         */
+        // return rand(0,1) == 1;
+        return true;
+    }
+
 }

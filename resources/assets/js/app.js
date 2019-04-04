@@ -131,6 +131,19 @@ instance.extend('max_date', {
     return moment().subtract(18, 'years').diff(moment(value, "DD/MM/YYYY"), "days") > 0;
   }
 });
+instance.extend('max_due_date', {
+  getMessage: (field) => `La fecha ingresada no es valida.`,
+  validate: (value) => {
+    return moment(value,'DD/MM/YYYY').isBetween(moment(), moment().add(6, 'years'))
+  }
+});
+instance.extend('phone_number', {
+  getMessage: (field) => `El teléfono ingresado es incorrecto.`,
+  validate: (value) => {
+    let regex = /((\(\d{1}\) ?)|(\d{3}-))?\d{3}-\d{3}/i;
+    return regex.exec(value) !== null;
+  }
+});
 instance.extend('max_current_date', {
   getMessage: (field) => `La fecha ingresada no debe ser mayor a la fecha actual.`,
   validate: (value) => {
@@ -225,7 +238,8 @@ let moneyInputMask = {
   digits: 2,
   digitsOptional: false,
   prefix: "Bs ",
-  placeholder: "0"
+  placeholder: "0",
+  max:1000000000
 };
 Vue.directive('money',{
   inserted: function(el) {
@@ -388,8 +402,6 @@ Vue.component('eco-com-process-form', require('./components/eco_com_process/Form
 Vue.component('eco-com-process-step1-requirements', require('./components/eco_com_process/Step1Requirements.vue'));
 Vue.component('eco-com-process-step2-applicant', require('./components/eco_com_process/Step2Applicant.vue'));
 Vue.component('eco-com-process-info', require('./components/eco_com_process/Info.vue'));
-Vue.component('eco-com-process-beneficiary', require('./components/eco_com_process/Beneficiary.vue'));
-Vue.component('eco-com-process-step1-requirements-edit', require('./components/eco_com_process/Step1RequirementsEdit.vue'));
 Vue.component('eco-com-process-eco-coms', require('./components/eco_com_process/EcoComs.vue'));
 
 // Eco Com
@@ -401,6 +413,8 @@ Vue.component('eco-com-step3-rents', require('./components/eco_com/Step3Rents.vu
 Vue.component('eco-com-info', require('./components/eco_com/Info.vue'));
 
 Vue.component('eco-com-search-affiliate', require('./components/eco_com/SearchAffiliate.vue'));
+Vue.component('eco-com-beneficiary', require('./components/eco_com/Beneficiary.vue'));
+Vue.component('eco-com-step1-requirements-edit', require('./components/eco_com/Step1RequirementsEdit.vue'));
 
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
@@ -408,6 +422,51 @@ Vue.component('correlative', require('./components/utils/Correlative.vue'));
 Vue.component('certification-button', require('./components/utils/CertificationButton.vue'));
 
 
+/**
+ * custom component
+ */
+Vue.component('animated-integer', {
+  template: '<span>{{ tweeningValue }}</span>',
+  props: {
+    value: {
+      type: Number,
+      required: true
+    }
+  },
+  data: function () {
+    return {
+      tweeningValue: 0
+    }
+  },
+  watch: {
+    value: function (newValue, oldValue) {
+      this.tween(oldValue, newValue)
+    }
+  },
+  mounted: function () {
+    this.tween(0, this.value)
+  },
+  methods: {
+    tween: function (startValue, endValue) {
+      var vm = this
+      function animate () {
+        if (TWEEN.update()) {
+          requestAnimationFrame(animate)
+        }
+      }
+
+      new TWEEN.Tween({ tweeningValue: startValue })
+        .to({ tweeningValue: endValue }, 500)
+        .onUpdate(function () {
+        // !! TODO set format currency
+          vm.tweeningValue = 'Bs '+ this.tweeningValue.toFixed(2)
+        })
+        .start()
+
+      animate()
+    }
+  }
+})
 const app = new Vue({
   el: '#app',
   store

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EconomicComplement extends Model
 {
-    protected $table = 'economic_complements_1';
+    // protected $table = 'economic_complements_1';
     protected $guarded = [];
     use SoftDeletes;
 
@@ -16,9 +16,9 @@ class EconomicComplement extends Model
     {
         return $this->belongsTo('Muserpol\User');
     }
-    public function eco_com_process()
+    public function affiliate()
     {
-        return $this->belongsTo('Muserpol\Models\EconomicComplement\EcoComProcess');
+        return $this->belongsTo('Muserpol\Models\Affiliate');
     }
     public function eco_com_state()
     {
@@ -54,7 +54,7 @@ class EconomicComplement extends Model
     }
     public function wf_state()
     {
-        return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_state_current_id', 'id');
+        return $this->belongsTo('Muserpol\Models\Workflow\WorkflowState', 'wf_current_state_id', 'id');
     }
     public function workflow()
     {

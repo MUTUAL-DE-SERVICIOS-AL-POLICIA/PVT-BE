@@ -56,18 +56,18 @@ class CreateEcoComTables extends Migration
         //     $table->timestamps();
         // });
 
-        // Schema::create('eco_com_process_submitted_documents', function (Blueprint $table) {
-        //     $table->bigIncrements('id');
-        //     $table->bigInteger('eco_com_process_id')->unsigned();
-        //     $table->bigInteger('procedure_requirement_id')->unsigned();
-        //     $table->boolean('is_valid')->default(false);
-        //     $table->date('reception_date');
-        //     $table->text('comment')->nullable();
-        //     $table->foreign('eco_com_process_id')->references('id')->on('eco_com_processes')->onDelete('cascade');
-        //     $table->foreign('procedure_requirement_id')->references('id')->on('procedure_requirements');
-        //     $table->unique(['eco_com_process_id', 'procedure_requirement_id']);
-        //     $table->timestamps();
-        // });
+        Schema::create('eco_com_submitted_documents', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('economic_complement_id')->unsigned();
+            $table->bigInteger('procedure_requirement_id')->unsigned();
+            $table->boolean('is_valid')->default(false);
+            $table->date('reception_date');
+            $table->text('comment')->nullable();
+            $table->foreign('economic_complement_id')->references('id')->on('economic_complements')->onDelete('cascade');
+            $table->foreign('procedure_requirement_id')->references('id')->on('procedure_requirements');
+            $table->unique(['economic_complement_id', 'procedure_requirement_id']);
+            $table->timestamps();
+        });
 
         // Schema::create('economic_complements', function (Blueprint $table) {
         //     $table->bigIncrements('id');
@@ -185,7 +185,7 @@ class CreateEcoComTables extends Migration
         Schema::drop('address_eco_com_applicant');
         // Schema::drop('eco_com_beneficiaries');
         // Schema::drop('economic_complements');
-        // Schema::drop('eco_com_process_submitted_documents');
+        Schema::drop('eco_com_submitted_documents');
         // Schema::drop('eco_com_processes');
     }
 }

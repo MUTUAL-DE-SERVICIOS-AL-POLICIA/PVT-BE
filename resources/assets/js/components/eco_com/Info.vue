@@ -47,10 +47,7 @@ export default {
       axios
         .patch(uri, this.form)
         .then(response => {
-          console.log(response)
-          if(response.status == 204 ){
-            window.location = `/eco_com_process/${this.ecoCom.eco_com_process_id}`
-          }
+          console.log(response);
           this.editing = false;
           this.show_spinner = false;
           this.form = response.data;
@@ -62,6 +59,18 @@ export default {
             "error"
           );
           this.show_spinner = false;
+        });
+    },
+    deleteEcoCom() {
+      axios
+        .delete(`/eco_com/${this.ecoCom.id}`)
+        .then(response => {
+          if (response.status == 204) {
+            window.location = `/`;
+          }
+        })
+        .catch(error => {
+          console.log(error);
         });
     }
   }

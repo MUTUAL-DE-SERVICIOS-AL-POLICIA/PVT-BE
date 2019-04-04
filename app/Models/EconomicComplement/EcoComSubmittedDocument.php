@@ -4,11 +4,12 @@ namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EcoComProcessSubmittedDocument extends Model
+class EcoComSubmittedDocument extends Model
 {
-    public function eco_com_process()
+    protected $table = "eco_com_submitted_documents";
+    public function economic_complement()
     {
-        return $this->belongsTo('Muserpol\Models\EconomicComplement\EcoComProcess');
+        return $this->belongsTo('Muserpol\Models\EconomicComplement\EconomicComplement');
     }
 
     public function procedure_requirement()

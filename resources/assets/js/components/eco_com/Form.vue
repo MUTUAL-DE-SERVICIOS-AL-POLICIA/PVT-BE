@@ -25,6 +25,30 @@ export default {
 
       this.showRequirementsError = val;
     },
+    async validateFirstStep() {
+      let keys = ["modality_id", "pension_entity_id", "city_id"];
+      try {
+        await keys.forEach(k => {
+          this.$refs.uno.$children[0].$validator.validate(k);
+        });
+      } catch (error) {
+        console.log("some error");
+      }
+      await this.$refs.dos.$children[0].$validator.validateAll()
+      return ! await this.$refs.uno.$children[0].$validator.errors.items
+        .map(x => x.field)
+        .some(r => keys.indexOf(r) >= 0);
+    },
+    async validateSecondStep() {
+      await this.$refs.dos.$children[0].$validator.validateAll();
+      return await this.$refs.dos.$children[0].$validator.errors.items
+        .map(x => x.field).length == 0
+    },
+    async validateThirdStep() {
+      await this.$refs.tres.$children[0].$validator.validateAll();
+      return await this.$refs.tres.$children[0].$validator.errors.items
+        .map(x => x.field).length == 0
+    }
     // validateFirstStep() {
     //   this.showRequirementsError = false;
     //   if (!this.$refs.uno.$children[0].city_end_id) {

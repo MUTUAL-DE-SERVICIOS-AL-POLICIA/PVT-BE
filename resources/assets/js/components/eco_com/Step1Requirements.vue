@@ -14,13 +14,13 @@
               v-validate.initial="'required'"
             >
               <option :value="null"></option>
-              <option v-for="type in modalities" :value="type.id" :key="type.id">@{{ type.name }}</option>
+              <option v-for="type in modalities" :value="type.id" :key="type.id">{{ type.name }}</option>
             </select>
             <i v-show="errors.has('modality_id')" class="fa fa-warning text-danger"></i>
             <span
               v-show="errors.has('modality_id')"
               class="text-danger"
-            >@{{ errors.first('modality_id') }}</span>
+            >{{ errors.first('modality_id') }}</span>
           </div>
         </div>
       </div>
@@ -39,13 +39,13 @@
               v-validate.initial="'required'"
               disabled
             >
-              <option v-for="rt in reception_types" :value="rt.id" :key="rt.id">@{{ rt.name }}</option>
+              <option v-for="rt in reception_types" :value="rt.id" :key="rt.id">{{ rt.name }}</option>
             </select>
             <i v-show="errors.has('reception_type_id')" class="fa fa-warning text-danger"></i>
             <span
               v-show="errors.has('reception_type_id')"
               class="text-danger"
-            >@{{ errors.first('reception_type_id') }}</span>
+            >{{ errors.first('reception_type_id') }}</span>
           </div>
         </div>
       </div>
@@ -60,15 +60,16 @@
               name="pension_entity_id"
               id="pension_entity_id"
               v-validate.initial="'required'"
+              @change="setPensionEntity()"
             >
               <option :value="null"></option>
-              <option v-for="(p, index) in pensionEntities" :value="p.id" :key="index">@{{p.name}}</option>
+              <option v-for="(p, index) in pensionEntities" :value="p.id" :key="index">{{p.name}}</option>
             </select>
             <i v-show="errors.has('pension_entity_id')" class="fa fa-warning text-danger"></i>
             <span
               v-show="errors.has('pension_entity_id')"
               class="text-danger"
-            >@{{ errors.first('pension_entity_id') }}</span>
+            >{{ errors.first('pension_entity_id') }}</span>
           </div>
         </div>
       </div>
@@ -87,10 +88,10 @@
               v-validate.initial="'required'"
             >
               <option :value="null"></option>
-              <option v-for="city in cities" :value="city.id" :key="city.id">@{{ city.name }}</option>
+              <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
             </select>
             <i v-show="errors.has('city_id')" class="fa fa-warning text-danger"></i>
-            <span v-show="errors.has('city_id')" class="text-danger">@{{ errors.first('city_id') }}</span>
+            <span v-show="errors.has('city_id')" class="text-danger">{{ errors.first('city_id') }}</span>
           </div>
         </div>
       </div>
@@ -112,9 +113,9 @@
           <div class="row">
             <div class="col-md-10">
               <div class="vote-actions">
-                <h1>@{{rq.number}}</h1>
+                <h1>{{rq.number}}</h1>
               </div>
-              <span class="vote-title">@{{rq.document}}</span>
+              <span class="vote-title">{{rq.document}}</span>
               <div class="vote-info">
                 <div class="col-md-2 no-margins no-padding">
                   <i class="fa fa-comments-o"></i> Comentario:
@@ -159,7 +160,7 @@
             v-for="(requirement, index) in aditionalRequirements"
             :value="requirement.id"
             :key="index"
-          >@{{ requirement.document }}</option>
+          >{{ requirement.document }}</option>
         </select>
       </div>
       <transition name="show-requirements-error" enter-active-class="animated bounceInLeft">
@@ -209,12 +210,17 @@ export default {
     };
   },
   mounted() {
+    this.setPensionEntity();
     this.setReceptionType();
-    this.$store.commit("ecoComForm/setCity",this.cities.filter(city => city.id == this.city_id)[0].name);
+    this.setModality();
+    this.$store.commit(
+      "ecoComForm/setCity",
+      this.cities.filter(city => city.id == this.city_id)[0].name
+    );
     // this.$store.commit("ecoComForm/setAffiliate", this.affiliate);
   },
   methods: {
-    onChooseModality(event) {
+    async onChooseModality(event) {
       // const options = event.target.options;
       // const selectedOption = options[options.selectedIndex];
       // if (selectedOption) {
@@ -225,9 +231,16 @@ export default {
       //   };
       //   this.$store.commit("retFunForm/setModality", object);
       // }
-      this.setReceptionType();
-      this.getRequirements();
-      this.getAditionalRequirements();
+      await this.setReceptionType();
+      await this.getRequirements();
+      await this.getAditionalRequirements();
+      await this.setModality();
+    },
+    setPensionEntity() {
+      this.$store.commit("ecoComForm/setPensionEntity", this.pension_entity_id);
+    },
+    setModality() {
+      this.$store.commit("ecoComForm/setModality", {id:this.modality_id, name:null});
     },
     async setReceptionType() {
       let last_eco_com_id = !!this.lastEcoCom ? this.lastEcoCom.id : null;
@@ -250,21 +263,24 @@ export default {
       );
       await this.findBeneficiary();
     },
-    async findBeneficiary(){
-      console.log("finding")
+    async findBeneficiary() {
       let last_eco_com_id = !!this.lastEcoCom ? this.lastEcoCom.id : null;
-
-      await axios.get('/get_eco_com_type_beneficiary',{
-        params:{
-          modality_id: this.modality_id,
-          affiliate_id: this.affiliate.id,
-          last_eco_com_id,
-        }
-      }).then(response => {
-        this.$store.commit("ecoComForm/setEcoComBeneficiary", response.data)
-      }).catch(error=>{
-        console.log(error)
-      })
+      await axios
+        .get("/get_eco_com_type_beneficiary", {
+          params: {
+            modality_id: this.modality_id,
+            affiliate_id: this.affiliate.id,
+            last_eco_com_id
+          }
+        })
+        .then(response => {
+          this.$store.commit("ecoComForm/setEcoComBeneficiary", response.data);
+          this.$store.commit("ecoComForm/setAffiliate", this.affiliate);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+        await this.$validator.validateAll();
     },
     getRequirements() {
       if (!this.modality_id) {

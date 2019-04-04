@@ -1,7 +1,7 @@
 <script>
 export default {
   props: [
-    "ecoComProcess",
+    "ecoCom",
     "procedureModalities",
     "requirements",
     "user",
@@ -31,7 +31,7 @@ export default {
   },
   mounted() {
     this.onChooseProcedureType();
-    this.modality = this.ecoComProcess.procedure_modality_id;
+    this.modality = this.ecoCom.eco_com_modality_id;
     this.getRequirements();
   },
   methods: {
@@ -190,7 +190,7 @@ export default {
       return false;
     },
     store() {
-      let uri = `/eco_com_process/${this.ecoComProcess.id}/edit_requirements`;
+      let uri = `/eco_com/${this.ecoCom.id}/edit_requirements`;
       let req = $("#aditional_requirements").val();
       axios
         .post(uri, {

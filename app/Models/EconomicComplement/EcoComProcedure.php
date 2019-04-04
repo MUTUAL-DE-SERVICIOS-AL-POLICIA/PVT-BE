@@ -15,4 +15,8 @@ class EcoComProcedure extends Model
     {
         return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComProcess');
     }
+    public function getNextProcedure()
+    {
+        return EcoComProcedure::where('sequence',$this->sequence +1)->first();
+    }
 }

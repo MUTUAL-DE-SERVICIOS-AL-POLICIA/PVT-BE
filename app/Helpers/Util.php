@@ -936,8 +936,8 @@ class Util
      */
     public static function getEcoComCurrentProcedure()
     {
-        $ids = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->get()->pluck('id');
-        $procedure_active = array($ids[0], $ids[1]);
-        return $procedure_active;
+        //!! TODO add validate dates
+        $ids = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->take(1)->get()->pluck('id');
+        return $ids;
     }
 }

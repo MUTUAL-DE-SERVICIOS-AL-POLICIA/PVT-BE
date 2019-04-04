@@ -7,7 +7,7 @@
             <br> 
             {{-- @endcan --}}
         </div>
-        <eco-com-process-beneficiary :beneficiary="{{ $eco_com_beneficiary }}" :cities="{{ $cities}}">
-        </eco-com-process-beneficiary>
+        <eco-com-beneficiary :beneficiary="{{ $eco_com_beneficiary }}" :cities="{{ $cities}}">
+        </eco-com-beneficiary>
     </div>
 </div>

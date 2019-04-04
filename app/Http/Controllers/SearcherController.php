@@ -10,6 +10,7 @@ use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Muserpol\Helpers\Util;
 use Log;
+use Carbon\Carbon;
 class SearcherController
 {
     private $tables;
@@ -55,31 +56,22 @@ class SearcherController
     }
     public function searchAjaxOnlyAffiliate(Request $request){
         $ci = $request->ci;
-        Log::info($ci);
         $affiliate = Affiliate::where('identity_card',$ci)->first();
         $eco_com = null;
         if($affiliate){
-            $affiliate->load([
-                'city_identity_card:id,first_shortened,name',
-                'city_birth:id,name',
-                'affiliate_state',
-                'pension_entity:id,name',
-                'category',
-                'degree',
-            ]);
+            $affiliate->full_name = $affiliate->fullName();
+            $affiliate->ci_with_ext = $affiliate->ciWithExt();
+            $affiliate->degree_name = $affiliate->degree->name ?? '';
+            $affiliate->category_percentage = $affiliate->category->name ?? '';
+            $affiliate->pension_entity_name= $affiliate->pension_entity->name ?? '';
             //!! TODO getLast
-            $eco_com = $affiliate->economic_complements()->orderByDesc('id')->first();
-            if($eco_com){
-                $eco_com->load([
-                    'eco_com_modality:id,name',
-                    'eco_com_state:id,name'
-                ]);
-            }
+            $eco_com = $affiliate->economic_complements()->with([
+                'eco_com_modality:id,name',
+                'eco_com_state:id,name'
+            ])->orderByDesc('id')->take(2)->get();
         }
         return array('affiliate' => $affiliate , 'eco_com'=>$eco_com );
     }
-
-    
 }
 class Person{
      var $id;
@@ -97,6 +89,8 @@ class Person{
      var $type;
      var $gender;
      var $birth_date;
+     var $due_date;
+     var $is_duedate_undefined;
      public function parsePerson($obj){
          $this->id = $obj->id ?? '';
          $this->first_name = $obj->first_name ?? '';
@@ -113,6 +107,8 @@ class Person{
          $this->city_identity_card_id = $obj->city_identity_card_id ?? null;
          $this->gender = $obj->gender ?? '';                 
          $this->birth_date = $obj->birth_date ?? '';
+         $this->due_date = $obj->due_date ?? '';
+         $this->is_duedate_undefined = $obj->is_duedate_undefined ?? false;
      }
      function __toString() {
          return $this->last_name." ".$this->first_name;

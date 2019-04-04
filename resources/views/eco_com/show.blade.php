@@ -54,20 +54,19 @@
     <div class="col-md-3" style="padding-right: 3px">
         <div class="widget-head-color-box blue-bg p-lg text-center">
             <div class="m-b-md">
-                <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ir al tramite Inicial">
-                    <a href="{{route('eco_com_process_show', $eco_com_process->id)}}" style="color: #fff"> Ir al Tramite Inicial {{ $eco_com_process->id }}</a>
+                <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Afiliado ">
+                    <a href="{{route('affiliate.show', $affiliate->id)}}" style="color: #fff"> {{ $affiliate->fullNameWithDegree() }}</a>
                 </h2>
-                {{-- <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $eco_com_process->affiliate->ciWithExt() }}</strong></h3>
-                <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $eco_com_process->affiliate->registration }}</strong></h4> --}}
+                <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $affiliate->ciWithExt() }}</strong></h3>
+                <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $affiliate->registration }}</strong></h4>
             </div>
         </div>
         <div class="widget-text-box">
             <ul class="list-group elements-list">
                 <li class="list-group-item active" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
-                <li class="list-group-item active" data-toggle="tab" href="#tab-eco-com-process"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite Inicial</a></li>
-                @if($eco_com_process->procedure_modality_id != 25)
+                {{-- @if($eco_com_process->procedure_modality_id != 25)
                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-user"></i> Afiliado </a></li>
-                @endif
+                @endif --}}
                 <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
@@ -92,14 +91,6 @@
                 </eco-com-info>
                 {{-- @endcan --}}
             </div>
-            <div id="tab-eco-com-process" class="tab-pane active">
-                {{-- @can('update',$eco_com_process) --}}
-                <eco-com-process-info :eco-com-process="{{ $eco_com_process }}" :states="{{ $states }}" :pension-entities="{{ $pension_entities }}"
-                    inline-template>
-                    @include('eco_com_process.info')
-                </eco-com-process-info>
-                {{-- @endcan --}}
-            </div>
             <div id="tab-eco-coms" class="tab-pane">
                 {{-- @can('update',$eco_com_process)
                 <ret-fun-info :eco_com_process="{{ $eco_com_process }}" :rf_city_start="{{$eco_com_process->city_start}}" :rf_city_end="{{$eco_com_process->city_end}}"
@@ -114,22 +105,25 @@
                 </affiliate-show>
             </div>
             <div id="tab-police-info" class="tab-pane">
-            <affiliate-police :affiliate="{{ $affiliate }}" :eco-com-id="{{ $economic_complement->id }}" inline-template :type-eco-com="true" :categories="{{$categories}}">
-    @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate, 'affiliate_states'=>$affiliate_states, 'categories' => $categories->pluck('name', 'id'), 'degrees'=> $degrees->pluck('name', 'id'), 'pension_entities'=> $pension_entities->pluck('name', 'id')])
+                <affiliate-police :affiliate="{{ $affiliate }}" :eco-com-id="{{ $economic_complement->id }}" inline-template :type-eco-com="true"
+                    :categories="{{$categories}}">
+    @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate, 'affiliate_states'=>$affiliate_states, 'categories'
+                    => $categories->pluck('name', 'id'), 'degrees'=> $degrees->pluck('name', 'id'), 'pension_entities'=>
+                    $pension_entities->pluck('name', 'id')])
                 </affiliate-police>
             </div>
             <div id="tab-beneficiaries" class="tab-pane">
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary) --}}
-                    @include('eco_com_process.beneficiary', ['eco_com_beneficiary'=>$eco_com_beneficiary,
+    @include('eco_com.beneficiary', ['eco_com_beneficiary'=>$eco_com_beneficiary,
                 'cities'=>$cities]) {{-- @endcan --}}
             </div>
             <div id="tab-summited-document" class="tab-pane">
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
-                <eco-com-process-step1-requirements-edit :eco-com-process="{{ $eco_com_process }}" :procedure-modalities="{{ $procedure_modalities }}"
+                <eco-com-step1-requirements-edit :eco-com="{{ $economic_complement }}" :procedure-modalities="{{ $procedure_modalities }}"
                     :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
                     :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
-    @include('eco_com_process.step1_requirements_edit')
-                </eco-com-process-step1-requirements-edit>
+    @include('eco_com.step1_requirements_edit')
+                </eco-com-step1-requirements-edit>
                 {{-- @endcan --}}
             </div>
             <div id="tab-qualification" class="tab-pane">
