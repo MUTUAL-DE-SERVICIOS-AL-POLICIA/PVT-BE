@@ -68,7 +68,9 @@ class CreateEcoComTables extends Migration
             $table->unique(['economic_complement_id', 'procedure_requirement_id']);
             $table->timestamps();
         });
-
+        Schema::table('economic_complements', function (Blueprint $table) {
+            $table->boolean('inbox_state')->default(false);
+        });
         // Schema::create('economic_complements', function (Blueprint $table) {
         //     $table->bigIncrements('id');
         //     $table->unsignedBigInteger('user_id');
@@ -183,6 +185,9 @@ class CreateEcoComTables extends Migration
     {
 
         Schema::drop('address_eco_com_applicant');
+        Schema::table('economic_complements', function (Blueprint $table) {
+            $table->dropColumn('inbox_state');
+        });
         // Schema::drop('eco_com_beneficiaries');
         // Schema::drop('economic_complements');
         Schema::drop('eco_com_submitted_documents');

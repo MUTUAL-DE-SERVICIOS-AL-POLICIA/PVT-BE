@@ -30,6 +30,7 @@
         <div class="form-group" :class="{'has-error': errors.has('reception_type_id') }">
           <label class="col-sm-4 control-label">Tipo de Recepcion</label>
           <div class="col-sm-8">
+            <input type="hidden" v-model="reception_type_id" name="reception_type">
             <select
               class="form-control m-b"
               ref="reception_type_id"

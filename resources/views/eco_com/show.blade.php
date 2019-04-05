@@ -20,14 +20,30 @@
                 </button>
             </span> {{--
     @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,]) --}}
+            @if(Util::isReceptionEcoCom()||Util::isRegionalRole())
+                <certification-button
+                    type="ecoCom"
+                    title="Imprimir"
+                    doc-id="{{ $economic_complement->id }}"
+                    url-print="{{ route('eco_com_print_reception', [$economic_complement->id])}}">
+                </certification-button>
+                @if($economic_complement->reception_type != 'Habitual')
+                    <certification-button
+                        type="ecoCom"
+                        title="Imprimir"
+                        doc-id="{{ $economic_complement->id }}"
+                        url-print="{{ route('eco_com_print_sworn_declaration', [$economic_complement->id])}}">
+                    </certification-button>
+                @endif
+            @endif
         </div>
         <div class="pull-right">
             <div class="form-inline">
-                {{-- @if ($can_validate)
-                <inbox-send-back-button-ret-fun :wf-sequence-back-list="{{ $wf_sequences_back }}" :doc-id="{{$eco_com_process->id}}" :wf-current-state-name="`{{$eco_com_process->wf_state->name}}`"
-                    type="retFun"></inbox-send-back-button-ret-fun>
-                <sweet-alert-modal inline-template :doc-id="{{$eco_com_process->id}}" :inbox-state="{{$eco_com_process->inbox_state ? 'true' : 'false'}}"
-                    :doc-user-id="{{$eco_com_process->user_id}}" :auth-id="{{ $user->id}}" type="retFun">
+                @if ($can_validate)
+                <inbox-send-back-button-ret-fun :wf-sequence-back-list="{{ $wf_sequences_back }}" :doc-id="{{$economic_complement->id}}"
+                    :wf-current-state-name="`{{$economic_complement->wf_state->name}}`" type="ecoCom"></inbox-send-back-button-ret-fun>
+                <sweet-alert-modal inline-template :doc-id="{{$economic_complement->id}}" :inbox-state="{{$economic_complement->inbox_state ? 'true' : 'false'}}"
+                    :doc-user-id="{{$economic_complement->user_id}}" :auth-id="{{ $user->id}}" type="ecoCom">
                     <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                         <div style="display:inline-block" v-if="status == true" key="one" data-toggle="tooltip" data-placement="top" title="Cancelar Revision del Trámite">
                             <button class="btn btn-danger btn-circle btn-outline btn-lg active" type="button" @click="cancelModal()" v-if="itisMine"><i class="fa fa-times"></i></button>
@@ -37,7 +53,7 @@
                         </div>
                     </transition>
                 </sweet-alert-modal>
-                @endif --}}
+                @endif
             </div>
         </div>
     </div>

@@ -60,6 +60,13 @@ class EconomicComplement extends Model
     {
         return $this->belongsTo('Muserpol\Models\Workflow\Workflow');
     }
+    public function getBasicInfoCode()
+    {
+        $code = $this->id." ".($this->affiliate->id ?? null) ."\n". "Trámite Nro: ".$this->code."\nModalidad: ".$this->eco_com_modality->name."\Beneficiario: ".($this->eco_com_beneficiary->fullName() ?? null);
+        $hash = crypt($code, 100);
+        return array('code' => $code, 'hash'=>$hash);
+        ;
+    }
     /**
      *!! TODO
      */

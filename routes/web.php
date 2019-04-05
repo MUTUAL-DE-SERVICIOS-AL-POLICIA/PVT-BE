@@ -24,6 +24,7 @@ use Muserpol\Helpers\Util;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
+    use Muserpol\Models\EconomicComplement\EconomicComplement;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -644,6 +645,9 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::get('get_next_area_code_contribution_process/{contribution_process_id}', function ($contribution_process_id) {
 			return ContributionProcess::find($contribution_process_id);
 		});
+		Route::get('get_next_area_code_eco_com/{eco_com_id}', function ($economic_complement_id) {
+			return EconomicComplement::find($economic_complement_id);
+		});
 		Route::get('/treasury/select_report', 'TreasuryController@selectReport');
 		Route::get('/treasury/report', 'TreasuryController@report');
 
@@ -670,6 +674,11 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::delete('eco_com/{eco_com_id}', 'EconomicComplementController@destroy');
 
 		Route::get('/affiliate/{affiliate_id}/eco_com_process/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
+
+
+		// eco com Certification
+		Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');
+		Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');
 		
 	});
 });

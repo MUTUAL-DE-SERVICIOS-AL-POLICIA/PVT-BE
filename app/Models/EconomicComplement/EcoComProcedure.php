@@ -25,4 +25,8 @@ class EcoComProcedure extends Model
     {
         return  Util::removeSpaces($this->semester.'/'.Carbon::parse($this->year)->year);
     }
+    public function getYear()
+    {
+        return Carbon::parse($this->year)->year;
+    }
 }

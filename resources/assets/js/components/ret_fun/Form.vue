@@ -15,8 +15,8 @@ export default {
   },
   methods: {
     onFinish() {
-      console.log(document.getElementById("eco-com-process-form"));
-      document.getElementById("eco-com-process-form").submit();
+      console.log(document.getElementById("ret-fun-form"));
+      document.getElementById("ret-fun-form").submit();
     },
     setLoading: function(value) {
       this.loadingWizard = value;

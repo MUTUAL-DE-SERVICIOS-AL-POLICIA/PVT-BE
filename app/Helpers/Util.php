@@ -931,6 +931,11 @@ class Util
             return false;
         }
     }
+
+    public static function isReceptionEcoCom()
+    {
+        return self::getRol()->id == 2 && self::getRol()->module_id == 2;
+    }
     /**
      * Economic Complement
      */

@@ -29,6 +29,8 @@ use Carbon\Carbon;
 use DB; 
 use Yajra\Datatables\DataTables;
 use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
+use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowState;
 
 class EconomicComplementController extends Controller
 {
@@ -86,7 +88,7 @@ class EconomicComplementController extends Controller
                 return $eco_com->eco_com_procedure ? $eco_com->eco_com_procedure->fullName() : '';
             })
             ->editColumn('state', function ($eco_com) {
-                return $eco_com->state == 'Edited' ?'Validado' : 'Pendiente';
+                return $eco_com->inbox_state ?'Validado' : 'Pendiente';
             })
             ->addColumn('pension_entity', function ($eco_com) {
                 return $eco_com->affiliate->pension_entity->name ?? null;
@@ -198,7 +200,9 @@ class EconomicComplementController extends Controller
         /**
          *!!TODO change inbox_state column
          **/
-        $economic_complement->state = 'Edited';
+        $economic_complement->inbox_state = true;
+        $economic_complement->state = 'Received';
+        $economic_complement->reception_type = $request->reception_type == 2 ? 'Habitual' : 'Inclusion';
 
         if ($request->pension_entity_id == 5) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
@@ -467,6 +471,24 @@ class EconomicComplementController extends Controller
             ->orderby('procedure_requirements.number', 'ASC')
             ->where('eco_com_submitted_documents.economic_complement_id', $id);
 
+        /**
+         ** for validation and submit
+         */
+        $rol = Util::getRol();
+        $module = Role::find($rol->id)->module;
+        $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
+        $can_validate = $wf_current_state->id == $economic_complement->wf_current_state_id;
+        $can_cancel = ($economic_complement->user_id == $user->id && $economic_complement->inbox_state == true);
+        
+        $wf_sequences_back = DB::table("wf_states")
+        ->where("wf_states.module_id", "=", $module->id)
+        ->where('wf_states.sequence_number', '<', WorkflowState::find($economic_complement->wf_current_state_id)->sequence_number)
+        ->select(
+            'wf_states.id as wf_state_id',
+            'wf_states.first_shortened as wf_state_name'
+        )
+        ->get();
+    
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -488,6 +510,10 @@ class EconomicComplementController extends Controller
             'procedure_types' => $procedure_types,
             'submitted' =>  $submitted->pluck('eco_com_submitted_documents.procedure_requirement_id', 'procedure_requirements.number'),
             'submit_documents' => $submitted->get(),
+
+            'can_validate' => $can_validate,
+            'can_cancel' => $can_cancel,
+            'wf_sequences_back' => $wf_sequences_back,
         ];
         return view('eco_com.show', $data);
     }

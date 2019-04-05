@@ -104,6 +104,12 @@
             <br>
             <div class="row">
                 <div class="col-md-2">
+                    <strong>Tipo de Trámite:</strong>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" :value="ecoCom.reception_type" disabled class="form-control">
+                </div>
+                <div class="col-md-2">
                     <strong>Ubicacion:</strong>
                 </div>
                 <div class="col-md-4">
