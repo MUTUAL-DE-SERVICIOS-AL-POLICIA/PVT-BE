@@ -891,6 +891,19 @@ class Util
         return $values;
     }
 
+    public static function getLastCodeQM($model)
+    {  
+        return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code','not like','%A')->whereIn('procedure_modality_id',[8,9])->get()->pluck('code')->last());
+
+    }
+
+    public static function getNextCodeAM($model)
+    { 
+        return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code','not like','%A')->whereIn('procedure_modality_id',[13,14,15])->get()->pluck('code')->last());
+    }
+
+
+
     public static function compoundInterest($contributions,Affiliate $affiliate) {
         $total = 0;
         $date_entry = Carbon::createFromFormat('m/Y', $affiliate->date_entry);
