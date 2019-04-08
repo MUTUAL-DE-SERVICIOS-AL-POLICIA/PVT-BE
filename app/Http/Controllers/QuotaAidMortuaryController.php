@@ -335,7 +335,7 @@ class QuotaAidMortuaryController extends Controller
 
             }elseif($request->procedure_type_id == 4){
 
-                $quota_aid_code = Util::getNextCodeAM(QuotaAidMortuary::class);
+                $quota_aid_code = Util::getLastCodeAM(QuotaAidMortuary::class);
                 $code = Util::getNextCode($quota_aid_code, '268');
                 
                 Log::info('code: '.$code);

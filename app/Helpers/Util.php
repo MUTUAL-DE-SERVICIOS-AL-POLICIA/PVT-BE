@@ -897,7 +897,7 @@ class Util
 
     }
 
-    public static function getNextCodeAM($model)
+    public static function getLastCodeAM($model)
     { 
         return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code','not like','%A')->whereIn('procedure_modality_id',[13,14,15])->get()->pluck('code')->last());
     }
