@@ -10,4 +10,5 @@ alter table economic_complements_1 drop constraint  economic_complements_code_un
 ### execute seeder
 ```
 php artisan db:seed --class=EconomicComplementSeeder
+php artisan db:seed --class=EconomicComplementRolSeeder
 ```
