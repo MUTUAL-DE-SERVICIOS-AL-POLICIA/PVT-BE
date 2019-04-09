@@ -66,7 +66,7 @@
                         <!-- <a :href="`${props.item.path}`"> -->
                             {{ props.item.name }}
                         <!-- </a> -->
-                        <ul class="tag-list"
+                        <!-- <ul class="tag-list"
                             style="padding: 0"
                             v-if="props.item.tags.length"
                             key="saved">
@@ -76,7 +76,7 @@
                                    style="">
                                     <i class="fa fa-tag"></i> {{tag.name}}</a>
                             </li>
-                        </ul>
+                        </ul> -->
                     </td>
                     <td @click="rowClick(props.item.path)">
                         <!-- <a :href="`${props.item.path}`"> -->

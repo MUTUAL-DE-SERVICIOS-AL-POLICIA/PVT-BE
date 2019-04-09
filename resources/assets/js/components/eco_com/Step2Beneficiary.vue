@@ -453,8 +453,9 @@
     </div>
     <div class="ibox float-e-margins" v-if="modalityId != 1">
       <div class="ibox-content">
+        <div class="row">
         <div class="col-md-12">
-          <legend>Datos del Afiliado (Derechohabiente)</legend>
+          <legend>Datos del Afiliado (Causahabiente)</legend>
           <div class="row">
             <div class="col-md-6">
               <div
@@ -648,6 +649,7 @@
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

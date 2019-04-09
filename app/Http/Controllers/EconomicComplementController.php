@@ -628,11 +628,15 @@ class EconomicComplementController extends Controller
             $eco_com = EconomicComplement::find($request->last_eco_com_id);
             if ($eco_com->eco_com_modality->eco_com_type_id == $request->modality_id) {
                 $eco_com_beneficiary = $eco_com->eco_com_beneficiary()->with('address')->first();
-                if (!sizeOf($eco_com_beneficiary->address) > 0) {
-                    $eco_com_beneficiary->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
+                if($eco_com_beneficiary){
+                    if (!sizeOf($eco_com_beneficiary->address) > 0) {
+                        $eco_com_beneficiary->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
+                    }
+                    $eco_com_beneficiary->phone_number = $this->parsePhone($eco_com_beneficiary->phone_number ?? '');
+                    $eco_com_beneficiary->cell_phone_number = $this->parsePhone($eco_com_beneficiary->cell_phone_number ?? '');
+                }else{
+                    $eco_com_beneficiary = new EcoComBeneficiary();
                 }
-                $eco_com_beneficiary->phone_number = $this->parsePhone($eco_com_beneficiary->phone_number ?? '');
-                $eco_com_beneficiary->cell_phone_number = $this->parsePhone($eco_com_beneficiary->cell_phone_number ?? '');
                 return $eco_com_beneficiary;
             }
         }

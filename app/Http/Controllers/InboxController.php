@@ -57,13 +57,12 @@ class InboxController extends Controller
                 # code...
                 break;
             case 2:
-            /* TODO
-            no crea historial del workflow (tema de observers)
-            utilizar modelos
-             */
-                DB::table('economic_complements')
-                    ->whereIn('id', $doc_ids)
-                    ->update(['wf_current_state_id' => $wf_state_next_id, 'state' => 'Received']);
+                $eco_coms = EconomicComplement::whereIn('id', $doc_ids)->get();
+                foreach ($eco_coms as $eco_com) {
+                    $eco_com->wf_current_state_id = $wf_state_next_id;
+                    $eco_com->inbox_state = false;
+                    $eco_com->save();
+                }
                 break;
             case 3:
                 // DB::table('retirement_funds')
@@ -131,13 +130,12 @@ class InboxController extends Controller
                 # code...
                 break;
             case 2:
-                /* TODO
-                no crea historial del workflow (tema de observers)
-                utilizar modelos
-                */
-                DB::table('economic_complements')
-                ->whereIn('id', $doc_ids)
-                ->update(['wf_current_state_id' => $wf_state_back_id, 'state'=>'Received']);
+                $eco_coms = EconomicComplement::whereIn('id', $doc_ids)->get();
+                foreach ($eco_coms as $eco_com) {
+                    $eco_com->wf_current_state_id = $wf_state_back_id;
+                    $eco_com->inbox_state = false;
+                    $eco_com->save();
+                }
                 break;
             case 3:
                 $retirement_funds = RetirementFund::whereIn('id', $doc_ids)->get();

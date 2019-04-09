@@ -879,7 +879,7 @@ class Util
     }
     public static function getLastCode($model)
     {
-        return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
+        return optional($model::where('code','not like', '%A')->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
     }
     public static function getLastCodeEconomicComplement($eco_com_procedure_id)
     {

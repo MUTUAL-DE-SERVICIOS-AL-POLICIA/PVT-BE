@@ -40,7 +40,7 @@ class DocumentController extends Controller
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
-                        concat('/economic_complement/', economic_complements.id) as path
+                        concat('/eco_com/', economic_complements.id) as path
                         "
                     )
                 )
@@ -48,7 +48,7 @@ class DocumentController extends Controller
                     ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
                     ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
                     ->where('wf_states.role_id', '=', $rol_id)
-                    ->where('economic_complements.state', '=', 'Received')
+                    ->where('economic_complements.inbox_state', '=', false)
                     ->get();
                 $documents_edited_total = DB::table('economic_complements')
                 ->select(
@@ -70,7 +70,7 @@ class DocumentController extends Controller
                     ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
                     ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
                     ->where('wf_states.role_id', '=', $rol_id)
-                    ->where('economic_complements.state', '=', 'Edited')
+                    ->where('economic_complements.inbox_state', '=', true)
                     ->where('economic_complements.user_id', '=', $user_id)
                     ->get()->count();
                 break;
@@ -233,13 +233,14 @@ class DocumentController extends Controller
                     DB::raw(
                             "
                         economic_complements.id as id,
+                        economic_complements.user_id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
                         economic_complements.code as code,
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
-                        concat('/economic_complement/', economic_complements.id) as path,
+                        concat('/eco_com/', economic_complements.id) as path,
                         false as status
                         "
                     )
@@ -248,7 +249,7 @@ class DocumentController extends Controller
                     ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
                     ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
                     ->where('wf_states.role_id', '=', $rol_id)
-                    ->where('economic_complements.state', '=', 'Edited')
+                    ->where('economic_complements.inbox_state', '=', true)
                     ->where('economic_complements.user_id', '=', $user_id)
                     ->get();
                 $documents_received_total = DB::table('economic_complements')
@@ -270,7 +271,7 @@ class DocumentController extends Controller
                     ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
                     ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
                     ->where('wf_states.role_id', '=', $rol_id)
-                    ->where('economic_complements.state', '=', 'Received')
+                    ->where('economic_complements.inbox_state', '=', false)
                     ->get()->count();
                 break;
             case 3:

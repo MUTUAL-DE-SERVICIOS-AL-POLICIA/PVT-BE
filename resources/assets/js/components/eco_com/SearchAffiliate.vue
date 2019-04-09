@@ -9,28 +9,56 @@
           <div class="row">
             <div class="col-lg-8 mx-auto">
               <div class="col-md-5">
-                <strong>Ingrese la cédula de identidad del afiliado:</strong>
+                <strong>Ingrese la cédula de identidad del {{ getSearchTypeName }}:</strong>
               </div>
-              <div class="col-md-5">
+              <div class="col-sm-3">
+                <div class="form-group" :class="{'has-error': errors.has('search_type_id') }">
+                  <select
+                    class="form-control"
+                    v-model="searchType"
+                    name="search_type_id"
+                    @change="setSearchType()"
+                    v-validate="'required'"
+                  >
+                    <option v-for="p in searchTypes" :value="p.id" :key="p.id">{{p.name}}</option>
+                  </select>
+                  <i v-show="errors.has('search_type_id')" class="fa fa-warning text-danger"></i>
+                  <span
+                    v-show="errors.has('search_type_id')"
+                    class="text-danger"
+                  >{{ errors.first('search_type_id') }}</span>
+                </div>
+              </div>
+              <div class="col-md-5" :class="{'has-error': errors.has('identity_card') }">
                 <div class="input-group">
                   <input
                     type="text"
-                    ref="identityCard"
+                    name="identity_card"
                     v-model="identityCard"
                     class="form-control"
+                    v-validate="'required'"
                     @keypress.enter="searchAffiliate()"
                   >
                   <span class="input-group-btn">
                     <button
-                      class="btn btn-primary"
+                      class="btn"
                       type="button"
                       @click="searchAffiliate()"
+                      :class="errors.has('identity_card') ? 'btn-danger' : 'btn-primary'"
                       role="button"
                     >
                       <i v-if="searching" key="searching" class="fa fa-spinner fa-pulse fa-fw"></i>
                       <i v-else key="foundnofound" class="fa fa-search"></i>
                     </button>
                   </span>
+                </div>
+                <div v-show="errors.has('identity_card')">
+                  <i
+                    class="fa fa-warning text-danger"
+                  ></i>
+                  <span
+                    class="text-danger"
+                  >{{ errors.first('identity_card') }}</span>
                 </div>
               </div>
             </div>
@@ -46,7 +74,7 @@
     >
       <div class="alert alert-warning" v-if="affiliateNoFound">
         <h2>
-          No se encontro el afiliado con ci
+          No se encontro el {{ getSearchTypeName }} con ci
           <strong>{{ identityCard }}</strong>
         </h2>
       </div>
@@ -54,6 +82,30 @@
     <transition name="custom-show-affiliate-transition" enter-active-class="animated fadeInLeftBig">
       <div class v-if="affiliateFound">
         <div class="col-lg-6">
+          <div class="ibox float-e-margins" v-if="searchType == 2">
+            <div class="ibox-title">
+              <h1>Datos del Beneficiario</h1>
+            </div>
+            <div class="ibox-content">
+              <div class="row">
+                <div class="col-md-12">
+                  <div>
+                    <h2
+                      class="no-margins"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Nombre Completo"
+                    >{{ ecoComBeneficiary.full_name }}</h2>
+                    <h3
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Cedula de Identidad"
+                    >{{ ecoComBeneficiary.ci_with_ext }}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="ibox float-e-margins">
             <div class="ibox-title">
               <h1>Datos del Afiliado</h1>
@@ -62,12 +114,37 @@
               <div class="row">
                 <div class="col-md-12">
                   <div>
-                    <h2 class="no-margins" data-toggle="tooltip" data-placement="top" title="Nombre Completo">{{ affiliate.full_name }}</h2>
-                    <h3 data-toggle="tooltip" data-placement="top" title="Cedula de Identidad">{{ affiliate.ci_with_ext }}</h3>
-                    <h3 data-toggle="tooltip" data-placement="top" title="Grado">{{ affiliate.degree_name }}</h3>
-                    <h4 data-toggle="tooltip" data-placement="top" title="Categoria">{{ affiliate.category_percentage }}</h4>
-                    <h4 data-toggle="tooltip" data-placement="top" title="Ente Gestor">{{ affiliate.pension_entity_name }}</h4>
-                    <h4 data-toggle="tooltip" data-placement="top" title="Fecha de desvinculacion">{{ affiliate.date_entry }}</h4>
+                    <h2
+                      class="no-margins"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Nombre Completo"
+                    >{{ affiliate.full_name }}</h2>
+                    <h3
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Cedula de Identidad"
+                    >{{ affiliate.ci_with_ext }}</h3>
+                    <h3
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Grado"
+                    >{{ affiliate.degree_name }}</h3>
+                    <h4
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Categoria"
+                    >{{ affiliate.category_percentage }}</h4>
+                    <h4
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Ente Gestor"
+                    >{{ affiliate.pension_entity_name }}</h4>
+                    <h4
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Fecha de desvinculacion"
+                    >{{ affiliate.date_entry }}</h4>
                   </div>
                 </div>
               </div>
@@ -147,11 +224,23 @@ export default {
     return {
       editing: false,
       affiliate: {},
+      ecoComBeneficiary: {},
+      searchType: 1,
+      searchTypes: [
+        {
+          id: 1,
+          name: "Afiliado"
+        },
+        {
+          id: 2,
+          name: "Beneficiario"
+        }
+      ],
       ecoCom: null,
       affiliateNoFound: false,
       affiliateFound: false,
       showButton: false,
-      identityCard: "2520804",
+      identityCard: "5633617",
       ecoComProcedureCreateName: null,
       ecoComProcedure: {},
       searching: false
@@ -160,13 +249,27 @@ export default {
   components: {
     ShowAffiliate
   },
+  mounted() {
+    if (localStorage.searchType) {
+      this.searchType = localStorage.searchType;
+    }
+  },
   methods: {
+    setSearchType() {
+      localStorage.searchType = this.searchType;
+      this.searchAffiliate();
+    },
     async searchAffiliate() {
+      await this.$validator.validateAll();
+      if (this.$validator.errors.items.length) {
+        return;
+      }
       this.searching = true;
       await axios
         .get("/search_ajax_only_affiliate", {
           params: {
-            ci: this.identityCard
+            ci: this.identityCard,
+            type: this.searchType
           }
         })
         .then(response => {
@@ -176,6 +279,7 @@ export default {
             flash("Affiliado Encontrado");
             this.affiliate = response.data.affiliate;
             this.ecoCom = response.data.eco_com;
+            this.ecoComBeneficiary = response.data.eco_com_beneficiary;
             this.affiliateFound = true;
             this.affiliateNoFound = false;
             this.getEcoComProcedureCreateName();
@@ -217,6 +321,12 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    }
+  },
+  computed: {
+    getSearchTypeName() {
+      let st = this.searchTypes.find(x => x.id == this.searchType);
+      return st ? st.name : "";
     }
   }
 };

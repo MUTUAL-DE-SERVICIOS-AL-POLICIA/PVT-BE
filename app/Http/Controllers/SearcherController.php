@@ -11,6 +11,8 @@ use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Muserpol\Helpers\Util;
 use Log;
 use Carbon\Carbon;
+use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
+
 class SearcherController
 {
     private $tables;
@@ -56,8 +58,20 @@ class SearcherController
     }
     public function searchAjaxOnlyAffiliate(Request $request){
         $ci = $request->ci;
-        $affiliate = Affiliate::where('identity_card',$ci)->first();
         $eco_com = null;
+        $affiliate = null;
+        $eco_com_beneficiary = new EcoComBeneficiary();
+        if($request->type == 1){
+            $affiliate = Affiliate::where('identity_card',$ci)->first();
+        }else{
+            $eco_com_beneficiary = EcoComBeneficiary::where('identity_card',$ci)->first();
+            if(!$eco_com_beneficiary){
+                return array('affiliate' => $affiliate, 'eco_com_beneficiary' => $eco_com_beneficiary , 'eco_com'=>$eco_com );
+            }
+            $eco_com_beneficiary->full_name = $eco_com_beneficiary->fullName();
+            $eco_com_beneficiary->ci_with_ext = $eco_com_beneficiary->ciWithExt();
+            $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
+        }
         if($affiliate){
             $affiliate->full_name = $affiliate->fullName();
             $affiliate->ci_with_ext = $affiliate->ciWithExt();
@@ -70,7 +84,7 @@ class SearcherController
                 'eco_com_state:id,name'
             ])->orderByDesc('id')->take(2)->get();
         }
-        return array('affiliate' => $affiliate , 'eco_com'=>$eco_com );
+        return array('affiliate' => $affiliate, 'eco_com_beneficiary' => $eco_com_beneficiary , 'eco_com'=>$eco_com );
     }
 }
 class Person{
