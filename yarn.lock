@@ -6095,9 +6095,10 @@ prettier@^1.7.0:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.12.0.tgz#d26fc5894b9230de97629b39cae225b503724ce8"
 
-print-js@^1.0.32:
-  version "1.0.40"
-  resolved "https://registry.yarnpkg.com/print-js/-/print-js-1.0.40.tgz#70967bae21263fb2c696e8e784bc996d1559d910"
+print-js@1.0.32:
+  version "1.0.32"
+  resolved "https://registry.yarnpkg.com/print-js/-/print-js-1.0.32.tgz#d4eb0af31c3c2368a39c6760c0e465443017e247"
+  integrity sha512-8mjndDIxVtTz7LxxwWwNurnrNHD/kiz1s313eR0lzceDUsJuOv1p0WgBPMdQQoRfx6SssV8ukCch6fQ7Hva7wA==
 
 private@^0.1.6, private@^0.1.7, private@~0.1.5:
   version "0.1.8"
@@ -8051,9 +8052,10 @@ vuelidate@^0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/vuelidate/-/vuelidate-0.6.2.tgz#b417f5367407b047a2548119b25db56fe2bd5753"
 
-vuetify@^1.0.19:
+vuetify@1.0.19:
   version "1.0.19"
   resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.0.19.tgz#fb6d123dd1c217795fc2333e912c0ecbed2ed69e"
+  integrity sha512-aWiNSDr6KA5G9JKzneN0hV++Hva4+zwZFV3YAY4z8gmmcXvPOhEdV6Syy3yhoxk3j0K6H9qTYxvy2OgjnrMbqg==
 
 vuex@^3.0.1:
   version "3.0.1"
