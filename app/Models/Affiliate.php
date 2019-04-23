@@ -494,7 +494,7 @@ class Affiliate extends Model
                     and reimbursements.month_year in '". $this->contributions()->
                     leftJoin('contribution_types', 'contributions.contribution_type_id', '=', 'contribution_types.id')
                     ->where('contribution_types.operator', '=', '+')
-                    ->get()->pluck('month_year')->->implode("','")."'
+                    ->get()->pluck('month_year')->implode("','")."'
                     UNION ALL
                     SELECT
                     contributions.id,
