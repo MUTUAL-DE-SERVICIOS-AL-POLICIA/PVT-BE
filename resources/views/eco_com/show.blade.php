@@ -18,8 +18,8 @@
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
                 </button>
-            </span> {{--
-    @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,]) --}}
+            </span>
+            @include('ret_fun.ret_fun_record', ['ret_fun_records' => $eco_com_records,])
             @if(Util::isReceptionEcoCom()||Util::isRegionalRole())
                 <certification-button
                     type="ecoCom"
@@ -91,8 +91,8 @@
                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li> --}}
             </ul>
         </div>
-        <br> {{--
-        <tag-list :doc-id="{{ $eco_com_process->id }}" type="ecoCom"></tag-list> --}}
+        <br>
+        <tag-list :doc-id="{{ $economic_complement->id }}" type="ecoCom"></tag-list>
     </div>
     <br>
     <div class="col-md-9" style="padding-left: 6px">

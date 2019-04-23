@@ -31,6 +31,7 @@ use Yajra\Datatables\DataTables;
 use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 
 class EconomicComplementController extends Controller
 {
@@ -156,6 +157,7 @@ class EconomicComplementController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', new EconomicComplement());
         Log::info($request->all());
         $eco_com_procedure = EcoComProcedure::find($request->eco_com_procedure_id);
         if (!$eco_com_procedure) {
@@ -488,7 +490,22 @@ class EconomicComplementController extends Controller
             'wf_states.first_shortened as wf_state_name'
         )
         ->get();
-    
+
+        /**
+         ** for records
+         */
+        $eco_com_records =  EconomicComplementRecord::where('economic_complement_id', $id)->orderBy('id','desc')->get();
+        $workflow_records = $economic_complement->wf_records()->orderBy('date', 'desc')->get();
+        $first_wf_state = EconomicComplementRecord::where('economic_complement_id', $id)->whereRaw("message like '%creó el tr%'")->first();
+        if ($first_wf_state) {
+            $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
+            $str = $first_wf_state->message;
+            preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+            $user_name = $matches[0][0];
+            $rol = User::where('username','=', $user_name)->first()->roles->first();
+            $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
+        }
+
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -514,6 +531,10 @@ class EconomicComplementController extends Controller
             'can_validate' => $can_validate,
             'can_cancel' => $can_cancel,
             'wf_sequences_back' => $wf_sequences_back,
+
+            'eco_com_records' =>  $eco_com_records,
+            'workflow_records' =>  $workflow_records,
+            'first_wf_state' =>  $first_wf_state,
         ];
         return view('eco_com.show', $data);
     }
@@ -595,6 +616,7 @@ class EconomicComplementController extends Controller
     }
     public function firstStep()
     {
+        $this->authorize('create', new EconomicComplement());
         $cities = City::all();
         $data = [
             'cities' => $cities,
@@ -604,7 +626,6 @@ class EconomicComplementController extends Controller
 
     public function getReceptionType(Request $request)
     {
-        Log::info($request->all());
         $reception_type_id = 1;
         if (!$request->modality_id) {
             return $reception_type_id;
@@ -624,7 +645,6 @@ class EconomicComplementController extends Controller
         }
         $affiliate = Affiliate::find($request->affiliate_id);
         if ($request->last_eco_com_id) {
-            Log::info("entre");
             $eco_com = EconomicComplement::find($request->last_eco_com_id);
             if ($eco_com->eco_com_modality->eco_com_type_id == $request->modality_id) {
                 $eco_com_beneficiary = $eco_com->eco_com_beneficiary()->with('address')->first();

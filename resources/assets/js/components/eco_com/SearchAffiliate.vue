@@ -53,12 +53,8 @@
                   </span>
                 </div>
                 <div v-show="errors.has('identity_card')">
-                  <i
-                    class="fa fa-warning text-danger"
-                  ></i>
-                  <span
-                    class="text-danger"
-                  >{{ errors.first('identity_card') }}</span>
+                  <i class="fa fa-warning text-danger"></i>
+                  <span class="text-danger">{{ errors.first('identity_card') }}</span>
                 </div>
               </div>
             </div>
@@ -162,7 +158,7 @@
             </div>
             <div class="ibox-content">
               <div class="table-responsive" v-if="ecoCom.length">
-                <table class="table table-striped">
+                <table class="table table-striped table-hover">
                   <thead>
                     <tr>
                       <th># de tramite</th>
@@ -173,10 +169,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="e in ecoCom" :key="e.id">
+                    <tr v-for="e in ecoCom" class="hover" :key="e.id" @click="rowClick(e.id)">
                       <td>{{e.code}}</td>
                       <td>{{e.semester | uppercase }}/{{e.year | year }}</td>
-                      <td>{{e.eco_com_modality.name}}</td>
+                      <td>{{e.eco_com_modality.shortened}}</td>
                       <td>{{e.eco_com_state.name}}</td>
                       <td>{{e.total}}</td>
                     </tr>
@@ -203,7 +199,7 @@
                 </a>
               </div>
               <div v-else key="noShowButton">
-                <button class="btn btn-warning btn-lg btn-block">
+                <button class="btn btn-warning btn-lg btn-block" :class="{'denied':!showButton}">
                   <i class="fa fa-exclamation-triangle"></i>
                   No hay tramites pendientes para crear
                 </button>
@@ -240,7 +236,8 @@ export default {
       affiliateNoFound: false,
       affiliateFound: false,
       showButton: false,
-      identityCard: "5633617",
+      // identityCard: "5633617",
+      identityCard: "1379469",
       ecoComProcedureCreateName: null,
       ecoComProcedure: {},
       searching: false
@@ -255,6 +252,9 @@ export default {
     }
   },
   methods: {
+    rowClick(id) {
+      window.location = `/eco_com/${id}`;
+    },
     setSearchType() {
       localStorage.searchType = this.searchType;
       this.searchAffiliate();
@@ -279,6 +279,7 @@ export default {
             flash("Affiliado Encontrado");
             this.affiliate = response.data.affiliate;
             this.ecoCom = response.data.eco_com;
+            this.ecoCom = this.ecoCom.reverse();
             this.ecoComBeneficiary = response.data.eco_com_beneficiary;
             this.affiliateFound = true;
             this.affiliateNoFound = false;
@@ -299,7 +300,7 @@ export default {
     async getEcoComProcedureCreateName() {
       this.showButton = true;
       this.ecoComProcedureCreateName = "cargando... XD";
-      let id = !!this.ecoCom[0] ? this.ecoCom[0].eco_com_procedure_id : null;
+      let id = !!this.ecoCom[this.ecoCom.length-1] ? this.ecoCom[this.ecoCom.length-1].eco_com_procedure_id : null;
       await axios
         .get("get_eco_com_procedures_active", {
           params: {
@@ -332,6 +333,13 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.hover:hover {
+  cursor: pointer;
+  font-weight: bold
+}
+.denied{
+  cursor: not-allowed
+}
 </style>
 

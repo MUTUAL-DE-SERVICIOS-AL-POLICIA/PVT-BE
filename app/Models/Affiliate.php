@@ -231,6 +231,10 @@ class Affiliate extends Model
     {
         return Util::getCivilStatus($this->civil_status, $this->gender);
     }
+    public function tags()
+    {
+        return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id','date'])->withTimestamps();
+    }
     /*contributions */
     public function getDatesContributions()
     {

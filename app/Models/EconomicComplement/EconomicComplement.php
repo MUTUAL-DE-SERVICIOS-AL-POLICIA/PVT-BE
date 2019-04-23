@@ -78,6 +78,14 @@ class EconomicComplement extends Model
     {
         return $this->hasOne('Muserpol\Models\EconomicComplement\EcoComBeneficiary');
     }
+    public function tags()
+    {
+        return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id','date'])->withTimestamps();
+    }
+    public function wf_records()
+    {
+        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
+    }
     // public function procedure_modality()
     // {
     //     return $this->belongsTo('Muserpol\Models\ProcedureModality');

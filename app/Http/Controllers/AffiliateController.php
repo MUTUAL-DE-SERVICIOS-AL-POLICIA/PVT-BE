@@ -351,6 +351,7 @@ class AffiliateController extends Controller
             'payment_types' =>  $payment_types,
             'voucher_types' =>  $voucher_types,
             'vouchers'  =>  $vouchers,
+            'categories_1'  =>  Category::all(),
             //'records_message'=>$records_message
         );
         return view('affiliates.show')->with($data);

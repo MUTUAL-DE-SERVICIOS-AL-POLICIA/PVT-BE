@@ -80,7 +80,7 @@ class SearcherController
             $affiliate->pension_entity_name= $affiliate->pension_entity->name ?? '';
             //!! TODO getLast
             $eco_com = $affiliate->economic_complements()->with([
-                'eco_com_modality:id,name',
+                'eco_com_modality:id,name,shortened',
                 'eco_com_state:id,name'
             ])->orderByDesc('id')->take(2)->get();
         }

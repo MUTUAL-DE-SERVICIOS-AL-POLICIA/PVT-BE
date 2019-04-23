@@ -166,6 +166,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('/update_tag_wf_state', 'TagController@updateTagWfState');
 		Route::get('/tag_quota_aid/{quota_aid_id}', "TagController@quotaAid")->name('tag_quota_aid');
 		Route::post('/update_tag_quota_aid/{quota_aid_id}', "TagController@updateQuotaAid")->name('update_tag_quota_aid');
+		Route::get('/tag_eco_com/{eco_com_id}', "TagController@ecoCom")->name('tag_eco_com');
+		Route::post('/update_tag_eco_com/{eco_com_id}', "TagController@updateEcoCom")->name('update_tag_eco_com');
+		Route::get('/tag_affiliate/{affiliate_id}', "TagController@affiliate")->name('tag_affiliate');
+		Route::post('/update_tag_affiliate/{affiliate_id}', "TagController@updateAffiliate")->name('update_tag_affiliate');
 		//QuotaAidMortuory
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
 		Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');

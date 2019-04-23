@@ -942,7 +942,11 @@ class Util
     public static function getEcoComCurrentProcedure()
     {
         //!! TODO add validate dates
-        $ids = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->take(1)->get()->pluck('id');
+        $ids = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->take(2)->get()->pluck('id');
         return $ids;
+    }
+    public static function rolIsEcoCom()
+    {
+        return self::getRol()->module_id == 2;
     }
 }
