@@ -28,7 +28,9 @@ export default {
             let uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
             axios.get(uri).then(({data})=>{
                 this.workflows =  data.workflows;
-                this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
+                if (data.workflows.length > 0) {
+                  this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
+                }
                 this.area_documents =  data.documents
                 console
                 if(this.inboxState == 'received') {
@@ -57,7 +59,7 @@ export default {
                         if (docs.workflow_id == w.workflow_id) {
                             w.docs.forEach(d => {
                                 if (d.id == docs.id) {
-                                    docs.status = d.status; 
+                                    docs.status = d.status;
                                 }
                             });
                         }
