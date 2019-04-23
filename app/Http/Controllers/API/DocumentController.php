@@ -26,6 +26,7 @@ class DocumentController extends Controller
     $headers = Util::getHeadersInboxRetFunQuotaAid();
     switch ($module->id) {
       case 1:
+        # admin
         $documents = DB::table('economic_complements')->limit(0)->get();
         break;
       case 2:
@@ -225,7 +226,8 @@ class DocumentController extends Controller
     $headers = Util::getHeadersInboxRetFunQuotaAid();
     switch ($module->id) {
       case 1:
-        # code...
+        # admin
+        $documents = DB::table('economic_complements')->limit(0)->get();
         break;
       case 2:
         # eco com
