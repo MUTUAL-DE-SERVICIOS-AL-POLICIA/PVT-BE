@@ -684,6 +684,31 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');
 		Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');
 		
+		
+		// base wage
+		Route::resource('base_wage', 'BaseWageController');
+		Route::get('get_first_level_base_wage', 'BaseWageController@FirstLevelData')->name('get_first_level_base_wage');
+		Route::get('get_second_level_base_wage', 'BaseWageController@SecondLevelData')->name('get_second_level_base_wage');
+		Route::get('get_third_level_base_wage', 'BaseWageController@ThirdLevelData')->name('get_third_level_base_wage');
+		Route::get('get_fourth_level_base_wage', 'BaseWageController@FourthLevelData')->name('get_fourth_level_base_wage');
+
+		// Complementary Factor
+		Route::resource('complementary_factor', 'ComplementaryFactorController');
+		Route::get('get_complementary_factor_old_age', 'ComplementaryFactorController@old_ageData')->name('get_complementary_factor_old_age');
+		Route::get('get_complementary_factor_widowhood', 'ComplementaryFactorController@widowhoodData')->name('get_complementary_factor_widowhood');
+
+		// average eco com
+		Route::get('averages', 'EconomicComplementController@averages')->name('averages');
+		Route::get('get_averages', 'EconomicComplementController@getAverageData')->name('get_averages');
+		Route::get('print_average', 'EconomicComplementController@printAverage')->name('print_average');
+		// Route::get('export_average/{year}/{semester}', 'EconomicComplementReportController@export_average')->name('export_average');
+
+		// observations
+		Route::get('eco_com_get_observations/{eco_com_id}', 'EcoComObservationController@getObservations');
+		Route::get('eco_com_get_delete_observations/{eco_com_id}', 'EcoComObservationController@getDeleteObservations');
+		Route::post('eco_com_observation_create', 'EcoComObservationController@create');
+		Route::patch('eco_com_observation_update', 'EcoComObservationController@update');
+		Route::delete('eco_com_observation_delete', 'EcoComObservationController@delete');
 	});
 });
 

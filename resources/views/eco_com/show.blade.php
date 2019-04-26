@@ -87,8 +87,7 @@
                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
-                {{--
-                <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li> --}}
+                <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
             </ul>
         </div>
         <br>
@@ -143,18 +142,14 @@
                 {{-- @endcan --}}
             </div>
             <div id="tab-qualification" class="tab-pane">
-                {{--
-    @include('ret_fun.summary_qualification', ['eco_com_process'=>$eco_com_process,'affiliate'=>$affiliate]) --}}
+                {{-- @include('ret_fun.summary_qualification', ['eco_com_process'=>$eco_com_process,'affiliate'=>$affiliate]) --}}
             </div>
             <div id="tab-observations" class="tab-pane">
-                {{--
-    @include('ret_fun.observation') --}}
+            <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}"></eco-com-observations>
+                {{-- @include('eco_com.observation') --}}
             </div>
-
         </div>
-
     </div>
-
 </div>
 <br>
 @endsection

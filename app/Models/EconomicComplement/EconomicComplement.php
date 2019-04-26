@@ -86,6 +86,10 @@ class EconomicComplement extends Model
     {
         return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
     }
+    public function observations()
+    {
+        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNull('observables.deleted_at')->withPivot(['user_id','date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
+    }
     // public function procedure_modality()
     // {
     //     return $this->belongsTo('Muserpol\Models\ProcedureModality');

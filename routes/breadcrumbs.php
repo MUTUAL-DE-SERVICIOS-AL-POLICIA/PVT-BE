@@ -170,6 +170,22 @@ Breadcrumbs::register('treasury_select_report', function($breadcrumbs)
 	$breadcrumbs->push('Seleccionar Reporte');
 });
 
+/**
+ * base wage
+ */
+Breadcrumbs::register('base_wage', function($breadcrumbs)
+{
+	$breadcrumbs->push('Sueldos de Personal de la Policía Nacional');
+});
+
+/**
+ * complementary factor
+ */
+Breadcrumbs::register('complementary_factor', function($breadcrumbs)
+{
+	$breadcrumbs->push('Factor de Complementación');
+});
+
 
 /**
  * Economic Complement

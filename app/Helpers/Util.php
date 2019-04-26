@@ -936,6 +936,29 @@ class Util
     {
         return self::getRol()->id == 2 && self::getRol()->module_id == 2;
     }
+    public static function formatPercentage($value)
+    {
+        if ($value) {
+            $value = number_format($value, 2, '.', ',');
+            return $value . "%";
+        }
+    }
+    public static function getYear($date)
+    {
+        if ($date) {
+            return date("Y", strtotime($date));
+        }
+    }
+    public static function datePickYear($year)
+	{
+		if ($year) {
+			return date($year ."-1-1");
+		}
+    }
+    public static function getEnabledLabel($is_enabled)
+	{
+		return $is_enabled ? 'Subsanado' : 'Vigente';
+	}
     /**
      * Economic Complement
      */

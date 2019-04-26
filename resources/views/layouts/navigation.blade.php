@@ -53,6 +53,16 @@
                     <a href="{{ url('/treasury/select_report') }}"><i class="fa fa-file-text"></i> <span class="nav-label">Aportes</span></a>
                 @endif
             </li>
+            @if(Util::getRol()->id == 5)
+            <li>
+                <a href="#" aria-expanded="false"><i class="fa fa-pencil"></i> <span class="nav-label">Opciones para la Calificacion</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse" aria-expanded="false">
+                    <li><a href="{{ url('averages') }}">Promedios</a></li>
+                    <li><a href="{{ url('complementary_factor') }}">Factor de Complementacion</a></li>
+                    <li><a href="{{ url('base_wage') }}">Sueldos</a></li>
+                </ul>
+            </li>
+            @endif
         </ul>
 
     </div>

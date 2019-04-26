@@ -21,6 +21,10 @@ window.flash = function (message, level = 'success', timeOut = 5000) {
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+import VModal from 'vue-js-modal'
+
+Vue.use(VModal)
+
 
  /**VUEX */
  import store from './store/index';
@@ -199,6 +203,9 @@ Vue.filter('uppercase', function (value) {
 });
 Vue.filter('monthYear', function (value) {
   return moment(value).format("MM/Y");
+});
+Vue.filter('textDate', function (value) {
+  return moment(value).format("DD MMM YYYY");
 });
 
 
@@ -415,6 +422,7 @@ Vue.component('eco-com-info', require('./components/eco_com/Info.vue'));
 Vue.component('eco-com-search-affiliate', require('./components/eco_com/SearchAffiliate.vue'));
 Vue.component('eco-com-beneficiary', require('./components/eco_com/Beneficiary.vue'));
 Vue.component('eco-com-step1-requirements-edit', require('./components/eco_com/Step1RequirementsEdit.vue'));
+Vue.component('eco-com-observations', require('./components/eco_com/Observations.vue'));
 
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
