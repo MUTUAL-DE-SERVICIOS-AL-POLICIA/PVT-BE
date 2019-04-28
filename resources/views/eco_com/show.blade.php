@@ -142,6 +142,8 @@
                 {{-- @endcan --}}
             </div>
             <div id="tab-qualification" class="tab-pane">
+            <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}">
+                </eco-com-qualification>
                 {{-- @include('ret_fun.summary_qualification', ['eco_com_process'=>$eco_com_process,'affiliate'=>$affiliate]) --}}
             </div>
             <div id="tab-observations" class="tab-pane">

@@ -83,7 +83,9 @@
         //added responsive table affiliate
         // document.getElementsByName('SimpleTable')[0].className+='table-responsive';
         var datatable_ret_fun = $('#datatables-retirement-funds').DataTable({
-          language: {
+            "processing": true,
+        "serverSide": true,
+            language: {
                 "decimal": "",
                 "emptyTable": "No hay información",
                 "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",

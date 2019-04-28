@@ -27,15 +27,13 @@ use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\EconomicComplement\EcoComType;
 use Carbon\Carbon;
 use DB;
-use Yajra\Datatables\DataTables;
 use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\EconomicComplement\EcoComRent;
 use Muserpol\Models\ObservationType;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Database\Eloquent\Model;
+use Yajra\DataTables\DataTables;
 
 class EconomicComplementController extends Controller
 {
@@ -80,8 +78,7 @@ class EconomicComplementController extends Controller
             'workflow_id',
         )
             ->where('code', 'not like', '%A')
-            ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
-            ->take(1000);
+            ->orderByDesc(DB::raw("split_part(code, '/',3)::integer desc, split_part(code, '/',2), split_part(code, '/',1)::integer"));
         return $datatables->eloquent($eco_coms)
             ->addColumn('eco_com_beneficiary_ci_with_ext', function ($eco_com) {
                 return $eco_com->eco_com_beneficiary ? $eco_com->eco_com_beneficiary->ciWithExt() : '';
@@ -506,7 +503,7 @@ class EconomicComplementController extends Controller
             $str = $first_wf_state->message;
             preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
             $user_name = $matches[0][0];
-            if(User::where('username', '=', $user_name)->first()){
+            if (User::where('username', '=', $user_name)->first()) {
                 $rol = User::where('username', '=', $user_name)->first()->roles->first();
                 $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
             }
@@ -515,7 +512,7 @@ class EconomicComplementController extends Controller
         /**
          ** for observations
          */
-        $observation_types = ObservationType::where('module_id',Util::getRol()->module_id)->where('type','T')->get();
+        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'T')->get();
         // $affiliate_observations = AffiliateObservation::where('affiliate_id', $economic_complement->affiliate_id)->get();
         // foreach($affiliate_observations as $observation){
         //     if($observation->observationType->type=='AT')
@@ -796,6 +793,33 @@ class EconomicComplementController extends Controller
         }
 
         return $num;
+    }
+    public function getEcoCom($id)
+    {
+        return EconomicComplement::findOrFail($id);
+    }
+    public function updateRents(Request $request)
+    {
+        $economic_complement = EconomicComplement::find($request->id);
+        if ($request->pension_entity_id == 5) {
+            $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
+            $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
+            $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
+            $economic_complement->aps_disability = Util::parseMoney($request->aps_total_disability);
+            $economic_complement->aps_total_fsa = null;
+            $economic_complement->aps_total_cc = null;
+            $economic_complement->aps_total_fs = null;
+        } else {
+            $economic_complement->aps_total_fsa = Util::parseMoney($request->aps_total_fsa);
+            $economic_complement->aps_total_cc = Util::parseMoney($request->aps_total_cc);
+            $economic_complement->aps_total_fs = Util::parseMoney($request->aps_total_fs);
+            $economic_complement->aps_disability = Util::parseMoney($request->aps_total_disability);
+            $economic_complement->sub_total_rent = null;
+            $economic_complement->reimbursement = null;
+            $economic_complement->dignity_pension = null;
+        }
+        $economic_complement->save();
+        return $economic_complement->qualify();
     }
     /**
      * Remove the specified resource from storage.
