@@ -25,6 +25,9 @@ use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Models\Voucher;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
+
 class Util
 {
     public static function isRegionalRole()
@@ -971,5 +974,23 @@ class Util
     public static function rolIsEcoCom()
     {
         return self::getRol()->module_id == 2;
+    }
+    public static function getPermissions(...$models)
+    {
+        $operations = [
+            'create',
+            'read',
+            'update',
+            'delete',
+            'print',
+        ];
+        $permissions = [];
+        foreach ($models as $model) {
+            foreach ($operations as $o) {
+                $class = explode('\\', $model);
+                $permissions[] =  array('operation'=>Str::snake($o.$class[sizeof($class)-1]), 'value' => Gate::allows($o,new $model()));
+            }
+        }
+        return json_encode($permissions);
     }
 }

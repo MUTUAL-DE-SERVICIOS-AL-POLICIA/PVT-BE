@@ -34,6 +34,8 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\EconomicComplement\EcoComRent;
 use Muserpol\Models\ObservationType;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Database\Eloquent\Model;
 
 class EconomicComplementController extends Controller
 {
@@ -529,6 +531,14 @@ class EconomicComplementController extends Controller
         //         }
         //     }
         // }
+
+        /**
+         ** Permissions
+         */
+        $permissions = Util::getPermissions(
+            ObservationType::class,
+            EconomicComplement::class,
+        );
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -559,6 +569,8 @@ class EconomicComplementController extends Controller
             'workflow_records' =>  $workflow_records,
             'first_wf_state' =>  $first_wf_state,
             'observation_types' =>  $observation_types,
+
+            'permissions' =>  $permissions,
         ];
         return view('eco_com.show', $data);
     }

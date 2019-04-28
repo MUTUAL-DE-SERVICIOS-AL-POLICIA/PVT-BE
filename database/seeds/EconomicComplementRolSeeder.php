@@ -40,6 +40,7 @@ class EconomicComplementRolSeeder extends Seeder
             ['module_id' => 2, 'name' => 'Unit'],
             ['module_id' => 2, 'name' => 'IpcRate'],
             ['module_id' => 2, 'name' => 'ComplementaryFactor'],
+            ['module_id' => 2, 'name' => 'ObservationType'],
         ];
         foreach ($statuses as $status) {
             Operation::create($status);

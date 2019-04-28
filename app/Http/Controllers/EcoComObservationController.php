@@ -11,16 +11,34 @@ use Auth;
 use DB;
 use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Helpers\Util;
+use Illuminate\Auth\Access\AuthorizationException;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 class EcoComObservationController extends Controller
 {
     public function getObservations($eco_com_id)
     {
+        try{
+            $this->authorize('read', new ObservationType());
+        }catch(AuthorizationException $exception){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para ver las observaciones'],
+            ], 403);
+        }
         $eco_com = EconomicComplement::find($eco_com_id);
         return $eco_com->observations;
     }
     public function getDeleteObservations($eco_com_id)
     {
+        try{
+            $this->authorize('read', new ObservationType());
+        }catch(AuthorizationException $exception){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para ver las observaciones'],
+            ], 403);
+        }
         $observations = collect(DB::table('observables')
             ->where('observable_id', $eco_com_id)
             ->where('observable_type', 'like', 'economic_complements')
@@ -32,6 +50,14 @@ class EcoComObservationController extends Controller
     }
     public function create(Request $request)
     {
+        try{
+            $this->authorize('create', new ObservationType());
+        }catch(AuthorizationException $exception){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para crear observaciones'],
+            ], 403);
+        }
         try {
             $this->validate($request, [
                 'message' => 'required|min:10|max:250',
@@ -61,6 +87,14 @@ class EcoComObservationController extends Controller
     }
     public function update(Request $request)
     {
+        try{
+            $this->authorize('update', new ObservationType());
+        }catch(AuthorizationException $exception){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para editar observaciones'],
+            ], 403);
+        }
         try {
             $this->validate($request, [
                 'message' => 'required|min:10|max:250',
@@ -103,6 +137,14 @@ class EcoComObservationController extends Controller
     }
     public function delete(Request $request)
     {
+        try{
+            $this->authorize('delete', new ObservationType());
+        }catch(AuthorizationException $exception){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para eliminar observaciones'],
+            ], 403);
+        }
         try {
             $this->validate($request, [
                 'observationTypeId' => 'required',

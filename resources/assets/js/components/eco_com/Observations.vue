@@ -10,12 +10,14 @@
               @click="createObs()"
               data-toggle="tooltip"
               title="Adicionar Observacion"
+              :disabled="!can('create_observation_type')"
+              v-if="can('read_observation_type')"
             >
               <i class="fa fa-plus"></i> Adicionar
             </button>
           </div>
         </div>
-        <div class="ibox-content">
+        <div class="ibox-content" v-if="can('read_observation_type')" >
           <table class="table table-striped table-hover table-bordered">
             <thead>
               <tr>
@@ -47,17 +49,13 @@
                     <button
                       data-toggle="dropdown"
                       class="btn btn-default btn-sm dropdown-toggle"
-                    >Opciones</button>
+                    ><i class="fa fa-chevron-down"></i>  Opciones</button>
                     <ul class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="#" @click.prevent.stop="editObs(o)">Editar</a>
+                        <a class="dropdown-item" href="#" @click.prevent="editObs(o)" :aria-disabled="!can('update_observation_type')"><i class="fa fa-pencil"></i> Editar</a>
                       </li>
                       <li>
-                        <a
-                          class="dropdown-item"
-                          @click.prevent.stop="deleteObs(o)"
-                          href="#"
-                        >Eliminar</a>
+                        <a class="dropdown-item" @click.prevent="deleteObs(o)" :aria-disabled="!can('delete_observation_type')" href="#"><i class="fa fa-times"></i> Eliminar</a>
                       </li>
                     </ul>
                   </div>
@@ -65,7 +63,7 @@
               </tr>
             </tbody>
           </table>
-          <input type="checkbox" v-model="showDeleteObservation" @change="getDeleteObservations()">
+          <input type="checkbox" v-model="showDeleteObservation" @change="getDeleteObservations()" id="show-delete-observation"><label for="show-delete-observation">Ver Observaciones Eliminadas</label>
           <table
             class="table table-striped table-hover table-bordered"
             v-if="showDeleteObservation"
@@ -97,6 +95,11 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="ibox-content" v-else>
+          <div class="alert alert-warning" >
+              No tiene permisos para ver las observaciones.
+          </div>
         </div>
       </div>
     </div>
@@ -190,9 +193,9 @@
   </div>
 </template>
 <script>
-import { flashErrors } from "../../helper.js";
+import { flashErrors, canOperation } from "../../helper.js";
 export default {
-  props: ["ecoCom", "observationTypes", "ecoComObservations"],
+  props: ["ecoCom", "observationTypes", "ecoComObservations", "permissions"],
   data() {
     return {
       form: {
@@ -210,7 +213,13 @@ export default {
     this.getObservations();
   },
   methods: {
+    can(operation){
+      return canOperation(operation, this.permissions)
+    },
     async getDeleteObservations() {
+      if(!this.can('read_observation_type', this.permissions)){
+        return;
+      }
       await axios
         .get(`/eco_com_get_delete_observations/${this.ecoCom.id}`)
         .then(response => {
@@ -249,6 +258,9 @@ export default {
       return method;
     },
     createObs() {
+      if(!this.can('create_observation_type', this.permissions)){
+        return;
+      }
       this.$modal.show("observation-modal");
       this.form.observationTypeId = null;
       this.form.message = null;
@@ -256,6 +268,9 @@ export default {
       this.method = "post";
     },
     editObs(o) {
+      if(!this.can('update_observation_type', this.permissions)){
+        return;
+      }
       this.form.observationTypeId = o.id;
       this.form.editObservationTypeId = o.id;
       this.form.message = o.pivot.message;
@@ -264,6 +279,9 @@ export default {
       this.$modal.show("observation-modal");
     },
     async deleteObs(o) {
+      if(!this.can('delete_observation_type', this.permissions)){
+        return;
+      }
       this.form.observationTypeId = o.id;
       this.method = "delete";
       await this.$swal({
@@ -325,6 +343,9 @@ export default {
       await this.getObservations();
     },
     async getObservations() {
+      if(!this.can('read_observation_type', this.permissions)){
+        return;
+      }
       await axios
         .get(`/eco_com_get_observations/${this.ecoCom.id}`)
         .then(response => {

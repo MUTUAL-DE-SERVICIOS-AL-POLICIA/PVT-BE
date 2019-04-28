@@ -145,7 +145,7 @@
                 {{-- @include('ret_fun.summary_qualification', ['eco_com_process'=>$eco_com_process,'affiliate'=>$affiliate]) --}}
             </div>
             <div id="tab-observations" class="tab-pane">
-            <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}"></eco-com-observations>
+            <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-observations>
                 {{-- @include('eco_com.observation') --}}
             </div>
         </div>

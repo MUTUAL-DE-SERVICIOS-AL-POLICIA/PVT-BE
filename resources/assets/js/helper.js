@@ -116,3 +116,10 @@ export function getNamePensionEntity(value){
     }
     return 'APS'
 }
+export function canOperation(operation, permissions){
+    let found = permissions.find(v => v.operation == operation);
+    if(found){
+        return found.value
+    }
+    return false
+}

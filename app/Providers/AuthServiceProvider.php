@@ -91,10 +91,12 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Policies\QuotaAidMortuaryPolicy;
 use Muserpol\Policies\ContributionProcessPolicy;
 use Muserpol\Policies\EconomicComplementPolicy;
+use Muserpol\Policies\ObservationTypePolicy;
 use Muserpol\Policies\ComplementaryFactorPolicy;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\ComplementaryFactor;
+use Muserpol\Models\ObservationType;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -153,6 +155,7 @@ class AuthServiceProvider extends ServiceProvider
 
          EconomicComplement::class => EconomicComplementPolicy::class,
          ComplementaryFactor::class => ComplementaryFactorPolicy::class,
+         ObservationType::class => ObservationTypePolicy::class,
     ];
 
     /**
