@@ -23,7 +23,7 @@ class EconomicComplementPolicy
      * @param  \Muserpol\EconomicComplement  $EconomicComplement
      * @return mixed
      */
-    public function view(User $user, EconomicComplement $EconomicComplement)
+    public function read(User $user, EconomicComplement $EconomicComplement)
     {
         $permission = Util::CheckPermission(self::ClASS_NAME, self::READ);
         return $permission ? true : false;
@@ -65,5 +65,9 @@ class EconomicComplementPolicy
     {
         $permission = Util::CheckPermission(self::ClASS_NAME, self::DELETE);
         return $permission ? true : false;
+    }
+    public function qualify(User $user, EconomicComplement $EconomicComplement)
+    {
+        return $EconomicComplement->wf_current_state_id == 3 && Util::getRol()->id == 4;
     }
 }

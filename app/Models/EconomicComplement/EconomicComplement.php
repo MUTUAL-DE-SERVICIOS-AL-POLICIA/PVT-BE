@@ -117,7 +117,6 @@ class EconomicComplement extends Model
         //     $economic_complement->save();
         // }
         // // /requalify
-        sleep(10);
         $eco_com_procedure = $this->eco_com_procedure;
         $eco_com_rent = EcoComRent::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
@@ -197,9 +196,9 @@ class EconomicComplement extends Model
                 $this->eco_com_modality_id = 9;
             } elseif ($this->isOrphanhood() && $this->total_rent < $indicator) {
                 //Orfandad
-                $this->economic_complement->eco_com_modality_id = 12;
+                $this->eco_com_modality_id = 12;
             } else {
-                $this->eco_com_modality_id = $this->economic_complement_modality->economic_complement_type->id;
+                $this->eco_com_modality_id = $this->eco_com_modality->eco_com_type->id;
             }
         }
         // $economic_complement->aps_disability = floatval(str_replace(',', '', $aps_disability));
@@ -216,7 +215,7 @@ class EconomicComplement extends Model
             */
         if ($this->eco_com_modality_id > 3 && $this->eco_com_modality_id < 10) { // no se esta tomando en cuenta a orfandad
             $eco_com_rent = EcoComRent::where('degree_id', '=', $this->degree_id)
-                ->where('eco_com_type_id', '=', $this->economic_complement_modality->economic_complement_type->id)
+                ->where('eco_com_type_id', '=', $this->eco_com_modality->eco_com_type->id)
                 ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
                 ->where('semester', '=', $eco_com_procedure->semester)
                 ->first();

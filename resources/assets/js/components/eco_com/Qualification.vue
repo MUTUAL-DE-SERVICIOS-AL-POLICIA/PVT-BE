@@ -12,16 +12,16 @@
             @click="edit()"
             data-toggle="tooltip"
             title="Adicionar Observacion"
+            :disabled="!can('update_economic_complement')"
           >
-            <!-- :disabled="!can('create_observation_type')"
-            v-if="can('read_observation_type')"-->
-            <i class="fa fa-plus"></i> Editar
+            <i class="fa fa-pencil"></i> Editar
           </button>
         </div>
       </div>
       <div class="ibox-content">
         <div class="row">
           <div class="col-md-6">
+            <p>Datos de la boleta</p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
@@ -63,6 +63,7 @@
             </table>
           </div>
           <div class="col-md-6">
+            <p>Datos del Calculo del total del Complemento Economico</p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
@@ -303,15 +304,16 @@
 import {
   isPensionEntitySenasir,
   getNamePensionEntity,
-  parseMoney
+  parseMoney,
+  canOperation
 } from "../../helper.js";
 export default {
-  props: ["ecoComId", "affiliate"],
+  props: ["ecoComId", "affiliate", "canQualify", "permissions"],
   data() {
     return {
       ecoCom: {},
       editing: false,
-      loadingButton:false,
+      loadingButton: false
     };
   },
   mounted() {
@@ -326,7 +328,13 @@ export default {
     }
   },
   methods: {
+    can(operation) {
+      return canOperation(operation, this.permissions);
+    },
     edit() {
+      if (!this.can("update_economic_complement", this.permissions)) {
+        return;
+      }
       this.$modal.show("rents-modal");
       this.editing = true;
     },
@@ -335,6 +343,9 @@ export default {
       this.editing = false;
     },
     async getEcoCom() {
+      if (!this.can("read_economic_complement", this.permissions)) {
+        return;
+      }
       await axios
         .get(`/get_eco_com/${this.ecoComId}`)
         .then(response => {
@@ -345,6 +356,9 @@ export default {
         });
     },
     async save() {
+      if (!this.can("update_economic_complement", this.permissions)) {
+        return;
+      }
       this.loadingButton = true;
       this.editing = false;
       this.ecoCom.pension_entity_id = this.affiliate.pension_entity_id;

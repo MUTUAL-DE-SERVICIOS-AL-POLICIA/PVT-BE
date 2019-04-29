@@ -34,6 +34,8 @@ use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\EconomicComplement\EcoComRent;
 use Muserpol\Models\ObservationType;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class EconomicComplementController extends Controller
 {
@@ -158,8 +160,14 @@ class EconomicComplementController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', new EconomicComplement());
-        Log::info($request->all());
+        try {
+            $this->authorize('create', new EconomicComplement());
+        } catch (AuthorizationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para crear el tramite'],
+            ], 403);
+        }
         $eco_com_procedure = EcoComProcedure::find($request->eco_com_procedure_id);
         if (!$eco_com_procedure) {
             abort(500, "ERROR");
@@ -427,6 +435,7 @@ class EconomicComplementController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('read', new EconomicComplement());
         $economic_complement = EconomicComplement::with(['wf_state:id,name', 'workflow:id,name', 'eco_com_modality:id,name,shortened'])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
@@ -536,6 +545,7 @@ class EconomicComplementController extends Controller
             ObservationType::class,
             EconomicComplement::class,
         );
+        $can_qualify = Gate::allows('qualify', $economic_complement);
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -568,11 +578,20 @@ class EconomicComplementController extends Controller
             'observation_types' =>  $observation_types,
 
             'permissions' =>  $permissions,
+            'can_qualify' =>  $can_qualify,
         ];
         return view('eco_com.show', $data);
     }
     public function updateAffiliatePoliceEcoCom(Request $request)
     {
+        try {
+            $this->authorize('update', new EconomicComplement());
+        } catch (AuthorizationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para editar el tramite'],
+            ], 403);
+        }
         $affiliate = Affiliate::where('id', '=', $request->id)->first();
         // $this->authorize('update', $affiliate);
         $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
@@ -631,6 +650,14 @@ class EconomicComplementController extends Controller
 
     public function updateInformation(Request $request)
     {
+        try {
+            $this->authorize('update', new EconomicComplement());
+        } catch (AuthorizationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para editar el tramite'],
+            ], 403);
+        }
         $economic_complement = EconomicComplement::findOrFail($request->id);
         // $economic_complement->degree_id = $request->degree_id;
         // $economic_complement->category_id = $request->category_id;
@@ -736,6 +763,14 @@ class EconomicComplementController extends Controller
     }
     public function editRequirements(Request $request, $id)
     {
+        try{
+            $this->authorize('update', new EconomicComplement());
+        }catch(AuthorizationException $exception){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para editar el tramite'],
+            ], 403);
+        }
         $documents = EcoComSubmittedDocument::select('procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id')
             ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
             ->orderby('procedure_requirements.number', 'ASC')
@@ -796,10 +831,26 @@ class EconomicComplementController extends Controller
     }
     public function getEcoCom($id)
     {
+        try{
+            $this->authorize('read', new EconomicComplement());
+        }catch(AuthorizationException $exception){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para ver el tramite'],
+            ], 403);
+        }
         return EconomicComplement::findOrFail($id);
     }
     public function updateRents(Request $request)
     {
+        try {
+            $this->authorize('update', new EconomicComplement());
+        } catch (AuthorizationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para editar el tramite'],
+            ], 403);
+        }
         $economic_complement = EconomicComplement::find($request->id);
         if ($request->pension_entity_id == 5) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
@@ -829,6 +880,14 @@ class EconomicComplementController extends Controller
      */
     public function destroy($id)
     {
+        try{
+            $this->authorize('delete', new EconomicComplement());
+        }catch(AuthorizationException $exception){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para eliminar el tramite'],
+            ], 403);
+        }
         if ($id) {
             $economic_complement = EconomicComplement::find($id);
             $economic_complement->code = $economic_complement->code . 'A';
