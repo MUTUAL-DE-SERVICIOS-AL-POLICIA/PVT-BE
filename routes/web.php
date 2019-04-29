@@ -678,6 +678,7 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::delete('eco_com/{eco_com_id}', 'EconomicComplementController@destroy');
 		Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
 		Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
+		Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
 
 		Route::get('/affiliate/{affiliate_id}/eco_com_process/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 

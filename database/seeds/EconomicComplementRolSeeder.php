@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Muserpol\Operation;
+use Muserpol\Models\DiscountType;
 
 class EconomicComplementRolSeeder extends Seeder
 {
@@ -27,6 +28,15 @@ class EconomicComplementRolSeeder extends Seeder
         ];
         foreach ($statuses as $status) {
             Operation::create($status);
+        }
+        $statuses = [
+            ['module_id' => 2, 'name' => 'Amortización por Cuentas por Cobrar', 'shortened' => 'Cuentas por Cobrar'],
+            ['module_id' => 2, 'name' => 'Amortización por Prestamos en Mora', 'shortened' => 'Prestamos en Mora'],
+            ['module_id' => 2, 'name' => 'Amortización por Reposición de Fondos', 'shortened' => 'Reposición de Fondos'],
+            ['module_id' => 2, 'name' => 'Amortización por Pago a Futuro', 'shortened' => 'Pago a Futuro'],
+        ];
+        foreach ($statuses as $status) {
+            DiscountType::create($status);
         }
     }
 }

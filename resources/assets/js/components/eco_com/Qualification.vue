@@ -20,6 +20,9 @@
       </div>
       <div class="ibox-content">
         <div class="row">
+          <eco-com-amortization></eco-com-amortization>
+        </div>
+        <div class="row">
           <div class="col-md-6">
             <p>Datos de la boleta</p>
             <table class="table table-bordered table-striped">
@@ -307,8 +310,10 @@ import {
   parseMoney,
   canOperation
 } from "../../helper.js";
+import { mapState, mapMutations } from "vuex";
+
 export default {
-  props: ["ecoComId", "affiliate", "canQualify", "permissions"],
+  props: ["ecoComId", "affiliate", "permissions"],
   data() {
     return {
       ecoCom: {},
@@ -350,6 +355,7 @@ export default {
         .get(`/get_eco_com/${this.ecoComId}`)
         .then(response => {
           this.ecoCom = response.data;
+          this.$store.commit("ecoComForm/setEcoCom", this.ecoCom);
         })
         .catch(error => {
           console.log(error);

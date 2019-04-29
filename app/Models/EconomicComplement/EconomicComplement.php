@@ -66,6 +66,10 @@ class EconomicComplement extends Model
     {
         return $this->belongsTo('Muserpol\Models\Workflow\Workflow');
     }
+    public function discount_types()
+    {
+        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount','date','message'])->withTimestamps();
+    }
     public function getBasicInfoCode()
     {
         $code = $this->id . " " . ($this->affiliate->id ?? null) . "\n" . "Trámite Nro: " . $this->code . "\nModalidad: " . $this->eco_com_modality->name . "\Beneficiario: " . ($this->eco_com_beneficiary->fullName() ?? null);

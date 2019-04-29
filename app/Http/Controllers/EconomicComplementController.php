@@ -36,6 +36,9 @@ use Muserpol\Models\ObservationType;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\AuthorizationException;
+use Muserpol\Models\EconomicComplement\EcoComState;
+use Illuminate\Validation\ValidationException;
+use Muserpol\Models\DiscountType;
 
 class EconomicComplementController extends Controller
 {
@@ -545,7 +548,6 @@ class EconomicComplementController extends Controller
             ObservationType::class,
             EconomicComplement::class,
         );
-        $can_qualify = Gate::allows('qualify', $economic_complement);
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -578,7 +580,6 @@ class EconomicComplementController extends Controller
             'observation_types' =>  $observation_types,
 
             'permissions' =>  $permissions,
-            'can_qualify' =>  $can_qualify,
         ];
         return view('eco_com.show', $data);
     }
@@ -763,9 +764,9 @@ class EconomicComplementController extends Controller
     }
     public function editRequirements(Request $request, $id)
     {
-        try{
+        try {
             $this->authorize('update', new EconomicComplement());
-        }catch(AuthorizationException $exception){
+        } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
                 'errors' => ['No tiene permisos para editar el tramite'],
@@ -831,15 +832,30 @@ class EconomicComplementController extends Controller
     }
     public function getEcoCom($id)
     {
-        try{
+        try {
             $this->authorize('read', new EconomicComplement());
-        }catch(AuthorizationException $exception){
+        } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
                 'errors' => ['No tiene permisos para ver el tramite'],
             ], 403);
         }
-        return EconomicComplement::findOrFail($id);
+        $rol = Util::getRol();
+        $discount_type_id = null;
+        switch ($rol->id) {
+            case 7: //contabiliadad
+                $discount_type_id = 4;
+                break;
+            case 16: //prestamo
+                $discount_type_id = 5;
+                break;
+            case 4: // complemento
+                $discount_type_id = 6;
+                break;
+        }
+        $eco_com = EconomicComplement::with('discount_types')->findOrFail($id);
+        $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id',$discount_type_id)->first())->pivot)->amount;
+        return $eco_com;
     }
     public function updateRents(Request $request)
     {
@@ -870,7 +886,89 @@ class EconomicComplementController extends Controller
             $economic_complement->dignity_pension = null;
         }
         $economic_complement->save();
-        return $economic_complement->qualify();
+
+        if (Gate::allows('qualify', $economic_complement)) {
+            return $economic_complement->qualify();
+        }
+        return $economic_complement;
+    }
+    public function saveAmortization(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'amount' => 'required|numeric|min:1',
+            ]);
+        } catch (ValidationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => $exception->errors(),
+            ], 422);
+        }
+        Log::info($request->all());
+        $eco_com = EconomicComplement::find($request->id);
+        if ($eco_com->eco_com_state->eco_com_state_type_id == 1 || $eco_com->eco_com_state->eco_com_state_type_id == 6) {
+            $eco_com_state = $eco_com->eco_com_state;
+            return 'No se puede realizar la amortización porque el trámite ' . $eco_com->code . ' se encuentra en estado de ' . $eco_com_state->name;
+        }
+        $rol = Util::getRol();
+        $discount_type_id = null;
+        switch ($rol->id) {
+            case 7: //contabiliadad
+                $discount_type_id = 4;
+                break;
+            case 16: //prestamo
+                $discount_type_id = 5;
+                break;
+            case 4: // complemento
+                $discount_type_id = 6;
+                break;
+        }
+        $discount_type = DiscountType::findOrFail($discount_type_id);
+        if ($eco_com->discount_types->contains($discount_type->id)) {
+            $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $request->amount, 'date' => now(), 'message' => $request->message]);
+        } else {
+            $eco_com->discount_types()->save($discount_type, ['amount' => $request->amount, 'date' => now(), 'message' => $request->message]);
+        }
+        //detach
+        // if ($eco_com->discount_types->contains($discount_type->id)) {
+        //     $eco_com->discount_types()->detach($discount_type->id);
+        // }
+        $record = new EconomicComplementRecord();
+        $record->user_id = Auth::user()->id;
+        $record->economic_complement_id = $eco_com->id;
+        $record->message = "El usuario " . Auth::user()->username  . " amortizó " . $request->amount . ".";
+        $record->save();
+        return $eco_com;
+        // case 4: //complemento
+        // $start_procedure = EconomicComplementProcedure::where('id','=', 2)->first();
+        //     $complemento = EconomicComplement::where('id', $request->id_complemento)->first();
+        //     $complemento->amount_replacement = $request->amount_amortization;
+        //     $complemento->save();
+        //     $sum = 0;
+        //     while ($start_procedure) {
+        //         $eco_com = $start_procedure->economic_complements()->where('affiliate_id', '=', $complemento->affiliate_id)->first();
+        //         if ($eco_com) {
+        //             if ($eco_com->amount_replacement) {
+        //                 $sum += $eco_com->amount_replacement;
+        //             }
+        //         }
+        //         $start_procedure = EconomicComplementProcedure::where('id', '=', Util::semesternext(Carbon::parse($start_procedure->year)->year, $start_procedure->semester))->first();
+        //         Log::info("whille");
+        //     }
+        //     $devolution = Devolution::where('affiliate_id', '=', $complemento->affiliate_id)->where('observation_type_id', '=', 13)->first();
+        //     if ($devolution) {
+        //         $devolution->balance = $devolution->total - $sum;
+        //         $devolution->save();
+        //     }
+        //     break;
+        // Session::flash('message', 'Se guardo la Amortización.');
+
+        // if ($complemento->total_rent > 0) {
+        //     EconomicComplement::calculate($complemento, $complemento->total_rent, $complemento->sub_total_rent, $complemento->reimbursement, $complemento->dignity_pension, $complemento->aps_total_fsa, $complemento->aps_total_cc, $complemento->aps_total_fs, $complemento->aps_disability);
+        //     $complemento->save();
+        // }
+
     }
     /**
      * Remove the specified resource from storage.
@@ -880,9 +978,9 @@ class EconomicComplementController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        try {
             $this->authorize('delete', new EconomicComplement());
-        }catch(AuthorizationException $exception){
+        } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
                 'errors' => ['No tiene permisos para eliminar el tramite'],

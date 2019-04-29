@@ -10,7 +10,8 @@ const state = {
   legalGuardian: {},
   receptionType: {},
   affiliate: {},
-  pensionEntityId: null
+  pensionEntityId: null,
+  ecoCom: {}
 };
 const mutations = {
   setModality(state, object) {
@@ -22,6 +23,9 @@ const mutations = {
   },
   setAffiliate(state, object) {
     state.affiliate = object;
+  },
+  setEcoCom(state, object) {
+    state.ecoCom = object;
   },
   setReceptionType(state, object) {
     state.receptionType = object;

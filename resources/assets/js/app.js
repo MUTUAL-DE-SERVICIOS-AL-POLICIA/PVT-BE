@@ -424,6 +424,7 @@ Vue.component('eco-com-beneficiary', require('./components/eco_com/Beneficiary.v
 Vue.component('eco-com-step1-requirements-edit', require('./components/eco_com/Step1RequirementsEdit.vue'));
 Vue.component('eco-com-observations', require('./components/eco_com/Observations.vue'));
 Vue.component('eco-com-qualification', require('./components/eco_com/Qualification.vue'));
+Vue.component('eco-com-amortization', require('./components/eco_com/Amortization.vue'));
 
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
