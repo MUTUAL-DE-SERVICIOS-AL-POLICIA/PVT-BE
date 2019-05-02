@@ -319,8 +319,8 @@ class Affiliate extends Model
   {
     $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
     if (!$contribution_type) {
-        return 'no existe el tipo de contribucion ' . $name_contribution_type;
-      }
+      return 'no existe el tipo de contribucion ' . $name_contribution_type;
+    }
     $contributions = $this->contributions()->where('contribution_type_id', '=', $contribution_type->id)->get();
     $total = 0;
     foreach ($contributions as $contribution) {

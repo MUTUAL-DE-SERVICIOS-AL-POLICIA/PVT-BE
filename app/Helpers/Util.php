@@ -50,7 +50,7 @@ class Util
         if ($value) {
             $value = number_format($value, 2, '.', ',');
             if ($prefix) {
-                return 'Bs '.$value;
+                return ' Bs'.$value;
             }
             return $value;
         }
