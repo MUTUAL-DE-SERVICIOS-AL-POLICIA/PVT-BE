@@ -285,18 +285,19 @@ class EconomicComplement extends Model
         $total = $total_amount_semester * round(floatval($complementary_factor) / 100, 2);
 
         //RESTANDO PRESTAMOS, CONTABILIDAD Y REPOSICION AL TOTAL PORCONCEPTO DE DEUDA
-        if ($this->amount_loan > 0) {
-            $total  = $total - $this->amount_loan;
-        }
-        if ($this->amount_accounting > 0) {
-            $total  = $total - $this->amount_accounting;
-        }
-        if ($this->amount_replacement > 0) {
-            $total  = $total - $this->amount_replacement;
-        }
-        if ($this->amount_credit > 0) {
-            $total  = $total - $this->amount_credit;
-        }
+        $total  = $total - $this->discount_types()->sum('amount');
+        // }
+        // if ($this->amount_loan > 0) {
+        // }
+        // if ($this->amount_accounting > 0) {
+        //     $total  = $total - $this->amount_accounting;
+        // }
+        // if ($this->amount_replacement > 0) {
+        //     $total  = $total - $this->amount_replacement;
+        // }
+        // if ($this->amount_credit > 0) {
+        //     $total  = $total - $this->amount_credit;
+        // }
         $this->total = $total;
         $this->base_wage_id = $base_wage->id;
         $this->salary_reference = $salary_reference;

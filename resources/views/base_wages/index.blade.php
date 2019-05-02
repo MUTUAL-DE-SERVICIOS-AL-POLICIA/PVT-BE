@@ -1,12 +1,3 @@
-@extends('layouts.app') 
-@section('title', 'Sueldos') 
-@section('content')
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
-        {{ Breadcrumbs::render('base_wage') }}
-    </div>
-</div>
-<br>
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margings">
@@ -20,40 +11,52 @@
                             <tr class="success">
                                 <th>AÑO</th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="00 00 - COMANDANTE GENERAL">CMTE GRAL</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="00 00 - COMANDANTE GENERAL">CMTE GRAL</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="00 01 - COMANDANTE GENERAL">CMTE GRAL.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="00 01 - COMANDANTE GENERAL">CMTE GRAL.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="00 02 - SUBCOMANDANTE GENERAL">SBCMTE.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="00 02 - SUBCOMANDANTE GENERAL">SBCMTE.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="00 03 - INSPECTOR GENERAL">INSP GRAL.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="00 03 - INSPECTOR GENERAL">INSP GRAL.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="00 04 - DIRECTOR GENERAL">DIR GRAL.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="00 04 - DIRECTOR GENERAL">DIR GRAL.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="01 01 - CORONEL CON SUELDO DE GENERAL">CNL.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="01 01 - CORONEL CON SUELDO DE GENERAL">CNL.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="01 02 - CORONEL">CNL.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="01 02 - CORONEL">CNL.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="01 03 - TENIENTE CORONEL">TCNL.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="01 03 - TENIENTE CORONEL">TCNL.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="01 04 - MAYOR">MY.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="01 04 - MAYOR">MY.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="01 05 - CAPITAN">CAP.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="01 05 - CAPITAN">CAP.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="01 06 - TENIENTE">TTE.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="01 06 - TENIENTE">TTE.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="01 07 - SUBTENIENTE">SBTTE.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="01 07 - SUBTENIENTE">SBTTE.</div>
                                 </th>
                             </tr>
                         </thead>
@@ -72,22 +75,28 @@
                             <tr class="success">
                                 <th>AÑO</th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="02 02 - CORONEL ADMINISTRATIVO">CNL. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="02 02 - CORONEL ADMINISTRATIVO">CNL. ADM.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="02 03 - TENIENTE CORONEL ADMINISTRATIVO ">TCNL. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="02 03 - TENIENTE CORONEL ADMINISTRATIVO ">TCNL. ADM.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="02 04 - MAYOR ADMINISTRATIVO">MY. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="02 04 - MAYOR ADMINISTRATIVO">MY. ADM.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="02 05 - CAPITAN ADMINISTRATIVO">CAP. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="02 05 - CAPITAN ADMINISTRATIVO">CAP. ADM.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="02 06 - TENIENTE ADMINISTRATIVO">TTE. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="02 06 - TENIENTE ADMINISTRATIVO">TTE. ADM.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="02 07 - SUBTENIENTE ADMINISTRATIVO">SBTTE. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="02 07 - SUBTENIENTE ADMINISTRATIVO">SBTTE. ADM.</div>
                                 </th>
                             </tr>
                         </thead>
@@ -106,28 +115,36 @@
                             <tr class="success">
                                 <th>AÑO</th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="03 08 - SUBOFICIAL SUPERIOR">SOF. SUP.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="03 08 - SUBOFICIAL SUPERIOR">SOF. SUP.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="03 09 - SUBOFICIAL MAYOR ">SOF. MY.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="03 09 - SUBOFICIAL MAYOR ">SOF. MY.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="03 010 - SUBOFICIAL PRIMERO">SOF. 1RO.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="03 010 - SUBOFICIAL PRIMERO">SOF. 1RO.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="03 11 - SUBOFICIAL SEGUNDO">SOF. 2DO.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="03 11 - SUBOFICIAL SEGUNDO">SOF. 2DO.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="03 12 - SARGENTO PRIMERO">SGTO. 1RO.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="03 12 - SARGENTO PRIMERO">SGTO. 1RO.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="03 13 - SARGENTO SEGUNDO">SGTO. 2DO.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="03 13 - SARGENTO SEGUNDO">SGTO. 2DO.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="03 14 - CABO">CBO.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="03 14 - CABO">CBO.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="03 15 - POLICIA">POL.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="03 15 - POLICIA">POL.</div>
                                 </th>
                             </tr>
                         </thead>
@@ -146,28 +163,42 @@
                             <tr class="success">
                                 <th>AÑO</th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="04 08 - SUBOFICIAL SUPERIOR ADMINISTRATIVO">SOF. SUP. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="04 08 - SUBOFICIAL SUPERIOR ADMINISTRATIVO">SOF. SUP. ADM.
+                                    </div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="04 09 - SUBOFICIAL MAYOR ADMINISTRATIVO ">SOF. MY. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="04 09 - SUBOFICIAL MAYOR ADMINISTRATIVO ">SOF. MY. ADM.
+                                    </div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="04 010 - SUBOFICIAL PRIMERO ADMINISTRATIVO">SOF. 1RO. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="04 010 - SUBOFICIAL PRIMERO ADMINISTRATIVO">SOF. 1RO. ADM.
+                                    </div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="04 11 - SUBOFICIAL SEGUNDO ADMINISTRATIVO">SOF. 2DO. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="04 11 - SUBOFICIAL SEGUNDO ADMINISTRATIVO">SOF. 2DO. ADM.
+                                    </div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="04 12 - SARGENTO PRIMERO ADMINISTRATIVO">SGTO. 1RO. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="04 12 - SARGENTO PRIMERO ADMINISTRATIVO">SGTO. 1RO. ADM.
+                                    </div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="04 13 - SARGENTO SEGUNDO ADMINISTRATIVO">SGTO. 2DO. ADM.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="04 13 - SARGENTO SEGUNDO ADMINISTRATIVO">SGTO. 2DO. ADM.
+                                    </div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="04 14 - CABO ADMINISTRATIVO">CBO.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="04 14 - CABO ADMINISTRATIVO">CBO.</div>
                                 </th>
                                 <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="04 16 - POLICIA ADMINISTRATIVO">POL.</div>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="04 16 - POLICIA ADMINISTRATIVO">POL.</div>
                                 </th>
                             </tr>
                         </thead>
@@ -178,7 +209,7 @@
         <br>
     </div>
 </div>
-
+{{-- 
 <div id="myModal-import" class="modal fade bs-example-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -228,107 +259,8 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
+{{--
 @endsection
-@section('scripts')
-<script src="{{ asset('/js/datatables.js')}}"></script>
-<script type="text/javascript">
-    $('.datepicker').datepicker({
-            format: "mm/yyyy",
-            viewMode: "months",
-            minViewMode: "months",
-            language: "es",
-            orientation: "bottom right",
-            autoclose: true
-        });
 
-        $(function() {
-            $('#first_level_base_wage-table').DataTable({
-                "dom": '<"top">t<"bottom"p>',
-                "order": [[ 0, "desc" ]],
-                processing: true,
-                serverSide: true,
-                pageLength: 10,
-                autoWidth: false,
-                ajax: '{!! route('get_first_level_base_wage') !!}',
-                columns: [
-                    { data: 'month_year', sClass: "text-center" },
-                    { data: 'c1', sClass: "text-right", bSortable: false },
-                    { data: 'c2', sClass: "text-right", bSortable: false },
-                    { data: 'c3', sClass: "text-right", bSortable: false },
-                    { data: 'c4', sClass: "text-right", bSortable: false },
-                    { data: 'c5', sClass: "text-right", bSortable: false },
-                    { data: 'c6', sClass: "text-right", bSortable: false },
-                    { data: 'c7', sClass: "text-right", bSortable: false },
-                    { data: 'c8', sClass: "text-right", bSortable: false },
-                    { data: 'c9', sClass: "text-right", bSortable: false },
-                    { data: 'c10', sClass: "text-right", bSortable: false },
-                    { data: 'c11', sClass: "text-right", bSortable: false },
-                    { data: 'c12', sClass: "text-right", bSortable: false }
-                ]
-            });
-
-            $('#second_level_base_wage-table').DataTable({
-                "dom": '<"top">t<"bottom"p>',
-                "order": [[ 0, "desc" ]],
-                processing: true,
-                serverSide: true,
-                pageLength: 10,
-                autoWidth: false,
-                ajax: '{!! route('get_second_level_base_wage') !!}',
-                columns: [
-                    { data: 'month_year', sClass: "text-center" },
-                    { data: 'c13', sClass: "text-right", bSortable: false },
-                    { data: 'c14', sClass: "text-right", bSortable: false },
-                    { data: 'c15', sClass: "text-right", bSortable: false },
-                    { data: 'c16', sClass: "text-right", bSortable: false },
-                    { data: 'c17', sClass: "text-right", bSortable: false },
-                    { data: 'c18', sClass: "text-right", bSortable: false }
-                ]
-            });
-
-            $('#third_level_base_wage-table').DataTable({
-                "dom": '<"top">t<"bottom"p>',
-                "order": [[ 0, "desc" ]],
-                processing: true,
-                serverSide: true,
-                pageLength: 10,
-                autoWidth: false,
-                ajax: '{!! route('get_third_level_base_wage') !!}',
-                columns: [
-                    { data: 'month_year', sClass: "text-center" },
-                    { data: 'c19', sClass: "text-right", bSortable: false },
-                    { data: 'c20', sClass: "text-right", bSortable: false },
-                    { data: 'c21', sClass: "text-right", bSortable: false },
-                    { data: 'c22', sClass: "text-right", bSortable: false },
-                    { data: 'c23', sClass: "text-right", bSortable: false },
-                    { data: 'c24', sClass: "text-right", bSortable: false },
-                    { data: 'c25', sClass: "text-right", bSortable: false },
-                    { data: 'c26', sClass: "text-right", bSortable: false }
-                ]
-            });
-
-            $('#fourth_level_base_wage-table').DataTable({
-                "dom": '<"top">t<"bottom"p>',
-                "order": [[ 0, "desc" ]],
-                processing: true,
-                serverSide: true,
-                pageLength: 10,
-                autoWidth: false,
-                ajax: '{!! route('get_fourth_level_base_wage') !!}',
-                columns: [
-                    { data: 'month_year', sClass: "text-center" },
-                    { data: 'c27', sClass: "text-right", bSortable: false },
-                    { data: 'c28', sClass: "text-right", bSortable: false },
-                    { data: 'c29', sClass: "text-right", bSortable: false },
-                    { data: 'c30', sClass: "text-right", bSortable: false },
-                    { data: 'c31', sClass: "text-right", bSortable: false },
-                    { data: 'c32', sClass: "text-right", bSortable: false },
-                    { data: 'c33', sClass: "text-right", bSortable: false },
-                    { data: 'c34', sClass: "text-right", bSortable: false }
-                ]
-            });
-        });
-
-</script>
-@endsection
+ --}}

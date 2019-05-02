@@ -1,24 +1,3 @@
-@extends('layouts.app') 
-@section('title', 'Promedios') 
-@section('content')
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-md-7">
-        {{ Breadcrumbs::render('complementary_factor') }}
-    </div>
-    <div class="col-md-5 " style="margin-top:12px;">
-        <div class="pull-right">
-            <div>
-                {{-- @can('update', $complementary_factor)
-                <span data-toggle="tooltip" title="Editar el factor de complementacion">
-                    <a href="" data-target="#myModal-edit" class="btn btn-raised btn-primary dropdown-toggle" data-toggle="modal">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-                </span> @endcan --}}
-            </div>
-        </div>
-    </div>
-</div>
-<br>
 <div class="row">
     <div class="col-md-12">
         <div class="ibox ibox-e-margins">
@@ -74,7 +53,6 @@
                         </div>
                     </div>
                     {!! Form::close() !!}
-
                     <div class="col-md-12">
                         <table class="table table-bordered table-hover" id="average_table">
                             <thead>
@@ -98,46 +76,8 @@
                             </thead>
                         </table>
                     </div>
-
                 </div>
             </div>
-
         </div>
     </div>
 </div>
-@endsection
- 
-@section('scripts')
-<script src="{{ asset('/js/datatables.js')}}"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-    var oTable = $('#average_table').DataTable({
-        "dom": '<"top">t<"bottom"p>',
-        processing: true,
-        serverSide: true,
-        pageLength: 30,
-        autoWidth: false,
-        order: [0, "asc"],
-        ajax: {
-            url: '{!! route('get_averages') !!}',
-            data: function (d) {
-                d.year = $('#year').val();
-                d.semester = $('#semester').val();
-            }
-        },
-        columns: [
-            { data: 'degree', sClass: "text-center" },
-            { data: 'type', bSortable: false },
-            { data: 'rmin', bSortable: false },
-            { data: 'rmax', bSortable: false },
-            { data: 'average', bSortable: false },
-        ]
-    });
-    $('#refresh-average').on('click', function(e) {
-        oTable.draw();
-        e.preventDefault();
-    });
-    });
-
-</script>
-@endsection

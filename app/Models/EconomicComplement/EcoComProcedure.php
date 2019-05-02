@@ -29,4 +29,46 @@ class EcoComProcedure extends Model
     {
         return Carbon::parse($this->year)->year;
     }
+    public function getNormalStartDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getNormalEndDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getLaggingStartDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getLaggingEndDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getAdditionalStartDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getAdditionalEndDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
 }

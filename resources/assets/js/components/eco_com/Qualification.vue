@@ -101,11 +101,15 @@
                 </tr>
                 <tr>
                   <td>Total Semestre (Diferencia * 6 meses)</td>
-                  <td>{{ ecoCom.total_amoun_semester | currency }}</td>
+                  <td>{{ ecoCom.total_amount_semester | currency }}</td>
                 </tr>
                 <tr>
                   <td>Factor de Complementación</td>
                   <td>{{ ecoCom.complementary_factor }}</td>
+                </tr>
+                <tr v-for="d in ecoCom.discount_types" :key="d.id" class="danger">
+                  <td>{{ d.name }} </td>
+                  <td>{{ d.pivot.amount | currency}} </td>
                 </tr>
                 <tr class="success">
                   <td>
@@ -185,8 +189,8 @@
                     type="text"
                     class="form-control"
                     v-money
-                    name="aps_total_disability"
-                    v-model="ecoCom.aps_total_disability"
+                    name="aps_disability"
+                    v-model="ecoCom.aps_disability"
                     :disabled="!editing"
                   >
                 </div>

@@ -39,6 +39,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Muserpol\Models\EconomicComplement\EcoComState;
 use Illuminate\Validation\ValidationException;
 use Muserpol\Models\DiscountType;
+use Muserpol\Models\ComplementaryFactor;
 
 class EconomicComplementController extends Controller
 {
@@ -492,7 +493,7 @@ class EconomicComplementController extends Controller
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
         $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
-        $can_validate = $wf_current_state->id == $economic_complement->wf_current_state_id;
+        $can_validate = optional($wf_current_state)->id == $economic_complement->wf_current_state_id;
         $can_cancel = ($economic_complement->user_id == $user->id && $economic_complement->inbox_state == true);
 
         $wf_sequences_back = DB::table("wf_states")
@@ -854,7 +855,7 @@ class EconomicComplementController extends Controller
                 break;
         }
         $eco_com = EconomicComplement::with('discount_types')->findOrFail($id);
-        $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id',$discount_type_id)->first())->pivot)->amount;
+        $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         return $eco_com;
     }
     public function updateRents(Request $request)
@@ -867,7 +868,7 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para editar el tramite'],
             ], 403);
         }
-        $economic_complement = EconomicComplement::find($request->id);
+        $economic_complement = EconomicComplement::with('discount_types')->find($request->id);
         if ($request->pension_entity_id == 5) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
             $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
@@ -939,6 +940,8 @@ class EconomicComplementController extends Controller
         $record->economic_complement_id = $eco_com->id;
         $record->message = "El usuario " . Auth::user()->username  . " amortizó " . $request->amount . ".";
         $record->save();
+
+        $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         return $eco_com;
         // case 4: //complemento
         // $start_procedure = EconomicComplementProcedure::where('id','=', 2)->first();
@@ -997,21 +1000,21 @@ class EconomicComplementController extends Controller
         }
         return [];
     }
-    public function averages()
-    {
-        $year_list = EcoComProcedure::orderByDesc('year')->pluck('year')->map(function ($item, $key) {
-            return Carbon::parse($item)->year;
-        })->unique()->toArray();
-        $year_list = array_combine($year_list, $year_list);
-        $semester_list = EcoComProcedure::all()->pluck('semester')->unique()->toArray();
-        $semester_list = array_combine($semester_list, $semester_list);
+    // public function averages()
+    // {
+    //     $year_list = EcoComProcedure::orderByDesc('year')->pluck('year')->map(function ($item, $key) {
+    //         return Carbon::parse($item)->year;
+    //     })->unique()->toArray();
+    //     $year_list = array_combine($year_list, $year_list);
+    //     $semester_list = EcoComProcedure::all()->pluck('semester')->unique()->toArray();
+    //     $semester_list = array_combine($semester_list, $semester_list);
 
-        $data = [
-            'year_list' => $year_list,
-            'semester_list' => $semester_list,
-        ];
-        return view('eco_com.average', $data);
-    }
+    //     $data = [
+    //         'year_list' => $year_list,
+    //         'semester_list' => $semester_list,
+    //     ];
+    //     return view('eco_com.average', $data);
+    // }
     public function getAverageData(Request $request)
     {
         $year = $request->year;
@@ -1050,5 +1053,93 @@ class EconomicComplementController extends Controller
     public function printAverage()
     {
         return null;
+    }
+    public function qualificationParameters()
+    {
+        // averages
+        $year_list = EcoComProcedure::orderByDesc('year')->pluck('year')->map(function ($item, $key) {
+            return Carbon::parse($item)->year;
+        })->unique()->toArray();
+        $year_list = array_combine($year_list, $year_list);
+        $semester_list = EcoComProcedure::all()->pluck('semester')->unique()->toArray();
+        $semester_list = array_combine($semester_list, $semester_list);
+
+        // complementary factor
+        $procedure = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first());
+        $year = Carbon::parse($procedure->year)->year;
+        $semester = $procedure->semester;
+        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first()) {
+            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first();
+            $cf1_old_age = $complementary_factor->old_age;
+            $cf1_widowhood = $complementary_factor->widowhood;
+        } else {
+            $cf1_old_age = "";
+            $cf1_widowhood = "";
+        }
+        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first()) {
+            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first();
+            $cf2_old_age = $complementary_factor->old_age;
+            $cf2_widowhood = $complementary_factor->widowhood;
+        } else {
+            $cf2_old_age = "";
+            $cf2_widowhood = "";
+        }
+
+        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first()) {
+            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first();
+            $cf3_old_age = $complementary_factor->old_age;
+            $cf3_widowhood = $complementary_factor->widowhood;
+        } else {
+            $cf3_old_age = "";
+            $cf3_widowhood = "";
+        }
+
+        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first()) {
+            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first();
+            $cf4_old_age = $complementary_factor->old_age;
+            $cf4_widowhood = $complementary_factor->widowhood;
+        } else {
+            $cf4_old_age = "";
+            $cf4_widowhood = "";
+        }
+
+        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first()) {
+            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first();
+            $cf5_old_age = $complementary_factor->old_age;
+            $cf5_widowhood = $complementary_factor->widowhood;
+        } else {
+            $cf5_old_age = "";
+            $cf5_widowhood = "";
+        }
+
+        /**
+         ** Permissions
+         */
+        
+        $permissions = Util::getPermissions(
+            EcoComProcedure::class,
+        );
+        $data = [
+            'complementary_factor' => new ComplementaryFactor(),
+            'year' => $year,
+            'semester' => $semester,
+            'cf1_old_age' => $cf1_old_age,
+            'cf1_widowhood' => $cf1_widowhood,
+            'cf2_old_age' => $cf2_old_age,
+            'cf2_widowhood' => $cf2_widowhood,
+            'cf3_old_age' => $cf3_old_age,
+            'cf3_widowhood' => $cf3_widowhood,
+            'cf4_old_age' => $cf4_old_age,
+            'cf4_widowhood' => $cf4_widowhood,
+            'cf5_old_age' => $cf5_old_age,
+            'cf5_widowhood' => $cf5_widowhood,
+
+            'year_list' => $year_list,
+            'semester_list' => $semester_list,
+
+            'permissions' => $permissions,
+        ];
+
+        return view('eco_com.qualification_parameters', $data);
     }
 }

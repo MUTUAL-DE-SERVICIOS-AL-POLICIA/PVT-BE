@@ -1,6 +1,8 @@
 <template>
   <div>
-    <button @click="$modal.show('amortization-modal')" class="btn btn-primary"><i class="fa fa-dollar"></i> Amortizar</button>
+    <button @click="$modal.show('amortization-modal')" class="btn btn-primary">
+      <i class="fa fa-dollar"></i> Amortizar
+    </button>
     <modal name="amortization-modal" class="p-lg" height="auto">
       <div cass="ibox-title">
         <h1>Registrar Amortización</h1>
@@ -74,6 +76,8 @@ export default {
         .patch(`/eco_com_save_amortization`, this.form)
         .then(response => {
           console.log(response);
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.$modal.hide("amortization-modal");
         })
         .catch(error => {
           console.log(error);

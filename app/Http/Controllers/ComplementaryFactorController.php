@@ -21,73 +21,73 @@ class ComplementaryFactorController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function index()
-    {
-        $procedure = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first());
-        $year = Carbon::parse($procedure->year)->year;
-        $semester = $procedure->semester;
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first();
-            $cf1_old_age = $complementary_factor->old_age;
-            $cf1_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf1_old_age = "";
-            $cf1_widowhood = "";
-        }
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first();
-            $cf2_old_age = $complementary_factor->old_age;
-            $cf2_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf2_old_age = "";
-            $cf2_widowhood = "";
-        }
+    // public function index()
+    // {
+    //     $procedure = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first());
+    //     $year = Carbon::parse($procedure->year)->year;
+    //     $semester = $procedure->semester;
+    //     if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first()) {
+    //         $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first();
+    //         $cf1_old_age = $complementary_factor->old_age;
+    //         $cf1_widowhood = $complementary_factor->widowhood;
+    //     } else {
+    //         $cf1_old_age = "";
+    //         $cf1_widowhood = "";
+    //     }
+    //     if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first()) {
+    //         $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first();
+    //         $cf2_old_age = $complementary_factor->old_age;
+    //         $cf2_widowhood = $complementary_factor->widowhood;
+    //     } else {
+    //         $cf2_old_age = "";
+    //         $cf2_widowhood = "";
+    //     }
 
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first();
-            $cf3_old_age = $complementary_factor->old_age;
-            $cf3_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf3_old_age = "";
-            $cf3_widowhood = "";
-        }
+    //     if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first()) {
+    //         $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first();
+    //         $cf3_old_age = $complementary_factor->old_age;
+    //         $cf3_widowhood = $complementary_factor->widowhood;
+    //     } else {
+    //         $cf3_old_age = "";
+    //         $cf3_widowhood = "";
+    //     }
 
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first();
-            $cf4_old_age = $complementary_factor->old_age;
-            $cf4_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf4_old_age = "";
-            $cf4_widowhood = "";
-        }
+    //     if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first()) {
+    //         $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first();
+    //         $cf4_old_age = $complementary_factor->old_age;
+    //         $cf4_widowhood = $complementary_factor->widowhood;
+    //     } else {
+    //         $cf4_old_age = "";
+    //         $cf4_widowhood = "";
+    //     }
 
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first();
-            $cf5_old_age = $complementary_factor->old_age;
-            $cf5_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf5_old_age = "";
-            $cf5_widowhood = "";
-        }
+    //     if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first()) {
+    //         $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first();
+    //         $cf5_old_age = $complementary_factor->old_age;
+    //         $cf5_widowhood = $complementary_factor->widowhood;
+    //     } else {
+    //         $cf5_old_age = "";
+    //         $cf5_widowhood = "";
+    //     }
 
-        $data = [
-            'complementary_factor'=> new ComplementaryFactor(),
-            'year' => $year,
-            'semester' => $semester,
-            'cf1_old_age' => $cf1_old_age,
-            'cf1_widowhood' => $cf1_widowhood,
-            'cf2_old_age' => $cf2_old_age,
-            'cf2_widowhood' => $cf2_widowhood,
-            'cf3_old_age' => $cf3_old_age,
-            'cf3_widowhood' => $cf3_widowhood,
-            'cf4_old_age' => $cf4_old_age,
-            'cf4_widowhood' => $cf4_widowhood,
-            'cf5_old_age' => $cf5_old_age,
-            'cf5_widowhood' => $cf5_widowhood,
-        ];
+    //     $data = [
+    //         'complementary_factor'=> new ComplementaryFactor(),
+    //         'year' => $year,
+    //         'semester' => $semester,
+    //         'cf1_old_age' => $cf1_old_age,
+    //         'cf1_widowhood' => $cf1_widowhood,
+    //         'cf2_old_age' => $cf2_old_age,
+    //         'cf2_widowhood' => $cf2_widowhood,
+    //         'cf3_old_age' => $cf3_old_age,
+    //         'cf3_widowhood' => $cf3_widowhood,
+    //         'cf4_old_age' => $cf4_old_age,
+    //         'cf4_widowhood' => $cf4_widowhood,
+    //         'cf5_old_age' => $cf5_old_age,
+    //         'cf5_widowhood' => $cf5_widowhood,
+    //     ];
 
-        return view('complementary_factor.index', $data);
-    }
+    //     return view('complementary_factor.index', $data);
+    // }
 
     public function old_ageData()
     {

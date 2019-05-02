@@ -3,7 +3,7 @@
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
- 
+
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-md-7">

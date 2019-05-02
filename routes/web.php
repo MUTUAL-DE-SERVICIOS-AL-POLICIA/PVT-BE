@@ -688,6 +688,9 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');
 		
 		
+		// eco com qualification parameters
+		Route::get('eco_com_qualification_parameters', 'EconomicComplementController@qualificationParameters')->name('eco_com_qualification_parameters');
+
 		// base wage
 		Route::resource('base_wage', 'BaseWageController');
 		Route::get('get_first_level_base_wage', 'BaseWageController@FirstLevelData')->name('get_first_level_base_wage');
@@ -712,6 +715,12 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::post('eco_com_observation_create', 'EcoComObservationController@create');
 		Route::patch('eco_com_observation_update', 'EcoComObservationController@update');
 		Route::delete('eco_com_observation_delete', 'EcoComObservationController@delete');
+
+		// eco com procedures
+		Route::get('eco_com_get_procedures', 'EcoComProcedureController@getProcedures');
+		Route::post('eco_com_procedure_create', 'EcoComProcedureController@create');
+		Route::patch('eco_com_procedure_update', 'EcoComProcedureController@update');
+		Route::delete('eco_com_procedure_delete', 'EcoComProcedureController@delete');
 	});
 });
 
