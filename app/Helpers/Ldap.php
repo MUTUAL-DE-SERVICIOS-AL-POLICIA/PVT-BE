@@ -287,7 +287,7 @@ class Ldap
 
         $result = [];
 
-        foreach ($entries as $key => $value) {
+        foreach ($entries as $value) {
           if ($value[$this->config['user_id_key']]) {
             $result[] = (object)[
               $this->config['user_id_key'] => $value[$this->config['user_id_key']][0],
@@ -301,6 +301,10 @@ class Ldap
             ];
           }
         }
+
+        usort($result, function ($a, $b) {
+          return $a->sn <=> $b->sn;
+        });
 
         return $result;
       }
