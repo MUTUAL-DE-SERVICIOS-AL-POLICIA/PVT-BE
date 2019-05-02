@@ -257,7 +257,7 @@ th.ellipsis-text {
                     
 
                     <div id="tab-observations" class="tab-pane">
-
+                        <affiliate-observations :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :observation-types="{{ $observation_types }}"></affiliate-observations>
                     </div>
 
 

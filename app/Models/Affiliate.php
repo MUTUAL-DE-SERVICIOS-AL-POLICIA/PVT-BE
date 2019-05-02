@@ -166,6 +166,10 @@ class Affiliate extends Model
     {
         return $this->hasMany('Muserpol\Models\Testimony');
     }
+    public function observations()
+    {
+        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
+    }
 
     /**
      * methods

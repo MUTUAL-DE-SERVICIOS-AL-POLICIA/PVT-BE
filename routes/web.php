@@ -721,6 +721,13 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::post('eco_com_procedure_create', 'EcoComProcedureController@create');
 		Route::patch('eco_com_procedure_update', 'EcoComProcedureController@update');
 		Route::delete('eco_com_procedure_delete', 'EcoComProcedureController@delete');
+
+		// Affiliate observations
+		Route::get('affiliate_get_observations/{affiliate_id}', 'AffiliateObservationController@getObservations');
+		Route::get('affiliate_get_delete_observations/{affiliate_id}', 'AffiliateObservationController@getDeleteObservations');
+		Route::post('affiliate_observation_create', 'AffiliateObservationController@create');
+		Route::patch('affiliate_observation_update', 'AffiliateObservationController@update');
+		Route::delete('affiliate_observation_delete', 'AffiliateObservationController@delete');
 	});
 });
 
