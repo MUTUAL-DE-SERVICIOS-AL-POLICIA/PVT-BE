@@ -37,6 +37,31 @@ class UserController extends Controller
     //     return redirect('changerol');
     // }
   }
+
+  public function getUsersLdapUpdate()
+  {
+    $ldap = new Ldap();
+    if ($ldap->connection && $ldap->verify_open_port()) {
+      $ldap_users = $ldap->list_entries();
+      $users = User::whereStatus('active')->get();
+      foreach ($users as $user) {
+        $exists = array_filter($ldap_users, function ($o) use ($user) {
+          if ($o->uid == $user->username) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        if (count($exists) == 0) {
+          $user->status = 'inactive';
+          $user->save();
+        }
+      }
+      $ldap->unbind();
+    }
+    return redirect('/user');
+  }
+
   /**
    * Process datatables ajax request.
    *

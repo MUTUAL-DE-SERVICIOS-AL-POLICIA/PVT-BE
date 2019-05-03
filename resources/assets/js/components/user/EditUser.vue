@@ -6,7 +6,7 @@
     <div class="form-group">
       <label class="col-lg-2 control-label">Funcionario</label>
       <div class="col-lg-10">
-        <input type="text" disabled class="form-control" :value="`${userSelected.last_name} ${userSelected.first_name}`" v-if="'id' in userSelected">
+        <input type="text" disabled class="form-control" :value="`${userSelected.last_name} ${userSelected.first_name}`" v-if="user">
         <select class="form-control m-b" v-model="uid" v-else>
           <option v-for="u in users" :key="u.uid" :value="u.uid">{{ u.sn }} {{ u.givenName }}</option>
         </select>
@@ -97,7 +97,7 @@ export default {
   },
   watch: {
     uid: function(val) {
-      if ('id' in this.user) {
+      if (this.user) {
         this.userSelected = this.user
         this.userSelected.user_id = this.user.id
       } else {
@@ -123,6 +123,7 @@ export default {
         this.userSelected.last_name = res.data.sn
         this.userSelected.position = res.data.title
         this.getUser(res.data.employeeNumber)
+        flash('Datos actualizados')
       } catch (e) {
         console.log(e)
         flash('Usuario inexistente', 'error')
