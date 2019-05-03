@@ -1,9 +1,12 @@
 <template>
   <form class="form-horizontal">
+    <div class="text-right">
+      <button class="btn btn-success" type="button" v-on:click="updateUser(user.id)" v-if="user">ACTUALIZAR</button>
+    </div>
     <div class="form-group">
       <label class="col-lg-2 control-label">Funcionario</label>
       <div class="col-lg-10">
-        <input type="text" disabled class="form-control" :value="`${userSelected.first_name} ${userSelected.last_name}`" v-if="'id' in userSelected">
+        <input type="text" disabled class="form-control" :value="`${userSelected.last_name} ${userSelected.first_name}`" v-if="'id' in userSelected">
         <select class="form-control m-b" v-model="uid" v-else>
           <option v-for="u in users" :key="u.uid" :value="u.uid">{{ u.sn }} {{ u.givenName }}</option>
         </select>
@@ -55,8 +58,9 @@
         </div>
       </div>
     </div>
-    <div class="text-right" center>
-      <button class="btn btn-primary" type="button" v-on:click="saveUser">REGISTRAR</button>
+    <div class="text-right">
+      <button class="btn btn-primary" type="button" v-on:click="cancel">CANCELAR</button>
+      <button class="btn btn-danger" type="button" v-on:click="saveUser">GUARDAR</button>
     </div>
   </form>
 </template>
@@ -87,7 +91,7 @@ export default {
     }
   },
   mounted() {
-    if ('id' in this.user) {
+    if (this.user) {
       this.uid = this.user.username
     }
   },
@@ -112,6 +116,21 @@ export default {
     }
   },
   methods: {
+    async updateUser(id) {
+      try {
+        let res = await axios.get(`/user/${id}`)
+        this.userSelected.first_name = res.data.givenName
+        this.userSelected.last_name = res.data.sn
+        this.userSelected.position = res.data.title
+        this.getUser(res.data.employeeNumber)
+      } catch (e) {
+        console.log(e)
+        flash('Usuario inexistente', 'error')
+      }
+    },
+    cancel() {
+      window.history.back()
+    },
     changeRole(id) {
       if (this.userSelected.rol.includes(id)) {
         this.userSelected.rol = this.userSelected.rol.filter(o => o != id)

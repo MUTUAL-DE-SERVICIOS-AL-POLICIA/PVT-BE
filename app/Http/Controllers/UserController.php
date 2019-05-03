@@ -44,22 +44,22 @@ class UserController extends Controller
    */
   public function getUserDatatable()
   {
-    $users = User::with('roles')->get();
+    $users = User::with('roles')->orderBy('last_name')->get();
     return Datatables::of($users)
       ->addColumn('action', function ($u) {
-        return '<a href="/user/' . $u->id . '/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>Edit</a>';
+        return '<a href="/user/' . $u->id . '/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Editar</a>';
       })
       ->editColumn('city_id', function ($u) {
         return $u->city->name ?? "";
       })
       ->editColumn('first_name', function ($u) {
-        return $u->first_name . ' ' . $u->last_name ?? "";
+        return $u->last_name ?? "" . ' ' . $u->first_name ?? "";
       })
       ->addColumn('button-roles', function ($u) {
         return '<a class="btn btn-xs btn-primary"><i class="fa fa-user-plus"></i> Ver</a>';
       })
       ->addColumn('state', function ($u) {
-        return '<a class="btn btn-xs btn-primary"><i class="fa fa-arrow-circle-up"></i> Cambiar</a>';
+        return '<a href="/user/' . ($u->status == 'active' ? 'inactive' : 'active') . '/' . $u->id . '" class="btn btn-xs btn-primary"><i class="fa fa-arrow-circle-up"></i> Cambiar</a>';
       })->rawColumns(['state', 'action', 'button-roles'])
       ->make(true);
   }
@@ -187,7 +187,20 @@ class UserController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function show($id)
-  { }
+  {
+    $user = User::findOrFail($id);
+    $ldap = new Ldap();
+    if ($ldap->connection && $ldap->verify_open_port()) {
+      $ldap_user = $ldap->get_entry($user->username, 'uid');
+      $ldap->unbind();
+    }
+
+    if ($ldap_user) {
+      return response()->json($ldap_user);
+    } else {
+      abort(404);
+    }
+  }
 
   /**
    * Show the form for editing the specified resource.
