@@ -45,7 +45,7 @@ class UserController extends Controller
       $ldap_users = $ldap->list_entries();
       $users = User::whereStatus('active')->get();
       foreach ($users as $user) {
-        if ($user->username != 'admin' && $user->username != 'pasante') {
+        if ($user->username != 'admin' && $user->username != 'asistente') {
           $exists = array_filter($ldap_users, function ($o) use ($user) {
             if ($o->uid == $user->username) {
               return true;
