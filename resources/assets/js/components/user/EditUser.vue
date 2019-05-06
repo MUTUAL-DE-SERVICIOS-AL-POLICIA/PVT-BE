@@ -37,6 +37,28 @@
           </select>
         </div>
       </div>
+      <div v-if="user">
+        <div v-if="user.username == 'admin'">
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Contraseña anterior</label>
+            <div class="col-lg-10">
+              <input type="password" class="form-control" v-model="userSelected.old_password">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Contraseña nueva</label>
+            <div class="col-lg-10">
+              <input type="password" class="form-control" v-model="userSelected.password">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Repita la contraseña</label>
+            <div class="col-lg-10">
+              <input type="password" class="form-control" v-model="userSelected.repeat_password">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="panel panel-primary">
       <div class="panel-body">
@@ -142,9 +164,19 @@ export default {
     async saveUser() {
       try {
         this.userSelected._token = this.token
-        let res = await axios.post(`/registrar`, this.userSelected)
-        window.location = '/user'
-        flash('Usuario registrado');
+        if (this.userSelected.username == 'admin') {
+          if (this.userSelected.password == this.userSelected.repeat_password && this.userSelected.old_password != null && this.userSelected.password != null) {
+            let res = await axios.post(`/registrar`, this.userSelected)
+            window.location = '/user'
+            flash('Usuario registrado');
+          } else {
+            flash('Las contraseñas no coinciden', 'error');
+          }
+        } else {
+          let res = await axios.post(`/registrar`, this.userSelected)
+          window.location = '/user'
+          flash('Usuario registrado');
+        }
       } catch (e) {
         console.log(e)
         flash('Error al guardar usuario', 'error');

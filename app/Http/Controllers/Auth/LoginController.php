@@ -51,7 +51,7 @@ class LoginController extends Controller
   {
     $request = request()->all();
 
-    if (!env("LDAP_AUTHENTICATION") || $request['username'] == 'admin') {
+    if (!env("LDAP_AUTHENTICATION") || $request['username'] == 'admin' || $request['username'] == 'asistente') {
       if (Auth::attempt(['username' => $request['username'], 'password' => $request['password']])) {
         session(['username' => $request['username']]);
       } else {

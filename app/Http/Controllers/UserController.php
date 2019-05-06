@@ -45,16 +45,18 @@ class UserController extends Controller
       $ldap_users = $ldap->list_entries();
       $users = User::whereStatus('active')->get();
       foreach ($users as $user) {
-        $exists = array_filter($ldap_users, function ($o) use ($user) {
-          if ($o->uid == $user->username) {
-            return true;
-          } else {
-            return false;
+        if ($user->username != 'admin' && $user->username != 'pasante') {
+          $exists = array_filter($ldap_users, function ($o) use ($user) {
+            if ($o->uid == $user->username) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          if (count($exists) == 0) {
+            $user->status = 'inactive';
+            $user->save();
           }
-        });
-        if (count($exists) == 0) {
-          $user->status = 'inactive';
-          $user->save();
         }
       }
       $ldap->unbind();
@@ -196,6 +198,15 @@ class UserController extends Controller
     $user->city_id = $request->city_id;
     if (!isset($user->id)) {
       $user->password = Hash::make($user->username);
+    }
+    if ($request->has('password') && $request->has('old_password')) {
+      if (Hash::check($request['old_password'], $user->password)) {
+        $user->password = Hash::make($request['password']);
+      } else {
+        return response()->json([
+          'message' => 'Contraseña anterior incorrecta'
+        ], 400);
+      }
     }
 
     $user->save();
