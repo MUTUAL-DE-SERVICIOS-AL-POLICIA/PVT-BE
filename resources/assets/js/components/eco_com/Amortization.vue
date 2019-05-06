@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { parseMoney, canOperation } from "../../helper.js";
+import { parseMoney, canOperation, flashErrors } from "../../helper.js";
 export default {
   data() {
     return {
@@ -76,11 +76,14 @@ export default {
         .patch(`/eco_com_save_amortization`, this.form)
         .then(response => {
           console.log(response);
-          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          // this.$store.commit("ecoComForm/setEcoCom", response.data);
           this.$modal.hide("amortization-modal");
         })
         .catch(error => {
-          console.log(error);
+          flashErrors(
+            "Error al procesar: ",
+            error.response.data.errors
+          );
         });
       this.loadingButton = false;
     }

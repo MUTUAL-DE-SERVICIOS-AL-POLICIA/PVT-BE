@@ -3,7 +3,6 @@
 namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Muserpol\Models\EconomicComplement\EcoComProcess;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Illuminate\Support\Facades\Auth;
 use Muserpol\Helpers\Util;
@@ -119,6 +118,9 @@ class EconomicComplementController extends Controller
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_id)->first()->id]);
         }
+        if ($affiliate->observations()->where('enabled',false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get()->count()){
+            return redirect()->action('AffiliateController@show', ['id' => $affiliate->id]);
+        }
         $cities = City::all();
         $eco_com_beneficiary = new EcoComBeneficiary();
         $eco_com_beneficiary->phone_number = explode(',', $eco_com_beneficiary->phone_number);
@@ -164,6 +166,7 @@ class EconomicComplementController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         try {
             $this->authorize('create', new EconomicComplement());
         } catch (AuthorizationException $exception) {
@@ -237,6 +240,44 @@ class EconomicComplementController extends Controller
             $economic_complement->dignity_pension = null;
         }
         $economic_complement->save();
+        /**
+         ** has affiliate observation
+         */
+        $observations = $affiliate->observations()->where('type', 'AT')->get();
+        foreach ($observations as $o) {
+            $economic_complement->observations()->save($o, [
+                'user_id' => $o->pivot->user_id,
+                'date' => $o->pivot->date,
+                'message' => $o->pivot->message,
+                'enabled' => false
+            ]);
+            // $record = new EconomicComplementRecord();
+            // $record->user_id = Auth::user()->id;
+            // $record->economic_complement_id = $economic_complement->id;
+            // $record->message = "El usuario " . User::find($o->user_id)->username  . " creó la observación " . $o->name . ".";
+            // $record->save();
+        }
+        /**
+         ** verify observation
+         */
+        $number_docs = ProcedureModality::find($request->modality_id)->procedure_requirements->pluck('number')->unique()->sort();
+        if($number_docs->contains(0)){
+            $number_docs = $number_docs->slice(1);
+        }
+        $count = 0;
+        foreach($request->all() as $key => $value){
+            if (strpos($key, 'document') !== false  && $value == 'checked' ) {
+                $count++;
+            }
+        }
+        if($count != $number_docs->count()){
+            $economic_complement->observations()->save(ObservationType::find(6), [
+                'user_id' => auth()->id(),
+                'date' => now(),
+                'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
+                'enabled' => false
+            ]);
+        }
         /**
          ** Save legal guardian
          */
@@ -869,6 +910,14 @@ class EconomicComplementController extends Controller
             ], 403);
         }
         $economic_complement = EconomicComplement::with('discount_types')->find($request->id);
+        if ($economic_complement->eco_com_state->eco_com_state_type_id == 1 || $economic_complement->eco_com_state->eco_com_state_type_id == 6) {
+            $eco_com_state = $economic_complement->eco_com_state;
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['No se puede modificar las rentas del trámite ' . $economic_complement->code . 'porque se encuentra en estado de ' . $eco_com_state->name],
+            ], 422);
+        }
         if ($request->pension_entity_id == 5) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
             $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
@@ -910,7 +959,11 @@ class EconomicComplementController extends Controller
         $eco_com = EconomicComplement::find($request->id);
         if ($eco_com->eco_com_state->eco_com_state_type_id == 1 || $eco_com->eco_com_state->eco_com_state_type_id == 6) {
             $eco_com_state = $eco_com->eco_com_state;
-            return 'No se puede realizar la amortización porque el trámite ' . $eco_com->code . ' se encuentra en estado de ' . $eco_com_state->name;
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['No se puede realizar la amortización porque el trámite ' . $eco_com->code . ' se encuentra en estado de ' . $eco_com_state->name],
+            ], 422);
         }
         $rol = Util::getRol();
         $discount_type_id = null;
@@ -1115,7 +1168,7 @@ class EconomicComplementController extends Controller
         /**
          ** Permissions
          */
-        
+
         $permissions = Util::getPermissions(
             EcoComProcedure::class,
         );

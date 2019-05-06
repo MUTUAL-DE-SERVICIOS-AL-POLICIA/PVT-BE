@@ -12,6 +12,7 @@ use Muserpol\Helpers\Util;
 use Log;
 use Carbon\Carbon;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
+use Muserpol\Models\ObservationType;
 
 class SearcherController
 {
@@ -78,13 +79,14 @@ class SearcherController
             $affiliate->degree_name = $affiliate->degree->name ?? '';
             $affiliate->category_percentage = $affiliate->category->name ?? '';
             $affiliate->pension_entity_name= $affiliate->pension_entity->name ?? '';
+            $affiliate_observations = $affiliate->observations()->where('enabled',false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get();
             //!! TODO getLast
             $eco_com = $affiliate->economic_complements()->with([
                 'eco_com_modality:id,name,shortened',
                 'eco_com_state:id,name'
             ])->orderByDesc('id')->take(2)->get();
         }
-        return array('affiliate' => $affiliate, 'eco_com_beneficiary' => $eco_com_beneficiary , 'eco_com'=>$eco_com );
+        return array('affiliate' => $affiliate,'affiliate_observations'=>$affiliate_observations, 'eco_com_beneficiary' => $eco_com_beneficiary , 'eco_com'=>$eco_com );
     }
 }
 class Person{

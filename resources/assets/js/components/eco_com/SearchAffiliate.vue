@@ -199,12 +199,23 @@
                 </a>
               </div>
               <div v-else key="noShowButton">
-                <button class="btn btn-warning btn-lg btn-block" :class="{'denied':!showButton}">
+                <button class="btn btn-warning btn-lg btn-block" :class="{'denied':!showButton}" v-if="! affiliateObservations.length">
                   <i class="fa fa-exclamation-triangle"></i>
                   No hay tramites pendientes para crear
                 </button>
               </div>
             </transition>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="alert alert-danger block" v-if="affiliateObservations.length">
+            El afiliado se encuentra observado por:
+            <ul>
+              <li class="alert-link" v-for="ao in affiliateObservations" :key="ao.id">
+                {{ ao.name }}
+              </li>
+            </ul>
+            Es necesario subsanar las observaciones. (<a :href="`/affiliate/${affiliate.id}`">ir al afiliado</a> )
           </div>
         </div>
       </div>
@@ -240,7 +251,8 @@ export default {
       identityCard: "1379469",
       ecoComProcedureCreateName: null,
       ecoComProcedure: {},
-      searching: false
+      searching: false,
+      affiliateObservations: [],
     };
   },
   components: {
@@ -278,6 +290,7 @@ export default {
           if (data.affiliate != null) {
             flash("Affiliado Encontrado");
             this.affiliate = response.data.affiliate;
+            this.affiliateObservations = response.data.affiliate_observations;
             this.ecoCom = response.data.eco_com;
             this.ecoCom = this.ecoCom.reverse();
             this.ecoComBeneficiary = response.data.eco_com_beneficiary;

@@ -312,7 +312,8 @@ import {
   isPensionEntitySenasir,
   getNamePensionEntity,
   parseMoney,
-  canOperation
+  canOperation,
+  flashErrors
 } from "../../helper.js";
 import { mapState, mapMutations } from "vuex";
 
@@ -362,7 +363,10 @@ export default {
           this.$store.commit("ecoComForm/setEcoCom", this.ecoCom);
         })
         .catch(error => {
-          console.log(error);
+          flashErrors(
+            "Error al procesar: ",
+            error.response.data.errors
+          );
         });
     },
     async save() {
@@ -378,7 +382,10 @@ export default {
           this.ecoCom = response.data;
         })
         .catch(error => {
-          console.log(error);
+          flashErrors(
+            "Error al procesar: ",
+            error.response.data.errors
+          );
         });
       this.loadingButton = false;
       this.editing = true;

@@ -38,12 +38,12 @@
                   {{ o.name }}
                 </td>
                 <td>{{ o.pivot.message }}</td>
-                <td>
+                <!-- <td>
                   <span
                     class="badge"
                     :class="{'badge-primary': o.pivot.enabled, 'badge-danger':!o.pivot.enabled }"
                   >{{ o.pivot.enabled ? "Subsanado" : "No subsanado" }}</span>
-                </td>
+                </td> -->
                 <td>
                   <div class="btn-group">
                     <button
@@ -86,12 +86,12 @@
                   {{ o.name }}
                 </td>
                 <td>{{ o.message }}</td>
-                <td>
+                <!-- <td>
                   <span
                     class="badge"
                     :class="{'badge-primary': o.enabled, 'badge-danger':!o.enabled }"
                   >{{ o.enabled ? "Subsanado" : "No subsanado" }}</span>
-                </td>
+                </td> -->
               </tr>
             </tbody>
           </table>
@@ -169,14 +169,14 @@
             </div>
           </div>
         </div>
-        <div class="col-md-12">
+        <!-- <div class="col-md-12">
           <div class="col-md-3">
             <label class="control-label">Subsanado</label>
           </div>
           <div class="col-md-9">
             <input type="checkbox" name="enabled" v-model="form.enabled">
           </div>
-        </div>
+        </div> -->
         <div class="col-md-12">
           <div class="text-center m-sm">
             <button class="btn btn-danger" type="button" @click="$modal.hide('observation-modal')">
