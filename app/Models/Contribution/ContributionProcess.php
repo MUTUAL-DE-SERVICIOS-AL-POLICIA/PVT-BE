@@ -104,7 +104,7 @@ class ContributionProcess extends Model
                         WHERE aid_contributions.deleted_at is null
                             and aid_contributions.id in (".$contribution_ids.")
             ) as contributions_reimbursements
-                GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id
+                GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id, contributions_reimbursements.type
                 ORDER BY month_year DESC");
         return array_reverse($contributions);
     }
@@ -192,7 +192,7 @@ class ContributionProcess extends Model
                         WHERE contributions.deleted_at is null
                             and contributions.id in (".$contribution_ids.")
             ) as contributions_reimbursements
-                GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id
+                GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id, contributions_reimbursements.type
                 ORDER BY month_year DESC");
         return array_reverse($contributions);
     }

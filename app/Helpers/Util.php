@@ -23,6 +23,11 @@ use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Models\Voucher;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
+
 class Util
 {
     public static function isRegionalRole()
@@ -877,7 +882,19 @@ class Util
     }
     public static function getLastCode($model)
     {
-        return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
+        return optional($model::where('code','not like', '%A')->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
+    }
+    public static function getLastCodeEconomicComplement($eco_com_procedure_id)
+    {
+        $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
+        $has_eco_com= $eco_com_procedure->economic_complements->count();
+        $number_code = 1;
+        if ($has_eco_com) {
+            $code = $eco_com_procedure->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last()->code;
+            $number_code = explode('/',$code)[0] + 1;
+        }
+        $code = $number_code.'/'.(strtoupper($eco_com_procedure->semester[0])).'/'.(Carbon::parse($eco_com_procedure->year)->year);
+        return $code;
     }
     public static function parseRequest($data, $prefix)
     {
@@ -916,5 +933,64 @@ class Util
         } else {
             return false;
         }
+    }
+
+    public static function isReceptionEcoCom()
+    {
+        return self::getRol()->id == 2 && self::getRol()->module_id == 2;
+    }
+    public static function formatPercentage($value)
+    {
+        if ($value) {
+            $value = number_format($value, 2, '.', ',');
+            return $value . "%";
+        }
+    }
+    public static function getYear($date)
+    {
+        if ($date) {
+            return date("Y", strtotime($date));
+        }
+    }
+    public static function datePickYear($year)
+	{
+		if ($year) {
+			return date($year ."-1-1");
+		}
+    }
+    public static function getEnabledLabel($is_enabled)
+	{
+		return $is_enabled ? 'Subsanado' : 'Vigente';
+	}
+    /**
+     * Economic Complement
+     */
+    public static function getEcoComCurrentProcedure()
+    {
+        //!! TODO add validate dates
+        $ids = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->take(2)->get()->pluck('id');
+        return $ids;
+    }
+    public static function rolIsEcoCom()
+    {
+        return self::getRol()->module_id == 2;
+    }
+    public static function getPermissions(...$models)
+    {
+        $operations = [
+            'create',
+            'read',
+            'update',
+            'delete',
+            'print',
+        ];
+        $permissions = [];
+        foreach ($models as $model) {
+            foreach ($operations as $o) {
+                $class = explode('\\', $model);
+                $permissions[] =  array('operation'=>Str::snake($o.$class[sizeof($class)-1]), 'value' => Gate::allows($o,new $model()));
+            }
+        }
+        return json_encode($permissions);
     }
 }

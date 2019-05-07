@@ -24,6 +24,7 @@ use Muserpol\Helpers\Util;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
+    use Muserpol\Models\EconomicComplement\EconomicComplement;
 
 
 Route::get('/logout', 'Auth\LoginController@logout');
@@ -165,6 +166,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('/update_tag_wf_state', 'TagController@updateTagWfState');
 		Route::get('/tag_quota_aid/{quota_aid_id}', "TagController@quotaAid")->name('tag_quota_aid');
 		Route::post('/update_tag_quota_aid/{quota_aid_id}', "TagController@updateQuotaAid")->name('update_tag_quota_aid');
+		Route::get('/tag_eco_com/{eco_com_id}', "TagController@ecoCom")->name('tag_eco_com');
+		Route::post('/update_tag_eco_com/{eco_com_id}', "TagController@updateEcoCom")->name('update_tag_eco_com');
+		Route::get('/tag_affiliate/{affiliate_id}', "TagController@affiliate")->name('tag_affiliate');
+		Route::post('/update_tag_affiliate/{affiliate_id}', "TagController@updateAffiliate")->name('update_tag_affiliate');
 		//QuotaAidMortuory
 		Route::get('affiliate/{affiliate}/quota_aid/create', 'QuotaAidMortuaryController@generateProcedure')->name('create_quota_aid');
 		Route::get('get_all_quota_aid', 'QuotaAidMortuaryController@getAllQuotaAid');
@@ -179,6 +184,7 @@ Route::group(['middleware' => ['auth']], function () {
 			//searcherController
 		Route::get('search/{ci}', 'SearcherController@search');
 		Route::get('search_ajax', 'SearcherController@searchAjax');
+		Route::get('search_ajax_only_affiliate', 'SearcherController@searchAjaxOnlyAffiliate');
 
 			//Contributions
 		Route::resource('contribution', 'ContributionController');
@@ -643,7 +649,85 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::get('get_next_area_code_contribution_process/{contribution_process_id}', function ($contribution_process_id) {
 			return ContributionProcess::find($contribution_process_id);
 		});
+		Route::get('get_next_area_code_eco_com/{eco_com_id}', function ($economic_complement_id) {
+			return EconomicComplement::find($economic_complement_id);
+		});
+		Route::get('/treasury/select_report', 'TreasuryController@selectReport');
 		Route::get('/treasury/report', 'TreasuryController@report');
+
+		// Economic Complement Process
+		Route::get('/affiliate/{affiliate_id}/eco_com_process/create', 'EcoComProcessController@create');
+		Route::post('eco_com_process_store', 'EcoComProcessController@store')->name('eco_com_process_store');
+		Route::get('eco_com_process/{id}', 'EcoComProcessController@show')->name('eco_com_process_show');
+		Route::patch('eco_com_process_update_information', 'EcoComProcessController@updateInformation')->name('eco_com_process_update_information');
+		Route::patch('eco_com_process/{eco_com_process_id}/update_beneficiary', 'EcoComProcessController@updateBeneficiary')->name('eco_com_process_update_beneficiary');
+		// Economic Complement
+		Route::get('eco_com_process/{eco_com_process_id}/economic_complement/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
+		Route::post('economic_complement_store', 'EconomicComplementController@store')->name('economic_complement_store');
+		Route::patch('economic_complement_update_information', 'EconomicComplementController@updateInformation');
+		Route::patch('/update_affiliate_police_eco_com', 'EconomicComplementController@updateAffiliatePoliceEcoCom');
+		
+		Route::get('eco_com/{eco_com_id}', 'EconomicComplementController@show')->name('eco_com_show');
+		Route::get('eco_com', 'EconomicComplementController@index')->name('eco_com');
+		Route::get('get_all_eco_com', 'EconomicComplementController@getAllEcoCom');
+		Route::post('eco_com/{eco_com}/edit_requirements', 'EconomicComplementController@editRequirements')->name('eco_com_edit_requirements');
+		Route::get('economic_complement_first_step', 'EconomicComplementController@firstStep')->name('economic_complement_first_step');
+		Route::get('get_eco_com_procedures_active', 'EcoComProcedureController@getProcedureActives')->name('get_eco_com_procedures_active');
+		Route::get('get_eco_com_reception_type', 'EconomicComplementController@getReceptionType');
+		Route::get('get_eco_com_type_beneficiary', 'EconomicComplementController@getTypeBeneficiary');
+		Route::delete('eco_com/{eco_com_id}', 'EconomicComplementController@destroy');
+		Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
+		Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
+		Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
+
+		Route::get('/affiliate/{affiliate_id}/eco_com_process/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
+
+
+		// eco com Certification
+		Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');
+		Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');
+		
+		
+		// eco com qualification parameters
+		Route::get('eco_com_qualification_parameters', 'EconomicComplementController@qualificationParameters')->name('eco_com_qualification_parameters');
+
+		// base wage
+		Route::resource('base_wage', 'BaseWageController');
+		Route::get('get_first_level_base_wage', 'BaseWageController@FirstLevelData')->name('get_first_level_base_wage');
+		Route::get('get_second_level_base_wage', 'BaseWageController@SecondLevelData')->name('get_second_level_base_wage');
+		Route::get('get_third_level_base_wage', 'BaseWageController@ThirdLevelData')->name('get_third_level_base_wage');
+		Route::get('get_fourth_level_base_wage', 'BaseWageController@FourthLevelData')->name('get_fourth_level_base_wage');
+
+		// Complementary Factor
+		Route::resource('complementary_factor', 'ComplementaryFactorController');
+		Route::get('get_complementary_factor_old_age', 'ComplementaryFactorController@old_ageData')->name('get_complementary_factor_old_age');
+		Route::get('get_complementary_factor_widowhood', 'ComplementaryFactorController@widowhoodData')->name('get_complementary_factor_widowhood');
+
+		// average eco com
+		Route::get('averages', 'EconomicComplementController@averages')->name('averages');
+		Route::get('get_averages', 'EconomicComplementController@getAverageData')->name('get_averages');
+		Route::get('print_average', 'EconomicComplementController@printAverage')->name('print_average');
+		// Route::get('export_average/{year}/{semester}', 'EconomicComplementReportController@export_average')->name('export_average');
+
+		// observations
+		Route::get('eco_com_get_observations/{eco_com_id}', 'EcoComObservationController@getObservations');
+		Route::get('eco_com_get_delete_observations/{eco_com_id}', 'EcoComObservationController@getDeleteObservations');
+		Route::post('eco_com_observation_create', 'EcoComObservationController@create');
+		Route::patch('eco_com_observation_update', 'EcoComObservationController@update');
+		Route::delete('eco_com_observation_delete', 'EcoComObservationController@delete');
+
+		// eco com procedures
+		Route::get('eco_com_get_procedures', 'EcoComProcedureController@getProcedures');
+		Route::post('eco_com_procedure_create', 'EcoComProcedureController@create');
+		Route::patch('eco_com_procedure_update', 'EcoComProcedureController@update');
+		Route::delete('eco_com_procedure_delete', 'EcoComProcedureController@delete');
+
+		// Affiliate observations
+		Route::get('affiliate_get_observations/{affiliate_id}', 'AffiliateObservationController@getObservations');
+		Route::get('affiliate_get_delete_observations/{affiliate_id}', 'AffiliateObservationController@getDeleteObservations');
+		Route::post('affiliate_observation_create', 'AffiliateObservationController@create');
+		Route::patch('affiliate_observation_update', 'AffiliateObservationController@update');
+		Route::delete('affiliate_observation_delete', 'AffiliateObservationController@delete');
 	});
 });
 

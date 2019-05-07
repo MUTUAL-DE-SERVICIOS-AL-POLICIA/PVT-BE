@@ -31,11 +31,11 @@ class PermissionController extends Controller
     public function create()
     {
         //
-        $modules = Module::all();
-        $roles = Role::all();
+        $modules = Module::orderBy('id')->get();
+        $roles = Role::orderBy('name')->get();
         $actions = Action::all();
         $modulesL=array('' =>'');
-        $operations = Operation::all();
+        $operations = Operation::orderBy('module_id')->orderBy('name')->get();
         $permissions = Permission::join('operations','permissions.operation_id','=','operations.id')
                                   ->select('permissions.id','permissions.operation_id','operations.module_id','permissions.action_id','operations.name')
                                   ->get();
