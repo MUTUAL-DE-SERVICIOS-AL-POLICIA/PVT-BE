@@ -40,13 +40,14 @@
                 </div>
                 <br>
                 <div class="row">
-                    <div class="col-md-2"><strong>Fecha de Desvinculaci&oacute;n:</strong></div>
-                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_derelict" v-month-year :disabled="!editing"></div>
-                    <div class="col-md-2"><strong>C&oacute;digo de archivo:</strong></div>
-                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.file_code" :disabled="!editing"></div>                    
-                </div>
-                <br>
-                <div class="row">
+                    <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
+                    <div class="col-md-4">
+                        <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing" @change="getCalculateCategory()" max="100" min="0">
+                        <div v-show="errors.has('service_years') && editing" >
+                            <i class="fa fa-warning text-danger"></i>
+                            <span class="text-danger">@{{ errors.first('service_years') }}</span>
+                        </div>
+                    </div>
                     <div class="col-md-2"><label class="control-label">Ente gestor:</label></div>
                     <div class="col-md-4">
                         {!! Form::select('pension_entity_id', $pension_entities, null, ['placeholder' => 'Seleccione el ente gestor', 'class' => 'form-control','v-model'=> 'form.pension_entity_id',':disabled'=>'!editing' ]) !!}
@@ -55,6 +56,24 @@
                             <span class="text-danger">@{{ errors.first('pension_entity_id') }}</span>
                         </div>
                     </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-2"><label class="control-label">Meses de servicio</label></div>
+                    <div class="col-md-4">
+                        <input type="number" v-model="form.service_months" class="form-control" :disabled="!editing" @change="getCalculateCategory()" max="12" min="0">
+                        <div v-show="errors.has('pension_entity_id') && editing" >
+                            <i class="fa fa-warning text-danger"></i>
+                            <span class="text-danger">@{{ errors.first('pension_entity_id') }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2"><strong>Fecha de Desvinculaci&oacute;n:</strong></div>
+                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_derelict" v-month-year :disabled="!editing"></div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-2"><strong>C&oacute;digo de archivo:</strong></div>
+                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.file_code" :disabled="!editing"></div>  
                 </div>
                 <br>
                 <div class="row">

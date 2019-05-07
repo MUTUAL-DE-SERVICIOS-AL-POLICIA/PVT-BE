@@ -59,7 +59,7 @@ tr {
 		border-bottom: 1px solid $color_shuttle_gray_approx;
 		&:first-child {
 			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-			border-radius: 1em 0 0 0;
+			border-radius: 0.5em 0 0 0;
 			border-left: 1px solid $color_shuttle_gray_approx;
 		}
 		&:last-child {
@@ -399,6 +399,10 @@ tr {
 	padding-left: 40px;
 	padding-right: 40px;
 }
+.px-20 {
+	padding-left: 20px;
+	padding-right: 20px;
+}
 .px-15 {
 	padding-left: 15px;
 	padding-right: 15px;
@@ -517,6 +521,9 @@ tr {
 }
 .m-t-35 {
 	margin-top: 35px;
+}
+.m-t-40 {
+	margin-top: 40px;
 }
 .m-t-50 {
 	margin-top: 50px;
@@ -817,9 +824,13 @@ tr {
 	background: $color_catskill_white_approx;
 }
 body {
-	counter-reset: number 0;
+	counter-reset: number 0 indext 0;
 }
 .counter:before {
 	counter-increment: number;
 	content: counter(number) ".- ";
+}
+.intext:before {
+	counter-increment: indext;
+	content: counter(indext) "";
 }

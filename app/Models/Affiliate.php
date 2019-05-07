@@ -58,6 +58,13 @@ class Affiliate extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function getDueDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     public function getDateDeathAttribute($value)
     {
         if(!$value){
@@ -159,6 +166,10 @@ class Affiliate extends Model
     {
         return $this->hasMany('Muserpol\Models\Testimony');
     }
+    public function observations()
+    {
+        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
+    }
 
     /**
      * methods
@@ -223,6 +234,10 @@ class Affiliate extends Model
     public function getCivilStatus()
     {
         return Util::getCivilStatus($this->civil_status, $this->gender);
+    }
+    public function tags()
+    {
+        return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id','date'])->withTimestamps();
     }
     /*contributions */
     public function getDatesContributions()
@@ -749,4 +764,32 @@ class Affiliate extends Model
         $affiliate = Affiliate::find($affiliate_id);
         Spouse::updatePersonalInfo($affiliate_id, $object);
     }
+
+    /**
+     * Economic Complements
+     */
+    public function economic_complements()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EconomicComplement');
+    }
+
+    public function hasEcoComProcessActive()
+    {
+        return !! $this->eco_com_processes()->where('status', true)->get()->count();
+    }
+    public function hasEconomicComplementWithProcedure($eco_com_procedure_id)
+    {
+        return !! $this->economic_complements()->where('eco_com_procedure_id',$eco_com_procedure_id)->get()->count();
+    }
+    public function canCreateEcoComProcedure($eco_com_procedure_id)
+    {
+        /**
+         *!! TODO
+         *!! verificar si se puede crear tramite en esa fecha
+         ** mmmm date_derelict < start date procedure
+         */
+        // return rand(0,1) == 1;
+        return true;
+    }
+
 }

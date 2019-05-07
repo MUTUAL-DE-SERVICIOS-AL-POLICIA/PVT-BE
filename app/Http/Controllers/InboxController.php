@@ -20,6 +20,7 @@ use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
 use Muserpol\Models\ProcedureType;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
 class InboxController extends Controller
 {
     public function received()
@@ -56,13 +57,12 @@ class InboxController extends Controller
                 # code...
                 break;
             case 2:
-            /* TODO
-            no crea historial del workflow (tema de observers)
-            utilizar modelos
-             */
-                DB::table('economic_complements')
-                    ->whereIn('id', $doc_ids)
-                    ->update(['wf_current_state_id' => $wf_state_next_id, 'state' => 'Received']);
+                $eco_coms = EconomicComplement::whereIn('id', $doc_ids)->get();
+                foreach ($eco_coms as $eco_com) {
+                    $eco_com->wf_current_state_id = $wf_state_next_id;
+                    $eco_com->inbox_state = false;
+                    $eco_com->save();
+                }
                 break;
             case 3:
                 // DB::table('retirement_funds')
@@ -130,13 +130,12 @@ class InboxController extends Controller
                 # code...
                 break;
             case 2:
-                /* TODO
-                no crea historial del workflow (tema de observers)
-                utilizar modelos
-                */
-                DB::table('economic_complements')
-                ->whereIn('id', $doc_ids)
-                ->update(['wf_current_state_id' => $wf_state_back_id, 'state'=>'Received']);
+                $eco_coms = EconomicComplement::whereIn('id', $doc_ids)->get();
+                foreach ($eco_coms as $eco_com) {
+                    $eco_com->wf_current_state_id = $wf_state_back_id;
+                    $eco_com->inbox_state = false;
+                    $eco_com->save();
+                }
                 break;
             case 3:
                 $retirement_funds = RetirementFund::whereIn('id', $doc_ids)->get();
@@ -180,6 +179,27 @@ class InboxController extends Controller
                 case 1:
                     break;
                 case 2:
+                    $eco_com = EconomicComplement::find($doc_id);
+                    if ($eco_com->inbox_state == true) {
+                        throw new Exception('Trámite ya validado.');
+                    }
+                    $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id', '=', $module->id)->first();
+                    if ($wf_current_state->id != $eco_com->wf_current_state_id) {
+                        throw new Exception('Error al validar el Trámite, verifique que el trámite este en unas de las bandejas.');
+                    }
+                    $eco_com->inbox_state = true;
+                    $eco_com->user_id = Auth::user()->id;
+
+                    $correlative = $eco_com;
+                    /* TODO
+                    * adicionar fechas de revision calificacion etc.
+                    */
+                    $eco_com->save();
+
+                    return response()->json([
+                        'doc' => $eco_com,
+                        'correlative' => $correlative,
+                    ], 200);
                     break;
                 case 3:
                     $ret_fun = RetirementFund::find($doc_id);
@@ -268,6 +288,33 @@ class InboxController extends Controller
             case 1:
                 break;
             case 2:
+                try {
+                    $eco_com = EconomicComplement::find($doc_id);
+                    if ($eco_com->inbox_state == false) {
+                        throw new Exception('Trámite aun no validado.');
+                    }
+                    $wf_current_state = WorkflowState::where('role_id', $rol_id)->where('module_id', '=', $module->id)->first();
+                    if ($wf_current_state->id != $eco_com->wf_current_state_id) {
+                        throw new Exception('Error al validar el Trámite, verifique que el trámite este en unas de las bandejas.');
+                    }
+                    $eco_com->inbox_state = false;
+
+                    // $correlative = RetFunCorrelative::where('retirement_fund_id',$eco_com->id)->where('wf_state_id',$wf_current_state->id)->where('code','NOT LIKE','%A')->first();
+                    // if(!isset($correlative->id)) {
+                    //     throw new Exception('El trátmite no tiene correlativo.');
+                    // }
+                    // $correlative->delete();
+                    /* TODO
+                    * adicionar fechas de revision calificacion etc.
+                    */
+                    $eco_com->save();
+                } catch (Exception $exception) {
+                    return response()->json([
+                        'status' => 'error',
+                        'errors' => $exception->getMessage(),
+                    ], 422);
+                }
+                return response()->json($eco_com, 200);
                 break;
             case 3:
                 try {

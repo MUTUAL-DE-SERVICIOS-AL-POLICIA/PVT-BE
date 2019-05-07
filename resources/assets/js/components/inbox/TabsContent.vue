@@ -30,7 +30,6 @@ export default {
                 this.workflows =  data.workflows;
                 this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
                 this.area_documents =  data.documents
-                console
                 if(this.inboxState == 'received') {
                     this.documents = this.area_documents
                 } else {

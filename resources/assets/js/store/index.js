@@ -7,6 +7,7 @@ import quotaAidForm from './modules/quotaAid/form'
 import inbox from './modules/inbox'
 import directContributionForm from './modules/directContribution/form'
 import contributionProcessForm from './modules/contributionProcess/form'
+import ecoComForm from './modules/ecoCom/form'
 
 export default new Vuex.Store({
   modules: {
@@ -14,6 +15,7 @@ export default new Vuex.Store({
     inbox: inbox,
     quotaAidForm, //quotaAidForm: quotaAidForm
     directContributionForm,
-    contributionProcessForm
+    contributionProcessForm,
+    ecoComForm,
   }
 });
