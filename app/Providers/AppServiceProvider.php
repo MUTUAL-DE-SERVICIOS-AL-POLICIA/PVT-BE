@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Observers\ContributionProcessObserver;
 use Carbon\Carbon;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Observers\EconomicComplementObserver;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -30,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         QuotaAidMortuary::observe(QuotaAidMortuaryObserver::class);
         RetFunObservation::observe(RetirementFundObservationObserver::class);
         ContributionProcess::observe(ContributionProcessObserver::class);
+        EconomicComplement::observe(EconomicComplementObserver::class);
         Relation::morphMap([
             'retirement_funds' => 'Muserpol\Models\RetirementFund\RetirementFund',
             'quota_aid_mortuaries' => 'Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary',
@@ -39,6 +43,8 @@ class AppServiceProvider extends ServiceProvider
             'reimbursements' => 'Muserpol\Models\Contribution\Reimbursement',
             'aid_reimbursements' => 'Muserpol\Models\Contribution\AidReimbursement',
             'wf_states' => 'Muserpol\Models\Workflow\WorkflowState',
+            'economic_complements' => 'Muserpol\Models\EconomicComplement\EconomicComplement',
+            'affiliates' => 'Muserpol\Models\Affiliate',
         ]);
 
         // carbon settings

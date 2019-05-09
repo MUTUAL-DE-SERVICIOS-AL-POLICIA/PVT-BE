@@ -107,3 +107,19 @@ export function camelCaseToSnakeCase(myStr) {
     }
     return null;
 }
+export function isPensionEntitySenasir(value){
+    return value == 5
+}
+export function getNamePensionEntity(value){
+    if (value == 5){
+        return 'SENASIR'
+    }
+    return 'APS'
+}
+export function canOperation(operation, permissions){
+    let found = permissions.find(v => v.operation == operation);
+    if(found){
+        return found.value
+    }
+    return false
+}

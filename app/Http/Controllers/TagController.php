@@ -12,6 +12,9 @@ use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Module;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\Affiliate;
+
 class TagController extends Controller
 {
     public function wfState()
@@ -26,6 +29,14 @@ class TagController extends Controller
     public function quotaAid($quota_aid_id)
     {
         return QuotaAidMortuary::find($quota_aid_id)->tags;
+    }
+    public function ecoCom($eco_com_id)
+    {
+        return EconomicComplement::find($eco_com_id)->tags;
+    }
+    public function affiliate($affiliate_id)
+    {
+        return Affiliate::find($affiliate_id)->tags;
     }
     public function updateRetFun(Request $request, $ret_fun_id)
     {
@@ -72,6 +83,52 @@ class TagController extends Controller
             }
         }
         return $quota_aid->tags;
+    }
+    public function updateEcoCom(Request $request, $eco_com_id)
+    {
+
+        $eco_com = EconomicComplement::find($eco_com_id);
+        $tags_wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first()->tags;
+        foreach ($tags_wf_state as $tag_wf_state) {
+            $found = array_filter($request->ids, function ($id) use ($tag_wf_state) {
+                return $id == $tag_wf_state['id'];
+            });
+            if ($found) {
+                if ($eco_com->tags->contains($tag_wf_state->id)) {
+                    // $eco_com->tags()->updateExistingPivot($tag_wf_state->id);
+                }else{
+                    $eco_com->tags()->save($tag_wf_state, ['date'=>Carbon::now(), 'user_id'=>Util::getAuthUser()->id]);
+                }
+            }else{
+                if ($eco_com->tags->contains($tag_wf_state->id)) {
+                    $eco_com->tags()->detach($tag_wf_state->id);
+                }
+            }
+        }
+        return $eco_com->tags;
+    }
+    public function updateAffiliate(Request $request, $affiliate_id)
+    {
+
+        $affiliate = Affiliate::find($affiliate_id);
+        $tags_wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first()->tags;
+        foreach ($tags_wf_state as $tag_wf_state) {
+            $found = array_filter($request->ids, function ($id) use ($tag_wf_state) {
+                return $id == $tag_wf_state['id'];
+            });
+            if ($found) {
+                if ($affiliate->tags->contains($tag_wf_state->id)) {
+                    // $affiliate->tags()->updateExistingPivot($tag_wf_state->id);
+                }else{
+                    $affiliate->tags()->save($tag_wf_state, ['date'=>Carbon::now(), 'user_id'=>Util::getAuthUser()->id]);
+                }
+            }else{
+                if ($affiliate->tags->contains($tag_wf_state->id)) {
+                    $affiliate->tags()->detach($tag_wf_state->id);
+                }
+            }
+        }
+        return $affiliate->tags;
     }
     public function getTags()
     {

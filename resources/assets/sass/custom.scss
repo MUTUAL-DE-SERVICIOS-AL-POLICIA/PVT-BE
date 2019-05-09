@@ -699,4 +699,17 @@ input.mediumCheckbox {
 	border-radius:50%;
 	color:#fff;
 }
-
+.cursor-not-allowed {
+	cursor: not-allowed;
+	opacity: 0.5;
+	text-decoration: none;
+}
+a[aria-disabled="true"] {
+	cursor: not-allowed;
+	opacity: 0.5;
+	text-decoration: none;
+}
+button[aria-disabled="true"] {
+	cursor: not-allowed;
+	opacity: 0.5;
+}

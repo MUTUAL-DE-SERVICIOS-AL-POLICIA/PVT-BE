@@ -31,6 +31,8 @@ use Muserpol\Models\ChargeType;
 use Muserpol\Models\PaymentType;
 use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
+use Muserpol\Models\ObservationType;
+
 class AffiliateController extends Controller
 {
     /**
@@ -209,7 +211,7 @@ class AffiliateController extends Controller
      */
     public function show(Affiliate $affiliate)
     {                
-        $this->authorize('view',$affiliate);
+        // $this->authorize('view',$affiliate);
         $cities = City::all()->pluck('name', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         $categories = Category::all()->pluck('name', 'id');
@@ -316,6 +318,19 @@ class AffiliateController extends Controller
         $voucher_type_ids = $voucher_types->pluck('id');
         $vouchers = Voucher::where('affiliate_id',$affiliate->id)->whereIn('voucher_type_id',$voucher_type_ids)->with(['type'])->get();        
         //return $vouchers;
+
+
+        /**
+         ** for observations
+         */
+        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->whereIn('type', ['A', 'AT'])->get();
+        /**
+         ** Permissions
+         */
+        $permissions = Util::getPermissions(
+            ObservationType::class,
+        );
+
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -351,7 +366,11 @@ class AffiliateController extends Controller
             'payment_types' =>  $payment_types,
             'voucher_types' =>  $voucher_types,
             'vouchers'  =>  $vouchers,
+            'categories_1'  =>  Category::all(),
             //'records_message'=>$records_message
+
+            'observation_types'  =>  $observation_types,
+            'permissions'  =>  $permissions,
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));

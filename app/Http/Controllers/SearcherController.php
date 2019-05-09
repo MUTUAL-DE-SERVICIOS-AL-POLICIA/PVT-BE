@@ -9,6 +9,11 @@ use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 use Muserpol\Models\RetirementFund\RetFunLegalGuardian;
 use Muserpol\Models\RetirementFund\RetFunAdvisor;
 use Muserpol\Helpers\Util;
+use Log;
+use Carbon\Carbon;
+use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
+use Muserpol\Models\ObservationType;
+
 class SearcherController
 {
     private $tables;
@@ -51,8 +56,38 @@ class SearcherController
     public function searchAjax(Request $request){
         $this->getDefaults();
         return json_encode($this->search($request->ci));        
-    }    
-    
+    }
+    public function searchAjaxOnlyAffiliate(Request $request){
+        $ci = $request->ci;
+        $eco_com = null;
+        $affiliate = null;
+        $eco_com_beneficiary = new EcoComBeneficiary();
+        if($request->type == 1){
+            $affiliate = Affiliate::where('identity_card',$ci)->first();
+        }else{
+            $eco_com_beneficiary = EcoComBeneficiary::where('identity_card',$ci)->first();
+            if(!$eco_com_beneficiary){
+                return array('affiliate' => $affiliate, 'eco_com_beneficiary' => $eco_com_beneficiary , 'eco_com'=>$eco_com );
+            }
+            $eco_com_beneficiary->full_name = $eco_com_beneficiary->fullName();
+            $eco_com_beneficiary->ci_with_ext = $eco_com_beneficiary->ciWithExt();
+            $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
+        }
+        if($affiliate){
+            $affiliate->full_name = $affiliate->fullName();
+            $affiliate->ci_with_ext = $affiliate->ciWithExt();
+            $affiliate->degree_name = $affiliate->degree->name ?? '';
+            $affiliate->category_percentage = $affiliate->category->name ?? '';
+            $affiliate->pension_entity_name= $affiliate->pension_entity->name ?? '';
+            $affiliate_observations = $affiliate->observations()->where('enabled',false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get();
+            //!! TODO getLast
+            $eco_com = $affiliate->economic_complements()->with([
+                'eco_com_modality:id,name,shortened',
+                'eco_com_state:id,name'
+            ])->orderByDesc('id')->take(2)->get();
+        }
+        return array('affiliate' => $affiliate,'affiliate_observations'=>$affiliate_observations, 'eco_com_beneficiary' => $eco_com_beneficiary , 'eco_com'=>$eco_com );
+    }
 }
 class Person{
      var $id;
@@ -70,6 +105,8 @@ class Person{
      var $type;
      var $gender;
      var $birth_date;
+     var $due_date;
+     var $is_duedate_undefined;
      public function parsePerson($obj){
          $this->id = $obj->id ?? '';
          $this->first_name = $obj->first_name ?? '';
@@ -86,6 +123,8 @@ class Person{
          $this->city_identity_card_id = $obj->city_identity_card_id ?? null;
          $this->gender = $obj->gender ?? '';                 
          $this->birth_date = $obj->birth_date ?? '';
+         $this->due_date = $obj->due_date ?? '';
+         $this->is_duedate_undefined = $obj->is_duedate_undefined ?? false;
      }
      function __toString() {
          return $this->last_name." ".$this->first_name;

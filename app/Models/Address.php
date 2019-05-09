@@ -31,6 +31,10 @@ class Address extends Model
     {
         return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunBeneficiary','ret_fun_address_beneficiary');
     }
+    public function eco_com_beneficiary()
+    {
+        return $this->belongsToMany('Muserpol\Models\EconomicComplement\EcoComBeneficiary','address_eco_com_beneficiary')->withTimestamps();
+    }
     public function city()
     {
         return $this->belongsTo('Muserpol\Models\City','city_address_id','id');

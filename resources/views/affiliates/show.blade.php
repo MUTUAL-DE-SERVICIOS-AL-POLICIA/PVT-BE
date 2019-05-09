@@ -124,6 +124,7 @@ th.ellipsis-text {
 
                     </ul>
             </div>
+            <tag-list :doc-id="{{ $affiliate->id }}" type="affiliate"></tag-list>
     </div>
     <br>
     <div class="col-md-9" style="padding-left: 6px">
@@ -137,7 +138,7 @@ th.ellipsis-text {
                     </div>
                     <div id="tab-police-info" class="tab-pane">
 
-                        <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
+                        <affiliate-police :affiliate="{{ $affiliate }}" :categories="{{$categories_1}}" inline-template>
                             @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
                         </affiliate-police>
 
@@ -256,7 +257,7 @@ th.ellipsis-text {
                     
 
                     <div id="tab-observations" class="tab-pane">
-
+                        <affiliate-observations :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :observation-types="{{ $observation_types }}"></affiliate-observations>
                     </div>
 
 
