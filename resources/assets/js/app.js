@@ -432,7 +432,8 @@ Vue.component('eco-com-procedure', require('./components/eco_com/Procedure.vue')
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));
 Vue.component('certification-button', require('./components/utils/CertificationButton.vue'));
-
+// Edit user
+Vue.component('edit-user', require('./components/user/EditUser.vue'));
 
 /**
  * custom component
