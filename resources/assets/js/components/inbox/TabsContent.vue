@@ -28,11 +28,8 @@ export default {
             let uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
             axios.get(uri).then(({data})=>{
                 this.workflows =  data.workflows;
-                if (data.workflows.length > 0) {
-                  this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
-                }
+                this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
                 this.area_documents =  data.documents
-                console
                 if(this.inboxState == 'received') {
                     this.documents = this.area_documents
                 } else {

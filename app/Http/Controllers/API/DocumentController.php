@@ -16,25 +16,23 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Workflow\WorkflowSequence;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\ContributionProcess;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
 
 class DocumentController extends Controller
 {
   public function received(Request $request, $rol_id, $user_id)
   {
     $module = Role::find($rol_id)->module;
-    // return DB::table('wf_states')->where('role_id', '=',10)->get();
     $headers = Util::getHeadersInboxRetFunQuotaAid();
     switch ($module->id) {
       case 1:
-        # admin
-        $documents = DB::table('economic_complements')->limit(0)->get();
+        # code...
         break;
       case 2:
         # eco com
-        $documents = DB::table('economic_complements')
-          ->select(
-            DB::raw(
-              "
+        $documents = EconomicComplement::with('tags')->select(
+          DB::raw(
+            "
                         economic_complements.id as id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
@@ -42,20 +40,22 @@ class DocumentController extends Controller
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
-                        concat('/economic_complement/', economic_complements.id) as path
+                        eco_com_types.name as modality,
+                        concat('/eco_com/', economic_complements.id) as path
                         "
-            )
           )
+        )
           ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
           ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
+          ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+          ->leftJoin('eco_com_types', 'eco_com_modalities.eco_com_type_id', '=', 'eco_com_types.id')
           ->where('wf_states.role_id', '=', $rol_id)
-          ->where('economic_complements.state', '=', 'Received')
+          ->where('economic_complements.inbox_state', '=', false)
           ->get();
-        $documents_edited_total = DB::table('economic_complements')
-          ->select(
-            DB::raw(
-              "
+        $documents_edited_total = EconomicComplement::with('tags')->select(
+          DB::raw(
+            "
                         economic_complements.id as id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
@@ -66,13 +66,13 @@ class DocumentController extends Controller
                         concat('/economic_complement/', economic_complements.id) as path,
                         false as status
                         "
-            )
           )
+        )
           ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
           ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
           ->where('wf_states.role_id', '=', $rol_id)
-          ->where('economic_complements.state', '=', 'Edited')
+          ->where('economic_complements.inbox_state', '=', true)
           ->where('economic_complements.user_id', '=', $user_id)
           ->get()->count();
         break;
@@ -226,38 +226,39 @@ class DocumentController extends Controller
     $headers = Util::getHeadersInboxRetFunQuotaAid();
     switch ($module->id) {
       case 1:
-        # admin
-        $documents = DB::table('economic_complements')->limit(0)->get();
+        # code...
         break;
       case 2:
         # eco com
-        $documents = DB::table('economic_complements')
-          ->select(
-            DB::raw(
-              "
+        $documents = EconomicComplement::with('tags')->select(
+          DB::raw(
+            "
                         economic_complements.id as id,
+                        economic_complements.user_id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
                         economic_complements.code as code,
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
-                        concat('/economic_complement/', economic_complements.id) as path,
+                        eco_com_types.name as modality,
+                        concat('/eco_com/', economic_complements.id) as path,
                         false as status
                         "
-            )
           )
+        )
           ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
           ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
+          ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+          ->leftJoin('eco_com_types', 'eco_com_modalities.eco_com_type_id', '=', 'eco_com_types.id')
           ->where('wf_states.role_id', '=', $rol_id)
-          ->where('economic_complements.state', '=', 'Edited')
+          ->where('economic_complements.inbox_state', '=', true)
           ->where('economic_complements.user_id', '=', $user_id)
           ->get();
-        $documents_received_total = DB::table('economic_complements')
-          ->select(
-            DB::raw(
-              "
+        $documents_received_total = EconomicComplement::with('tags')->select(
+          DB::raw(
+            "
                         economic_complements.id as id,
                         affiliates.identity_card as ci,
                         trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
@@ -267,13 +268,13 @@ class DocumentController extends Controller
                         economic_complements.workflow_id as workflow_id,
                         concat('/economic_complement/', economic_complements.id) as path
                         "
-            )
           )
+        )
           ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
           ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
           ->where('wf_states.role_id', '=', $rol_id)
-          ->where('economic_complements.state', '=', 'Received')
+          ->where('economic_complements.inbox_state', '=', false)
           ->get()->count();
         break;
       case 3:
@@ -413,9 +414,8 @@ class DocumentController extends Controller
         ->select('wf_states.id as wf_state_id', 'workflow_id as workflow_id', 'wf_states.name as wf_state_name')
         ->get();
       /* TODO (improve)*/
-      $wf_sequences_back = DB::table("wf_states")
+      $wf_sequences_back = WorkflowState::where("wf_states.module_id", "=", $module->id)
         // ->whereIn("workflow_id", $temp)
-        ->where("wf_states.module_id", "=", $module->id)
         // ->where("wf_state_current_id", $wf_current_state->id)
         ->where('wf_states.sequence_number', '<', $wf_current_state->sequence_number)
         ->select(
