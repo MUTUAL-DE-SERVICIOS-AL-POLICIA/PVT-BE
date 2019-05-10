@@ -487,7 +487,6 @@ class EconomicComplementController extends Controller
 
         $states = ProcedureState::all();
         $pension_entities = PensionEntity::all();
-
         /*
         * for affiliate info
         */

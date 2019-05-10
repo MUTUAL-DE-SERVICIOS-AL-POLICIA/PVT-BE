@@ -77,6 +77,10 @@ class EconomicComplement extends Model
     
         return array('code' => $this->code, 'hash' => null);
     }
+    public function submitted_documents()
+    {
+        return $this->hasMany(EcoComSubmittedDocument::class);
+    }
     /**
      *!! TODO
      */

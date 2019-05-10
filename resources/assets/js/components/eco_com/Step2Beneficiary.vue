@@ -640,7 +640,7 @@
                   class="form-control"
                   v-model.trim="affiliate.birth_date"
                   name="affiliate_birth_date"
-                  v-validate="'date_format:DD/MM/YYYY|max_current_date'"
+                  v-validate="'date_format:dd/MM/yyyy|max_current_date'"
                 >
                 <div>
                   <i v-show="errors.has('affiliate_birth_date')" class="fa fa-warning text-danger"></i>
@@ -879,7 +879,7 @@
                   class="form-control"
                   v-model.trim="ecoComBeneficiary.birth_date"
                   name="eco_com_beneficiary_birth_date"
-                  v-validate="'date_format:DD/MM/YYYY|max_current_date'"
+                  v-validate="'date_format:dd/MM/yyyy|max_current_date'"
                 >
                 <div>
                   <i
@@ -962,7 +962,7 @@
                   v-model.trim="ecoComBeneficiary.due_date"
                   class="form-control"
                   v-date
-                  v-validate="'date_format:DD/MM/YYYY|max_due_date'"
+                  v-validate="'date_format:dd/MM/yyyy|max_due_date'"
                 >
                 <br>
                 <input
