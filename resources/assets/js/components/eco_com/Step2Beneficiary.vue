@@ -252,7 +252,7 @@
                   type="checkbox"
                   name="legal_guardian_is_duedate_undefined"
                   v-model="legalGuardian.is_duedate_undefined"
-                >
+                > Indefinido
                 <div
                   v-show="errors.has('legal_guardian_due_date') && !legalGuardian.is_duedate_undefined"
                 >
@@ -640,7 +640,7 @@
                   class="form-control"
                   v-model.trim="affiliate.birth_date"
                   name="affiliate_birth_date"
-                  v-validate="'date_format:DD/MM/YYYY|max_current_date'"
+                  v-validate="'date_format:dd/MM/yyyy|max_current_date'"
                 >
                 <div>
                   <i v-show="errors.has('affiliate_birth_date')" class="fa fa-warning text-danger"></i>
@@ -879,7 +879,7 @@
                   class="form-control"
                   v-model.trim="ecoComBeneficiary.birth_date"
                   name="eco_com_beneficiary_birth_date"
-                  v-validate="'date_format:DD/MM/YYYY|max_current_date'"
+                  v-validate="'date_format:dd/MM/yyyy|max_current_date'"
                 >
                 <div>
                   <i
@@ -962,14 +962,14 @@
                   v-model.trim="ecoComBeneficiary.due_date"
                   class="form-control"
                   v-date
-                  v-validate="'date_format:DD/MM/YYYY|max_due_date'"
+                  v-validate="'date_format:dd/MM/yyyy|max_due_date'"
                 >
                 <br>
                 <input
                   type="checkbox"
                   name="eco_com_beneficiary_is_duedate_undefined"
                   v-model="ecoComBeneficiary.is_duedate_undefined"
-                >
+                > Indefinido
                 <div
                   v-show="errors.has('eco_com_beneficiary_due_date') && !ecoComBeneficiary.is_duedate_undefined "
                 >

@@ -728,7 +728,6 @@ class Affiliate extends Model
       ->select('quota_aid_mortuaries.*')
       ->get();
   }
-
   // public function getLastDateContribution()
   // {
   //     $date = $this->contributions()->max('month_year');

@@ -1,5 +1,5 @@
 let mix = require("laravel-mix");
-// require("laravel-mix-purgecss");
+require("laravel-mix-purgecss");
 require("dotenv").config();
 /*
  |--------------------------------------------------------------------------
@@ -26,16 +26,16 @@ switch (app) {
     mix
     .sass("resources/assets/sass/app.scss", "public/css")
     .version()
-    // .purgeCss({
-    //   enabled: true,
+    .purgeCss({
+      enabled: true,
 
-    //   globs: [
-    //     path.join(__dirname, "resources/views/**/*.blade.php"),
-    //     path.join(__dirname, "resources/assets/js/**/*.vue")
-    //   ],
-    //   extensions: ["html", "js", "php", "vue"],
-    //   whitelistPatterns: [/language/, /hljs/]
-    // })
+      globs: [
+        path.join(__dirname, "resources/views/**/*.blade.php"),
+        path.join(__dirname, "resources/assets/js/**/*.vue")
+      ],
+      extensions: ["html", "js", "php", "vue"],
+      whitelistPatterns: [/language/, /hljs/]
+    })
     ;
    break;
 

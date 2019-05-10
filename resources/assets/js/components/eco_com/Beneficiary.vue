@@ -5,9 +5,9 @@
         <div class="pull-left">
           <legend>Beneficiario</legend>
         </div>
-        <div class="text-right" v-if="editable&&beneficiary.type!='S'?true:false">
-          <button class="btn btn-danger" type="button" v-on:click="remove">
-            <i class="fa fa-trash"></i>
+        <div class="text-right">
+          <button class="btn btn-primary" type="button" v-on:click="edit()">
+            <i class="fa fa-pencil"></i> Editar
           </button>
         </div>
       </div>
@@ -174,26 +174,6 @@
           >
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="col-md-4">
-          <label class="control-label">Parentesco</label>
-        </div>
-        <div class="col-md-8">
-          <select
-            class="form-control"
-            v-model.trim="beneficiary.kinship_id"
-            name="beneficiary_kinship[]"
-            :disabled="!editable"
-          >
-            <option :value="null"></option>
-            <option
-              v-for="kinship in kinships"
-              :key="beneficiary.id + ''+kinship.id "
-              :value="kinship.id"
-            >{{kinship.name}}</option>
-          </select>
-        </div>
-      </div>
     </div>
     <br>
     <div class="row">
@@ -204,7 +184,7 @@
         <div class="col-md-8">
           <div class="row">
             <div class="col-md-2" v-if="editable">
-              <button class="btn btn-success" type="button" @click="addPhoneNumber">
+              <button class="btn btn-success" type="button" @click="addPhoneNumber()">
                 <i class="fa fa-plus"></i>
               </button>
             </div>
@@ -243,7 +223,7 @@
         <div class="col-md-8">
           <div class="row">
             <div class="col-md-2" v-if="editable">
-              <button class="btn btn-success" type="button" @click="addCellPhoneNumber">
+              <button class="btn btn-success" type="button" @click="addCellPhoneNumber()">
                 <i class="fa fa-plus"></i>
               </button>
             </div>
@@ -349,7 +329,7 @@
     <br>
     <div class="hr-line-dashed"></div>
     <div class="text-center" v-show="editable">
-      <button class="btn btn-danger" type="button" @click="cancel">
+      <button class="btn btn-danger" type="button" @click="cancel()">
         <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
         <span class="bold">Cancelar</span>
       </button>
@@ -362,43 +342,30 @@
 <script>
 import { getGender } from "../../helper.js";
 export default {
-  props: ["kinships", "cities", "beneficiary"],
+  props: ["cities", "beneficiary"],
   data() {
     return {
-      // removable_beneficiary: true
-      editable: true,
-      legalRepresentatives: [
-        { id: 1, name: "Tutor(a)" },
-        { id: 2, name: "Apoderado(a)" }
-      ]
+      editable: false
     };
   },
-  created() {
-    //  Parche
-  },
-  mounted() {
-    //this.$refs.identity_card.focus();
-    // dateInputMaskAll();
-  },
   methods: {
-    cancel() {},
+    cancel() {
+      this.editable = false;
+    },
     update() {
-      let uri = `/eco_com_process/${this.beneficiary.eco_com_process_id}/update_beneficiary`;
+      let uri = `/eco_com_beneficiary/${this.beneficiary.id}`;
       this.show_spinner = true;
-
       axios
         .patch(uri, this.beneficiary)
         .then(response => {
           this.editing = false;
           this.show_spinner = false;
-          this.beneficiaries = response.data.beneficiaries;
-          flash("Informacion del Afiliado Actualizada  " + response.data);
+          flash("Informacion del Beneficiario Actualizada");
         })
         .catch(response => {
           this.show_spinner = false;
-          this.beneficiaries = this.ben;
           flash(
-            "Error al actualizar el afiliado: " + response.message,
+            "Error al actualizar el Beneficiario: " + response.message,
             "error"
           );
         });
@@ -436,8 +403,8 @@ export default {
       if (this.beneficiary.cell_phone_number.length < 1)
         this.addCellPhoneNumber();
     },
-    remove() {
-      this.$emit("remove");
+    edit() {
+      this.editable = true;
     },
     searchBeneficiary: function() {
       let ci = this.beneficiary.identity_card;
@@ -475,84 +442,6 @@ export default {
     getGenderBeneficiary(value) {
       return getGender(value);
     },
-    setAdvisorData(data) {
-      this.beneficiary.advisor_identity_card = data.identity_card;
-      this.beneficiary.advisor_city_identity_card_id =
-        data.city_identity_card_id;
-      this.beneficiary.advisor_first_name = data.first_name;
-      this.beneficiary.advisor_second_name = data.second_name;
-      this.beneficiary.advisor_last_name = data.last_name;
-      this.beneficiary.advisor_mothers_last_name = data.mothers_last_name;
-      this.beneficiary.advisor_surname_husband = data.surname_husband;
-      this.beneficiary.advisor_birth_date = data.birth_date;
-      this.beneficiary.advisor_gender = data.gender;
-      // phone.value
-      // cell_phone.value
-      this.beneficiary.advisor_name_court = data.name_court;
-      this.beneficiary.advisor_resolution_number = data.resolution_number;
-      this.beneficiary.advisor_resolution_date = data.resolution_date;
-    },
-    setLegalGuardianData(data) {
-      this.beneficiary.legal_guardian_identity_card = data.identity_card;
-      this.beneficiary.legal_guardian_city_identity_card_id =
-        data.city_identity_card_id;
-      this.beneficiary.legal_guardian_first_name = data.first_name;
-      this.beneficiary.legal_guardian_second_name = data.second_name;
-      this.beneficiary.legal_guardian_last_name = data.last_name;
-      this.beneficiary.legal_guardian_mothers_last_name =
-        data.mothers_last_name;
-      this.beneficiary.legal_guardian_surname_husband = data.surname_husband;
-      this.beneficiary.legal_guardian_gender = data.gender;
-      this.beneficiary.legal_guardian_number_authority = data.number_authority;
-      this.beneficiary.legal_guardian_notary_of_public_faith =
-        data.notary_of_public_faith;
-      this.beneficiary.legal_guardian_notary = data.notary;
-      this.beneficiary.legal_guardian_date_authority = data.date_authority;
-    },
-    searchLegalRepresentative(type) {
-      // type:
-      // 1 => tutor
-      // 2 => apoderado
-      console.log("searching legal representative");
-      let ci;
-      switch (type) {
-        case 1:
-          ci = this.beneficiary.advisor_identity_card;
-          break;
-        case 2:
-          ci = this.beneficiary.legal_guardian_identity_card;
-          break;
-        default:
-          alert("error al buscar legal representative");
-          break;
-      }
-      axios
-        .get("/search_ajax", {
-          params: {
-            ci
-          }
-        })
-        .then(response => {
-          let data = response.data;
-          setTimeout(() => {
-            switch (type) {
-              case 1:
-                this.setAdvisorData(data);
-                break;
-              case 2:
-                this.setLegalGuardianData(data);
-                break;
-              default:
-                alert("error al guardar datos legal representative");
-                break;
-            }
-          }, 300);
-        })
-        .catch(function(error) {
-          console.log("Error searching legal guardian");
-          console.log(error);
-        });
-    }
   },
   computed: {
     beneficiaryAge() {
