@@ -61,8 +61,8 @@
                     type="text"
                     class="form-control"
                     v-money
-                    name="aps_total_disability"
-                    v-model="aps_total_disability"
+                    name="aps_disability"
+                    v-model="aps_disability"
                   >
                 </div>
               </div>
@@ -136,8 +136,8 @@
                     type="text"
                     class="form-control"
                     v-money
-                    name="aps_total_disability"
-                    v-model="aps_total_disability"
+                    name="aps_disability"
+                    v-model="aps_disability"
                   >
                 </div>
               </div>
@@ -177,8 +177,8 @@ export default {
       aps_total_cc: !!this.ecoCom ? this.ecoCom.aps_total_cc : 0,
       aps_total_fs: !!this.ecoCom ? this.ecoCom.aps_total_fs : 0,
 
-      aps_total_disability: !!this.ecoCom
-        ? this.ecoCom.aps_total_disability
+      aps_disability: !!this.ecoCom
+        ? this.ecoCom.aps_disability
         : 0,
       sub_total_rent: !!this.ecoCom ? this.ecoCom.sub_total_rent : 0,
       reimbursement: !!this.ecoCom ? this.ecoCom.reimbursement : 0,
@@ -200,7 +200,7 @@ export default {
         parseFloat(parseMoney(this.aps_total_fsa)) +
         parseFloat(parseMoney(this.aps_total_cc)) +
         parseFloat(parseMoney(this.aps_total_fs)) +
-        parseFloat(parseMoney(this.aps_total_disability))
+        parseFloat(parseMoney(this.aps_disability))
       );
     },
     totalSumSenasir() {
@@ -208,7 +208,7 @@ export default {
         parseFloat(parseMoney(this.sub_total_rent)) -
         parseFloat(parseMoney(this.reimbursement)) +
         parseFloat(parseMoney(this.dignity_pension)) +
-        parseFloat(parseMoney(this.aps_total_disability))
+        parseFloat(parseMoney(this.aps_disability))
       );
     }
   }

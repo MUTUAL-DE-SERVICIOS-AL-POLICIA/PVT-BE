@@ -130,14 +130,26 @@ class EconomicComplement extends Model
         $complementary_factor = ComplementaryFactor::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
             ->get();
-        if (!$eco_com_rent) {
-            return 'Verifique que existan los promedio para la gestion ' . $eco_com_procedure->fullName();
+        if ($eco_com_rent->count() == 0) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['Verifique que existan los promedio para la gestion ' . $eco_com_procedure->fullName()],
+            ], 422);
         }
-        if (!$base_wage) {
-            return 'Verifique que si existen los sueldos para la gestion ' . $eco_com_procedure->fullName();
+        if ($base_wage->count() == 0) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['Verifique que si existen los sueldos para la gestion ' . $eco_com_procedure->fullName()],
+            ], 422);
         }
-        if (!$complementary_factor) {
-            return 'Verifique los datos de los factores de complementacion de la gestion ' . $eco_com_procedure->fullName();
+        if ($complementary_factor->count() == 0) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['Verifique los datos de los factores de complementación de la gestion ' . $eco_com_procedure->fullName()],
+            ], 422);
         }
         $indicator = $eco_com_procedure->indicator;
         /**
@@ -316,7 +328,7 @@ class EconomicComplement extends Model
         //     }
         // }
         $this->save();
-        return $this;
+        // return $this;
     }
     public function isOldAge()
     {

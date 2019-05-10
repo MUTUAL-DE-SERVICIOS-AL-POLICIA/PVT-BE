@@ -91,7 +91,7 @@ class CreateEcoComTables extends Migration
         //     $table->decimal('aps_total_cc', 13, 2)->nullable();
         //     $table->decimal('aps_total_fsa', 13, 2)->nullable();
         //     $table->decimal('aps_total_fs', 13, 2)->nullable();
-        //     $table->decimal('aps_total_disability', 13, 2)->nullable();
+        //     $table->decimal('aps_disability', 13, 2)->nullable();
 
         //     $table->foreign('user_id')->references('id')->on('users');
         //     $table->foreign('eco_com_state_id')->references('id')->on('eco_com_states');

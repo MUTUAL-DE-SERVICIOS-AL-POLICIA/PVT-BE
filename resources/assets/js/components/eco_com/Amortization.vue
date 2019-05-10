@@ -1,6 +1,10 @@
 <template>
   <div>
-    <button @click="$modal.show('amortization-modal')" class="btn btn-primary">
+    <button
+      @click="showModal()"
+      class="btn btn-primary"
+      :disabled="!can('amortize_economic_complement')"
+    >
       <i class="fa fa-dollar"></i> Amortizar
     </button>
     <modal name="amortization-modal" class="p-lg" height="auto">
@@ -19,8 +23,8 @@
                   v-money
                   name="discount_amount"
                   v-model="ecoCom.discount_amount"
-                  v-validate="'required'"
                 >
+                <!-- v-validate="'required'" -->
               </div>
             </div>
           </div>
@@ -55,7 +59,9 @@
 
 <script>
 import { parseMoney, canOperation, flashErrors } from "../../helper.js";
+import { mapState, mapMutations } from "vuex";
 export default {
+  props: ["permissions"],
   data() {
     return {
       form: {},
@@ -68,7 +74,20 @@ export default {
     }
   },
   methods: {
+    can(operation) {
+      return canOperation(operation, this.permissions);
+    },
+    showModal() {
+      if (!this.can("amortize_economic_complement", this.permissions)) {
+        flash("No tiene permisos para realizar la amortizacion", "error");
+        return;
+      }
+      this.$modal.show("amortization-modal");
+    },
     async save() {
+      if (!this.can("amortize_economic_complement", this.permissions)) {
+        return;
+      }
       this.loadingButton = true;
       this.form.id = this.ecoCom.id;
       this.form.amount = parseMoney(this.ecoCom.discount_amount);
@@ -76,14 +95,12 @@ export default {
         .patch(`/eco_com_save_amortization`, this.form)
         .then(response => {
           console.log(response);
-          // this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
           this.$modal.hide("amortization-modal");
+          flash("Amortizacion realizada con exito.");
         })
         .catch(error => {
-          flashErrors(
-            "Error al procesar: ",
-            error.response.data.errors
-          );
+          flashErrors("Error al procesar: ", error.response.data.errors);
         });
       this.loadingButton = false;
     }

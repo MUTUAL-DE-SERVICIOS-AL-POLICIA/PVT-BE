@@ -225,7 +225,7 @@ class EconomicComplementController extends Controller
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
             $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
             $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
-            $economic_complement->aps_disability = Util::parseMoney($request->aps_total_disability);
+            $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
             $economic_complement->aps_total_fsa = null;
             $economic_complement->aps_total_cc = null;
             $economic_complement->aps_total_fs = null;
@@ -233,7 +233,7 @@ class EconomicComplementController extends Controller
             $economic_complement->aps_total_fsa = Util::parseMoney($request->aps_total_fsa);
             $economic_complement->aps_total_cc = Util::parseMoney($request->aps_total_cc);
             $economic_complement->aps_total_fs = Util::parseMoney($request->aps_total_fs);
-            $economic_complement->aps_disability = Util::parseMoney($request->aps_total_disability);
+            $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
             $economic_complement->sub_total_rent = null;
             $economic_complement->reimbursement = null;
             $economic_complement->dignity_pension = null;
@@ -589,6 +589,9 @@ class EconomicComplementController extends Controller
             ObservationType::class,
             EconomicComplement::class
         );
+        $permissions = json_decode($permissions);
+        $permissions[] = ['operation'=>'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];
+        $permissions= json_encode($permissions);
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -921,7 +924,7 @@ class EconomicComplementController extends Controller
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
             $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
             $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
-            $economic_complement->aps_disability = Util::parseMoney($request->aps_total_disability);
+            $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
             $economic_complement->aps_total_fsa = null;
             $economic_complement->aps_total_cc = null;
             $economic_complement->aps_total_fs = null;
@@ -929,20 +932,42 @@ class EconomicComplementController extends Controller
             $economic_complement->aps_total_fsa = Util::parseMoney($request->aps_total_fsa);
             $economic_complement->aps_total_cc = Util::parseMoney($request->aps_total_cc);
             $economic_complement->aps_total_fs = Util::parseMoney($request->aps_total_fs);
-            $economic_complement->aps_disability = Util::parseMoney($request->aps_total_disability);
+            $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
             $economic_complement->sub_total_rent = null;
             $economic_complement->reimbursement = null;
             $economic_complement->dignity_pension = null;
         }
         $economic_complement->save();
-
-        if (Gate::allows('qualify', $economic_complement)) {
-            return $economic_complement->qualify();
+        $discount_type_id = null;
+        $rol = Util::getRol();
+        switch ($rol->id) {
+            case 7: //contabiliadad
+                $discount_type_id = 4;
+                break;
+            case 16: //prestamo
+                $discount_type_id = 5;
+                break;
+            case 4: // complemento
+                $discount_type_id = 6;
+                break;
         }
+        if (Gate::allows('qualify', $economic_complement)) {
+            $economic_complement->qualify();
+        }
+        $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         return $economic_complement;
     }
     public function saveAmortization(Request $request)
     {
+        $eco_com = EconomicComplement::with('discount_types')->find($request->id);
+        try {
+            $this->authorize('amortize', $eco_com);
+        } catch (AuthorizationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para realizar la amortizacion'],
+            ], 403);
+        }
         try {
             $this->validate($request, [
                 'amount' => 'required|numeric|min:1',
@@ -954,8 +979,6 @@ class EconomicComplementController extends Controller
                 'errors' => $exception->errors(),
             ], 422);
         }
-        Log::info($request->all());
-        $eco_com = EconomicComplement::find($request->id);
         if ($eco_com->eco_com_state->eco_com_state_type_id == 1 || $eco_com->eco_com_state->eco_com_state_type_id == 6) {
             $eco_com_state = $eco_com->eco_com_state;
             return response()->json([
@@ -992,7 +1015,10 @@ class EconomicComplementController extends Controller
         $record->economic_complement_id = $eco_com->id;
         $record->message = "El usuario " . Auth::user()->username  . " amortizó " . $request->amount . ".";
         $record->save();
-
+        if (Gate::allows('qualify', $eco_com)) {
+            $eco_com->qualify();
+        }
+        $eco_com = EconomicComplement::with('discount_types')->find($request->id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         return $eco_com;
         // case 4: //complemento

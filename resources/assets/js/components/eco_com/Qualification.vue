@@ -20,7 +20,7 @@
       </div>
       <div class="ibox-content">
         <div class="row">
-          <eco-com-amortization></eco-com-amortization>
+          <eco-com-amortization :permissions="permissions"></eco-com-amortization>
         </div>
         <div class="row">
           <div class="col-md-6">
@@ -108,8 +108,8 @@
                   <td>{{ ecoCom.complementary_factor }}</td>
                 </tr>
                 <tr v-for="d in ecoCom.discount_types" :key="d.id" class="danger">
-                  <td>{{ d.name }} </td>
-                  <td>{{ d.pivot.amount | currency}} </td>
+                  <td>{{ d.name }}</td>
+                  <td>{{ d.pivot.amount | currency}}</td>
                 </tr>
                 <tr class="success">
                   <td>
@@ -142,7 +142,7 @@
                     class="form-control"
                     v-money
                     name="aps_total_fsa"
-                    v-model="ecoCom.aps_total_fsa"
+                    v-model="ecoComModal.aps_total_fsa"
                     :disabled="!editing"
                   >
                 </div>
@@ -158,7 +158,7 @@
                     class="form-control"
                     v-money
                     name="aps_total_cc"
-                    v-model="ecoCom.aps_total_cc"
+                    v-model="ecoComModal.aps_total_cc"
                     :disabled="!editing"
                   >
                 </div>
@@ -174,7 +174,7 @@
                     class="form-control"
                     v-money
                     name="aps_total_fs"
-                    v-model="ecoCom.aps_total_fs"
+                    v-model="ecoComModal.aps_total_fs"
                     :disabled="!editing"
                   >
                 </div>
@@ -190,7 +190,7 @@
                     class="form-control"
                     v-money
                     name="aps_disability"
-                    v-model="ecoCom.aps_disability"
+                    v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
                   >
                 </div>
@@ -220,7 +220,7 @@
                     class="form-control"
                     v-money
                     name="sub_total_rent"
-                    v-model="ecoCom.sub_total_rent"
+                    v-model="ecoComModal.sub_total_rent"
                     :disabled="!editing"
                   >
                 </div>
@@ -236,7 +236,7 @@
                     class="form-control"
                     v-money
                     name="reimbursement"
-                    v-model="ecoCom.reimbursement"
+                    v-model="ecoComModal.reimbursement"
                     :disabled="!editing"
                   >
                 </div>
@@ -252,7 +252,7 @@
                     class="form-control"
                     v-money
                     name="dignity_pension"
-                    v-model="ecoCom.dignity_pension"
+                    v-model="ecoComModal.dignity_pension"
                     :disabled="!editing"
                   >
                 </div>
@@ -267,8 +267,8 @@
                     type="text"
                     class="form-control"
                     v-money
-                    name="aps_total_disability"
-                    v-model="ecoCom.aps_total_disability"
+                    name="aps_disability"
+                    v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
                   >
                 </div>
@@ -321,7 +321,7 @@ export default {
   props: ["ecoComId", "affiliate", "permissions"],
   data() {
     return {
-      ecoCom: {},
+      ecoComModal: {},
       editing: false,
       loadingButton: false
     };
@@ -330,6 +330,9 @@ export default {
     this.getEcoCom();
   },
   computed: {
+    ecoCom() {
+      return this.$store.state.ecoComForm.ecoCom;
+    },
     isSenasir() {
       return isPensionEntitySenasir(this.affiliate.pension_entity_id);
     },
@@ -345,6 +348,7 @@ export default {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;
       }
+      this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
       this.$modal.show("rents-modal");
       this.editing = true;
     },
@@ -359,14 +363,10 @@ export default {
       await axios
         .get(`/get_eco_com/${this.ecoComId}`)
         .then(response => {
-          this.ecoCom = response.data;
-          this.$store.commit("ecoComForm/setEcoCom", this.ecoCom);
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
         })
         .catch(error => {
-          flashErrors(
-            "Error al procesar: ",
-            error.response.data.errors
-          );
+          flashErrors("Error al procesar: ", error.response.data.errors);
         });
     },
     async save() {
@@ -375,18 +375,16 @@ export default {
       }
       this.loadingButton = true;
       this.editing = false;
-      this.ecoCom.pension_entity_id = this.affiliate.pension_entity_id;
+      this.ecoComModal.pension_entity_id = this.affiliate.pension_entity_id;
       await axios
-        .patch(`/eco_com_update_rents`, this.ecoCom)
+        .patch(`/eco_com_update_rents`, this.ecoComModal)
         .then(response => {
-          this.ecoCom = response.data;
-          this.$modal.hide('rents-modal');
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.$modal.hide("rents-modal");
+          flash("Rentas Actualizadas con exito");
         })
         .catch(error => {
-          flashErrors(
-            "Error al procesar: ",
-            error.response.data.errors
-          );
+          flashErrors("Error al procesar: ", error.response.data.errors);
         });
       this.loadingButton = false;
       this.editing = true;
