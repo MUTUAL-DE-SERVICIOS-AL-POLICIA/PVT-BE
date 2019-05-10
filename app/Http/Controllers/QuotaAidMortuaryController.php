@@ -312,7 +312,7 @@ class QuotaAidMortuaryController extends Controller
         // if(isset($quota_aid->id)) {
         //     $has_quota_aid = true;
         //     return $quota_aid;
-        //     return "ya tiene un tramite";
+        //     return "ya tiene un trámite";
         //     // $biz_rules = [
         //     //     'quota_aid_double'
         //     // ];
@@ -329,17 +329,15 @@ class QuotaAidMortuaryController extends Controller
             $code = str_replace("A", "", $nextcode->code);
         }else{
             if($request->procedure_type_id == 3){
-                //cuota
-                $quota_aid = QuotaAidMortuary::select('id', 'code')->whereIn('procedure_modality_id', [8,9])->limit(10)->orderBy('id', 'desc')->get();
-                // $quota_aid_code = $this->getLastCode($quota_aid);
-                $quota_aid_code = Util::getLastCode(QuotaAidMortuary::class);
-                // $this->getLastCode($quota_aid);
+
+                $quota_aid_code = Util::getLastCodeQM(QuotaAidMortuary::class);
                 $code = Util::getNextCode($quota_aid_code, '179');
+
             }elseif($request->procedure_type_id == 4){
-                //auxlio
-                $quota_aid = QuotaAidMortuary::select('id', 'code')->whereIn('procedure_modality_id', [13,14,15])->limit(10)->orderBy('id', 'desc')->get();
-                $quota_aid_code = $this->getLastCode($quota_aid);
+
+                $quota_aid_code = Util::getLastCodeAM(QuotaAidMortuary::class);
                 $code = Util::getNextCode($quota_aid_code, '268');
+                
                 Log::info('code: '.$code);
             }
         }
@@ -359,7 +357,7 @@ class QuotaAidMortuaryController extends Controller
         $quota_aid->workflow_id = 5;
         $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
         if (!$wf_state) {
-            Log::info("error al crear el tramite");
+            Log::info("error al crear el trámite");
             return;
         }
         $quota_aid->wf_state_current_id = $wf_state->id;
@@ -1179,25 +1177,6 @@ class QuotaAidMortuaryController extends Controller
             'hierarchy' => $hierarchy,
         ];
         return view('quota_aid.create',$data);
-    }
-    private function getLastCode($quotas){
-        $num = 0;
-        $year = 0;
-        if(count($quotas) == 0)
-        return "";
-        foreach($quotas as $quota)
-        {
-            $code = str_replace('A','',$quota->code);
-            if( $code != "")
-            {
-                $code = explode('/',$code);
-                if($code[1]>$year)
-                    $year = $code[1];
-                if($code[0]>$num)
-                    $num = $code[0];
-            }
-        }
-        return $num."/".$year;
     }
 
     /**

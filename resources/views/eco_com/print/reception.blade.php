@@ -43,7 +43,6 @@
         </div>
 
         <div class="font-bold uppercase m-b-5 counter">DOCUMENTOS RECEPCIONADOS</div>
-        {{--
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm">
@@ -53,24 +52,26 @@
                 </tr>
             </thead>
             <tbody class="text-sm">
-                @foreach($submitted_documents as $i=>$item) @if($item->procedure_requirement->number > 0)
-                <tr>
-                    <td class='text-center p-5'>{!! $item->procedure_requirement->number !!}</td>
-                    <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
-                    @if (true)
-                    <td class="text-center">
-                        <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
-                    </td>
-                    @else
-                    <td class="text-center">
-                        <i class="mdi mdi-close-box-outline"></i>
-                    </td>
+                @foreach($eco_com_submitted_documents as $item)
+                    @if($item->number > 0)
+                    <tr>
+                        <td class='text-center p-5'>{!! $item->number !!}</td>
+                        <td class='text-justify p-5'>{!! $item->procedure_document->name !!} </td>
+                        @if (true)
+                        <td class="text-center">
+                            <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i>
+                        </td>
+                        @else
+                        <td class="text-center">
+                            <i class="mdi mdi-close-box-outline"></i>
+                        </td>
+                        @endif
+                    </tr>
                     @endif
-                </tr>
-                @endif @endforeach
+                @endforeach
             </tbody>
         </table>
-        @if($submitted_documents[0]->procedure_requirement->number != 1)
+        {{-- @if($submitted_documents[0]->procedure_requirement->number != 1)
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm">

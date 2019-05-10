@@ -756,9 +756,9 @@ class RetirementFundCertificationController extends Controller
             //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
             // }
         }
-        if ($retirement_fund->total_ret_fun > 0) {
-            $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
-        }
+
+        $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
+        
         $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
         if ($affiliate->hasAvailability()) {
             if ($retirement_fund->total_availability > 0) {
@@ -768,9 +768,9 @@ class RetirementFundCertificationController extends Controller
             //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
             // }
         }
-        if ($retirement_fund->total_ret_fun > 0) {
-            $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
-        }
+        
+        $pages[] =\View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
+        
         $pages[] =\View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
 
         if (!$affiliate->selectedContributions() > 0 && ! $affiliate->globalPayRetFun()  && $retirement_fund->procedure_modality->procedure_type->id == 2 ){
@@ -1272,13 +1272,13 @@ class RetirementFundCertificationController extends Controller
         $certification_no_contribution = ContributionType::where('name','=','Período Certificación Sin Aporte')->first();
 
         $contributions = Contribution::where('affiliate_id', $affiliate->id)
-                        ->where(function ($query) use ($certification_contribution,$certification_no_contribution){
-                            $query->where('contribution_type_id',$certification_contribution->id)
-                            ->orWhere('contribution_type_id',$certification_no_contribution->id)
-                            ->orWhere('contribution_type_id',9);
-                        })
-                        ->orderBy('month_year')                        
-                        ->get();
+            ->where(function ($query) use ($certification_contribution, $certification_no_contribution) {
+                $query->where('contribution_type_id', $certification_contribution->id)
+                    ->orWhere('contribution_type_id', $certification_no_contribution->id)
+                    ->orWhere('contribution_type_id', 9);
+            })
+            ->orderBy('month_year')
+            ->get();
         // 9 id periodo no  trabajado
         $contributions_number = Contribution::where('affiliate_id', $affiliate->id)->whereIn('contribution_type_id',[$certification_contribution->id,9])->count();
         $contributions_total = Contribution::where('affiliate_id', $affiliate->id)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->sum('total');
@@ -1387,7 +1387,7 @@ class RetirementFundCertificationController extends Controller
                 if($quantity > 1) {
                     $person .=" como herederos legales acreditados mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
                 } else {
-                    $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de la cuidad de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
+                    $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony_applicant->document_type." Nº ".$testimony_applicant->number." de fecha ".Util::getStringDate($testimony_applicant->date)." sobre Declaratoria de Herederos, emitido por ".$testimony_applicant->court." de la ciudad de ".$testimony_applicant->place." a cargo de ".$testimony_applicant->notary."";
                 }
             //} 
 
@@ -1414,7 +1414,7 @@ class RetirementFundCertificationController extends Controller
                     if($stored_quantity > 1) {
                         $person .=" como herederos legales acreditados mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de ".$testimony->place." a cargo de ".$testimony->notary."";
                     } else {
-                        $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de la cuidad de ".$testimony->place." a cargo de ".$testimony->notary."";
+                        $person .=" como ".($applicant->gender=="M"?"heredero legal acreditado":"heredera legal acreditada")." mediante ".$testimony->document_type." Nº ".$testimony->number." de fecha ".Util::getStringDate($testimony->date)." sobre Declaratoria de Herederos, emitido por ".$testimony->court." de la ciudad de ".$testimony->place." a cargo de ".$testimony->notary."";
                     }                    
                 }
             } 
@@ -1573,20 +1573,20 @@ class RetirementFundCertificationController extends Controller
         ];
         $discounts = $retirement_fund->discount_types(); //DiscountType::where('retirement_fund_id',$retirement_fund->id)->orderBy('discount_type_id','ASC')->get();                
         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-        $payment = "Por consiguiente, habiendo sido remitido el presente tramite al Área Legal de la Unidad de
+        $payment = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal de la Unidad de
         Otorgación del Fondo de Retiro Policial Solidario, autorizado
          por Jefatura de la referida unidad, conforme a los Art. ".$art[$retirement_fund->procedure_modality_id]." y la Disposición Transitoria
         Segunda, del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante
         Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante
         Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017. Se DICTAMINA en
-        merito a la documentación de respaldo contenida en el presente, ";
-        $payment = "Por consiguiente, habiendo sido remitido el presente tramite al Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
+        mérito a la documentación de respaldo contenida en el presente, ";
+        $payment = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, 
         Cuota y Auxilio Mortuorio, autorizado por Jefatura de la referida Unidad, conforme a 
         los Arts. ".$art[$retirement_fund->procedure_modality_id].", Disposición Transitoria Segunda del 
         Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante 
         Resoluciones de Directorio Nros. 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019; y la Disposición Transitoria
         Segunda del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y modificado 
-        mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019. Se <b>DICTAMINA</b> en merito a la documentación de respaldo contenida en el presente, ";
+        mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019. Se <b>DICTAMINA</b> en mérito a la documentación de respaldo contenida en el presente, ";
 
         $flagy = 0;
         $discounts = $retirement_fund->discount_types();
@@ -1662,8 +1662,8 @@ class RetirementFundCertificationController extends Controller
                 if(!$beneficiary->state && !$reserved) {
                     $reserved = true;
                     $reserved_quantity = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('state',false)->count();
-                    $certification = $beneficiary->testimonies()->first();
-                    $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la cuidad de ".$certification->place.", se evidencia 
+                    $certification = $beneficiary->testimonies()->first(); //PRINT CUOTA PARTE DICTAMEN LEGAL
+                    $payment .= "Mediante certificación ".$certification->document_type."-N° ".$certification->number." de ".Util::getStringDate($certification->date)." emitido en la ciudad de ".$certification->place.", se evidencia 
                     la descendencia del titular fallecido; por lo que, se mantiene en reserva".($reserved_quantity>1?" las Cuotas Partes ":" la Cuota Parte ")." salvando los derechos del beneficiario ".
                     ($affiliate->gender=="M"?"del ":"de la ").$affiliate->fullNameWithDegree()." con C.I. N° ".$affiliate->identity_card." ".($affiliate->city_identity_card->first_shortened??"SIN CI").
                     ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 29, 34, 35 y 41 del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante Resoluciones de Directorio Nros. 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de frebrero de 2019, de la siguiente manera:<br><br>";
@@ -2166,7 +2166,7 @@ class RetirementFundCertificationController extends Controller
         }        
 
         $body_resolution .= "<b>".$cardinal[$cardinal_index++].".-</b> El monto TOTAL a pagar de&nbsp; <strong>".Util::formatMoneyWithLiteral($retirement_fund->total)."</strong>, a favor ";
-
+        $reserved = false;
         if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
             
             $beneficiaries = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->orderBy('kinship_id')->orderByDesc('state')->get();
@@ -2177,7 +2177,9 @@ class RetirementFundCertificationController extends Controller
             }
             $body_resolution .= ($affiliate->gender=='M'?' del Sr. ':' de la Sra. ').$affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card." ".$affiliate->city_identity_card->first_shortened."., en el siguiente tenor: <br><br>";
             foreach($beneficiaries as $beneficiary){
-                if(!$beneficiary->state) {
+                if(!$beneficiary->state && !$reserved) {
+                    $reserved = true;
+                //if(!$beneficiary->state) {   //PRINT CUOTA PARTE LEGAL RESOLUTION
                     $reserved_quantity = RetFunBeneficiary::where('retirement_fund_id',$retirement_fund->id)->where('state',false)->count();
                     $certification = $beneficiary->testimonies()->first();
                     $body_resolution .= "Mantener en reserva la Cuota Parte salvando los derechos, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos del Reglamento de Fondo de Retiro Policial Solidario, de la siguiente manera:<br><br>";

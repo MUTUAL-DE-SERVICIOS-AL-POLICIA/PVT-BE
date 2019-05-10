@@ -106,7 +106,7 @@ import { camelCaseToSnakeCase } from "../../helper.js";
         },
         cancelModal() {
           this.$swal({
-            title: "¿Está seguro de cancelar la revision del Tramite?",
+            title: "¿Está seguro de cancelar la revision del Trámite?",
             type: "error",
             showCancelButton: true,
             confirmButtonColor: "#59B75C",

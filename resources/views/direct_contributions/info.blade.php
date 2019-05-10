@@ -53,7 +53,7 @@
                         <strong>Ciudad de Recepci&oacute;n:</strong>
                     </div>
                     <div class="col-md-4">
-                        {!! Form::select('city_id', $cities, null , ['placeholder' => 'Seleccione cuidad', 'class' => 'form-control','v-model'=>'form.city_id',':disabled'=>'!editing']) !!}
+                        {!! Form::select('city_id', $cities, null , ['placeholder' => 'Seleccione ciudad', 'class' => 'form-control','v-model'=>'form.city_id',':disabled'=>'!editing']) !!}
                     </div>
                     <div class="col-md-2">
                             <strong> Fecha de documento:</strong>&nbsp;

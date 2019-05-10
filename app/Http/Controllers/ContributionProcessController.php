@@ -55,7 +55,7 @@ class ContributionProcessController extends Controller
         $contribution_process->user_id = Auth::user()->id;
         $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
         if (!$wf_state) {
-            Log::info("error al crear el tramite");
+            Log::info("error al crear el trámite");
             return;
         }
         $contribution_process->wf_state_current_id = $wf_state->id;

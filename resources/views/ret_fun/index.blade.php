@@ -50,7 +50,7 @@
                     </tfoot>
                     <thead>
                         <tr>
-                            <th># de Tramite</th>
+                            <th># de Trámite</th>
                             <th>Fecha de Recepción</th>
                             <th>C.I</th>
                             <th>Exp</th>
@@ -59,7 +59,7 @@
                             <th>Apellido Paterno</th>
                             <th>Apellido Materno</th>
                             <th>Apellido de Casada</th>
-                            <th>Tipo de Tramite</th>
+                            <th>Tipo de Trámite</th>
                             <th>Modalidad</th>
                             <th>Ubicacion</th>
                             <th>Regional</th>

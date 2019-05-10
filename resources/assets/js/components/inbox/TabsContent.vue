@@ -56,7 +56,7 @@ export default {
                         if (docs.workflow_id == w.workflow_id) {
                             w.docs.forEach(d => {
                                 if (d.id == docs.id) {
-                                    docs.status = d.status; 
+                                    docs.status = d.status;
                                 }
                             });
                         }

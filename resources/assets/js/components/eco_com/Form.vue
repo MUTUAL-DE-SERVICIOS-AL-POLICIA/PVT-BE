@@ -34,19 +34,24 @@ export default {
       } catch (error) {
         console.log("some error");
       }
-      await this.$refs.dos.$children[0].$validator.validateAll()
+      await this.$refs.uno.$children[0].$validator.validateAll();
+      await this.$refs.dos.$children[0].$validator.validateAll();
+      const scrollToFooter = scroller();
+      scrollToFooter("#eco-com-form-header");
       return ! await this.$refs.uno.$children[0].$validator.errors.items
         .map(x => x.field)
         .some(r => keys.indexOf(r) >= 0);
     },
     async validateSecondStep() {
       await this.$refs.dos.$children[0].$validator.validateAll();
-      return await this.$refs.dos.$children[0].$validator.errors.items
+      const scrollToFooter = scroller();
+      scrollToFooter("#eco-com-form-header");
+      return this.$refs.dos.$children[0].$validator.errors.items
         .map(x => x.field).length == 0
     },
     async validateThirdStep() {
       await this.$refs.tres.$children[0].$validator.validateAll();
-      return await this.$refs.tres.$children[0].$validator.errors.items
+      return this.$refs.tres.$children[0].$validator.errors.items
         .map(x => x.field).length == 0
     }
     // validateFirstStep() {
@@ -68,8 +73,8 @@ export default {
     //     this.showRequirementsError = !this.showRequirementsError;
     //     return false;
     //   }
-    //   const scrollToFooterCreateBeneficiaries = scroller();
-    //   scrollToFooterCreateBeneficiaries("#ret-fun-form-header");
+    //   const scrollToFooter = scroller();
+    //   scrollToFooter("#ret-fun-form-header");
     //   return true;
     // },
     // validateSecondStep() {

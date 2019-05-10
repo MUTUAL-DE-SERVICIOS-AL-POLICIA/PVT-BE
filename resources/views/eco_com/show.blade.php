@@ -11,9 +11,6 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
-            {{--
-            <eco-com-create-button :eco-com-process="{{ $eco_com_process }}" :eco-com-procedures="{{ json_encode($eco_com_procedures) }}">
-            </eco-com-create-button> --}}
             <span data-toggle="modal" data-target="#ModalRecordRetFun">
                 <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
                     <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
@@ -80,9 +77,6 @@
         <div class="widget-text-box">
             <ul class="list-group elements-list">
                 <li class="list-group-item active" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
-                {{-- @if($eco_com_process->procedure_modality_id != 25)
-                <li class="list-group-item " data-toggle="tab" href="#tab-affiliate"><a href="#"><i class="fa fa-user"></i> Afiliado </a></li>
-                @endif --}}
                 <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
@@ -98,21 +92,14 @@
 
         <div class="tab-content">
             <div id="tab-eco-com" class="tab-pane active">
-                {{-- @can('update',$eco_com_process) --}}
                 <eco-com-info :eco-com="{{ $economic_complement }}" :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}" :states="{{ $states }}"
                     :pension-entities="{{ $pension_entities }}" :degrees="{{ $degrees }}" :categories="{{ $categories }}" :affiliate="{{ $affiliate }}"
                     :cities="{{ $cities }}" inline-template>
     @include('eco_com.info')
                 </eco-com-info>
-                {{-- @endcan --}}
             </div>
             <div id="tab-eco-coms" class="tab-pane">
-                {{-- @can('update',$eco_com_process)
-                <ret-fun-info :eco_com_process="{{ $eco_com_process }}" :rf_city_start="{{$eco_com_process->city_start}}" :rf_city_end="{{$eco_com_process->city_end}}"
-                    :rf_procedure_modality=" {{$eco_com_process->procedure_modality}}" :states="{{ $states }}" inline-template>
-    @include('ret_fun.info', ['eco_com_process'=>$eco_com_process,'cities'=>$birth_cities])
-                </ret-fun-info>
-                @endcan --}}
+
             </div>
             <div id="tab-affiliate" class="tab-pane">
                 <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
@@ -144,7 +131,6 @@
             <div id="tab-qualification" class="tab-pane">
             <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}">
                 </eco-com-qualification>
-                {{-- @include('ret_fun.summary_qualification', ['eco_com_process'=>$eco_com_process,'affiliate'=>$affiliate]) --}}
             </div>
             <div id="tab-observations" class="tab-pane">
             <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-observations>

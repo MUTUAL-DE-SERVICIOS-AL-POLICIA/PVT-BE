@@ -36,7 +36,7 @@
                         <div class="form-group">
                             <label class="col-sm-4 control-label">Renta Invalidez</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" v-money name="aps_total_disability" v-model="aps_total_disability">
+                                <input type="text" class="form-control" v-money name="aps_disability" v-model="aps_disability">
                             </div>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                         <div class="form-group">
                             <label class="col-sm-4 control-label">Renta Invalidez</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" v-money name="aps_total_disability" v-model="aps_total_disability">
+                                <input type="text" class="form-control" v-money name="aps_disability" v-model="aps_disability">
                             </div>
                         </div>
                     </div>

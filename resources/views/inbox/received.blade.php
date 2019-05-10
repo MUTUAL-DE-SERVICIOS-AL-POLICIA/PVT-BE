@@ -1,5 +1,5 @@
-@extends('layouts.app') 
-@section('title', 'Mi bandeja') 
+@extends('layouts.app')
+@section('title', 'Mi bandeja')
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
@@ -21,10 +21,10 @@
                                 <ul class="folder-list m-b-md" style="padding: 0">
                                     <li>
                                         <a href="{{ url('inbox/received') }}" class="btn-outline" style="border-left:5px solid #59B75C; padding-left:10px; color: #3c3c3c; background:#F8F8F9;font-weight: bold;"> <i class="fa fa-envelope-o "></i> Recibidos
-                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">    
+                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                                                     <span class="label label-warning pull-right" v-if="totalDocs != null" key="value">
                                                         @{{totalDocs}}
-                                                    </span>    
+                                                    </span>
                                                     <span v-else class="label label-warning pull-right" key="icon" style="padding-left:15px">
                                                         <i  class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i>
                                                     </span>
@@ -33,10 +33,10 @@
                                     </li>
                                     <li>
                                         <a href="{{ url('inbox/edited') }}" class="btn-outline"> <i class="fa fa-check"></i> Revisados
-                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">    
+                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                                                     <span class="label label-default pull-right" v-if="documentsEditedTotal != null" key="value">
                                                         @{{documentsEditedTotal}}
-                                                    </span>    
+                                                    </span>
                                                     <span v-else class="label label-default pull-right" key="icon" style="padding-left:15px">
                                                         <i  class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i>
                                                     </span>
@@ -52,7 +52,7 @@
                 <div class="col-lg-9 animated fadeInRight my-inbox" :class="showLoading ? 'sk-loading' : ''">
                     <div class="mail-box-header">
                         <h2>
-                            <span>Recibidos (@{{totalDocs}})</span>
+                            <span>Recibidos (@{{ totalDocs != null ? totalDocs : 'Inválido' }})</span>
                         </h2>
                         <div class="mail-tools tooltip-demo m-t-md" style="margin-bottom:45px;">
                             <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">

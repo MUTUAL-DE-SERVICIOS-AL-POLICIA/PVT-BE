@@ -82,7 +82,7 @@ class AffiliateObserver
 
         if($affiliate->city_birth_id != $old->city_birth_id)
         {
-            $message = $message . ' fecha de nacimiento '.($old->city_birth->name??'Sin cuidad').' a '.($affiliate->city_birth->name??'Sin cuidad').', ';
+            $message = $message . ' fecha de nacimiento '.($old->city_birth->name??'Sin ciudad').' a '.($affiliate->city_birth->name??'Sin ciudad').', ';
 
         }
 

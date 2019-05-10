@@ -319,7 +319,7 @@ Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualificati
 Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterval.vue'));
 Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
 Vue.component('ret-fun-certification-button', require('./components/ret_fun/CertificationButton.vue'));
-Vue.component('ret-fun-chart', require('./components/ret_fun/Chart.vue'));
+// Vue.component('ret-fun-chart', require('./components/ret_fun/Chart.vue'));
 Vue.component('inbox-send-back-button-ret-fun', require('./components/inbox/SendBackButtonRetFun.vue'));
 Vue.component('inbox-send-back-button-quota-aid', require('./components/inbox/SendBackButtonQuotaAid.vue'));
 Vue.component('ret-fun-report-form', require('./components/ret_fun/ReportForm.vue'));
@@ -405,15 +405,7 @@ Vue.component("contribution-edit", require("./components/direct_contribution/Con
 Vue.component('aid-contribution-create', require('./components/contribution/CreateAidContribution.vue'));
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
 
-// Eco Com Process
-Vue.component('eco-com-process-form', require('./components/eco_com_process/Form.vue'));
-Vue.component('eco-com-process-step1-requirements', require('./components/eco_com_process/Step1Requirements.vue'));
-Vue.component('eco-com-process-step2-applicant', require('./components/eco_com_process/Step2Applicant.vue'));
-Vue.component('eco-com-process-info', require('./components/eco_com_process/Info.vue'));
-Vue.component('eco-com-process-eco-coms', require('./components/eco_com_process/EcoComs.vue'));
-
 // Eco Com
-Vue.component('eco-com-create-button', require('./components/eco_com/CreateButton.vue'));
 Vue.component('eco-com-form', require('./components/eco_com/Form.vue'));
 Vue.component('eco-com-step1-requirements', require('./components/eco_com/Step1Requirements.vue'));
 Vue.component('eco-com-step2-beneficiary', require('./components/eco_com/Step2Beneficiary.vue'));
@@ -432,7 +424,8 @@ Vue.component('eco-com-procedure', require('./components/eco_com/Procedure.vue')
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));
 Vue.component('certification-button', require('./components/utils/CertificationButton.vue'));
-
+// Edit user
+Vue.component('edit-user', require('./components/user/EditUser.vue'));
 
 /**
  * custom component
