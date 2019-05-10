@@ -1,5 +1,5 @@
-@extends('layouts.app') 
-@section('title', 'Mi bandeja') 
+@extends('layouts.app')
+@section('title', 'Mi bandeja')
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
@@ -31,10 +31,10 @@
                                 <ul class="folder-list m-b-md" style="padding: 0">
                                     <li>
                                         <a href="{{ url('inbox/received') }}" class="btn-outline"> <i class="fa fa-envelope-o "></i> Recibidos
-                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">    
+                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                                                 <span class="label label-default pull-right" v-if="documentsReceivedTotal != null" key="value">
                                                     @{{documentsReceivedTotal}}
-                                                </span>    
+                                                </span>
                                                 <span v-else class="label label-default pull-right" key="icon" style="padding-left:15px">
                                                     <i  class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i>
                                                 </span>
@@ -46,7 +46,7 @@
                                             <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                                                 <span class="label label-warning pull-right" v-if="totalDocs != null" key="valueEdited">
                                                     @{{totalDocs}}
-                                                </span>    
+                                                </span>
                                                 <span v-else class="label label-warning pull-right" key="iconEdited" style="padding-left:15px">
                                                     <i  class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i>
                                                 </span>
@@ -63,7 +63,7 @@
                     <div class="mail-box-header">
                         <h2>
                             <span>
-                            Revisados (@{{totalDocs}})
+                            Revisados (@{{ totalDocs != null ? totalDocs : 'Inválido' }})
                         </span>
                         </h2>
 
@@ -98,7 +98,7 @@
                                                             data-placement="top" title="Enviar los Trámites seleccionados"> DERIVAR <i class="fa fa-send"></i> <strong>(@{{docs}})</strong>  <i class="fa fa-arrow-right">  </i></button>
                                                     </span>
                                                 </div>
-                                            
+
                                         </div>
                                     </div>
                                     <div v-else key="refresh">

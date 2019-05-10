@@ -18,7 +18,7 @@ class RetirementFundObserver
         $retfun->message = 'El usuario '.Auth::user()->username. ' creo el Trámite '.$rf->code.' con la modalidad '.$rf->procedure_modality->name.' '.Carbon::now();
         $retfun->save();
 
-        // Log::info('se creo el tramite con el id '.$retfun->id);
+        // Log::info('se creo el trámite con el id '.$retfun->id);
     }
     private function defaultValuesWfRecord($wf_state_current_id = null , $record_type_id = null, $message = null)
     {

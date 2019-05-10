@@ -13,6 +13,8 @@ require("dotenv").config();
  */
 const app = process.env.MIX_APP;
 mix
+  .webpackConfig({ devtool: "inline-source-map" })
+  .sourceMaps()
   .js("resources/assets/js/app.js", "public/js")
   .js("resources/assets/js/datatable.js", "public/js")
   .sass("resources/assets/sass/wkhtml.scss", "public/css")

@@ -12,8 +12,8 @@ class ProcedureStateUpdateSeeder extends Seeder
     public function run()
     {
         $states = [
-            ['name' => 'Pagado', 'description' => 'tramite ya pagado.'],
-            ['name' => 'Cobrado', 'description' => 'tramite ya cobrado.'],
+            ['name' => 'Pagado', 'description' => 'Trámite ya pagado.'],
+            ['name' => 'Cobrado', 'description' => 'Trámite ya cobrado.'],
             ['name' => 'Anulado', 'description' => 'Trámite anulado.'],
             
         ];

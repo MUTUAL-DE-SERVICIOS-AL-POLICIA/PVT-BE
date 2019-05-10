@@ -10,7 +10,8 @@
                 <div class="panel-heading">
                     <h3 class="pull-left">Usuarios</h3>
                     <div class="text-right">
-                        <a href="{{url('user/create')}}" class="btn btn-primary"><i class="fa fa-plus" ></i></a>
+                        <a href="/usersLdapUpdate" title="Cambiar estados" class="btn btn-danger"><i class="fa fa-refresh" ></i></a>
+                        <a href="{{url('user/create')}}" title="Nuevo usuario" class="btn btn-info"><i class="fa fa-plus" ></i></a>
                     </div>
                 </div>
                 <div class="panel-body">
