@@ -17,8 +17,9 @@ class EcoComCertificationController extends Controller
         **!! TODO add support utf-8
         */
         Log::info("hola");
-        $bar_code = \DNS2D::getBarcodePNG(($eco_com->getBasicInfoCode()['code'] . "\n\n" . $eco_com->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
         // $bar_code = \DNS2D::getBarcodePNG(($eco_com->getBasicInfoCode()['code'] . "\n\n" . $eco_com->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        // $bar_code = \DNS2D::getBarcodePNG(($eco_com->getBasicInfoCode()['code'] . "\n\n" . $eco_com->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+        $bar_code = \DNS2D::getBarcodePNG(($eco_com->getBasicInfoCode()['code'] . "\n\n" . $eco_com->getBasicInfoCode()['hash']), "QRCODE");
         Log::info("/hola");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code])->render();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';

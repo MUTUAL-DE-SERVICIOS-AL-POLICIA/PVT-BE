@@ -190,7 +190,7 @@
             >
               <div v-if="showButton" key="showButton">
                 <a
-                  :href="`/affiliate/${this.affiliate.id}/eco_com_process/create/${this.ecoComProcedure.id}`"
+                  :href="`/affiliate/${this.affiliate.id}/eco_com/create/${this.ecoComProcedure.id}`"
                 >
                   <button class="btn btn-primary btn-lg btn-block">
                     <i class="fa fa-plus"></i>

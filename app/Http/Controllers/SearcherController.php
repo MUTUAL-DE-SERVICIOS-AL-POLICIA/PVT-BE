@@ -107,6 +107,7 @@ class Person{
      var $birth_date;
      var $due_date;
      var $is_duedate_undefined;
+     var $city_birth_id;
      public function parsePerson($obj){
          $this->id = $obj->id ?? '';
          $this->first_name = $obj->first_name ?? '';
@@ -125,6 +126,7 @@ class Person{
          $this->birth_date = $obj->birth_date ?? '';
          $this->due_date = $obj->due_date ?? '';
          $this->is_duedate_undefined = $obj->is_duedate_undefined ?? false;
+         $this->city_birth_id= $obj->city_birth_id;
      }
      function __toString() {
          return $this->last_name." ".$this->first_name;

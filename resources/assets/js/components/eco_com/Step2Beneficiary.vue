@@ -252,7 +252,7 @@
                   type="checkbox"
                   name="legal_guardian_is_duedate_undefined"
                   v-model="legalGuardian.is_duedate_undefined"
-                >
+                > Indefinido
                 <div
                   v-show="errors.has('legal_guardian_due_date') && !legalGuardian.is_duedate_undefined"
                 >
@@ -969,7 +969,7 @@
                   type="checkbox"
                   name="eco_com_beneficiary_is_duedate_undefined"
                   v-model="ecoComBeneficiary.is_duedate_undefined"
-                >
+                > Indefinido
                 <div
                   v-show="errors.has('eco_com_beneficiary_due_date') && !ecoComBeneficiary.is_duedate_undefined "
                 >

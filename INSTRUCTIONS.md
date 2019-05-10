@@ -1,7 +1,7 @@
 ### rename tables
 ```
-eco_com_submitted_documents -> eco_com_submitted_documents_1
-economic_complements -> economic_complements_1
+alter table eco_com_submitted_documents rename to 
+eco_com_submitted_documents_1; 
 ```
 ### drop constraint
 ```

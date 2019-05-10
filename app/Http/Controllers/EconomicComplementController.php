@@ -80,7 +80,7 @@ class EconomicComplementController extends Controller
             'wf_current_state_id',
             'eco_com_modality_id',
             'eco_com_procedure_id',
-            'workflow_id',
+            'workflow_id'
         )
             ->where('code', 'not like', '%A')
             ->orderByDesc(DB::raw("split_part(code, '/',3)::integer desc, split_part(code, '/',2), split_part(code, '/',1)::integer"));
@@ -143,7 +143,6 @@ class EconomicComplementController extends Controller
         $modalities = EcoComType::all();
         $pension_entities = PensionEntity::all();
         $data = [
-            // 'eco_com_process' => $eco_com_process,
             'affiliate' => $affiliate,
             'cities' => $cities,
             'eco_com_beneficiary' => $eco_com_beneficiary,
@@ -588,7 +587,7 @@ class EconomicComplementController extends Controller
          */
         $permissions = Util::getPermissions(
             ObservationType::class,
-            EconomicComplement::class,
+            EconomicComplement::class
         );
         $data = [
             'economic_complement' => $economic_complement,
@@ -1170,7 +1169,7 @@ class EconomicComplementController extends Controller
          */
 
         $permissions = Util::getPermissions(
-            EcoComProcedure::class,
+            EcoComProcedure::class
         );
         $data = [
             'complementary_factor' => new ComplementaryFactor(),

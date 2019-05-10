@@ -380,6 +380,7 @@ export default {
         .patch(`/eco_com_update_rents`, this.ecoCom)
         .then(response => {
           this.ecoCom = response.data;
+          this.$modal.hide('rents-modal');
         })
         .catch(error => {
           flashErrors(

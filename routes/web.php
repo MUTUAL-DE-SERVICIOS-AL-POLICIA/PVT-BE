@@ -655,14 +655,7 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::get('/treasury/select_report', 'TreasuryController@selectReport');
 		Route::get('/treasury/report', 'TreasuryController@report');
 
-		// Economic Complement Process
-		Route::get('/affiliate/{affiliate_id}/eco_com_process/create', 'EcoComProcessController@create');
-		Route::post('eco_com_process_store', 'EcoComProcessController@store')->name('eco_com_process_store');
-		Route::get('eco_com_process/{id}', 'EcoComProcessController@show')->name('eco_com_process_show');
-		Route::patch('eco_com_process_update_information', 'EcoComProcessController@updateInformation')->name('eco_com_process_update_information');
-		Route::patch('eco_com_process/{eco_com_process_id}/update_beneficiary', 'EcoComProcessController@updateBeneficiary')->name('eco_com_process_update_beneficiary');
 		// Economic Complement
-		Route::get('eco_com_process/{eco_com_process_id}/economic_complement/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 		Route::post('economic_complement_store', 'EconomicComplementController@store')->name('economic_complement_store');
 		Route::patch('economic_complement_update_information', 'EconomicComplementController@updateInformation');
 		Route::patch('/update_affiliate_police_eco_com', 'EconomicComplementController@updateAffiliatePoliceEcoCom');
@@ -679,9 +672,10 @@ foreach (array_keys($retirement_funds) as $value) {
 		Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
 		Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
 		Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
-
-		Route::get('/affiliate/{affiliate_id}/eco_com_process/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
-
+		Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
+		
+		// Eco com Beneficiary
+		Route::patch('/eco_com_beneficiary/{eco_com_beneficiary_id}', 'EcoComBeneficiaryController@update');
 
 		// eco com Certification
 		Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');

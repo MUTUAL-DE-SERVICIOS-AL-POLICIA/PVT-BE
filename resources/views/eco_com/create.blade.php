@@ -2,7 +2,7 @@
 @section('title', 'Afiliados') 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9" id="ret-fun-form-header">
+    <div class="col-lg-9" id="eco-com-form-header">
         {{ Breadcrumbs::render('create_eco_com', $affiliate) }}
     </div>
 </div>
@@ -20,8 +20,7 @@
                             @endforeach
                         </ol>
                     </div>
-                    @endif {!! Form::open(['route' => 'economic_complement_store', 'method' => 'POST', 'id'=>'eco-com-form']) !!} {{--
-                    <input type="hidden" name="eco_com_process_id" value="{{ $eco_com_process->id }}"> --}}
+                    @endif {!! Form::open(['route' => 'economic_complement_store', 'method' => 'POST', 'id'=>'eco-com-form']) !!}
                     <input type="hidden" name="eco_com_procedure_id" value="{{ $eco_com_procedure_id }}">
                     <input type="hidden" name="affiliate_id" value="{{ $affiliate->id }}">
                     <eco-com-form inline-template>

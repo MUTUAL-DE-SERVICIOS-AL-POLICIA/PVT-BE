@@ -11,6 +11,7 @@ use Muserpol\Models\ComplementaryFactor;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Helpers\Util;
 use Log;
+use Illuminate\Support\Facades\Crypt;
 
 class EconomicComplement extends Model
 {
@@ -72,9 +73,9 @@ class EconomicComplement extends Model
     }
     public function getBasicInfoCode()
     {
-        $code = $this->id . " " . ($this->affiliate->id ?? null) . "\n" . "Trámite Nro: " . $this->code . "\nModalidad: " . $this->eco_com_modality->name . "\Beneficiario: " . ($this->eco_com_beneficiary->fullName() ?? null);
-        $hash = crypt($code, 100);
-        return array('code' => $code, 'hash' => $hash);;
+        // $code = $this->id . " " . ($this->affiliate->id ?? null) . "\n" . "Trámite Nro: " . $this->code . "\nModalidad: " . $this->eco_com_modality->name . "\Beneficiario: " . ($this->eco_com_beneficiary->fullName() ?? null);
+    
+        return array('code' => $this->code, 'hash' => null);
     }
     /**
      *!! TODO

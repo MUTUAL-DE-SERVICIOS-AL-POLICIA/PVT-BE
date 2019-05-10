@@ -328,7 +328,7 @@ class AffiliateController extends Controller
          ** Permissions
          */
         $permissions = Util::getPermissions(
-            ObservationType::class,
+            ObservationType::class
         );
 
         $data = array(
@@ -370,7 +370,7 @@ class AffiliateController extends Controller
             //'records_message'=>$records_message
 
             'observation_types'  =>  $observation_types,
-            'permissions'  =>  $permissions,
+            'permissions'  =>  $permissions
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
