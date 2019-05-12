@@ -51,7 +51,7 @@
                     name="legal_guardian_identity_card"
                     v-model.trim="legalGuardian.identity_card"
                     class="form-control"
-                    v-validate.initial="'required'"
+                    v-validate="'required'"
                   >
                   <span class="input-group-btn">
                     <button
@@ -87,7 +87,7 @@
                   class="form-control"
                   name="legal_guardian_city_identity_card_id"
                   v-model.trim="legalGuardian.city_identity_card_id"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                   <option :value="null"></option>
                   <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
@@ -113,7 +113,7 @@
                   name="legal_guardian_first_name"
                   v-model.trim="legalGuardian.first_name"
                   class="form-control"
-                  v-validate.initial="'required|alpha_space_quote'"
+                  v-validate="'required|alpha_space_quote'"
                 >
                 <div v-show="errors.has('legal_guardian_first_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -131,7 +131,7 @@
                   name="legal_guardian_second_name"
                   v-model.trim="legalGuardian.second_name"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('legal_guardian_second_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -152,7 +152,7 @@
                   name="legal_guardian_last_name"
                   v-model.trim="legalGuardian.last_name"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('legal_guardian_last_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -173,7 +173,7 @@
                   name="legal_guardian_mothers_last_name"
                   v-model.trim="legalGuardian.mothers_last_name"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('legal_guardian_mothers_last_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -197,7 +197,7 @@
                   name="legal_guardian_surname_husband"
                   v-model.trim="legalGuardian.surname_husband"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('legal_guardian_surname_husband')">
                   <i class="fa fa-warning text-danger"></i>
@@ -214,7 +214,7 @@
                   class="form-control m-b"
                   name="legal_guardian_gender"
                   v-model.trim="legalGuardian.gender"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                   <option :value="null"></option>
                   <option value="M">Masculino</option>
@@ -362,7 +362,7 @@
                   name="legal_guardian_number_authority"
                   v-model.trim="legalGuardian.number_authority"
                   class="form-control"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                 <i
                   v-show="errors.has('legal_guardian_number_authority')"
@@ -387,7 +387,7 @@
                   name="legal_guardian_notary_of_public_faith"
                   v-model.trim="legalGuardian.notary_of_public_faith"
                   class="form-control"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                 <i
                   v-show="errors.has('legal_guardian_notary_of_public_faith')"
@@ -412,7 +412,7 @@
                   name="legal_guardian_notary"
                   v-model.trim="legalGuardian.notary"
                   class="form-control"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                 <i v-show="errors.has('legal_guardian_notary')" class="fa fa-warning text-danger"></i>
                 <span
@@ -435,7 +435,7 @@
                   name="legal_guardian_date_authority"
                   v-model.trim="legalGuardian.date_authority"
                   class="form-control"
-                  v-validate.initial="'required|max_current_date'"
+                  v-validate="'required|max_current_date'"
                 >
                 <i
                   v-show="errors.has('legal_guardian_date_authority')"
@@ -472,7 +472,7 @@
                       name="affiliate_identity_card"
                       v-model.trim="affiliate.identity_card"
                       class="form-control"
-                      v-validate.initial="'required'"
+                      v-validate="'required'"
                     >
                   </div>
                   <div v-show="errors.has('affiliate_identity_card')">
@@ -494,7 +494,7 @@
                   class="form-control"
                   name="affiliate_city_identity_card_id"
                   v-model.trim="affiliate.city_identity_card_id"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                   <option :value="null"></option>
                   <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
@@ -518,7 +518,7 @@
                   name="affiliate_first_name"
                   v-model.trim="affiliate.first_name"
                   class="form-control"
-                  v-validate.initial="'required|alpha_space_quote'"
+                  v-validate="'required|alpha_space_quote'"
                 >
                 <div v-show="errors.has('affiliate_first_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -536,7 +536,7 @@
                   name="affiliate_second_name"
                   v-model.trim="affiliate.second_name"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('affiliate_second_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -557,7 +557,7 @@
                   name="affiliate_last_name"
                   v-model.trim="affiliate.last_name"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('affiliate_last_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -575,7 +575,7 @@
                   name="affiliate_mothers_last_name"
                   v-model.trim="affiliate.mothers_last_name"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('affiliate_mothers_last_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -596,7 +596,7 @@
                   name="affiliate_surname_husband"
                   v-model.trim="affiliate.surname_husband"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('affiliate_surname_husband')">
                   <i class="fa fa-warning text-danger"></i>
@@ -613,7 +613,7 @@
                   class="form-control m-b"
                   name="affiliate_gender"
                   v-model.trim="affiliate.gender"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                   <option :value="null"></option>
                   <option value="M">Masculino</option>
@@ -661,7 +661,7 @@
             <div class="col-md-6">
               <div
                 class="form-group"
-                :class="{'has-error': errors.has('ecoComBeneficiary.identity_card') }"
+                :class="{'has-error': errors.has('eco_com_beneficiary_identity_card') }"
               >
                 <div class="col-md-4">
                   <label class="control-label">Cédula de Identidad</label>
@@ -673,12 +673,12 @@
                       name="eco_com_beneficiary_identity_card"
                       v-model.trim="ecoComBeneficiary.identity_card"
                       class="form-control"
-                      v-validate.initial="'required'"
+                      v-validate="'required'"
                     >
                     <span class="input-group-btn">
                       <button
                         class="btn"
-                        :class="errors.has('ecoComBeneficiary.identity_card') ? 'btn-danger' : 'btn-primary' "
+                        :class="errors.has('eco_com_beneficiary_identity_card') ? 'btn-danger' : 'btn-primary' "
                         type="button"
                         @click="searchApplicant"
                         role="button"
@@ -710,7 +710,7 @@
                   class="form-control"
                   name="eco_com_beneficiary_city_identity_card_id"
                   v-model.trim="ecoComBeneficiary.city_identity_card_id"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                   <option :value="null"></option>
                   <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
@@ -741,7 +741,7 @@
                   name="eco_com_beneficiary_first_name"
                   v-model.trim="ecoComBeneficiary.first_name"
                   class="form-control"
-                  v-validate.initial="'required|alpha_space_quote'"
+                  v-validate="'required|alpha_space_quote'"
                 >
                 <div v-show="errors.has('eco_com_beneficiary_first_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -762,7 +762,7 @@
                   name="eco_com_beneficiary_second_name"
                   v-model.trim="ecoComBeneficiary.second_name"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('eco_com_beneficiary_second_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -783,7 +783,7 @@
                   name="eco_com_beneficiary_last_name"
                   v-model.trim="ecoComBeneficiary.last_name"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('eco_com_beneficiary_last_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -804,7 +804,7 @@
                   name="eco_com_beneficiary_mothers_last_name"
                   v-model.trim="ecoComBeneficiary.mothers_last_name"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('eco_com_beneficiary_mothers_last_name')">
                   <i class="fa fa-warning text-danger"></i>
@@ -830,7 +830,7 @@
                   name="eco_com_beneficiary_surname_husband"
                   v-model.trim="ecoComBeneficiary.surname_husband"
                   class="form-control"
-                  v-validate.initial="'alpha_space_quote'"
+                  v-validate="'alpha_space_quote'"
                 >
                 <div v-show="errors.has('eco_com_beneficiary_surname_husband')">
                   <i class="fa fa-warning text-danger"></i>
@@ -849,7 +849,7 @@
                   class="form-control m-b"
                   name="eco_com_beneficiary_gender"
                   v-model.trim="ecoComBeneficiary.gender"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                   <option :value="null"></option>
                   <option value="M">Masculino</option>
@@ -902,7 +902,7 @@
                   class="form-control"
                   name="eco_com_beneficiary_city_birth_id"
                   v-model.trim="ecoComBeneficiary.city_birth_id"
-                  v-validate.initial="'required'"
+                  v-validate="'required'"
                 >
                   <option :value="null"></option>
                   <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
@@ -962,7 +962,7 @@
                   v-model.trim="ecoComBeneficiary.due_date"
                   class="form-control"
                   v-date
-                  v-validate="'date_format:dd/MM/yyyy|max_due_date'"
+                  v-validate="'required|date_format:dd/MM/yyyy|max_due_date'"
                 >
                 <br>
                 <input

@@ -29,17 +29,17 @@
                             {{--
                             <ret-fun-create-info></ret-fun-create-info> --}}
 
-                            <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
+                            <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep" key="uno">
                                 <eco-com-step1-requirements :last-eco-com="{{ $last_eco_com }}" :pension-entities="{{ $pension_entities }}" :modalities="{{ $modalities }}"
                                     :affiliate="{{ $affiliate }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}"
                                     :show-requirements-error="showRequirementsError">
                                 </eco-com-step1-requirements>
                             </tab-content>
-                            <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
+                            <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep" key="dos">
                                 <eco-com-step2-beneficiary :cities="{{ $cities }}">
                                 </eco-com-step2-beneficiary>
                             </tab-content>
-                            <tab-content title="Registro de rentas" ref="tres" icon="mdi mdi-currency-usd" :before-change="validateThirdStep">
+                            <tab-content title="Registro de rentas" ref="tres" icon="mdi mdi-currency-usd" :before-change="validateThirdStep" key="tres">
                                 <eco-com-step3-rents>
                                 </eco-com-step3-rents>
                             </tab-content>
