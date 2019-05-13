@@ -454,202 +454,332 @@
     <div class="ibox float-e-margins" v-if="modalityId != 1">
       <div class="ibox-content">
         <div class="row">
-        <div class="col-md-12">
-          <legend>Datos del Afiliado (Causahabiente)</legend>
-          <div class="row">
-            <div class="col-md-6">
+          <div class="col-md-12">
+            <legend>Datos del Afiliado (Causahabiente)</legend>
+            <div class="row">
+              <div class="col-md-6">
+                <div
+                  class="form-group"
+                  :class="{'has-error': errors.has('affiliate_identity_card') }"
+                >
+                  <div class="col-md-4">
+                    <label class="control-label">Cédula de Identidad</label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="input-group">
+                      <input
+                        type="text"
+                        name="affiliate_identity_card"
+                        v-model.trim="affiliate.identity_card"
+                        class="form-control"
+                        v-validate="'required'"
+                      >
+                    </div>
+                    <div v-show="errors.has('affiliate_identity_card')">
+                      <i class="fa fa-warning text-danger"></i>
+                      <span class="text-danger">{{ errors.first('affiliate_identity_card') }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div
-                class="form-group"
-                :class="{'has-error': errors.has('affiliate_identity_card') }"
+                class="col-md-6"
+                :class="{'has-error': errors.has('affiliate_city_identity_card_id') }"
               >
                 <div class="col-md-4">
-                  <label class="control-label">Cédula de Identidad</label>
+                  <label class="control-label">Ciudad de Expedición</label>
                 </div>
                 <div class="col-md-8">
-                  <div class="input-group">
-                    <input
-                      type="text"
-                      name="affiliate_identity_card"
-                      v-model.trim="affiliate.identity_card"
-                      class="form-control"
-                      v-validate="'required'"
-                    >
-                  </div>
-                  <div v-show="errors.has('affiliate_identity_card')">
+                  <select
+                    class="form-control"
+                    name="affiliate_city_identity_card_id"
+                    v-model.trim="affiliate.city_identity_card_id"
+                    v-validate="'required'"
+                  >
+                    <option :value="null"></option>
+                    <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
+                  </select>
+                  <div v-show="errors.has('affiliate_city_identity_card_id')">
                     <i class="fa fa-warning text-danger"></i>
-                    <span class="text-danger">{{ errors.first('affiliate_identity_card') }}</span>
+                    <span class="text-danger">{{ errors.first('affiliate_city_identity_card_id') }}</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div
-              class="col-md-6"
-              :class="{'has-error': errors.has('affiliate_city_identity_card_id') }"
-            >
-              <div class="col-md-4">
-                <label class="control-label">Ciudad de Expedición</label>
+            <br>
+            <div class="row">
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_first_name') }">
+                <div class="col-md-4">
+                  <label class="control-label">Primer Nombre</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="affiliate_first_name"
+                    v-model.trim="affiliate.first_name"
+                    class="form-control"
+                    v-validate="'required|alpha_space_quote'"
+                  >
+                  <div v-show="errors.has('affiliate_first_name')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_first_name') }}</span>
+                  </div>
+                </div>
               </div>
-              <div class="col-md-8">
-                <select
-                  class="form-control"
-                  name="affiliate_city_identity_card_id"
-                  v-model.trim="affiliate.city_identity_card_id"
-                  v-validate="'required'"
-                >
-                  <option :value="null"></option>
-                  <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
-                </select>
-                <div v-show="errors.has('affiliate_city_identity_card_id')">
-                  <i class="fa fa-warning text-danger"></i>
-                  <span class="text-danger">{{ errors.first('affiliate_city_identity_card_id') }}</span>
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_second_name')}">
+                <div class="col-md-4">
+                  <label class="control-label">Segundo Nombre</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="affiliate_second_name"
+                    v-model.trim="affiliate.second_name"
+                    class="form-control"
+                    v-validate="'alpha_space_quote'"
+                  >
+                  <div v-show="errors.has('affiliate_second_name')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_second_name') }}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <br>
-          <div class="row">
-            <div class="col-md-6" :class="{'has-error': errors.has('affiliate_first_name') }">
-              <div class="col-md-4">
-                <label class="control-label">Primer Nombre</label>
+            <br>
+            <div class="row">
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_last_name')}">
+                <div class="col-md-4">
+                  <label class="control-label">Apellido Paterno</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="affiliate_last_name"
+                    v-model.trim="affiliate.last_name"
+                    class="form-control"
+                    v-validate="'alpha_space_quote'"
+                  >
+                  <div v-show="errors.has('affiliate_last_name')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_last_name') }}</span>
+                  </div>
+                </div>
               </div>
-              <div class="col-md-8">
-                <input
-                  type="text"
-                  name="affiliate_first_name"
-                  v-model.trim="affiliate.first_name"
-                  class="form-control"
-                  v-validate="'required|alpha_space_quote'"
-                >
-                <div v-show="errors.has('affiliate_first_name')">
-                  <i class="fa fa-warning text-danger"></i>
-                  <span class="text-danger">{{ errors.first('affiliate_first_name') }}</span>
+              <div
+                class="col-md-6"
+                :class="{'has-error': errors.has('affiliate_mothers_last_name')}"
+              >
+                <div class="col-md-4">
+                  <label class="control-label">Apellido Materno</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="affiliate_mothers_last_name"
+                    v-model.trim="affiliate.mothers_last_name"
+                    class="form-control"
+                    v-validate="'alpha_space_quote'"
+                  >
+                  <div v-show="errors.has('affiliate_mothers_last_name')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_mothers_last_name') }}</span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-6" :class="{'has-error': errors.has('affiliate_second_name')}">
-              <div class="col-md-4">
-                <label class="control-label">Segundo Nombre</label>
+            <br>
+            <div class="row">
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_surname_husband')}">
+                <div class="col-md-4">
+                  <label class="control-label">Apellido de Casada</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="affiliate_surname_husband"
+                    v-model.trim="affiliate.surname_husband"
+                    class="form-control"
+                    v-validate="'alpha_space_quote'"
+                  >
+                  <div v-show="errors.has('affiliate_surname_husband')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_surname_husband') }}</span>
+                  </div>
+                </div>
               </div>
-              <div class="col-md-8">
-                <input
-                  type="text"
-                  name="affiliate_second_name"
-                  v-model.trim="affiliate.second_name"
-                  class="form-control"
-                  v-validate="'alpha_space_quote'"
-                >
-                <div v-show="errors.has('affiliate_second_name')">
-                  <i class="fa fa-warning text-danger"></i>
-                  <span class="text-danger">{{ errors.first('affiliate_second_name') }}</span>
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_gender') }">
+                <div class="col-md-4">
+                  <label class="control-label">Genero</label>
+                </div>
+                <div class="col-md-8">
+                  <select
+                    class="form-control m-b"
+                    name="affiliate_gender"
+                    v-model.trim="affiliate.gender"
+                    v-validate="'required'"
+                  >
+                    <option :value="null"></option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                  </select>
+                  <i v-show="errors.has('affiliate_gender')" class="fa fa-warning text-danger"></i>
+                  <span
+                    v-show="errors.has('affiliate_gender')"
+                    class="text-danger"
+                  >{{ errors.first('affiliate_gender') }}</span>
                 </div>
               </div>
             </div>
-          </div>
-          <br>
-          <div class="row">
-            <div class="col-md-6" :class="{'has-error': errors.has('affiliate_last_name')}">
-              <div class="col-md-4">
-                <label class="control-label">Apellido Paterno</label>
-              </div>
-              <div class="col-md-8">
-                <input
-                  type="text"
-                  name="affiliate_last_name"
-                  v-model.trim="affiliate.last_name"
-                  class="form-control"
-                  v-validate="'alpha_space_quote'"
-                >
-                <div v-show="errors.has('affiliate_last_name')">
-                  <i class="fa fa-warning text-danger"></i>
-                  <span class="text-danger">{{ errors.first('affiliate_last_name') }}</span>
+            <br>
+            <div class="row">
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_birth_date') }">
+                <div class="col-md-4">
+                  <label class="control-label">Fecha de Nacimiento</label>
                 </div>
-              </div>
-            </div>
-            <div class="col-md-6" :class="{'has-error': errors.has('affiliate_mothers_last_name')}">
-              <div class="col-md-4">
-                <label class="control-label">Apellido Materno</label>
-              </div>
-              <div class="col-md-8">
-                <input
-                  type="text"
-                  name="affiliate_mothers_last_name"
-                  v-model.trim="affiliate.mothers_last_name"
-                  class="form-control"
-                  v-validate="'alpha_space_quote'"
-                >
-                <div v-show="errors.has('affiliate_mothers_last_name')">
-                  <i class="fa fa-warning text-danger"></i>
-                  <span class="text-danger">{{ errors.first('affiliate_mothers_last_name') }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <br>
-          <div class="row">
-            <div class="col-md-6" :class="{'has-error': errors.has('affiliate_surname_husband')}">
-              <div class="col-md-4">
-                <label class="control-label">Apellido de Casada</label>
-              </div>
-              <div class="col-md-8">
-                <input
-                  type="text"
-                  name="affiliate_surname_husband"
-                  v-model.trim="affiliate.surname_husband"
-                  class="form-control"
-                  v-validate="'alpha_space_quote'"
-                >
-                <div v-show="errors.has('affiliate_surname_husband')">
-                  <i class="fa fa-warning text-danger"></i>
-                  <span class="text-danger">{{ errors.first('affiliate_surname_husband') }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6" :class="{'has-error': errors.has('affiliate_gender') }">
-              <div class="col-md-4">
-                <label class="control-label">Genero</label>
-              </div>
-              <div class="col-md-8">
-                <select
-                  class="form-control m-b"
-                  name="affiliate_gender"
-                  v-model.trim="affiliate.gender"
-                  v-validate="'required'"
-                >
-                  <option :value="null"></option>
-                  <option value="M">Masculino</option>
-                  <option value="F">Femenino</option>
-                </select>
-                <i v-show="errors.has('affiliate_gender')" class="fa fa-warning text-danger"></i>
-                <span
-                  v-show="errors.has('affiliate_gender')"
-                  class="text-danger"
-                >{{ errors.first('affiliate_gender') }}</span>
-              </div>
-            </div>
-          </div>
-          <br>
-          <div class="row">
-            <div class="col-md-6" :class="{'has-error': errors.has('affiliate_birth_date') }">
-              <div class="col-md-4">
-                <label class="control-label">Fecha de Nacimiento</label>
-              </div>
-              <div class="col-md-8">
-                <input
-                  type="text"
-                  v-date
-                  class="form-control"
-                  v-model.trim="affiliate.birth_date"
-                  name="affiliate_birth_date"
-                  v-validate="'date_format:dd/MM/yyyy|max_current_date'"
-                >
-                <div>
-                  <i v-show="errors.has('affiliate_birth_date')" class="fa fa-warning text-danger"></i>
-                  <span class="text-danger">{{ errors.first('affiliate_birth_date') }}</span>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    v-date
+                    class="form-control"
+                    v-model.trim="affiliate.birth_date"
+                    name="affiliate_birth_date"
+                    v-validate="'date_format:dd/MM/yyyy|max_current_date'"
+                  >
+                  <div>
+                    <i
+                      v-show="errors.has('affiliate_birth_date')"
+                      class="fa fa-warning text-danger"
+                    ></i>
+                    <span class="text-danger">{{ errors.first('affiliate_birth_date') }}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="ibox float-e-margins">
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-md-12">
+            <legend>Datos Policiales del Afiliado (Causahabiente)</legend>
+            <div class="row">
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_category_id') }">
+                <div class="col-md-4">
+                  <label class="control-label">Categoria</label>
+                </div>
+                <div class="col-md-8">
+                  <select
+                    class="form-control"
+                    name="affiliate_category_id"
+                    v-model.trim="affiliate.category_id"
+                    v-validate="'required'"
+                  >
+                    <option :value="null"></option>
+                    <option v-for="c in categories" :value="c.id" :key="c.id">{{ c.name }}</option>
+                  </select>
+                  <div v-show="errors.has('affiliate_category_id')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_category_id') }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_degree_id') }">
+                <div class="col-md-4">
+                  <label class="control-label">Grado</label>
+                </div>
+                <div class="col-md-8">
+                  <select
+                    class="form-control"
+                    name="affiliate_degree_id"
+                    v-model.trim="affiliate.degree_id"
+                    v-validate="'required'"
+                  >
+                    <option :value="null"></option>
+                    <option v-for="d in degrees" :value="d.id" :key="d.id">{{ d.name }}</option>
+                  </select>
+                  <div v-show="errors.has('affiliate_degree_id')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_degree_id') }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-lg-6">
+                <div
+                  class="col-lg-6"
+                  :class="{'has-error': errors.has('affiliate_service_years') }"
+                >
+                  <div class="col-md-6">
+                    <label class="control-label">Años de servicio</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input
+                      v-validate="'min_value:0|max_value:100'"
+                      type="number"
+                      v-model="affiliate.service_years"
+                      name="affiliate_service_years"
+                      class="form-control"
+                      @change="calculateCategory()"
+                      max="100"
+                      min="0"
+                    >
+                    <div v-show="errors.has('affiliate_service_years')">
+                      <i class="fa fa-warning text-danger"></i>
+                      <span class="text-danger">{{ errors.first('affiliate_service_years') }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-6"
+                  :class="{'has-error': errors.has('affiliate_service-months') }"
+                >
+                  <div class="col-md-6">
+                    <label class="control-label">Meses de servicio</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input
+                      v-validate="'min_value:0|max_value:12'"
+                      type="number"
+                      v-model="affiliate.service_months"
+                      name="affiliate_service_months"
+                      class="form-control"
+                      @change="calculateCategory()"
+                      max="12"
+                      min="0"
+                    >
+                    <div v-show="errors.has('affiliate_service_months')">
+                      <i class="fa fa-warning text-danger"></i>
+                      <span class="text-danger">{{ errors.first('affiliate_service_months') }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6" :class="{'has-error': errors.has('affiliate_date_derelict') }">
+                <div class="col-md-4">
+                  <label class="control-label">Fecha de Desvinculaci&oacute;n:</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="affiliate.date_derelict"
+                    v-month-year
+                    name="affiliate_date_derelict"
+                    v-validate="'date_format:MM/yyyy|max_current_date_month_year'"
+                  >
+                  <div v-show="errors.has('affiliate_date_derelict')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_date_derelict') }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+          </div>
         </div>
       </div>
     </div>
@@ -773,7 +903,10 @@
           </div>
           <br>
           <div class="row">
-            <div class="col-md-6" :class="{'has-error': errors.has('eco_com_beneficiary_last_name')}">
+            <div
+              class="col-md-6"
+              :class="{'has-error': errors.has('eco_com_beneficiary_last_name')}"
+            >
               <div class="col-md-4">
                 <label class="control-label">Apellido Paterno</label>
               </div>
@@ -868,7 +1001,10 @@
           </div>
           <br>
           <div class="row">
-            <div class="col-md-6" :class="{'has-error': errors.has('eco_com_beneficiary_birth_date') }">
+            <div
+              class="col-md-6"
+              :class="{'has-error': errors.has('eco_com_beneficiary_birth_date') }"
+            >
               <div class="col-md-4">
                 <label class="control-label">Fecha de Nacimiento</label>
               </div>
@@ -1138,7 +1274,7 @@
 <script>
 import { mapGetters, mapMutations, mapState } from "vuex";
 export default {
-  props: ["cities"],
+  props: ["cities", "degrees", "categories"],
   data() {
     return {
       beneficiary_city_id: "",
@@ -1197,6 +1333,22 @@ export default {
     }
   },
   methods: {
+    calculateCategory() {
+      let years = this.affiliate.service_years;
+      let months = this.affiliate.service_months;
+      if (years < 0 || months < 0 || years > 100 || months > 12) {
+        return "error";
+      }
+      if (months > 0) {
+        years++;
+      }
+      let category = this.categories.find(c => {
+        return c.from <= years && c.to >= years;
+      });
+      if (!!category) {
+        this.$store.commit("ecoComForm/setAffiliateCategoryId", category.id);
+      }
+    },
     toggleLegalGuardian() {
       if (this.has_legal_guardian == true) {
         this.$store.commit("ecoComForm/setLegalGuardian", {});

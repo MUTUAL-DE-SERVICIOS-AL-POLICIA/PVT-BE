@@ -142,6 +142,8 @@ class EconomicComplementController extends Controller
         }
         $modalities = EcoComType::all();
         $pension_entities = PensionEntity::all();
+        $degrees = Degree::all();
+        $categories = Category::all();
         $data = [
             'affiliate' => $affiliate,
             'cities' => $cities,
@@ -152,6 +154,8 @@ class EconomicComplementController extends Controller
             'eco_com_procedure_id' => $eco_com_procedure_id,
             'modalities' => $modalities,
             'pension_entities' => $pension_entities,
+            'degrees' => $degrees,
+            'categories' => $categories,
         ];
 
         return view('eco_com.create', $data);
@@ -165,7 +169,7 @@ class EconomicComplementController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        logger($request->all());
         try {
             $this->authorize('create', new EconomicComplement());
         } catch (AuthorizationException $exception) {
@@ -184,9 +188,27 @@ class EconomicComplementController extends Controller
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $request->eco_com_procedure_id)->first()->id]);
         }
         /**
-         ** update affiliate info
+         ** update affiliate police info
          */
+        $affiliate->category_id = $request->affiliate_category_id;
+        $service_year = $request->affiliate_service_years;
+        $service_month = $request->affiliate_service_months;
+        if ($service_year > 0 || $service_month > 0) {
+            if ($service_month > 0) {
+                $service_year++;
+            }
+            $category = Category::where('from', '<=', $service_year)
+                ->where('to', '>=', $service_year)
+                ->first();
+            if ($category) {
+                $affiliate->category_id = $category->id;
+                $affiliate->service_years = $request->affiliate_service_years;
+                $affiliate->service_months = $request->affiliate_service_months;
+            }
+        }
+        $affiliate->degree_id = $request->affiliate_degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
         $affiliate->save();
         /**
          ** create Economic complement 
