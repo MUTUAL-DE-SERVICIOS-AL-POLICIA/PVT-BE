@@ -28,7 +28,7 @@
                 class="form-control"
               >
                 <option :value="null"></option>
-                <option v-for="lt in legal_guardian_types" :key="lt.id" :value="lt.id">{{ lt.name }}</option>
+                <option v-for="lt in ecoComLegalGuardianTypes" :key="lt.id" :value="lt.id">{{ lt.name }}</option>
               </select>
             </div>
           </div>
@@ -1274,7 +1274,7 @@
 <script>
 import { mapGetters, mapMutations, mapState } from "vuex";
 export default {
-  props: ["cities", "degrees", "categories"],
+  props: ["cities", "degrees", "categories", 'ecoComLegalGuardianTypes'],
   data() {
     return {
       beneficiary_city_id: "",
@@ -1284,11 +1284,6 @@ export default {
       applicant_type: null,
       show_advisor_form: false,
       show_apoderado_form: false,
-      applicant_types: [
-        { name: "Beneficiario", id: 1 },
-        { name: "Tutor", id: 2 },
-        { name: "Apoderado", id: 3 }
-      ],
       civilStatus: [
         { id: "C", name: "Casado (a)" },
         { id: "S", name: "Soltero (a)" },
@@ -1298,16 +1293,6 @@ export default {
       beneficiary_city_address_id: null,
       has_legal_guardian: false,
       legal_guardian_type_id: null,
-      legal_guardian_types: [
-        {
-          id: 1,
-          name: "solicitante"
-        },
-        {
-          id: 2,
-          name: "solicitante y cobrador"
-        }
-      ]
     };
   },
   computed: {
@@ -1325,7 +1310,7 @@ export default {
     },
     getNameLegalGuardianType() {
       if (this.legal_guardian_type_id) {
-        return this.legal_guardian_types.find(
+        return this.ecoComLegalGuardianTypes.find(
           x => x.id == this.legal_guardian_type_id
         ).name;
       }

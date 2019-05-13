@@ -39,6 +39,7 @@ use Muserpol\Models\EconomicComplement\EcoComState;
 use Illuminate\Validation\ValidationException;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ComplementaryFactor;
+use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
 
 class EconomicComplementController extends Controller
 {
@@ -144,6 +145,7 @@ class EconomicComplementController extends Controller
         $pension_entities = PensionEntity::all();
         $degrees = Degree::all();
         $categories = Category::all();
+        $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $data = [
             'affiliate' => $affiliate,
             'cities' => $cities,
@@ -156,6 +158,7 @@ class EconomicComplementController extends Controller
             'pension_entities' => $pension_entities,
             'degrees' => $degrees,
             'categories' => $categories,
+            'eco_com_legal_guardian_types' => $eco_com_legal_guardian_types,
         ];
 
         return view('eco_com.create', $data);
@@ -305,6 +308,7 @@ class EconomicComplementController extends Controller
         if ($request->has_legal_guardian == 'on') {
             $legal_guardian = new EcoComLegalGuardian();
             $legal_guardian->economic_complement_id = $economic_complement->id;
+            $legal_guardian->eco_com_legal_guardian_type_id = $request->legal_guardian_type_id;
             $legal_guardian->city_identity_card_id = $request->legal_guardian_city_identity_card;
             $legal_guardian->identity_card = $request->legal_guardian_identity_card;
             $legal_guardian->last_name = $request->legal_guardian_last_name;
@@ -619,11 +623,17 @@ class EconomicComplementController extends Controller
          */
         $permissions = Util::getPermissions(
             ObservationType::class,
-            EconomicComplement::class
+            EconomicComplement::class,
+            EcoComLegalGuardian::class
         );
         $permissions = json_decode($permissions);
         $permissions[] = ['operation'=>'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];
         $permissions= json_encode($permissions);
+
+        /**
+         ** legal guardian types
+         */
+        $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -656,6 +666,8 @@ class EconomicComplementController extends Controller
             'observation_types' =>  $observation_types,
 
             'permissions' =>  $permissions,
+
+            'eco_com_legal_guardian_types' =>  $eco_com_legal_guardian_types,
         ];
         return view('eco_com.show', $data);
     }

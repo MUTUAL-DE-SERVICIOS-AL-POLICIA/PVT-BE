@@ -13,6 +13,7 @@ use Log;
 use Carbon\Carbon;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\ObservationType;
+use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
 
 class SearcherController
 {
@@ -25,6 +26,8 @@ class SearcherController
          new RetFunBeneficiary(),
          new RetFunLegalGuardian(),
          new RetFunAdvisor(),
+         new EcoComBeneficiary(),
+         new EcoComLegalGuardian(),
         ];      
      $this->select = $fields;
     }
@@ -35,6 +38,8 @@ class SearcherController
          new RetFunBeneficiary(),
          new RetFunLegalGuardian(),
          new RetFunAdvisor(),
+         new EcoComBeneficiary(),
+         new EcoComLegalGuardian(),
         ];      
         $this->select = "*";
     }
@@ -129,17 +134,17 @@ class Person{
          $this->mothers_last_name =$obj->mothers_last_name ?? '';
          $this->identity_card = $obj->identity_card ?? '';
          $this->kinship_id = $obj->kinship_id ?? null;
-         $this->phone_number = $this->parsePhone($obj->phone_number) ?? '';
-         $this->cell_phone_number = $this->parsePhone($obj->cell_phone_number) ?? '';
+         $this->phone_number = $obj ? $this->parsePhone($obj->phone_number) : '' ;
+         $this->cell_phone_number = $obj ? $this->parsePhone($obj->cell_phone_number) : '';
          $this->surname_husband = $obj->surname_husband ?? '';
-         $this->class = get_class($obj) ?? 'desconocido';
+         $this->class = $obj ? get_class($obj) : 'desconocido';
          $this->type = $this->getClassObject();
          $this->city_identity_card_id = $obj->city_identity_card_id ?? null;
          $this->gender = $obj->gender ?? '';                 
          $this->birth_date = $obj->birth_date ?? '';
          $this->due_date = $obj->due_date ?? '';
          $this->is_duedate_undefined = $obj->is_duedate_undefined ?? false;
-         $this->city_birth_id= $obj->city_birth_id;
+         $this->city_birth_id= $obj->city_birth_id ?? null;
          $this->civil_status= $obj->civil_status ?? null;
      }
      function __toString() {

@@ -81,6 +81,10 @@ class EconomicComplement extends Model
     {
         return $this->hasMany(EcoComSubmittedDocument::class);
     }
+    public function eco_com_legal_guardian()
+    {
+        return $this->hasOne(EcoComLegalGuardian::class);
+    }
     /**
      *!! TODO
      */
