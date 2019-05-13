@@ -661,6 +661,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('get_eco_com_procedures_active', 'EcoComProcedureController@getProcedureActives')->name('get_eco_com_procedures_active');
     Route::get('get_eco_com_reception_type', 'EconomicComplementController@getReceptionType');
     Route::get('get_eco_com_type_beneficiary', 'EconomicComplementController@getTypeBeneficiary');
+    Route::get('get_eco_com_rents_first_semester', 'EconomicComplementController@getRentsFirstSemester');
     Route::delete('eco_com/{eco_com_id}', 'EconomicComplementController@destroy');
     Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');

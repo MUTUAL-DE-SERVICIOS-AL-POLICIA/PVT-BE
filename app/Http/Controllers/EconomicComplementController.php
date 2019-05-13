@@ -279,7 +279,7 @@ class EconomicComplementController extends Controller
             // $record->save();
         }
         /**
-         ** verify observation
+         ** verify observation id = 6
          */
         $number_docs = ProcedureModality::find($request->modality_id)->procedure_requirements->pluck('number')->unique()->sort();
         if($number_docs->contains(0)){
@@ -347,6 +347,17 @@ class EconomicComplementController extends Controller
         }
         $eco_com_beneficiary->save();
 
+        /**
+         ** observacion mayor de 25 en orfandad
+         */
+        if($request->modality_id == 3 && $eco_com_beneficiary->birth_date) {
+            $beneficiary_years = intval(explode(' ',Util::calculateAge($eco_com_beneficiary->birth_date, null)[0]));
+            if($beneficiary_years > 25){
+                /**
+                 * !! TODO agregar una observacion o algo
+                 */
+            }
+        }
         /**
          ** Update or create address
          */
@@ -816,6 +827,17 @@ class EconomicComplementController extends Controller
                 break;
         }
         return null;
+    }
+    public function getRentsFirstSemester(Request $request)
+    {
+        if($request->last_eco_com_id){
+            $eco_com_procedure = EcoComProcedure::find($request->current_procedure_id);
+            $eco_com = EconomicComplement::find($request->last_eco_com_id);
+            if($eco_com->eco_com_procedure->semester == 'Primer' && $eco_com->eco_com_procedure->getYear() == $eco_com_procedure->getYear()){
+                return $eco_com;
+            }
+        }
+        return new EconomicComplement();
     }
     public function parsePhone($phones)
     {

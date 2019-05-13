@@ -183,7 +183,8 @@ export default {
     "showRequirementsError",
     "lastEcoCom",
     "pensionEntities",
-    "affiliate"
+    "affiliate",
+    "ecoComProcedureId"
   ],
   data() {
     return {
@@ -241,7 +242,10 @@ export default {
       this.$store.commit("ecoComForm/setPensionEntity", this.pension_entity_id);
     },
     setModality() {
-      this.$store.commit("ecoComForm/setModality", {id:this.modality_id, name:null});
+      this.$store.commit("ecoComForm/setModality", {
+        id: this.modality_id,
+        name: null
+      });
     },
     async setReceptionType() {
       let last_eco_com_id = !!this.lastEcoCom ? this.lastEcoCom.id : null;
@@ -281,7 +285,23 @@ export default {
         .catch(error => {
           console.log(error);
         });
-        await this.$validator.validateAll();
+      await this.$validator.validateAll();
+      await this.verifyFirstSemesterRents(last_eco_com_id);
+    },
+    async verifyFirstSemesterRents(last_eco_com_id) {
+      await axios
+        .get("/get_eco_com_rents_first_semester", {
+          params: {
+            last_eco_com_id,
+            current_procedure_id: this.ecoComProcedureId
+          }
+        })
+        .then(response => {
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     getRequirements() {
       if (!this.modality_id) {
