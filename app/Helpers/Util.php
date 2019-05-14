@@ -904,7 +904,16 @@ class Util
     }
     return $values;
   }
-
+  public static function parsePhone($phones)
+  {
+      $array_phone=[];
+      foreach (explode(',', $phones) as $phone) {
+        $json_phone = new \stdClass;
+        $json_phone->value = $phone;
+        array_push($array_phone, $json_phone);
+      }
+      return $array_phone;
+  }
   public static function compoundInterest($contributions, Affiliate $affiliate)
   {
     $total = 0;

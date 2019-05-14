@@ -133,6 +133,9 @@ const mutations = {
     // }else if (typeof object.phone_number == 'string') {
     //   state.legalGuardian.phone_number = object.phone_number.split(',').map(x=>{return{value:x}})
     // }
+  },
+  setAffiliateCategoryId(state, id){
+    state.affiliate.category_id = id
   }
 };
 const getters = {

@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <div class="col-lg-12">
-        <div class="ibox-title">
+        <div class="ibox-title" id="create-eco-com-ibox">
           <h3>Creando Complemento Economico</h3>
         </div>
         <div class="ibox-content">
@@ -151,6 +151,19 @@
     </transition>
     <transition name="custom-show-ecocom-transition" enter-active-class="animated fadeInRightBig">
       <div class v-if="affiliateFound">
+        <div class="col-lg-6" v-if="!verifyValidDueDate || verifyHasDisability">
+          <div class="alert alert-warning block">
+            Se encontraron algunas observaciones antes de crear el tramite:
+            <ul>
+              <li class="alert-link" v-if="! verifyValidDueDate">
+                La cedula de identidad esta caducada o no se registro una fecha de vencimiento de la cedula de identidad.
+              </li>
+              <li class="alert-link" v-if="verifyHasDisability">
+                El tramite anterior tuvo concurrencia.
+              </li>
+            </ul>
+          </div>
+        </div>
         <div class="col-lg-6">
           <div class="ibox float-e-margins">
             <div class="ibox-title">
@@ -224,6 +237,7 @@
 </template>
 
 <script>
+import { scroller } from "vue-scrollto/src/scrollTo";
 import ShowAffiliate from "../affiliate/ShowAffiliate.vue";
 export default {
   props: ["cities"],
@@ -308,6 +322,8 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+      const scrollToFooter = scroller();
+      scrollToFooter("#create-eco-com-ibox");
       this.searching = false;
     },
     async getEcoComProcedureCreateName() {
@@ -338,6 +354,22 @@ export default {
     }
   },
   computed: {
+    verifyValidDueDate(){
+      if(this.searchType == 1){
+        return this.affiliate.valid_due_date
+      }
+      if(this.searchType == 2){
+        return this.ecoComBeneficiary.valid_due_date
+      }
+    },
+    verifyHasDisability(){
+      let eco = this.ecoCom[this.ecoCom.length-1];
+      console.log(eco);
+      if(eco){
+        return eco.aps_disability > 0;
+      }
+      return false;
+    },
     getSearchTypeName() {
       let st = this.searchTypes.find(x => x.id == this.searchType);
       return st ? st.name : "";

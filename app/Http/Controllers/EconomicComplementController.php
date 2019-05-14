@@ -39,6 +39,7 @@ use Muserpol\Models\EconomicComplement\EcoComState;
 use Illuminate\Validation\ValidationException;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ComplementaryFactor;
+use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
 
 class EconomicComplementController extends Controller
 {
@@ -118,7 +119,7 @@ class EconomicComplementController extends Controller
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_id)->first()->id]);
         }
-        if ($affiliate->observations()->where('enabled',false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get()->count()){
+        if ($affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get()->count()) {
             return redirect()->action('AffiliateController@show', ['id' => $affiliate->id]);
         }
         $cities = City::all();
@@ -142,6 +143,9 @@ class EconomicComplementController extends Controller
         }
         $modalities = EcoComType::all();
         $pension_entities = PensionEntity::all();
+        $degrees = Degree::all();
+        $categories = Category::all();
+        $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $data = [
             'affiliate' => $affiliate,
             'cities' => $cities,
@@ -152,6 +156,9 @@ class EconomicComplementController extends Controller
             'eco_com_procedure_id' => $eco_com_procedure_id,
             'modalities' => $modalities,
             'pension_entities' => $pension_entities,
+            'degrees' => $degrees,
+            'categories' => $categories,
+            'eco_com_legal_guardian_types' => $eco_com_legal_guardian_types,
         ];
 
         return view('eco_com.create', $data);
@@ -165,7 +172,7 @@ class EconomicComplementController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        logger($request->all());
         try {
             $this->authorize('create', new EconomicComplement());
         } catch (AuthorizationException $exception) {
@@ -184,9 +191,27 @@ class EconomicComplementController extends Controller
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $request->eco_com_procedure_id)->first()->id]);
         }
         /**
-         ** update affiliate info
+         ** update affiliate police info
          */
+        $affiliate->category_id = $request->affiliate_category_id;
+        $service_year = $request->affiliate_service_years;
+        $service_month = $request->affiliate_service_months;
+        if ($service_year > 0 || $service_month > 0) {
+            if ($service_month > 0) {
+                $service_year++;
+            }
+            $category = Category::where('from', '<=', $service_year)
+                ->where('to', '>=', $service_year)
+                ->first();
+            if ($category) {
+                $affiliate->category_id = $category->id;
+                $affiliate->service_years = $request->affiliate_service_years;
+                $affiliate->service_months = $request->affiliate_service_months;
+            }
+        }
+        $affiliate->degree_id = $request->affiliate_degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
         $affiliate->save();
         /**
          ** create Economic complement 
@@ -210,8 +235,8 @@ class EconomicComplementController extends Controller
         // $economic_complement->complementary_factor_id = 2;
         $economic_complement->year = Carbon::parse($eco_com_procedure->year)->year . '-01-01';
         $economic_complement->semester = $eco_com_procedure->semester;
-        $economic_complement->has_legal_guardian = $request->has_legal_guardian == 'on'; // solicitante y cobrador
-        $economic_complement->has_legal_guardian_s = $request->legal_guardian_type_id == 1; // solo solicitante
+        // $economic_complement->has_legal_guardian = $request->has_legal_guardian == 'on'; // solicitante y cobrador
+        // $economic_complement->has_legal_guardian_s = $request->legal_guardian_type_id == 1; // solo solicitante
         $economic_complement->code = Util::getLastCodeEconomicComplement($request->eco_com_procedure_id);
         $economic_complement->reception_date = now();
         /**
@@ -257,19 +282,19 @@ class EconomicComplementController extends Controller
             // $record->save();
         }
         /**
-         ** verify observation
+         ** verify observation id = 6
          */
         $number_docs = ProcedureModality::find($request->modality_id)->procedure_requirements->pluck('number')->unique()->sort();
-        if($number_docs->contains(0)){
+        if ($number_docs->contains(0)) {
             $number_docs = $number_docs->slice(1);
         }
         $count = 0;
-        foreach($request->all() as $key => $value){
-            if (strpos($key, 'document') !== false  && $value == 'checked' ) {
+        foreach ($request->all() as $key => $value) {
+            if (strpos($key, 'document') !== false  && $value == 'checked') {
                 $count++;
             }
         }
-        if($count != $number_docs->count()){
+        if ($count != $number_docs->count()) {
             $economic_complement->observations()->save(ObservationType::find(6), [
                 'user_id' => auth()->id(),
                 'date' => now(),
@@ -283,6 +308,7 @@ class EconomicComplementController extends Controller
         if ($request->has_legal_guardian == 'on') {
             $legal_guardian = new EcoComLegalGuardian();
             $legal_guardian->economic_complement_id = $economic_complement->id;
+            $legal_guardian->eco_com_legal_guardian_type_id = $request->legal_guardian_type_id;
             $legal_guardian->city_identity_card_id = $request->legal_guardian_city_identity_card;
             $legal_guardian->identity_card = $request->legal_guardian_identity_card;
             $legal_guardian->last_name = $request->legal_guardian_last_name;
@@ -325,6 +351,17 @@ class EconomicComplementController extends Controller
         }
         $eco_com_beneficiary->save();
 
+        /**
+         ** observacion mayor de 25 en orfandad
+         */
+        if ($request->modality_id == 3 && $eco_com_beneficiary->birth_date) {
+            $beneficiary_years = intval(explode(' ', Util::calculateAge($eco_com_beneficiary->birth_date, null)[0]));
+            if ($beneficiary_years > 25) {
+                /**
+                 * !! TODO agregar una observacion o algo
+                 */
+            }
+        }
         /**
          ** Update or create address
          */
@@ -512,6 +549,9 @@ class EconomicComplementController extends Controller
             $eco_com_beneficiary->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
 
+        /**
+         ** for requirements
+         */
         $user = User::find(Auth::user()->id);
         $procedure_types = ProcedureType::where('module_id', 2)->get();
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
@@ -519,7 +559,7 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
-        $procedure_modalities = ProcedureModality::where('procedure_type_id', '<=', '8')->select('id', 'name', 'procedure_type_id')->get();
+        $procedure_modalities = ProcedureModality::where('procedure_type_id', '=', 8)->select('id', 'name', 'procedure_type_id')->get();
         // $observation_types = ObservationType::where('module_id',3)->get();
         $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
@@ -586,11 +626,17 @@ class EconomicComplementController extends Controller
          */
         $permissions = Util::getPermissions(
             ObservationType::class,
-            EconomicComplement::class
+            EconomicComplement::class,
+            EcoComLegalGuardian::class
         );
         $permissions = json_decode($permissions);
-        $permissions[] = ['operation'=>'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];
-        $permissions= json_encode($permissions);
+        $permissions[] = ['operation' => 'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];
+        $permissions = json_encode($permissions);
+
+        /**
+         ** legal guardian types
+         */
+        $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -623,6 +669,8 @@ class EconomicComplementController extends Controller
             'observation_types' =>  $observation_types,
 
             'permissions' =>  $permissions,
+
+            'eco_com_legal_guardian_types' =>  $eco_com_legal_guardian_types,
         ];
         return view('eco_com.show', $data);
     }
@@ -795,6 +843,17 @@ class EconomicComplementController extends Controller
         }
         return null;
     }
+    public function getRentsFirstSemester(Request $request)
+    {
+        if ($request->last_eco_com_id) {
+            $eco_com_procedure = EcoComProcedure::find($request->current_procedure_id);
+            $eco_com = EconomicComplement::find($request->last_eco_com_id);
+            if ($eco_com->eco_com_procedure->semester == 'Primer' && $eco_com->eco_com_procedure->getYear() == $eco_com_procedure->getYear()) {
+                return $eco_com;
+            }
+        }
+        return new EconomicComplement();
+    }
     public function parsePhone($phones)
     {
         $array_phone = [];
@@ -815,30 +874,23 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para editar el tramite'],
             ], 403);
         }
-        $documents = EcoComSubmittedDocument::select('procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id')
-            ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
-            ->orderby('procedure_requirements.number', 'ASC')
-            ->where('eco_com_submitted_documents.economic_complement_id', $id)
-            ->where('procedure_requirements.number', '>', '0')
-            ->pluck('eco_com_submitted_documents.procedure_requirement_id', 'procedure_requirements.number');
-        $num = $num2 = 0;
-
-        foreach ($request->requirements as $requirement) {
-            $from = $to = 0;
-            $comment = null;
-            for ($i = 0; $i < count($requirement); $i++) {
-                $from = $requirement[$i]['number'];
-                if ($requirement[$i]['status'] == true) {
-                    $to = $requirement[$i]['id'];
-                    $comment = $requirement[$i]['comment'];
-                    $doc = EcoComSubmittedDocument::where('economic_complement_id', $id)->where('procedure_requirement_id', $documents[$from])->first();
-                    $doc->procedure_requirement_id = $to;
-                    $doc->comment = $comment;
-                    $doc->save();
+        $num = $count = 0;
+        $eco_com = EconomicComplement::find($id);
+        // ? Algun dia
+        $submitted_documents = $eco_com->submitted_documents()->delete();
+        foreach ($request->requirements  as  $requirement) {
+            foreach ($requirement as $r) {
+                if ($r['status']) {
+                    $count++;
+                    $submit = new EcoComSubmittedDocument();
+                    $submit->economic_complement_id = $eco_com->id;
+                    $submit->procedure_requirement_id = $r['id'];
+                    $submit->reception_date = date('Y-m-d');
+                    $submit->comment = $r['comment'];
+                    $submit->save();
                 }
             }
         }
-
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
             ->where('procedure_requirements.number', '0')
@@ -870,7 +922,32 @@ class EconomicComplementController extends Controller
                 }
             }
         }
-
+        /**
+         ** verify observation id = 6
+         */
+        $number_docs = ProcedureModality::find(24)->procedure_requirements->pluck('number')->unique()->sort();
+        if ($number_docs->contains(0)) {
+            $number_docs = $number_docs->slice(1);
+        }
+        if ($count != $number_docs->count()) {
+            if(!$eco_com->observations->contains(6)){
+                $eco_com->observations()->save(ObservationType::find(6), [
+                    'user_id' => auth()->id(),
+                    'date' => now(),
+                    'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
+                    'enabled' => false
+                ]);
+            }
+        }else{
+            if($eco_com->observations->contains(6)){
+                $eco_com->observations()->updateExistingPivot(6, [
+                    'user_id' => auth()->id(),
+                    'date' => now(),
+                    'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
+                    'enabled' => true
+                ]);
+            }
+        }
         return $num;
     }
     public function getEcoCom($id)

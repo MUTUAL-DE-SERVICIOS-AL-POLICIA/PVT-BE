@@ -13,6 +13,7 @@ use Log;
 use Carbon\Carbon;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\ObservationType;
+use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
 
 class SearcherController
 {
@@ -25,6 +26,8 @@ class SearcherController
          new RetFunBeneficiary(),
          new RetFunLegalGuardian(),
          new RetFunAdvisor(),
+         new EcoComBeneficiary(),
+         new EcoComLegalGuardian(),
         ];      
      $this->select = $fields;
     }
@@ -35,6 +38,8 @@ class SearcherController
          new RetFunBeneficiary(),
          new RetFunLegalGuardian(),
          new RetFunAdvisor(),
+         new EcoComBeneficiary(),
+         new EcoComLegalGuardian(),
         ];      
         $this->select = "*";
     }
@@ -61,21 +66,33 @@ class SearcherController
         $ci = $request->ci;
         $eco_com = null;
         $affiliate = null;
+        $affiliate_observations = [];
         $eco_com_beneficiary = new EcoComBeneficiary();
         if($request->type == 1){
             $affiliate = Affiliate::where('identity_card',$ci)->first();
         }else{
-            $eco_com_beneficiary = EcoComBeneficiary::where('identity_card',$ci)->first();
+            $eco_com_beneficiary = Spouse::where('identity_card',$ci)->first();
+            if(!$eco_com_beneficiary){
+                $eco_com_beneficiary = EcoComBeneficiary::where('identity_card',$ci)->first();
+            }
             if(!$eco_com_beneficiary){
                 return array('affiliate' => $affiliate, 'eco_com_beneficiary' => $eco_com_beneficiary , 'eco_com'=>$eco_com );
             }
+            if($eco_com_beneficiary instanceof Spouse){
+                $affiliate = $eco_com_beneficiary->affiliate;
+            }else{
+                $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
+            }
             $eco_com_beneficiary->full_name = $eco_com_beneficiary->fullName();
             $eco_com_beneficiary->ci_with_ext = $eco_com_beneficiary->ciWithExt();
-            $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
+            $due_date = $eco_com_beneficiary->due_date ?? Carbon::now()->subDay();
+            $eco_com_beneficiary->valid_due_date = $eco_com_beneficiary->is_duedate_undefined ? true : $due_date > Carbon::now() ;
         }
         if($affiliate){
             $affiliate->full_name = $affiliate->fullName();
             $affiliate->ci_with_ext = $affiliate->ciWithExt();
+            $due_date = $affiliate->due_date ?? Carbon::now()->subDay();
+            $affiliate->valid_due_date = $affiliate->is_duedate_undefined ? true : $due_date > Carbon::now() ;
             $affiliate->degree_name = $affiliate->degree->name ?? '';
             $affiliate->category_percentage = $affiliate->category->name ?? '';
             $affiliate->pension_entity_name= $affiliate->pension_entity->name ?? '';
@@ -108,6 +125,7 @@ class Person{
      var $due_date;
      var $is_duedate_undefined;
      var $city_birth_id;
+     var $civil_status;
      public function parsePerson($obj){
          $this->id = $obj->id ?? '';
          $this->first_name = $obj->first_name ?? '';
@@ -116,17 +134,18 @@ class Person{
          $this->mothers_last_name =$obj->mothers_last_name ?? '';
          $this->identity_card = $obj->identity_card ?? '';
          $this->kinship_id = $obj->kinship_id ?? null;
-         $this->phone_number = $this->parsePhone($obj->phone_number) ?? '';
-         $this->cell_phone_number = $this->parsePhone($obj->cell_phone_number) ?? '';
+         $this->phone_number = $obj ? $this->parsePhone($obj->phone_number) : '' ;
+         $this->cell_phone_number = $obj ? $this->parsePhone($obj->cell_phone_number) : '';
          $this->surname_husband = $obj->surname_husband ?? '';
-         $this->class = get_class($obj) ?? 'desconocido';
+         $this->class = $obj ? get_class($obj) : 'desconocido';
          $this->type = $this->getClassObject();
          $this->city_identity_card_id = $obj->city_identity_card_id ?? null;
          $this->gender = $obj->gender ?? '';                 
          $this->birth_date = $obj->birth_date ?? '';
          $this->due_date = $obj->due_date ?? '';
          $this->is_duedate_undefined = $obj->is_duedate_undefined ?? false;
-         $this->city_birth_id= $obj->city_birth_id;
+         $this->city_birth_id= $obj->city_birth_id ?? null;
+         $this->civil_status= $obj->civil_status ?? null;
      }
      function __toString() {
          return $this->last_name." ".$this->first_name;
