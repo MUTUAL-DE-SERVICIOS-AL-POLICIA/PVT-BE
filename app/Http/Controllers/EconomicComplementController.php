@@ -235,8 +235,8 @@ class EconomicComplementController extends Controller
         // $economic_complement->complementary_factor_id = 2;
         $economic_complement->year = Carbon::parse($eco_com_procedure->year)->year . '-01-01';
         $economic_complement->semester = $eco_com_procedure->semester;
-        $economic_complement->has_legal_guardian = $request->has_legal_guardian == 'on'; // solicitante y cobrador
-        $economic_complement->has_legal_guardian_s = $request->legal_guardian_type_id == 1; // solo solicitante
+        // $economic_complement->has_legal_guardian = $request->has_legal_guardian == 'on'; // solicitante y cobrador
+        // $economic_complement->has_legal_guardian_s = $request->legal_guardian_type_id == 1; // solo solicitante
         $economic_complement->code = Util::getLastCodeEconomicComplement($request->eco_com_procedure_id);
         $economic_complement->reception_date = now();
         /**

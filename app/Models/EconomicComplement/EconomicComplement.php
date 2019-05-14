@@ -114,6 +114,14 @@ class EconomicComplement extends Model
     // }
     public function qualify()
     {
+        if ($this->eco_com_state->eco_com_state_type_id == 1 || $this->eco_com_state->eco_com_state_type_id == 6) {
+            $eco_com_state = $this->eco_com_state;
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['No se puede realizar la amortización porque el trámite ' . $this->code . ' se encuentra en estado de ' . $eco_com_state->name],
+            ], 422);
+        }
         // // requalify
         // if ($economic_complement->total > 0 && ( $economic_complement->eco_com_state_id == 1 || $economic_complement->eco_com_state_id == 2 || $economic_complement->eco_com_state_id == 3 || $economic_complement->eco_com_state_id == 17 || $economic_complement->eco_com_state_id == 18 || $economic_complement->eco_com_state_id == 15 ) ) {
         //     $economic_complement->recalification_date = Carbon::now();
