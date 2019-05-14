@@ -151,7 +151,7 @@
     </transition>
     <transition name="custom-show-ecocom-transition" enter-active-class="animated fadeInRightBig">
       <div class v-if="affiliateFound">
-        <div class="col-lg-6">
+        <div class="col-lg-6" v-if="!verifyValidDueDate || verifyHasDisability">
           <div class="alert alert-warning block">
             Se encontraron algunas observaciones antes de crear el tramite:
             <ul>

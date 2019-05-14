@@ -119,7 +119,7 @@ class EconomicComplementController extends Controller
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_id)->first()->id]);
         }
-        if ($affiliate->observations()->where('enabled',false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get()->count()){
+        if ($affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get()->count()) {
             return redirect()->action('AffiliateController@show', ['id' => $affiliate->id]);
         }
         $cities = City::all();
@@ -285,16 +285,16 @@ class EconomicComplementController extends Controller
          ** verify observation id = 6
          */
         $number_docs = ProcedureModality::find($request->modality_id)->procedure_requirements->pluck('number')->unique()->sort();
-        if($number_docs->contains(0)){
+        if ($number_docs->contains(0)) {
             $number_docs = $number_docs->slice(1);
         }
         $count = 0;
-        foreach($request->all() as $key => $value){
-            if (strpos($key, 'document') !== false  && $value == 'checked' ) {
+        foreach ($request->all() as $key => $value) {
+            if (strpos($key, 'document') !== false  && $value == 'checked') {
                 $count++;
             }
         }
-        if($count != $number_docs->count()){
+        if ($count != $number_docs->count()) {
             $economic_complement->observations()->save(ObservationType::find(6), [
                 'user_id' => auth()->id(),
                 'date' => now(),
@@ -354,9 +354,9 @@ class EconomicComplementController extends Controller
         /**
          ** observacion mayor de 25 en orfandad
          */
-        if($request->modality_id == 3 && $eco_com_beneficiary->birth_date) {
-            $beneficiary_years = intval(explode(' ',Util::calculateAge($eco_com_beneficiary->birth_date, null)[0]));
-            if($beneficiary_years > 25){
+        if ($request->modality_id == 3 && $eco_com_beneficiary->birth_date) {
+            $beneficiary_years = intval(explode(' ', Util::calculateAge($eco_com_beneficiary->birth_date, null)[0]));
+            if ($beneficiary_years > 25) {
                 /**
                  * !! TODO agregar una observacion o algo
                  */
@@ -549,6 +549,9 @@ class EconomicComplementController extends Controller
             $eco_com_beneficiary->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
 
+        /**
+         ** for requirements
+         */
         $user = User::find(Auth::user()->id);
         $procedure_types = ProcedureType::where('module_id', 2)->get();
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
@@ -556,7 +559,7 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
-        $procedure_modalities = ProcedureModality::where('procedure_type_id', '<=', '8')->select('id', 'name', 'procedure_type_id')->get();
+        $procedure_modalities = ProcedureModality::where('procedure_type_id', '=', 8)->select('id', 'name', 'procedure_type_id')->get();
         // $observation_types = ObservationType::where('module_id',3)->get();
         $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
@@ -627,8 +630,8 @@ class EconomicComplementController extends Controller
             EcoComLegalGuardian::class
         );
         $permissions = json_decode($permissions);
-        $permissions[] = ['operation'=>'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];
-        $permissions= json_encode($permissions);
+        $permissions[] = ['operation' => 'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];
+        $permissions = json_encode($permissions);
 
         /**
          ** legal guardian types
@@ -842,10 +845,10 @@ class EconomicComplementController extends Controller
     }
     public function getRentsFirstSemester(Request $request)
     {
-        if($request->last_eco_com_id){
+        if ($request->last_eco_com_id) {
             $eco_com_procedure = EcoComProcedure::find($request->current_procedure_id);
             $eco_com = EconomicComplement::find($request->last_eco_com_id);
-            if($eco_com->eco_com_procedure->semester == 'Primer' && $eco_com->eco_com_procedure->getYear() == $eco_com_procedure->getYear()){
+            if ($eco_com->eco_com_procedure->semester == 'Primer' && $eco_com->eco_com_procedure->getYear() == $eco_com_procedure->getYear()) {
                 return $eco_com;
             }
         }
@@ -871,30 +874,23 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para editar el tramite'],
             ], 403);
         }
-        $documents = EcoComSubmittedDocument::select('procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id')
-            ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
-            ->orderby('procedure_requirements.number', 'ASC')
-            ->where('eco_com_submitted_documents.economic_complement_id', $id)
-            ->where('procedure_requirements.number', '>', '0')
-            ->pluck('eco_com_submitted_documents.procedure_requirement_id', 'procedure_requirements.number');
-        $num = $num2 = 0;
-
-        foreach ($request->requirements as $requirement) {
-            $from = $to = 0;
-            $comment = null;
-            for ($i = 0; $i < count($requirement); $i++) {
-                $from = $requirement[$i]['number'];
-                if ($requirement[$i]['status'] == true) {
-                    $to = $requirement[$i]['id'];
-                    $comment = $requirement[$i]['comment'];
-                    $doc = EcoComSubmittedDocument::where('economic_complement_id', $id)->where('procedure_requirement_id', $documents[$from])->first();
-                    $doc->procedure_requirement_id = $to;
-                    $doc->comment = $comment;
-                    $doc->save();
+        $num = $count = 0;
+        $eco_com = EconomicComplement::find($id);
+        // ? Algun dia
+        $submitted_documents = $eco_com->submitted_documents()->delete();
+        foreach ($request->requirements  as  $requirement) {
+            foreach ($requirement as $r) {
+                if ($r['status']) {
+                    $count++;
+                    $submit = new EcoComSubmittedDocument();
+                    $submit->economic_complement_id = $eco_com->id;
+                    $submit->procedure_requirement_id = $r['id'];
+                    $submit->reception_date = date('Y-m-d');
+                    $submit->comment = $r['comment'];
+                    $submit->save();
                 }
             }
         }
-
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
             ->where('procedure_requirements.number', '0')
@@ -926,7 +922,32 @@ class EconomicComplementController extends Controller
                 }
             }
         }
-
+        /**
+         ** verify observation id = 6
+         */
+        $number_docs = ProcedureModality::find(24)->procedure_requirements->pluck('number')->unique()->sort();
+        if ($number_docs->contains(0)) {
+            $number_docs = $number_docs->slice(1);
+        }
+        if ($count != $number_docs->count()) {
+            if(!$eco_com->observations->contains(6)){
+                $eco_com->observations()->save(ObservationType::find(6), [
+                    'user_id' => auth()->id(),
+                    'date' => now(),
+                    'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
+                    'enabled' => false
+                ]);
+            }
+        }else{
+            if($eco_com->observations->contains(6)){
+                $eco_com->observations()->updateExistingPivot(6, [
+                    'user_id' => auth()->id(),
+                    'date' => now(),
+                    'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
+                    'enabled' => true
+                ]);
+            }
+        }
         return $num;
     }
     public function getEcoCom($id)
