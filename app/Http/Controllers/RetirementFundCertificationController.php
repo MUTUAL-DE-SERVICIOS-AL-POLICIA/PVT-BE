@@ -1635,7 +1635,7 @@ class RetirementFundCertificationController extends Controller
                         else
                             $payment .= ", ";
                     }
-                    $payment.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
+                    $payment.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->ciWithExt();                
                     $payment.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
                 }
                 //$payment .= " en conformidad al contrato de préstamo Nro. ".($discount->pivot->note_code??'sin nro')." y la nota ".($discount->pivot->code??'sin nota')." de fecha ". Util::getStringDate($discount->pivot->date) ." de la Dirección de Estrategias Sociales e Inversiones";
@@ -2069,7 +2069,7 @@ class RetirementFundCertificationController extends Controller
                         else
                             $body_legal_dictum .= ", ";
                     }
-                    $body_legal_dictum.= ($loan->affiliate_guarantor->gender=="M"?"Sr. ":"Sra. ").$loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
+                    $body_legal_dictum.= ($loan->affiliate_guarantor->gender=="M"?"Sr. ":"Sra. ").$loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->ciWithExt();                
                     $body_legal_dictum.= " en la suma de <b>".Util::formatMoneyWithLiteral($loan->amount)."</b>";
                 }                                
                 $body_legal_dictum.=".";
@@ -2157,7 +2157,7 @@ class RetirementFundCertificationController extends Controller
                         else
                             $body_resolution .= ", ";
                     }
-                    $body_resolution.= ($loan->affiliate_guarantor->gender=="M"?"Sr. ":"Sra. ").$loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card;                
+                    $body_resolution.= ($loan->affiliate_guarantor->gender=="M"?"Sr. ":"Sra. ").$loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->ciWithExt();                
                     $body_resolution.= " en la suma de <strong>&nbsp;".Util::formatMoneyWithLiteral($loan->amount)."</strong>";
                 }
                 //$body_resolution .= ".<br><br>";//;" en conformidad al contrato de préstamo Nro. ".($discount->pivot->code??'sin nro')." y la nota ".($discount->pivot->note_code??'sin nota')." de fecha ". Util::getStringDate($retirement_fund->reception_date) .".<br><br>";
