@@ -414,6 +414,7 @@ Vue.component('eco-com-info', require('./components/eco_com/Info.vue'));
 
 Vue.component('eco-com-search-affiliate', require('./components/eco_com/SearchAffiliate.vue'));
 Vue.component('eco-com-beneficiary', require('./components/eco_com/Beneficiary.vue'));
+Vue.component('eco-com-legal-guardian', require('./components/eco_com/LegalGuardian.vue'));
 Vue.component('eco-com-step1-requirements-edit', require('./components/eco_com/Step1RequirementsEdit.vue'));
 Vue.component('eco-com-observations', require('./components/eco_com/Observations.vue'));
 Vue.component('eco-com-qualification', require('./components/eco_com/Qualification.vue'));

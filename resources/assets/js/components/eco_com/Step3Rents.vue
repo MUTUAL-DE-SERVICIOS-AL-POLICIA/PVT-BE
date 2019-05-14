@@ -17,7 +17,7 @@
                     class="form-control"
                     v-money
                     name="aps_total_fsa"
-                    v-model="aps_total_fsa"
+                    v-model="ecoCom.aps_total_fsa"
                   >
                 </div>
               </div>
@@ -32,7 +32,7 @@
                     class="form-control"
                     v-money
                     name="aps_total_cc"
-                    v-model="aps_total_cc"
+                    v-model="ecoCom.aps_total_cc"
                   >
                 </div>
               </div>
@@ -47,7 +47,7 @@
                     class="form-control"
                     v-money
                     name="aps_total_fs"
-                    v-model="aps_total_fs"
+                    v-model="ecoCom.aps_total_fs"
                   >
                 </div>
               </div>
@@ -62,7 +62,7 @@
                     class="form-control"
                     v-money
                     name="aps_disability"
-                    v-model="aps_disability"
+                    v-model="ecoCom.aps_disability"
                   >
                 </div>
               </div>
@@ -92,7 +92,7 @@
                     class="form-control"
                     v-money
                     name="sub_total_rent"
-                    v-model="sub_total_rent"
+                    v-model="ecoCom.sub_total_rent"
                   >
                 </div>
               </div>
@@ -107,7 +107,7 @@
                     class="form-control"
                     v-money
                     name="reimbursement"
-                    v-model="reimbursement"
+                    v-model="ecoCom.reimbursement"
                   >
                 </div>
               </div>
@@ -122,7 +122,7 @@
                     class="form-control"
                     v-money
                     name="dignity_pension"
-                    v-model="dignity_pension"
+                    v-model="ecoCom.dignity_pension"
                   >
                 </div>
               </div>
@@ -137,7 +137,7 @@
                     class="form-control"
                     v-money
                     name="aps_disability"
-                    v-model="aps_disability"
+                    v-model="ecoCom.aps_disability"
                   >
                 </div>
               </div>
@@ -173,19 +173,12 @@ import {
 export default {
   data() {
     return {
-      aps_total_fsa: !!this.ecoCom ? this.ecoCom.aps_total_fsa : 0,
-      aps_total_cc: !!this.ecoCom ? this.ecoCom.aps_total_cc : 0,
-      aps_total_fs: !!this.ecoCom ? this.ecoCom.aps_total_fs : 0,
-
-      aps_disability: !!this.ecoCom
-        ? this.ecoCom.aps_disability
-        : 0,
-      sub_total_rent: !!this.ecoCom ? this.ecoCom.sub_total_rent : 0,
-      reimbursement: !!this.ecoCom ? this.ecoCom.reimbursement : 0,
-      dignity_pension: !!this.ecoCom ? this.ecoCom.dignity_pension : 0
     };
   },
   computed: {
+    ecoCom() {
+      return this.$store.state.ecoComForm.ecoCom;
+    },
     pensionEntityId() {
       return this.$store.state.ecoComForm.pensionEntityId;
     },
@@ -197,18 +190,18 @@ export default {
     },
     totalSumFractions() {
       return (
-        parseFloat(parseMoney(this.aps_total_fsa)) +
-        parseFloat(parseMoney(this.aps_total_cc)) +
-        parseFloat(parseMoney(this.aps_total_fs)) +
-        parseFloat(parseMoney(this.aps_disability))
+        parseFloat(parseMoney(this.ecoCom.aps_total_fsa)) +
+        parseFloat(parseMoney(this.ecoCom.aps_total_cc)) +
+        parseFloat(parseMoney(this.ecoCom.aps_total_fs)) +
+        parseFloat(parseMoney(this.ecoCom.aps_disability))
       );
     },
     totalSumSenasir() {
       return (
-        parseFloat(parseMoney(this.sub_total_rent)) -
-        parseFloat(parseMoney(this.reimbursement)) +
-        parseFloat(parseMoney(this.dignity_pension)) +
-        parseFloat(parseMoney(this.aps_disability))
+        parseFloat(parseMoney(this.ecoCom.sub_total_rent)) -
+        parseFloat(parseMoney(this.ecoCom.reimbursement)) +
+        parseFloat(parseMoney(this.ecoCom.dignity_pension)) +
+        parseFloat(parseMoney(this.ecoCom.aps_disability))
       );
     }
   }

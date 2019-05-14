@@ -78,7 +78,8 @@
             <ul class="list-group elements-list">
                 <li class="list-group-item active" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-users"></i> Apoderado</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
@@ -114,10 +115,16 @@
                     $pension_entities->pluck('name', 'id')])
                 </affiliate-police>
             </div>
-            <div id="tab-beneficiaries" class="tab-pane">
+            <div id="tab-eco-com-beneficiary" class="tab-pane">
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary) --}}
     @include('eco_com.beneficiary', ['eco_com_beneficiary'=>$eco_com_beneficiary,
                 'cities'=>$cities]) {{-- @endcan --}}
+            </div>
+            <div id="tab-eco-com-legal-guardian" class="tab-pane">
+                <eco-com-legal-guardian :eco-com="{{ $economic_complement }}" :eco-com-legal-guardian-types="{{ $eco_com_legal_guardian_types }}" :cities="{{ $cities }}" :permissions="{{ $permissions }}">
+                </eco-com-legal-guardian>
+                {{-- @include('eco_com.beneficiary', ['eco_com_beneficiary'=>$eco_com_beneficiary,
+                'cities'=>$cities]) --}}
             </div>
             <div id="tab-summited-document" class="tab-pane">
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}

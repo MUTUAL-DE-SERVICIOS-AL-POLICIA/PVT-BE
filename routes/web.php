@@ -661,20 +661,25 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('get_eco_com_procedures_active', 'EcoComProcedureController@getProcedureActives')->name('get_eco_com_procedures_active');
     Route::get('get_eco_com_reception_type', 'EconomicComplementController@getReceptionType');
     Route::get('get_eco_com_type_beneficiary', 'EconomicComplementController@getTypeBeneficiary');
+    Route::get('get_eco_com_rents_first_semester', 'EconomicComplementController@getRentsFirstSemester');
     Route::delete('eco_com/{eco_com_id}', 'EconomicComplementController@destroy');
     Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
-
+    
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
-
+    
     // Eco com Beneficiary
-		Route::patch('/eco_com_beneficiary/{eco_com_beneficiary_id}', 'EcoComBeneficiaryController@update');
+    Route::patch('/eco_com_beneficiary/{eco_com_beneficiary_id}', 'EcoComBeneficiaryController@update');
+
+    // Eco com legal guardian
+    Route::get('get_eco_com_legal_guardian/{eco_com_id}', 'EcoComLegalGuardianController@getEcoComLegalGuardian');
+    Route::patch('/eco_com_legal_guardian', 'EcoComLegalGuardianController@update');
     // eco com Certification
     Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');
     Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');
-
-
+    
+    
     // eco com qualification parameters
     Route::get('eco_com_qualification_parameters', 'EconomicComplementController@qualificationParameters')->name('eco_com_qualification_parameters');
 

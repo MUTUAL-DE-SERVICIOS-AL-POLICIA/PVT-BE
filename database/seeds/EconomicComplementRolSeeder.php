@@ -3,6 +3,8 @@
 use Illuminate\Database\Seeder;
 use Muserpol\Operation;
 use Muserpol\Models\DiscountType;
+use Muserpol\Models\Workflow\WorkflowSequence;
+use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
 
 class EconomicComplementRolSeeder extends Seeder
 {
@@ -43,6 +45,25 @@ class EconomicComplementRolSeeder extends Seeder
         ];
         foreach ($statuses as $status) {
             DiscountType::create($status);
+        }
+        $statuses = [
+            ['workflow_id' => 1, 'wf_state_current_id' => 1, 'wf_state_next_id' => 8, 'action' => 'Aprobar'],
+            ['workflow_id' => 1, 'wf_state_current_id' => 3, 'wf_state_next_id' => 8, 'action' => 'Aprobar'],
+            ['workflow_id' => 2, 'wf_state_current_id' => 1, 'wf_state_next_id' => 8, 'action' => 'Aprobar'],
+            ['workflow_id' => 2, 'wf_state_current_id' => 3, 'wf_state_next_id' => 8, 'action' => 'Aprobar'],
+            ['workflow_id' => 3, 'wf_state_current_id' => 1, 'wf_state_next_id' => 8, 'action' => 'Aprobar'],
+            ['workflow_id' => 3, 'wf_state_current_id' => 3, 'wf_state_next_id' => 8, 'action' => 'Aprobar'],
+        ];
+        foreach ($statuses as $status) {
+            WorkflowSequence::create($status);
+        }
+        $statuses = [
+            ['name' => 'Solicitante'],
+            ['name' => 'Cobrador'],
+            ['name' => 'Solicitante y Cobrador'],
+        ];
+        foreach ($statuses as $status) {
+            EcoComLegalGuardianType::create($status);
         }
     }
 }
