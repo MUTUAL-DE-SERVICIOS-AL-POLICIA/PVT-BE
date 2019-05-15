@@ -436,8 +436,13 @@ class InboxController extends Controller
             ->wherehas('procedure_modality', function ($query) use ($procedure_type) {
               $query->where('procedure_type_id', $procedure_type->id);
             })
-            ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
             ->get();
+          foreach ($procedures as $procedure) {
+            $correlative = explode('/', $procedure->getCorrelative(40)->code);
+            $procedure->correlative_code = intval($correlative[0]);
+            $procedure->correlative_year = intval($correlative[1]);
+          }
+          $procedures = $procedures->sortBy('correlative_code')->sortBy('correlative_year');
           break;
         default:
           return 0;
