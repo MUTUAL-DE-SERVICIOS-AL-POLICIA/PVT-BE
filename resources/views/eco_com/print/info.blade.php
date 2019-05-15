@@ -24,7 +24,7 @@
                 {{ $eco_com->reception_type }}
             </td>
             <td class="text-center uppercase font-bold px-5 py-3">
-                {{ $eco_com->eco_com_modality->eco_com_type->name }}
+                {{ $eco_com->eco_com_modality->procedure_modality->name }}
             </td>
             <td class="text-center uppercase font-bold px-5 py-3">
                 {{ $eco_com->city->name }}

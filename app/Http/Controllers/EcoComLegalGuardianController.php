@@ -52,8 +52,14 @@ class EcoComLegalGuardianController extends Controller
                 'errors' => $exception->errors(),
             ], 422);
         }
-        $legal_guardian = EcoComLegalGuardian::find($request->id);
-        // $legal_guardian->legal_guardian_type_id = $request->type_id;
+        $eco_com = EconomicComplement::find($request->eco_com_id);
+        $legal_guardian = $eco_com->eco_com_legal_guardian;
+
+        if(!$legal_guardian){
+            $legal_guardian = new EcoComLegalGuardian();
+            $legal_guardian->economic_complement_id = $request->eco_com_id;
+        }
+        $legal_guardian->eco_com_legal_guardian_type_id = $request->eco_com_legal_guardian_type_id;
         $legal_guardian->city_identity_card_id = $request->city_identity_card_id;
         $legal_guardian->identity_card = $request->identity_card;
         $legal_guardian->last_name = $request->last_name;

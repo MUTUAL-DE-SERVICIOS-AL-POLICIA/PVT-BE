@@ -40,7 +40,7 @@ class DocumentController extends Controller
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
-                        eco_com_types.name as modality,
+                        procedure_modalities.name as modality,
                         concat('/eco_com/', economic_complements.id) as path
                         "
           )
@@ -49,7 +49,7 @@ class DocumentController extends Controller
           ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
           ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
           ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
-          ->leftJoin('eco_com_types', 'eco_com_modalities.eco_com_type_id', '=', 'eco_com_types.id')
+          ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
           ->where('wf_states.role_id', '=', $rol_id)
           ->where('economic_complements.inbox_state', '=', false)
           ->get();
@@ -241,7 +241,7 @@ class DocumentController extends Controller
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
-                        eco_com_types.name as modality,
+                        procedure_modalities.name as modality,
                         concat('/eco_com/', economic_complements.id) as path,
                         false as status
                         "
@@ -251,7 +251,7 @@ class DocumentController extends Controller
           ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
           ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
           ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
-          ->leftJoin('eco_com_types', 'eco_com_modalities.eco_com_type_id', '=', 'eco_com_types.id')
+          ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
           ->where('wf_states.role_id', '=', $rol_id)
           ->where('economic_complements.inbox_state', '=', true)
           ->where('economic_complements.user_id', '=', $user_id)

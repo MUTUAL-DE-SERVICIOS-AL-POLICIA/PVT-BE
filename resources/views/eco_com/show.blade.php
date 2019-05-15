@@ -79,7 +79,7 @@
                 <li class="list-group-item active" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-users"></i> Apoderado</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>

@@ -17,8 +17,6 @@ export default {
       aditionalRequirementsSelected: [],
       modality: null,
       show_spinner: false,
-      modality_id: 3,
-      actual_target: 1,
       city_end_id: this.user.city_id,
       procedure_type_id: 2,
       my_index: 1,
@@ -30,19 +28,10 @@ export default {
   created() {
   },
   mounted() {
-    this.onChooseProcedureType();
-    this.modality = this.ecoCom.eco_com_modality_id;
+    this.modality = this.ecoCom.eco_com_modality.procedure_modality_id;
     this.getRequirements();
   },
   methods: {
-    onChooseProcedureType() {
-      this.modalitiesFilter = this.procedureModalities.filter(m => {
-        return m.procedure_type_id == this.procedure_type_id;
-      });
-      this.modality = null;
-    },
-    onChooseModality(event) {
-    },
     toggle_editing: function() {
       this.editing = !this.editing;
       setTimeout(() => {

@@ -23,7 +23,6 @@ use Muserpol\Models\Category;
 use Log;
 use Muserpol\Models\AffiliateState;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
-use Muserpol\Models\EconomicComplement\EcoComType;
 use Carbon\Carbon;
 use DB;
 use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
@@ -40,6 +39,7 @@ use Illuminate\Validation\ValidationException;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ComplementaryFactor;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
+use Muserpol\Helpers\ID;
 
 class EconomicComplementController extends Controller
 {
@@ -137,11 +137,11 @@ class EconomicComplementController extends Controller
         $user = Auth::user();
         $last_eco_com = $affiliate->economic_complements()->orderByDesc('id')->get()->first();
         if ($last_eco_com) {
-            $last_eco_com->procedure_modality_id = $last_eco_com->eco_com_modality->eco_com_type_id;
+            $last_eco_com->procedure_modality_id = $last_eco_com->eco_com_modality->procedure_modality_id;
         } else {
             $last_eco_com = new EconomicComplement();
         }
-        $modalities = EcoComType::all();
+        $modalities = ProcedureModality::where('procedure_type_id',8)->get();
         $pension_entities = PensionEntity::all();
         $degrees = Degree::all();
         $categories = Category::all();
@@ -193,7 +193,7 @@ class EconomicComplementController extends Controller
         /**
          ** update affiliate police info
          */
-        $affiliate->category_id = $request->affiliate_category_id;
+        // $affiliate->category_id = $request->affiliate_category_id;
         $service_year = $request->affiliate_service_years;
         $service_month = $request->affiliate_service_months;
         if ($service_year > 0 || $service_month > 0) {
@@ -219,7 +219,7 @@ class EconomicComplementController extends Controller
         $economic_complement = new EconomicComplement();
         $economic_complement->user_id = Auth::user()->id;
         $economic_complement->affiliate_id = $affiliate->id;
-        $economic_complement->eco_com_modality_id = $request->modality_id;
+        $economic_complement->eco_com_modality_id = ProcedureModality::find($request->modality_id)->eco_com_modalities()->where('name', 'like', '%normal%')->first()->id;
         $economic_complement->eco_com_state_id = 16;
         $economic_complement->eco_com_procedure_id = $request->eco_com_procedure_id;
         $economic_complement->workflow_id = 1;
@@ -354,7 +354,7 @@ class EconomicComplementController extends Controller
         /**
          ** observacion mayor de 25 en orfandad
          */
-        if ($request->modality_id == 3 && $eco_com_beneficiary->birth_date) {
+        if ($request->modality_id == ID::ecoCom()->orphanhood && $eco_com_beneficiary->birth_date) {
             $beneficiary_years = intval(explode(' ', Util::calculateAge($eco_com_beneficiary->birth_date, null)[0]));
             if ($beneficiary_years > 25) {
                 /**
@@ -374,14 +374,14 @@ class EconomicComplementController extends Controller
                 $address->street = $request->beneficiary_street;
                 $address->number_address = $request->beneficiary_number_address;
                 $address->save();
-                if ($economic_complement->procedure_modality_id == 24) {
+                if ($economic_complement->procedure_modality_id == ID::ecoCom()->old_age) {
                     $update_affiliate = Affiliate::find($economic_complement->affiliate_id);
                     if ($update_affiliate->address->contains($address->id)) { } else {
                         $update_affiliate->address()->save($address);
                     }
                 }
             } else {
-                if ($economic_complement->procedure_modality_id == 24) {
+                if ($economic_complement->procedure_modality_id == ID::ecoCom()->old_age) {
                     $update_affiliate = Affiliate::find($economic_complement->affiliate_id);
                     $update_affiliate->address()->detach($address->id);
                 }
@@ -397,7 +397,7 @@ class EconomicComplementController extends Controller
                 $address->number_address = $request->beneficiary_number_address;
                 $address->save();
                 $eco_com_beneficiary->address()->save($address);
-                if ($economic_complement->procedure_modality_id == 24) {
+                if ($economic_complement->procedure_modality_id == ID::ecoCom()->old_age) {
                     $update_affiliate = Affiliate::find($economic_complement->affiliate_id);
                     $update_affiliate->address()->save($address);
                 }
@@ -410,7 +410,7 @@ class EconomicComplementController extends Controller
          */
         switch ($request->modality_id) {
                 // vejez update affiliate
-            case 1:
+            case ID::ecoCom()->old_age:
                 $affiliate->city_identity_card_id = $request->eco_com_beneficiary_city_identity_card_id;
                 $affiliate->identity_card = $request->eco_com_beneficiary_identity_card;
                 $affiliate->last_name = $request->eco_com_beneficiary_last_name;
@@ -433,7 +433,7 @@ class EconomicComplementController extends Controller
                 $affiliate->save();
                 break;
                 // viudedad update or create spouse
-            case 2:
+            case ID::ecoCom()->widowhood:
                 $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
                 if (!$spouse) {
                     $spouse = new Spouse();
@@ -517,7 +517,7 @@ class EconomicComplementController extends Controller
     public function show($id)
     {
         $this->authorize('read', new EconomicComplement());
-        $economic_complement = EconomicComplement::with(['wf_state:id,name', 'workflow:id,name', 'eco_com_modality:id,name,shortened'])->findOrFail($id);
+        $economic_complement = EconomicComplement::with(['wf_state:id,name', 'workflow:id,name', 'eco_com_modality:id,name,shortened,procedure_modality_id'])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
         $categories = Category::all();
@@ -560,7 +560,6 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
         $procedure_modalities = ProcedureModality::where('procedure_type_id', '=', 8)->select('id', 'name', 'procedure_type_id')->get();
-        // $observation_types = ObservationType::where('module_id',3)->get();
         $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
             ->orderby('procedure_requirements.number', 'ASC')
@@ -784,7 +783,7 @@ class EconomicComplementController extends Controller
         }
         if ($request->last_eco_com_id) {
             $eco_com = EconomicComplement::find($request->last_eco_com_id);
-            if ($eco_com->eco_com_modality->eco_com_type_id == $request->modality_id) {
+            if ($eco_com->eco_com_modality->procedure_modality_id == $request->modality_id) {
                 $reception_type_id = 2;
             }
         }
@@ -798,7 +797,7 @@ class EconomicComplementController extends Controller
         $affiliate = Affiliate::find($request->affiliate_id);
         if ($request->last_eco_com_id) {
             $eco_com = EconomicComplement::find($request->last_eco_com_id);
-            if ($eco_com->eco_com_modality->eco_com_type_id == $request->modality_id) {
+            if ($eco_com->eco_com_modality->procedure_modality_id == $request->modality_id) {
                 $eco_com_beneficiary = $eco_com->eco_com_beneficiary()->with('address')->first();
                 if ($eco_com_beneficiary) {
                     if (!sizeOf($eco_com_beneficiary->address) > 0) {
@@ -813,7 +812,7 @@ class EconomicComplementController extends Controller
             }
         }
         switch ($request->modality_id) {
-            case 1:
+            case ID::ecoCom()->old_age:
                 $affiliate->load([
                     'address'
                 ]);
@@ -821,7 +820,7 @@ class EconomicComplementController extends Controller
                 $affiliate->cell_phone_number = $this->parsePhone($affiliate->cell_phone_number) ?? '';
                 return $affiliate;
                 break;
-            case 2:
+            case ID::ecoCom()->widowhood:
                 $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
                 if (!$spouse) {
                     // $spouse = new Spouse();
@@ -898,7 +897,6 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
 
-        $eco_com = EconomicComplement::select('id', 'eco_com_modality_id')->find($id);
         $aditional =  $request->aditional_requirements;
         $num = "";
         foreach ($procedure_requirements as $requirement) {
@@ -925,13 +923,20 @@ class EconomicComplementController extends Controller
         /**
          ** verify observation id = 6
          */
-        $number_docs = ProcedureModality::find(24)->procedure_requirements->pluck('number')->unique()->sort();
+        $number_docs = ProcedureModality::find($eco_com->eco_com_modality->procedure_modality_id)->procedure_requirements->pluck('number')->unique()->sort();
         if ($number_docs->contains(0)) {
             $number_docs = $number_docs->slice(1);
         }
         if ($count != $number_docs->count()) {
             if(!$eco_com->observations->contains(6)){
                 $eco_com->observations()->save(ObservationType::find(6), [
+                    'user_id' => auth()->id(),
+                    'date' => now(),
+                    'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
+                    'enabled' => false
+                ]);
+            }else{
+                $eco_com->observations()->updateExistingPivot(6, [
                     'user_id' => auth()->id(),
                     'date' => now(),
                     'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
@@ -1178,13 +1183,13 @@ class EconomicComplementController extends Controller
             $year = Carbon::parse($procedure->year)->year;
             $semester = $procedure->semester;
         }
-        $average_list = EcoComRent::select(DB::raw("degrees.shortened as degree, eco_com_types.name as type,eco_com_rents.minor as rmin,eco_com_rents.higher as rmax, eco_com_rents.average as average "))
-            ->leftJoin('eco_com_types', 'eco_com_rents.eco_com_type_id', '=', 'eco_com_types.id')
+        $average_list = EcoComRent::select(DB::raw("degrees.shortened as degree, procedure_modalities.name as type,eco_com_rents.minor as rmin,eco_com_rents.higher as rmax, eco_com_rents.average as average "))
+            ->leftJoin('procedure_modalities', 'eco_com_rents.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('degrees', 'eco_com_rents.degree_id', '=', 'degrees.id')
             ->whereYear('eco_com_rents.year', '=', $year)
             ->where('eco_com_rents.semester', '=', $semester)
             ->orderBy('degrees.correlative', 'ASC')
-            ->orderBy('eco_com_types.id', 'ASC');
+            ->orderBy('procedure_modalities.id', 'ASC');
 
         return Datatables::of($average_list)
             ->addColumn('degree', function ($average_list) {

@@ -1,5 +1,5 @@
 let mix = require("laravel-mix");
-// require("laravel-mix-purgecss");
+require("laravel-mix-purgecss");
 require("dotenv").config();
 /*
  |--------------------------------------------------------------------------
@@ -42,6 +42,7 @@ switch (app) {
   case 'test':
     mix
     .sass("resources/assets/sass/app_test.scss", "public/css/app.css")
+    .version()
    break;
   case 'dev':
     mix

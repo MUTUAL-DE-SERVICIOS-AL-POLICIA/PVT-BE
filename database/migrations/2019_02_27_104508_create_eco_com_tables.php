@@ -13,7 +13,9 @@ class CreateEcoComTables extends Migration
      */
     public function up()
     {
-
+        if (Schema::hasTable('eco_com_submitted_documents')) {
+            Schema::rename('eco_com_submitted_documents', 'eco_com_submitted_documents_1');
+        }
         // Schema::create('eco_com_procedures', function(Blueprint $table) {
         //     $table->bigIncrements('id');
         //     $table->bigInteger('user_id')->unsigned();
