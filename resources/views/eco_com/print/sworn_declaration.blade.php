@@ -36,16 +36,14 @@
                     <tr>
                         <td class="text-center p-5 intext"></td>
                         <td class="text-justify p-5">
-                            @if($eco_com->eco_com_modality->eco_com_type_id == 1) No percibo una pensión de jubilación por Riesgo Común y/o Profesional
-                            o Invalidez Común y/o Profesional, por lo cual, la prestación o renta @endif @if($eco_com->eco_com_modality->eco_com_type_id
-                            == 2) No percibo una pensión por Riesgo Común y/o Profesional o Invalidez Común y/o Profesional
-                            o Muerte, por lo cual, por lo cual, la prestación o renta @endif @if($eco_com->eco_com_modality->eco_com_type_id
-                            == 3) No percibo una pensión de jubilación por Riesgo Común y/o Profesional e Invalidez Común
+                            @if($eco_com->isOldAge()) No percibo una pensión de jubilación por Riesgo Común y/o Profesional
+                            o Invalidez Común y/o Profesional, por lo cual, la prestación o renta @endif @if($eco_com->isWidowhood()) No percibo una pensión por Riesgo Común y/o Profesional o Invalidez Común y/o Profesional
+                            o Muerte, por lo cual, por lo cual, la prestación o renta @endif @if($eco_com->isOrphanhood()) No percibo una pensión de jubilación por Riesgo Común y/o Profesional e Invalidez Común
                             y/o Profesional o Muerte, por lo cual, la pensión @endif en curso de pago que percibo por parte
                             de las Administradoras del Fondo de Pensiones (AFP’s), Aseguradoras o del Sistema de Reparto
                             corresponde a una
                             <span class="font-bold uppercase">
-                            PRESTACIÓN POR {{ $eco_com->eco_com_modality->eco_com_type->name }} {{ $eco_com->eco_com_modality->eco_com_type_id != 3 ? 'O RENTA DE JUBILACIÓN' : 'DERIVADA DE VEJEZ DEL CAUSAHABIENTE'}}
+                            PRESTACIÓN POR {{ $eco_com->eco_com_modality->procedure_modality->name }} {{ $eco_com->eco_com_modality->procedure_modality_id != 3 ? 'O RENTA DE JUBILACIÓN' : 'DERIVADA DE VEJEZ DEL CAUSAHABIENTE'}}
                         </span>, por lo que estaré a la espera de la respectiva valoración de
                             la documentación presentada a efecto que se determine si mi prestación se enmarca en la normativa
                             de acceso al beneficio del Complemento Económico, detallado en los Decreto Supremo N° 1446, 3231
@@ -55,10 +53,10 @@
                     <tr>
                         <td class="text-center p-5 intext"></td>
                         <td class="text-justify p-5">
-                            @if($eco_com->eco_com_modality->eco_com_type_id == 1) Pertenezco al sector pasivo de la Policía Boliviana y acredito con
+                            @if($eco_com->isOldAge()) Pertenezco al sector pasivo de la Policía Boliviana y acredito con
                             la @else Mi causahabiente perteneció al sector pasivo de la Policía Boliviana y acredita en la
                             @endif Certificación de Años de Servicio emitido por el Comando General de la Policía Boliviana
-                            como mínimo de 16 años de servicio, asimismo, <strong>No</strong>                            {{ $eco_com->eco_com_modality->eco_com_type_id == 1 ? 'fui':'fue'}} dado de baja en forma obligatoria
+                            como mínimo de 16 años de servicio, asimismo, <strong>No</strong>                            {{ $eco_com->isOldAge() ? 'fui':'fue'}} dado de baja en forma obligatoria
                             o voluntaria de la Policía Boliviana.
                         </td>
                     </tr>
@@ -73,11 +71,11 @@
                     <tr>
                         <td class="text-center p-5 intext"></td>
                         <td class="text-justify p-5">
-                            {{ $eco_com->eco_com_modality->eco_com_type_id == 1 ? 'No tengo': 'Mi causahabiente y mi persona no tienen' }} sentencia
+                            {{ $eco_com->isOldAge() ? 'No tengo': 'Mi causahabiente y mi persona no tienen' }} sentencia
                             condenatoria ejecutoriada por delitos cometidos contra la MUSEPOL y/o MUSERPOL.
                         </td>
                     </tr>
-                    @if($eco_com->eco_com_modality->eco_com_type_id == 2)
+                    @if($eco_com->isWidowhood())
                     <tr>
                         <td class="text-center p-5 intext"></td>
                         <td class="text-justify p-5">
@@ -101,9 +99,9 @@
                     <tr>
                         <td class="text-center p-5 intext"></td>
                         <td class="text-justify p-5">
-                            En caso de no informar oportunamente que percibo una prestación por @if($eco_com->eco_com_modality->eco_com_type_id == 1)
+                            En caso de no informar oportunamente que percibo una prestación por @if($eco_com->isOldAge())
                             vejez o solidaria de vejez y simultáneamente una prestación por invalidez (concurrencia), @else
-                            {{$eco_com->eco_com_modality->eco_com_type_id == 2 ? 'Viudedad':'Orfandad Absoluta'}} derivada
+                            {{$eco_com->isWidowhood() ? 'Viudedad':'Orfandad Absoluta'}} derivada
                             de vejez o solidaria de vejez y simultáneamente una prestación por Riesgo Común y/o Profesional
                             e Invalidez Común y/o Profesional o Muerte, @endif me comprometo y acepto a proceder con la devolución
                             de posibles pagos en defecto determinados a través de la Contrastación de información proporcionada
@@ -113,19 +111,18 @@
                     <tr>
                         <td class="text-center p-5 intext"></td>
                         <td class="text-justify p-5">
-                            Estoy de acuerdo en proceder con la devolución de montos {{ $eco_com->eco_com_modality->eco_com_type_id == 1 ? 'cobrados
+                            Estoy de acuerdo en proceder con la devolución de montos {{ $eco_com->isOldAge() ? 'cobrados
                             indebidamente o subsanar cualquier observación' : 'percibidos indebidamente' }} en caso de producirse
                             alguna inconsistencia a causa del contenido de la documentación presentada, información proporcionada
-                            por entidades externas, error del sistema u otros que se presenten @if($eco_com->eco_com_modality->eco_com_type_id
-                            != 3) , conforme prevé el Art. 28° del reglamento del Complemento Económico @endif .
+                            por entidades externas, error del sistema u otros que se presenten @if($eco_com->eco_com_modality->procedure_modality_id != 26) , conforme prevé el Art. 28° del reglamento del Complemento Económico @endif .
                         </td>
                     </tr>
-                    @if($eco_com->eco_com_modality->eco_com_type_id != 1)
+                    @if($eco_com->eco_com_modality->procedure_modality_id != 24)
                     <tr>
                         <td class="text-center p-5 intext"></td>
                         <td class="text-justify p-5">
                             De presentarse una tercera persona que acredite igual o mayor derecho para acceder al Beneficio del Complemento Económico
-                            por mi causahabiente {{ $eco_com->eco_com_modality->eco_com_type_id == 2 ? ', estoy de acuerdo
+                            por mi causahabiente {{ $eco_com->isWidowhood() ? ', estoy de acuerdo
                             en que': 'ya que se encuentra debidamente regulado por ley, ' }} la Mutual de Servicios al Policía
                             no se hace responsable por la suspensión del mencionado Beneficio y estoy de acuerdo a realizar
                             devolución de montos cobrados.

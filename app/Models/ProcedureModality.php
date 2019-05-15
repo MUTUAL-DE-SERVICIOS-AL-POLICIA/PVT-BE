@@ -3,10 +3,16 @@
 namespace Muserpol\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Muserpol\Models\EconomicComplement\EcoComModality;
 
 class ProcedureModality extends Model
 {
     public $timestamps = false;
+
+    public function eco_com_modalities()
+    {
+        return $this->hasMany(EcoComModality::class);
+    }
     public function procedure_type()
     {
         return $this->belongsTo('Muserpol\Models\ProcedureType');

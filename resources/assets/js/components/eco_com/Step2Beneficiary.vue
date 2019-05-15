@@ -451,7 +451,7 @@
         </div>
       </div>
     </div>
-    <div class="ibox float-e-margins" v-if="modalityId != 1">
+    <div class="ibox float-e-margins" v-if="modalityId != 29">
       <div class="ibox-content">
         <div class="row">
           <div class="col-md-12">
@@ -675,6 +675,7 @@
                     name="affiliate_category_id"
                     v-model.trim="affiliate.category_id"
                     v-validate="'required'"
+                    disabled
                   >
                     <option :value="null"></option>
                     <option v-for="c in categories" :value="c.id" :key="c.id">{{ c.name }}</option>
@@ -718,7 +719,7 @@
                   </div>
                   <div class="col-md-6">
                     <input
-                      v-validate="'min_value:0|max_value:100'"
+                      v-validate="'required|min_value:0|max_value:100'"
                       type="number"
                       v-model="affiliate.service_years"
                       name="affiliate_service_years"
@@ -742,7 +743,7 @@
                   </div>
                   <div class="col-md-6">
                     <input
-                      v-validate="'min_value:0|max_value:12'"
+                      v-validate="'required|min_value:0|max_value:12'"
                       type="number"
                       v-model="affiliate.service_months"
                       name="affiliate_service_months"

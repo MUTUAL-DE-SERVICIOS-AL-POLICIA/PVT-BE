@@ -4,7 +4,11 @@
       <div class="ibox-title">
         <h2 class="pull-left">Datos del Apoderado</h2>
         <div class="ibox-tools">
-          <button class="btn btn-primary" @click="edit()" data-toggle="tooltip" title="Editar"
+          <button
+            class="btn btn-primary"
+            @click="edit()"
+            data-toggle="tooltip"
+            title="Editar"
             :disabled="!can('update_eco_com_legal_guardian')"
             v-if="can('read_eco_com_legal_guardian')"
           >
@@ -14,6 +18,35 @@
       </div>
       <div class="ibox-content" v-if="can('read_eco_com_legal_guardian')">
         <div>
+          <div class="row">
+            <div class="col-md-12" :class="{'has-error': errors.has('eco_com_legal_guardian_type_id') }">
+              <div class="col-md-4">
+                <label class="control-label">Tipo de Apoderado</label>
+              </div>
+              <div class="col-md-8">
+                <select
+                  name="eco_com_legal_guardian_type_id"
+                  v-model="legalGuardian.eco_com_legal_guardian_type_id"
+                  class="form-control"
+                  :disabled="editable"
+                  v-validate="'required'"
+                >
+                  <option :value="null"></option>
+                  <option
+                    v-for="lt in ecoComLegalGuardianTypes"
+                    :key="lt.id"
+                    :value="lt.id"
+                  >{{ lt.name }}</option>
+                </select>
+                <i v-show="errors.has('eco_com_legal_guardian_type_id')" class="fa fa-warning text-danger"></i>
+                <span
+                  v-show="errors.has('eco_com_legal_guardian_type_id')"
+                  class="text-danger"
+                >{{ errors.first('eco_com_legal_guardian_type_id') }}</span>
+              </div>
+            </div>
+          </div>
+          <br>
           <div class="row">
             <div
               class="col-md-6"
@@ -39,8 +72,8 @@
                       type="button"
                       role="button"
                       :disabled="editable"
+                      @click="searchLegalGuardian()"
                     >
-                      <!-- @click="searchLegalGuardian" -->
                       <i class="fa fa-search"></i>
                     </button>
                   </span>
@@ -463,9 +496,7 @@
         </div>
       </div>
       <div class="ibox-content" v-else>
-        <div class="alert alert-warning" >
-          No tiene permisos para ver la informacion del apoderado.
-        </div>
+        <div class="alert alert-warning">No tiene permisos para ver la informacion del apoderado.</div>
       </div>
     </div>
   </div>
@@ -487,8 +518,8 @@ export default {
     this.getLegalGuardian();
   },
   methods: {
-    can(operation){
-      return canOperation(operation, this.permissions)
+    can(operation) {
+      return canOperation(operation, this.permissions);
     },
     async getLegalGuardian() {
       await axios
@@ -498,7 +529,7 @@ export default {
         });
     },
     edit() {
-      if(!this.can('update_eco_com_legal_guardian', this.permissions)){
+      if (!this.can("update_eco_com_legal_guardian", this.permissions)) {
         return;
       }
       this.editable = !this.editable;
@@ -513,6 +544,7 @@ export default {
       if (this.$validator.errors.items.length) {
         return;
       }
+      this.legalGuardian.eco_com_id = this.ecoCom.id;
       await axios
         .patch(`/eco_com_legal_guardian`, this.legalGuardian)
         .then(response => {
@@ -521,10 +553,7 @@ export default {
           flash("Informacion del apoderado actualizada");
         })
         .catch(error => {
-          flashErrors(
-            "Error al procesar: ",
-            error.response.data.errors
-          );
+          flashErrors("Error al procesar: ", error.response.data.errors);
         });
     },
     ...mapMutations("ecoComForm", [
@@ -532,7 +561,23 @@ export default {
       "deleteLegalGuardianPhoneNumber",
       "addLegalGuardianCellPhoneNumber",
       "deleteLegalGuardianCellPhoneNumber"
-    ])
+    ]),
+    async searchLegalGuardian() {
+      await axios
+        .get("/search_ajax", {
+          params: {
+            ci: this.legalGuardian.identity_card
+          }
+        })
+        .then(response => {
+          let data = response.data;
+          this.$store.dispatch("ecoComForm/setLegalGuardian1", data);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+      await this.$validator.validateAll();
+    }
   },
   computed: {
     legalGuardian() {
