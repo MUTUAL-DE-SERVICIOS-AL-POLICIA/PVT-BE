@@ -626,7 +626,8 @@ class EconomicComplementController extends Controller
         $permissions = Util::getPermissions(
             ObservationType::class,
             EconomicComplement::class,
-            EcoComLegalGuardian::class
+            EcoComLegalGuardian::class,
+            EcoComBeneficiary::class
         );
         $permissions = json_decode($permissions);
         $permissions[] = ['operation' => 'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];

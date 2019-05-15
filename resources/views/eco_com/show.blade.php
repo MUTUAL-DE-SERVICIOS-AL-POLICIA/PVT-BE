@@ -116,9 +116,9 @@
                 </affiliate-police>
             </div>
             <div id="tab-eco-com-beneficiary" class="tab-pane">
-                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary) --}}
-    @include('eco_com.beneficiary', ['eco_com_beneficiary'=>$eco_com_beneficiary,
-                'cities'=>$cities]) {{-- @endcan --}}
+                <eco-com-beneficiary :eco-com="{{ $economic_complement }}" :cities="{{ $cities }}" :permissions="{{ $permissions }}"
+                >
+                </eco-com-beneficiary>
             </div>
             <div id="tab-eco-com-legal-guardian" class="tab-pane">
                 <eco-com-legal-guardian :eco-com="{{ $economic_complement }}" :eco-com-legal-guardian-types="{{ $eco_com_legal_guardian_types }}" :cities="{{ $cities }}" :permissions="{{ $permissions }}">
