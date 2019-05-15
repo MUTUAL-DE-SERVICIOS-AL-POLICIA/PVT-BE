@@ -231,7 +231,7 @@ class EconomicComplement extends Model
                 //Orfandad
                 $this->eco_com_modality_id = 12;
             } else {
-                $this->eco_com_modality_id = $this->eco_com_modality->eco_com_type->id;
+                $this->eco_com_modality_id = $this->eco_com_modality->procedure_modality_id;
             }
         }
         // $economic_complement->aps_disability = floatval(str_replace(',', '', $aps_disability));
@@ -248,7 +248,7 @@ class EconomicComplement extends Model
             */
         if ($this->eco_com_modality_id > 3 && $this->eco_com_modality_id < 10) { // no se esta tomando en cuenta a orfandad
             $eco_com_rent = EcoComRent::where('degree_id', '=', $this->degree_id)
-                ->where('eco_com_type_id', '=', $this->eco_com_modality->eco_com_type->id)
+                ->where('procedure_modality_id', '=', $this->eco_com_modality->procedure_modality_id)
                 ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
                 ->where('semester', '=', $eco_com_procedure->semester)
                 ->first();
@@ -261,7 +261,7 @@ class EconomicComplement extends Model
         } else if ($this->eco_com_modality_id >= 10) { // solo orfandad
             $eco_com_rent = EcoComRent::where('degree_id', '=', $this->degree_id)
                 //!! porque se toma en cuenta vejez?????
-                ->where('eco_com_type_id', '=', 1)
+                ->where('procedure_modality_id', '=', 1)
                 ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
                 ->where('semester', '=', $eco_com_procedure->semester)
                 ->first();
@@ -348,14 +348,14 @@ class EconomicComplement extends Model
     }
     public function isOldAge()
     {
-        return $this->eco_com_modality->eco_com_type_id == 1;
+        return $this->eco_com_modality->procedure_modality_id == 1;
     }
     public function isWidowhood()
     {
-        return $this->eco_com_modality->eco_com_type_id == 2;
+        return $this->eco_com_modality->procedure_modality_id == 2;
     }
     public function isOrphanhood()
     {
-        return $this->eco_com_modality->eco_com_type_id == 3;
+        return $this->eco_com_modality->procedure_modality_id == 3;
     }
 }
