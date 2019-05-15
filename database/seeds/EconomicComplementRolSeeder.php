@@ -5,6 +5,13 @@ use Muserpol\Operation;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\Workflow\WorkflowSequence;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
+use Muserpol\Models\EconomicComplement\EcoComModality;
+use Muserpol\Models\EconomicComplement\EcoComRent;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Muserpol\Action;
+use Muserpol\Permission;
+use Muserpol\Models\Role;
 
 class EconomicComplementRolSeeder extends Seeder
 {
@@ -15,6 +22,7 @@ class EconomicComplementRolSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(EconomicComplementSeeder::class);
         $statuses = [
             ['module_id' => 2, 'name' => 'Affiliate'],
             ['module_id' => 2, 'name' => 'EconomicComplement'],
@@ -64,6 +72,42 @@ class EconomicComplementRolSeeder extends Seeder
         ];
         foreach ($statuses as $status) {
             EcoComLegalGuardianType::create($status);
+        }
+
+        $eco_com_modalities = EcoComModality::whereIn('id', [1,4,6,8])->get();
+        foreach ($eco_com_modalities as $e) {
+            $e->procedure_modality_id = 29;
+            $e->save();
+        }
+        $eco_com_modalities = EcoComModality::whereIn('id', [2,5,7,9])->get();
+        foreach ($eco_com_modalities as $e) {
+            $e->procedure_modality_id = 30;
+            $e->save();
+        }
+        $eco_com_modalities = EcoComModality::whereIn('id', [3,10,11,12])->get();
+        foreach ($eco_com_modalities as $e) {
+            $e->procedure_modality_id = 31;
+            $e->save();
+        }
+        $eco_com_rents= EcoComRent::where('eco_com_type_id', 1)->get();
+        foreach ($eco_com_rents as $e) {
+            $e->procedure_modality_id = 29;
+            $e->save();
+        }
+        $eco_com_rents= EcoComRent::where('eco_com_type_id', 2)->get();
+        foreach ($eco_com_rents as $e) {
+            $e->procedure_modality_id = 30;
+            $e->save();
+        }
+        $eco_com_rents= EcoComRent::where('eco_com_type_id', 3)->get();
+        foreach ($eco_com_rents as $e) {
+            $e->procedure_modality_id = 31;
+            $e->save();
+        }
+        if (Schema::hasColumn('eco_com_rents', 'eco_com_type_id')) {
+            Schema::table('eco_com_rents', function (Blueprint $table) {
+                $table->dropColumn('eco_com_type_id');
+            });
         }
     }
 }

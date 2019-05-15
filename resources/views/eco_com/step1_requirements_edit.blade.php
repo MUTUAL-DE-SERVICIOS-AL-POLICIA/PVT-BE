@@ -64,7 +64,7 @@
                 </div>
             </form>
             <div v-else>
-                <h3>Documentos ya presentados en la anterior gestion</h3>
+                <h3>Documentos ya presentados anteriormente</h3>
             </div>
         </div>
     </div>

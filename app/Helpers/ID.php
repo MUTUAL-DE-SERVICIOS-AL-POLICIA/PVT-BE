@@ -162,4 +162,15 @@ class ID
 		return((object)$ids);
 	}
 
+
+	public static function ecoCom()
+	{
+		$ids = [
+			'old_age' => 29,
+			'widowhood' => 30,
+			'orphanhood' => 31,
+		];
+		return((object)$ids);
+	}
+
 }
