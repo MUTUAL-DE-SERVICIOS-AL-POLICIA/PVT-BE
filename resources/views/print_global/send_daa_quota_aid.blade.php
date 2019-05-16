@@ -73,8 +73,15 @@
                             <td class="uppercase px-5 text-right">{{ $year }}</td>
                             <td class="uppercase px-5 text-right">{{ $procedure->reception_date }}</td>
                             <td class="uppercase px-5 text-right">{{ $procedure->code }}</td>
-                            <td class="uppercase px-5 text-right">{{ $procedure->getCorrelative(40)->date }}</td>
-                            <td class="uppercase px-5 text-right">{{ $procedure->getCorrelative(40)->code }}</td>
+                            @php ($correlative = $procedure->getCorrelative(40))
+                            @if ($correlative)
+                                <td class="uppercase px-5 text-right">{{ $correlative->date }}</td>
+                                <td class="uppercase px-5 text-right">{{ $correlative->code }}</td>
+                            @else
+                                @for ($i=0; $i<2; $i++)
+                                    <td class="uppercase px-5 text-center">-</td>
+                                @endfor
+                            @endif
                             <td class="uppercase px-15 text-left">{{ $procedure->affiliate->degree->shortened }}</td>
                             <td class="uppercase px-15 text-left">{{ $procedure->affiliate->ciWithExt() }}</td>
                             <td class="uppercase px-15 text-left">{{ $procedure->affiliate->fullName() }}</td>

@@ -418,36 +418,35 @@ class InboxController extends Controller
       switch ($module->id) {
         case 3:
           $title = 'FONDO DE RETIRO POLICIAL SOLIDARIO';
-          $procedures = RetirementFund::with(['procedure_modality'])->whereIn('id', $procedure_ids)
-            ->wherehas('procedure_modality', function ($query) use ($procedure_type) {
-              $query->where('procedure_type_id', $procedure_type->id);
-            })
-            ->get();
-          foreach ($procedures as $procedure) {
-            $correlative = explode('/', $procedure->getCorrelative(26)->code);
-            $procedure->correlative_code = intval($correlative[0]);
-            $procedure->correlative_year = intval($correlative[1]);
-          }
-          $procedures = $procedures->sortBy('correlative_code')->sortBy('correlative_year');
+          $sub_query = new RetirementFund();
           break;
         case 4:
           $title = 'CUOTA Y AUXILIO MORTUORIO';
-          $procedures = QuotaAidMortuary::with(['procedure_modality'])->whereIn('id', $procedure_ids)
-            ->wherehas('procedure_modality', function ($query) use ($procedure_type) {
-              $query->where('procedure_type_id', $procedure_type->id);
-            })
-            ->get();
-          foreach ($procedures as $procedure) {
-            $correlative = explode('/', $procedure->getCorrelative(40)->code);
-            $procedure->correlative_code = intval($correlative[0]);
-            $procedure->correlative_year = intval($correlative[1]);
-          }
-          $procedures = $procedures->sortBy('correlative_code')->sortBy('correlative_year');
+          $sub_query = new QuotaAidMortuary();
           break;
         default:
           return 0;
           break;
       }
+
+      $procedures = $sub_query::with(['procedure_modality'])->whereIn('id', $procedure_ids)
+        ->wherehas('procedure_modality', function ($query) use ($procedure_type) {
+          $query->where('procedure_type_id', $procedure_type->id);
+        })
+        ->get();
+      foreach ($procedures as $procedure) {
+        $correlative = $procedure->getCorrelative($wf_state_from->id);
+        if ($correlative) {
+          $correlative = explode('/', $correlative->code);
+          $procedure->correlative_code = intval($correlative[0]);
+          $procedure->correlative_year = intval($correlative[1]);
+        } else {
+          $procedure->correlative_code = null;
+          $procedure->correlative_year = null;
+        }
+      }
+      $procedures = $procedures->sortBy('correlative_code')->sortBy('correlative_year');
+
       $data = [
         'procedures'  =>  $procedures,
         'title'  =>  $title,
@@ -458,14 +457,15 @@ class InboxController extends Controller
         'year'  =>  date('Y')
       ];
       if ($procedures->count() > 0) {
-        if ($wf_state_from->id == 26) {
-          $pages[] = \View::make('print_global.send_daa', $data)->render();
-        }
-        if ($wf_state_from->id == 40) {
-          $pages[] = \View::make('print_global.send_daa_quota_aid', $data)->render();
-        }
-        if ($wf_state_from->id != 40 && $wf_state_from->id != 26) {
-          $pages[] = \View::make('print_global.send', $data)->render();
+        switch ($wf_state_from->id) {
+          case 26:
+            $pages[] = \View::make('print_global.send_daa', $data)->render();
+            break;
+          case 40:
+            $pages[] = \View::make('print_global.send_daa_quota_aid', $data)->render();
+            break;
+          default:
+            $pages[] = \View::make('print_global.send', $data)->render();
         }
       }
     }
