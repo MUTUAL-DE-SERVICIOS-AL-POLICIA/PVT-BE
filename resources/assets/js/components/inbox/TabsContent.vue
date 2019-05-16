@@ -124,7 +124,7 @@ export default {
                         })
                         this.getData();
                         this.classification(this.activeWorkflowId);
-                        this.printCertification(procedures)
+                        this.printCertification(false, procedures)
                     }
                 });
             }else{
@@ -186,17 +186,20 @@ export default {
                         })
                         this.getData();
                         this.classification(this.activeWorkflowId);
-                        this.printCertification()
+                        this.printCertification(false)
                     }
                 });
             }else{
                 alert("error");
             }
         },
-        async printCertification(procedures) {
+        async printCertification(retrieve=false, procedures) {
             let found = this.dataInbox.workflows.find(w =>{
                 return w.workflow_id == this.activeWorkflowId
             });
+            if (retrieve) {
+                procedures = found.docs
+            }
             try {
                 let res = await axios({
                 method: "POST",

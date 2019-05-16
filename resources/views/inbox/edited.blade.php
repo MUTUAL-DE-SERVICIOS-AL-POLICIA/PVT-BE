@@ -87,7 +87,12 @@
                                             </transition>
                                         </div> --}}
                                         {{-- forward --}}
-                                        <div class="col-md-6 col-xs-offset-6  text-center">
+                                        <div class="col-md-1  text-center">
+                                            <span class="input-group-btn">
+                                                <button :disabled="! (docs > 0 && wfSequenceNext != null)"class="btn" :class="{'btn-success': docs > 0  }" @click="printCertification(true)" ><i class="fa fa-print"></i> IMPRIMIR  <strong>(@{{docs}})</strong></button>
+                                            </span>
+                                        </div>
+                                        <div class="col-md-6 col-xs-offset-5  text-center">
                                                 <div class="input-group" >
                                                     <select name="" v-model="wfSequenceNext" id="" class="form-control">
                                                         <option :value="null"> Seleccione a donde derivará los Trámites </option>
