@@ -676,6 +676,8 @@ Route::group(['middleware' => ['auth']], function () {
     // Eco com legal guardian
     Route::get('get_eco_com_legal_guardian/{eco_com_id}', 'EcoComLegalGuardianController@getEcoComLegalGuardian');
     Route::patch('/eco_com_legal_guardian', 'EcoComLegalGuardianController@update');
+    Route::delete('/eco_com_legal_guardian', 'EcoComLegalGuardianController@delete');
+
     // eco com Certification
     Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');
     Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');

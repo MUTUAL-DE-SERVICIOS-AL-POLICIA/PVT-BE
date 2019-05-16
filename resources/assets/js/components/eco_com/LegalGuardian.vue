@@ -4,6 +4,7 @@
       <div class="ibox-title">
         <h2 class="pull-left">Datos del Apoderado</h2>
         <div class="ibox-tools">
+          <button v-if="!editable && can('delete_eco_com_legal_guardian')" class="btn btn-danger" @click="deleteLegalGuardian()" ><i class="fa fa-trash-o"></i></button>
           <button
             class="btn btn-primary"
             @click="edit()"
@@ -518,6 +519,18 @@ export default {
     this.getLegalGuardian();
   },
   methods: {
+    async deleteLegalGuardian(){
+      await axios.delete('/eco_com_legal_guardian',{ data: this.legalGuardian })
+      .then(response => {
+        flash('Se elimino al apoderado');
+        this.editable = true;
+        this.getLegalGuardian();
+
+      })
+      .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+      })
+    },
     can(operation) {
       return canOperation(operation, this.permissions);
     },
@@ -545,6 +558,7 @@ export default {
         return;
       }
       this.legalGuardian.eco_com_id = this.ecoCom.id;
+      console.log(this.legalGuardian);
       await axios
         .patch(`/eco_com_legal_guardian`, this.legalGuardian)
         .then(response => {
