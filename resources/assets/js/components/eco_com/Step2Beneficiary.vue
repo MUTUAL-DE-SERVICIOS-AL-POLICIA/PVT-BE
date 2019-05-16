@@ -696,6 +696,7 @@
                     name="affiliate_degree_id"
                     v-model.trim="affiliate.degree_id"
                     v-validate="'required'"
+                    :disabled="isHabitual"
                   >
                     <option :value="null"></option>
                     <option v-for="d in degrees" :value="d.id" :key="d.id">{{ d.name }}</option>
@@ -719,7 +720,7 @@
                   </div>
                   <div class="col-md-6">
                     <input
-                      v-validate="'required|min_value:0|max_value:100'"
+                      v-validate="serviceYearsRequired"
                       type="number"
                       v-model="affiliate.service_years"
                       name="affiliate_service_years"
@@ -727,6 +728,7 @@
                       @change="calculateCategory()"
                       max="100"
                       min="0"
+                      :disabled="isHabitual"
                     >
                     <div v-show="errors.has('affiliate_service_years')">
                       <i class="fa fa-warning text-danger"></i>
@@ -743,14 +745,15 @@
                   </div>
                   <div class="col-md-6">
                     <input
-                      v-validate="'required|min_value:0|max_value:12'"
+                      v-validate="serviceMonthsRequired"
                       type="number"
                       v-model="affiliate.service_months"
                       name="affiliate_service_months"
                       class="form-control"
                       @change="calculateCategory()"
-                      max="12"
+                      max="11"
                       min="0"
+                      :disabled="isHabitual"
                     >
                     <div v-show="errors.has('affiliate_service_months')">
                       <i class="fa fa-warning text-danger"></i>
@@ -765,6 +768,7 @@
                 </div>
                 <div class="col-md-8">
                   <input
+                    :disabled="isHabitual"
                     type="text"
                     class="form-control"
                     v-model="affiliate.date_derelict"
@@ -1297,6 +1301,21 @@ export default {
     };
   },
   computed: {
+    isHabitual(){
+      return this.receptionType.id == 2;
+    },
+    serviceYearsRequired(){
+      if(this.receptionType.id == 1){
+        return 'required|min_value:0|max_value:100';
+      }
+      return 'min_value:0|max_value:100';
+    },
+    serviceMonthsRequired(){
+      if(this.receptionType.id == 1){
+        return 'required|min_value:0|max_value:11';
+      }
+      return 'min_value:0|max_value:11';
+    },
     ecoComBeneficiary() {
       return this.$store.state.ecoComForm.beneficiary;
     },
@@ -1308,6 +1327,9 @@ export default {
     },
     modalityId() {
       return this.$store.state.ecoComForm.modality_id;
+    },
+    receptionType() {
+      return this.$store.state.ecoComForm.receptionType;
     },
     getNameLegalGuardianType() {
       if (this.legal_guardian_type_id) {

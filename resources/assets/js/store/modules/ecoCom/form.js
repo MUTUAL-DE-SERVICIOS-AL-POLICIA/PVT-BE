@@ -127,7 +127,16 @@ const mutations = {
       state.legalGuardian.cell_phone_number.push({ value: null });
   },
   setLegalGuardian(state, object){
-    state.legalGuardian = object
+    state.legalGuardian = {}
+    if(Object.keys(object).length){
+      state.legalGuardian = object
+    }
+    if(!state.legalGuardian.hasOwnProperty('phone_number')){
+      state.legalGuardian.phone_number = [{value:null}]
+    }
+    if(!state.legalGuardian.hasOwnProperty('cell_phone_number')){
+      state.legalGuardian.cell_phone_number = [{value:null}]
+    }
     // if(!!object.phone_number && typeof object.phone_number == 'object'){
       
     // }else if (typeof object.phone_number == 'string') {
