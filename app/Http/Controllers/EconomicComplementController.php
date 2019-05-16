@@ -193,26 +193,28 @@ class EconomicComplementController extends Controller
         /**
          ** update affiliate police info
          */
-        // $affiliate->category_id = $request->affiliate_category_id;
-        $service_year = $request->affiliate_service_years;
-        $service_month = $request->affiliate_service_months;
-        if ($service_year > 0 || $service_month > 0) {
-            if ($service_month > 0) {
-                $service_year++;
+        if($request->reception_type == 1){
+            // $affiliate->category_id = $request->affiliate_category_id;
+            $service_year = $request->affiliate_service_years;
+            $service_month = $request->affiliate_service_months;
+            if ($service_year > 0 || $service_month > 0) {
+                if ($service_month > 0) {
+                    $service_year++;
+                }
+                $category = Category::where('from', '<=', $service_year)
+                    ->where('to', '>=', $service_year)
+                    ->first();
+                if ($category) {
+                    $affiliate->category_id = $category->id;
+                    $affiliate->service_years = $request->affiliate_service_years;
+                    $affiliate->service_months = $request->affiliate_service_months;
+                }
             }
-            $category = Category::where('from', '<=', $service_year)
-                ->where('to', '>=', $service_year)
-                ->first();
-            if ($category) {
-                $affiliate->category_id = $category->id;
-                $affiliate->service_years = $request->affiliate_service_years;
-                $affiliate->service_months = $request->affiliate_service_months;
-            }
+            $affiliate->degree_id = $request->affiliate_degree_id;
+            $affiliate->pension_entity_id = $request->pension_entity_id;
+            $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
+            $affiliate->save();
         }
-        $affiliate->degree_id = $request->affiliate_degree_id;
-        $affiliate->pension_entity_id = $request->pension_entity_id;
-        $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
-        $affiliate->save();
         /**
          ** create Economic complement 
          */
@@ -309,7 +311,7 @@ class EconomicComplementController extends Controller
             $legal_guardian = new EcoComLegalGuardian();
             $legal_guardian->economic_complement_id = $economic_complement->id;
             $legal_guardian->eco_com_legal_guardian_type_id = $request->legal_guardian_type_id;
-            $legal_guardian->city_identity_card_id = $request->legal_guardian_city_identity_card;
+            $legal_guardian->city_identity_card_id = $request->legal_guardian_city_identity_card_id;
             $legal_guardian->identity_card = $request->legal_guardian_identity_card;
             $legal_guardian->last_name = $request->legal_guardian_last_name;
             $legal_guardian->mothers_last_name = $request->legal_guardian_mothers_last_name;
@@ -323,6 +325,11 @@ class EconomicComplementController extends Controller
             if ($request->legal_guardian_is_duedate_undefined == 'on') {
                 $legal_guardian->due_date = null;
             }
+            $legal_guardian->number_authority = $request->legal_guardian_number_authority;
+            $legal_guardian->notary_of_public_faith = $request->legal_guardian_notary_of_public_faith;
+            $legal_guardian->notary = $request->legal_guardian_notary;
+            $legal_guardian->date_authority = Util::verifyBarDate($request->legal_guardian_date_authority) ? Util::parseBarDate($request->legal_guardian_date_authority) : $request->legal_guardian_date_authority;
+            $legal_guardian->gender = $request->legal_guardian_gender;
             $legal_guardian->save();
         }
         /**

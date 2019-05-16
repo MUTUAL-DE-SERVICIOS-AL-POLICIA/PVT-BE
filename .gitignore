@@ -23,3 +23,6 @@ yarn-error.log
 /nbproject/project.xml
 /public/fonts/vendor/mdi
 laradock/
+package-lock.json
+yarn.lock
+
