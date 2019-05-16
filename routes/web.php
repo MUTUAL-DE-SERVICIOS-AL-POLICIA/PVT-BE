@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('user/active/{user}', 'UserController@active');
     //Route::get('users/index','UserController@index');
     Route::get('usersGetData', 'UserController@getUserDatatable')->name('user_list');
+    Route::get('usersLdapUpdate', 'UserController@getUsersLdapUpdate')->name('user_ldap_sync');
 
     //ROUTES TO E SYSTEM PARAMENTERS
     Route::get('ret_fun_settings', 'HomeController@retFunSettings');
@@ -666,9 +667,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
-    
+
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
-    
+
     // Eco com Beneficiary
     Route::get('get_eco_com_beneficiary/{eco_com_id}', 'EcoComBeneficiaryController@getEcoComBeneficiary');
     Route::patch('/eco_com_beneficiary', 'EcoComBeneficiaryController@update');
@@ -681,8 +682,8 @@ Route::group(['middleware' => ['auth']], function () {
     // eco com Certification
     Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');
     Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');
-    
-    
+
+
     // eco com qualification parameters
     Route::get('eco_com_qualification_parameters', 'EconomicComplementController@qualificationParameters')->name('eco_com_qualification_parameters');
 
