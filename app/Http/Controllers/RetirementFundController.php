@@ -712,7 +712,7 @@ class RetirementFundController extends Controller
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
         $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
-        $can_validate = $wf_current_state->id == $retirement_fund->wf_state_current_id;
+        $can_validate = optional($wf_current_state)->id == $retirement_fund->wf_state_current_id;
         $can_cancel = ($retirement_fund->user_id == $user->id && $retirement_fund->inbox_state == true);
 
         //workflow record
