@@ -199,7 +199,7 @@ export default {
     totalSumSenasir() {
       return (
         parseFloat(parseMoney(this.ecoCom.sub_total_rent)) -
-        parseFloat(parseMoney(this.ecoCom.reimbursement)) +
+        parseFloat(parseMoney(this.ecoCom.reimbursement)) -
         parseFloat(parseMoney(this.ecoCom.dignity_pension)) +
         parseFloat(parseMoney(this.ecoCom.aps_disability))
       );

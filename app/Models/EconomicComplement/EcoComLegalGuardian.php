@@ -19,4 +19,11 @@ class EcoComLegalGuardian extends Model
     {
         return $this->belongsTo('Muserpol\Models\EconomicComplement\EconomicComplement');
     }
+    public function getDateAuthorityAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
 }
