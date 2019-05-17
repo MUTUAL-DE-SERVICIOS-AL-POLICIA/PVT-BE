@@ -1,9 +1,5 @@
 @extends('layouts.app') 
 @section('title', 'Complemento economico Padre') 
-@section('styles')
-<link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
-@endsection
-
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-md-7">
@@ -65,8 +61,11 @@
 
 <div class="row">
     <div class="col-md-3" style="padding-right: 3px">
-        <div class="widget-head-color-box blue-bg p-lg text-center">
-            <div class="m-b-md">
+        <div class="widget-head-color-box blue-bg text-center">
+            <div class="pull-left" style="background: #1a6a9d; border-radius: 5px 0px 5px 0px;" data-toggle="tooltip" data-placement="top" title="Codigo único de Afiliado">
+                <h3 class=" p-xxs"><strong>{{  $affiliate->id }}</strong></h3>
+            </div>
+            <div class="p-sm">
                 <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Afiliado ">
                     <a href="{{route('affiliate.show', $affiliate->id)}}" style="color: #fff"> {{ $affiliate->fullNameWithDegree() }}</a>
                 </h2>
@@ -78,7 +77,7 @@
             <ul class="list-group elements-list">
                 <li class="list-group-item active" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiario</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
@@ -148,9 +147,18 @@
 </div>
 <br>
 @endsection
- 
+
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
+<style>
+.elements-list .list-group-item.active, .elements-list .list-group-item:hover {
+    background: #f3f3f4;
+    color: inherit;
+    border-color: #e7eaec;
+    border-radius: 0;
+    border-left: 2px solid #1a6a9d;
+}
+</style>
 @endsection
  
 @section('jss')
