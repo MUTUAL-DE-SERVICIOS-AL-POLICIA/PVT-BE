@@ -62,49 +62,78 @@ class EconomicComplementController extends Controller
     }
     public function getAllEcoCom(DataTables $datatables)
     {
-        $eco_coms = EconomicComplement::with([
-            'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id,pension_entity_id',
-            'city:id,name,first_shortened',
-            'wf_state:id,name,first_shortened',
-            'eco_com_modality:id,name,shortened',
-            'eco_com_beneficiary',
-            'workflow:id,name',
-        ])->select(
-            'id',
-            'code',
-            'reception_date',
-            'total',
-            'affiliate_id',
-            'city_id',
-            'state',
-            'total',
-            'wf_current_state_id',
-            'eco_com_modality_id',
-            'eco_com_procedure_id',
-            'workflow_id'
-        )
-            ->where('code', 'not like', '%A')
-            ->orderByDesc(DB::raw("split_part(code, '/',3)::integer desc, split_part(code, '/',2), split_part(code, '/',1)::integer"));
-        return $datatables->eloquent($eco_coms)
-            ->addColumn('eco_com_beneficiary_ci_with_ext', function ($eco_com) {
-                return $eco_com->eco_com_beneficiary ? $eco_com->eco_com_beneficiary->ciWithExt() : '';
-            })
-            ->addColumn('eco_com_beneficiary_full_name', function ($eco_com) {
-                return $eco_com->eco_com_beneficiary ? $eco_com->eco_com_beneficiary->fullName() : '';
-            })
-            ->addColumn('procedure', function ($eco_com) {
-                return $eco_com->eco_com_procedure ? $eco_com->eco_com_procedure->fullName() : '';
-            })
-            ->editColumn('state', function ($eco_com) {
-                return $eco_com->inbox_state ? 'Validado' : 'Pendiente';
-            })
-            ->addColumn('pension_entity', function ($eco_com) {
-                return $eco_com->affiliate->pension_entity->name ?? null;
-            })
-            ->addColumn('action', function ($eco_com) {
-                return "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
-            })
-            ->make(true);
+        $eco_coms = EconomicComplement::select(
+            DB::RAW("
+            economic_complements.id as id,
+            economic_complements.code,
+            economic_complements.reception_date,
+            city_eco_com.name as eco_com_city_name,
+            concat_ws(' ',extract(year from eco_com_procedures.year), eco_com_procedures.semester) as eco_com_procedure_year,
+            procedure_modalities.name as procedure_modality,
+            CASE WHEN economic_complements.inbox_state THEN 'Validado' ELSE 'Pendiente' END as eco_com_inbox_state,
+            wf_states.first_shortened as wf_state_name,
+            pension_entities.name as pension_entity_name,
+            economic_complements.total,
+            affiliates.identity_card as affiliate_identity_card,
+            trim(regexp_replace(concat_ws(' ', affiliates.first_name, affiliates.second_name, affiliates.last_name, affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g'))  as affiliate_full_name,
+            eco_com_applicants.identity_card as eco_com_beneficiary_identity_card,
+            trim(regexp_replace(concat_ws(' ', eco_com_applicants.first_name, eco_com_applicants.second_name, eco_com_applicants.last_name, eco_com_applicants.mothers_last_name, eco_com_applicants.surname_husband), '\s+', ' ', 'g'))  as eco_com_beneficiary_full_name
+            "))
+            ->leftJoin('cities as city_eco_com', 'economic_complements.city_id', '=', 'city_eco_com.id' )
+            ->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id' )
+            ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id' )
+            ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id' )
+            ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id' )
+            ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+            ->leftJoin('pension_entities', 'affiliates.pension_entity_id', '=', 'pension_entities.id')
+            ->leftJoin('eco_com_applicants', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
+            ->where('economic_complements.code', 'not like', '%A')
+            ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',3)::integer desc, split_part(economic_complements.code, '/',2), split_part(economic_complements.code, '/',1)::integer"));
+            return $datatables->eloquent($eco_coms)
+                ->filterColumn('eco_com_beneficiary_identity_card', function($query, $keyword) {
+                    $sql = "eco_com_applicants.identity_card like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('eco_com_beneficiary_full_name', function($query, $keyword) {
+                    $sql = "trim(regexp_replace(concat_ws(' ', eco_com_applicants.first_name, eco_com_applicants.second_name, eco_com_applicants.last_name, eco_com_applicants.mothers_last_name, eco_com_applicants.surname_husband), '\s+', ' ', 'g')) like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('affiliate_identity_card', function($query, $keyword) {
+                    $sql = "affiliates.identity_card like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('affiliate_full_name', function($query, $keyword) {
+                    $sql = "trim(regexp_replace(concat_ws(' ', affiliates.first_name, affiliates.second_name, affiliates.last_name, affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('eco_com_city_name', function($query, $keyword) {
+                    $sql = "city_eco_com.name like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('eco_com_procedure_year', function($query, $keyword) {
+                    $sql = "concat_ws(' ',extract(year from eco_com_procedures.year), eco_com_procedures.semester) like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('procedure_modality', function($query, $keyword) {
+                    $sql = "procedure_modalities.name like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('pension_entity_name', function($query, $keyword) {
+                    $sql = "pension_entities.name like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('wf_state_name', function($query, $keyword) {
+                    $sql = "wf_states.first_shortened like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('eco_com_inbox_state', function($query, $keyword) {
+                    $sql = "CASE WHEN economic_complements.inbox_state THEN 'Validado' ELSE 'Pendiente' END like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->addColumn('action', function ($eco_com) {
+                    return "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
+                })
+                ->make(true);
     }
 
     /**

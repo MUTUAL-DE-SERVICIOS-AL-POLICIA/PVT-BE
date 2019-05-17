@@ -26,14 +26,18 @@
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             </tr>
                     </tfoot>
                     <thead>
                         <tr>
                             <th># de Tramite</th>
                             <th>Fecha de Recepción</th>
-                            <th>C.I</th>
+                            <th>C.I Beneficiario</th>
                             <th>Nombre del Beneficiario</th>
+                            <th>C.I Titular</th>
+                            <th>Nombre del Titular</th>
                             <th>Regional</th>
                             <th>Gestion</th>
                             <th>Modalidad</th>
@@ -132,14 +136,16 @@
                 // { data: 'id' },
                 { data: 'code' },
                 { data: 'reception_date' },
-                { data: 'eco_com_beneficiary_ci_with_ext' },
+                { data: 'eco_com_beneficiary_identity_card' },
                 { data: 'eco_com_beneficiary_full_name' },
-                { data: 'city.name'},
-                { data: 'procedure'},
-                { data: 'eco_com_modality.shortened' },
-                { data: 'pension_entity' },
-                { data: 'wf_state.first_shortened' },
-                { data: 'state' },
+                { data: 'affiliate_identity_card' },
+                { data: 'affiliate_full_name' },
+                { data: 'eco_com_city_name'},
+                { data: 'eco_com_procedure_year'},
+                { data: 'procedure_modality' },
+                { data: 'pension_entity_name' },
+                { data: 'wf_state_name' },
+                { data: 'eco_com_inbox_state' },
                 { data: 'total' },
                 { data: 'action' },
             ],
