@@ -180,28 +180,47 @@ th.ellipsis-text {
                         @endcan
                     </div>
                     <div id="tab-eco-com" class="tab-pane">
-
-                            <div class="ibox">
-
-                                <div class="ibox-content">
-                                        <table class="table table-bordered table-hover" id="economic_complements-table">
-                                            <thead>
-                                                <tr class="success">
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Número de Trámite">Número de Trámite</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Gesion ">Gestión</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Fecha de Emisión">Fecha de Ingreso del Trámite</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Ubicación">Ubicación</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Estado">Estado</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Total">Total</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Opciones">Opciones</div></th>
-
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h1>Tramites de Complemento Economico</h1>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="success">
+                                            <th># de tramite</th>
+                                            <th>Gestion</th>
+                                            <th>Fecha de Ingreso del Trámite</th>
+                                            <th>Modalidad</th>
+                                            <th>Ubicación</th>
+                                            <th>Estado</th>
+                                            <th>Total</th>
+                                            <th>Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($eco_coms as $eco_com)
+                                                <tr>
+                                                <td>{{$eco_com->code}}</td>
+                                                <td>{{$eco_com->eco_com_procedure->fullName() }}</td>
+                                                <td>{{$eco_com->reception_date }}</td>
+                                                <td>{{$eco_com->eco_com_modality->procedure_modality->name }}</td>
+                                                <td>{{$eco_com->wf_state->first_shortened }}</td>
+                                                <td>{{$eco_com->eco_com_state->name }}</td>
+                                                <td>{{$eco_com->total}}</td>
+                                                <td>
+                                                    <a href="/eco_com/{{$eco_com->id}}">
+                                                        <button class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
+                                                    </a>
+                                                </td>
                                                 </tr>
-                                            </thead>
-                                        </table>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-
-
+                        </div>
                     </div>
                     <div id="tab-quota-aid-mortuory" class="tab-pane">
                         @can('update',$quota_aid)
