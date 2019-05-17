@@ -20,7 +20,7 @@
             </div>
             @include('eco_com.print.legal_guardian', ['eco_com_legal_guardian' => $eco_com_legal_guardian])
         @endif
-        <div>
+        <div class="text-xs">
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
                 <span class="uppercase">CNL. DESP. EDGAR JOSÉ CORTEZ ALBORNOZ</span><br>
