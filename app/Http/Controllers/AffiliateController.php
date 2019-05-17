@@ -330,7 +330,10 @@ class AffiliateController extends Controller
         $permissions = Util::getPermissions(
             ObservationType::class
         );
-
+        /**
+         ** eco coms
+         */
+        $eco_coms = $affiliate->economic_complements;
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -370,7 +373,8 @@ class AffiliateController extends Controller
             //'records_message'=>$records_message
 
             'observation_types'  =>  $observation_types,
-            'permissions'  =>  $permissions
+            'permissions'  =>  $permissions,
+            'eco_coms'  =>  $eco_coms
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
