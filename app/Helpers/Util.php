@@ -983,6 +983,22 @@ class Util
   {
     return self::getRol()->module_id == 2;
   }
+  public static function rolIsAdmin()
+  {
+    return self::getRol()->module_id == 1;
+  }
+  public static function rolIsRetFun()
+  {
+    return self::getRol()->module_id == 3;
+  }
+  public static function rolIsQuotaAid()
+  {
+    return self::getRol()->module_id == 4 || self::getRol()->module_id == 5 ;
+  }
+  public static function rolIsContributions()
+  {
+    return self::getRol()->module_id == 11;
+  }
   public static function getPermissions(...$models)
   {
     $operations = [
