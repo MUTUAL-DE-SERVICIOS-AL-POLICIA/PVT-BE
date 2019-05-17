@@ -27,7 +27,7 @@ class EcoComCertificationController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
-        $title = null;
+        $title = "RECEPCIÓN DEL BENEFICIO DE COMPLEMENTO ECONÓMICO – ". mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
         $code = $eco_com->code;
         $area = $eco_com->wf_state->first_shortened;
         $user = $eco_com->user;
