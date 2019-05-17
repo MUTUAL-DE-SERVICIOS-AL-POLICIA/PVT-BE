@@ -866,6 +866,18 @@ class Util
       ['text' => "Fecha de Recepción", 'value' => "date_reception"],
     ];
   }
+  public static function getHeadersInboxEcoCom()
+  {
+    return [
+      ['text' => "# Trámite", 'value' => "code"],
+      ['text' => "CI Beneficiario", 'align' => "left", 'value' => "ci"],
+      ['text' => "Nombre del Beneficiario", 'value' => "name"],
+      ['text' => "Modalidad", 'value' => "modality"],
+      ['text' => "Regional", 'value' => "city"],
+      ['text' => "Tipo", 'value' => "type"],
+      ['text' => "Fecha de Recepción", 'value' => "reception_date"],
+    ];
+  }
   public static function getHeadersInboxTreasury()
   {
     return [
@@ -982,6 +994,22 @@ class Util
   public static function rolIsEcoCom()
   {
     return self::getRol()->module_id == 2;
+  }
+  public static function rolIsAdmin()
+  {
+    return self::getRol()->module_id == 1;
+  }
+  public static function rolIsRetFun()
+  {
+    return self::getRol()->module_id == 3;
+  }
+  public static function rolIsQuotaAid()
+  {
+    return self::getRol()->module_id == 4 || self::getRol()->module_id == 5 ;
+  }
+  public static function rolIsContributions()
+  {
+    return self::getRol()->module_id == 11;
   }
   public static function getPermissions(...$models)
   {

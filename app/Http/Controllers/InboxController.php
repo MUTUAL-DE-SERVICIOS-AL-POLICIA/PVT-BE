@@ -21,6 +21,9 @@ use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\City;
+use Muserpol\Models\ProcedureModality;
+use Muserpol\Models\EconomicComplement\EcoComModality;
 
 class InboxController extends Controller
 {
@@ -30,7 +33,23 @@ class InboxController extends Controller
   }
   public function edited()
   {
-    return view('inbox.edited');
+    $cities = City::all();
+    $procedure_modalities = ProcedureModality::select('procedure_modalities.*')
+    ->leftJoin('procedure_types','procedure_types.id', '=', 'procedure_modalities.procedure_type_id')
+    ->where('procedure_types.module_id', Util::getRol()->module_id)
+    ->get();
+    $eco_com_modalities = EcoComModality::all();
+    $reception_types = json_encode(array(
+      array('key' => 'Habitual', 'value' => 'Habitual' ),
+      array('key' => 'Inclusion', 'value' => 'Inclusion' )
+    ));
+    $data = [
+      'cities' => $cities,
+      'procedure_modalities' => $procedure_modalities,
+      'eco_com_modalities' => $eco_com_modalities,
+      'reception_types' => $reception_types
+    ];
+    return view('inbox.edited', $data);
   }
   public function sendForward(Request $request)
   {

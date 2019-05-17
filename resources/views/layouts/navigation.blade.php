@@ -34,35 +34,45 @@
                 data-placement="right" title="Mi Bandeja">
                 <a href="{{ url('/inbox') }}"><i class="fa fa-inbox"></i> <span class="nav-label">Mi Bandeja</span></a>
             </li>
-            <li data-toggle="tooltip" data-placement="right" title="Crear Tramite de Complemento Economico">
-                <a href="{{ route('economic_complement_first_step') }}"><i class="fa fa-puzzle-piece"></i> <span
-                        class="nav-label">Crear Complemento Economico</span></a>
-            </li>
+            @if (Util::rolIsEcoCom())
+                <li data-toggle="tooltip" data-placement="right" title="Crear Tramite de Complemento Economico">
+                    <a href="{{ route('economic_complement_first_step') }}"><i class="fa fa-plus-circle"></i> <span
+                            class="nav-label">Crear Complemento Economico</span></a>
+                </li>
+            @endif
             <li class="{{ isActiveRoute('affiliate.index') }}" data-toggle="tooltip" data-placement="right"
                 title="Afiliados">
                 <a href="{{ url('/affiliate') }}"><i class="fa fa-user"></i> <span
                         class="nav-label">Afiliados</span></a>
             </li>
-            <li class="{{ isActiveRoute('eco_com.index') }}" data-toggle="tooltip" data-placement="right"
-                title="Complemento Economico">
-                <a href="{{ url('/eco_com') }}"><i class="{{Muserpol\Helpers\Util::IconModule(2)}}"></i> <span
-                        class="nav-label">Complemento Economico</span></a>
-            </li>
-            <li class="{{ isActiveRoute('ret_fun.index') }}" data-toggle="tooltip" data-placement="right"
-                title="Fondo de Retiro">
-                <a href="{{ url('/ret_fun') }}"><i class="{{Muserpol\Helpers\Util::IconModule(3)}}"></i> <span
-                        class="nav-label">Fondo de Retiro</span></a>
-            </li>
-            <li class="{{ isActiveRoute('quota_aid.index') }}" data-toggle="tooltip" data-placement="right"
-                title="Cuota y Auxilio Mortuorio">
-                <a href="{{ url('/quota_aid') }}"><i class="{{Muserpol\Helpers\Util::IconModule(4)}}"></i> <span
-                        class="nav-label">Cuota y Auxilio Mortuorio</span></a>
-            </li>
-            <li class="{{ isActiveRoute('direct_contribution.index') }}" data-toggle="tooltip" data-placement="right"
-                title="Aportes">
-                <a href="{{ url('/direct_contribution') }}"><i class="{{Util::IconModule(11)}}"></i> <span
-                        class="nav-label">Aportes</span></a>
-            </li>
+            @if (Util::rolIsEcoCom())
+                <li class="{{ isActiveRoute('eco_com.index') }}" data-toggle="tooltip" data-placement="right"
+                    title="Complemento Economico">
+                    <a href="{{ url('/eco_com') }}"><i class="{{Muserpol\Helpers\Util::IconModule(2)}}"></i> <span
+                            class="nav-label">Complemento Economico</span></a>
+                </li>
+            @endif
+            @if (Util::rolIsRetFun())
+                <li class="{{ isActiveRoute('ret_fun.index') }}" data-toggle="tooltip" data-placement="right"
+                    title="Fondo de Retiro">
+                    <a href="{{ url('/ret_fun') }}"><i class="{{Muserpol\Helpers\Util::IconModule(3)}}"></i> <span
+                            class="nav-label">Fondo de Retiro</span></a>
+                </li>
+            @endif
+            @if (Util::rolIsQuotaAid())
+                <li class="{{ isActiveRoute('quota_aid.index') }}" data-toggle="tooltip" data-placement="right"
+                    title="Cuota y Auxilio Mortuorio">
+                    <a href="{{ url('/quota_aid') }}"><i class="{{Muserpol\Helpers\Util::IconModule(4)}}"></i> <span
+                            class="nav-label">Cuota y Auxilio Mortuorio</span></a>
+                </li>
+            @endif
+            @if (Util::rolIsContributions())
+                <li class="{{ isActiveRoute('direct_contribution.index') }}" data-toggle="tooltip" data-placement="right"
+                    title="Aportes">
+                    <a href="{{ url('/direct_contribution') }}"><i class="{{Util::IconModule(11)}}"></i> <span
+                            class="nav-label">Aportes</span></a>
+                </li>
+            @endif
             <li class="{{ isActiveRoute('direct_contribution.index') }}" data-toggle="tooltip" data-placement="right"
                 title="Reportes">
                 @if (Util::getRol()->id == 62)
@@ -70,7 +80,7 @@
                         class="nav-label">Aportes</span></a>
                 @endif
             </li>
-            @if(Util::getRol()->id == 5)
+            @if(Util::rolIsEcoCom() && Util::getRol()->id == 5)
             <li data-toggle="tooltip" data-placement="right"
                 title="Paramentros para la calificacion del Complemento Economico">
                 <a href="{{ url('/eco_com_qualification_parameters') }}"><i

@@ -358,4 +358,8 @@ class EconomicComplement extends Model
     {
         return $this->eco_com_modality->procedure_modality_id == 3;
     }
+    public function hasLegalGuardian()
+    {
+        return $this->eco_com_legal_guardian;
+    }
 }

@@ -52,20 +52,9 @@
                             class="mediumCheckbox"
                         >
                     </td>
-                    <td @click="rowClick(props.item.path)">
-                        <!-- <a :href="`${props.item.path}`"> -->
-                            {{ props.item.code }}
-                        <!-- </a> -->
-                    </td>
-                    <td @click="rowClick(props.item.path)">
-                        <!-- <a :href="`${props.item.path}`"> -->
-                            {{ props.item.ci }}
-                        <!-- </a> -->
-                    </td>
-                    <td @click="rowClick(props.item.path)">
-                        <!-- <a :href="`${props.item.path}`"> -->
-                            {{ props.item.name }}
-                        <!-- </a> -->
+                    <td v-for="x in dataInbox.headers" :key="x.value" @click="rowClick(props.item.path)">
+                      {{ props.item[x.value] }}
+                      <template v-if="x.value == 'name'">
                         <ul class="tag-list"
                             style="padding: 0"
                             v-if="props.item.tags.length"
@@ -77,19 +66,7 @@
                                     <i class="fa fa-tag"></i> {{tag.name}}</a>
                             </li>
                         </ul>
-                    </td>
-                    <td @click="rowClick(props.item.path)">
-                        <!-- <a :href="`${props.item.path}`"> -->
-                            {{ props.item.modality }}
-                        <!-- </a> -->
-                    </td>
-                    <td @click="rowClick(props.item.path)">
-                        <!-- <a :href="`${props.item.path}`"> -->
-                            {{ props.item.city }}
-                        <!-- </a> -->
-                    </td>
-                    <td @click="rowClick(props.item.path)">
-                        {{ props.item.reception_date | formatDateInbox | uppercase}}
+                      </template>
                     </td>
                 </tr>
             </template>

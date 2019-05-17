@@ -229,18 +229,21 @@ class DocumentController extends Controller
         # code...
         break;
       case 2:
+        $headers = Util::getHeadersInboxEcoCom();
+        logger($request->all());
         # eco com
         $documents = EconomicComplement::with('tags')->select(
           DB::raw(
             "
                         economic_complements.id as id,
                         economic_complements.user_id,
-                        affiliates.identity_card as ci,
-                        trim(regexp_replace(concat_ws(' ', affiliates.first_name,affiliates.second_name,affiliates.last_name,affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) as name,
+                        eco_com_applicants.identity_card as ci,
+                        trim(regexp_replace(concat_ws(' ', eco_com_applicants.first_name,eco_com_applicants.second_name,eco_com_applicants.last_name,eco_com_applicants.mothers_last_name, eco_com_applicants.surname_husband), '\s+', ' ', 'g')) as name,
                         economic_complements.code as code,
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
+                        economic_complements.reception_type as type,
                         procedure_modalities.name as modality,
                         concat('/eco_com/', economic_complements.id) as path,
                         false as status
@@ -251,11 +254,24 @@ class DocumentController extends Controller
           ->leftJoin('cities as eco_com_cities', 'economic_complements.city_id', '=', 'eco_com_cities.id')
           ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
           ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+          ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
           ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
           ->where('wf_states.role_id', '=', $rol_id)
           ->where('economic_complements.inbox_state', '=', true)
-          ->where('economic_complements.user_id', '=', $user_id)
-          ->get();
+          ->where('economic_complements.user_id', '=', $user_id);
+          if($request->city_id){
+            $documents->whereIn('city_id', [$request->city_id]);
+          }
+          if($request->procedure_modality_id){
+            $documents->whereIn('procedure_modalities.id', [$request->procedure_modality_id]);
+          }
+          if($request->reception_type){
+            $documents->where('economic_complements.reception_type', 'like', $request->reception_type);
+          }
+          if($request->reception_date){
+            $documents->where('economic_complements.reception_date', '=', $request->reception_date);
+          }
+        $documents = $documents->get();
         $documents_received_total = EconomicComplement::with('tags')->select(
           DB::raw(
             "

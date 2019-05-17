@@ -4,6 +4,8 @@ namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Muserpol\Helpers\Util;
+use Muserpol\Models\City;
 
 class EcoComLegalGuardian extends Model
 {
@@ -25,5 +27,21 @@ class EcoComLegalGuardian extends Model
             return null;
         }
         return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function eco_com_legal_guardian_type()
+    {
+        return $this->belongsTo(EcoComLegalGuardianType::class);
+    }
+    public function city_identity_card()
+    {
+        return $this->belongsTo(City::class, 'city_identity_card_id', 'id');
+    }
+    public function fullName($style = "uppercase")
+    {
+        return Util::fullName($this, $style);
+    }
+    public function ciWithExt()
+    {
+        return Util::removeSpaces($this->identity_card . ' ' .($this->city_identity_card->first_shortened ?? ''));
     }
 }

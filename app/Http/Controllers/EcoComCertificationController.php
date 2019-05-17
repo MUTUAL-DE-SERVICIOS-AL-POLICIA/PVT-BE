@@ -15,6 +15,7 @@ class EcoComCertificationController extends Controller
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
         $affiliate = $eco_com->affiliate;
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
+        $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
         $eco_com_submitted_documents = $eco_com->submitted_documents->pluck('procedure_requirement');
         if($eco_com->reception_type == 'Habitual'){
             $eco_com_submitted_documents = ProcedureRequirement::where('id',127)->get();
@@ -46,6 +47,7 @@ class EcoComCertificationController extends Controller
             'eco_com' => $eco_com,
             'affiliate' => $affiliate,
             'eco_com_beneficiary' => $eco_com_beneficiary,
+            'eco_com_legal_guardian' => $eco_com_legal_guardian,
             'eco_com_submitted_documents' => $eco_com_submitted_documents,
         ];
         $pages = [];
