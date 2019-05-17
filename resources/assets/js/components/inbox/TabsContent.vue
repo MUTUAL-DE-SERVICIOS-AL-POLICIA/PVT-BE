@@ -2,7 +2,7 @@
 import {mapGetters, mapMutations} from 'vuex';
 import { flashErrors } from "../../helper.js";
 export default {
-    props:['rolId','user', 'inboxState'],
+    props:['rolId','user', 'inboxState', 'cities', 'procedureModalities', 'ecoComModalities', 'receptionTypes'],
     data(){
         return{
             workflows: [],
@@ -17,16 +17,22 @@ export default {
             showLoading:true,
             documentsReceivedTotal:null,
             documentsEditedTotal:null,
+            filter:{
+                city_id: 0,
+                procedure_modality_id: 0,
+                reception_type: null,
+                eco_com_modality_id: 0,
+            }
         }
     },
     mounted(){
         this.getData();
     },
     methods:{
-        getData(){
+        async getData(){
             this.showLoading=true;
             let uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
-            axios.get(uri).then(({data})=>{
+            await axios.get(uri, {params: this.filter}).then(({data})=>{
                 this.workflows =  data.workflows;
                 this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
                 this.area_documents =  data.documents
