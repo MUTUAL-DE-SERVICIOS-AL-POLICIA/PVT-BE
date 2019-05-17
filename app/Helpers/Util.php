@@ -866,6 +866,18 @@ class Util
       ['text' => "Fecha de Recepción", 'value' => "date_reception"],
     ];
   }
+  public static function getHeadersInboxEcoCom()
+  {
+    return [
+      ['text' => "# Trámite", 'value' => "code"],
+      ['text' => "CI Beneficiario", 'align' => "left", 'value' => "ci"],
+      ['text' => "Nombre del Beneficiario", 'value' => "name"],
+      ['text' => "Modalidad", 'value' => "modality"],
+      ['text' => "Regional", 'value' => "city"],
+      ['text' => "Tipo", 'value' => "type"],
+      ['text' => "Fecha de Recepción", 'value' => "reception_date"],
+    ];
+  }
   public static function getHeadersInboxTreasury()
   {
     return [
