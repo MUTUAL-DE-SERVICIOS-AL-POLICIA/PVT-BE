@@ -108,21 +108,23 @@
         </table>
         @endif --}}
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
-        <table class="m-t-50">
-            <tr>
-                <td class="no-border text-center text-base w-50 align-bottom">
-                    <span class="font-bold">
-                        ----------------------------------------------------
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="no-border text-center text-base w-50 align-top">
-                    <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
-                    <br />
-                    <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
-                </td>
-            </tr>
+        <table class="m-t-50 table-info">
+            <tbody>
+                <tr>
+                    <td class="no-border text-center text-base w-50 align-bottom" style="border-radius: 0.5em 0 0 0!important;">
+                        <span class="font-bold">
+                            ----------------------------------------------------
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="no-border text-center text-base w-50 align-top">
+                        <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
+                        <br />
+                        <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
+                    </td>
+                </tr>
+            </tbody>
         </table>
         <div class="m-t-50 font-bold text-xxxs">
             Los datos insertos en la presente solicitud son de plena responsabilidad del solicitante.

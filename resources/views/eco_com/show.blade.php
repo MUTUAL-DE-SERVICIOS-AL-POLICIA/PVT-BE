@@ -29,6 +29,14 @@
                     </certification-button>
                 @endif
             @endif
+            @if (Util::getRol()->id == 4)
+                <certification-button
+                    type="ecoCom"
+                    title="Imprimir Calificacion"
+                    doc-id="{{ $economic_complement->id }}"
+                    url-print="{{ route('eco_com_print_qualification', [$economic_complement->id])}}">
+                </certification-button>
+            @endif
         </div>
         <div class="pull-right">
             <div class="form-inline">

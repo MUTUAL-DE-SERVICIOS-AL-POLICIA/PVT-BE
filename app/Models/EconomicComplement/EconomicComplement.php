@@ -125,6 +125,18 @@ class EconomicComplement extends Model
     // {
     //     return $this->belongsTo('Muserpol\Models\ProcedureModality');
     // }
+    public function getComplementaryFactor()
+    {
+        return intval($this->complementary_factor);
+    }
+    public function getTotalSemester()
+    {
+        return $this->difference * 6;
+    }
+    public function getOnlyTotalEcoCom()
+    {
+        return $this->total + $this->discount_types()->sum('amount');
+    }
     public function qualify()
     {
         if ($this->eco_com_state->eco_com_state_type_id == 1 || $this->eco_com_state->eco_com_state_type_id == 6) {
@@ -374,6 +386,14 @@ class EconomicComplement extends Model
     public function hasLegalGuardian()
     {
         return $this->eco_com_legal_guardian;
+    }
+    public function hasDiscountTypes()
+    {
+        return $this->discount_types->count() > 0;
+    }
+    public function hasDiscountType($id)
+    {
+        return !!$this->discount_types()->where('discount_type_id', $id)->first();
     }
     public function eco_com_reception_type()
     {
