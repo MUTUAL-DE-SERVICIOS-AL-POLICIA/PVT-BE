@@ -12,6 +12,7 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Helpers\Util;
 use Log;
 use Illuminate\Support\Facades\Crypt;
+use Hashids\Hashids;
 
 class EconomicComplement extends Model
 {
@@ -71,11 +72,23 @@ class EconomicComplement extends Model
     {
         return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount','date','message'])->withTimestamps();
     }
+    public function encode()
+    {
+        $hashids = new Hashids('economic_complements',10);
+        return $hashids->encode($this->id);
+    }
+    public function decode($hash)
+    {
+        $hashids = new Hashids('economic_complements',10);
+        $id = $hashids->decode($hash);
+        if($id){
+            return $id[0];
+        }
+        return null;
+    }
     public function getBasicInfoCode()
     {
-        // $code = $this->id . " " . ($this->affiliate->id ?? null) . "\n" . "Trámite Nro: " . $this->code . "\nModalidad: " . $this->eco_com_modality->name . "\Beneficiario: " . ($this->eco_com_beneficiary->fullName() ?? null);
-    
-        return array('code' => $this->code, 'hash' => null);
+        return array('hash' => $this->encode());
     }
     public function submitted_documents()
     {

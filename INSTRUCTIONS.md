@@ -10,3 +10,8 @@ alter table economic_complements drop constraint economic_complements_affiliate_
 ```
 php artisan db:seed --class=EconomicComplementRolSeeder
 ```
+### enable extension
+```
+bcmath
+gmp
+```

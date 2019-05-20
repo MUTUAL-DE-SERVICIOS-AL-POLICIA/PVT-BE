@@ -15,10 +15,10 @@
         </div>
         @include('eco_com.print.only_police_info', ['affiliate'=>$affiliate])
         @if ($eco_com->hasLegalGuardian())
-            <div class="font-bold uppercase m-b-5 counter">
-                Datos del Apoderado Legal
-            </div>
-            @include('eco_com.print.legal_guardian', ['eco_com_legal_guardian' => $eco_com_legal_guardian])
+        <div class="font-bold uppercase m-b-5 counter">
+            Datos del Apoderado Legal
+        </div>
+        @include('eco_com.print.legal_guardian', ['eco_com_legal_guardian' => $eco_com_legal_guardian])
         @endif
         <div class="text-xs">
             <div class="text-left block">
@@ -127,8 +127,12 @@
         <div class="m-t-50 font-bold text-xxxs">
             Los datos insertos en la presente solicitud son de plena responsabilidad del solicitante.
             <br>
-            Autorizo el acceso a la información correspondiente a mi persona (y causahabiente si corresponde) en las bases de datos de SERECI, SEGIP y otras Instituciones Públicas y/o Privadas de ser necesario para su revisión y/o verificación.
+            Autorizo el acceso a la información correspondiente a mi persona (y causahabiente si corresponde) en las
+            bases de datos de SERECI, SEGIP y otras Instituciones Públicas y/o Privadas de ser necesario para su
+            revisión y/o verificación.
         </div>
     </div>
 </div>
+@endsection
+@section('footer')
 @endsection

@@ -20,10 +20,6 @@ class EcoComCertificationController extends Controller
         if($eco_com->eco_com_reception_type_id == 1){
             $eco_com_submitted_documents = ProcedureRequirement::where('id',127)->get();
         }
-        // $bar_code = \DNS2D::getBarcodePNG(($eco_com->getBasicInfoCode()['code'] . "\n\n" . $eco_com->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
-        // $bar_code = \DNS2D::getBarcodePNG(($eco_com->getBasicInfoCode()['code'] . "\n\n" . $eco_com->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
-        $bar_code = \DNS2D::getBarcodePNG(($eco_com->getBasicInfoCode()['code'] . "\n\n" . $eco_com->getBasicInfoCode()['hash']), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code])->render();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
@@ -33,6 +29,11 @@ class EcoComCertificationController extends Controller
         $user = $eco_com->user;
         $date = Util::getDateFormat($eco_com->reception_date);
         $number = $code;
+
+
+        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user'=> $user])->render();
+
         $data = [
             'direction' => $direction,
             'institution' => $institution,
@@ -58,7 +59,7 @@ class EcoComCertificationController extends Controller
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
-            ->setOption('margin-bottom', '15mm')
+            ->setOption('margin-bottom', '23mm')
             ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $eco_com->id . '.pdf');
     }
@@ -70,11 +71,6 @@ class EcoComCertificationController extends Controller
         }
         $affiliate = $eco_com->affiliate;
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
-        /*
-        **!! TODO add support utf-8
-        */
-        $bar_code = \DNS2D::getBarcodePNG(($eco_com->getBasicInfoCode()['code'] . "\n\n" . $eco_com->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code])->render();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
@@ -84,6 +80,10 @@ class EcoComCertificationController extends Controller
         $user = $eco_com->user;
         $date = Util::getDateFormat($eco_com->reception_date);
         $number = $code;
+
+        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user'=> $user])->render();
+
         $data = [
             'direction' => $direction,
             'institution' => $institution,
@@ -107,7 +107,7 @@ class EcoComCertificationController extends Controller
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
-            ->setOption('margin-bottom', '15mm')
+            ->setOption('margin-bottom', '23mm')
             ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $eco_com->id . '.pdf');
     }
