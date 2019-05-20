@@ -93,7 +93,7 @@
                         <div class="col-md-6">
                             <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('birth_date') && editing }">
                                 <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
-                                <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" v-date type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:DD/MM/YYYY|max_date'">
+                                <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" v-date type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:dd/MM/yyyy|max_date'">
                                     <div v-show="errors.has('birth_date') && editing">
                                         <i class="fa fa-warning text-danger"></i>
                                         <span class="text-danger">@{{ errors.first('birth_date') }}</span>
@@ -114,7 +114,7 @@
 
                             <div class="row m-b-md">
                             <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Fallecimiento:</label></div>
-                            <div class="col-md-9"><input name="date_death" v-model="form.date_death" v-date type="text" class="form-control" :disabled="!editing" v-validate="'date_format:DD/MM/YYYY|max_current_date'">
+                            <div class="col-md-9"><input name="date_death" v-model="form.date_death" v-date type="text" class="form-control" :disabled="!editing" v-validate="'date_format:dd/MM/yyyy|max_current_date'">
                                 <div v-show="errors.has('date_death') && editing">
                                     <i class="fa fa-warning text-danger"></i>
                                     <span class="text-danger">@{{ errors.first('date_death') }}</span>

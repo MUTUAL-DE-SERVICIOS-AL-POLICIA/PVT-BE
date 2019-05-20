@@ -145,7 +145,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" data-date="true" name="contributor_birth_date" v-model.trim="contributor_birth_date"
-                                    v-validate.initial="'required|date_format:DD/MM/YYYY'">
+                                    v-validate.initial="'required|date_format:dd/MM/yyyy'">
                                 <i v-show="errors.has('contributor_birth_date')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('contributor_birth_date')" class="text-danger">@{{ errors.first('contributor_birth_date') }}</span>
                             </div>
