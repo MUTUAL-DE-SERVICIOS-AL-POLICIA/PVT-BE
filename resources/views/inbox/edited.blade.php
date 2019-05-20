@@ -89,7 +89,7 @@
                                 <label for="">Tipo de Recepcion:</label>
                                 <select class="form-control" v-model="filter.reception_type" @change="getData()">
                                     <option :value="null">TODOS</option>
-                                    <option v-for="pm in receptionTypes" :key="pm.key" :value="pm.key">@{{ pm.value }} </option>
+                                    <option v-for="pm in receptionTypes" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
                                 </select>
                             </div>
                             <div class="form-group">

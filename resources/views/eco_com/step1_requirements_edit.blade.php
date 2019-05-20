@@ -9,7 +9,7 @@
                     <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar</button>
                 </div>
             </div>
-            <form id="brianytati" v-if="ecoCom.reception_type != 'Habitual'">
+            <form id="brianytati" v-if="ecoCom.eco_com_reception_type_id == 2">
                 <div class="row">
                     <div v-for="(requirement, index) in requirementList" :key="index">
                         <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement" :class="rq.background" style="cursor:pointer"

@@ -21,7 +21,7 @@
     <tbody>
         <tr class="text-sm">
             <td class="text-center uppercase font-bold px-5 py-3">
-                {{ $eco_com->reception_type }}
+                {{ $eco_com->eco_com_reception_type->name }}
             </td>
             <td class="text-center uppercase font-bold px-5 py-3">
                 {{ $eco_com->eco_com_modality->procedure_modality->name }}

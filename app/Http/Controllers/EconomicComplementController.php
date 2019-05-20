@@ -40,6 +40,7 @@ use Muserpol\Models\DiscountType;
 use Muserpol\Models\ComplementaryFactor;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
 use Muserpol\Helpers\ID;
+use Muserpol\Models\EconomicComplement\EcoComReceptionType;
 
 class EconomicComplementController extends Controller
 {
@@ -175,6 +176,7 @@ class EconomicComplementController extends Controller
         $degrees = Degree::all();
         $categories = Category::all();
         $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
+        $eco_com_reception_types = EcoComReceptionType::all();
         $data = [
             'affiliate' => $affiliate,
             'cities' => $cities,
@@ -188,6 +190,7 @@ class EconomicComplementController extends Controller
             'degrees' => $degrees,
             'categories' => $categories,
             'eco_com_legal_guardian_types' => $eco_com_legal_guardian_types,
+            'eco_com_reception_types' => $eco_com_reception_types,
         ];
 
         return view('eco_com.create', $data);
@@ -222,7 +225,7 @@ class EconomicComplementController extends Controller
         /**
          ** update affiliate police info
          */
-        if($request->reception_type == 1){
+        if($request->reception_type == 2){
             // $affiliate->category_id = $request->affiliate_category_id;
             $service_year = $request->affiliate_service_years;
             $service_month = $request->affiliate_service_months;
@@ -241,7 +244,6 @@ class EconomicComplementController extends Controller
             }
             $affiliate->degree_id = $request->affiliate_degree_id;
             $affiliate->pension_entity_id = $request->pension_entity_id;
-            $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
             $affiliate->save();
         }
         /**
@@ -275,7 +277,7 @@ class EconomicComplementController extends Controller
          **/
         $economic_complement->inbox_state = true;
         $economic_complement->state = 'Received';
-        $economic_complement->reception_type = $request->reception_type == 2 ? 'Habitual' : 'Inclusion';
+        $economic_complement->eco_com_reception_type_id = $request->reception_type;
 
         if ($request->pension_entity_id == 5) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
@@ -814,14 +816,14 @@ class EconomicComplementController extends Controller
 
     public function getReceptionType(Request $request)
     {
-        $reception_type_id = 1;
+        $reception_type_id = 2;
         if (!$request->modality_id) {
             return $reception_type_id;
         }
         if ($request->last_eco_com_id) {
             $eco_com = EconomicComplement::find($request->last_eco_com_id);
             if ($eco_com->eco_com_modality->procedure_modality_id == $request->modality_id) {
-                $reception_type_id = 2;
+                $reception_type_id = 1;
             }
         }
         return $reception_type_id;

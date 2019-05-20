@@ -28,9 +28,9 @@
 								<div class="form-group">
 									<div class="input-daterange input-group" :class="{ 'has-error': errors.has('modal_first_date')||errors.has('modal_last_date') }">
 										<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-										<input type="text" name="modal_first_date" class="form-control-sm form-control" placeholder="mm/yyyy" data-month-year="true" v-model="modal.first_date" v-validate="'required|date_format:MM/YYYY|maxDate|minDate'">
+										<input type="text" name="modal_first_date" class="form-control-sm form-control" placeholder="mm/yyyy" data-month-year="true" v-model="modal.first_date" v-validate="'required|date_format:MM/yyyy|maxDate|minDate'">
 										<span class="input-group-addon"> <i class="fa fa-arrow-right"></i> </span>
-										<input type="text" name="modal_last_name" class="form-control-sm form-control" placeholder="mm/yyyy" data-month-year="true" v-model="modal.last_date" v-validate="'required|date_format:MM/YYYY|maxDate|minDate'">
+										<input type="text" name="modal_last_name" class="form-control-sm form-control" placeholder="mm/yyyy" data-month-year="true" v-model="modal.last_date" v-validate="'required|date_format:MM/yyyy|maxDate|minDate'">
 										<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 									</div>
 								</div>

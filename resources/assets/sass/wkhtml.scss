@@ -208,17 +208,17 @@ tr {
 .border-b {
 	border-color: $color_shark_approx;
 	border-style: solid;
-	border-bottom-width: 1px,;
+	border-bottom-width: 1px;
 }
 .border-t {
 	border-color: $color_shark_approx;
 	border-style: solid;
-	border-top-width: 1px,;
+	border-top-width: 1px;
 }
 .border-r {
 	border-color: $color_shark_approx;
 	border-style: solid;
-	border-right-width: 1px,;
+	border-right-width: 1px;
 }
 .border-l {
 	border-color: $color_shark_approx;
@@ -761,6 +761,9 @@ tr {
 .text-5xl {
 	font-size: 3rem;
 }
+.no-rounded {
+	border-radius: 0rem;
+}
 .rounded {
 	//Instead of the line below you could use @include border-top-left-radius($radius)
 	border-top-left-radius: .7rem;
@@ -833,4 +836,19 @@ body {
 .intext:before {
 	counter-increment: indext;
 	content: counter(indext) "";
+}
+.static	{
+	position: static;
+}
+.fixed {
+	position: fixed;
+}
+.absolute {
+	position: absolute;
+}
+.relative {
+	position: relative;
+}
+.sticky {
+	position: sticky;
 }
