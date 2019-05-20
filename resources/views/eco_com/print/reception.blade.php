@@ -15,10 +15,10 @@
         </div>
         @include('eco_com.print.only_police_info', ['affiliate'=>$affiliate])
         @if ($eco_com->hasLegalGuardian())
-            <div class="font-bold uppercase m-b-5 counter">
-                Datos del Apoderado Legal
-            </div>
-            @include('eco_com.print.legal_guardian', ['eco_com_legal_guardian' => $eco_com_legal_guardian])
+        <div class="font-bold uppercase m-b-5 counter">
+            Datos del Apoderado Legal
+        </div>
+        @include('eco_com.print.legal_guardian', ['eco_com_legal_guardian' => $eco_com_legal_guardian])
         @endif
         <div class="text-xs">
             <div class="text-left block">
@@ -32,22 +32,22 @@
                 <span class="font-bold uppercase">REF: <span class="underline">
                         SOLICITUD PAGO COMPLEMENTO ECONÓMICO {{ $eco_com->eco_com_procedure->semester }} SEMESTRE DE LA
                         GESTIÓN {{ $eco_com->eco_com_procedure->getYear() }} BENEFICIARIO
-                        {{ $eco_com->reception_type }}
+                        {{ $eco_com->eco_com_reception_type->name }}
                     </span></span>
             </div>
             <div class="m-b-5">Distinguido Director:</div>
             <div class="m-b-10">La presente tiene por objeto solicitar a su autoridad pueda instruir por la unidad
                 correspondiente
-                @if($eco_com->reception_type == 'Habitual')
+                @if($eco_com->eco_com_reception_type_id == 1)
                 hacerme el
                 @endif
                 <strong class="uppercase">
-                    @if($eco_com->reception_type != 'Habitual')
+                    @if($eco_com->eco_com_reception_type_id == 2)
                     LA INCLUSIÓN COMO NUEVO BENEFICIARIO PARA EL
                     @endif
                     PAGO DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO DEL {{ $eco_com->eco_com_procedure->semester }}
                     SEMESTRE DE LA GESTIÓN {{ $eco_com->eco_com_procedure->getYear() }}</strong>,
-                en mi calidad de beneficiario {{ $eco_com->reception_type }}.
+                en mi calidad de beneficiario {{ $eco_com->eco_com_reception_type->name }}.
                 <br>Para tal efecto, adjunto los requisitos
                 exigidos de acuerdo al siguiente detalle:</div>
         </div>
@@ -108,27 +108,33 @@
         </table>
         @endif --}}
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
-        <table class="m-t-50">
-            <tr>
-                <td class="no-border text-center text-base w-50 align-bottom">
-                    <span class="font-bold">
-                        ----------------------------------------------------
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="no-border text-center text-base w-50 align-top">
-                    <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
-                    <br />
-                    <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
-                </td>
-            </tr>
+        <table class="m-t-50 table-info">
+            <tbody>
+                <tr>
+                    <td class="no-border text-center text-base w-50 align-bottom" style="border-radius: 0.5em 0 0 0!important;">
+                        <span class="font-bold">
+                            ----------------------------------------------------
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="no-border text-center text-base w-50 align-top">
+                        <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
+                        <br />
+                        <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
+                    </td>
+                </tr>
+            </tbody>
         </table>
         <div class="m-t-50 font-bold text-xxxs">
             Los datos insertos en la presente solicitud son de plena responsabilidad del solicitante.
             <br>
-            Autorizo el acceso a la información correspondiente a mi persona (y causahabiente si corresponde) en las bases de datos de SERECI, SEGIP y otras Instituciones Públicas y/o Privadas de ser necesario para su revisión y/o verificación.
+            Autorizo el acceso a la información correspondiente a mi persona (y causahabiente si corresponde) en las
+            bases de datos de SERECI, SEGIP y otras Instituciones Públicas y/o Privadas de ser necesario para su
+            revisión y/o verificación.
         </div>
     </div>
 </div>
+@endsection
+@section('footer')
 @endsection

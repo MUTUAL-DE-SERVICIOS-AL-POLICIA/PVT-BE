@@ -92,6 +92,7 @@ export function getGender(value) {
 }
 
 export function flashErrors(prefix, errors, level) {
+    console.log(errors);
     for (const key in errors) {
         let value = errors[key];
 

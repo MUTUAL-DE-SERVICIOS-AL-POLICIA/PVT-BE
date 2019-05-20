@@ -762,26 +762,6 @@
                   </div>
                 </div>
               </div>
-              <div class="col-lg-6" :class="{'has-error': errors.has('affiliate_date_derelict') }">
-                <div class="col-md-4">
-                  <label class="control-label">Fecha de Desvinculaci&oacute;n:</label>
-                </div>
-                <div class="col-md-8">
-                  <input
-                    :disabled="isHabitual"
-                    type="text"
-                    class="form-control"
-                    v-model="affiliate.date_derelict"
-                    v-month-year
-                    name="affiliate_date_derelict"
-                    v-validate="'date_format:MM/yyyy|max_current_date_month_year'"
-                  >
-                  <div v-show="errors.has('affiliate_date_derelict')">
-                    <i class="fa fa-warning text-danger"></i>
-                    <span class="text-danger">{{ errors.first('affiliate_date_derelict') }}</span>
-                  </div>
-                </div>
-              </div>
             </div>
             <br>
           </div>
@@ -1302,16 +1282,16 @@ export default {
   },
   computed: {
     isHabitual(){
-      return this.receptionType.id == 2;
+      return this.receptionType.id == 1;
     },
     serviceYearsRequired(){
-      if(this.receptionType.id == 1){
+      if(!this.isHabitual){
         return 'required|min_value:0|max_value:100';
       }
       return 'min_value:0|max_value:100';
     },
     serviceMonthsRequired(){
-      if(this.receptionType.id == 1){
+      if(!this.isHabitual){
         return 'required|min_value:0|max_value:11';
       }
       return 'min_value:0|max_value:11';

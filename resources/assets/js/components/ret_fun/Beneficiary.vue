@@ -434,7 +434,7 @@
                             <label class="control-label">Fecha de Resolucion</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" v-date name="beneficiary_advisor_resolution_date[]" v-model.trim="beneficiary.advisor_resolution_date" class="form-control" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'" :disabled="!editable">
+                            <input type="text" v-date name="beneficiary_advisor_resolution_date[]" v-model.trim="beneficiary.advisor_resolution_date" class="form-control" v-validate.initial="'required|date_format:dd/MM/yyyy|max_current_date'" :disabled="!editable">
                             <i v-show="errors.has('beneficiary_advisor_resolution_date[]')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('beneficiary_advisor_resolution_date[]')" class="text-danger">{{ errors.first('beneficiary_advisor_resolution_date[]') }}</span>
                         </div>
@@ -586,7 +586,7 @@
                             <label class="control-label">Fecha de Poder</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" v-date name="beneficiary_legal_guardian_date_authority[]" v-model.trim="beneficiary.legal_guardian_date_authority" class="form-control" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'" :disabled="!editable">
+                            <input type="text" v-date name="beneficiary_legal_guardian_date_authority[]" v-model.trim="beneficiary.legal_guardian_date_authority" class="form-control" v-validate.initial="'required|date_format:dd/MM/yyyy|max_current_date'" :disabled="!editable">
                             <i v-show="errors.has('beneficiary_legal_guardian_date_authority[]')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('beneficiary_legal_guardian_date_authority[]')" class="text-danger">{{ errors.first('beneficiary_legal_guardian_date_authority[]') }}</span>
                         </div>

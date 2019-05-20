@@ -16,7 +16,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
-import { camelCaseToSnakeCase } from "../../helper.js";
+import { camelCaseToSnakeCase, flashErrors } from "../../helper.js";
     export default {
       props: ["type","title", "urlPrint", "docId", "message"],
       data(){
@@ -80,14 +80,19 @@ import { camelCaseToSnakeCase } from "../../helper.js";
               }
             });
           }else{
-            let res = await axios({
-              method: "GET",
-              url: this.urlPrint,
-              responseType: "arraybuffer"
-            });
-            const pdfBlob = new Blob([res.data], { type: "application/pdf" });
-            printJS(URL.createObjectURL(pdfBlob));
-            this.loading = false;
+            try{
+              let res = await axios({
+                method: "GET",
+                url: this.urlPrint,
+                responseType: "arraybuffer"
+              });
+              const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+              printJS(URL.createObjectURL(pdfBlob));
+              this.loading = false;
+            } catch(error){
+              this.loading = false;
+              flashErrors("Error: ", ['Ocurrio un error al generar el documento']);
+            }
           }
         }
       },

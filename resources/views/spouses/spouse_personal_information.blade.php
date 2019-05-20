@@ -95,7 +95,7 @@
                     <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('birth_date') && editing }">
                         <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
                         <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" v-date type="text" class="form-control" :disabled="!editing"
-                                v-validate="'required|date_format:DD/MM/YYYY|max_date'">
+                                v-validate="'required|date_format:dd/MM/yyyy|max_date'">
                             <div v-show="errors.has('birth_date') && editing">
                                 <i class="fa fa-warning text-danger"></i>
                                 <span class="text-danger">@{{ errors.first('birth_date') }}</span>

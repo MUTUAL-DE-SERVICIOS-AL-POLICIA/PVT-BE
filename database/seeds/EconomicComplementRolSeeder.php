@@ -12,6 +12,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Muserpol\Action;
 use Muserpol\Permission;
 use Muserpol\Models\Role;
+use Muserpol\Models\EconomicComplement\EcoComReceptionType;
 
 class EconomicComplementRolSeeder extends Seeder
 {
@@ -108,6 +109,13 @@ class EconomicComplementRolSeeder extends Seeder
             Schema::table('eco_com_rents', function (Blueprint $table) {
                 $table->dropColumn('eco_com_type_id');
             });
+        }
+        $statuses = [
+            ['name' => 'Habitual'],
+            ['name' => 'Inclusión'],
+        ];
+        foreach ($statuses as $status) {
+            EcoComReceptionType::create($status);
         }
     }
 }
