@@ -40,7 +40,7 @@
               v-validate.initial="'required'"
               disabled
             >
-              <option v-for="rt in reception_types" :value="rt.id" :key="rt.id">{{ rt.name }}</option>
+              <option v-for="rt in ecoComReceptionTypes" :value="rt.id" :key="rt.id">{{ rt.name }}</option>
             </select>
             <i v-show="errors.has('reception_type_id')" class="fa fa-warning text-danger"></i>
             <span
@@ -98,7 +98,7 @@
       </div>
     </div>
     <h2>Lista de Requisitos</h2>
-    <div v-if="reception_type_id == 2">
+    <div v-if="reception_type_id == 1">
       <h3>Documentos ya presentados</h3>
     </div>
     <div v-else class="wrapper wrapper-content animated fadeInRight">
@@ -184,7 +184,8 @@ export default {
     "lastEcoCom",
     "pensionEntities",
     "affiliate",
-    "ecoComProcedureId"
+    "ecoComProcedureId",
+    "ecoComReceptionTypes"
   ],
   data() {
     return {
@@ -198,16 +199,6 @@ export default {
       pension_entity_id: !!this.affiliate.pension_entity_id
         ? this.affiliate.pension_entity_id
         : null,
-      reception_types: [
-        {
-          id: 1,
-          name: "Inclusion"
-        },
-        {
-          id: 2,
-          name: "Habitual"
-        }
-      ],
       reception_type_id: null
     };
   },
@@ -264,7 +255,7 @@ export default {
         });
       await this.$store.commit(
         "ecoComForm/setReceptionType",
-        this.reception_types.find(r => r.id == this.reception_type_id)
+        this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id)
       );
       await this.findBeneficiary();
     },

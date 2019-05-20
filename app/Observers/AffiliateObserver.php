@@ -124,13 +124,13 @@ class AffiliateObserver
 
         if($affiliate->degree_id != $old->degree_id)
         {
-            $message = $message . ' grado '.$old->degree->name.' a '.$affiliate->degree->name.', ';
+            $message = $message . ' grado '.optional($old->degree)->name.' a '.optional($affiliate->degree)->name.', ';
 
         }
 
         if($affiliate->pension_entity_id != $old->pension_entity_id)
         {
-            $message = $message . ' ente gestor '.($old->pension_entity->name??"Sin ente gestor").' a '.($affiliate->pension_entity->name??"Sin ente gestor").', ';
+            $message = $message . ' ente gestor '.(optional($old->pension_entity)->name??"Sin ente gestor").' a '.(optional($affiliate->pension_entity)->name??"Sin ente gestor").', ';
 
         }
 

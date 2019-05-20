@@ -24,6 +24,7 @@ use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\City;
 use Muserpol\Models\ProcedureModality;
 use Muserpol\Models\EconomicComplement\EcoComModality;
+use Muserpol\Models\EconomicComplement\EcoComReceptionType;
 
 class InboxController extends Controller
 {
@@ -39,10 +40,7 @@ class InboxController extends Controller
     ->where('procedure_types.module_id', Util::getRol()->module_id)
     ->get();
     $eco_com_modalities = EcoComModality::all();
-    $reception_types = json_encode(array(
-      array('key' => 'Habitual', 'value' => 'Habitual' ),
-      array('key' => 'Inclusion', 'value' => 'Inclusion' )
-    ));
+    $reception_types = EcoComReceptionType::all();
     $data = [
       'cities' => $cities,
       'procedure_modalities' => $procedure_modalities,

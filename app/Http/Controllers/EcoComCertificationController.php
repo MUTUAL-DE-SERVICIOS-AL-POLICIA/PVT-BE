@@ -17,7 +17,7 @@ class EcoComCertificationController extends Controller
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
         $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
         $eco_com_submitted_documents = $eco_com->submitted_documents->pluck('procedure_requirement');
-        if($eco_com->reception_type == 'Habitual'){
+        if($eco_com->eco_com_reception_type_id == 1){
             $eco_com_submitted_documents = ProcedureRequirement::where('id',127)->get();
         }
         // $bar_code = \DNS2D::getBarcodePNG(($eco_com->getBasicInfoCode()['code'] . "\n\n" . $eco_com->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
@@ -65,7 +65,7 @@ class EcoComCertificationController extends Controller
     public function printSwornDeclaration($id)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
-        if($eco_com->reception_type == 'Habitual'){
+        if($eco_com->eco_com_reception_type_id == 1){
             return 'error';
         }
         $affiliate = $eco_com->affiliate;

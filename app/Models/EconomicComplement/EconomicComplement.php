@@ -362,4 +362,12 @@ class EconomicComplement extends Model
     {
         return $this->eco_com_legal_guardian;
     }
+    public function eco_com_reception_type()
+    {
+        return $this->belongsTo(EcoComReceptionType::class);
+    }
+    public function hasObservationType($id)
+    {
+        return !!$this->observations()->where('observation_type_id', '=', $id)->first();
+    }
 }

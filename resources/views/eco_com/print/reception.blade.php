@@ -32,22 +32,22 @@
                 <span class="font-bold uppercase">REF: <span class="underline">
                         SOLICITUD PAGO COMPLEMENTO ECONÓMICO {{ $eco_com->eco_com_procedure->semester }} SEMESTRE DE LA
                         GESTIÓN {{ $eco_com->eco_com_procedure->getYear() }} BENEFICIARIO
-                        {{ $eco_com->reception_type }}
+                        {{ $eco_com->eco_com_reception_type->name }}
                     </span></span>
             </div>
             <div class="m-b-5">Distinguido Director:</div>
             <div class="m-b-10">La presente tiene por objeto solicitar a su autoridad pueda instruir por la unidad
                 correspondiente
-                @if($eco_com->reception_type == 'Habitual')
+                @if($eco_com->eco_com_reception_type_id == 1)
                 hacerme el
                 @endif
                 <strong class="uppercase">
-                    @if($eco_com->reception_type != 'Habitual')
+                    @if($eco_com->eco_com_reception_type_id == 2)
                     LA INCLUSIÓN COMO NUEVO BENEFICIARIO PARA EL
                     @endif
                     PAGO DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO DEL {{ $eco_com->eco_com_procedure->semester }}
                     SEMESTRE DE LA GESTIÓN {{ $eco_com->eco_com_procedure->getYear() }}</strong>,
-                en mi calidad de beneficiario {{ $eco_com->reception_type }}.
+                en mi calidad de beneficiario {{ $eco_com->eco_com_reception_type->name }}.
                 <br>Para tal efecto, adjunto los requisitos
                 exigidos de acuerdo al siguiente detalle:</div>
         </div>

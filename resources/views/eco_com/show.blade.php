@@ -20,7 +20,7 @@
                     doc-id="{{ $economic_complement->id }}"
                     url-print="{{ route('eco_com_print_reception', [$economic_complement->id])}}">
                 </certification-button>
-                @if($economic_complement->reception_type != 'Habitual')
+                @if($economic_complement->eco_com_reception_type_id == 2)
                     <certification-button
                         type="ecoCom"
                         title="Imprimir"
