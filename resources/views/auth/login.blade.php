@@ -22,7 +22,7 @@
             <div class="form-group">
                 <input type="password" name="password" placeholder="Contraseña" class="form-control" <?php if(Session::has('b_pass')){ echo "value='".Session::get('b_pass')."'";}?> required/>
             </div>
-            <button type="submit" class="btn btn-primary block full-width m-b">Iniciar Sesión </button>
+            <button type="submit" class="btn btn-primary block full-width m-b">Iniciar Sesión 2 </button>
 
             
            
