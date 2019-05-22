@@ -13,6 +13,7 @@ use Muserpol\Helpers\Util;
 use Log;
 use Illuminate\Support\Facades\Crypt;
 use Hashids\Hashids;
+use DB;
 
 class EconomicComplement extends Model
 {
@@ -271,6 +272,9 @@ class EconomicComplement extends Model
          ** averages
             ** actualizacion de las rentas netas
             */
+
+        $total_rent = $this->total_rent;
+
         if ($this->eco_com_modality_id > 3 && $this->eco_com_modality_id < 10) { // no se esta tomando en cuenta a orfandad
             $eco_com_rent = EcoComRent::where('degree_id', '=', $this->degree_id)
                 ->where('procedure_modality_id', '=', $this->eco_com_modality->procedure_modality_id)
@@ -279,8 +283,10 @@ class EconomicComplement extends Model
                 ->first();
             // EXCEPTION WHEN TOTAL_RENT > AVERAGE IN MODALITIES 4 AND 5
             if ($this->total_rent > $eco_com_rent->average and ($this->eco_com_modality_id == 4 || $this->eco_com_modality_id == 5 || $this->eco_com_modality_id == 10)) { // se verifica si el total rent es mayor al promedio y que sea de un solo componente
+                $total_rent = $this->total_rent;
                 $this->total_rent_calc = $this->total_rent;
             } else {
+                $total_rent = $eco_com_rent->average;
                 $this->total_rent_calc = $eco_com_rent->average;
             }
         } else if ($this->eco_com_modality_id >= 10) { // solo orfandad
@@ -291,8 +297,10 @@ class EconomicComplement extends Model
                 ->where('semester', '=', $eco_com_procedure->semester)
                 ->first();
             if ($this->total_rent > $eco_com_rent->average and $this->eco_com_modality_id == 10) {
+                $total_rent = $this->total_rent;
                 $this->total_rent_calc = $this->total_rent;
             } else {
+                $total_rent = $eco_com_rent->average;
                 $this->total_rent_calc = $eco_com_rent->average;
             }
         }
@@ -315,7 +323,7 @@ class EconomicComplement extends Model
         $this->seniority = $seniority;
         $salary_quotable = $salary_reference + $seniority;
         $this->salary_quotable = $salary_quotable;
-        $difference = $salary_quotable - $this->total_rent;
+        $difference = $salary_quotable - $total_rent;
         $this->difference = $difference;
         $months_of_payment = 6;
         $total_amount_semester = $difference * $months_of_payment;
@@ -369,6 +377,14 @@ class EconomicComplement extends Model
         //     }
         // }
         $this->save();
+        if ($this->total_rent > $this->salary_quotable) {
+            $this->eco_com_state_id = 12;
+        }else{
+            if ($this->eco_com_state_id == 12){
+                $this->eco_com_state_id = 16;
+            }
+        }
+        $this->save();
         // return $this;
     }
     public function isOldAge()
@@ -403,4 +419,105 @@ class EconomicComplement extends Model
     {
         return !!$this->observations()->where('observation_type_id', '=', $id)->first();
     }
+    public function scopeHasEcoComState($query, ...$ids)
+    {
+        $collect = collect([]);
+        foreach ($ids as $i) {
+            $collect->push($i);
+        }
+        return $query->leftJoin('eco_com_states','economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
+        ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+        ->whereIn('eco_com_state_types.id', $collect);
+    }
+    public function scopeNotHasEcoComState($query, ...$ids)
+    {
+        $collect = collect([]);
+        foreach ($ids as $i) {
+            $collect->push($i);
+        }
+        return $query->leftJoin('eco_com_states','economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
+        ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+        ->whereNotIn('eco_com_state_types.id', $collect);
+    }
+    public function scopeEcoComProcedure($query, ...$ids)
+    {
+        $collect = collect([]);
+        foreach ($ids as $i) {
+            $collect->push($i);
+        }
+        return $query->whereIn('eco_com_procedure_id', $collect);
+    }
+    public function scopeWorkflow($query, ...$ids)
+    {
+        $collect = collect([]);
+        foreach ($ids as $i) {
+            $collect->push($i);
+        }
+        return $query->whereIn('workflow_id', $collect);
+    }
+    public function scopeWfState($query, ...$ids)
+    {
+        $collect = collect([]);
+        foreach ($ids as $i) {
+            $collect->push($i);
+        }
+        return $query->whereIn('wf_current_state_id', $collect);
+    }
+    public function scopeInboxState($query, ...$ids)
+    {
+        $collect = collect([]);
+        foreach ($ids as $i) {
+            $collect->push($i);
+        }
+        return $query->whereIn('inbox_state', $collect);
+    }
+    public function scopeCity($query)
+    {
+        return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=','economic_complements.city_id');
+    }
+    public function scopeBeneficiary($query)
+    {
+        return $query->leftJoin('eco_com_applicants as beneficiary', 'beneficiary.economic_complement_id', '=','economic_complements.id')
+        ->leftJoin('cities as beneficiary_city', 'beneficiary_city.id', '=','beneficiary.city_identity_card_id');
+    }
+    public function scopeHasObservationTypeAndCorrect($query,...$ids)
+    {
+        $collect = collect([]);
+        foreach ($ids as $i) {
+            $collect->push($i);
+        }
+        $model ='economic_complements';
+        $table ='economic_complements';
+        return $query->whereExists(function ($query) use($model , $table, $collect) {
+            $query->select(DB::raw(1))
+                  ->from('observables')
+                  ->where('observables.observable_id', '=', $table . '.id')
+                  ->where('observables.observable_type', '=', $model)
+                  ->where('observables.enabled', false)
+                  ->whereIn('observables.observation_type_id', $collect);
+        });
+        return $query->leftJoin('observables', function($join) use($model , $table, $collect)
+        {
+            $join->on('observables.observable_id', '=', $table . '.id')
+                ->where('observables.observable_type', '=', $model)
+                ->where('observables.enabled', false)
+                ->whereIn('observables.observation_type_id', $collect)
+                ;
+        });
+        return $query->leftJoin('observables', 'observables.observable_id', '=',$this->id)
+        ->where('observables.observable_type', 'economic_complements')
+        ->where('observables.enabled', true);
+        return $this->observations()->whereIn('id', collect(func_get_args($ids)))->where('enabled', true)->get()->count();
+        // return collect(func_get_args($ids))->includes($this->)
+    }
+    public function hasObservationTypeAndNotCorrect(...$ids)
+    {
+        return $this->observations()->whereIn('id', collect(func_get_args($ids)))->where('enabled', false)->get()->count();
+        // return collect(func_get_args($ids))->includes($this->)
+    }
+    // public function hasObservationTypeAndCorrect(...$ids)
+    // {
+    //     return !! $this->observations()->whereIn('id', collect(func_get_args($ids)))->where('enabled', true)->get()->count();
+    //     // return collect(func_get_args($ids))->includes($this->)
+    // }
 }

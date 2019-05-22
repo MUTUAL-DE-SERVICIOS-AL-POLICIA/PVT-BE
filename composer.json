@@ -18,9 +18,10 @@
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
+        "maatwebsite/excel": "^3.1",
         "milon/barcode": "^5.3",
         "nesbot/carbon": "^1.22",
-        "yajra/laravel-datatables-buttons": "^3.0",
+        "phpoffice/phpspreadsheet": "^1.6",
         "yajra/laravel-datatables-oracle": "^8.4"
     },
     "require-dev": {

@@ -1058,6 +1058,20 @@ class EconomicComplementController extends Controller
             $economic_complement->dignity_pension = null;
         }
         $economic_complement->save();
+        if ($request->pension_entity_id == 5) {
+            $economic_complement->total_rent =
+            $economic_complement->sub_total_rent -
+            $economic_complement->reimbursement -
+            $economic_complement->dignity_pension +
+            $economic_complement->aps_disability;
+        }else{
+            $economic_complement->total_rent =
+            $economic_complement->aps_total_fsa +
+            $economic_complement->aps_total_cc +
+            $economic_complement->aps_total_fs +
+            $economic_complement->aps_disability;
+        }
+        $economic_complement->save();
         $discount_type_id = null;
         $rol = Util::getRol();
         switch ($rol->id) {
