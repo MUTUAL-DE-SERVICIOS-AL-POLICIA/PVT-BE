@@ -178,10 +178,10 @@ return [
     Muserpol\Providers\RouteServiceProvider::class,
     //dependences
     Yajra\DataTables\DataTablesServiceProvider::class,
-    Yajra\DataTables\ButtonsServiceProvider::class,
     Collective\Html\HtmlServiceProvider::class,
     Barryvdh\Snappy\ServiceProvider::class,
     Milon\Barcode\BarcodeServiceProvider::class,
+    Maatwebsite\Excel\ExcelServiceProvider::class,
   ],
 
   /*
@@ -238,6 +238,7 @@ return [
     'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
     'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
     'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+    'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     // 'DataTables' => Yajra\DataTables\Facades\DataTables::class,1
     // LDAP
     'Ldap' => Muserpol\Helpers\Ldap::class

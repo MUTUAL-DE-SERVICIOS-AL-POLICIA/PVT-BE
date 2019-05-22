@@ -21,6 +21,10 @@ class EcoComProcedure extends Model
     {
         return  Util::removeSpaces($this->semester.'/'.Carbon::parse($this->year)->year);
     }
+    public function getNameSendBank()
+    {
+        return "MUSERPOL PAGO COMPLEMENTO ECONOMICO ". ($this->semester == 'Primer' ?  '1ER' : '2DO') ." SEM ". $this->getYear();
+    }
     public function getYear()
     {
         return Carbon::parse($this->year)->year;
