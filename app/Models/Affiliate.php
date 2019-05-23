@@ -412,7 +412,7 @@ class Affiliate extends Model
       'is_continuous' => false,
       'contributions' => []
     ];
-    if (!$date_death  = optional(optional($this->quota_aid_mortuaries->last())->getDeceased())->date_death) {
+    if (!$date_death  = optional(optional($this->quota_aid_mortuaries()->where('code', 'not like', '%A')->orderBy('id', 'DESC')->first())->getDeceased())->date_death) {
       return $null_data;
     }
     $number_contributions = Util::getQuotaAidCurrentProcedure()->first()->months;
