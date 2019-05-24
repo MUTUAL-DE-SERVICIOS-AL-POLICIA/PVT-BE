@@ -32,7 +32,7 @@ use Muserpol\Models\PaymentType;
 use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
 use Muserpol\Models\ObservationType;
-
+use DB;
 class AffiliateController extends Controller
 {
     /**
@@ -333,7 +333,7 @@ class AffiliateController extends Controller
         /**
          ** eco coms
          */
-        $eco_coms = $affiliate->economic_complements;
+        $eco_coms = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->reverse();
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,

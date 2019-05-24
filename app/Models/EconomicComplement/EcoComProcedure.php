@@ -15,6 +15,7 @@ class EcoComProcedure extends Model
     }
     public function getNextProcedure()
     {
+        //!! TODO Eliminar sequence
         return EcoComProcedure::where('sequence',$this->sequence +1)->first();
     }
     public function fullName()

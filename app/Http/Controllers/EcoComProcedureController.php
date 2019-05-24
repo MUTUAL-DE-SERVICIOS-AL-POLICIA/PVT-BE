@@ -72,7 +72,7 @@ class EcoComProcedureController extends Controller
                 'errors' => ['No tiene permisos para ver los procedimientos.'],
             ], 403);
         }
-        $eco_com_procedures = EcoComProcedure::orderByDesc('sequence')->get();
+        $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->get();
         foreach ($eco_com_procedures as $e) {
             $e->name = $e->fullName();
         }
