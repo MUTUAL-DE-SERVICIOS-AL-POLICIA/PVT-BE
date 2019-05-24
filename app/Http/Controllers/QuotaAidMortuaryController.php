@@ -692,8 +692,8 @@ class QuotaAidMortuaryController extends Controller
     //return $correlatives;
 
     //summary individual accounts
-    $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid();
-    $quota_aid_contributions = $affiliate->getQuotaAidContributions();
+    $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid($id);
+    $quota_aid_contributions = $affiliate->getQuotaAidContributions($id);
     $total_dates = Util::sumTotalContributions($quota_aid_dates);
     $dates = array(
       'id' => 0,
