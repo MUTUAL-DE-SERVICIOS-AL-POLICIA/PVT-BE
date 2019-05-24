@@ -319,7 +319,7 @@ class QuotaAidCertificationController extends Controller
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
-    $dates = $affiliate->getContributionsWithTypeQuotaAid();
+    $dates = $affiliate->getContributionsWithTypeQuotaAid($id);
     if (sizeof($dates) > 1) {
       return "error";
     }
@@ -823,8 +823,9 @@ class QuotaAidCertificationController extends Controller
     $qualification_id = 37;
     $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $qualification_id)->first();
     $months  = $affiliate->getTotalQuotes();
-    $start_contribution = $affiliate->getContributionsWithTypeQuotaAid()[0]->start;
-    $end_contribution = $affiliate->getContributionsWithTypeQuotaAid()[0]->end;
+    $contributions = $affiliate->getContributionsWithTypeQuotaAid($id)[0];
+    $start_contribution = $contributions->start;
+    $end_contribution = $contributions->end;
     $body_qualification .=  "Que, mediante Calificación de " . $quota_aid->procedure_modality->procedure_type->second_name . " N° " . $qualification->code . " del Área de Calificación de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($qualification->date) . ", se realizó el cálculo por el periodo de " . Util::getStringDate($start_contribution, true) . " a " . Util::getStringDate($end_contribution, true) . ", determinando el beneficio de <strong>" . mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name) . "</strong> por <strong>" . mb_strtoupper($quota_aid->procedure_modality->name) . "&nbsp;&nbsp;</strong>de<strong> " . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong>";
     $body_qualification .= ".";
 
