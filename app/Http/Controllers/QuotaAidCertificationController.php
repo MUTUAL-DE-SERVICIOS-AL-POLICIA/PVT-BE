@@ -608,14 +608,10 @@ class QuotaAidCertificationController extends Controller
     $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
 
     if (!$applicant) {
-      return response()->json([
-        'message' => 'No existe solicitante'
-      ], 404);
+      return response('No existe solicitante', 404);
     }
     if (count($applicant->testimonies) == 0) {
-      return response()->json([
-        'message' => 'No existen testimonios'
-      ], 404);
+      return response('No existen testimonios', 404);
     }
 
     $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id', $quota_aid->id)->orderByDesc('type')->orderBy('id')->get();
