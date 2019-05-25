@@ -9,7 +9,11 @@
 <div class="wrapper wrapper-content">
     <div class="row">
         <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`received`"
-            inline-template>
+            :cities="{{ $cities }}"
+            :procedure-modalities="{{ $procedure_modalities }}"
+            :eco-com-modalities="{{ $eco_com_modalities }}"
+            :reception-types="{{ $reception_types }}"
+        inline-template>
             <div>
                 <div class="col-lg-3">
                     <div class="ibox float-e-margins">
@@ -48,6 +52,47 @@
                             </div>
                         </div>
                     </div>
+                    <div class="ibox">
+                            <div class="ibox-content">
+                                <div class="form-group">
+                                    <label for="">Regional:</label>
+                                    <select class="form-control" v-model="filter.city_id" @change="getData()">
+                                        <option value="0">TODO</option>
+                                        <option v-for="c in cities" :key="c.id" :value="c.id">@{{ c.name }} </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Tipo de Prestacion:</label>
+                                    <select class="form-control" v-model="filter.procedure_modality_id" @change="getData()">
+                                        <option value="0">TODOS</option>
+                                        <option v-for="pm in procedureModalities" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
+                                    </select>
+                                </div>
+                                {{-- <div class="form-group">
+                                    <label for="">Modalidad:</label>
+                                    <select class="form-control" v-model="filter.eco_com_modality_id" @change="getData()">
+                                        <option value="0">TODOS</option>
+                                        <option v-for="pm in ecoComModalities" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
+                                    </select>
+                                </div> --}}
+                                <div class="form-group">
+                                    <label for="">Tipo de Recepcion:</label>
+                                    <select class="form-control" v-model="filter.eco_com_reception_type_id" @change="getData()">
+                                        <option :value="null">TODOS</option>
+                                        <option v-for="pm in receptionTypes" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Fecha de Recepcion</label>
+                                    <input class="form-control" type="date" v-model="filter.reception_date" @change="getData()">
+                                </div>
+                            </div>
+                            <div class="ibox-footer">
+                                <div class="text-center">
+                                    <button class="btn btn-sm btn-primary" @click="getData()"><i class="fa fa-search"></i> Filtrar</button>
+                                </div>
+                            </div>
+                        </div>
                 </div>
                 <div class="col-lg-9 animated fadeInRight my-inbox" :class="showLoading ? 'sk-loading' : ''">
                     <div class="mail-box-header">

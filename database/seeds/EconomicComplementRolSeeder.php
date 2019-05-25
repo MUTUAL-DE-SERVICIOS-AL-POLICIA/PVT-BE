@@ -117,5 +117,6 @@ class EconomicComplementRolSeeder extends Seeder
         foreach ($statuses as $status) {
             EcoComReceptionType::create($status);
         }
+        $this->call(EconomicComplementRequirementsSeeder::class);
     }
 }

@@ -107,7 +107,7 @@
                     <strong>Tipo de Trámite:</strong>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" :value="ecoCom.reception_type" disabled class="form-control">
+                    <input type="text" :value="ecoCom.eco_com_reception_type.name" disabled class="form-control">
                 </div>
                 <div class="col-md-2">
                     <strong>Ubicacion:</strong>

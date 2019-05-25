@@ -20,14 +20,6 @@
                     doc-id="{{ $economic_complement->id }}"
                     url-print="{{ route('eco_com_print_reception', [$economic_complement->id])}}">
                 </certification-button>
-                @if($economic_complement->eco_com_reception_type_id == 2)
-                    <certification-button
-                        type="ecoCom"
-                        title="Imprimir"
-                        doc-id="{{ $economic_complement->id }}"
-                        url-print="{{ route('eco_com_print_sworn_declaration', [$economic_complement->id])}}">
-                    </certification-button>
-                @endif
             @endif
             @if (Util::getRol()->id == 4)
                 <certification-button

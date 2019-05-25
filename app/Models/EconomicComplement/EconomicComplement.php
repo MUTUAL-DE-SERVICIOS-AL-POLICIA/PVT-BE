@@ -389,15 +389,15 @@ class EconomicComplement extends Model
     }
     public function isOldAge()
     {
-        return $this->eco_com_modality->procedure_modality_id == 1;
+        return $this->eco_com_modality->procedure_modality_id == 29;
     }
     public function isWidowhood()
     {
-        return $this->eco_com_modality->procedure_modality_id == 2;
+        return $this->eco_com_modality->procedure_modality_id == 30;
     }
     public function isOrphanhood()
     {
-        return $this->eco_com_modality->procedure_modality_id == 3;
+        return $this->eco_com_modality->procedure_modality_id == 31;
     }
     public function hasLegalGuardian()
     {

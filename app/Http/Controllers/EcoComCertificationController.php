@@ -56,6 +56,15 @@ class EcoComCertificationController extends Controller
         for ($i = 1; $i <= $number_pages; $i++) {
             $pages[] = \View::make('eco_com.print.reception', $data)->render();
         }
+
+        // ddjj
+        if($eco_com->eco_com_reception_type_id == 2 ){
+            $number_pages = Util::isRegionalRole() ?3 : 2;
+            for ($i = 1; $i <= $number_pages; $i++) {
+                $pages[] =\View::make('eco_com.print.sworn_declaration', self::printSwornDeclaration($id))->render();
+            }
+        }
+
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
@@ -63,7 +72,7 @@ class EcoComCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $eco_com->id . '.pdf');
     }
-    public function printSwornDeclaration($id)
+    public function printSwornDeclaration($id, $only_data = true)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
         if($eco_com->eco_com_reception_type_id == 1){
@@ -99,6 +108,9 @@ class EcoComCertificationController extends Controller
             'affiliate' => $affiliate,
             'eco_com_beneficiary' => $eco_com_beneficiary,
         ];
+        if ($only_data) {
+            return $data;
+        }
         $pages = [];
         $number_pages = Util::isRegionalRole() ?3 : 2;
         for ($i = 1; $i <= $number_pages; $i++) {

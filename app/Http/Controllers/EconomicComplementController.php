@@ -555,7 +555,12 @@ class EconomicComplementController extends Controller
     public function show($id)
     {
         $this->authorize('read', new EconomicComplement());
-        $economic_complement = EconomicComplement::with(['wf_state:id,name', 'workflow:id,name', 'eco_com_modality:id,name,shortened,procedure_modality_id'])->findOrFail($id);
+        $economic_complement = EconomicComplement::with([
+            'wf_state:id,name',
+            'workflow:id,name',
+            'eco_com_modality:id,name,shortened,procedure_modality_id',
+            'eco_com_reception_type:id,name'
+        ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
         $categories = Category::all();

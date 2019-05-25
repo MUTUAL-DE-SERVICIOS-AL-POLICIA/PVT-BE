@@ -20,7 +20,7 @@ export default {
             filter:{
                 city_id: 0,
                 procedure_modality_id: 0,
-                reception_type: null,
+                eco_com_reception_type_id: 0,
                 eco_com_modality_id: 0,
             }
         }
