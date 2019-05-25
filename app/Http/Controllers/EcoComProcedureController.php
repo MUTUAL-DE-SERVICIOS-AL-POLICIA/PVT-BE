@@ -14,10 +14,7 @@ class EcoComProcedureController extends Controller
 {
     public function getProcedureActives(Request $request)
     {
-        Log::info("**********");
-        Log::info($request->id);
         $eco_com_procedure_ids = Util::getEcoComCurrentProcedure();
-        Log::info($eco_com_procedure_ids);
         if (!$eco_com_procedure_ids) {
             return response()->json([], 204);
         }
