@@ -346,11 +346,16 @@
                 >
                 <br>
                 <input
+                  class="mediumCheckbox"
                   type="checkbox"
                   name="eco_com_beneficiary_is_duedate_undefined"
                   v-model="ecoComBeneficiary.is_duedate_undefined"
                   :disabled="editable"
-                > Indefinido
+                  id="eco_com_beneficiary_is_duedate_undefined"
+                >
+                <label for="eco_com_beneficiary_is_duedate_undefined" class="pointer v-middle">
+                  Indefinido
+                </label>
                 <div
                   v-show="errors.has('eco_com_beneficiary_due_date') && !ecoComBeneficiary.is_duedate_undefined "
                 >

@@ -102,10 +102,16 @@
                                     >
                                     <br>
                                     <input
-                                      type="checkbox"
-                                      name="is_duedate_undefined"
-                                      v-model="form.is_duedate_undefined"
-                                    > Indefinido
+                                        class="mediumCheckbox"
+                                        type="checkbox"
+                                        :disabled="!editing"
+                                        name="is_duedate_undefined"
+                                        v-model="form.is_duedate_undefined"
+                                        id="is_duedate_undefined"
+                                    >
+                                    <label for="is_duedate_undefined" class="pointer v-middle">
+                                        Indefinido
+                                    </label>
                                     <div
                                       v-show="errors.has('form.due_date') && !form.is_duedate_undefined "
                                     >

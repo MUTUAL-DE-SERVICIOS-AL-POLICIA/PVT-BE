@@ -143,7 +143,9 @@ const mutations = {
     if(!state.legalGuardian.hasOwnProperty('cell_phone_number')){
       state.legalGuardian.cell_phone_number = [{value:null}]
     }
-    state.legalGuardian.eco_com_legal_guardian_type_id = tt
+    if(tt){
+      state.legalGuardian.eco_com_legal_guardian_type_id = tt
+    }
   },
   setAffiliateCategoryId(state, id){
     state.affiliate.category_id = id
