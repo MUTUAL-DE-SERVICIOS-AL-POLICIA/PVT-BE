@@ -1,15 +1,13 @@
 <?php
 
-namespace Muserpol\Models\Workflow;
+namespace Muserpol\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Muserpol\User;
-use Muserpol\Models\RecordType;
 
-class WorkflowRecord extends Model
+class DocumentRecord extends Model
 {
-    protected $table = "wf_records";
-    public $guarded = [];
+    public $guarded =  [];
 
     public function recordable()
     {
@@ -19,10 +17,10 @@ class WorkflowRecord extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function wf_state()
-    {
-        return $this->belongsTo(WorkflowState::class);
-    }
+    // public function wf_state()
+    // {
+    //     return $this->belongsTo(WorkflowState::class);
+    // }
     public function record_type()
     {
         return $this->belongsTo(RecordType::class);

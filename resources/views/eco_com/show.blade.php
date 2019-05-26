@@ -82,6 +82,7 @@
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-record"><a href="#"><i class="fa fa-history"></i> Historial</a></li>
             </ul>
         </div>
         <br>
@@ -141,6 +142,9 @@
             <div id="tab-observations" class="tab-pane">
             <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-observations>
                 {{-- @include('eco_com.observation') --}}
+            </div>
+            <div id="tab-record" class="tab-pane">
+                <eco-com-record :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-record>
             </div>
         </div>
     </div>

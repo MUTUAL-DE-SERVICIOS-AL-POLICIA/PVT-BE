@@ -728,3 +728,9 @@ button[aria-disabled="true"] {
 .v-middle{
 	vertical-align: middle;
 }
+.timeline-item .date {
+    text-align: right;
+    width: 135px;
+    position: relative;
+    padding-top: 27px;
+}

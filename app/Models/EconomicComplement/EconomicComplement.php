@@ -521,6 +521,9 @@ class EconomicComplement extends Model
     public function notes()
     {
         return $this->morphMany('Muserpol\Models\Note', 'annotable');
-        // ->withTimestamps();
+    }
+    public function document_records()
+    {
+        return $this->morphMany('Muserpol\Models\DocumentRecord', 'recordable');
     }
 }

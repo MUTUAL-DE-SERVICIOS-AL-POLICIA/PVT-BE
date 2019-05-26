@@ -198,6 +198,12 @@ Vue.filter('year', function (value) {
 Vue.filter('formatDateInbox', function (value) {
   return moment(value).format("DD MMMM YYYY");
 });
+Vue.filter('recordDate', function (value) {
+  return moment(value).format("DD MMM YYYY");
+});
+Vue.filter('recordHour', function (value) {
+  return moment(value).format("ddd HH:mm:ss");
+});
 Vue.filter('uppercase', function (value) {
   return value.toUpperCase();
 });
@@ -420,6 +426,8 @@ Vue.component('eco-com-observations', require('./components/eco_com/Observations
 Vue.component('eco-com-qualification', require('./components/eco_com/Qualification.vue'));
 Vue.component('eco-com-amortization', require('./components/eco_com/Amortization.vue'));
 
+Vue.component('eco-com-record', require('./components/eco_com/Record.vue'));
+Vue.component('eco-com-notes', require('./components/eco_com/Notes.vue'));
 Vue.component('eco-com-procedure', require('./components/eco_com/Procedure.vue'));
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));

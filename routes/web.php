@@ -669,6 +669,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
+    Route::get('eco_com_record/{id}', 'EconomicComplementController@getRecord');
 
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
@@ -714,6 +715,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('eco_com_observation_create', 'EcoComObservationController@create');
     Route::patch('eco_com_observation_update', 'EcoComObservationController@update');
     Route::delete('eco_com_observation_delete', 'EcoComObservationController@delete');
+
+    // note eco_com
+    Route::post('eco_com_note_create', 'EcoComNoteController@create');
+    Route::patch('eco_com_note_update', 'EcoComNoteController@update');
+    Route::delete('eco_com_note_delete', 'EcoComNoteController@delete');
 
     // eco com procedures
     Route::get('eco_com_get_procedures', 'EcoComProcedureController@getProcedures');

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\City;
 use Muserpol\Models\Spouse;
+use Muserpol\Models\Note;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
 use Muserpol\Models\Affiliate;
@@ -28,7 +29,6 @@ use DB;
 use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowState;
-use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\EconomicComplement\EcoComRent;
 use Muserpol\Models\ObservationType;
 use Yajra\DataTables\DataTables;
@@ -41,6 +41,7 @@ use Muserpol\Models\ComplementaryFactor;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\EconomicComplement\EcoComReceptionType;
+use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 
 class EconomicComplementController extends Controller
 {
@@ -664,7 +665,8 @@ class EconomicComplementController extends Controller
             ObservationType::class,
             EconomicComplement::class,
             EcoComLegalGuardian::class,
-            EcoComBeneficiary::class
+            EcoComBeneficiary::class,
+            Note::class
         );
         $permissions = json_decode($permissions);
         $permissions[] = ['operation' => 'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];
@@ -1143,11 +1145,12 @@ class EconomicComplementController extends Controller
         // if ($eco_com->discount_types->contains($discount_type->id)) {
         //     $eco_com->discount_types()->detach($discount_type->id);
         // }
-        $record = new EconomicComplementRecord();
-        $record->user_id = Auth::user()->id;
-        $record->economic_complement_id = $eco_com->id;
-        $record->message = "El usuario " . Auth::user()->username  . " amortizó " . $request->amount . ".";
-        $record->save();
+        $eco_com->document_records()->create([
+            'user_id' => Auth::user()->id,
+            'record_type_id' => 10,
+            'date' => Carbon::now(),
+            'message' => "El usuario " . Auth::user()->username  . " amortizó " . $request->amount . "."
+        ]);
         if (Gate::allows('qualify', $eco_com)) {
             $eco_com->qualify();
         }
@@ -1352,5 +1355,24 @@ class EconomicComplementController extends Controller
         ];
 
         return view('eco_com.qualification_parameters', $data);
+    }
+    public function getRecord($id)
+    {
+        $eco_com = EconomicComplement::find($id);
+        $document_records = $eco_com->document_records()->with(['user:id,username', 'record_type:id,name'])->orderByDesc('date')->get();
+        $workflow_records = $eco_com->wf_records()->with(['user:id,username','wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
+        $note_records = $eco_com->notes()->orderByDesc('date')->get();
+        // $first_wf_state = EconomicComplementRecord::where('economic_complement_id', $id)->whereRaw("message like '%creó el tr%'")->first();
+        // if ($first_wf_state) {
+        //     $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
+        //     $str = $first_wf_state->message;
+        //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+        //     $user_name = $matches[0][0];
+        //     if (User::where('username', '=', $user_name)->first()) {
+        //         $rol = User::where('username', '=', $user_name)->first()->roles->first();
+        //         $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
+        //     }
+        // }
+        return compact('document_records', 'workflow_records', 'note_records');
     }
 }

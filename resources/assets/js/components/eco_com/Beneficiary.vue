@@ -613,6 +613,7 @@ export default {
     async save() {
       await this.$validator.validateAll();
       if (this.$validator.errors.items.length) {
+        flash("Campos requeridos: ", 'error');
         return;
       }
       this.ecoComBeneficiary.eco_com_id = this.ecoCom.id;

@@ -22,11 +22,13 @@ export default {
                 procedure_modality_id: 0,
                 eco_com_reception_type_id: 0,
                 eco_com_modality_id: 0,
-            }
+            },
+            tempFilter: {}
         }
     },
     mounted(){
         this.getData();
+        this.tempFilter = JSON.parse(JSON.stringify(this.filter));
     },
     methods:{
         async getData(){
@@ -50,6 +52,10 @@ export default {
                 this.showLoading = false;
                 this.$store.commit('inbox/setHeaders', data.headers);
             });
+        },
+        cancelFilter(){
+            this.filter = JSON.parse(JSON.stringify(this.tempFilter))
+            this.getData();
         },
         switchShow() {
             this.documents = this.area_documents
