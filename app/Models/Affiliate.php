@@ -311,10 +311,10 @@ class Affiliate extends Model
     }
     return $dates;
   }
-  public function getContributionsWithTypeQuotaAid()
+  public function getContributionsWithTypeQuotaAid($quota_aid_id = null)
   {
     $dates = [];
-    $contributions = $this->getQuotaAidContributions()['contributions'];
+    $contributions = $this->getQuotaAidContributions($quota_aid_id)['contributions'];
     if ($length = sizeof($contributions)) {
       $start = $contributions[0]['month_year'];
       for ($i = 0; $i < $length - 1; $i++) {
@@ -406,13 +406,13 @@ class Affiliate extends Model
     $number_contributions = $current_procedure->contributions_number;
     return $this->getTotalQuotes() < $number_contributions;
   }
-  public function getQuotaAidContributions($with_reimbursements = true)
+  public function getQuotaAidContributions($quota_aid_id)
   {
     $null_data = [
       'is_continuous' => false,
       'contributions' => []
     ];
-    if (!$date_death  = optional(optional($this->quota_aid_mortuaries->last())->getDeceased())->date_death) {
+    if (!$date_death  = optional(optional($this->quota_aid_mortuaries()->where('code', 'not like', '%A')->where('id', $quota_aid_id)->orderBy('id', 'DESC')->first())->getDeceased())->date_death) {
       return $null_data;
     }
     $number_contributions = Util::getQuotaAidCurrentProcedure()->first()->months;

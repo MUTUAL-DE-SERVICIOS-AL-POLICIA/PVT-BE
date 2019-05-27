@@ -82,7 +82,7 @@
     </table>
 
     <div class="block">
-        
+
         @yield('content')
     </div>
     <footer class="absolute pin-b no-margins no-paddings w-100">
