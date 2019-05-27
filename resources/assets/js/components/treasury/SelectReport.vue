@@ -7,7 +7,7 @@
     </select>
     <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('from')}">
       <div class="col-sm-3 col-form-label"><label class="control-label">Desde:</label></div>
-      <div class="col-md-5"><input name="from" v-model="from" v-date type="text" class="form-control" v-validate="'required|date_format:DD/MM/YYYY|max_current_date'">
+      <div class="col-md-5"><input name="from" v-model="from" v-date type="text" class="form-control" v-validate="'required|date_format:dd/MM/yyyy|max_current_date'">
           <div v-show="errors.has('from')">
               <i class="fa fa-warning text-danger"></i>
               <span class="text-danger">{{ errors.first('from') }}</span>
@@ -16,7 +16,7 @@
     </div>
     <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('to')}">
       <div class="col-sm-3 col-form-label"><label class="control-label">Hasta:</label></div>
-      <div class="col-md-5"><input name="to" v-model="to" v-date type="text" class="form-control" v-validate="'required|date_format:DD/MM/YYYY|max_current_date'">
+      <div class="col-md-5"><input name="to" v-model="to" v-date type="text" class="form-control" v-validate="'required|date_format:dd/MM/yyyy|max_current_date'">
           <div v-show="errors.has('to')">
               <i class="fa fa-warning text-danger"></i>
               <span class="text-danger">{{ errors.first('to') }}</span>

@@ -15,11 +15,18 @@ class EcoComProcedure extends Model
     }
     public function getNextProcedure()
     {
-        return EcoComProcedure::where('sequence',$this->sequence +1)->first();
+        if ($this->semester == 'Primer' ) {
+            return EcoComProcedure::where('semester','Segundo')->whereYear('year', $this->getYear())->first();
+        }
+        return EcoComProcedure::where('semester','Primer')->whereYear('year', $this->getYear()+1)->first();
     }
     public function fullName()
     {
         return  Util::removeSpaces($this->semester.'/'.Carbon::parse($this->year)->year);
+    }
+    public function getNameSendBank()
+    {
+        return "MUSERPOL PAGO COMPLEMENTO ECONOMICO ". ($this->semester == 'Primer' ?  '1ER' : '2DO') ." SEM ". $this->getYear();
     }
     public function getYear()
     {

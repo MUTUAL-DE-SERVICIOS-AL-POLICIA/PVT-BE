@@ -20,14 +20,14 @@
                     doc-id="{{ $economic_complement->id }}"
                     url-print="{{ route('eco_com_print_reception', [$economic_complement->id])}}">
                 </certification-button>
-                @if($economic_complement->reception_type != 'Habitual')
-                    <certification-button
-                        type="ecoCom"
-                        title="Imprimir"
-                        doc-id="{{ $economic_complement->id }}"
-                        url-print="{{ route('eco_com_print_sworn_declaration', [$economic_complement->id])}}">
-                    </certification-button>
-                @endif
+            @endif
+            @if (Util::getRol()->id == 4)
+                <certification-button
+                    type="ecoCom"
+                    title="Imprimir Calificacion"
+                    doc-id="{{ $economic_complement->id }}"
+                    url-print="{{ route('eco_com_print_qualification', [$economic_complement->id])}}">
+                </certification-button>
             @endif
         </div>
         <div class="pull-right">
@@ -82,6 +82,7 @@
                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-record"><a href="#"><i class="fa fa-history"></i> Historial</a></li>
             </ul>
         </div>
         <br>
@@ -141,6 +142,9 @@
             <div id="tab-observations" class="tab-pane">
             <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-observations>
                 {{-- @include('eco_com.observation') --}}
+            </div>
+            <div id="tab-record" class="tab-pane">
+                <eco-com-record :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-record>
             </div>
         </div>
     </div>

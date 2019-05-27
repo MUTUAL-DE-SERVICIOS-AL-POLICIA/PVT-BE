@@ -26,13 +26,12 @@
                     <eco-com-form inline-template>
                         <form-wizard color="#1AB394" title="" subtitle="" back-button-text="Volver" next-button-text="Siguiente" finish-button-text="Finalizar"
                             error-color="#ED5565" @on-complete="onFinish" @on-loading="setLoading">
-                            {{--
-                            <ret-fun-create-info></ret-fun-create-info> --}}
+                            <eco-com-create-info></eco-com-create-info>
 
                             <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep" key="uno">
                                 <eco-com-step1-requirements :last-eco-com="{{ $last_eco_com }}" :pension-entities="{{ $pension_entities }}" :modalities="{{ $modalities }}"
                                     :affiliate="{{ $affiliate }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}"
-                                    :show-requirements-error="showRequirementsError" :eco-com-procedure-id="{{ $eco_com_procedure_id }}">
+                                    :show-requirements-error="showRequirementsError" :eco-com-procedure-id="{{ $eco_com_procedure_id }}" :eco-com-reception-types="{{ $eco_com_reception_types }}">
                                 </eco-com-step1-requirements>
                             </tab-content>
                             <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep" key="dos">

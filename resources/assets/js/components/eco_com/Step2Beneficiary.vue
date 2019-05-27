@@ -6,13 +6,15 @@
         <div class="row">
           <div class="col-md-6">
             <div class="col-md-4">
-              <label class="control-label">Tiene Apoderado</label>
+              <label class="control-label pointer" for="has_legal_guardian">Tiene Apoderado</label>
             </div>
             <div class="col-md-8">
               <input
+                class="mediumCheckbox"
                 type="checkbox"
                 v-model="has_legal_guardian"
                 name="has_legal_guardian"
+                id="has_legal_guardian"
                 @change="toggleLegalGuardian()"
               >
             </div>
@@ -249,10 +251,15 @@
                 >
                 <br>
                 <input
+                  class="mediumCheckbox"
                   type="checkbox"
                   name="legal_guardian_is_duedate_undefined"
                   v-model="legalGuardian.is_duedate_undefined"
-                > Indefinido
+                  id="legal_guardian_is_duedate_undefined"
+                >
+                <label for="legal_guardian_is_duedate_undefined" class="pointer v-middle">
+                  Indefinido
+                </label>
                 <div
                   v-show="errors.has('legal_guardian_due_date') && !legalGuardian.is_duedate_undefined"
                 >
@@ -762,26 +769,6 @@
                   </div>
                 </div>
               </div>
-              <div class="col-lg-6" :class="{'has-error': errors.has('affiliate_date_derelict') }">
-                <div class="col-md-4">
-                  <label class="control-label">Fecha de Desvinculaci&oacute;n:</label>
-                </div>
-                <div class="col-md-8">
-                  <input
-                    :disabled="isHabitual"
-                    type="text"
-                    class="form-control"
-                    v-model="affiliate.date_derelict"
-                    v-month-year
-                    name="affiliate_date_derelict"
-                    v-validate="'date_format:MM/yyyy|max_current_date_month_year'"
-                  >
-                  <div v-show="errors.has('affiliate_date_derelict')">
-                    <i class="fa fa-warning text-danger"></i>
-                    <span class="text-danger">{{ errors.first('affiliate_date_derelict') }}</span>
-                  </div>
-                </div>
-              </div>
             </div>
             <br>
           </div>
@@ -1107,10 +1094,15 @@
                 >
                 <br>
                 <input
+                  class="mediumCheckbox"
                   type="checkbox"
                   name="eco_com_beneficiary_is_duedate_undefined"
                   v-model="ecoComBeneficiary.is_duedate_undefined"
-                > Indefinido
+                  id="eco_com_beneficiary_is_duedate_undefined"
+                >
+                <label for="eco_com_beneficiary_is_duedate_undefined" class="pointer v-middle">
+                  Indefinido
+                </label>
                 <div
                   v-show="errors.has('eco_com_beneficiary_due_date') && !ecoComBeneficiary.is_duedate_undefined "
                 >
@@ -1302,16 +1294,16 @@ export default {
   },
   computed: {
     isHabitual(){
-      return this.receptionType.id == 2;
+      return this.receptionType.id == 1;
     },
     serviceYearsRequired(){
-      if(this.receptionType.id == 1){
+      if(!this.isHabitual){
         return 'required|min_value:0|max_value:100';
       }
       return 'min_value:0|max_value:100';
     },
     serviceMonthsRequired(){
-      if(this.receptionType.id == 1){
+      if(!this.isHabitual){
         return 'required|min_value:0|max_value:11';
       }
       return 'min_value:0|max_value:11';

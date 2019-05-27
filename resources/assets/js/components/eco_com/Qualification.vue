@@ -146,6 +146,9 @@
                     :disabled="!editing"
                   >
                 </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
+                </div>
               </div>
             </div>
             <br>
@@ -161,6 +164,9 @@
                     v-model="ecoComModal.aps_total_cc"
                     :disabled="!editing"
                   >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
@@ -178,6 +184,9 @@
                     :disabled="!editing"
                   >
                 </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
+                </div>
               </div>
             </div>
             <br>
@@ -193,6 +202,9 @@
                     v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
                   >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
@@ -224,6 +236,9 @@
                     :disabled="!editing"
                   >
                 </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
+                </div>
               </div>
             </div>
             <br>
@@ -239,6 +254,9 @@
                     v-model="ecoComModal.reimbursement"
                     :disabled="!editing"
                   >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-minus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
@@ -256,6 +274,9 @@
                     :disabled="!editing"
                   >
                 </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-minus" style="font-size:20px"></i>
+                </div>
               </div>
             </div>
             <br>
@@ -271,6 +292,9 @@
                     v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
                   >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>

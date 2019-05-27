@@ -40,7 +40,7 @@
               v-validate.initial="'required'"
               disabled
             >
-              <option v-for="rt in reception_types" :value="rt.id" :key="rt.id">{{ rt.name }}</option>
+              <option v-for="rt in ecoComReceptionTypes" :value="rt.id" :key="rt.id">{{ rt.name }}</option>
             </select>
             <i v-show="errors.has('reception_type_id')" class="fa fa-warning text-danger"></i>
             <span
@@ -98,7 +98,7 @@
       </div>
     </div>
     <h2>Lista de Requisitos</h2>
-    <div v-if="reception_type_id == 2">
+    <div v-if="reception_type_id == 1">
       <h3>Documentos ya presentados</h3>
     </div>
     <div v-else class="wrapper wrapper-content animated fadeInRight">
@@ -184,7 +184,8 @@ export default {
     "lastEcoCom",
     "pensionEntities",
     "affiliate",
-    "ecoComProcedureId"
+    "ecoComProcedureId",
+    "ecoComReceptionTypes"
   ],
   data() {
     return {
@@ -198,16 +199,6 @@ export default {
       pension_entity_id: !!this.affiliate.pension_entity_id
         ? this.affiliate.pension_entity_id
         : null,
-      reception_types: [
-        {
-          id: 1,
-          name: "Inclusion"
-        },
-        {
-          id: 2,
-          name: "Habitual"
-        }
-      ],
       reception_type_id: null
     };
   },
@@ -215,10 +206,7 @@ export default {
     this.setPensionEntity();
     this.setReceptionType();
     this.setModality();
-    this.$store.commit(
-      "ecoComForm/setCity",
-      this.cities.filter(city => city.id == this.city_id)[0].name
-    );
+    this.setCity();
     // this.$store.commit("ecoComForm/setAffiliate", this.affiliate);
   },
   methods: {
@@ -239,12 +227,30 @@ export default {
       await this.setModality();
     },
     setPensionEntity() {
-      this.$store.commit("ecoComForm/setPensionEntity", this.pension_entity_id);
+      let name = null;
+      if(this.pension_entity_id){
+        name = this.pensionEntities.find(x => x.id == this.pension_entity_id).name;
+      }
+      this.$store.commit("ecoComForm/setPensionEntity", {
+        id: this.pension_entity_id,
+        name: name
+      });
+    },
+    setCity() {
+      let name = null;
+      if(this.city_id){
+        name = this.cities.find(x => x.id == this.city_id).name;
+        this.$store.commit("ecoComForm/setCity", name);
+      }
     },
     setModality() {
+      let name = null;
+      if(this.modality_id){
+        name = this.modalities.find(x => x.id == this.modality_id).name;
+      }
       this.$store.commit("ecoComForm/setModality", {
         id: this.modality_id,
-        name: null
+        name: name
       });
     },
     async setReceptionType() {
@@ -262,10 +268,7 @@ export default {
         .catch(error => {
           console.log(error);
         });
-      await this.$store.commit(
-        "ecoComForm/setReceptionType",
-        this.reception_types.find(r => r.id == this.reception_type_id)
-      );
+      await this.$store.commit("ecoComForm/setReceptionType",this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id));
       await this.findBeneficiary();
     },
     async findBeneficiary() {
@@ -363,11 +366,8 @@ export default {
         }
       }
     },
-    onChooseCity(event) {
-      const options = event.target.options;
-      const selectedOption = options[options.selectedIndex];
-      const selectedText = selectedOption.textContent;
-      this.$store.commit("retFunForm/setCity", selectedText);
+    onChooseCity() {
+      this.setCity()
     }
   }
 };

@@ -198,6 +198,12 @@ Vue.filter('year', function (value) {
 Vue.filter('formatDateInbox', function (value) {
   return moment(value).format("DD MMMM YYYY");
 });
+Vue.filter('recordDate', function (value) {
+  return moment(value).format("DD MMM YYYY");
+});
+Vue.filter('recordHour', function (value) {
+  return moment(value).format("ddd HH:mm:ss");
+});
 Vue.filter('uppercase', function (value) {
   return value.toUpperCase();
 });
@@ -410,6 +416,7 @@ Vue.component('eco-com-form', require('./components/eco_com/Form.vue'));
 Vue.component('eco-com-step1-requirements', require('./components/eco_com/Step1Requirements.vue'));
 Vue.component('eco-com-step2-beneficiary', require('./components/eco_com/Step2Beneficiary.vue'));
 Vue.component('eco-com-step3-rents', require('./components/eco_com/Step3Rents.vue'));
+Vue.component('eco-com-create-info', require('./components/eco_com/CreateInfo.vue'));
 Vue.component('eco-com-info', require('./components/eco_com/Info.vue'));
 
 Vue.component('eco-com-search-affiliate', require('./components/eco_com/SearchAffiliate.vue'));
@@ -420,6 +427,8 @@ Vue.component('eco-com-observations', require('./components/eco_com/Observations
 Vue.component('eco-com-qualification', require('./components/eco_com/Qualification.vue'));
 Vue.component('eco-com-amortization', require('./components/eco_com/Amortization.vue'));
 
+Vue.component('eco-com-record', require('./components/eco_com/Record.vue'));
+Vue.component('eco-com-notes', require('./components/eco_com/Notes.vue'));
 Vue.component('eco-com-procedure', require('./components/eco_com/Procedure.vue'));
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));

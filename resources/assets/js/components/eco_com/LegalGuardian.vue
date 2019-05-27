@@ -266,15 +266,20 @@
                   v-model.trim="legalGuardian.due_date"
                   class="form-control"
                   v-date
-                  v-validate="'date_format:dd/MM/yyyy|max_due_date'"
+                  v-validate="'required|date_format:dd/MM/yyyy|max_due_date'"
                 >
                 <br>
                 <input
+                  class="mediumCheckbox"
                   type="checkbox"
                   name="legal_guardian_is_duedate_undefined"
                   v-model="legalGuardian.is_duedate_undefined"
                   :disabled="editable"
-                > Indefinido
+                  id="legal_guardian_is_duedate_undefined"
+                >
+                <label for="legal_guardian_is_duedate_undefined" class="pointer v-middle">
+                  Indefinido
+                </label>
                 <div
                   v-show="errors.has('legal_guardian_due_date') && !legalGuardian.is_duedate_undefined"
                 >

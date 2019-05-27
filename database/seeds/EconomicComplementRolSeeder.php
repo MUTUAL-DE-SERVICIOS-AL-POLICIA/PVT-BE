@@ -12,6 +12,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Muserpol\Action;
 use Muserpol\Permission;
 use Muserpol\Models\Role;
+use Muserpol\Models\EconomicComplement\EcoComReceptionType;
+use Muserpol\Models\RecordType;
 
 class EconomicComplementRolSeeder extends Seeder
 {
@@ -24,8 +26,9 @@ class EconomicComplementRolSeeder extends Seeder
     {
         $this->call(EconomicComplementSeeder::class);
         $statuses = [
-            ['module_id' => 2, 'name' => 'Affiliate'],
+            // ['module_id' => 2, 'name' => 'Affiliate'],
             ['module_id' => 2, 'name' => 'EconomicComplement'],
+            ['module_id' => 2, 'name' => 'EcoComProcedure'],
             ['module_id' => 2, 'name' => 'EcoComBeneficiary'],
             ['module_id' => 2, 'name' => 'EcoComLegalGuardian'],
             ['module_id' => 2, 'name' => 'EcoComRent'],
@@ -41,6 +44,7 @@ class EconomicComplementRolSeeder extends Seeder
             ['module_id' => 9, 'name' => 'EconomicComplement'],
             ['module_id' => 9, 'name' => 'Affiliate'],
             ['module_id' => 9, 'name' => 'ObservationType'],
+            ['module_id' => 2, 'name' => 'Note'],
         ];
         foreach ($statuses as $status) {
             Operation::create($status);
@@ -109,5 +113,22 @@ class EconomicComplementRolSeeder extends Seeder
                 $table->dropColumn('eco_com_type_id');
             });
         }
+        $statuses = [
+            ['name' => 'Habitual'],
+            ['name' => 'Inclusión'],
+        ];
+        foreach ($statuses as $status) {
+            EcoComReceptionType::create($status);
+        }
+        $statuses = [
+            ['name' => 'Observaciones', 'description' => 'Datos de la Observación.'],
+            ['name' => 'Amortizaciones', 'description' => 'Datos de la Amortización.'],
+            ['name' => 'Beneficiario(s)', 'description' => 'Datos del o los Beneficiario(s).'],
+            ['name' => 'Apoderado', 'description' => 'Datos del Apoderado Legal.'],
+        ];
+        foreach ($statuses as $status) {
+            RecordType::create($status);
+        }
+        // $this->call(EconomicComplementRequirementsSeeder::class);
     }
 }

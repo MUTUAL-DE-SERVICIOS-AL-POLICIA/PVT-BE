@@ -7,7 +7,7 @@
           <strong>{{ namePensionEntity }}</strong>
         </legend>
         <div class="row" v-if="! isSenasir">
-          <div class="col-md-7 col-xs-offset-3">
+          <div class="col-md-8 col-xs-offset-3">
             <div class="row">
               <div class="form-group">
                 <label class="col-sm-4 control-label">Fracción de Saldo Acumulado</label>
@@ -19,6 +19,9 @@
                     name="aps_total_fsa"
                     v-model="ecoCom.aps_total_fsa"
                   >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
@@ -35,6 +38,9 @@
                     v-model="ecoCom.aps_total_cc"
                   >
                 </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
+                </div>
               </div>
             </div>
             <br>
@@ -50,6 +56,9 @@
                     v-model="ecoCom.aps_total_fs"
                   >
                 </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
+                </div>
               </div>
             </div>
             <br>
@@ -64,6 +73,9 @@
                     name="aps_disability"
                     v-model="ecoCom.aps_disability"
                   >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
@@ -95,6 +107,9 @@
                     v-model="ecoCom.sub_total_rent"
                   >
                 </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
+                </div>
               </div>
             </div>
             <br>
@@ -109,6 +124,9 @@
                     name="reimbursement"
                     v-model="ecoCom.reimbursement"
                   >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-minus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
@@ -125,6 +143,9 @@
                     v-model="ecoCom.dignity_pension"
                   >
                 </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-minus" style="font-size:20px"></i>
+                </div>
               </div>
             </div>
             <br>
@@ -139,6 +160,9 @@
                     name="aps_disability"
                     v-model="ecoCom.aps_disability"
                   >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>

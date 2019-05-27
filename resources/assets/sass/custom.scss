@@ -722,3 +722,15 @@ button[aria-disabled="true"] {
 .elements-list .list-group-item:hover{
     cursor: pointer;
 }
+.pointer:hover{
+	cursor: pointer;
+}
+.v-middle{
+	vertical-align: middle;
+}
+.timeline-item .date {
+    text-align: right;
+    width: 135px;
+    position: relative;
+    padding-top: 27px;
+}

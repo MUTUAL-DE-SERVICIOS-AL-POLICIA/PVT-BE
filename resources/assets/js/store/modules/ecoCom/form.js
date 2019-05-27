@@ -1,5 +1,7 @@
 const state = {
   modality: "",
+  procedureModalityName: "",
+  pensionEntityName: "",
   modality_id: "",
   city: "",
   id: null,
@@ -15,7 +17,7 @@ const state = {
 };
 const mutations = {
   setModality(state, object) {
-    state.modality = object.name;
+    state.procedureModalityName = object.name;
     state.modality_id = object.id;
   },
   setCity(state, value) {
@@ -39,8 +41,9 @@ const mutations = {
   setCorrelative(state, value) {
     state.correlative = value;
   },
-  setPensionEntity(state, value){
-    state.pensionEntityId = value
+  setPensionEntity(state, object){
+    state.pensionEntityId = object.id
+    state.pensionEntityName = object.name
   },
   addBeneficiaryPhoneNumber(state) {
     if (state.beneficiary.phone_number.length > 0) {
@@ -127,6 +130,12 @@ const mutations = {
       state.legalGuardian.cell_phone_number.push({ value: null });
   },
   setLegalGuardian(state, object){
+    var tt = null;
+    if(state.legalGuardian){
+      if(state.legalGuardian.eco_com_legal_guardian_type_id){
+        tt = state.legalGuardian.eco_com_legal_guardian_type_id;
+      }
+    }
     state.legalGuardian = {}
     if(Object.keys(object).length){
       state.legalGuardian = object
@@ -137,11 +146,9 @@ const mutations = {
     if(!state.legalGuardian.hasOwnProperty('cell_phone_number')){
       state.legalGuardian.cell_phone_number = [{value:null}]
     }
-    // if(!!object.phone_number && typeof object.phone_number == 'object'){
-      
-    // }else if (typeof object.phone_number == 'string') {
-    //   state.legalGuardian.phone_number = object.phone_number.split(',').map(x=>{return{value:x}})
-    // }
+    if(tt){
+      state.legalGuardian.eco_com_legal_guardian_type_id = tt
+    }
   },
   setAffiliateCategoryId(state, id){
     state.affiliate.category_id = id

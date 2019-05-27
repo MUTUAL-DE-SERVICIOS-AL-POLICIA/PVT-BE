@@ -25,7 +25,9 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
-
+use Maatwebsite\Excel\Facades\Excel;
+use Muserpol\Exports\EcoComBankExport;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
 
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/minor', 'HomeController@minor')->name("minor");
@@ -667,6 +669,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
+    Route::get('eco_com_record/{id}', 'EconomicComplementController@getRecord');
 
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
@@ -682,6 +685,7 @@ Route::group(['middleware' => ['auth']], function () {
     // eco com Certification
     Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');
     Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');
+    Route::get('eco_com/{eco_com_id}/print/qualification', 'EcoComCertificationController@printQualification')->name('eco_com_print_qualification');
 
 
     // eco com qualification parameters
@@ -712,6 +716,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_observation_update', 'EcoComObservationController@update');
     Route::delete('eco_com_observation_delete', 'EcoComObservationController@delete');
 
+    // note eco_com
+    Route::post('eco_com_note_create', 'EcoComNoteController@create');
+    Route::patch('eco_com_note_update', 'EcoComNoteController@update');
+    Route::delete('eco_com_note_delete', 'EcoComNoteController@delete');
+
     // eco com procedures
     Route::get('eco_com_get_procedures', 'EcoComProcedureController@getProcedures');
     Route::post('eco_com_procedure_create', 'EcoComProcedureController@create');
@@ -724,5 +733,41 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('affiliate_observation_create', 'AffiliateObservationController@create');
     Route::patch('affiliate_observation_update', 'AffiliateObservationController@update');
     Route::delete('affiliate_observation_delete', 'AffiliateObservationController@delete');
+    Route::get('/tempo',function ()
+    {
+      DB::connection()->enableQueryLog();
+      $year  = request()->year;
+      $semester  = request()->semester;
+      $eco_com_procedure = EcoComProcedure::whereYear('year', $year)->where('semester', $semester)->first();
+      return Excel::download(new EcoComBankExport($eco_com_procedure->id), 'products.xlsx');
+
+      $ecos = EconomicComplement::with([
+            'observations',
+            'eco_com_beneficiary',
+            'eco_com_legal_guardian',
+            'affiliate.spouse'
+            ])
+            ->ecoComProcedure(7) // procedure_id
+            ->NotHasEcoComState(1, 3, 6) // q el tramite no tenga estado de pagado, excluido o enviado al banco
+            ->workflow(1, 2, 3) // los 3 workflows
+            ->wfState(3) // Area tecnica
+            ->inboxState(true) // tramites en la segunda bandeja
+            // ->leftJoin('observables')
+            ->city() // eco_com_city
+            ->beneficiary() // beneficiary
+            ->select('economic_complements.*')
+            ->where('economic_complements.total', '>', 0)
+            ->whereRaw("not exists(SELECT observables.observable_id FROM observables
+      WHERE economic_complements.id = observables.observable_id AND observables.observable_type like 'economic_complements' AND
+        observables.observation_type_id IN (1, 2, 13, 22) AND
+        observables.enabled = FALSE AND observables.deleted_at is null)")
+            ->get();
+        return $ecos;
+      // return $ecos;
+      return Excel::download($ecos, 'products.xlsx');
+      return $ecos->filter(function ($value, $key) {
+          return $value->hasObservationTypeAndNotCorrect(13);
+      });
+    });
   });
 });

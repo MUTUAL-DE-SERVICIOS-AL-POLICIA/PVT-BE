@@ -346,11 +346,16 @@
                 >
                 <br>
                 <input
+                  class="mediumCheckbox"
                   type="checkbox"
                   name="eco_com_beneficiary_is_duedate_undefined"
                   v-model="ecoComBeneficiary.is_duedate_undefined"
                   :disabled="editable"
-                > Indefinido
+                  id="eco_com_beneficiary_is_duedate_undefined"
+                >
+                <label for="eco_com_beneficiary_is_duedate_undefined" class="pointer v-middle">
+                  Indefinido
+                </label>
                 <div
                   v-show="errors.has('eco_com_beneficiary_due_date') && !ecoComBeneficiary.is_duedate_undefined "
                 >
@@ -608,6 +613,7 @@ export default {
     async save() {
       await this.$validator.validateAll();
       if (this.$validator.errors.items.length) {
+        flash("Campos requeridos: ", 'error');
         return;
       }
       this.ecoComBeneficiary.eco_com_id = this.ecoCom.id;

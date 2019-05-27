@@ -6,7 +6,6 @@ use Log;
 use Auth;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
-use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
 
@@ -14,11 +13,19 @@ class EconomicComplementObserver
 {
     public function created(EconomicComplement $eco_com)
     {
-        $record = new EconomicComplementRecord();
-        $record->user_id = Auth::user()->id;
-        $record->economic_complement_id = $eco_com->id;
-        $record->message = "El usuario " . Auth::user()->username  . " creó el trámite " . $eco_com->code . ".";
-        $record->save();
+        $eco_com->wf_records()->create([
+            'user_id' => Auth::user()->id,
+            'record_type_id' => 7,
+            'wf_state_id' => $eco_com->wf_current_state_id,
+            'date' => Carbon::now(),
+            'message' => 'El usuario '.Auth::user()->username.' recepcionó el trámite.'
+        ]);
+        $eco_com->document_records()->create([
+            'user_id' => Auth::user()->id,
+            'record_type_id' => 7,
+            'date' => Carbon::now(),
+            'message' => 'El usuario '.Auth::user()->username.' creó el trámite.'
+        ]);
     }
     private function defaultValuesWfRecord($wf_current_state_id = null, $record_type_id = null, $message = null)
     {
@@ -37,24 +44,45 @@ class EconomicComplementObserver
 
         $message = 'El usuario ' . Auth::user()->username . ' modifico ';
         $temp = $message;
-        if ($eco_com->city_start_id != $old->city_start_id) {
-            $message = $message . ' ciudad de recepción  de ' . $old->city_start->name . ' a ' . $eco_com->city_start->name . ', ';
+        if ($eco_com->city_id != $old->city_id) {
+            $message = $message . ' regional de ' . $old->city->name . ' a ' . $eco_com->city->name . ', ';
         }
-
-        if ($eco_com->city_end_id != $old->city_end_id) {
-            $message = $message . ' ciudad de recepción  de ' . $old->city_end->name . ' a ' . $eco_com->city_end->name . ', ';
-        }
-
         if ($eco_com->reception_date != $old->reception_date) {
             $message = $message . ' fecha de recepción ' . $old->reception_date . ' a ' . $eco_com->reception_date . ', ';
         }
+        if ($eco_com->sub_total_rent != $old->sub_total_rent) {
+            $message = $message . ' Total Ganado Renta ó Pensión ' . $old->sub_total_rent . ' a ' . $eco_com->sub_total_rent . ', ';
+        }
+        if ($eco_com->reimbursement != $old->reimbursement) {
+            $message = $message . ' Reintegro ' . $old->reimbursement . ' a ' . $eco_com->reimbursement . ', ';
+        }
+        if ($eco_com->dignity_pension != $old->dignity_pension) {
+            $message = $message . ' Renta Dignidad ' . $old->dignity_pension . ' a ' . $eco_com->dignity_pension . ', ';
+        }
+
+        if ($eco_com->sub_total_rent != $old->sub_total_rent) {
+            $message = $message . ' fecha de recepción ' . $old->sub_total_rent . ' a ' . $eco_com->sub_total_rent . ', ';
+        }
+        if ($eco_com->aps_total_fsa != $old->aps_total_fsa) {
+            $message = $message . ' Fracción de Saldo Acumulada ' . $old->aps_total_fsa . ' a ' . $eco_com->aps_total_fsa . ', ';
+        }
+        if ($eco_com->aps_total_cc != $old->aps_total_cc) {
+            $message = $message . ' Fracción de Pensión CCM ' . $old->aps_total_cc . ' a ' . $eco_com->aps_total_cc . ', ';
+        }
+        if ($eco_com->aps_total_fs != $old->aps_total_fs) {
+            $message = $message . ' Fracción Solidaria de Vejéz ' . $old->aps_total_fs . ' a ' . $eco_com->aps_total_fs . ', ';
+        }
+        if ($eco_com->aps_disability != $old->aps_disability) {
+            $message = $message . ' Prestación por Invalidéz ' . $old->aps_disability . ' a ' . $eco_com->aps_disability . ', ';
+        }
         if($temp !=  $message){
             $message = $message . ' ';
-            $record = new EconomicComplementRecord();
-            $record->user_id = Auth::user()->id;
-            $record->economic_complement_id = $eco_com->id;
-            $record->message = $message;
-            $record->save();
+            $eco_com->document_records()->create([
+                'user_id' => Auth::user()->id,
+                'record_type_id' => 7,
+                'date' => Carbon::now(),
+                'message' => $message
+            ]);
         }
 
         $wf_state_sequence = WorkflowState::find($eco_com->wf_current_state_id)->sequence_number;
