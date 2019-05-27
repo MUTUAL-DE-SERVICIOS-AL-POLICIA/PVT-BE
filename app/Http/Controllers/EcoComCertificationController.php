@@ -7,6 +7,7 @@ use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Helpers\Util;
 use Log;
 use Muserpol\Models\ProcedureRequirement;
+use Muserpol\Helpers\ID;
 
 class EcoComCertificationController extends Controller
 {
@@ -17,7 +18,7 @@ class EcoComCertificationController extends Controller
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
         $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
         $eco_com_submitted_documents = $eco_com->submitted_documents->pluck('procedure_requirement');
-        if($eco_com->eco_com_reception_type_id == 1){
+        if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual){
             $eco_com_submitted_documents = ProcedureRequirement::where('id',127)->get();
         }
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
@@ -56,6 +57,15 @@ class EcoComCertificationController extends Controller
         for ($i = 1; $i <= $number_pages; $i++) {
             $pages[] = \View::make('eco_com.print.reception', $data)->render();
         }
+
+        // ddjj
+        if($eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion ){
+            $number_pages = Util::isRegionalRole() ?3 : 2;
+            for ($i = 1; $i <= $number_pages; $i++) {
+                $pages[] =\View::make('eco_com.print.sworn_declaration', self::printSwornDeclaration($id))->render();
+            }
+        }
+
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
@@ -63,10 +73,10 @@ class EcoComCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $eco_com->id . '.pdf');
     }
-    public function printSwornDeclaration($id)
+    public function printSwornDeclaration($id, $only_data = true)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
-        if($eco_com->eco_com_reception_type_id == 1){
+        if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual){
             return 'error';
         }
         $affiliate = $eco_com->affiliate;
@@ -99,6 +109,9 @@ class EcoComCertificationController extends Controller
             'affiliate' => $affiliate,
             'eco_com_beneficiary' => $eco_com_beneficiary,
         ];
+        if ($only_data) {
+            return $data;
+        }
         $pages = [];
         $number_pages = Util::isRegionalRole() ?3 : 2;
         for ($i = 1; $i <= $number_pages; $i++) {

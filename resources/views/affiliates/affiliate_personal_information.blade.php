@@ -88,6 +88,38 @@
                                      </div>
                                 </div>
                             </div>
+                            <div class="row m-b-md" :class="{'has-error': errors.has('due_date') && !form.is_duedate_undefined }">
+                                <div class="col-md-4"><label class="control-label">Fecha de Vencimiento del CI</label></div>
+                                  <div class="col-md-8">
+                                    <input
+                                      type="text"
+                                      :disabled="form.is_duedate_undefined || !editing"
+                                      name="due_date"
+                                      v-model.trim="form.due_date"
+                                      class="form-control"
+                                      v-date
+                                      v-validate="'required|date_format:dd/MM/yyyy|max_due_date'"
+                                    >
+                                    <br>
+                                    <input
+                                        class="mediumCheckbox"
+                                        type="checkbox"
+                                        :disabled="!editing"
+                                        name="is_duedate_undefined"
+                                        v-model="form.is_duedate_undefined"
+                                        id="is_duedate_undefined"
+                                    >
+                                    <label for="is_duedate_undefined" class="pointer v-middle">
+                                        Indefinido
+                                    </label>
+                                    <div
+                                      v-show="errors.has('form.due_date') && !form.is_duedate_undefined "
+                                    >
+                                      <i class="fa fa-warning text-danger"></i>
+                                      <span class="text-danger">@{{ errors.first('due_date') }}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         {{-- right --}}
                         <div class="col-md-6">

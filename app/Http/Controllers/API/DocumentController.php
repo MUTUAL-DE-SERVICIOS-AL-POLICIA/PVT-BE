@@ -30,6 +30,9 @@ class DocumentController extends Controller
         break;
       case 2:
         # eco com
+        logger($request->all());
+
+        $headers = Util::getHeadersInboxEcoCom();
         $documents = EconomicComplement::with('tags')->select(
           DB::raw(
             "
@@ -41,6 +44,7 @@ class DocumentController extends Controller
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
                         procedure_modalities.name as modality,
+                        eco_com_reception_types.name as eco_com_reception_type,
                         concat('/eco_com/', economic_complements.id) as path
                         "
           )
@@ -50,9 +54,22 @@ class DocumentController extends Controller
           ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
           ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
           ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
+          ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
           ->where('wf_states.role_id', '=', $rol_id)
-          ->where('economic_complements.inbox_state', '=', false)
-          ->get();
+          ->where('economic_complements.inbox_state', '=', false);
+          if($request->city_id){
+            $documents->whereIn('city_id', [$request->city_id]);
+          }
+          if($request->procedure_modality_id){
+            $documents->whereIn('procedure_modalities.id', [$request->procedure_modality_id]);
+          }
+          if($request->eco_com_reception_type_id){
+            $documents->whereIn('economic_complements.eco_com_reception_type_id',  [$request->eco_com_reception_type_id]);
+          }
+          if($request->reception_date){
+            $documents->where('economic_complements.reception_date', '=', $request->reception_date);
+          }
+        $documents = $documents->get();
         $documents_edited_total = EconomicComplement::with('tags')->select(
           DB::raw(
             "
@@ -243,7 +260,7 @@ class DocumentController extends Controller
                         eco_com_cities.second_shortened as city,
                         economic_complements.reception_date as reception_date,
                         economic_complements.workflow_id as workflow_id,
-                        economic_complements.reception_type as type,
+                        eco_com_reception_types.name as eco_com_reception_type,
                         procedure_modalities.name as modality,
                         concat('/eco_com/', economic_complements.id) as path,
                         false as status
@@ -256,6 +273,7 @@ class DocumentController extends Controller
           ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
           ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
           ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
+          ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
           ->where('wf_states.role_id', '=', $rol_id)
           ->where('economic_complements.inbox_state', '=', true)
           ->where('economic_complements.user_id', '=', $user_id);
@@ -265,8 +283,8 @@ class DocumentController extends Controller
           if($request->procedure_modality_id){
             $documents->whereIn('procedure_modalities.id', [$request->procedure_modality_id]);
           }
-          if($request->reception_type){
-            $documents->where('economic_complements.reception_type', 'like', $request->reception_type);
+          if($request->eco_com_reception_type_id){
+            $documents->whereIn('economic_complements.eco_com_reception_type_id',  [$request->eco_com_reception_type_id]);
           }
           if($request->reception_date){
             $documents->where('economic_complements.reception_date', '=', $request->reception_date);

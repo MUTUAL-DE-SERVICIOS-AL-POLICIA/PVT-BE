@@ -71,18 +71,18 @@ class EconomicComplement extends Model
     }
     public function discount_types()
     {
-        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount','date','message'])->withTimestamps();
+        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount', 'date', 'message'])->withTimestamps();
     }
     public function encode()
     {
-        $hashids = new Hashids('economic_complements',10);
+        $hashids = new Hashids('economic_complements', 10);
         return $hashids->encode($this->id);
     }
     public function decode($hash)
     {
-        $hashids = new Hashids('economic_complements',10);
+        $hashids = new Hashids('economic_complements', 10);
         $id = $hashids->decode($hash);
-        if($id){
+        if ($id) {
             return $id[0];
         }
         return null;
@@ -196,7 +196,7 @@ class EconomicComplement extends Model
         $indicator = $eco_com_procedure->indicator;
         /**
          ** updating modality with components
-            */
+         */
         //APS
         if ($this->affiliate->pension_entity->type == 'APS') {
             $component = 0;
@@ -265,13 +265,13 @@ class EconomicComplement extends Model
         $this->save();
         /**
          ** /updating modality with components
-            */
+         */
         // $this->total_rent_calc = $this->total_rent;
 
         /**
          ** averages
-            ** actualizacion de las rentas netas
-            */
+         ** actualizacion de las rentas netas
+         */
 
         $total_rent = $this->total_rent;
 
@@ -306,7 +306,7 @@ class EconomicComplement extends Model
         }
         /**
          ** /averages
-            */
+         */
 
         $base_wage = BaseWage::where('degree_id', $this->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first();
 
@@ -379,8 +379,8 @@ class EconomicComplement extends Model
         $this->save();
         if ($this->total_rent > $this->salary_quotable) {
             $this->eco_com_state_id = 12;
-        }else{
-            if ($this->eco_com_state_id == 12){
+        } else {
+            if ($this->eco_com_state_id == 12) {
                 $this->eco_com_state_id = 16;
             }
         }
@@ -389,15 +389,15 @@ class EconomicComplement extends Model
     }
     public function isOldAge()
     {
-        return $this->eco_com_modality->procedure_modality_id == 1;
+        return $this->eco_com_modality->procedure_modality_id == 29;
     }
     public function isWidowhood()
     {
-        return $this->eco_com_modality->procedure_modality_id == 2;
+        return $this->eco_com_modality->procedure_modality_id == 30;
     }
     public function isOrphanhood()
     {
-        return $this->eco_com_modality->procedure_modality_id == 3;
+        return $this->eco_com_modality->procedure_modality_id == 31;
     }
     public function hasLegalGuardian()
     {
@@ -425,9 +425,9 @@ class EconomicComplement extends Model
         foreach ($ids as $i) {
             $collect->push($i);
         }
-        return $query->leftJoin('eco_com_states','economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
-        ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
-        ->whereIn('eco_com_state_types.id', $collect);
+        return $query->leftJoin('eco_com_states', 'economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
+            ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+            ->whereIn('eco_com_state_types.id', $collect);
     }
     public function scopeNotHasEcoComState($query, ...$ids)
     {
@@ -435,9 +435,9 @@ class EconomicComplement extends Model
         foreach ($ids as $i) {
             $collect->push($i);
         }
-        return $query->leftJoin('eco_com_states','economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
-        ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
-        ->whereNotIn('eco_com_state_types.id', $collect);
+        return $query->leftJoin('eco_com_states', 'economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
+            ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+            ->whereNotIn('eco_com_state_types.id', $collect);
     }
     public function scopeEcoComProcedure($query, ...$ids)
     {
@@ -473,40 +473,38 @@ class EconomicComplement extends Model
     }
     public function scopeCity($query)
     {
-        return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=','economic_complements.city_id');
+        return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id');
     }
     public function scopeBeneficiary($query)
     {
-        return $query->leftJoin('eco_com_applicants as beneficiary', 'beneficiary.economic_complement_id', '=','economic_complements.id')
-        ->leftJoin('cities as beneficiary_city', 'beneficiary_city.id', '=','beneficiary.city_identity_card_id');
+        return $query->leftJoin('eco_com_applicants as beneficiary', 'beneficiary.economic_complement_id', '=', 'economic_complements.id')
+            ->leftJoin('cities as beneficiary_city', 'beneficiary_city.id', '=', 'beneficiary.city_identity_card_id');
     }
-    public function scopeHasObservationTypeAndCorrect($query,...$ids)
+    public function scopeHasObservationTypeAndCorrect($query, ...$ids)
     {
         $collect = collect([]);
         foreach ($ids as $i) {
             $collect->push($i);
         }
-        $model ='economic_complements';
-        $table ='economic_complements';
-        return $query->whereExists(function ($query) use($model , $table, $collect) {
+        $model = 'economic_complements';
+        $table = 'economic_complements';
+        return $query->whereExists(function ($query) use ($model, $table, $collect) {
             $query->select(DB::raw(1))
-                  ->from('observables')
-                  ->where('observables.observable_id', '=', $table . '.id')
-                  ->where('observables.observable_type', '=', $model)
-                  ->where('observables.enabled', false)
-                  ->whereIn('observables.observation_type_id', $collect);
+                ->from('observables')
+                ->where('observables.observable_id', '=', $table . '.id')
+                ->where('observables.observable_type', '=', $model)
+                ->where('observables.enabled', false)
+                ->whereIn('observables.observation_type_id', $collect);
         });
-        return $query->leftJoin('observables', function($join) use($model , $table, $collect)
-        {
+        return $query->leftJoin('observables', function ($join) use ($model, $table, $collect) {
             $join->on('observables.observable_id', '=', $table . '.id')
                 ->where('observables.observable_type', '=', $model)
                 ->where('observables.enabled', false)
-                ->whereIn('observables.observation_type_id', $collect)
-                ;
+                ->whereIn('observables.observation_type_id', $collect);
         });
-        return $query->leftJoin('observables', 'observables.observable_id', '=',$this->id)
-        ->where('observables.observable_type', 'economic_complements')
-        ->where('observables.enabled', true);
+        return $query->leftJoin('observables', 'observables.observable_id', '=', $this->id)
+            ->where('observables.observable_type', 'economic_complements')
+            ->where('observables.enabled', true);
         return $this->observations()->whereIn('id', collect(func_get_args($ids)))->where('enabled', true)->get()->count();
         // return collect(func_get_args($ids))->includes($this->)
     }
@@ -520,4 +518,12 @@ class EconomicComplement extends Model
     //     return !! $this->observations()->whereIn('id', collect(func_get_args($ids)))->where('enabled', true)->get()->count();
     //     // return collect(func_get_args($ids))->includes($this->)
     // }
+    public function notes()
+    {
+        return $this->morphMany('Muserpol\Models\Note', 'annotable');
+    }
+    public function document_records()
+    {
+        return $this->morphMany('Muserpol\Models\DocumentRecord', 'recordable');
+    }
 }

@@ -63,6 +63,7 @@
                         </div>
                     </div>
                     <div class="ibox">
+                        <div class="ibox-title"><h3>Filtros</h3></div>
                         <div class="ibox-content">
                             <div class="form-group">
                                 <label for="">Regional:</label>
@@ -87,8 +88,8 @@
                             </div> --}}
                             <div class="form-group">
                                 <label for="">Tipo de Recepcion:</label>
-                                <select class="form-control" v-model="filter.reception_type" @change="getData()">
-                                    <option :value="null">TODOS</option>
+                                <select class="form-control" v-model="filter.eco_com_reception_type_id" @change="getData()">
+                                    <option value="0">TODOS</option>
                                     <option v-for="pm in receptionTypes" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
                                 </select>
                             </div>
@@ -99,6 +100,7 @@
                         </div>
                         <div class="ibox-footer">
                             <div class="text-center">
+                                <button class="btn btn-sm btn-danger" @click="cancelFilter()"><i class="fa fa-times"></i> Cancelar</button>
                                 <button class="btn btn-sm btn-primary" @click="getData()"><i class="fa fa-search"></i> Filtrar</button>
                             </div>
                         </div>

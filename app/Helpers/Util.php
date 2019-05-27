@@ -874,7 +874,7 @@ class Util
       ['text' => "Nombre del Beneficiario", 'value' => "name"],
       ['text' => "Modalidad", 'value' => "modality"],
       ['text' => "Regional", 'value' => "city"],
-      ['text' => "Tipo", 'value' => "type"],
+      ['text' => "Tipo", 'value' => "eco_com_reception_type"],
       ['text' => "Fecha de Recepción", 'value' => "reception_date"],
     ];
   }

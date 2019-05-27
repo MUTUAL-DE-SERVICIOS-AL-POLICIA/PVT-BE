@@ -6,13 +6,15 @@
         <div class="row">
           <div class="col-md-6">
             <div class="col-md-4">
-              <label class="control-label">Tiene Apoderado</label>
+              <label class="control-label pointer" for="has_legal_guardian">Tiene Apoderado</label>
             </div>
             <div class="col-md-8">
               <input
+                class="mediumCheckbox"
                 type="checkbox"
                 v-model="has_legal_guardian"
                 name="has_legal_guardian"
+                id="has_legal_guardian"
                 @change="toggleLegalGuardian()"
               >
             </div>
@@ -249,10 +251,15 @@
                 >
                 <br>
                 <input
+                  class="mediumCheckbox"
                   type="checkbox"
                   name="legal_guardian_is_duedate_undefined"
                   v-model="legalGuardian.is_duedate_undefined"
-                > Indefinido
+                  id="legal_guardian_is_duedate_undefined"
+                >
+                <label for="legal_guardian_is_duedate_undefined" class="pointer v-middle">
+                  Indefinido
+                </label>
                 <div
                   v-show="errors.has('legal_guardian_due_date') && !legalGuardian.is_duedate_undefined"
                 >
@@ -1087,10 +1094,15 @@
                 >
                 <br>
                 <input
+                  class="mediumCheckbox"
                   type="checkbox"
                   name="eco_com_beneficiary_is_duedate_undefined"
                   v-model="ecoComBeneficiary.is_duedate_undefined"
-                > Indefinido
+                  id="eco_com_beneficiary_is_duedate_undefined"
+                >
+                <label for="eco_com_beneficiary_is_duedate_undefined" class="pointer v-middle">
+                  Indefinido
+                </label>
                 <div
                   v-show="errors.has('eco_com_beneficiary_due_date') && !ecoComBeneficiary.is_duedate_undefined "
                 >

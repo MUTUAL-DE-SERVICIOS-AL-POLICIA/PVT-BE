@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\ObservationType;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
-
+use DB;
 class SearcherController
 {
     private $tables;
@@ -68,21 +68,23 @@ class SearcherController
         $affiliate = null;
         $affiliate_observations = [];
         $eco_com_beneficiary = new EcoComBeneficiary();
+        logger("----------------HOLA ----------------");
         if($request->type == 1){
             $affiliate = Affiliate::where('identity_card',$ci)->first();
         }else{
-            $eco_com_beneficiary = Spouse::where('identity_card',$ci)->first();
-            if(!$eco_com_beneficiary){
-                $eco_com_beneficiary = EcoComBeneficiary::where('identity_card',$ci)->first();
-            }
+            $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
+            ->leftJoin('eco_com_modalities','eco_com_modalities.id','=', 'economic_complements.eco_com_modality_id')
+            ->leftJoin('procedure_modalities',"procedure_modalities.id",'=', 'eco_com_modalities.procedure_modality_id')
+            ->where('procedure_modalities.id','<>',29)
+            ->where('eco_com_applicants.identity_card',$ci)
+            ->select('eco_com_applicants.*')
+            ->orderBy('eco_com_applicants.id')
+            ->get()
+            ->last();
             if(!$eco_com_beneficiary){
                 return array('affiliate' => $affiliate, 'eco_com_beneficiary' => $eco_com_beneficiary , 'eco_com'=>$eco_com );
             }
-            if($eco_com_beneficiary instanceof Spouse){
-                $affiliate = $eco_com_beneficiary->affiliate;
-            }else{
-                $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
-            }
+            $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
             $eco_com_beneficiary->full_name = $eco_com_beneficiary->fullName();
             $eco_com_beneficiary->ci_with_ext = $eco_com_beneficiary->ciWithExt();
             $due_date = $eco_com_beneficiary->due_date ?? Carbon::now()->subDay();
@@ -97,12 +99,17 @@ class SearcherController
             $affiliate->category_percentage = $affiliate->category->name ?? '';
             $affiliate->pension_entity_name= $affiliate->pension_entity->name ?? '';
             $affiliate_observations = $affiliate->observations()->where('enabled',false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get();
-            //!! TODO getLast
             $eco_com = $affiliate->economic_complements()->with([
                 'eco_com_modality:id,name,shortened',
                 'eco_com_state:id,name'
-            ])->orderByDesc('id')->take(2)->get();
+            ])->orderByDesc(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))
+            ->orderByDesc(DB::raw("split_part(code, '/',2)"))
+            ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
+            ->take(2)
+            ->get();
         }
+        logger("----------------HOLA ----------------");
+
         return array('affiliate' => $affiliate,'affiliate_observations'=>$affiliate_observations, 'eco_com_beneficiary' => $eco_com_beneficiary , 'eco_com'=>$eco_com );
     }
 }

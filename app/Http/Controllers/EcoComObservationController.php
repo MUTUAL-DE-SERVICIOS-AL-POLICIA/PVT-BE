@@ -9,7 +9,6 @@ use Muserpol\Models\ObservationType;
 use Carbon\Carbon;
 use Auth;
 use DB;
-use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Helpers\Util;
 use Illuminate\Auth\Access\AuthorizationException;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
@@ -78,11 +77,12 @@ class EcoComObservationController extends Controller
             'message' => $request->message,
             'enabled' => $request->enabled
         ]);
-        $record = new EconomicComplementRecord();
-        $record->user_id = Auth::user()->id;
-        $record->economic_complement_id = $eco_com->id;
-        $record->message = "El usuario " . Auth::user()->username  . " creó la observación " . $observation->name . ".";
-        $record->save();
+        $eco_com->document_records()->create([
+            'user_id' => Auth::user()->id,
+            'record_type_id' => 9,
+            'date' => Carbon::now(),
+            'message' => "El usuario " . Auth::user()->username  . " creó la observación " . $observation->name . "."
+        ]);
         return 'created';
     }
     public function update(Request $request)
@@ -116,10 +116,7 @@ class EcoComObservationController extends Controller
                 'message' => $request->message,
                 'enabled' => $request->enabled
             ]);
-            $record = new EconomicComplementRecord();
-            $record->user_id = Auth::user()->id;
-            $record->economic_complement_id = $eco_com->id;
-            $message = "El usuario " . Auth::user()->username  . " modifico la observación ". $observation->name." :";
+            $message = "El usuario " . Auth::user()->username  . " modifico la observación ". $observation->name.": ";
             if($old_observation->pivot->message != $request->message)
             {
                 $message = $message . ' Mensaje de - '.$old_observation->pivot->message.' - a - '.$request->message.', ';
@@ -128,8 +125,13 @@ class EcoComObservationController extends Controller
             {
                 $message = $message . ' de '.Util::getEnabledLabel($old_observation->pivot->enabled).' a '.Util::getEnabledLabel($request->enabled).', ';
             }
-            $record->message = $message. ".";
-            $record->save();
+            $message = $message. ".";
+            $eco_com->document_records()->create([
+                'user_id' => Auth::user()->id,
+                'record_type_id' => 9,
+                'date' => Carbon::now(),
+                'message' => $message
+            ]);
         } else {
             return response()->json(['errors' => ['El Tramite no tiene esa observación']], 422);
         }
@@ -161,11 +163,12 @@ class EcoComObservationController extends Controller
             $eco_com->observations()->updateExistingPivot($observation->id, [
                 'deleted_at' => Carbon::now(),
             ]);
-            $record = new EconomicComplementRecord();
-            $record->user_id = Auth::user()->id;
-            $record->economic_complement_id = $eco_com->id;
-            $record->message = "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . ".";
-            $record->save();
+            $eco_com->document_records()->create([
+                'user_id' => Auth::user()->id,
+                'record_type_id' => 9,
+                'date' => Carbon::now(),
+                'message' => "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . "."
+            ]);
         } else {
             return response()->json(['errors' => ['El Tramite no tiene esa observación']], 422);
         }

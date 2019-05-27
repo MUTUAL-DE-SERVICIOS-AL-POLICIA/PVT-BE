@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\City;
 use Muserpol\Models\Spouse;
+use Muserpol\Models\Note;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
 use Muserpol\Models\Affiliate;
@@ -28,7 +29,6 @@ use DB;
 use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowState;
-use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\EconomicComplement\EcoComRent;
 use Muserpol\Models\ObservationType;
 use Yajra\DataTables\DataTables;
@@ -41,6 +41,7 @@ use Muserpol\Models\ComplementaryFactor;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\EconomicComplement\EcoComReceptionType;
+use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 
 class EconomicComplementController extends Controller
 {
@@ -171,7 +172,7 @@ class EconomicComplementController extends Controller
         } else {
             $last_eco_com = new EconomicComplement();
         }
-        $modalities = ProcedureModality::where('procedure_type_id',8)->get();
+        $modalities = ProcedureModality::where('procedure_type_id', ID::procedureType()->eco_com)->get();
         $pension_entities = PensionEntity::all();
         $degrees = Degree::all();
         $categories = Category::all();
@@ -225,7 +226,7 @@ class EconomicComplementController extends Controller
         /**
          ** update affiliate police info
          */
-        if($request->reception_type == 2){
+        if($request->reception_type == ID::ecoCom()->inclusion){
             // $affiliate->category_id = $request->affiliate_category_id;
             $service_year = $request->affiliate_service_years;
             $service_month = $request->affiliate_service_months;
@@ -253,33 +254,27 @@ class EconomicComplementController extends Controller
         $economic_complement->user_id = Auth::user()->id;
         $economic_complement->affiliate_id = $affiliate->id;
         $economic_complement->eco_com_modality_id = ProcedureModality::find($request->modality_id)->eco_com_modalities()->where('name', 'like', '%normal%')->first()->id;
-        $economic_complement->eco_com_state_id = 16;
+        $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
         $economic_complement->eco_com_procedure_id = $request->eco_com_procedure_id;
-        $economic_complement->workflow_id = 1;
-        /**
-         * !! TODO regionales
-         */
-        $economic_complement->wf_current_state_id = 1;
-
+        $economic_complement->workflow_id = ID::workflow()->eco_com_normal;
+        $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0,1])->first();
+        if(!$wf_state){
+            Log::info("error al crear el trámite");
+            return;
+        }
+        $economic_complement->wf_current_state_id = $wf_state->id;
         $economic_complement->city_id = $request->city_id;
         $economic_complement->degree_id = $affiliate->degree->id;
         $economic_complement->category_id = $affiliate->category->id;
-        // $economic_complement->base_wage_id = 2;
-        // $economic_complement->complementary_factor_id = 2;
-        $economic_complement->year = Carbon::parse($eco_com_procedure->year)->year . '-01-01';
-        $economic_complement->semester = $eco_com_procedure->semester;
-        // $economic_complement->has_legal_guardian = $request->has_legal_guardian == 'on'; // solicitante y cobrador
-        // $economic_complement->has_legal_guardian_s = $request->legal_guardian_type_id == 1; // solo solicitante
+        $economic_complement->year = Carbon::parse($eco_com_procedure->year)->year . '-01-01'; // !! TODO Borrar columna
+        $economic_complement->semester = $eco_com_procedure->semester; // !! TODO Borrar columna
         $economic_complement->code = Util::getLastCodeEconomicComplement($request->eco_com_procedure_id);
         $economic_complement->reception_date = now();
-        /**
-         *!!TODO change inbox_state column
-         **/
         $economic_complement->inbox_state = true;
-        $economic_complement->state = 'Received';
+        $economic_complement->state = 'Received'; // !! TODO Borrar columna
         $economic_complement->eco_com_reception_type_id = $request->reception_type;
 
-        if ($request->pension_entity_id == 5) {
+        if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
             $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
             $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
@@ -407,7 +402,7 @@ class EconomicComplementController extends Controller
             $address_id = $eco_com_beneficiary->address()->first()->id;
             $address = Address::find($address_id);
             if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
-                $address->city_address_id = $request->beneficiary_city_address_id ?? 1;
+                $address->city_address_id = $request->beneficiary_city_address_id ?? ID::cityId()->BN;
                 $address->zone = $request->beneficiary_zone;
                 $address->street = $request->beneficiary_street;
                 $address->number_address = $request->beneficiary_number_address;
@@ -429,7 +424,7 @@ class EconomicComplementController extends Controller
         } else {
             if ($request->beneficiary_city_address_id) {
                 $address = new Address();
-                $address->city_address_id = $request->beneficiary_city_address_id ?? 1;
+                $address->city_address_id = $request->beneficiary_city_address_id ?? ID::cityId()->BN;
                 $address->zone = $request->beneficiary_zone;
                 $address->street = $request->beneficiary_street;
                 $address->number_address = $request->beneficiary_number_address;
@@ -555,7 +550,12 @@ class EconomicComplementController extends Controller
     public function show($id)
     {
         $this->authorize('read', new EconomicComplement());
-        $economic_complement = EconomicComplement::with(['wf_state:id,name', 'workflow:id,name', 'eco_com_modality:id,name,shortened,procedure_modality_id'])->findOrFail($id);
+        $economic_complement = EconomicComplement::with([
+            'wf_state:id,name',
+            'workflow:id,name',
+            'eco_com_modality:id,name,shortened,procedure_modality_id',
+            'eco_com_reception_type:id,name'
+        ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
         $categories = Category::all();
@@ -591,13 +591,13 @@ class EconomicComplementController extends Controller
          ** for requirements
          */
         $user = User::find(Auth::user()->id);
-        $procedure_types = ProcedureType::where('module_id', 2)->get();
+        $procedure_types = ProcedureType::where('module_id', ID::module()->eco_com)->get();
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
-        $procedure_modalities = ProcedureModality::where('procedure_type_id', '=', 8)->select('id', 'name', 'procedure_type_id')->get();
+        $procedure_modalities = ProcedureModality::where('procedure_type_id', '=', ID::procedureType()->eco_com)->select('id', 'name', 'procedure_type_id')->get();
         $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid')
             ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
             ->orderby('procedure_requirements.number', 'ASC')
@@ -665,7 +665,8 @@ class EconomicComplementController extends Controller
             ObservationType::class,
             EconomicComplement::class,
             EcoComLegalGuardian::class,
-            EcoComBeneficiary::class
+            EcoComBeneficiary::class,
+            Note::class
         );
         $permissions = json_decode($permissions);
         $permissions[] = ['operation' => 'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];
@@ -816,14 +817,14 @@ class EconomicComplementController extends Controller
 
     public function getReceptionType(Request $request)
     {
-        $reception_type_id = 2;
+        $reception_type_id = ID::ecoCom()->inclusion;
         if (!$request->modality_id) {
             return $reception_type_id;
         }
         if ($request->last_eco_com_id) {
             $eco_com = EconomicComplement::find($request->last_eco_com_id);
             if ($eco_com->eco_com_modality->procedure_modality_id == $request->modality_id) {
-                $reception_type_id = 1;
+                $reception_type_id = ID::ecoCom()->habitual;
             }
         }
         return $reception_type_id;
@@ -1032,7 +1033,7 @@ class EconomicComplementController extends Controller
             ], 403);
         }
         $economic_complement = EconomicComplement::with('discount_types')->find($request->id);
-        if ($economic_complement->eco_com_state->eco_com_state_type_id == 1 || $economic_complement->eco_com_state->eco_com_state_type_id == 6) {
+        if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
             $eco_com_state = $economic_complement->eco_com_state;
             return response()->json([
                 'status' => 'error',
@@ -1040,7 +1041,7 @@ class EconomicComplementController extends Controller
                 'errors' => ['No se puede modificar las rentas del trámite ' . $economic_complement->code . 'porque se encuentra en estado de ' . $eco_com_state->name],
             ], 422);
         }
-        if ($request->pension_entity_id == 5) {
+        if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
             $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
             $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
@@ -1058,7 +1059,7 @@ class EconomicComplementController extends Controller
             $economic_complement->dignity_pension = null;
         }
         $economic_complement->save();
-        if ($request->pension_entity_id == 5) {
+        if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
             $economic_complement->total_rent =
             $economic_complement->sub_total_rent -
             $economic_complement->reimbursement -
@@ -1113,7 +1114,7 @@ class EconomicComplementController extends Controller
                 'errors' => $exception->errors(),
             ], 422);
         }
-        if ($eco_com->eco_com_state->eco_com_state_type_id == 1 || $eco_com->eco_com_state->eco_com_state_type_id == 6) {
+        if ($eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
             $eco_com_state = $eco_com->eco_com_state;
             return response()->json([
                 'status' => 'error',
@@ -1144,11 +1145,12 @@ class EconomicComplementController extends Controller
         // if ($eco_com->discount_types->contains($discount_type->id)) {
         //     $eco_com->discount_types()->detach($discount_type->id);
         // }
-        $record = new EconomicComplementRecord();
-        $record->user_id = Auth::user()->id;
-        $record->economic_complement_id = $eco_com->id;
-        $record->message = "El usuario " . Auth::user()->username  . " amortizó " . $request->amount . ".";
-        $record->save();
+        $eco_com->document_records()->create([
+            'user_id' => Auth::user()->id,
+            'record_type_id' => 10,
+            'date' => Carbon::now(),
+            'message' => "El usuario " . Auth::user()->username  . " amortizó " . $request->amount . "."
+        ]);
         if (Gate::allows('qualify', $eco_com)) {
             $eco_com->qualify();
         }
@@ -1353,5 +1355,24 @@ class EconomicComplementController extends Controller
         ];
 
         return view('eco_com.qualification_parameters', $data);
+    }
+    public function getRecord($id)
+    {
+        $eco_com = EconomicComplement::find($id);
+        $document_records = $eco_com->document_records()->with(['user:id,username', 'record_type:id,name'])->orderByDesc('date')->get();
+        $workflow_records = $eco_com->wf_records()->with(['user:id,username','wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
+        $note_records = $eco_com->notes()->orderByDesc('date')->get();
+        // $first_wf_state = EconomicComplementRecord::where('economic_complement_id', $id)->whereRaw("message like '%creó el tr%'")->first();
+        // if ($first_wf_state) {
+        //     $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
+        //     $str = $first_wf_state->message;
+        //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+        //     $user_name = $matches[0][0];
+        //     if (User::where('username', '=', $user_name)->first()) {
+        //         $rol = User::where('username', '=', $user_name)->first()->roles->first();
+        //         $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
+        //     }
+        // }
+        return compact('document_records', 'workflow_records', 'note_records');
     }
 }

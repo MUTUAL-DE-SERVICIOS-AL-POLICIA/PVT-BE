@@ -30,7 +30,20 @@ class InboxController extends Controller
 {
   public function received()
   {
-    return view('inbox.received');
+    $cities = City::all();
+    $procedure_modalities = ProcedureModality::select('procedure_modalities.*')
+    ->leftJoin('procedure_types','procedure_types.id', '=', 'procedure_modalities.procedure_type_id')
+    ->where('procedure_types.module_id', Util::getRol()->module_id)
+    ->get();
+    $eco_com_modalities = EcoComModality::all();
+    $reception_types = EcoComReceptionType::all();
+    $data = [
+      'cities' => $cities,
+      'procedure_modalities' => $procedure_modalities,
+      'eco_com_modalities' => $eco_com_modalities,
+      'reception_types' => $reception_types
+    ];
+    return view('inbox.received', $data);
   }
   public function edited()
   {

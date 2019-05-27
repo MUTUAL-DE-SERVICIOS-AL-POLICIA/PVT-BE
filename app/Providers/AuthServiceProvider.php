@@ -49,6 +49,7 @@ use Muserpol\Policies\ScannedDocumentPolicy;
 use Muserpol\Models\Spouse;
 use Muserpol\Policies\SpousePolicy;
 use Muserpol\Models\Unit;
+use Muserpol\Models\Note;
 use Muserpol\Policies\UnitPolicy;
 use Muserpol\Models\Voucher;
 use Muserpol\Policies\VoucherPolicy;
@@ -84,6 +85,7 @@ use Muserpol\Models\RetirementFund\RetFunSubmittedDocument;
 use Muserpol\Policies\RetFunSubmittedDocumentPolicy;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use Muserpol\Policies\RetirementFundPolicy;
+use Muserpol\Policies\NotePolicy;
 
 use Muserpol\Models\Contribution\ContributionCommitment;
 use Muserpol\Policies\ContributionCommitmentPolicy;
@@ -165,6 +167,7 @@ class AuthServiceProvider extends ServiceProvider
          EcoComProcedure::class => EcoComProcedurePolicy::class,
          EcoComLegalGuardian::class => EcoComLegalGuardianPolicy::class,
          EcoComBeneficiary::class => EcoComBeneficiaryPolicy::class,
+         Note::class => NotePolicy::class,
     ];
 
     /**

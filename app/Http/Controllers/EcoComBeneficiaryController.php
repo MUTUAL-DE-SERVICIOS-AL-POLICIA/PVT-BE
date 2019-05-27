@@ -73,8 +73,8 @@ class EcoComBeneficiaryController extends Controller
         $beneficiary->civil_status = $request->civil_status;
         $beneficiary->city_birth_id = $request->city_birth_id;
         $beneficiary->due_date = Util::verifyBarDate($request->due_date) ? Util::parseBarDate($request->due_date) : $request->due_date;
-        $beneficiary->is_duedate_undefined = $request->beneficiary_is_duedate_undefined == 'on';
-        if ($request->beneficiary_is_duedate_undefined == 'on') {
+        $beneficiary->is_duedate_undefined = $request->is_duedate_undefined == 'on';
+        if ($request->is_duedate_undefined == 'on') {
             $beneficiary->due_date = null;
         }
         $beneficiary->save();

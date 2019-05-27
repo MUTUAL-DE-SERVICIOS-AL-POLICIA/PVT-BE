@@ -32,7 +32,7 @@ use Muserpol\Models\PaymentType;
 use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
 use Muserpol\Models\ObservationType;
-
+use DB;
 class AffiliateController extends Controller
 {
     /**
@@ -333,7 +333,7 @@ class AffiliateController extends Controller
         /**
          ** eco coms
          */
-        $eco_coms = $affiliate->economic_complements;
+        $eco_coms = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->reverse();
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -402,7 +402,7 @@ class AffiliateController extends Controller
     public function update(Request $request, Affiliate $affiliate)
     {
         $affiliate =  Affiliate::where('id','=', $affiliate->id)->first();
-        $this->authorize('update', $affiliate);
+        // $this->authorize('update', $affiliate);
         /*
         TODO
         add regex into identity_card validate: 51561 and 4451-1L
@@ -425,6 +425,11 @@ class AffiliateController extends Controller
             $messages =[
                 'last_name.required' => 'El campo Apellido Paterno o Materno es requerido.',
             ];
+        }
+        if($request->is_duedate_undefined == 'on'){
+            $rules['is_duedate_undefined'] = 'required';
+        }else{
+            $rules['due_date'] = 'required';
         }
         try {
             $validator = Validator::make($request->all(), $rules, $messages)->validate();
@@ -451,6 +456,12 @@ class AffiliateController extends Controller
         $affiliate->city_birth_id = $request->city_birth_id;
         $affiliate->city_identity_card_id =$request->city_identity_card_id;
         $affiliate->surname_husband = $request->surname_husband;        
+        $affiliate->due_date = Util::verifyBarDate($request->due_date) ? Util::parseBarDate($request->due_date) : $request->due_date;
+        $affiliate->is_duedate_undefined = $request->is_duedate_undefined == 'on';
+        if ($request->is_duedate_undefined == 'on') {
+            $affiliate->due_date = null;
+        }
+        $affiliate->save();
 
         if (sizeOf($affiliate->address) > 0) {
             $address_id = $affiliate->address()->first()->id;

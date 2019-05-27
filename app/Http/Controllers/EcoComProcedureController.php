@@ -14,10 +14,7 @@ class EcoComProcedureController extends Controller
 {
     public function getProcedureActives(Request $request)
     {
-        Log::info("**********");
-        Log::info($request->id);
         $eco_com_procedure_ids = Util::getEcoComCurrentProcedure();
-        Log::info($eco_com_procedure_ids);
         if (!$eco_com_procedure_ids) {
             return response()->json([], 204);
         }
@@ -72,7 +69,7 @@ class EcoComProcedureController extends Controller
                 'errors' => ['No tiene permisos para ver los procedimientos.'],
             ], 403);
         }
-        $eco_com_procedures = EcoComProcedure::orderByDesc('sequence')->get();
+        $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->get();
         foreach ($eco_com_procedures as $e) {
             $e->name = $e->fullName();
         }
