@@ -1299,7 +1299,7 @@ class QuotaAidMortuaryController extends Controller
       ->where('hierarchy_id', $degree->hierarchy_id)
       ->where('is_enabled', true)
       ->first();
-    $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid();
+    $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid($quota_aid_id);
     $quota_aid_contributions = $affiliate->getQuotaAidContributions($quota_aid_id);
     if (!$quota_aid_contributions['is_continuous']) {
       return 'Verifique que el titular tenga la cantidad de aportes correctas';
