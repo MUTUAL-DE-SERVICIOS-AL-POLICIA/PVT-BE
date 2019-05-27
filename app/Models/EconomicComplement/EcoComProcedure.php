@@ -15,8 +15,10 @@ class EcoComProcedure extends Model
     }
     public function getNextProcedure()
     {
-        //!! TODO Eliminar sequence
-        return EcoComProcedure::where('sequence',$this->sequence +1)->first();
+        if ($this->semester == 'Primer' ) {
+            return EcoComProcedure::where('semester','Segundo')->whereYear('year', $this->getYear())->first();
+        }
+        return EcoComProcedure::where('semester','Primer')->whereYear('year', $this->getYear()+1)->first();
     }
     public function fullName()
     {
