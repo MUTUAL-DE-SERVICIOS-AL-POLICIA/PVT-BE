@@ -44,6 +44,7 @@ class EconomicComplementRolSeeder extends Seeder
             ['module_id' => 9, 'name' => 'EconomicComplement'],
             ['module_id' => 9, 'name' => 'Affiliate'],
             ['module_id' => 9, 'name' => 'ObservationType'],
+            ['module_id' => 2, 'name' => 'Note'],
         ];
         foreach ($statuses as $status) {
             Operation::create($status);

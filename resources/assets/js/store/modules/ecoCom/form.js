@@ -1,5 +1,7 @@
 const state = {
   modality: "",
+  procedureModalityName: "",
+  pensionEntityName: "",
   modality_id: "",
   city: "",
   id: null,
@@ -15,7 +17,7 @@ const state = {
 };
 const mutations = {
   setModality(state, object) {
-    state.modality = object.name;
+    state.procedureModalityName = object.name;
     state.modality_id = object.id;
   },
   setCity(state, value) {
@@ -39,8 +41,9 @@ const mutations = {
   setCorrelative(state, value) {
     state.correlative = value;
   },
-  setPensionEntity(state, value){
-    state.pensionEntityId = value
+  setPensionEntity(state, object){
+    state.pensionEntityId = object.id
+    state.pensionEntityName = object.name
   },
   addBeneficiaryPhoneNumber(state) {
     if (state.beneficiary.phone_number.length > 0) {

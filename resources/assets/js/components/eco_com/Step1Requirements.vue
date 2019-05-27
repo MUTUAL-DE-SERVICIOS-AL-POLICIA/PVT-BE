@@ -206,10 +206,7 @@ export default {
     this.setPensionEntity();
     this.setReceptionType();
     this.setModality();
-    this.$store.commit(
-      "ecoComForm/setCity",
-      this.cities.filter(city => city.id == this.city_id)[0].name
-    );
+    this.setCity();
     // this.$store.commit("ecoComForm/setAffiliate", this.affiliate);
   },
   methods: {
@@ -230,12 +227,30 @@ export default {
       await this.setModality();
     },
     setPensionEntity() {
-      this.$store.commit("ecoComForm/setPensionEntity", this.pension_entity_id);
+      let name = null;
+      if(this.pension_entity_id){
+        name = this.pensionEntities.find(x => x.id == this.pension_entity_id).name;
+      }
+      this.$store.commit("ecoComForm/setPensionEntity", {
+        id: this.pension_entity_id,
+        name: name
+      });
+    },
+    setCity() {
+      let name = null;
+      if(this.city_id){
+        name = this.cities.find(x => x.id == this.city_id).name;
+        this.$store.commit("ecoComForm/setCity", name);
+      }
     },
     setModality() {
+      let name = null;
+      if(this.modality_id){
+        name = this.modalities.find(x => x.id == this.modality_id).name;
+      }
       this.$store.commit("ecoComForm/setModality", {
         id: this.modality_id,
-        name: null
+        name: name
       });
     },
     async setReceptionType() {
@@ -253,10 +268,7 @@ export default {
         .catch(error => {
           console.log(error);
         });
-      await this.$store.commit(
-        "ecoComForm/setReceptionType",
-        this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id)
-      );
+      await this.$store.commit("ecoComForm/setReceptionType",this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id));
       await this.findBeneficiary();
     },
     async findBeneficiary() {
@@ -354,11 +366,8 @@ export default {
         }
       }
     },
-    onChooseCity(event) {
-      const options = event.target.options;
-      const selectedOption = options[options.selectedIndex];
-      const selectedText = selectedOption.textContent;
-      this.$store.commit("retFunForm/setCity", selectedText);
+    onChooseCity() {
+      this.setCity()
     }
   }
 };
