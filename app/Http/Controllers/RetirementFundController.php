@@ -2257,17 +2257,6 @@ class RetirementFundController extends Controller
 
     public function editRequirements(Request $request, $id)
     {
-        //return $request->ret_fun_modality;
-        //return $request->aditional_requirements;
-        // $documents = RetFunSubmittedDocument::select('procedure_requirements.number', 'ret_fun_submitted_documents.procedure_requirement_id')
-        //     ->leftJoin('procedure_requirements', 'ret_fun_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
-        //     ->orderby('procedure_requirements.number', 'ASC')
-        //     ->where('ret_fun_submitted_documents.retirement_fund_id', $id)
-        //     ->where('procedure_requirements.number', '>', '0')
-        //     ->pluck('ret_fun_submitted_documents.procedure_requirement_id', 'procedure_requirements.number');
-        //return $documents;
-        // $num = $num2 = 0;
-
         $requirements = [];
         foreach ($request->requirements as $requirement) {
             $requirements = array_merge($requirements, $requirement);
@@ -2292,22 +2281,6 @@ class RetirementFundController extends Controller
                 }
             }
         }
-
-        // foreach ($request->requirements as $requirement) {
-        //     $from = $to = 0;
-        //     $comment = null;
-        //     for ($i = 0; $i < count($requirement); $i++) {
-        //         $from = $requirement[$i]['number'];
-        //         if ($requirement[$i]['status'] == true) {
-        //             $to = $requirement[$i]['id'];
-        //             $comment = $requirement[$i]['comment'];
-        //             $doc = RetFunSubmittedDocument::where('retirement_fund_id', $id)->where('procedure_requirement_id', $documents[$from])->first();
-        //             $doc->procedure_requirement_id = $to;
-        //             $doc->comment = $comment;
-        //             $doc->save();
-        //         }
-        //     }
-        // }
 
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
