@@ -304,7 +304,6 @@ class RetirementFundController extends Controller
                 $submit = new RetFunSubmittedDocument();
                 $submit->retirement_fund_id = $retirement_fund->id;
                 $submit->procedure_requirement_id = $requirement->id;
-                $submit->reception_date = date('Y-m-d');
                 $submit->comment = $request->input('comment' . $requirement->id);
                 $submit->save();
             }
@@ -316,7 +315,6 @@ class RetirementFundController extends Controller
                 $submit = new RetFunSubmittedDocument();
                 $submit->retirement_fund_id = $retirement_fund->id;
                 $submit->procedure_requirement_id = $requirement;
-                $submit->reception_date = date('Y-m-d');
                 $submit->comment = "";
                 $submit->save();
             }
@@ -2269,7 +2267,6 @@ class RetirementFundController extends Controller
                     $doc = new RetFunSubmittedDocument();
                     $doc->retirement_fund_id = $id;
                     $doc->procedure_requirement_id = $requirement['id'];
-                    $doc->reception_date = date('Y-m-d');
                 }
                 $doc->procedure_requirement_id = $requirement['id'];
                 $doc->comment = $requirement['comment'];
@@ -2307,7 +2304,6 @@ class RetirementFundController extends Controller
                     $submit = new RetFunSubmittedDocument();
                     $submit->retirement_fund_id = $retirement_fund->id;
                     $submit->procedure_requirement_id = $requirement->id;
-                    $submit->reception_date = date('Y-m-d');
                     $submit->comment = "";
                     $submit->save();
                 }
