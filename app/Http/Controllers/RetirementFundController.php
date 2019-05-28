@@ -2272,21 +2272,21 @@ class RetirementFundController extends Controller
         foreach ($request->requirements as $requirement) {
             $requirements = array_merge($requirements, $requirement);
         }
-        \Log::info($requirements);
 
         foreach ($requirements as $requirement) {
-            $doc = RetFunSubmittedDocument::where('retirement_fund_id', $id)->where('procedure_requirement_id', $requirement->id)->first();
+            $doc = RetFunSubmittedDocument::where('retirement_fund_id', $id)->where('procedure_requirement_id', $requirement['id'])->first();
             if ($requirement['status']) {
                 if (!$doc) {
                     $doc = new RetFunSubmittedDocument();
                     $doc->retirement_fund_id = $id;
-                    $doc->procedure_requirement_id = $requirement->id;
+                    $doc->procedure_requirement_id = $requirement['id'];
+                    $doc->reception_date = date('Y-m-d');
                 }
-                $doc->procedure_requirement_id = $requirement->id;
-                $doc->comment = $requirement->comment;
+                $doc->procedure_requirement_id = $requirement['id'];
+                $doc->comment = $requirement['comment'];
                 $doc->save();
             } else {
-                if ($doc->id) {
+                if (isset($doc->id)) {
                     $doc->delete();
                     $doc->forceDelete();
                 }
