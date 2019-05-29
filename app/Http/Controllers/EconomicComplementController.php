@@ -622,23 +622,6 @@ class EconomicComplementController extends Controller
             ->get();
 
         /**
-         ** for records
-         */
-        $eco_com_records =  EconomicComplementRecord::where('economic_complement_id', $id)->orderBy('id', 'desc')->get();
-        $workflow_records = $economic_complement->wf_records()->orderBy('date', 'desc')->get();
-        $first_wf_state = EconomicComplementRecord::where('economic_complement_id', $id)->whereRaw("message like '%creó el tr%'")->first();
-        if ($first_wf_state) {
-            $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
-            $str = $first_wf_state->message;
-            preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-            $user_name = $matches[0][0];
-            if (User::where('username', '=', $user_name)->first()) {
-                $rol = User::where('username', '=', $user_name)->first()->roles->first();
-                $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
-            }
-        }
-
-        /**
          ** for observations
          */
         $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'T')->get();
@@ -668,9 +651,7 @@ class EconomicComplementController extends Controller
             EcoComBeneficiary::class,
             Note::class
         );
-        $permissions = json_decode($permissions);
-        $permissions[] = ['operation' => 'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)];
-        $permissions = json_encode($permissions);
+        $permissions->push(['operation' => 'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)]);
 
         /**
          ** legal guardian types
@@ -702,9 +683,6 @@ class EconomicComplementController extends Controller
             'can_cancel' => $can_cancel,
             'wf_sequences_back' => $wf_sequences_back,
 
-            'eco_com_records' =>  $eco_com_records,
-            'workflow_records' =>  $workflow_records,
-            'first_wf_state' =>  $first_wf_state,
             'observation_types' =>  $observation_types,
 
             'permissions' =>  $permissions,
@@ -1148,6 +1126,7 @@ class EconomicComplementController extends Controller
         $eco_com->document_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 10,
+            'wf_state_id' => Util::getRol()->wf_states->first()->id,
             'date' => Carbon::now(),
             'message' => "El usuario " . Auth::user()->username  . " amortizó " . $request->amount . "."
         ]);
@@ -1359,20 +1338,9 @@ class EconomicComplementController extends Controller
     public function getRecord($id)
     {
         $eco_com = EconomicComplement::find($id);
-        $document_records = $eco_com->document_records()->with(['user:id,username', 'record_type:id,name'])->orderByDesc('date')->get();
+        $document_records = $eco_com->document_records()->with(['user:id,username', 'wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
         $workflow_records = $eco_com->wf_records()->with(['user:id,username','wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
         $note_records = $eco_com->notes()->orderByDesc('date')->get();
-        // $first_wf_state = EconomicComplementRecord::where('economic_complement_id', $id)->whereRaw("message like '%creó el tr%'")->first();
-        // if ($first_wf_state) {
-        //     $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
-        //     $str = $first_wf_state->message;
-        //     preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-        //     $user_name = $matches[0][0];
-        //     if (User::where('username', '=', $user_name)->first()) {
-        //         $rol = User::where('username', '=', $user_name)->first()->roles->first();
-        //         $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
-        //     }
-        // }
         return compact('document_records', 'workflow_records', 'note_records');
     }
 }

@@ -125,10 +125,11 @@ class EconomicComplementRolSeeder extends Seeder
             ['name' => 'Amortizaciones', 'description' => 'Datos de la Amortización.'],
             ['name' => 'Beneficiario(s)', 'description' => 'Datos del o los Beneficiario(s).'],
             ['name' => 'Apoderado', 'description' => 'Datos del Apoderado Legal.'],
+            ['name' => 'Notas', 'description' => 'Notas.'],
         ];
         foreach ($statuses as $status) {
             RecordType::create($status);
         }
-        // $this->call(EconomicComplementRequirementsSeeder::class);
+        $this->call(EconomicComplementRequirementsSeeder::class);
     }
 }

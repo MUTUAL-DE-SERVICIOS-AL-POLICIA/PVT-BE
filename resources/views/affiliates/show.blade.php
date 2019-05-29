@@ -208,13 +208,28 @@ th.ellipsis-text {
                                                 <td>{{$eco_com->eco_com_modality->procedure_modality->name }}</td>
                                                 <td>{{$eco_com->wf_state->first_shortened }}</td>
                                                 <td>{{$eco_com->eco_com_state->name }}</td>
-                                                <td>{{$eco_com->total}}</td>
-                                                <td>
+                                                <td>{{Util::formatMoney($eco_com->total)}}</td>
+                                                <td style="vertical-align:middle">
                                                     <a href="/eco_com/{{$eco_com->id}}">
                                                         <button class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
                                                     </a>
                                                 </td>
                                                 </tr>
+                                                @if ($eco_com->discount_types->count() > 0)
+                                                    <tr class="danger">
+                                                        <td colspan="2" rowspan="{{ $eco_com->discount_types->count() + 1  }}" style="vertical-align:middle">
+                                                            <strong>
+                                                                Amortizaciones
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                    @foreach ($eco_com->discount_types as $d)
+                                                    <tr class="danger">
+                                                        <td colspan="4">{{$d->name}}</td>
+                                                        <td>{{Util::formatMoney($d->pivot->amount)}}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
                                             @endforeach
                                         </tbody>
                                     </table>

@@ -28,6 +28,7 @@ use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 
 class Util
 {
@@ -1027,6 +1028,28 @@ class Util
         $permissions[] =  array('operation' => Str::snake($o . $class[sizeof($class) - 1]), 'value' => Gate::allows($o, new $model()));
       }
     }
-    return json_encode($permissions);
+    return collect($permissions);
+  }
+  public static function isDoblePerceptionEcoCom($ci)
+  {
+    return collect(EconomicComplement::select(DB::raw('eco_com_procedures.id, eco_com_procedures.year, eco_com_procedures.semester, eco_com_applicants.identity_card, count(*)'))
+    ->leftJoin('eco_com_procedures','economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+    ->leftJoin('eco_com_applicants','economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
+    ->groupBy('eco_com_procedures.id')
+    ->groupBy('eco_com_procedures.year')
+    ->groupBy('eco_com_procedures.semester')
+    ->groupBy('eco_com_applicants.identity_card')
+    ->havingRaw('count(*) > ?', [1])
+    ->orderBYDesc('eco_com_procedures.year')
+    ->orderBYDesc('eco_com_procedures.semester')
+    ->get())->where('identity_card', 'like', $ci)->count() > 0
+    ;
+  }
+  public static function getTexDate($date = null)
+  {
+    if(! $date){
+      $date = now();
+    }
+    return Carbon::parse($date)->formatLocalized('%d de %B de %Y');
   }
 }

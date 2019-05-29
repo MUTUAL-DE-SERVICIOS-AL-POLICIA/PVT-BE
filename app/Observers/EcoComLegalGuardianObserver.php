@@ -17,6 +17,7 @@ class EcoComLegalGuardianObserver
         $eco_com_legal_guardian->economic_complement->document_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 12,
+            'wf_state_id' => Util::getRol()->wf_states->first()->id,
             'date' => Carbon::now(),
             'message' => $message
         ]);
@@ -91,6 +92,7 @@ class EcoComLegalGuardianObserver
             $eco_com_legal_guardian->economic_complement->document_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 12,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id,
                 'date' => Carbon::now(),
                 'message' => $message
             ]);
@@ -102,6 +104,7 @@ class EcoComLegalGuardianObserver
         $eco_com_legal_guardian->economic_complement->document_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 12,
+            'wf_state_id' => Util::getRol()->wf_states->first()->id,
             'date' => Carbon::now(),
             'message' => $message
         ]);

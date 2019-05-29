@@ -7,29 +7,11 @@
         </div>
         <div class="ibox-content">
           <div class="row">
-            <div class="col-lg-8 mx-auto">
-              <div class="col-md-5">
-                <strong>Ingrese la cédula de identidad del {{ getSearchTypeName }}:</strong>
+            <div class="col-lg-12 mx-auto">
+              <div class="col-md-2">
+                <strong>Ingrese la cédula de identidad:</strong>
               </div>
-              <div class="col-sm-3">
-                <div class="form-group" :class="{'has-error': errors.has('search_type_id') }">
-                  <select
-                    class="form-control"
-                    v-model="searchType"
-                    name="search_type_id"
-                    @change="setSearchType()"
-                    v-validate="'required'"
-                  >
-                    <option v-for="p in searchTypes" :value="p.id" :key="p.id">{{p.name}}</option>
-                  </select>
-                  <i v-show="errors.has('search_type_id')" class="fa fa-warning text-danger"></i>
-                  <span
-                    v-show="errors.has('search_type_id')"
-                    class="text-danger"
-                  >{{ errors.first('search_type_id') }}</span>
-                </div>
-              </div>
-              <div class="col-md-5" :class="{'has-error': errors.has('identity_card') }">
+              <div class="col-md-3" :class="{'has-error': errors.has('identity_card') }">
                 <div class="input-group">
                   <input
                     type="text"
@@ -38,6 +20,7 @@
                     class="form-control"
                     v-validate="'required'"
                     @keypress.enter="searchAffiliate()"
+                    :disabled="hasDoblePerception"
                   >
                   <span class="input-group-btn">
                     <button
@@ -57,6 +40,26 @@
                   <span class="text-danger">{{ errors.first('identity_card') }}</span>
                 </div>
               </div>
+              <div class="col-sm-6" v-if="hasDoblePerception">
+                <!-- :class="{'has-error': errors.has('search_type_id') }" -->
+                <div class="form-group" >
+                  <label for="">El ci tiene doble percepcion seleccione ...: </label>
+                  <select
+                    class="form-control"
+                    v-model="searchType"
+                    name="search_type_id"
+                    @change="setSearchType()"
+                  >
+                    <option :value="null"></option>
+                    <option v-for="p in searchTypes" :value="p.id" :key="p.id">{{p.name}}</option>
+                  </select>
+                  <!-- <i v-show="errors.has('search_type_id')" class="fa fa-warning text-danger"></i>
+                  <span
+                    v-show="errors.has('search_type_id')"
+                    class="text-danger"
+                  >{{ errors.first('search_type_id') }}</span> -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -70,15 +73,15 @@
     >
       <div class="alert alert-warning" v-if="affiliateNoFound">
         <h2>
-          No se encontro el {{ getSearchTypeName }} con ci
+          No se encontro el ci
           <strong>{{ identityCard }}</strong>
         </h2>
       </div>
     </transition>
     <transition name="custom-show-affiliate-transition" enter-active-class="animated fadeInLeftBig">
-      <div class v-if="affiliateFound">
+      <div>
         <div class="col-lg-6">
-          <div class="ibox float-e-margins" v-if="searchType == 2">
+          <div class="ibox float-e-margins" v-if="notIsOldAge">
             <div class="ibox-title">
               <h1>Datos del Beneficiario</h1>
             </div>
@@ -102,7 +105,7 @@
               </div>
             </div>
           </div>
-          <div class="ibox float-e-margins">
+          <div class="ibox float-e-margins" v-if="affiliateFound">
             <div class="ibox-title">
               <h1>Datos del Afiliado</h1>
             </div>
@@ -155,12 +158,14 @@
           <div class="alert alert-orange block">
             Se encontraron algunas observaciones antes de crear el tramite:
             <ul>
-              <li class="alert-link" v-if="! verifyValidDueDate">
-                La cedula de identidad esta caducada o no se registro una fecha de vencimiento de la cedula de identidad.
-              </li>
-              <li class="alert-link" v-if="verifyHasDisability">
-                El tramite anterior tuvo concurrencia.
-              </li>
+              <li
+                class="alert-link"
+                v-if="! verifyValidDueDate"
+              >La cedula de identidad esta caducada o no se registro una fecha de vencimiento de la cedula de identidad.</li>
+              <li
+                class="alert-link"
+                v-if="verifyHasDisability"
+              >El tramite anterior tuvo concurrencia.</li>
             </ul>
           </div>
         </div>
@@ -212,7 +217,11 @@
                 </a>
               </div>
               <div v-else key="noShowButton">
-                <button class="btn btn-warning btn-lg btn-block" :class="{'denied':!showButton}" v-if="! affiliateObservations.length">
+                <button
+                  class="btn btn-warning btn-lg btn-block"
+                  :class="{'denied':!showButton}"
+                  v-if="! affiliateObservations.length"
+                >
                   <i class="fa fa-exclamation-triangle"></i>
                   No hay tramites pendientes para crear
                 </button>
@@ -224,11 +233,9 @@
           <div class="alert alert-danger block" v-if="affiliateObservations.length">
             El afiliado se encuentra observado por:
             <ul>
-              <li class="alert-link" v-for="ao in affiliateObservations" :key="ao.id">
-                {{ ao.name }}
-              </li>
-            </ul>
-            Es necesario subsanar las observaciones. (<a :href="`/affiliate/${affiliate.id}`">ir al afiliado</a> )
+              <li class="alert-link" v-for="ao in affiliateObservations" :key="ao.id">{{ ao.name }}</li>
+            </ul>Es necesario subsanar las observaciones. (
+            <a :href="`/affiliate/${affiliate.id}`">ir al afiliado</a> )
           </div>
         </div>
       </div>
@@ -238,7 +245,7 @@
 
 <script>
 import { scroller } from "vue-scrollto/src/scrollTo";
-import ShowAffiliate from "../affiliate/ShowAffiliate.vue";
+import { flashErrors } from '../../helper';
 export default {
   props: ["cities"],
   data() {
@@ -246,18 +253,18 @@ export default {
       editing: false,
       affiliate: {},
       ecoComBeneficiary: {},
-      searchType: 1,
+      searchType: null,
       searchTypes: [
         {
           id: 1,
-          name: "Afiliado"
+          name: "Titular"
         },
         {
           id: 2,
           name: "Beneficiario"
         }
       ],
-      ecoCom: null,
+      ecoCom: [],
       affiliateNoFound: false,
       affiliateFound: false,
       showButton: false,
@@ -267,40 +274,39 @@ export default {
       ecoComProcedure: {},
       searching: false,
       affiliateObservations: [],
+      oneTime: true,
+      hasDoblePerception: false
     };
-  },
-  components: {
-    ShowAffiliate
-  },
-  mounted() {
-    if (localStorage.searchType) {
-      this.searchType = localStorage.searchType;
-    }
   },
   methods: {
     rowClick(id) {
       window.location = `/eco_com/${id}`;
     },
     setSearchType() {
-      localStorage.searchType = this.searchType;
       this.searchAffiliate();
     },
     async searchAffiliate() {
+      this.clearResults();
       await this.$validator.validateAll();
       if (this.$validator.errors.items.length) {
         return;
       }
       this.searching = true;
       await axios
-        .get("/search_ajax_only_affiliate", {
-          params: {
-            ci: this.identityCard,
-            type: this.searchType
-          }
+        .post("/search_ajax_only_affiliate", {
+          ci: this.identityCard,
+          type: this.searchType,
+          one_time: this.oneTime,
+          has_doble_perception: this.hasDoblePerception
         })
         .then(response => {
-          console.log(response);
           let data = response.data;
+          if (response.data.has_doble_perception) {
+            this.oneTime = false;
+            this.hasDoblePerception = true;
+            return;
+          }
+          this.hasDoblePerception = false;
           if (data.affiliate != null) {
             flash("Affiliado Encontrado");
             this.affiliate = response.data.affiliate;
@@ -311,25 +317,37 @@ export default {
             this.affiliateFound = true;
             this.affiliateNoFound = false;
             this.getEcoComProcedureCreateName();
+            this.oneTime = true;
+            this.searchType = null;
           } else {
             flash("Affiliado NO Encontrado", "warning");
             this.affiliateNoFound = true;
+            this.affiliateNoFound = true;
             this.affiliateFound = false;
             this.affiliate = null;
-            this.ecoCom = null;
+            this.ecoCom = [];
+            this.searchType = null;
+
           }
         })
         .catch(function(error) {
-          console.log(error);
+          flashErrors("Error al buscar: ", [error])
         });
       const scrollToFooter = scroller();
       scrollToFooter("#create-eco-com-ibox");
       this.searching = false;
     },
+    clearResults() {
+      this.affiliateFound = false;
+      this.affiliate = null;
+      this.ecoCom = [];
+    },
     async getEcoComProcedureCreateName() {
       this.showButton = true;
       this.ecoComProcedureCreateName = "cargando... XD";
-      let id = !!this.ecoCom[this.ecoCom.length-1] ? this.ecoCom[this.ecoCom.length-1].eco_com_procedure_id : null;
+      let id = !!this.ecoCom[this.ecoCom.length - 1]
+        ? this.ecoCom[this.ecoCom.length - 1].eco_com_procedure_id
+        : null;
       await axios
         .get("get_eco_com_procedures_active", {
           params: {
@@ -338,7 +356,6 @@ export default {
           }
         })
         .then(response => {
-          console.log(response.status);
           if (response.status == 200) {
             this.ecoComProcedureCreateName = `${
               response.data.semester
@@ -349,31 +366,34 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error);
+          flashErrors("error: ", [error])
         });
     }
   },
   computed: {
-    verifyValidDueDate(){
-      if(this.searchType == 1){
-        return this.affiliate.valid_due_date
+    notIsOldAge(){
+      if (this.ecoCom.length > 0) {
+        if (this.ecoCom[this.ecoCom.length - 1].eco_com_modality != null) {
+          return this.ecoCom[this.ecoCom.length - 1].eco_com_modality.procedure_modality_id != 29
+        }
       }
-      if(this.searchType == 2){
-        return this.ecoComBeneficiary.valid_due_date
+      return false;
+    },
+    verifyValidDueDate() {
+      if (this.searchType == 1) {
+        return this.affiliate.valid_due_date;
+      }
+      if (this.searchType == 2) {
+        return this.ecoComBeneficiary.valid_due_date;
       }
     },
-    verifyHasDisability(){
-      let eco = this.ecoCom[this.ecoCom.length-1];
-      console.log(eco);
-      if(eco){
+    verifyHasDisability() {
+      let eco = this.ecoCom[this.ecoCom.length - 1];
+      if (eco) {
         return eco.aps_disability > 0;
       }
       return false;
     },
-    getSearchTypeName() {
-      let st = this.searchTypes.find(x => x.id == this.searchType);
-      return st ? st.name : "";
-    }
   }
 };
 </script>
@@ -381,10 +401,10 @@ export default {
 <style scoped>
 .hover:hover {
   cursor: pointer;
-  font-weight: bold
+  font-weight: bold;
 }
-.denied{
-  cursor: not-allowed
+.denied {
+  cursor: not-allowed;
 }
 </style>
 

@@ -187,7 +187,7 @@ Route::group(['middleware' => ['auth']], function () {
     //searcherController
     Route::get('search/{ci}', 'SearcherController@search');
     Route::get('search_ajax', 'SearcherController@searchAjax');
-    Route::get('search_ajax_only_affiliate', 'SearcherController@searchAjaxOnlyAffiliate');
+    Route::post('search_ajax_only_affiliate', 'SearcherController@searchAjaxOnlyAffiliate');
 
     //Contributions
     Route::resource('contribution', 'ContributionController');
@@ -686,6 +686,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');
     Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');
     Route::get('eco_com/{eco_com_id}/print/qualification', 'EcoComCertificationController@printQualification')->name('eco_com_print_qualification');
+    Route::get('eco_com/print/certification_all_eco_coms/{identiy_card}', 'EcoComCertificationController@certificationAllEcoComs')->name('eco_com_print_certification_all_eco_coms');
 
 
     // eco com qualification parameters

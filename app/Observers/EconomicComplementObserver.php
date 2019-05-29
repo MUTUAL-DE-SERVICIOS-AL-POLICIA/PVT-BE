@@ -23,6 +23,7 @@ class EconomicComplementObserver
         $eco_com->document_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 7,
+            'wf_state_id' => Util::getRol()->wf_states->first()->id,
             'date' => Carbon::now(),
             'message' => 'El usuario '.Auth::user()->username.' creó el trámite.'
         ]);
@@ -80,6 +81,7 @@ class EconomicComplementObserver
             $eco_com->document_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 7,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id,
                 'date' => Carbon::now(),
                 'message' => $message
             ]);

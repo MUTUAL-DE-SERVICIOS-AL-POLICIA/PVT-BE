@@ -3,6 +3,7 @@
 namespace Muserpol\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Muserpol\Models\Workflow\WorkflowState;
 
 class Role extends Model
 {
@@ -30,9 +31,9 @@ class Role extends Model
     {
     	return $this->belongsToMany('Muserpol\User', 'role_user');
     }
-    public function wf_steps()
+    public function wf_states()
     {
-    	return $this->hasMany(Models\WorkflowStep::class);
+    	return $this->hasMany(WorkflowState::class);
     }
 
 }

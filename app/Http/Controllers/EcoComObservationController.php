@@ -80,6 +80,7 @@ class EcoComObservationController extends Controller
         $eco_com->document_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 9,
+            'wf_state_id' => Util::getRol()->wf_states->first()->id,
             'date' => Carbon::now(),
             'message' => "El usuario " . Auth::user()->username  . " creó la observación " . $observation->name . "."
         ]);
@@ -129,6 +130,7 @@ class EcoComObservationController extends Controller
             $eco_com->document_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 9,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id,
                 'date' => Carbon::now(),
                 'message' => $message
             ]);
@@ -166,6 +168,7 @@ class EcoComObservationController extends Controller
             $eco_com->document_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 9,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id,
                 'date' => Carbon::now(),
                 'message' => "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . "."
             ]);

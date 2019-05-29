@@ -7,12 +7,6 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
         <div class="pull-left">
-            <span data-toggle="modal" data-target="#ModalRecordRetFun">
-                <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Trámite">
-                    <i class="fa fa-history" style="font-size:15px;"></i> Historial del Trámite
-                </button>
-            </span>
-            @include('ret_fun.ret_fun_record', ['ret_fun_records' => $eco_com_records,])
             @if(Util::isReceptionEcoCom()||Util::isRegionalRole())
                 <certification-button
                     type="ecoCom"
@@ -153,7 +147,6 @@
 @endsection
 
 @section('styles')
-<link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
 <style>
 .elements-list .list-group-item.active, .elements-list .list-group-item:hover {
     background: #f3f3f4;
@@ -163,8 +156,4 @@
     border-left: 2px solid #1a6a9d;
 }
 </style>
-@endsection
- 
-@section('jss')
-<script src="{{ asset('/js/datatables.js')}}"></script>
 @endsection

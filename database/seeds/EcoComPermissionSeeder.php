@@ -17,8 +17,8 @@ class EcoComPermissionSeeder extends Seeder
 
     public function run()
     {
-        foreach (Operation::where('module_id', 2) as $o) {
-            foreach (Action::whereIn('id', [1, 2, 3, 4]) as $a) {
+        foreach (Operation::where('module_id', 2)->get() as $o) {
+            foreach (Action::whereIn('id', [1, 2, 3, 4, 5])->get() as $a) {
                 $permission = Permission::where('operation_id', $o->id)
                     ->where('action_id', $a->id)
                     ->first();
@@ -47,6 +47,7 @@ class EcoComPermissionSeeder extends Seeder
         $this->createRolePermission(99, [4], [2]);
         $this->createRolePermission(100, [4], [2]);
         $this->createRolePermission(104, [4], [2]);
+        $this->createRolePermission(112, [2,4], [1,2,3,4]);
 
         $this->createRolePermission(85, [5], [2, 3]);
         $this->createRolePermission(95, [5], [2, 3, 4]);
