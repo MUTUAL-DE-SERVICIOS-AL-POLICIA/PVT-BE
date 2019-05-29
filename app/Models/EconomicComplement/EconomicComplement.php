@@ -518,6 +518,27 @@ class EconomicComplement extends Model
     //     return !! $this->observations()->whereIn('id', collect(func_get_args($ids)))->where('enabled', true)->get()->count();
     //     // return collect(func_get_args($ids))->includes($this->)
     // }
+    public function getType()
+    {
+        $type = 'Derechohabiente';
+        if ($this->isOldAge()) {
+            $type = 'Titular';
+        }
+        return $type;
+    }
+    public function getTypeModality()
+    {
+        if ($this->isOldAge()) {
+            $type = 'Titular';
+        }
+        if ($this->isWidowhood()) {
+            $type = 'Viuda(o)';
+        }
+        if ($this->isOrphanhood()) {
+            $type = 'Huérfano Absoluto';
+        }
+        return $type;
+    }
     public function notes()
     {
         return $this->morphMany('Muserpol\Models\Note', 'annotable');

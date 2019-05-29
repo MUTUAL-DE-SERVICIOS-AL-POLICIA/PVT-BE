@@ -8,6 +8,7 @@ use Muserpol\Models\Note;
 use Illuminate\Validation\ValidationException;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Carbon\Carbon;
+use Muserpol\Helpers\Util;
 
 class EcoComNoteController extends Controller
 {
@@ -40,6 +41,7 @@ class EcoComNoteController extends Controller
         $eco_com->document_records()->create([
             'user_id' => auth()->user()->id,
             'record_type_id' => 13,
+            'wf_state_id' => Util::getRol()->wf_states->first()->id,
             'date' => Carbon::now(),
             'message' => "El usuario " . auth()->user()->username  . " creó una nota."
         ]);
@@ -77,6 +79,7 @@ class EcoComNoteController extends Controller
             $eco_com->document_records()->create([
                 'user_id' => auth()->user()->id,
                 'record_type_id' => 13,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id,
                 'date' => Carbon::now(),
                 'message' => $message
             ]);
@@ -113,6 +116,7 @@ class EcoComNoteController extends Controller
             $eco_com->document_records()->create([
                 'user_id' => auth()->user()->id,
                 'record_type_id' => 13,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id,
                 'date' => Carbon::now(),
                 'message' => "El usuario " . auth()->user()->username  . " eliminó la nota ". $message,
             ]);

@@ -21,7 +21,7 @@
                   <p style="font-size:medium" class="p-sm">{{ dr.message }}</p>
                   <span
                     style="position:absolute; top: 5px; right:10px; font-style:italic"
-                  >Area de Calificacion</span>
+                  >{{ dr.wf_state.name }}</span>
                 </div>
               </div>
             </div>
