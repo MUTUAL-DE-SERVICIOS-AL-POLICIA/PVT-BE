@@ -1045,7 +1045,7 @@ class Util
     ->get())->where('identity_card', 'like', $ci)->count() > 0
     ;
   }
-  public static function getTexDate($date = null)
+  public static function getTextDate($date = null)
   {
     if(! $date){
       $date = now();

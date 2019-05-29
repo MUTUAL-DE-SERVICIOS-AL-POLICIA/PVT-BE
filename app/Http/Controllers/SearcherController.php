@@ -125,6 +125,7 @@ class SearcherController
         $eco_com_beneficiary->full_name = $eco_com_beneficiary->fullName();
         $eco_com_beneficiary->ci_with_ext = $eco_com_beneficiary->ciWithExt();
         $due_date = $eco_com_beneficiary->due_date ?? Carbon::now()->subDay();
+        $due_date = Util::verifyBarDate($due_date) ? Util::parseBarDate($due_date) : $due_date;
         $eco_com_beneficiary->valid_due_date = $eco_com_beneficiary->is_duedate_undefined ? true : $due_date > Carbon::now();
         if ($affiliate) {
             $affiliate->full_name = $affiliate->fullName();
@@ -134,7 +135,8 @@ class SearcherController
             $affiliate->degree_name = $affiliate->degree->name ?? '';
             $affiliate->category_percentage = $affiliate->category->name ?? '';
             $affiliate->pension_entity_name = $affiliate->pension_entity->name ?? '';
-            $affiliate_observations = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get();
+            $affiliate_observations_exclude = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::whereIn('type', ['A'])->get()->pluck('id'))->get();
+            $affiliate_observations = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::whereIn('type', ['AT'])->get()->pluck('id'))->get();
             $eco_com = $affiliate->economic_complements()->with([
                 'eco_com_modality:id,name,shortened,procedure_modality_id',
                 'eco_com_state:id,name'
@@ -146,6 +148,7 @@ class SearcherController
         }
         $data = [
             'affiliate' => $affiliate,
+            'affiliate_observations_exclude' =>$affiliate_observations_exclude,
             'affiliate_observations' =>$affiliate_observations,
             'eco_com_beneficiary' => $eco_com_beneficiary,
             'eco_com' => $eco_com,

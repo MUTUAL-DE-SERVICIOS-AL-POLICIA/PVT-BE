@@ -212,10 +212,14 @@ export default {
             if (retrieve) {
                 procedures = found.docs
             }
+            let uri = '/procedure/print/send';
+            if (this.rolId.module_id  == 2) {
+                uri = '/procedure/print/send_eco_com';
+            }
             try {
                 let res = await axios({
                 method: "POST",
-                url: '/procedure/print/send',
+                url: uri,
                 data: {'procedures' : procedures, from_area:this.wfCurrentState.id, to_area: this.wfSequenceNext},
                 responseType: "arraybuffer",
                 });

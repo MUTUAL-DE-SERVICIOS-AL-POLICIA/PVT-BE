@@ -131,7 +131,7 @@
                     @endif
                 </tbody>
             </table>
-            <p class="justify">En mérito de los datos registrados en forma precedente, el interesado aprueba y ratifica su tenor de manera íntegra, quien en señal de conformidad en forma expresa y voluntaria firma el presente documento en la ciudad de {{ $user->city->name ?? 'La Paz' }}, {{ now() }}.</p>
+            <p class="justify">En mérito de los datos registrados en forma precedente, el interesado aprueba y ratifica su tenor de manera íntegra, quien en señal de conformidad en forma expresa y voluntaria firma el presente documento en la ciudad de {{ $user->city->name ?? 'La Paz' }}, {{ Util::getTextDate() }}.</p>
             <table class="m-t-50">
                 <tr>
                     <td class="no-border text-center text-base w-50 align-bottom">

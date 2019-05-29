@@ -259,7 +259,7 @@ class EcoComCertificationController extends Controller
         $type_modality = $eco_coms->last()->getTypeModality();
         $user = auth()->user();
         $area = Util::getRol()->wf_states->first()->first_shortened;
-        $date = Util::getTexDate();
+        $date = Util::getTextDate();
 
         $data = [
             'direction' => $direction,
