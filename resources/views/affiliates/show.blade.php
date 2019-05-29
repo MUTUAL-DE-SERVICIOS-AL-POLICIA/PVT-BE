@@ -217,6 +217,8 @@ th.ellipsis-text {
                                                 </tr>
                                                 @if ($eco_com->discount_types->count() > 0)
                                                     <tr class="danger">
+                                                        <td colspan="2" rowspan="{{ $eco_com->discount_types->count() + 1  }}" >
+                                                        </td>
                                                         <td colspan="2" rowspan="{{ $eco_com->discount_types->count() + 1  }}" style="vertical-align:middle">
                                                             <strong>
                                                                 Amortizaciones
@@ -225,7 +227,7 @@ th.ellipsis-text {
                                                     </tr>
                                                     @foreach ($eco_com->discount_types as $d)
                                                     <tr class="danger">
-                                                        <td colspan="4">{{$d->name}}</td>
+                                                        <td colspan="2">{{$d->name}}</td>
                                                         <td>{{Util::formatMoney($d->pivot->amount)}}</td>
                                                     </tr>
                                                     @endforeach

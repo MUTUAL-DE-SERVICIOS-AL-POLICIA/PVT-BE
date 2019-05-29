@@ -32,9 +32,9 @@ class InboxController extends Controller
   {
     $cities = City::all();
     $procedure_modalities = ProcedureModality::select('procedure_modalities.*')
-    ->leftJoin('procedure_types','procedure_types.id', '=', 'procedure_modalities.procedure_type_id')
-    ->where('procedure_types.module_id', Util::getRol()->module_id)
-    ->get();
+      ->leftJoin('procedure_types', 'procedure_types.id', '=', 'procedure_modalities.procedure_type_id')
+      ->where('procedure_types.module_id', Util::getRol()->module_id)
+      ->get();
     $eco_com_modalities = EcoComModality::all();
     $reception_types = EcoComReceptionType::all();
     $data = [
@@ -49,9 +49,9 @@ class InboxController extends Controller
   {
     $cities = City::all();
     $procedure_modalities = ProcedureModality::select('procedure_modalities.*')
-    ->leftJoin('procedure_types','procedure_types.id', '=', 'procedure_modalities.procedure_type_id')
-    ->where('procedure_types.module_id', Util::getRol()->module_id)
-    ->get();
+      ->leftJoin('procedure_types', 'procedure_types.id', '=', 'procedure_modalities.procedure_type_id')
+      ->where('procedure_types.module_id', Util::getRol()->module_id)
+      ->get();
     $eco_com_modalities = EcoComModality::all();
     $reception_types = EcoComReceptionType::all();
     $data = [
@@ -506,6 +506,65 @@ class InboxController extends Controller
       ->setOrientation('landscape')
       ->setOption('footer-center', 'Pagina [page] de [toPage]')
       ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+      ->stream("documentos enviados.pdf");
+  }
+  public function printSendEcoCom(Request $request)
+  {
+    $rol_id = Util::getRol()->id;
+    $module = Role::find($rol_id)->module;
+    $procedure_ids = array();
+    foreach ($request->procedures as $procedure) {
+      array_push($procedure_ids, $procedure['id']);
+    }
+    $title = 'Listado de Beneficiarios del Complemento Económico';
+    $wf_state_from = WorkflowState::find($request->from_area);
+    $wf_state_to = WorkflowState::find($request->to_area);
+    $user = Auth::user();
+    $procedure_types = ProcedureType::where('module_id', $module->id)->get();
+    $procedures = EconomicComplement::with([
+      'eco_com_beneficiary',
+      'eco_com_procedure',
+      'affiliate',
+      'degree',
+      'category',
+      'city'
+    ])
+      ->whereIn('id', $procedure_ids)
+      ->orderBy(DB::raw("split_part(economic_complements.code, '/',3)::integer asc, split_part(economic_complements.code, '/',2), split_part(economic_complements.code, '/',1)::integer"))
+      ->get();
+    $data = [
+      'procedures'  =>  $procedures,
+      'title'  =>  $title,
+      'subtitle'  =>  null,
+      'from_area'  =>  $wf_state_from,
+      'to_area'  =>  $wf_state_to,
+      'user'  =>  $user,
+      'year'  =>  date('Y')
+    ];
+    $pages = [];
+    foreach (City::orderBy('id')->get() as $city) {
+      $procedures_cities = $procedures->where('city_id', $city->id);
+      $data = [
+        'procedures'  =>  $procedures_cities,
+        'title'  =>  $title,
+        'unit'  =>  'UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO',
+        'subtitle'  =>  'Regional '.$city->name,
+        'from_area'  =>  $wf_state_from,
+        'to_area'  =>  $wf_state_to,
+        'user'  =>  $user,
+        'year'  =>  date('Y')
+      ];
+      if ($procedures_cities->count() > 0) {
+        $pages[] = \View::make('print_global.send_eco_com', $data)->render();
+      }
+    }
+    $pdf = \App::make('snappy.pdf.wrapper');
+    $pdf->loadHTML($pages);
+    return $pdf->setOption('encoding', 'utf-8')
+      ->setOption('margin-bottom', '15mm')
+      ->setOrientation('landscape')
+      ->setOption('footer-center', 'Pagina [page] de [toPage]')
+      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - ' . now()->year)
       ->stream("documentos enviados.pdf");
   }
 }

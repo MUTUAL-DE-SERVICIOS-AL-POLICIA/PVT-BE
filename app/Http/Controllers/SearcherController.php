@@ -134,7 +134,7 @@ class SearcherController
             $affiliate->degree_name = $affiliate->degree->name ?? '';
             $affiliate->category_percentage = $affiliate->category->name ?? '';
             $affiliate->pension_entity_name = $affiliate->pension_entity->name ?? '';
-            $affiliate_observations = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get();
+            $affiliate_observations = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::whereIn('type', ['A', 'AT'])->get()->pluck('id'))->get();
             $eco_com = $affiliate->economic_complements()->with([
                 'eco_com_modality:id,name,shortened,procedure_modality_id',
                 'eco_com_state:id,name'
