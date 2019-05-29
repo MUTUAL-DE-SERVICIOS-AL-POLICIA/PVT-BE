@@ -36,7 +36,7 @@ class EcoComPermissionSeeder extends Seeder
         $this->createRolePermission(98, [2, 23, 22, 24, 25, 26, 27, 52], [1, 2, 3]);
         $this->createRolePermission(100, [2, 23, 22, 24, 25, 26, 27, 52], [1, 2, 3]);
         $this->createRolePermission(103, [2, 23, 22, 24, 25, 26, 27, 52], [1, 2, 3]);
-        $this->createRolePermission(105, [2, 4, 23, 22, 24, 25, 26, 27, 52], [1, 2, 3]);
+        $this->createRolePermission(105, [2, 4, 23, 22, 24, 25, 26, 27, 52], [1, 2, 3, 4]);
 
         $this->createRolePermission(85, [4], [2, 3]);
         $this->createRolePermission(97, [4], [2, 3]);

@@ -66,9 +66,11 @@ class EcoComCertificationController extends Controller
             }
         }
         // other ddjj
-        $number_pages = Util::isRegionalRole() ? 3 : 2;
-        for ($i = 1; $i <= $number_pages; $i++) {
-            $pages[] = \View::make('eco_com.print.sworn_declaration_beneficiary', self::printSwornDeclarationBeneficiary($id))->render();
+        if ($eco_com->isWidowhood()) {
+            $number_pages = Util::isRegionalRole() ? 3 : 2;
+            for ($i = 1; $i <= $number_pages; $i++) {
+                $pages[] = \View::make('eco_com.print.sworn_declaration_beneficiary', self::printSwornDeclarationBeneficiary($id))->render();
+            }
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
@@ -131,9 +133,6 @@ class EcoComCertificationController extends Controller
     public function printSwornDeclarationBeneficiary($id, $only_data = true)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
-        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual) {
-            return 'error';
-        }
         $affiliate = $eco_com->affiliate;
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
