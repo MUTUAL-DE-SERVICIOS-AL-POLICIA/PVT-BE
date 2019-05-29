@@ -72,7 +72,7 @@ class EcoComLegalGuardianObserver
             $message = $message . ' el ... de ' . $old->is_duedate_undefined . ' a ' . $eco_com_legal_guardian->is_duedate_undefined . ', ';
         }
         if ($eco_com_legal_guardian->eco_com_legal_guardian_type_id != $old->eco_com_legal_guardian_type_id) {
-            $message = $message . ' el tipo de apoderado de ' . $old->eco_com_legal_guardian_type->name . ' a ' . $eco_com_legal_guardian->eco_com_legal_guardian_type->name . ', ';
+            $message = $message . ' el tipo de apoderado de ' . optional($old->eco_com_legal_guardian_type)->name . ' a ' . optional($eco_com_legal_guardian->eco_com_legal_guardian_type)->name . ', ';
         }
         if ($eco_com_legal_guardian->number_authority != $old->number_authority) {
             $message = $message . ' el Nro de Poder de ' . $old->number_authority . ' a ' . $eco_com_legal_guardian->number_authority . ', ';

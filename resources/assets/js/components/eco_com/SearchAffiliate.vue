@@ -81,7 +81,7 @@
     <transition name="custom-show-affiliate-transition" enter-active-class="animated fadeInLeftBig">
       <div>
         <div class="col-lg-6">
-          <div class="ibox float-e-margins" v-if="notIsOldAge">
+          <div class="ibox float-e-margins" v-if="hasBeneficiary">
             <div class="ibox-title">
               <h1>Datos del Beneficiario</h1>
             </div>
@@ -220,7 +220,7 @@
                 <button
                   class="btn btn-warning btn-lg btn-block"
                   :class="{'denied':!showButton}"
-                  v-if="! affiliateObservations.length"
+                  v-if="! affiliateObservationsExclude.length"
                 >
                   <i class="fa fa-exclamation-triangle"></i>
                   No hay tramites pendientes para crear
@@ -230,12 +230,20 @@
           </div>
         </div>
         <div class="col-lg-6">
+          <div class="alert alert-danger block" v-if="affiliateObservationsExclude.length">
+            El afiliado se encuentra observado por:
+            <ul>
+              <li class="alert-link" v-for="ao in affiliateObservationsExclude" :key="ao.id">{{ ao.name }}</li>
+            </ul>Es necesario subsanar las observaciones. (
+            <a :href="`/affiliate/${affiliate.id}`">ir al afiliado</a> )
+          </div>
+        </div>
+        <div class="col-lg-6">
           <div class="alert alert-danger block" v-if="affiliateObservations.length">
             El afiliado se encuentra observado por:
             <ul>
               <li class="alert-link" v-for="ao in affiliateObservations" :key="ao.id">{{ ao.name }}</li>
-            </ul>Es necesario subsanar las observaciones. (
-            <a :href="`/affiliate/${affiliate.id}`">ir al afiliado</a> )
+            </ul>
           </div>
         </div>
       </div>
@@ -273,6 +281,7 @@ export default {
       ecoComProcedureCreateName: null,
       ecoComProcedure: {},
       searching: false,
+      affiliateObservationsExclude: [],
       affiliateObservations: [],
       oneTime: true,
       hasDoblePerception: false
@@ -310,6 +319,7 @@ export default {
           if (data.affiliate != null) {
             flash("Affiliado Encontrado");
             this.affiliate = response.data.affiliate;
+            this.affiliateObservationsExclude = response.data.affiliate_observations_exclude;
             this.affiliateObservations = response.data.affiliate_observations;
             this.ecoCom = response.data.eco_com;
             this.ecoCom = this.ecoCom.reverse();
@@ -361,6 +371,9 @@ export default {
               response.data.semester
             }/${moment(response.data.year).year()}`;
             this.ecoComProcedure = response.data;
+            if(this.affiliateObservationsExclude.length > 0){
+              this.showButton = false;
+            }
           } else {
             this.showButton = false;
           }
@@ -371,7 +384,7 @@ export default {
     }
   },
   computed: {
-    notIsOldAge(){
+    hasBeneficiary(){
       if (this.ecoCom.length > 0) {
         if (this.ecoCom[this.ecoCom.length - 1].eco_com_modality != null) {
           return this.ecoCom[this.ecoCom.length - 1].eco_com_modality.procedure_modality_id != 29
@@ -380,12 +393,12 @@ export default {
       return false;
     },
     verifyValidDueDate() {
-      if (this.searchType == 1) {
+      if (this.hasBeneficiary) {
+        return this.ecoComBeneficiary.valid_due_date;
+      }else{
         return this.affiliate.valid_due_date;
       }
-      if (this.searchType == 2) {
-        return this.ecoComBeneficiary.valid_due_date;
-      }
+
     },
     verifyHasDisability() {
       let eco = this.ecoCom[this.ecoCom.length - 1];

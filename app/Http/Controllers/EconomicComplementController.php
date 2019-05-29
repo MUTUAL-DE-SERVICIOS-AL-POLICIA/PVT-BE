@@ -390,9 +390,12 @@ class EconomicComplementController extends Controller
         if ($request->modality_id == ID::ecoCom()->orphanhood && $eco_com_beneficiary->birth_date) {
             $beneficiary_years = intval(explode(' ', Util::calculateAge($eco_com_beneficiary->birth_date, null)[0]));
             if ($beneficiary_years > 25) {
-                /**
-                 * !! TODO agregar una observacion o algo
-                 */
+                $economic_complement->observations()->save(ObservationType::find(36), [
+                    'user_id' => auth()->id(),
+                    'date' => now(),
+                    'message' => 'Excluido - Huerfano(a) cumplio 25 años. (Observación adicionada automáticamente)',
+                    'enabled' => false
+                ]);
             }
         }
         /**

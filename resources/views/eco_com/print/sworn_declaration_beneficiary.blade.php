@@ -29,9 +29,8 @@
                 Que mi persona no ha contraído nuevo matrimonio; por tanto, al no contar con el Certificado de Verificación de Partidas Matrimoniales emitido por el Servicio de Registro Cívico (SERECI), autorizo a la MUSERPOL efectuar la verificación de lo declarado ante las instancias que correspondan; protestando de mi parte a presentar el Certificado de Estado Civil y el Certificado de Matrimonio, ambos en originales y actualizados.
             </p>
             <p class="justify">
-                En señal de conformidad en forma expresa y voluntaria firmo al pie de la presente en la ciudad de {{ $economic_complement->city->name ?? '' }} en fecha {{ now()->day}} de {{now()->formatLocalized('%B')}} de la gestión {{now()->year}}.
+                En señal de conformidad en forma expresa y voluntaria firmo al pie de la presente en la ciudad de {{ $user->city->name ?? '' }} en fecha {{  Util::getTextDate() }}.
             </p>
-            <p class="justify">En mérito de los datos registrados en forma precedente, el interesado aprueba y ratifica su tenor de manera íntegra, quien en señal de conformidad en forma expresa y voluntaria firma el presente documento en la ciudad de {{ $user->city->name ?? 'La Paz' }}, {{ now() }}.</p>
             <table class="m-t-50">
                 <tr>
                     <td class="no-border text-center text-base w-50 align-bottom">
