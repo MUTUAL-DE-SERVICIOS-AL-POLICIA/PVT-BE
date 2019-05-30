@@ -16,13 +16,19 @@
     </p>
 
     <div class="font-bold uppercase m-b-5 counter">
+        Datos Personales del Titular
+    </div>
+    @include('eco_com.print.applicant_info', ['applicant'=>$affiliate])
+    <div class="font-bold uppercase m-b-5 counter">
         Datos Policiales del Titular
     </div>
     @include('eco_com.print.only_police_info', ['affiliate'=>$affiliate])
+    @if ($type != 'Titular')
     <div class="font-bold uppercase m-b-5 counter">
         Datos del Beneficiario
     </div>
     @include('eco_com.print.applicant_info', ['applicant'=>$eco_com_beneficiary])
+    @endif
     <div class="font-bold uppercase m-b-5 m-t-10 counter">
         Pagos Realizados
     </div>
@@ -35,8 +41,16 @@
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td class="text-left uppercase px-10 py-3">
+                    beneficiario (a)
+                </td>
+                <td class="text-left uppercase px-10 py-3">
+                    Sr. (a) {{$eco_com_beneficiary->fullName()}} ({{$type_modality}})
+                </td>
+            </tr>
             @foreach ($eco_coms as $eco)
-            <tr class=>
+            <tr >
                 <td class="text-left uppercase px-10 py-3">
                     {{ $eco->eco_com_procedure->getTextName()}}
                 </td>

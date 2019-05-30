@@ -8,7 +8,8 @@ use Muserpol\Helpers\Util;
 use Log;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Helpers\ID;
-
+use Muserpol\Models\Affiliate;
+use DB;
 class EcoComCertificationController extends Controller
 {
     public function printReception($id)
@@ -237,29 +238,28 @@ class EcoComCertificationController extends Controller
             // ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $eco_com->id . '.pdf');
     }
-    public function certificationAllEcoComs($ci)
+    public function certificationAllEcoComs($affiliate_id)
     {
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
         $title = "CERTIFICACIÓN";
-        $eco_coms = EconomicComplement::leftJoin('eco_com_applicants', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
-            ->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
-            ->leftJoin('eco_com_modalities', 'eco_com_modalities.id', '=', 'economic_complements.eco_com_modality_id')
-            ->leftJoin('procedure_modalities', "procedure_modalities.id", '=', 'eco_com_modalities.procedure_modality_id')
-            ->where('eco_com_applicants.identity_card', $ci)
-            ->select('economic_complements.*')
-            ->orderBY('eco_com_procedures.year')
-            ->orderBY('eco_com_procedures.semester')
-            ->get();
-        $eco_com_beneficiary = $eco_coms->last()->eco_com_beneficiary;
-        $affiliate = $eco_coms->last()->affiliate;
-        $type = $eco_coms->last()->getType();
-        $type_modality = $eco_coms->last()->getTypeModality();
+        $affiliate = Affiliate::find($affiliate_id);
+        $eco_com = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last();
+        $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
+        $type = $eco_com->getType();
+        $type_modality = $eco_com->getTypeModality();
         $user = auth()->user();
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
-
+        $eco_coms = EconomicComplement::leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+        ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
+        ->where('eco_com_applicants.identity_card', $eco_com_beneficiary->identity_card)
+        ->where('affiliate_id', $affiliate_id)
+        ->select('economic_complements.*')
+        ->orderBY('eco_com_procedures.year')
+        ->orderBY('eco_com_procedures.semester')
+        ->get();
         $data = [
             'direction' => $direction,
             'institution' => $institution,

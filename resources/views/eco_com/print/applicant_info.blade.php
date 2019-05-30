@@ -16,9 +16,11 @@
             <td class="px-15 py text-center">
                 SEGUNDO APELLIDO
             </td>
+            @if ($applicant->surname_husband)
             <td class="px-15 py text-center">
                 APELLIDO CASADA
             </td>
+            @endif
         </tr>
     </thead>
     <tbody>
@@ -28,7 +30,9 @@
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->second_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->last_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->mothers_last_name }}</td>
+            @if ($applicant->surname_husband)
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->surname_husband }}</td>
+            @endif
         </tr>
     </tbody>
 

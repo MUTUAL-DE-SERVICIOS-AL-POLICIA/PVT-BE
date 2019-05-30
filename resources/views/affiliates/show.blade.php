@@ -182,7 +182,19 @@ th.ellipsis-text {
                     <div id="tab-eco-com" class="tab-pane">
                         <div class="ibox">
                             <div class="ibox-title">
-                                <h1>Tramites de Complemento Economico</h1>
+                                <h2 class="pull-left">Tramites de Complemento Economico</h2>
+                                <div class="ibox-tools">
+                                    <button class="btn btn-primary dim"
+                                            type="button"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Imprimir Certificacion de pagos realizados"
+                                            onclick='printJS({printable: "{{route("eco_com_print_certification_all_eco_coms", [$affiliate->id])}}", type: "pdf", modalMessage: "Generando documentos de impresión, por favor espere un momento.", showModal: true})'
+                                    >
+                                    <i class="fa fa-print"></i>
+                                    Imprimir
+                                    </button>
+                                </div>
                             </div>
                             <div class="ibox-content">
                                 <div class="table-responsive">
