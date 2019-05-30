@@ -98,7 +98,11 @@ import { camelCaseToSnakeCase } from "../../helper.js";
         },
         async toggleEditing() {
           this.editing = !this.editing;
-          await axios.get(`/tag_wf_state`)
+          let uri = `/tag_wf_state`;
+          if (this.type == 'affiliate') {
+              uri = `/tag_module`
+          }
+          await axios.get(uri)
             .then(response=>{
                 this.tagsWfState = response.data
             }).catch(error=>{

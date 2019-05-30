@@ -51,6 +51,7 @@ class AppServiceProvider extends ServiceProvider
             'wf_states' => 'Muserpol\Models\Workflow\WorkflowState',
             'economic_complements' => 'Muserpol\Models\EconomicComplement\EconomicComplement',
             'affiliates' => 'Muserpol\Models\Affiliate',
+            'modules' => 'Muserpol\Models\Module',
         ]);
 
         // carbon settings
