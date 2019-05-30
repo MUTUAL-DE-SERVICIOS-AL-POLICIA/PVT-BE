@@ -43,4 +43,8 @@ class Devolution extends Model
         }
         return null;
     }
+    public function getAmortizado()
+    {
+        return $this->total - $this->balance;
+    }
 }

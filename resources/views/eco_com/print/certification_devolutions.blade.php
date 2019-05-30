@@ -23,14 +23,14 @@
     <p class="text-justify">
         En este sentido, se realizó la amortización de deuda por Pagos en Defecto con el
         {{ $devolution->getPercentage() }}%
-        del Complemento Económico, según Compromisos de Devolución {{ $devolution->id }} a partir del
+        del Complemento Económico, según Compromisos de Devolución, a partir del
         {{ $devolution->eco_com_procedure->getTextName() }}, de acuerdo al siguiente detalle:
     </p>
     <div class="w-50 mx-auto m-b-20">
         <table class=" w-100 ">
             <tr>
                 <td class="border uppercase font-bold p-5">Deuda Total</td>
-                <td class="border p-5">Bs. {{ Util::formatMoney($devolution->total) }}</td>
+                <td class="border font-bold  p-5">Bs. {{ Util::formatMoney($devolution->total) }}</td>
             </tr>
         </table>
     </div>
@@ -69,12 +69,29 @@
                 </td>
             </tr>
             @endforeach
+            <tr>
+                <td colspan="2" class="uppercase font-bold text-right px-10 py-3">
+                    Total Amortización
+                </td>
+                <td colspan="2" class=" font-bold text-left px-10 py-3">
+                    Bs. {{Util::formatMoney($devolution->getAmortizado()) }} </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="uppercase font-bold text-right px-10 py-3">
+                    Deuda Pendiente a la fecha
+                </td>
+                <td colspan="2" class="uppercase font-bold text-left px-10 py-3">
+                    Bs. {{ Util::formatMoney($devolution->balance) }}
+                </td>
+            </tr>
         </tbody>
     </table>
 
     <p class="text-justify">
-        Por lo cual, actualmente usted tiene una deuda pendiente de <strong>Bs. {{ Util::formatMoney($devolution->balance) }}
-                ({{Util::convertir($devolution->balance)}} Bolivianos)</strong> por Pagos en Defecto del Complemento Economico, que
+        Por lo cual, actualmente usted tiene una deuda pendiente de <strong>Bs.
+            {{ Util::formatMoney($devolution->balance) }}
+            ({{Util::convertir($devolution->balance)}} Bolivianos)</strong> por Pagos en Defecto del Complemento
+        Economico, que
         deberá ser cancelado.
     </p>
     <p class="text-justify">

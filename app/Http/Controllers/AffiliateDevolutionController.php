@@ -55,7 +55,7 @@ class AffiliateDevolutionController extends Controller
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
         $eco_coms = EconomicComplement::with('discount_types')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
         ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
-        ->where('eco_com_applicants.identity_card', $eco_com_beneficiary->identity_card)
+        // ->where('eco_com_applicants.identity_card', $eco_com_beneficiary->identity_card)
         ->where('affiliate_id', $affiliate->id)
         ->select('economic_complements.*')
         ->orderBY('eco_com_procedures.year')
