@@ -120,6 +120,7 @@ th.ellipsis-text {
                         <li class="list-group-item " data-toggle="tab" href="#tab-direct-contribution"><a href="#"><i class="{{ Util::IconModule(11)}}"></i> Aportes directos</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Util::IconModule(2)}}"></i> Complemento Económico</a></li>
                         {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
+                        <li class="list-group-item " data-toggle="tab" href="#tab-devolutions"><a href="#"><i class="fa fa-balance-scale"></i> Devoluciones</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
 
                     </ul>
@@ -306,6 +307,9 @@ th.ellipsis-text {
 
                     <div id="tab-observations" class="tab-pane">
                         <affiliate-observations :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :observation-types="{{ $observation_types }}"></affiliate-observations>
+                    </div>
+                    <div id="tab-devolutions" class="tab-pane">
+                        <affiliate-devolutions :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}"></affiliate-devolutions>
                     </div>
 
 

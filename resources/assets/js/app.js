@@ -307,6 +307,7 @@ Vue.component('affiliate-show', require('./components/affiliate/ShowAffiliate.vu
 Vue.component('affiliate-police', require('./components/affiliate/Police.vue'));
 //Vue.component('affiliate-create', require('./components/affiliate/CreateAffiliate.vue'));
 Vue.component('affiliate-observations', require('./components/affiliate/Observations.vue'));
+Vue.component('affiliate-devolutions', require('./components/affiliate/Devolutions.vue'));
 Vue.component('spouse-show', require('./components/spouse/ShowSpouse.vue'));
 //retirement Fund
 

@@ -20,9 +20,13 @@ class Devolution extends Model
     {
         return $this->hasMany(Due::class);
     }
+    public function eco_com_procedure()
+    {
+        return $this->belongsTo(EcoComProcedure::class, 'start_eco_com_procedure_id');
+    }
     public function eco_com_procedures()
     {
-        return $this->belongsToMany(EcoComProcedure::class);
+        return $this->belongsToMany(EcoComProcedure::class, 'devolution_eco_com_procedure', 'devolution_id', 'eco_com_procedure_id');
     }
     public function totalAmountProcedures($eco_com_procedure_ids = [])
     {
@@ -31,5 +35,12 @@ class Devolution extends Model
         }
         $sum = $this->dues()->whereIn('eco_com_procedure_id', $eco_com_procedure_ids)->get()->sum('amount');
         return str_replace(",",".","".$sum);
+    }
+    public function getPercentage()
+    {
+        if ($this->percentage) {
+            return $this->percentage * 100;
+        }
+        return null;
     }
 }

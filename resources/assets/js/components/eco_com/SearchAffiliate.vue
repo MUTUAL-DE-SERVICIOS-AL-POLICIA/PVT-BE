@@ -43,7 +43,7 @@
               <div class="col-sm-6" v-if="hasDoblePerception">
                 <!-- :class="{'has-error': errors.has('search_type_id') }" -->
                 <div class="form-group">
-                  <label for>El ci tiene doble percepcion seleccione ...:</label>
+                  <label for>El ci percibe doble beneficio seleccione:</label>
                   <select
                     class="form-control"
                     v-model="searchType"

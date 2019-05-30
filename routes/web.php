@@ -736,6 +736,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('affiliate_observation_create', 'AffiliateObservationController@create');
     Route::patch('affiliate_observation_update', 'AffiliateObservationController@update');
     Route::delete('affiliate_observation_delete', 'AffiliateObservationController@delete');
+    Route::get('affiliate_get_devolutions/{affiliate_id}', 'AffiliateDevolutionController@getDevolutions');
+    Route::get('affiliate/{affiliate_id}/print/certification_devolutions', 'AffiliateDevolutionController@printCertificationDevolutions');
     Route::get('/tempo',function ()
     {
       DB::connection()->enableQueryLog();
