@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Log;
 use DB;
 use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Models\EconomicComplement\Devolution;
 
 class Affiliate extends Model
 {
@@ -786,5 +787,9 @@ class Affiliate extends Model
      */
     // return rand(0,1) == 1;
     return true;
+  }
+  public function devolutions()
+  {
+    return $this->hasMany(Devolution::class);
   }
 }
