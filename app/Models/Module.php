@@ -15,4 +15,8 @@ class Module extends Model
 	{
 		return $this->hasMany('Muserpol\Models\ProcedureType');
 	}
+	public function tags()
+    {
+        return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id', 'date'])->withTimestamps();
+    }
 }

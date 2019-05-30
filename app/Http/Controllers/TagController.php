@@ -22,6 +22,11 @@ class TagController extends Controller
         $wf_current_state = WorkflowState::where('role_id', Util::getRol()->id)->first();
         return $wf_current_state->tags;
     }
+    public function module()
+    {
+        $module = Module::find(Util::getRol()->module_id);
+        return $module->tags;
+    }
     public function retFun($ret_fun_id)
     {
         return RetirementFund::find($ret_fun_id)->tags;
@@ -111,20 +116,20 @@ class TagController extends Controller
     {
 
         $affiliate = Affiliate::find($affiliate_id);
-        $tags_wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first()->tags;
-        foreach ($tags_wf_state as $tag_wf_state) {
-            $found = array_filter($request->ids, function ($id) use ($tag_wf_state) {
-                return $id == $tag_wf_state['id'];
+        $tags_module = Module::find(Util::getRol()->module_id)->tags;
+        foreach ($tags_module as $tag_module) {
+            $found = array_filter($request->ids, function ($id) use ($tag_module) {
+                return $id == $tag_module['id'];
             });
             if ($found) {
-                if ($affiliate->tags->contains($tag_wf_state->id)) {
-                    // $affiliate->tags()->updateExistingPivot($tag_wf_state->id);
+                if ($affiliate->tags->contains($tag_module->id)) {
+                    // $affiliate->tags()->updateExistingPivot($tag_module->id);
                 }else{
-                    $affiliate->tags()->save($tag_wf_state, ['date'=>Carbon::now(), 'user_id'=>Util::getAuthUser()->id]);
+                    $affiliate->tags()->save($tag_module, ['date'=>Carbon::now(), 'user_id'=>Util::getAuthUser()->id]);
                 }
             }else{
-                if ($affiliate->tags->contains($tag_wf_state->id)) {
-                    $affiliate->tags()->detach($tag_wf_state->id);
+                if ($affiliate->tags->contains($tag_module->id)) {
+                    $affiliate->tags()->detach($tag_module->id);
                 }
             }
         }

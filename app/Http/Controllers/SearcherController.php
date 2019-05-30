@@ -72,6 +72,7 @@ class SearcherController
         $eco_com = null;
         $affiliate = null;
         $affiliate_observations = [];
+        $other_observations = collect([]);
         $eco_com_beneficiary = new EcoComBeneficiary();
         $has_doble_perception = false;
         logger($request->all());
@@ -135,8 +136,11 @@ class SearcherController
             $affiliate->degree_name = $affiliate->degree->name ?? '';
             $affiliate->category_percentage = $affiliate->category->name ?? '';
             $affiliate->pension_entity_name = $affiliate->pension_entity->name ?? '';
-            $affiliate_observations_exclude = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::whereIn('type', ['A'])->get()->pluck('id'))->get();
-            $affiliate_observations = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::whereIn('type', ['AT'])->get()->pluck('id'))->get();
+            // !! TODO borrar id 33 y 35 despues de borrar las observaciones
+            $affiliate_observations_exclude = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->get()->pluck('id'))->get();
+            $affiliate_observations_amortizable = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('description', 'like', 'Amortizable')->where('id','<>', 13)->get()->pluck('id'))->get();
+            $affiliate_devolutions = $affiliate->devolutions()->with('observation_type:id,name,type')->get();
+            $affiliate_observations = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::whereIn('description', ['Subsanable', 'Amortizable'])->get()->pluck('id'))->get();
             $eco_com = $affiliate->economic_complements()->with([
                 'eco_com_modality:id,name,shortened,procedure_modality_id',
                 'eco_com_state:id,name'
@@ -145,11 +149,33 @@ class SearcherController
                 ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
                 ->take(2)
                 ->get();
+            if ($eco_com->count() > 0) {
+                if ($eco_com->first()->aps_disability > 0) {
+                    $other_observations->push(['value'=>'El ultimo tramite tuvo concurrencia.']);
+                }
+                $temp_ben = $eco_com->first()->eco_com_beneficiary;
+                if ($temp_ben) {
+                    $due_date = $temp_ben->due_date ?? Carbon::now()->subDay();
+                    $due_date = Util::verifyBarDate($due_date) ? Util::parseBarDate($due_date) : $due_date;
+                    $valid_due_date = $temp_ben->is_duedate_undefined ? true : $due_date > Carbon::now();
+                    if (!$valid_due_date) {
+                        if ($temp_ben->due_date) {
+                            $other_observations->push(['value'=>'La fecha de vencimiento del CI ya fue vencida']);
+                        }else{
+                            $other_observations->push(['value'=>'La fecha de vencimiento del CI No esta Registrada']);
+                        }
+                    }
+                }
+            }
         }
+        logger($other_observations);
         $data = [
             'affiliate' => $affiliate,
             'affiliate_observations_exclude' =>$affiliate_observations_exclude,
+            'affiliate_observations_amortizable' =>$affiliate_observations_amortizable,
             'affiliate_observations' =>$affiliate_observations,
+            'affiliate_devolutions' =>$affiliate_devolutions,
+            'other_observations' =>$other_observations,
             'eco_com_beneficiary' => $eco_com_beneficiary,
             'eco_com' => $eco_com,
             'has_doble_perception' => $has_doble_perception

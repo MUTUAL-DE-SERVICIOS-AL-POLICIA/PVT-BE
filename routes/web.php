@@ -160,6 +160,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // tags
     Route::resource('/tag', "TagController");
+    Route::get('/tag_module', "TagController@module")->name('tag_module');
     Route::get('/tag_wf_state', "TagController@wfState")->name('tag_wf_state');
     Route::get('/tag_ret_fun/{ret_fun_id}', "TagController@retFun")->name('tag_ret_fun');
     Route::post('/update_tag_ret_fun/{ret_fun_id}', "TagController@updateRetFun")->name('update_tag_ret_fun');
@@ -735,6 +736,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('affiliate_observation_create', 'AffiliateObservationController@create');
     Route::patch('affiliate_observation_update', 'AffiliateObservationController@update');
     Route::delete('affiliate_observation_delete', 'AffiliateObservationController@delete');
+    Route::get('affiliate_get_devolutions/{affiliate_id}', 'AffiliateDevolutionController@getDevolutions');
+    Route::get('affiliate/{affiliate_id}/print/certification_devolutions', 'AffiliateDevolutionController@printCertificationDevolutions');
     Route::get('/tempo',function ()
     {
       DB::connection()->enableQueryLog();
