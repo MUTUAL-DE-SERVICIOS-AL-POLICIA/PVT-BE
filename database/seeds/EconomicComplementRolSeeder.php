@@ -131,5 +131,6 @@ class EconomicComplementRolSeeder extends Seeder
             RecordType::create($status);
         }
         $this->call(EconomicComplementRequirementsSeeder::class);
+        $this->call(EcoComPermissionSeeder::class);
     }
 }
