@@ -2,11 +2,11 @@
 @section('content')
 <div>
     <p class="text-justify">
-        En la ciudad de {{ $user->city->name ?? 'La Paz' }}, en fecha {{ Util::getTexDate() }}, a horas
+        En la ciudad de {{ $user->city->name ?? 'La Paz' }}, en fecha {{ Util::getTextDate() }}, a horas
         {{ now()->format("H:i")}} se entrega en
         forma personal al Sr. (a) {{ $eco_com_beneficiary->fullName() }} el Certificado
         D.B.E./U.C.E./CERT. Nº 001/2019 DE LA UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL
-        COMPLEMENTO ECONÓMICO - MUSERPOL de fecha {{ Util::getTexDate() }}, quien recibió en mano propia el
+        COMPLEMENTO ECONÓMICO - MUSERPOL de fecha {{ Util::getTextDate() }}, quien recibió en mano propia el
         original de dicho documento.
     </p>
     <div>

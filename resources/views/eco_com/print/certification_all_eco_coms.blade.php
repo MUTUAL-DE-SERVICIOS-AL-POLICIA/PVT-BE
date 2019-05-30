@@ -61,7 +61,7 @@
         Es cuanto se certifica en honor a la verdad para fines consiguientes.
     </p>
     <p class="text-center">
-        {{ $user->city->name ?? 'La Paz' }}, {{ Util::getTexDate() }}
+        {{ $user->city->name ?? 'La Paz' }}, {{ Util::getTextDate() }}
     </p>
     <div>
         <table class="m-t-50">
