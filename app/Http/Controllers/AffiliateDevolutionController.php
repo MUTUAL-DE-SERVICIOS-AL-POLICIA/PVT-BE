@@ -37,7 +37,7 @@ class AffiliateDevolutionController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
-        $title = "CERTIFICACIÓN DE Reposición de Fondos";
+        $title = "CERTIFICACIÓN DE REPOSICIÓN DE FONDOS";
         $user = auth()->user();
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
