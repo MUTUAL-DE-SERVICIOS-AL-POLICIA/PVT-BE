@@ -77,13 +77,18 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="w-50 mx-auto">
+            <div class="w-60 mx-auto">
                 <table class="m-t-25 border table-info w-100">
                     <tbody>
                         <tr>
                             <td class="no-border text-center text-base w-33 align-bottom py-50"
                                 style="border-bottom:1px solid #5d6975!important;border-right:1px solid #5d6975!important; border-radius:0 !important">
                             </td>
+                            @if ($from_area->id == 3)
+                            <td class="no-border text-center text-base w-33 align-bottom py-50"
+                                style="border-bottom:1px solid #5d6975!important;border-right:1px solid #5d6975!important; border-radius:0 !important">
+                            </td>
+                            @endif
                             <td class="no-border text-center text-base w-33 align-bottom"
                                 style="border-bottom:1px solid #5d6975!important; border-radius:0 !important">
                             </td>
@@ -93,8 +98,14 @@
                         <tr>
                             <td class="no-border text-center text-base py-10 w-33 align-top"
                                 style="border-right:1px solid #5d6975!important; border-radius:0 !important">
-                                <span class="font-bold uppercase">Elaborado y revisado por</span>
+                                <span class="font-bold uppercase">Elaborado {{$from_area->id == 3 ? '' : 'y Revisado '}}por</span>
                             </td>
+                            @if ($from_area->id == 3)
+                            <td class="no-border text-center text-base py-10 w-33 align-top"
+                                style="border-right:1px solid #5d6975!important; border-radius:0 !important">
+                                <span class="font-bold uppercase">Revisado por</span>
+                            </td>
+                            @endif
                             <td class="no-border  text-center text-base py-10 w-33 align-top">
                                 <span class="font-bold uppercase">V° B°</span>
                             </td>

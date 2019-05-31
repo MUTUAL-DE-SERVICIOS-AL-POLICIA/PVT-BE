@@ -17,7 +17,7 @@
             </button>
           </div>
         </div>
-        <div class="ibox-content" v-if="can('read_observation_type')" >
+        <div class="ibox-content" v-if="can('read_observation_type')">
           <table class="table table-striped table-hover table-bordered">
             <thead>
               <tr>
@@ -46,16 +46,29 @@
                 </td>
                 <td>
                   <div class="btn-group">
-                    <button
-                      data-toggle="dropdown"
-                      class="btn btn-default btn-sm dropdown-toggle"
-                    ><i class="fa fa-chevron-down"></i>  Opciones</button>
+                    <button data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle">
+                      <i class="fa fa-chevron-down"></i> Opciones
+                    </button>
                     <ul class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="#" @click.prevent="editObs(o)" :aria-disabled="!can('update_observation_type')"><i class="fa fa-pencil"></i> Editar</a>
+                        <a
+                          class="dropdown-item"
+                          href="#"
+                          @click.prevent="editObs(o)"
+                          :aria-disabled="!can('update_observation_type')"
+                        >
+                          <i class="fa fa-pencil"></i> Editar
+                        </a>
                       </li>
                       <li>
-                        <a class="dropdown-item" @click.prevent="deleteObs(o)" :aria-disabled="!can('delete_observation_type')" href="#"><i class="fa fa-times"></i> Eliminar</a>
+                        <a
+                          class="dropdown-item"
+                          @click.prevent="deleteObs(o)"
+                          :aria-disabled="!can('delete_observation_type')"
+                          href="#"
+                        >
+                          <i class="fa fa-times"></i> Eliminar
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -63,7 +76,13 @@
               </tr>
             </tbody>
           </table>
-          <input type="checkbox" v-model="showDeleteObservation" @change="getDeleteObservations()" id="show-delete-observation"><label for="show-delete-observation">Ver Observaciones Eliminadas</label>
+          <input
+            type="checkbox"
+            v-model="showDeleteObservation"
+            @change="getDeleteObservations()"
+            id="show-delete-observation"
+          >
+          <label for="show-delete-observation">Ver Observaciones Eliminadas</label>
           <table
             class="table table-striped table-hover table-bordered"
             v-if="showDeleteObservation"
@@ -97,9 +116,7 @@
           </table>
         </div>
         <div class="ibox-content" v-else>
-          <div class="alert alert-warning" >
-              No tiene permisos para ver las observaciones.
-          </div>
+          <div class="alert alert-warning">No tiene permisos para ver las observaciones.</div>
         </div>
       </div>
     </div>
@@ -210,14 +227,20 @@ export default {
     };
   },
   mounted() {
-    this.getObservations();
+    document.querySelectorAll(".tab-eco-com-observations")[0].addEventListener(
+      "click",
+      () => {
+        this.getObservations();
+      },
+      { passive: true }
+    );
   },
   methods: {
-    can(operation){
-      return canOperation(operation, this.permissions)
+    can(operation) {
+      return canOperation(operation, this.permissions);
     },
     async getDeleteObservations() {
-      if(!this.can('read_observation_type', this.permissions)){
+      if (!this.can("read_observation_type", this.permissions)) {
         return;
       }
       await axios
@@ -258,7 +281,7 @@ export default {
       return method;
     },
     createObs() {
-      if(!this.can('create_observation_type', this.permissions)){
+      if (!this.can("create_observation_type", this.permissions)) {
         return;
       }
       this.$modal.show("observation-modal");
@@ -268,7 +291,7 @@ export default {
       this.method = "post";
     },
     editObs(o) {
-      if(!this.can('update_observation_type', this.permissions)){
+      if (!this.can("update_observation_type", this.permissions)) {
         return;
       }
       this.form.observationTypeId = o.id;
@@ -279,7 +302,7 @@ export default {
       this.$modal.show("observation-modal");
     },
     async deleteObs(o) {
-      if(!this.can('delete_observation_type', this.permissions)){
+      if (!this.can("delete_observation_type", this.permissions)) {
         return;
       }
       this.form.observationTypeId = o.id;
@@ -343,9 +366,10 @@ export default {
       await this.getObservations();
     },
     async getObservations() {
-      if(!this.can('read_observation_type', this.permissions)){
+      if (!this.can("read_observation_type", this.permissions)) {
         return;
       }
+      this.$scrollTo('#wrapper');
       await axios
         .get(`/eco_com_get_observations/${this.ecoCom.id}`)
         .then(response => {

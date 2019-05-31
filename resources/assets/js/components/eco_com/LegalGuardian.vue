@@ -521,7 +521,13 @@ export default {
     };
   },
   mounted() {
-    this.getLegalGuardian();
+    document.querySelectorAll(".tab-eco-com-legal-guardian")[0].addEventListener(
+      "click",
+      () => {
+        this.getLegalGuardian();
+      },
+      { passive: true }
+    );
   },
   methods: {
     async deleteLegalGuardian(){
@@ -540,6 +546,7 @@ export default {
       return canOperation(operation, this.permissions);
     },
     async getLegalGuardian() {
+      this.$scrollTo('#wrapper');
       await axios
         .get(`/get_eco_com_legal_guardian/${this.ecoCom.id}`)
         .then(response => {

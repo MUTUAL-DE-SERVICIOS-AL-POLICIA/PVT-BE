@@ -226,7 +226,7 @@
                 <tbody>
                   <tr v-for="e in ecoCom" class="hover" :key="e.id" @click="rowClick(e.id)">
                     <td>{{e.code}}</td>
-                    <td>{{e.semester | uppercase }}/{{e.year | year }}</td>
+                    <td>{{e.eco_com_procedure.semester | uppercase }}/{{e.eco_com_procedure.year | year }}</td>
                     <td>{{e.eco_com_modality.shortened}}</td>
                     <td>{{e.eco_com_state.name}}</td>
                     <td>{{e.total}}</td>

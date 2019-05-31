@@ -20,7 +20,20 @@ class EcoComCertificationController extends Controller
         $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
         $eco_com_submitted_documents = $eco_com->submitted_documents->pluck('procedure_requirement');
         if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual) {
-            $eco_com_submitted_documents = ProcedureRequirement::where('id', 127)->get();
+            switch ($eco_com->eco_com_modality->procedure_modality_id) {
+                case 29:
+                    $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', [1235])->get();
+                    break;
+                case 30:
+                    $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', [1266 ])->get();
+                    break;
+                case 31:
+                    $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', [1297 ])->get();
+                    break;
+
+            }
+
+
         }
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";

@@ -353,9 +353,10 @@
                   :disabled="editable"
                   id="eco_com_beneficiary_is_duedate_undefined"
                 >
-                <label for="eco_com_beneficiary_is_duedate_undefined" class="pointer v-middle">
-                  Indefinido
-                </label>
+                <label
+                  for="eco_com_beneficiary_is_duedate_undefined"
+                  class="pointer v-middle"
+                >Indefinido</label>
                 <div
                   v-show="errors.has('eco_com_beneficiary_due_date') && !ecoComBeneficiary.is_duedate_undefined "
                 >
@@ -564,13 +565,22 @@ export default {
     };
   },
   mounted() {
-    this.getBeneficiary();
+    document
+      .querySelectorAll(".tab-eco-com-beneficiary")[0]
+      .addEventListener(
+        "click",
+        () => {
+          this.getBeneficiary();
+        },
+        { passive: true }
+      );
   },
   methods: {
     can(operation) {
       return canOperation(operation, this.permissions);
     },
     async getBeneficiary() {
+      this.$scrollTo('#wrapper');
       await axios
         .get(`/get_eco_com_beneficiary/${this.ecoCom.id}`)
         .then(response => {
@@ -613,7 +623,7 @@ export default {
     async save() {
       await this.$validator.validateAll();
       if (this.$validator.errors.items.length) {
-        flash("Campos requeridos: ", 'error');
+        flash("Campos requeridos: ", "error");
         return;
       }
       this.ecoComBeneficiary.eco_com_id = this.ecoCom.id;

@@ -92,44 +92,48 @@ class EconomicComplementController extends Controller
             ->where('economic_complements.code', 'not like', '%A')
             ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',3)::integer desc, split_part(economic_complements.code, '/',2), split_part(economic_complements.code, '/',1)::integer"));
             return $datatables->eloquent($eco_coms)
+                ->filterColumn('code', function($query, $keyword) {
+                    $sql = "economic_complements.code ilike ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
                 ->filterColumn('eco_com_beneficiary_identity_card', function($query, $keyword) {
-                    $sql = "eco_com_applicants.identity_card like ?";
+                    $sql = "eco_com_applicants.identity_card ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('eco_com_beneficiary_full_name', function($query, $keyword) {
-                    $sql = "trim(regexp_replace(concat_ws(' ', eco_com_applicants.first_name, eco_com_applicants.second_name, eco_com_applicants.last_name, eco_com_applicants.mothers_last_name, eco_com_applicants.surname_husband), '\s+', ' ', 'g')) like ?";
+                    $sql = "trim(regexp_replace(concat_ws(' ', eco_com_applicants.first_name, eco_com_applicants.second_name, eco_com_applicants.last_name, eco_com_applicants.mothers_last_name, eco_com_applicants.surname_husband), '\s+', ' ', 'g')) ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('affiliate_identity_card', function($query, $keyword) {
-                    $sql = "affiliates.identity_card like ?";
+                    $sql = "affiliates.identity_card ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('affiliate_full_name', function($query, $keyword) {
-                    $sql = "trim(regexp_replace(concat_ws(' ', affiliates.first_name, affiliates.second_name, affiliates.last_name, affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) like ?";
+                    $sql = "trim(regexp_replace(concat_ws(' ', affiliates.first_name, affiliates.second_name, affiliates.last_name, affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('eco_com_city_name', function($query, $keyword) {
-                    $sql = "city_eco_com.name like ?";
+                    $sql = "city_eco_com.name ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('eco_com_procedure_year', function($query, $keyword) {
-                    $sql = "concat_ws(' ',extract(year from eco_com_procedures.year), eco_com_procedures.semester) like ?";
+                    $sql = "concat_ws(' ',extract(year from eco_com_procedures.year), eco_com_procedures.semester) ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('procedure_modality', function($query, $keyword) {
-                    $sql = "procedure_modalities.name like ?";
+                    $sql = "procedure_modalities.name ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('pension_entity_name', function($query, $keyword) {
-                    $sql = "pension_entities.name like ?";
+                    $sql = "pension_entities.name ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('wf_state_name', function($query, $keyword) {
-                    $sql = "wf_states.first_shortened like ?";
+                    $sql = "wf_states.first_shortened ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('eco_com_inbox_state', function($query, $keyword) {
-                    $sql = "CASE WHEN economic_complements.inbox_state THEN 'Validado' ELSE 'Pendiente' END like ?";
+                    $sql = "CASE WHEN economic_complements.inbox_state THEN 'Validado' ELSE 'Pendiente' END ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->addColumn('action', function ($eco_com) {
