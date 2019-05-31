@@ -87,7 +87,7 @@ class SearcherController
         if ($request->has_doble_perception == true) {
             logger("has DOble ");
             if ($request->type == 1) {
-                $affiliate = Affiliate::where('identity_card', $ci)->first();
+                $affiliate = Affiliate::where('identity_card', $ci)->with(['degree:id,name', 'category:id,name', 'pension_entity:id,name'])->select('id', 'category_id', 'degree_id', 'pension_entity_id', 'date_entry', 'identity_card', 'city_identity_card_id', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband','gender')->first();
             } else {
                 $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
                     ->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
@@ -102,7 +102,7 @@ class SearcherController
                     ->first();
                 logger("foun beneficiary in code");
                 logger($eco_com_beneficiary->economic_complement->code);
-                $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
+                $affiliate = $eco_com_beneficiary->economic_complement->affiliate()->select('id', 'category_id', 'degree_id', 'pension_entity_id', 'date_entry', 'identity_card', 'city_identity_card_id', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband','gender')->first();
             }
         } else {
             $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
@@ -116,11 +116,11 @@ class SearcherController
                 ->get()
                 ->first();
             if (!$eco_com_beneficiary) {
-                $affiliate = Affiliate::where('identity_card', $ci)->first();
+                $affiliate = Affiliate::where('identity_card', $ci)->with(['degree:id,name', 'category:id,name', 'pension_entity:id,name'])->select('id', 'category_id', 'degree_id', 'pension_entity_id', 'date_entry', 'identity_card', 'city_identity_card_id', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband','gender')->first();
                 logger('Found in affiliate');
             }else{
                 logger('Found in eco_com_beneficiary');
-                $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
+                $affiliate = $eco_com_beneficiary->economic_complement->affiliate()->with(['degree:id,name', 'category:id,name', 'pension_entity:id,name'])->select('id', 'category_id', 'degree_id', 'pension_entity_id', 'date_entry', 'identity_card', 'city_identity_card_id', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband','gender')->first();
             }
         }
         if (!$eco_com_beneficiary) {
@@ -144,9 +144,10 @@ class SearcherController
             $affiliate_observations_amortizable = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('description', 'like', 'Amortizable')->where('id','<>', 13)->get()->pluck('id'))->get();
             $affiliate_devolutions = $affiliate->devolutions()->with('observation_type:id,name,type')->get();
             $affiliate_observations = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::whereIn('description', ['Subsanable', 'Amortizable'])->get()->pluck('id'))->get();
-            $eco_com = $affiliate->economic_complements()->with([
+            $eco_com = $affiliate->economic_complements()->select('id', 'code', 'total','eco_com_procedure_id', 'eco_com_modality_id', 'eco_com_state_id')->with([
                 'eco_com_modality:id,name,shortened,procedure_modality_id',
-                'eco_com_state:id,name'
+                'eco_com_state:id,name',
+                'eco_com_procedure:id,semester,year'
             ])->orderByDesc(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))
                 ->orderByDesc(DB::raw("split_part(code, '/',2)"))
                 ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))

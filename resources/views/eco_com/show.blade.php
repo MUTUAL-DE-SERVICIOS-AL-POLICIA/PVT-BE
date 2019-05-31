@@ -71,12 +71,12 @@
             <ul class="list-group elements-list">
                 <li class="list-group-item active" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiario</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-record"><a href="#"><i class="fa fa-history"></i> Historial</a></li>
+                <li class="list-group-item tab-eco-com-beneficiary" data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiario</a></li>
+                <li class="list-group-item tab-eco-com-legal-guardian" data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
+                <li class="list-group-item tab-eco-com-observations" data-toggle="tab" href="#tab-eco-com-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
+                <li class="list-group-item tab-eco-com-record" data-toggle="tab" href="#tab-eco-com-record" ><a href="#"><i class="fa fa-history"></i> Historial</a></li>
             </ul>
         </div>
         <br>
@@ -120,7 +120,7 @@
                 {{-- @include('eco_com.beneficiary', ['eco_com_beneficiary'=>$eco_com_beneficiary,
                 'cities'=>$cities]) --}}
             </div>
-            <div id="tab-summited-document" class="tab-pane">
+            <div id="tab-eco-com-summited-document" class="tab-pane">
                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
                 <eco-com-step1-requirements-edit :eco-com="{{ $economic_complement }}" :procedure-modalities="{{ $procedure_modalities }}"
                     :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
@@ -129,15 +129,15 @@
                 </eco-com-step1-requirements-edit>
                 {{-- @endcan --}}
             </div>
-            <div id="tab-qualification" class="tab-pane">
+            <div id="tab-eco-com-qualification" class="tab-pane">
             <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}">
                 </eco-com-qualification>
             </div>
-            <div id="tab-observations" class="tab-pane">
+            <div id="tab-eco-com-observations" class="tab-pane">
             <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-observations>
                 {{-- @include('eco_com.observation') --}}
             </div>
-            <div id="tab-record" class="tab-pane">
+            <div id="tab-eco-com-record" class="tab-pane">
                 <eco-com-record :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-record>
             </div>
         </div>

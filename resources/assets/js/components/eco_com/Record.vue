@@ -1,7 +1,17 @@
 <template>
   <div class="ibox">
     <div class="ibox-content">
-      <vue-tabs active-tab-color="#59b66d" active-text-color="white" v-on:getUpdateRecords="getRecord()">
+      <div class="row text-center">
+        <button @click="getRecord()" class="btn" title="Actualizar">
+          Actualizar
+          <i class="fa fa-refresh"></i>
+        </button>
+      </div>
+      <vue-tabs
+        active-tab-color="#59b66d"
+        active-text-color="white"
+        v-on:getUpdateRecords="getRecord()"
+      >
         <v-tab title="Modificaciones" icon="fa fa-edit">
           <div class="ibox-content inspinia-timeline">
             <div class="timeline-item" v-for="dr in documentRecords" :key="dr.id">
@@ -54,8 +64,13 @@
           </div>
         </v-tab>
 
-        <v-tab title="Anotaciones" icon="fa fa-file" >
-          <eco-com-notes :eco-com="ecoCom" v-on:getUpdateRecords="getRecord()" :permissions="permissions" :note-records="noteRecords"></eco-com-notes>
+        <v-tab title="Anotaciones" icon="fa fa-file">
+          <eco-com-notes
+            :eco-com="ecoCom"
+            v-on:getUpdateRecords="getRecord()"
+            :permissions="permissions"
+            :note-records="noteRecords"
+          ></eco-com-notes>
         </v-tab>
       </vue-tabs>
     </div>
@@ -83,7 +98,7 @@ export default {
         { id: 10, icon: "fa-balance-scale", active: true },
         { id: 11, icon: "fa-users", active: true },
         { id: 12, icon: "fa-shield", active: true },
-        { id: 13, icon: "fa-sticky-note-o", active: true },
+        { id: 13, icon: "fa-sticky-note-o", active: true }
       ],
       form: {
         message: null
@@ -92,7 +107,13 @@ export default {
     };
   },
   mounted() {
-    this.getRecord();
+    document.querySelectorAll(".tab-eco-com-record")[0].addEventListener(
+      "click",
+      () => {
+        this.getRecord();
+      },
+      { passive: true }
+    );
   },
   methods: {
     getRecordIcon(id) {
@@ -103,6 +124,7 @@ export default {
       return "fa-hand-spock-o";
     },
     async getRecord() {
+      this.$scrollTo('#wrapper');
       await axios
         .get(`/eco_com_record/${this.ecoCom.id}`)
         .then(response => {
@@ -114,8 +136,7 @@ export default {
         .catch(error => {
           console.log(error);
         });
-    },
-
+    }
   }
 };
 </script>
