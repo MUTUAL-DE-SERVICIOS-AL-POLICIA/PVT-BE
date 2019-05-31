@@ -15,13 +15,16 @@ class AffiliateDevolutionController extends Controller
         $affiliate = Affiliate::find($affiliate_id);
         $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])->get();
         $devolution = $devolutions->where('observation_type_id', 13)->first();
-        $dues = $devolution->dues()->select('dues.*')
-            ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
-            ->orderByDesc('eco_com_procedures.year')
-            ->orderByDesc('eco_com_procedures.semester')
-            ->get();
-        foreach ($dues as $d) {
-            $d->eco_com_procedure_name = $d->eco_com_procedure->getTextName();
+        $dues = [];
+        if ($devolution){
+            $dues = $devolution->dues()->select('dues.*')
+                ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+                ->orderByDesc('eco_com_procedures.year')
+                ->orderByDesc('eco_com_procedures.semester')
+                ->get();
+            foreach ($dues as $d) {
+                $d->eco_com_procedure_name = $d->eco_com_procedure->getTextName();
+            }
         }
         $data = [
             'devolution' => $devolution,
@@ -34,13 +37,16 @@ class AffiliateDevolutionController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
-        $title = "CERTIFICACIÓN";
+        $title = "CERTIFICACIÓN DE Reposición de Fondos";
         $user = auth()->user();
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
         $affiliate = Affiliate::find($affiliate_id);
         $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])->get();
         $devolution = $devolutions->where('observation_type_id', 13)->first();
+        if (!isset($devolution->id)) {
+            return response()->json('El tramite no tiene deudas', 204);
+        }
         $dues = $devolution->dues()->select('dues.*')
             ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
             ->orderBy('eco_com_procedures.year')
@@ -66,6 +72,9 @@ class AffiliateDevolutionController extends Controller
             return $item->discount_types->contains(6);
         });
         // dd($eco_coms->first()->discount_types->where('id', 6));
+        $bar_code = \DNS2D::getBarcodePNG($affiliate->encode(), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+
         $data = [
             'direction' => $direction,
             'institution' => $institution,
@@ -89,7 +98,7 @@ class AffiliateDevolutionController extends Controller
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '23mm')
-            // ->setOption('footer-html', $footerHtml)
+            ->setOption('footer-html', $footerHtml)
             ->stream("certificacion.pdf");
         return $data;
     }

@@ -3,8 +3,8 @@
 <div>
     <p class="text-justify">
         La Unidad de Otorgación del Complemento Económico de la Mutual de Servicios al Policía – MUSERPOL, a petición
-        escrita del interesado (a), procedió a la revisión de la documentación e información registrada en la Plataforma
-        Virtual - Módulo Informático de la Unidad de Otorgación del Complemento Economico.
+        del interesado (a), procedió a la revisión de la documentación e información registrada en la Plataforma
+        Virtual de Trámites - MUSERPOL.
     </p>
     <p class="font-bold">
         CERTIFICA QUE:
@@ -30,7 +30,7 @@
     @include('eco_com.print.applicant_info', ['applicant'=>$eco_com_beneficiary])
     @endif
     <div class="font-bold uppercase m-b-5 m-t-10 counter">
-        Pagos Realizados
+        Pagos Realizados como {{$type_modality}}
     </div>
     <table class="table-info w-100">
         <thead class="bg-grey-darker">
@@ -41,21 +41,13 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td class="text-left uppercase px-10 py-3">
-                    beneficiario (a)
-                </td>
-                <td class="text-left uppercase px-10 py-3">
-                    Sr. (a) {{$eco_com_beneficiary->fullName()}} ({{$type_modality}})
-                </td>
-            </tr>
             @foreach ($eco_coms as $eco)
             <tr >
-                <td class="text-left uppercase px-10 py-3">
+                <td class="text-left uppercase px-10 py-5">
                     {{ $eco->eco_com_procedure->getTextName()}}
                 </td>
-                <td class="text-left px-10 py-3">
-                    Bs. {{ Util::formatMoney($eco->total) }} ({{Util::convertir($eco->total) .' Bolivianos'}})
+                <td class="text-left px-10 py-5">
+                <span class="font-bold">Bs. {{ Util::formatMoney($eco->total) }}</span> (<span class="italic lowercase">{{Util::convertir($eco->total) }}</span> Bolivianos)
                 </td>
             </tr>
             @endforeach

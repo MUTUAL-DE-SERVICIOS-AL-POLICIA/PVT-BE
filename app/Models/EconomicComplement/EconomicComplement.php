@@ -529,7 +529,7 @@ class EconomicComplement extends Model
     public function getTypeModality()
     {
         if ($this->isOldAge()) {
-            $type = 'Titular';
+            $type = 'Vejez';
         }
         if ($this->isWidowhood()) {
             $type = 'Viuda(o)';

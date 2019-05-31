@@ -6,7 +6,7 @@
           <h2 class="pull-left">Devoluciones</h2>
           <div class="ibox-tools">
             <!-- @click="createObs()" -->
-            <button class="btn btn-primary" @click="printCertification()">
+            <button v-if="devolution" class="btn btn-primary" @click="printCertification()">
               <i class="fa fa-print"></i> Imprimir Certificacion
             </button>
             <!-- <button class="btn btn-primary" data-toggle="tooltip" title="Adicionar Observacion"> -->
@@ -18,36 +18,41 @@
         </div>
         <!-- v-if="can('read_observation_type')" -->
         <div class="ibox-content">
-          <table class="table table-striped table-hover table-bordered">
-            <thead>
+          <div v-if="devolution">
+            <table class="table table-striped table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th>Nro.</th>
+                  <th>GESTIÓN</th>
+                  <th>MONTO ADEUDADO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(d, index) in dues" :key="index">
+                  <td>{{index + 1}}</td>
+                  <td>{{ d.eco_com_procedure_name }}</td>
+                  <td>{{ d.amount | currency }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
               <tr>
-                <th>Nro.</th>
-                <th>GESTIÓN</th>
-                <th>MONTO ADEUDADO</th>
+                <td>Total Deuda</td>
+                <td>
+                  <strong>{{ devolution.total | currency }}</strong>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(d, index) in dues" :key="index">
-                <td>{{index + 1}}</td>
-                <td>{{ d.eco_com_procedure_name }}</td>
-                <td>{{ d.amount | currency }}</td>
+              <tr>
+                <td>Total Deuda Pendiente</td>
+                <td>
+                  <strong>{{ devolution.balance | currency }}</strong>
+                </td>
               </tr>
-            </tbody>
-          </table>
-          <table>
-            <tr>
-              <td>Total Deuda</td>
-              <td>
-                <strong>{{ devolution.total | currency }}</strong>
-              </td>
-            </tr>
-            <tr>
-              <td>Total Deuda Pendiente</td>
-              <td>
-                <strong>{{ devolution.balance | currency }}</strong>
-              </td>
-            </tr>
-          </table>
+            </table>
+          </div>
+          <div v-else>
+            <div class="alert alert-info">El afiliado no tiene deudas.</div>
+          </div>
         </div>
         <!-- v-else -->
         <div class="ibox-content">

@@ -22,7 +22,8 @@
                         style="border-top: 2px solid; ">
                         Procesado por: <span class="italic">{{ $user->fullName() }}</span><br>
                         PLATAFORMA VIRTUAL DE TRÁMITES
-                        MUTUAL DE SERVICIOS AL POLICÍA - MUSERPOL
+                        MUTUAL DE SERVICIOS AL POLICÍA - MUSERPOL <br>
+                        <span class="italic">http://www.muserpol.gob.bo</span>
                     </th>
                     <th class="no-padding no-margins align-middle text-right px-10"
                         style="border-top: 2px solid; border-left: 2px solid; ">

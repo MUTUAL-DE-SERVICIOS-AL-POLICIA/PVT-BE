@@ -4,7 +4,7 @@
     <p class="text-justify">
         En la ciudad de {{ $user->city->name ?? 'La Paz' }}, en fecha {{ Util::getTextDate() }}, a horas
         {{ now()->format("H:i")}} se entrega en
-        forma personal al Sr. (a) {{ $eco_com_beneficiary->fullName() }} el Certificado DE LA UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL
+        forma personal al Sr. (a) {{ $eco_com_beneficiary->fullName() }}, el Certificado DE LA UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL
         COMPLEMENTO ECONÓMICO - MUSERPOL, quien recibió en mano propia el
         original de dicho documento.
     </p>
