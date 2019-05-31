@@ -256,12 +256,12 @@ class EcoComCertificationController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
-        $title = "CERTIFICACIÓN";
+        $title = "CERTIFICACIÓN DE PAGOS DE COMPLEMENTO ECONÓMICO";
         $affiliate = Affiliate::find($affiliate_id);
         $eco_com = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last();
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
         $type = $eco_com->getType();
-        $type_modality = $eco_com->getTypeModality();
+        $type_modality = $eco_com->eco_com_modality->procedure_modality->name;
         $user = auth()->user();
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
@@ -273,6 +273,8 @@ class EcoComCertificationController extends Controller
         ->orderBY('eco_com_procedures.year')
         ->orderBY('eco_com_procedures.semester')
         ->get();
+        $bar_code = \DNS2D::getBarcodePNG($affiliate->encode(), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
         $data = [
             'direction' => $direction,
             'institution' => $institution,
@@ -296,7 +298,7 @@ class EcoComCertificationController extends Controller
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '23mm')
-            // ->setOption('footer-html', $footerHtml)
+            ->setOption('footer-html', $footerHtml)
             ->stream("certificacion.pdf");
     }
 }

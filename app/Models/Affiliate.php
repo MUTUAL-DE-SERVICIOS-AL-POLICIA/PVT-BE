@@ -11,7 +11,7 @@ use Log;
 use DB;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\EconomicComplement\Devolution;
-
+use Hashids\Hashids;
 class Affiliate extends Model
 {
   use SoftDeletes;
@@ -791,5 +791,19 @@ class Affiliate extends Model
   public function devolutions()
   {
     return $this->hasMany(Devolution::class);
+  }
+  public function encode()
+  {
+      $hashids = new Hashids('affiliates', 10);
+      return $hashids->encode($this->id);
+  }
+  public function decode($hash)
+  {
+      $hashids = new Hashids('affiliates', 10);
+      $id = $hashids->decode($hash);
+      if ($id) {
+          return $id[0];
+      }
+      return null;
   }
 }

@@ -2,9 +2,8 @@
 @section('content')
 <div>
     <p class="text-justify">
-        La Unidad de Otorgación del Complemento Económico de la Mutual de Servicios al Policía – MUSERPOL, a petición
-        escrita del interesado (a), procedió a la revisión de la documentación e información registrada en la Plataforma
-        Virtual - Módulo Informático de la Unidad de Otorgación del Complemento Economico.
+        La Unidad de Otorgación del Complemento Económico de la Mutual de Servicios al Policía – MUSERPOL, a petición del interesado (a), procedió a la revisión de la documentación e información registrada en la Plataforma
+        Virtual de Trámites PVT - MUSERPOL, por cuanto el derecho lo permite.
     </p>
     <p class="font-bold">
         CERTIFICA QUE:
@@ -21,16 +20,15 @@
         beneficio del Complemento Económico.
     </p>
     <p class="text-justify">
-        En este sentido, se realizó la amortización de deuda por Pagos en Defecto con el
-        {{ $devolution->getPercentage() }}%
-        del Complemento Económico, según Compromisos de Devolución, a partir del
-        {{ $devolution->eco_com_procedure->getTextName() }}, de acuerdo al siguiente detalle:
+        En este sentido, se realizó la amortización de deuda por Pagos en Defecto del Complemento Económico, a partir
+        del {{ $devolution->eco_com_procedure->getTextName() }}, según compromisos de Devolución, de acuerdo al
+        siguiente detalle:
     </p>
     <div class="w-50 mx-auto m-b-20">
         <table class=" w-100 ">
             <tr>
                 <td class="border uppercase font-bold p-5">Deuda Total</td>
-                <td class="border font-bold  p-5">Bs. {{ Util::formatMoney($devolution->total) }}</td>
+                <td class="border font-bold text-right p-5">Bs. {{ Util::formatMoney($devolution->total) }}</td>
             </tr>
         </table>
     </div>
@@ -69,30 +67,34 @@
                 </td>
             </tr>
             @endforeach
-            <tr>
-                <td colspan="2" class="uppercase font-bold text-right px-10 py-3">
+            <tr class="bg-grey-lightest">
+                <td class=""></td>
+                <td class="uppercase font-bold text-right px-10 py-3">
                     Total Amortización
                 </td>
-                <td colspan="2" class=" font-bold text-left px-10 py-3">
-                    Bs. {{Util::formatMoney($devolution->getAmortizado()) }} </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="uppercase font-bold text-right px-10 py-3">
-                    Deuda Pendiente a la fecha
+                <td class=" font-bold text-right px-10 py-3">
+                    Bs. {{Util::formatMoney($devolution->getAmortizado()) }}
                 </td>
-                <td colspan="2" class="uppercase font-bold text-left px-10 py-3">
-                    Bs. {{ Util::formatMoney($devolution->balance) }}
-                </td>
+                <td class=""></td>
             </tr>
         </tbody>
     </table>
+    <div class="w-50 mx-auto m-t-20">
+        <table class=" w-100 ">
+            <tr>
+                <td class="border uppercase font-bold p-5">Deuda Pendiente a la fecha</td>
+                <td class="border font-bold  p-5"> Bs. {{ Util::formatMoney($devolution->balance) }}
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <p class="text-justify">
         Por lo cual, actualmente usted tiene una deuda pendiente de <strong>Bs.
             {{ Util::formatMoney($devolution->balance) }}
             ({{Util::convertir($devolution->balance)}} Bolivianos)</strong> por Pagos en Defecto del Complemento
         Economico, que
-        deberá ser cancelado.
+        deberá ser cancelado conforme compromiso(s) de devolución.
     </p>
     <p class="text-justify">
         Sin embargo, cabe señalar que el monto individual del Complemento Económico es variable,
