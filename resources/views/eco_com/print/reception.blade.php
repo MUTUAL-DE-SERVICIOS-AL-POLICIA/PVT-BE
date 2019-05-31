@@ -129,7 +129,7 @@
         <div class="m-t-50 font-bold text-xxxs">
             Los datos insertos en la presente solicitud son de plena responsabilidad del solicitante.
             <br>
-            Autorizo el acceso a la información correspondiente a mi persona (y causahabiente si corresponde) en las
+            Autorizo el acceso a la información correspondiente a mi persona (y causante si corresponde) en las
             bases de datos de SERECI, SEGIP y otras Instituciones Públicas y/o Privadas de ser necesario para su
             revisión y/o verificación.
         </div>

@@ -1,5 +1,5 @@
-@extends('layouts.app') 
-@section('title', 'Fondo de Retiro') 
+@extends('layouts.app')
+@section('title', 'Fondo de Retiro')
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
@@ -10,25 +10,39 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="text-center m-t-lg table-responsive">
-                <table class="table table-striped table-bordered table-hover display" id="datatables-retirement-funds" cellspacing="0" width="100%"
-                    style="font-size: 12px">
+                <table class="table table-striped table-bordered table-hover display" id="datatables-retirement-funds"
+                    cellspacing="0" width="100%" style="font-size: 12px">
                     <tfoot>
                         <tr>
-                            <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            </tr>
+                            <th style="padding:5px; width:20px;"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:20px;"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                                    style="width:100%"></th>
+                        </tr>
                     </tfoot>
                     <thead>
                         <tr>
@@ -56,7 +70,7 @@
     </div>
 </div>
 @endsection
- 
+
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 <style>
@@ -79,7 +93,7 @@
     }
 </style>
 @endsection
- 
+
 @section('scripts')
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
@@ -88,7 +102,7 @@
         // document.getElementsByName('SimpleTable')[0].className+='table-responsive';
         var datatable_ret_fun = $('#datatables-retirement-funds').DataTable({
             "processing": true,
-        "serverSide": true,
+            "serverSide": true,
             language: {
                 "decimal": "",
                 "emptyTable": "No hay información",
