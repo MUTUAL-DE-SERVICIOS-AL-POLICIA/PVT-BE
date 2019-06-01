@@ -52,8 +52,11 @@
                         </div>
                     </div>
                 </div>
+                <div v-else>
+                    <div v-if="editing" class="alert alert-warning">No hay requisitos por editar</div>
+                </div>
                 <br>
-                <div v-if='ecoCom.eco_com_reception_type_id == 1'>
+                <div>
                     <h4>Documentos adicionales</h4>
                     <select data-placeholder="Documentos adicionales..." class="chosen-select"
                         id="aditional_requirements" name="aditional_requirements[]" multiple=""

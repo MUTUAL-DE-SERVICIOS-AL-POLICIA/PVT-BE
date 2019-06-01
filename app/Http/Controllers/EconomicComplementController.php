@@ -778,7 +778,9 @@ class EconomicComplementController extends Controller
         // $economic_complement->degree_id = $request->degree_id;
         // $economic_complement->category_id = $request->category_id;
         $economic_complement->city_id = $request->city_id;
-        $economic_complement->reception_date = $request->reception_date;
+        if (Util::getRol()->id == 5) {
+            $economic_complement->reception_date = $request->reception_date;
+        }
         $economic_complement->save();
         /**
          * update affiliate info

@@ -1,12 +1,6 @@
 <template>
   <div class="ibox">
     <div class="ibox-content">
-      <div class="row text-center">
-        <button @click="getRecord()" class="btn" title="Actualizar">
-          Actualizar
-          <i class="fa fa-refresh"></i>
-        </button>
-      </div>
       <vue-tabs
         active-tab-color="#59b66d"
         active-text-color="white"

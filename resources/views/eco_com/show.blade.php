@@ -69,12 +69,12 @@
         </div>
         <div class="widget-text-box">
             <ul class="list-group elements-list">
-                <li class="list-group-item active" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
+                <li class="list-group-item active tab-eco-com" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
+                <li class="list-group-item tab-police-info" data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
                 <li class="list-group-item tab-eco-com-beneficiary" data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiario</a></li>
                 <li class="list-group-item tab-eco-com-legal-guardian" data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
+                <li class="list-group-item tab-eco-com-summited-document" data-toggle="tab" href="#tab-eco-com-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
+                <li class="list-group-item tab-eco-com-qualification" data-toggle="tab" href="#tab-eco-com-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
                 <li class="list-group-item tab-eco-com-observations" data-toggle="tab" href="#tab-eco-com-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                 <li class="list-group-item tab-eco-com-record" data-toggle="tab" href="#tab-eco-com-record" ><a href="#"><i class="fa fa-history"></i> Historial</a></li>
             </ul>
@@ -88,9 +88,7 @@
         <div class="tab-content">
             <div id="tab-eco-com" class="tab-pane active">
                 <eco-com-info :eco-com="{{ $economic_complement }}" :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}" :states="{{ $states }}"
-                    :pension-entities="{{ $pension_entities }}" :degrees="{{ $degrees }}" :categories="{{ $categories }}" :affiliate="{{ $affiliate }}"
-                    :cities="{{ $cities }}" inline-template>
-    @include('eco_com.info')
+                :cities="{{ $cities }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
                 </eco-com-info>
             </div>
             <div id="tab-eco-coms" class="tab-pane">
