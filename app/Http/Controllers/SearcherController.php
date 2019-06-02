@@ -153,7 +153,7 @@ class SearcherController
             ])->orderByDesc(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))
                 ->orderByDesc(DB::raw("split_part(code, '/',2)"))
                 ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
-                ->take(2)
+                ->take(3)
                 ->get();
             if ($eco_com->count() > 0) {
                 if ($eco_com->first()->aps_disability > 0) {
@@ -174,7 +174,6 @@ class SearcherController
                 }
             }
         }
-        logger($other_observations);
         $data = [
             'affiliate' => $affiliate,
             'affiliate_observations_exclude' =>$affiliate_observations_exclude,

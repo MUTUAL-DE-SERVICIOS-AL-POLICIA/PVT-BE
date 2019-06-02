@@ -127,6 +127,7 @@ class EconomicComplementRolSeeder extends Seeder
             ['name' => 'Apoderado', 'description' => 'Datos del Apoderado Legal.'],
             ['name' => 'Notas', 'description' => 'Notas.'],
             ['name' => 'Direcciones', 'description' => 'direcciones.'],
+            ['name' => 'Etiquetas', 'description' => 'etiquetas.'],
         ];
         foreach ($statuses as $status) {
             RecordType::create($status);

@@ -94,6 +94,7 @@ export default {
         { id: 12, icon: "fa-shield", active: true },
         { id: 13, icon: "fa-sticky-note-o", active: true },
         { id: 14, icon: "fa-map-marker", active: true },
+        { id: 15, icon: "fa-tags", active: true },
       ],
       form: {
         message: null
