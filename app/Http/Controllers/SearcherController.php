@@ -155,7 +155,7 @@ class SearcherController
                 ->get();
             if ($eco_com->count() > 0) {
                 if ($eco_com->first()->aps_disability > 0) {
-                    $other_observations->push(['value'=>'El ultimo tramite tuvo concurrencia.']);
+                    $other_observations->push(['value'=>'El ultimo Trámite tuvo concurrencia.']);
                 }
                 $temp_ben = $eco_com->first()->eco_com_beneficiary;
                 if ($temp_ben) {

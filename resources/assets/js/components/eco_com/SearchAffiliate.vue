@@ -198,7 +198,7 @@
     <transition name="custom-show-ecocom-transition" enter-active-class="animated fadeInRightBig">
       <div class="col-lg-6" v-if="affiliateFound">
         <div class="alert alert-orange block" v-if="otherObservations.length > 0">
-          Se encontraron algunas observaciones antes de crear el tramite:
+          Se encontraron algunas observaciones antes de crear el Trámite:
           <ul>
             <li
               class="alert-link"
@@ -216,7 +216,7 @@
               <table class="table table-striped table-hover">
                 <thead>
                   <tr>
-                    <th># de tramite</th>
+                    <th># de Trámite</th>
                     <th>Gestion</th>
                     <th>Modalidad</th>
                     <th>Estado</th>
@@ -234,7 +234,7 @@
                 </tbody>
               </table>
             </div>
-            <h3 v-else>No se encontro ningun tramite</h3>
+            <h3 v-else>No se encontro ningun Trámite</h3>
           </div>
           <transition
             name="custom-button-transition"
@@ -260,7 +260,7 @@
                 v-if="! affiliateObservationsExclude.length"
               >
                 <i class="fa fa-exclamation-triangle"></i>
-                No hay tramites pendientes para crear
+                No hay Trámites pendientes para crear
               </button>
             </div>
           </transition>

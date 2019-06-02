@@ -135,7 +135,7 @@ class EcoComObservationController extends Controller
                 'message' => $message
             ]);
         } else {
-            return response()->json(['errors' => ['El Tramite no tiene esa observación']], 422);
+            return response()->json(['errors' => ['El Trámite no tiene esa observación']], 422);
         }
         return "updated";
     }
@@ -173,7 +173,7 @@ class EcoComObservationController extends Controller
                 'message' => "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . "."
             ]);
         } else {
-            return response()->json(['errors' => ['El Tramite no tiene esa observación']], 422);
+            return response()->json(['errors' => ['El Trámite no tiene esa observación']], 422);
         }
     }
 }

@@ -196,7 +196,7 @@ class EcoComProcedureController extends Controller
         }
         $eco_com_procedure = EcoComProcedure::find($request->id);
         if ($eco_com_procedure->economic_complements->count()) {
-            return response()->json(['errors' => ['Existen tramites con ese procedimiento1.']], 422);
+            return response()->json(['errors' => ['Existen Trámites con ese procedimiento.']], 422);
         }
         if ($eco_com_procedure) {
             $eco_com_procedure->delete();

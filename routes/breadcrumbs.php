@@ -196,5 +196,5 @@ Breadcrumbs::register('create_eco_com', function($breadcrumbs, $affiliate)
 Breadcrumbs::register('show_eco_com', function($breadcrumbs, $eco_com)
 {
 	$breadcrumbs->parent('eco_com');
-	$breadcrumbs->push('Tramite N°: '.$eco_com->code);
+	$breadcrumbs->push('Trámite N°: '.$eco_com->code);
 });

@@ -69,7 +69,7 @@
         </div>
         <div class="widget-text-box">
             <ul class="list-group elements-list">
-                <li class="list-group-item active tab-eco-com" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
+                <li class="list-group-item active tab-eco-com" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Información del Trámite</a></li>
                 <li class="list-group-item tab-police-info" data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
                 <li class="list-group-item tab-eco-com-beneficiary" data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiario</a></li>
                 <li class="list-group-item tab-eco-com-legal-guardian" data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>

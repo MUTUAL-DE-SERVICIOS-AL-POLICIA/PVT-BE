@@ -475,7 +475,7 @@
         </div>
       </div>
       <div class="ibox-content" v-else>
-        <div class="alert alert-warning">No tiene permisos para ver la informacion del beneficiario.</div>
+        <div class="alert alert-warning">No tiene permisos para ver la información del beneficiario.</div>
       </div>
     </div>
     <div class="hr-line-dashed"></div>
@@ -610,7 +610,7 @@ export default {
         .then(response => {
           this.editable = false;
           this.show_spinner = false;
-          flash("Informacion del Beneficiario Actualizada");
+          flash("Información del Beneficiario Actualizada");
         })
         .catch(response => {
           this.show_spinner = false;
@@ -632,7 +632,7 @@ export default {
         .then(response => {
           this.$store.commit("ecoComForm/setEcoComBeneficiary", response.data);
           this.editable = true;
-          flash("Informacion del Beneficiario actualizada");
+          flash("Información del Beneficiario actualizada");
         })
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);

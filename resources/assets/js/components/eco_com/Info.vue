@@ -2,11 +2,11 @@
   <div class="col-md-12">
     <div class="ibox">
       <div class="ibox-title">
-        <h2 class="pull-left">Informacion del Tramite</h2>
+        <h2 class="pull-left">Información del Trámite</h2>
         <div class="ibox-tools">
           <button
             data-toggle="tooltip"
-            title="Eliminar Tramite"
+            title="Eliminar Trámite"
             v-if="editing"
             class="btn btn-danger"
             @click="deleteEcoCom()"
@@ -60,9 +60,13 @@
             <label class="control-label">Regional</label>
           </div>
           <div class="col-md-4">
-            <select class="form-control" v-model="form.city_id" name="city_id" :disabled="!editing">
+            <select class="form-control" v-model="form.city_id" name="city_id" :disabled="!editing" v-validate="'required'">
               <option v-for="(c, index) in cities" :value="c.id" :key="index">{{c.name}}</option>
             </select>
+            <div v-show="errors.has('city_id')">
+              <i class="fa fa-warning text-danger"></i>
+              <span class="text-danger">{{ errors.first('city_id') }}</span>
+            </div>
           </div>
         </div>
         <br>
@@ -197,7 +201,7 @@ export default {
           this.editing = false;
           this.show_spinner = false;
           this.form = response.data;
-          flash("Informacion del tramite Actualizada");
+          flash("Información del Trámite Actualizada");
         })
         .catch(response => {
           flashErrors("Error al procesar: ", error.response.data.errors);
@@ -206,11 +210,11 @@ export default {
     },
     async deleteEcoCom() {
       if (!this.can("delete_economic_complement", this.permissions)) {
-        flash("No tiene permisos para eliminar el tramite", "error");
+        flash("No tiene permisos para eliminar el Trámite", "error");
         return;
       }
       await this.$swal({
-        title: "¿Está seguro de Eliminar el Tramite?",
+        title: "¿Está seguro de Eliminar el Trámite?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#59B75C",

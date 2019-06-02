@@ -782,7 +782,7 @@ class Affiliate extends Model
   {
     /**
      *!! TODO
-     *!! verificar si se puede crear tramite en esa fecha
+     *!! verificar si se puede crear Trámite en esa fecha
      ** mmmm date_derelict < start date procedure
      */
     // return rand(0,1) == 1;

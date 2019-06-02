@@ -215,7 +215,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para crear el tramite'],
+                'errors' => ['No tiene permisos para crear el Trámite'],
             ], 403);
         }
         $eco_com_procedure = EcoComProcedure::find($request->eco_com_procedure_id);
@@ -705,7 +705,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para editar el tramite'],
+                'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
         $affiliate = Affiliate::where('id', '=', $request->id)->first();
@@ -771,7 +771,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para editar el tramite'],
+                'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
         $economic_complement = EconomicComplement::findOrFail($request->id);
@@ -897,7 +897,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para editar el tramite'],
+                'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
         $num = $count = 0;
@@ -989,7 +989,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para ver el tramite'],
+                'errors' => ['No tiene permisos para ver el Trámite'],
             ], 403);
         }
         $rol = Util::getRol();
@@ -1016,7 +1016,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para editar el tramite'],
+                'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
         $economic_complement = EconomicComplement::with('discount_types')->find($request->id);
@@ -1188,14 +1188,23 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para eliminar el tramite'],
+                'errors' => ['No tiene permisos para eliminar el Trámite'],
             ], 403);
         }
         if ($id) {
-            $economic_complement = EconomicComplement::find($id);
-            $economic_complement->code = $economic_complement->code . 'A';
-            $economic_complement->save();
-            $economic_complement->delete();
+            $eco_com = EconomicComplement::find($id);
+            $eco_com->code = $eco_com->code . 'A';
+            $eco_com->save();
+            $eco_com->eco_com_beneficiary()->delete();
+            $eco_com->eco_com_legal_guardian()->delete();
+            $eco_com->submitted_documents()->delete();
+            $eco_com->wf_records()->delete();
+            $eco_com->notes()->delete();
+            $eco_com->document_records()->delete();
+            $eco_com->observations()->detach();
+            $eco_com->discount_types()->detach();
+            $eco_com->tags()->detach();
+            $eco_com->delete();
             return response()->json([
                 'message' => 'deleted',
             ], 204);

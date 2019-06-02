@@ -84,7 +84,7 @@ class EcoComNoteController extends Controller
                 'message' => $message
             ]);
         } else {
-            return response()->json(['errors' => ['El Tramite no tiene esa nota']], 422);
+            return response()->json(['errors' => ['El Trámite no tiene esa nota']], 422);
         }
         return "updated";
     }
@@ -121,7 +121,7 @@ class EcoComNoteController extends Controller
                 'message' => "El usuario " . auth()->user()->username  . " eliminó la nota ". $message,
             ]);
         } else {
-            return response()->json(['errors' => ['El Tramite no tiene esa nota']], 422);
+            return response()->json(['errors' => ['El Trámite no tiene esa nota']], 422);
         }
     }
 }

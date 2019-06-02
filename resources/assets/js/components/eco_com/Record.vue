@@ -32,7 +32,7 @@
           </div>
         </v-tab>
 
-        <v-tab title="Flujo del Tramite" icon="fa fa-random">
+        <v-tab title="Flujo del Trámite" icon="fa fa-random">
           <div class="ibox-content inspinia-timeline">
             <div class="timeline-item" v-for="wr in workflowRecords" :key="wr.id">
               <div class="row">
