@@ -30,7 +30,7 @@ class EcoComBeneficiary extends Model
     }
     public function address()
     {
-        return $this->belongsToMany('\Muserpol\Models\Address', 'address_eco_com_applicant', 'eco_com_applicant_id', 'address_id')->withTimestamps();
+        return $this->morphToMany('\Muserpol\Models\Address', 'addressable')->withTimestamps();
     }
     public function city_identity_card()
     {

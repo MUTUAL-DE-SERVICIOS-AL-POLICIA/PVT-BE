@@ -8,7 +8,9 @@ const state = {
   isValidated: false,
   correlative: null,
 
-  beneficiary: {},
+  beneficiary: {
+    address: {}
+  },
   legalGuardian: {},
   receptionType: {},
   affiliate: {},
@@ -34,6 +36,12 @@ const mutations = {
   },
   setEcoComBeneficiary(state, object) {
     state.beneficiary = object;
+    if (object.address.length > 0) {
+      state.beneficiary.address = object.address[0];
+    }else{
+      state.beneficiary.address = {};
+
+    }
   },
   setIsValidated(state, value) {
     state.isValidated = value;
@@ -41,9 +49,9 @@ const mutations = {
   setCorrelative(state, value) {
     state.correlative = value;
   },
-  setPensionEntity(state, object){
-    state.pensionEntityId = object.id
-    state.pensionEntityName = object.name
+  setPensionEntity(state, object) {
+    state.pensionEntityId = object.id;
+    state.pensionEntityName = object.name;
   },
   addBeneficiaryPhoneNumber(state) {
     if (state.beneficiary.phone_number.length > 0) {
@@ -129,29 +137,29 @@ const mutations = {
     if (state.legalGuardian.cell_phone_number.length < 1)
       state.legalGuardian.cell_phone_number.push({ value: null });
   },
-  setLegalGuardian(state, object){
+  setLegalGuardian(state, object) {
     var tt = null;
-    if(state.legalGuardian){
-      if(state.legalGuardian.eco_com_legal_guardian_type_id){
+    if (state.legalGuardian) {
+      if (state.legalGuardian.eco_com_legal_guardian_type_id) {
         tt = state.legalGuardian.eco_com_legal_guardian_type_id;
       }
     }
-    state.legalGuardian = {}
-    if(Object.keys(object).length){
-      state.legalGuardian = object
+    state.legalGuardian = {};
+    if (Object.keys(object).length) {
+      state.legalGuardian = object;
     }
-    if(!state.legalGuardian.hasOwnProperty('phone_number')){
-      state.legalGuardian.phone_number = [{value:null}]
+    if (!state.legalGuardian.hasOwnProperty("phone_number")) {
+      state.legalGuardian.phone_number = [{ value: null }];
     }
-    if(!state.legalGuardian.hasOwnProperty('cell_phone_number')){
-      state.legalGuardian.cell_phone_number = [{value:null}]
+    if (!state.legalGuardian.hasOwnProperty("cell_phone_number")) {
+      state.legalGuardian.cell_phone_number = [{ value: null }];
     }
-    if(tt){
-      state.legalGuardian.eco_com_legal_guardian_type_id = tt
+    if (tt) {
+      state.legalGuardian.eco_com_legal_guardian_type_id = tt;
     }
   },
-  setAffiliateCategoryId(state, id){
-    state.affiliate.category_id = id
+  setAffiliateCategoryId(state, id) {
+    state.affiliate.category_id = id;
   }
 };
 const getters = {
@@ -161,8 +169,8 @@ const getters = {
  ** only for testing XD
  */
 const actions = {
-  async setLegalGuardian1(context, data){
-    await context.commit('setLegalGuardian', data)
+  async setLegalGuardian1(context, data) {
+    await context.commit("setLegalGuardian", data);
   }
 };
 export default {

@@ -23,7 +23,8 @@ class QuotaAidBeneficiary extends Model
     }
     public function address() //aca
     {
-        return $this->belongsToMany('Muserpol\Models\Address', 'address_quota_aid_beneficiary');
+        return $this->morphToMany('\Muserpol\Models\Address', 'addressable')->withTimestamps();
+        // return $this->belongsToMany('Muserpol\Models\Address', 'address_quota_aid_beneficiary');
     }
     public function quota_aid_advisors()
     {

@@ -89,7 +89,7 @@ class Affiliate extends Model
   }
   public function address()
   {
-    return $this->belongsToMany('Muserpol\Models\Address');
+    return $this->morphToMany('\Muserpol\Models\Address', 'addressable')->withTimestamps();
   }
   public function spouse()
   {

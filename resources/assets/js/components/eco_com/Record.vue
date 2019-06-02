@@ -92,7 +92,8 @@ export default {
         { id: 10, icon: "fa-balance-scale", active: true },
         { id: 11, icon: "fa-users", active: true },
         { id: 12, icon: "fa-shield", active: true },
-        { id: 13, icon: "fa-sticky-note-o", active: true }
+        { id: 13, icon: "fa-sticky-note-o", active: true },
+        { id: 14, icon: "fa-map-marker", active: true },
       ],
       form: {
         message: null

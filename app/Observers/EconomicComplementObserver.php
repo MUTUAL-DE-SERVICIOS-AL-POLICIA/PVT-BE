@@ -76,6 +76,12 @@ class EconomicComplementObserver
         if ($eco_com->aps_disability != $old->aps_disability) {
             $message = $message . ' Prestación por Invalidéz ' . $old->aps_disability . ' a ' . $eco_com->aps_disability . ', ';
         }
+        if ($eco_com->degree_id != $old->degree_id) {
+            $message = $message . ' Grado ' . optional($old->degree)->name . ' a ' . optional($eco_com->degree)->name . ', ';
+        }
+        if ($eco_com->category_id != $old->category_id) {
+            $message = $message . ' Categoría ' . optional($old->category)->name . ' a ' . optional($eco_com->category)->name . ', ';
+        }
         if($temp !=  $message){
             $message = $message . ' ';
             $eco_com->document_records()->create([

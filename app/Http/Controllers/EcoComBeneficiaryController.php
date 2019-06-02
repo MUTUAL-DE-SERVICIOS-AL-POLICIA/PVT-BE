@@ -12,6 +12,8 @@ use Auth;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
+use Carbon\Carbon;
+use Muserpol\Models\City;
 
 class EcoComBeneficiaryController extends Controller
 {
@@ -19,7 +21,7 @@ class EcoComBeneficiaryController extends Controller
     {
         $eco_com = EconomicComplement::find($id);
         $beneficiary = $eco_com->eco_com_beneficiary;
-
+        $beneficiary->address;
         if($beneficiary){
             $beneficiary->phone_number = Util::parsePhone($beneficiary->phone_number);
             $beneficiary->cell_phone_number = Util::parsePhone($beneficiary->cell_phone_number);
@@ -81,48 +83,78 @@ class EcoComBeneficiaryController extends Controller
 
         $eco_com = $beneficiary->economic_complement;
         $affiliate = $eco_com->affiliate;
-        // return $beneficiary;
-        // /**
         //  * Update or create address
-        //  */
-        // if (sizeOf($beneficiary->address) > 0) {
-        //     $address_id = $beneficiary->address()->first()->id;
-        //     $address = Address::find($address_id);
-        //     if ($request->address[0]['zone'] || $request->address[0]['street'] || $request->address[0]['number_address']) {
-        //         $address->city_address_id = $request->address[0]['city_address_id'] ?? 1;
-        //         $address->zone = $request->address[0]['zone'];
-        //         $address->street = $request->address[0]['street'];
-        //         $address->number_address = $request->address[0]['number_address'];
-        //         $address->save();
-        //         if ($eco_com->procedure_modality_id == 24) {
-        //             $update_affiliate = $eco_com->affiliate;
-        //             if ($update_affiliate->address->contains($address->id)) { } else {
-        //                 $update_affiliate->address()->save($address);
-        //             }
-        //         }
-        //     } else {
-        //         if ($eco_com->procedure_modality_id == 24) {
-        //             $update_affiliate = $eco_com->affiliate;
-        //             $update_affiliate->address()->detach($address->id);
-        //         }
-        //         $beneficiary->address()->detach($address->id);
-        //         $address->delete();
-        //     }
-        // } else {
-        //     if (sizeOf($request->address) > 0) {
-        //         $address = new Address();
-        //         $address->city_address_id = $request->address[0]['city_address_id'] ?? 1;
-        //         $address->zone = $request->address[0]['zone'];
-        //         $address->street = $request->address[0]['street'];
-        //         $address->number_address = $request->address[0]['number_address'];
-        //         $address->save();
-        //         $beneficiary->address()->save($address);
-        //         if ($eco_com->procedure_modality_id == 24) {
-        //             $update_affiliate = Affiliate::find($eco_com->affiliate_id);
-        //             $update_affiliate->address()->save($address);
-        //         }
-        //     }
-        // }
+        if ($beneficiary->address->count() > 0) {
+            $address_id = $beneficiary->address()->first()->id;
+            $address = Address::find($address_id);
+            if ($request->address['zone'] || $request->address['street'] || $request->address['number_address']) {
+                $message = "";
+                if ($address->city_address_id != $request->address['city_address_id']) {
+                    $message = $message . " Ciudad de ".optional($address->city)->name ." a ".optional(City::find($request->address['city_address_id']))->name;
+                }
+                if ($address->zone != $request->address['zone']) {
+                    $message = $message . " Zona de ".$address->zone." a ".$request->address['zone'];
+                }
+                if ($address->street != $request->address['street']) {
+                    $message = $message . " Calle de ".$address->street." a ".$request->address['street'];
+                }
+                if ($address->number_address != $request->address['number_address']) {
+                    $message = $message . " Nro de ".$address->number_address." a ".$request->address['number_address'];
+                }
+                $address->city_address_id = $request->address['city_address_id'];
+                $address->zone = $request->address['zone'];
+                $address->street = $request->address['street'];
+                $address->number_address = $request->address['number_address'];
+                $address->save();
+                if ($eco_com->isOldAge()) {
+                    if (!$affiliate->address->contains($address->id)) {
+                        $affiliate->address()->save($address);
+                    }
+                }
+                if ($message != "") {
+                    $eco_com->document_records()->create([
+                        'user_id' => auth()->user()->id,
+                        'record_type_id' => 14,
+                        'wf_state_id' => Util::getRol()->wf_states->first()->id,
+                        'date' => Carbon::now(),
+                        'message' => "Edito la dirección: ". $message,
+                    ]);
+                }
+            } else {
+                if ($eco_com->isOldAge()) {
+                    $affiliate->address()->detach($address->id);
+                }
+                $beneficiary->address()->detach($address->id);
+                $eco_com->document_records()->create([
+                    'user_id' => auth()->user()->id,
+                    'record_type_id' => 14,
+                    'wf_state_id' => Util::getRol()->wf_states->first()->id,
+                    'date' => Carbon::now(),
+                    'message' => "Elimino la dirección Ciudad: " .$address->city->name ." Zona: ".$address->zone. " Calle: ".$address->street. " Nro: ".$address->number_address.".",
+                ]);
+                $address->delete();
+            }
+        } else {
+            if ($request->address) {
+                $address = new Address();
+                $address->city_address_id = $request->address['city_address_id'] ?? null;
+                $address->zone = $request->address['zone'] ?? null;
+                $address->street = $request->address['street'] ?? null;
+                $address->number_address = $request->address['number_address'] ?? null;
+                $address->save();
+                $beneficiary->address()->save($address);
+                if ($eco_com->isOldAge()) {
+                    $affiliate->address()->save($address);
+                }
+                $eco_com->document_records()->create([
+                    'user_id' => auth()->user()->id,
+                    'record_type_id' => 14,
+                    'wf_state_id' => Util::getRol()->wf_states->first()->id,
+                    'date' => Carbon::now(),
+                    'message' => "Registro un nueva dirección."
+                ]);
+            }
+        }
 
 
         // /**
@@ -136,48 +168,6 @@ class EcoComBeneficiaryController extends Controller
         //          */
         //     }
         // }
-        // /**
-        //  ** Update or create address
-        //  */
-        // if (sizeOf($eco_com_beneficiary->address) > 0) {
-        //     $address_id = $eco_com_beneficiary->address()->first()->id;
-        //     $address = Address::find($address_id);
-        //     if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
-        //         $address->city_address_id = $request->beneficiary_city_address_id ?? 1;
-        //         $address->zone = $request->beneficiary_zone;
-        //         $address->street = $request->beneficiary_street;
-        //         $address->number_address = $request->beneficiary_number_address;
-        //         $address->save();
-        //         if ($economic_complement->procedure_modality_id == ID::ecoCom()->old_age) {
-        //             $update_affiliate = Affiliate::find($economic_complement->affiliate_id);
-        //             if ($update_affiliate->address->contains($address->id)) { } else {
-        //                 $update_affiliate->address()->save($address);
-        //             }
-        //         }
-        //     } else {
-        //         if ($economic_complement->procedure_modality_id == ID::ecoCom()->old_age) {
-        //             $update_affiliate = Affiliate::find($economic_complement->affiliate_id);
-        //             $update_affiliate->address()->detach($address->id);
-        //         }
-        //         $eco_com_beneficiary->address()->detach($address->id);
-        //         $address->delete();
-        //     }
-        // } else {
-        //     if ($request->beneficiary_city_address_id) {
-        //         $address = new Address();
-        //         $address->city_address_id = $request->beneficiary_city_address_id ?? 1;
-        //         $address->zone = $request->beneficiary_zone;
-        //         $address->street = $request->beneficiary_street;
-        //         $address->number_address = $request->beneficiary_number_address;
-        //         $address->save();
-        //         $eco_com_beneficiary->address()->save($address);
-        //         if ($economic_complement->procedure_modality_id == ID::ecoCom()->old_age) {
-        //             $update_affiliate = Affiliate::find($economic_complement->affiliate_id);
-        //             $update_affiliate->address()->save($address);
-        //         }
-        //     }
-        // }
-        // $eco_com_beneficiary->save();
 
         /**
          ** update affiliate and spouse
@@ -239,6 +229,8 @@ class EcoComBeneficiaryController extends Controller
 
                 break;
         }
+        $beneficiary = $beneficiary->fresh();
+        $beneficiary->address;
         $beneficiary->phone_number = Util::parsePhone($beneficiary->phone_number);
         $beneficiary->cell_phone_number = Util::parsePhone($beneficiary->cell_phone_number);
         return $beneficiary;

@@ -115,17 +115,13 @@
             <div id="tab-eco-com-legal-guardian" class="tab-pane">
                 <eco-com-legal-guardian :eco-com="{{ $economic_complement }}" :eco-com-legal-guardian-types="{{ $eco_com_legal_guardian_types }}" :cities="{{ $cities }}" :permissions="{{ $permissions }}">
                 </eco-com-legal-guardian>
-                {{-- @include('eco_com.beneficiary', ['eco_com_beneficiary'=>$eco_com_beneficiary,
-                'cities'=>$cities]) --}}
             </div>
             <div id="tab-eco-com-summited-document" class="tab-pane">
-                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
                 <eco-com-step1-requirements-edit :eco-com="{{ $economic_complement }}" :procedure-modalities="{{ $procedure_modalities }}"
                     :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
                     :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
     @include('eco_com.step1_requirements_edit')
                 </eco-com-step1-requirements-edit>
-                {{-- @endcan --}}
             </div>
             <div id="tab-eco-com-qualification" class="tab-pane">
             <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}">
@@ -133,7 +129,6 @@
             </div>
             <div id="tab-eco-com-observations" class="tab-pane">
             <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-observations>
-                {{-- @include('eco_com.observation') --}}
             </div>
             <div id="tab-eco-com-record" class="tab-pane">
                 <eco-com-record :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-record>

@@ -126,11 +126,13 @@ class EconomicComplementRolSeeder extends Seeder
             ['name' => 'Beneficiario(s)', 'description' => 'Datos del o los Beneficiario(s).'],
             ['name' => 'Apoderado', 'description' => 'Datos del Apoderado Legal.'],
             ['name' => 'Notas', 'description' => 'Notas.'],
+            ['name' => 'Direcciones', 'description' => 'direcciones.'],
         ];
         foreach ($statuses as $status) {
             RecordType::create($status);
         }
         $this->call(EconomicComplementRequirementsSeeder::class);
         $this->call(EcoComPermissionSeeder::class);
+        $this->call(TagAffiliateSeeder::class);
     }
 }
