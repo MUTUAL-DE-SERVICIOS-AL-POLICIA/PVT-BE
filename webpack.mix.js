@@ -13,6 +13,7 @@ require("dotenv").config();
  */
 const app = process.env.MIX_APP;
 mix
+
   .webpackConfig({ devtool: "inline-source-map" })
   .sourceMaps()
   .js("resources/assets/js/app.js", "public/js")
