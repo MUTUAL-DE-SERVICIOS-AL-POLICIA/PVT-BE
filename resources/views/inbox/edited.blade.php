@@ -1,5 +1,5 @@
-@extends('layouts.app') 
-@section('title', 'Mi bandeja') 
+@extends('layouts.app')
+@section('title', 'Mi bandeja')
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
@@ -19,6 +19,10 @@
 <div class="wrapper wrapper-content">
     <div class="row">
         <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`"
+        :cities="{{ $cities }}"
+        :procedure-modalities="{{ $procedure_modalities }}"
+        :eco-com-modalities="{{ $eco_com_modalities }}"
+        :reception-types="{{ $reception_types }}"
             inline-template>
             <div>
                 <div class="col-lg-3">
@@ -31,10 +35,10 @@
                                 <ul class="folder-list m-b-md" style="padding: 0">
                                     <li>
                                         <a href="{{ url('inbox/received') }}" class="btn-outline"> <i class="fa fa-envelope-o "></i> Recibidos
-                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">    
+                                            <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                                                 <span class="label label-default pull-right" v-if="documentsReceivedTotal != null" key="value">
                                                     @{{documentsReceivedTotal}}
-                                                </span>    
+                                                </span>
                                                 <span v-else class="label label-default pull-right" key="icon" style="padding-left:15px">
                                                     <i  class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i>
                                                 </span>
@@ -46,7 +50,7 @@
                                             <transition name="fade" mode="out-in" :duration="300" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
                                                 <span class="label label-warning pull-right" v-if="totalDocs != null" key="valueEdited">
                                                     @{{totalDocs}}
-                                                </span>    
+                                                </span>
                                                 <span v-else class="label label-warning pull-right" key="iconEdited" style="padding-left:15px">
                                                     <i  class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i>
                                                 </span>
@@ -58,12 +62,55 @@
                             </div>
                         </div>
                     </div>
+                    <div class="ibox">
+                        <div class="ibox-title"><h3>Filtros</h3></div>
+                        <div class="ibox-content">
+                            <div class="form-group">
+                                <label for="">Regional:</label>
+                                <select class="form-control" v-model="filter.city_id" @change="getData()">
+                                    <option value="0">TODO</option>
+                                    <option v-for="c in cities" :key="c.id" :value="c.id">@{{ c.name }} </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Tipo de Prestacion:</label>
+                                <select class="form-control" v-model="filter.procedure_modality_id" @change="getData()">
+                                    <option value="0">TODOS</option>
+                                    <option v-for="pm in procedureModalities" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
+                                </select>
+                            </div>
+                            {{-- <div class="form-group">
+                                <label for="">Modalidad:</label>
+                                <select class="form-control" v-model="filter.eco_com_modality_id" @change="getData()">
+                                    <option value="0">TODOS</option>
+                                    <option v-for="pm in ecoComModalities" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
+                                </select>
+                            </div> --}}
+                            <div class="form-group">
+                                <label for="">Tipo de Recepcion:</label>
+                                <select class="form-control" v-model="filter.eco_com_reception_type_id" @change="getData()">
+                                    <option value="0">TODOS</option>
+                                    <option v-for="pm in receptionTypes" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Fecha de Recepcion</label>
+                                <input class="form-control" type="date" v-model="filter.reception_date" @change="getData()">
+                            </div>
+                        </div>
+                        <div class="ibox-footer">
+                            <div class="text-center">
+                                <button class="btn btn-sm btn-danger" @click="cancelFilter()"><i class="fa fa-times"></i> Cancelar</button>
+                                <button class="btn btn-sm btn-primary" @click="getData()"><i class="fa fa-search"></i> Filtrar</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-9 animated fadeInRight my-inbox" :class="showLoading ? 'sk-loading' : ''">
                     <div class="mail-box-header">
                         <h2>
                             <span>
-                            Revisados (@{{totalDocs}})
+                            Revisados (@{{ totalDocs != null ? totalDocs : 'Inválido' }})
                         </span>
                         </h2>
 
@@ -87,7 +134,12 @@
                                             </transition>
                                         </div> --}}
                                         {{-- forward --}}
-                                        <div class="col-md-6 col-xs-offset-6  text-center">
+                                        <div class="col-md-1  text-center">
+                                            <span class="input-group-btn">
+                                                <button :disabled="! (docs > 0 && wfSequenceNext != null)"class="btn" :class="{'btn-success': docs > 0  }" @click="printCertification(true)" ><i class="fa fa-print"></i> IMPRIMIR  <strong>(@{{docs}})</strong></button>
+                                            </span>
+                                        </div>
+                                        <div class="col-md-6 col-xs-offset-5  text-center">
                                                 <div class="input-group" >
                                                     <select name="" v-model="wfSequenceNext" id="" class="form-control">
                                                         <option :value="null"> Seleccione a donde derivará los Trámites </option>
@@ -98,7 +150,7 @@
                                                             data-placement="top" title="Enviar los Trámites seleccionados"> DERIVAR <i class="fa fa-send"></i> <strong>(@{{docs}})</strong>  <i class="fa fa-arrow-right">  </i></button>
                                                     </span>
                                                 </div>
-                                            
+
                                         </div>
                                     </div>
                                     <div v-else key="refresh">

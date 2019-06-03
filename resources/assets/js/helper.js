@@ -92,6 +92,7 @@ export function getGender(value) {
 }
 
 export function flashErrors(prefix, errors, level) {
+    console.log(errors);
     for (const key in errors) {
         let value = errors[key];
 
@@ -106,4 +107,20 @@ export function camelCaseToSnakeCase(myStr) {
         return myStr.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
     }
     return null;
+}
+export function isPensionEntitySenasir(value){
+    return value == 5
+}
+export function getNamePensionEntity(value){
+    if (value == 5){
+        return 'SENASIR'
+    }
+    return 'APS'
+}
+export function canOperation(operation, permissions){
+    let found = permissions.find(v => v.operation == operation);
+    if(found){
+        return found.value
+    }
+    return false
 }

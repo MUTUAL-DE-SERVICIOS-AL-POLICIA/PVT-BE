@@ -10,7 +10,8 @@ use Carbon\Carbon;
 use Log;
 use DB;
 use Muserpol\Models\Contribution\Contribution;
-
+use Muserpol\Models\EconomicComplement\Devolution;
+use Hashids\Hashids;
 class Affiliate extends Model
 {
   use SoftDeletes;
@@ -58,6 +59,13 @@ class Affiliate extends Model
     }
     return Carbon::parse($value)->format('d/m/Y');
   }
+  public function getDueDateAttribute($value)
+  {
+    if (!$value) {
+      return null;
+    }
+    return Carbon::parse($value)->format('d/m/Y');
+  }
   public function getDateDeathAttribute($value)
   {
     if (!$value) {
@@ -81,7 +89,7 @@ class Affiliate extends Model
   }
   public function address()
   {
-    return $this->belongsToMany('Muserpol\Models\Address');
+    return $this->morphToMany('\Muserpol\Models\Address', 'addressable')->withTimestamps();
   }
   public function spouse()
   {
@@ -159,6 +167,10 @@ class Affiliate extends Model
   {
     return $this->hasMany('Muserpol\Models\Testimony');
   }
+  public function observations()
+  {
+    return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
+  }
 
   /**
    * methods
@@ -223,6 +235,10 @@ class Affiliate extends Model
   public function getCivilStatus()
   {
     return Util::getCivilStatus($this->civil_status, $this->gender);
+  }
+  public function tags()
+  {
+    return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id', 'date'])->withTimestamps();
   }
   /*contributions */
   public function getDatesContributions()
@@ -487,9 +503,6 @@ class Affiliate extends Model
                 reimbursements.total
                     FROM reimbursements
                     WHERE affiliate_id = " . $this->id . " and reimbursements.deleted_at is null and month_year <= '" . $this->contributions()->leftJoin('contribution_types', 'contributions.contribution_type_id', '=', 'contribution_types.id')->where('contribution_types.operator', '=', '+')->orderBy('contributions.month_year')->get()->last()->month_year . "'
-                    and reimbursements.month_year in ('" . $this->contributions()->leftJoin('contribution_types', 'contributions.contribution_type_id', '=', 'contribution_types.id')
-        ->where('contribution_types.operator', '=', '+')
-        ->get()->pluck('month_year')->implode("','") . "')
                     UNION ALL
                     SELECT
                     contributions.id,
@@ -716,7 +729,6 @@ class Affiliate extends Model
       ->select('quota_aid_mortuaries.*')
       ->get();
   }
-
   // public function getLastDateContribution()
   // {
   //     $date = $this->contributions()->max('month_year');
@@ -748,5 +760,50 @@ class Affiliate extends Model
   {
     $affiliate = Affiliate::find($affiliate_id);
     Spouse::updatePersonalInfo($affiliate_id, $object);
+  }
+
+  /**
+   * Economic Complements
+   */
+  public function economic_complements()
+  {
+    return $this->hasMany('Muserpol\Models\EconomicComplement\EconomicComplement');
+  }
+
+  public function hasEcoComProcessActive()
+  {
+    return !!$this->eco_com_processes()->where('status', true)->get()->count();
+  }
+  public function hasEconomicComplementWithProcedure($eco_com_procedure_id)
+  {
+    return !!$this->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_id)->get()->count();
+  }
+  public function canCreateEcoComProcedure($eco_com_procedure_id)
+  {
+    /**
+     *!! TODO
+     *!! verificar si se puede crear Trámite en esa fecha
+     ** mmmm date_derelict < start date procedure
+     */
+    // return rand(0,1) == 1;
+    return true;
+  }
+  public function devolutions()
+  {
+    return $this->hasMany(Devolution::class);
+  }
+  public function encode()
+  {
+      $hashids = new Hashids('affiliates', 10);
+      return $hashids->encode($this->id);
+  }
+  public function decode($hash)
+  {
+      $hashids = new Hashids('affiliates', 10);
+      $id = $hashids->decode($hash);
+      if ($id) {
+          return $id[0];
+      }
+      return null;
   }
 }

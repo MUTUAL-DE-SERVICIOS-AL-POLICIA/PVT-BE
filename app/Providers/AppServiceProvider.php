@@ -15,6 +15,13 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Muserpol\Models\Contribution\ContributionProcess;
 use Muserpol\Observers\ContributionProcessObserver;
 use Carbon\Carbon;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Observers\EconomicComplementObserver;
+use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
+use Muserpol\Observers\EcoComBeneficiaryObserver;
+use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
+use Muserpol\Observers\EcoComLegalGuardianObserver;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -30,6 +37,9 @@ class AppServiceProvider extends ServiceProvider
         QuotaAidMortuary::observe(QuotaAidMortuaryObserver::class);
         RetFunObservation::observe(RetirementFundObservationObserver::class);
         ContributionProcess::observe(ContributionProcessObserver::class);
+        EconomicComplement::observe(EconomicComplementObserver::class);
+        EcoComBeneficiary::observe(EcoComBeneficiaryObserver::class);
+        EcoComLegalGuardian::observe(EcoComLegalGuardianObserver::class);
         Relation::morphMap([
             'retirement_funds' => 'Muserpol\Models\RetirementFund\RetirementFund',
             'quota_aid_mortuaries' => 'Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary',
@@ -39,10 +49,18 @@ class AppServiceProvider extends ServiceProvider
             'reimbursements' => 'Muserpol\Models\Contribution\Reimbursement',
             'aid_reimbursements' => 'Muserpol\Models\Contribution\AidReimbursement',
             'wf_states' => 'Muserpol\Models\Workflow\WorkflowState',
+            'economic_complements' => 'Muserpol\Models\EconomicComplement\EconomicComplement',
+            'eco_com_beneficiaries' => 'Muserpol\Models\EconomicComplement\EcoComBeneficiary',
+            'ret_fun_beneficiaries' => 'Muserpol\Models\RetirementFund\RetFunBeneficiary',
+            'quota_aid_beneficiaries' => 'Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary',
+            'affiliates' => 'Muserpol\Models\Affiliate',
+            'modules' => 'Muserpol\Models\Module',
         ]);
 
         // carbon settings
         Carbon::useMonthsOverflow(false);
+        setlocale(LC_TIME, 'es_BO.utf8');
+        Carbon::setLocale(config('app.locale'));
     }
 
     /**

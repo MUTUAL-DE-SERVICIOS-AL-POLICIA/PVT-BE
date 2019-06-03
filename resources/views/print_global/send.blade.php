@@ -4,8 +4,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>PLATAFORMA VIRTUAL - MUSERPOL {{ $title ?? '' }}</title>
-    <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
-    <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
+    <style>
+        <?php include public_path('css/materialicons.css') ?>
+        <?php include public_path('css/wkhtml.css') ?>
+    </style>
 </head>
 
 <body>
@@ -68,8 +70,15 @@
                             <td class="uppercase px-5 text-right">{{ $index++ }}</td>
                             <td class="uppercase px-5 text-right">{{ $procedure->code }}</td>
                             <td class="uppercase px-5 text-right">{{ date('d/m/Y',strtotime($procedure->reception_date)) }}</td>
-                            <td class="uppercase px-5 text-right">{{ $procedure->getCorrelative($from_area->id)->code }}</td>
-                            <td class="uppercase px-5 text-right">{{ date('d/m/Y',strtotime($procedure->getCorrelative($from_area->id)->date)) }}</td>
+                            @php ($correlative = $procedure->getCorrelative($from_area->id))
+                            @if ($correlative)
+                                <td class="uppercase px-5 text-right">{{ $correlative->code }}</td>
+                                <td class="uppercase px-5 text-right">{{ date('d/m/Y',strtotime($correlative->date)) }}</td>
+                            @else
+                                @for ($i=0; $i<2; $i++)
+                                    <td class="uppercase px-5 text-center">-</td>
+                                @endfor
+                            @endif
                             <td class="uppercase px-15 text-right">{{ $procedure->affiliate->ciWithExt() }}</td>
                             <td class="uppercase px-15 text-left">{{ $procedure->affiliate->fullName() }}</td>
                             <td class="uppercase px-15 text-center">{{ $procedure->procedure_modality->name }}</td>

@@ -1,7 +1,10 @@
 <script>
 	export default{
 		props:[
-			'affiliate'
+			'affiliate',
+			'typeEcoCom',
+			'ecoComId',
+			'categories'
 		],
 		data(){
 			return{
@@ -16,12 +19,15 @@
 						date_entry: this.affiliate.date_entry,
 						item: this.affiliate.item,
 						type: this.affiliate.type
-					}
-		
+					},
+				calculateCategoryId: null
+
 			}
 		},
 		created() {
-
+			if(this.form.service_years || this.form.service_months){
+				this.getCalculateCategory()
+			}
 		},
 		computed:{
 			state_name: function(){
@@ -35,11 +41,26 @@
 			},
 			pension_entity_name: function(){
 				return !!this.pension_entity? this.pension_entity.name:'';
-			}
-
+			},
 		}
 		,
 		methods: {
+			getCalculateCategory(){
+				let years = this.form.service_years;
+				let months = this.form.service_months;
+				if (years < 0 || months < 0 || years >100 || months > 12 ) {
+					return "error";
+				}
+				if (months > 0) {
+					years++;
+				}
+				let category = this.categories.find(c =>{
+					return c.from <= years && c.to >= years
+				})
+				if(!!category){
+					this.form.category_id = category.id
+				}
+			},
 			toggle_editing: function () {
 				this.editing = !this.editing;
 				if(this.editing==false)
@@ -55,8 +76,13 @@
 					this.form.file_code = this.values.file_code;
 				}
 			},
-			update: function () {	
+			update: function (){
 				let uri = `/update_affiliate_police/${this.affiliate.id}`;
+				if (this.typeEcoCom == true) {
+					uri = `/update_affiliate_police_eco_com`;
+				}
+				console.log(`updating ${uri}`)
+				this.form.eco_com_id= this.ecoComId;
 				this.show_spinner=true;
 				axios.patch(uri,this.form)
 					.then(response=>{

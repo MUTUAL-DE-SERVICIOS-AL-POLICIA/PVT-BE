@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
     <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
 </head>
-<body>
+<body class="no-border">
     <div class="page-break">
     <table class="w-100 ">
         <tr>
@@ -85,7 +85,7 @@
 
         @yield('content')
     </div>
-    <footer>
+    <footer class="absolute pin-b no-margins no-paddings w-100">
         @yield('footer')
     </footer>
     </div>

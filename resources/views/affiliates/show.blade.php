@@ -120,10 +120,12 @@ th.ellipsis-text {
                         <li class="list-group-item " data-toggle="tab" href="#tab-direct-contribution"><a href="#"><i class="{{ Util::IconModule(11)}}"></i> Aportes directos</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Util::IconModule(2)}}"></i> Complemento Económico</a></li>
                         {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
+                        <li class="list-group-item " data-toggle="tab" href="#tab-devolutions"><a href="#"><i class="fa fa-balance-scale"></i> Devoluciones</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
 
                     </ul>
             </div>
+            <tag-list :doc-id="{{ $affiliate->id }}" type="affiliate"></tag-list>
     </div>
     <br>
     <div class="col-md-9" style="padding-left: 6px">
@@ -137,7 +139,7 @@ th.ellipsis-text {
                     </div>
                     <div id="tab-police-info" class="tab-pane">
 
-                        <affiliate-police :affiliate="{{ $affiliate }}" inline-template>
+                        <affiliate-police :affiliate="{{ $affiliate }}" :categories="{{$categories_1}}" inline-template>
                             @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
                         </affiliate-police>
 
@@ -179,28 +181,76 @@ th.ellipsis-text {
                         @endcan
                     </div>
                     <div id="tab-eco-com" class="tab-pane">
-
-                            <div class="ibox">
-
-                                <div class="ibox-content">
-                                        <table class="table table-bordered table-hover" id="economic_complements-table">
-                                            <thead>
-                                                <tr class="success">
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Número de Trámite">Número de Trámite</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Gesion ">Gestión</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Fecha de Emisión">Fecha de Ingreso del Trámite</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Ubicación">Ubicación</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Estado">Estado</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Total">Total</div></th>
-                                                    <th class="text-center"><div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Opciones">Opciones</div></th>
-
-                                                </tr>
-                                            </thead>
-                                        </table>
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h2 class="pull-left">Trámites de Complemento Economico</h2>
+                                <div class="ibox-tools">
+                                    <button class="btn btn-primary dim"
+                                            type="button"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Imprimir Certificacion de pagos realizados"
+                                            onclick='printJS({printable: "{{route("eco_com_print_certification_all_eco_coms", [$affiliate->id])}}", type: "pdf", modalMessage: "Generando documentos de impresión, por favor espere un momento.", showModal: true})'
+                                    >
+                                    <i class="fa fa-print"></i>
+                                    Imprimir
+                                    </button>
                                 </div>
                             </div>
-
-
+                            <div class="ibox-content">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="success">
+                                            <th># de Trámite</th>
+                                            <th>Gestion</th>
+                                            <th>Fecha de Ingreso del Trámite</th>
+                                            <th>Modalidad</th>
+                                            <th>Ubicación</th>
+                                            <th>Estado</th>
+                                            <th>Total</th>
+                                            <th>Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($eco_coms as $eco_com)
+                                                <tr>
+                                                <td>{{$eco_com->code}}</td>
+                                                <td>{{$eco_com->eco_com_procedure->fullName() }}</td>
+                                                <td>{{$eco_com->reception_date }}</td>
+                                                <td>{{$eco_com->eco_com_modality->procedure_modality->name }}</td>
+                                                <td>{{$eco_com->wf_state->first_shortened }}</td>
+                                                <td>{{$eco_com->eco_com_state->name }}</td>
+                                                <td>{{Util::formatMoney($eco_com->total)}}</td>
+                                                <td style="vertical-align:middle">
+                                                    <a href="/eco_com/{{$eco_com->id}}">
+                                                        <button class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
+                                                    </a>
+                                                </td>
+                                                </tr>
+                                                @if ($eco_com->discount_types->count() > 0)
+                                                    <tr class="danger">
+                                                        <td colspan="2" rowspan="{{ $eco_com->discount_types->count() + 1  }}" >
+                                                        </td>
+                                                        <td colspan="2" rowspan="{{ $eco_com->discount_types->count() + 1  }}" style="vertical-align:middle">
+                                                            <strong>
+                                                                Amortizaciones
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                    @foreach ($eco_com->discount_types as $d)
+                                                    <tr class="danger">
+                                                        <td colspan="2">{{$d->name}}</td>
+                                                        <td>{{Util::formatMoney($d->pivot->amount)}}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div id="tab-quota-aid-mortuory" class="tab-pane">
                         @can('update',$quota_aid)
@@ -256,7 +306,10 @@ th.ellipsis-text {
                     
 
                     <div id="tab-observations" class="tab-pane">
-
+                        <affiliate-observations :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :observation-types="{{ $observation_types }}"></affiliate-observations>
+                    </div>
+                    <div id="tab-devolutions" class="tab-pane">
+                        <affiliate-devolutions :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}"></affiliate-devolutions>
                     </div>
 
 

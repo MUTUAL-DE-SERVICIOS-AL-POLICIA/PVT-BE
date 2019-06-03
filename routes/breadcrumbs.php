@@ -1,4 +1,6 @@
 <?php 
+use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
+
 
 Breadcrumbs::register('affiliate', function($breadcrumbs)
 {
@@ -159,3 +161,40 @@ Breadcrumbs::register('show_qualification_quota_aid', function ($breadcrumbs, $q
 	$breadcrumbs->push($name, URL::to('quota_aid/' . $quota_aid->id . '/qualification'));
 });
 
+/**
+ * Treasury
+ */
+Breadcrumbs::register('treasury_select_report', function($breadcrumbs)
+{
+	$breadcrumbs->push('Tesorería');
+	$breadcrumbs->push('Seleccionar Reporte');
+});
+
+Breadcrumbs::register('eco_com_qualification_parameters', function($breadcrumbs)
+{
+	$breadcrumbs->push('Parámetros para la calificación del Complemento Económico');
+});
+
+
+/**
+ * Economic Complement
+ */
+Breadcrumbs::register('eco_com', function($breadcrumbs)
+{
+	$breadcrumbs->push('Complemento Económico', URL::to('eco_com'));
+});
+Breadcrumbs::register('create_eco_com_first_step', function($breadcrumbs)
+{
+	$breadcrumbs->parent('eco_com');
+	$breadcrumbs->push("Nuevo Trámite", URL::to('economic_complement_first_step'));
+});
+Breadcrumbs::register('create_eco_com', function($breadcrumbs, $affiliate)
+{
+	$breadcrumbs->parent('create_eco_com_first_step');
+	$breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
+});
+Breadcrumbs::register('show_eco_com', function($breadcrumbs, $eco_com)
+{
+	$breadcrumbs->parent('eco_com');
+	$breadcrumbs->push('Trámite N°: '.$eco_com->code);
+});
