@@ -25,8 +25,6 @@ export default {
       counter_aditional_document: 1000
     };
   },
-  created() {
-  },
   mounted() {
     this.modality = this.ecoCom.eco_com_modality.procedure_modality_id;
     this.getRequirements();

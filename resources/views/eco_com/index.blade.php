@@ -46,7 +46,7 @@
                     </tfoot>
                     <thead>
                         <tr>
-                            <th># de Tramite</th>
+                            <th># de Trámite</th>
                             <th>Fecha de Recepción</th>
                             <th>C.I Beneficiario</th>
                             <th>Nombre del Beneficiario</th>

@@ -326,7 +326,7 @@ Vue.component('ret-fun-qualification', require('./components/ret_fun/Qualificati
 Vue.component('ret-fun-date-interval', require('./components/ret_fun/DateInterval.vue'));
 Vue.component('ret-fun-qualification-group', require('./components/ret_fun/QualificationGroup.vue'));
 Vue.component('ret-fun-certification-button', require('./components/ret_fun/CertificationButton.vue'));
-// Vue.component('ret-fun-chart', require('./components/ret_fun/Chart.vue'));
+Vue.component('ret-fun-chart', require('./components/ret_fun/Chart.vue'));
 Vue.component('inbox-send-back-button-ret-fun', require('./components/inbox/SendBackButtonRetFun.vue'));
 Vue.component('inbox-send-back-button-quota-aid', require('./components/inbox/SendBackButtonQuotaAid.vue'));
 Vue.component('ret-fun-report-form', require('./components/ret_fun/ReportForm.vue'));
@@ -413,6 +413,9 @@ Vue.component('aid-contribution-create', require('./components/contribution/Crea
 Vue.component('contribution-aid-commitment',require('./components/contribution/AidCommitment.vue'));
 
 // Eco Com
+Vue.component('eco-com-dashboard', require('./components/eco_com/Dashboard.vue'));
+Vue.component('pie-bar', require('./components/eco_com/dashboard/PieBar.vue'));
+Vue.component('multiple', require('./components/eco_com/dashboard/Multiple.vue'));
 Vue.component('eco-com-form', require('./components/eco_com/Form.vue'));
 Vue.component('eco-com-step1-requirements', require('./components/eco_com/Step1Requirements.vue'));
 Vue.component('eco-com-step2-beneficiary', require('./components/eco_com/Step2Beneficiary.vue'));

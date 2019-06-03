@@ -351,7 +351,13 @@ export default {
     };
   },
   mounted() {
-    this.getEcoCom();
+    document.querySelectorAll(".tab-eco-com-qualification")[0].addEventListener(
+      "click",
+      () => {
+        this.getEcoCom();
+      },
+      { passive: true }
+    );
   },
   computed: {
     ecoCom() {
@@ -384,6 +390,7 @@ export default {
       if (!this.can("read_economic_complement", this.permissions)) {
         return;
       }
+      this.$scrollTo("#wrapper");
       await axios
         .get(`/get_eco_com/${this.ecoComId}`)
         .then(response => {

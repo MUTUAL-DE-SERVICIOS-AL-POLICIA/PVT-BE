@@ -502,7 +502,7 @@
         </div>
       </div>
       <div class="ibox-content" v-else>
-        <div class="alert alert-warning">No tiene permisos para ver la informacion del apoderado.</div>
+        <div class="alert alert-warning">No tiene permisos para ver la Información del apoderado.</div>
       </div>
     </div>
   </div>
@@ -576,7 +576,7 @@ export default {
         .then(response => {
           this.$store.commit("ecoComForm/setLegalGuardian", response.data);
           this.editable = true;
-          flash("Informacion del apoderado actualizada");
+          flash("Información del apoderado actualizada");
         })
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);

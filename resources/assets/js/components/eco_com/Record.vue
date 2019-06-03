@@ -1,12 +1,6 @@
 <template>
   <div class="ibox">
     <div class="ibox-content">
-      <div class="row text-center">
-        <button @click="getRecord()" class="btn" title="Actualizar">
-          Actualizar
-          <i class="fa fa-refresh"></i>
-        </button>
-      </div>
       <vue-tabs
         active-tab-color="#59b66d"
         active-text-color="white"
@@ -38,7 +32,7 @@
           </div>
         </v-tab>
 
-        <v-tab title="Flujo del Tramite" icon="fa fa-random">
+        <v-tab title="Flujo del Trámite" icon="fa fa-random">
           <div class="ibox-content inspinia-timeline">
             <div class="timeline-item" v-for="wr in workflowRecords" :key="wr.id">
               <div class="row">
@@ -98,7 +92,9 @@ export default {
         { id: 10, icon: "fa-balance-scale", active: true },
         { id: 11, icon: "fa-users", active: true },
         { id: 12, icon: "fa-shield", active: true },
-        { id: 13, icon: "fa-sticky-note-o", active: true }
+        { id: 13, icon: "fa-sticky-note-o", active: true },
+        { id: 14, icon: "fa-map-marker", active: true },
+        { id: 15, icon: "fa-tags", active: true },
       ],
       form: {
         message: null

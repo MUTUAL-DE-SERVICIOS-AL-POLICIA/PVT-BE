@@ -53,8 +53,10 @@ class SearcherController
         $this->getDefaults();
         foreach ($this->tables as $table) {
             $person = $table->where('identity_card', $ci)->select($this->select)->first();
-            if (isset($person->id))
+            if (isset($person->id)){
+                $person->address;
                 break;
+            }
         }
 
         $operson = new Person();
@@ -151,11 +153,11 @@ class SearcherController
             ])->orderByDesc(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))
                 ->orderByDesc(DB::raw("split_part(code, '/',2)"))
                 ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"))
-                ->take(2)
+                ->take(3)
                 ->get();
             if ($eco_com->count() > 0) {
                 if ($eco_com->first()->aps_disability > 0) {
-                    $other_observations->push(['value'=>'El ultimo tramite tuvo concurrencia.']);
+                    $other_observations->push(['value'=>'El ultimo Trámite tuvo concurrencia.']);
                 }
                 $temp_ben = $eco_com->first()->eco_com_beneficiary;
                 if ($temp_ben) {
@@ -172,7 +174,6 @@ class SearcherController
                 }
             }
         }
-        logger($other_observations);
         $data = [
             'affiliate' => $affiliate,
             'affiliate_observations_exclude' =>$affiliate_observations_exclude,
@@ -208,6 +209,7 @@ class Person
     var $is_duedate_undefined;
     var $city_birth_id;
     var $civil_status;
+    var $address;
     public function parsePerson($obj)
     {
         $this->id = $obj->id ?? '';
@@ -229,6 +231,7 @@ class Person
         $this->is_duedate_undefined = $obj->is_duedate_undefined ?? false;
         $this->city_birth_id = $obj->city_birth_id ?? null;
         $this->civil_status = $obj->civil_status ?? null;
+        $this->address = $obj->address ?? [];
     }
     function __toString()
     {

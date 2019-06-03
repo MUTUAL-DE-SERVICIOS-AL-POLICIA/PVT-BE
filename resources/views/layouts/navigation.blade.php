@@ -35,7 +35,7 @@
                 <a href="{{ url('/inbox') }}"><i class="fa fa-inbox"></i> <span class="nav-label">Mi Bandeja</span></a>
             </li>
             @if (Util::rolIsEcoCom())
-                <li data-toggle="tooltip" data-placement="right" title="Crear Tramite de Complemento Economico">
+                <li data-toggle="tooltip" data-placement="right" title="Crear Trámite de Complemento Economico">
                     <a href="{{ route('economic_complement_first_step') }}"><i class="fa fa-plus-circle"></i> <span
                             class="nav-label">Crear Complemento Economico</span></a>
                 </li>

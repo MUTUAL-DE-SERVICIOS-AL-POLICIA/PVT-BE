@@ -50,6 +50,9 @@ class AppServiceProvider extends ServiceProvider
             'aid_reimbursements' => 'Muserpol\Models\Contribution\AidReimbursement',
             'wf_states' => 'Muserpol\Models\Workflow\WorkflowState',
             'economic_complements' => 'Muserpol\Models\EconomicComplement\EconomicComplement',
+            'eco_com_beneficiaries' => 'Muserpol\Models\EconomicComplement\EcoComBeneficiary',
+            'ret_fun_beneficiaries' => 'Muserpol\Models\RetirementFund\RetFunBeneficiary',
+            'quota_aid_beneficiaries' => 'Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary',
             'affiliates' => 'Muserpol\Models\Affiliate',
             'modules' => 'Muserpol\Models\Module',
         ]);

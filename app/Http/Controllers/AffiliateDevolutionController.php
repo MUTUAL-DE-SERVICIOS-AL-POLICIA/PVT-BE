@@ -37,7 +37,7 @@ class AffiliateDevolutionController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
-        $title = "CERTIFICACIÓN DE Reposición de Fondos";
+        $title = "CERTIFICACIÓN DE REPOSICIÓN DE FONDOS";
         $user = auth()->user();
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
@@ -45,7 +45,7 @@ class AffiliateDevolutionController extends Controller
         $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])->get();
         $devolution = $devolutions->where('observation_type_id', 13)->first();
         if (!isset($devolution->id)) {
-            return response()->json('El tramite no tiene deudas', 204);
+            return response()->json('El Trámite no tiene deudas', 204);
         }
         $dues = $devolution->dues()->select('dues.*')
             ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')

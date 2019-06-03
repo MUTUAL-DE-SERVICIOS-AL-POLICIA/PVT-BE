@@ -69,12 +69,12 @@
         </div>
         <div class="widget-text-box">
             <ul class="list-group elements-list">
-                <li class="list-group-item active" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Informacion del Tramite</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
+                <li class="list-group-item active tab-eco-com" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Información del Trámite</a></li>
+                <li class="list-group-item tab-police-info" data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
                 <li class="list-group-item tab-eco-com-beneficiary" data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiario</a></li>
                 <li class="list-group-item tab-eco-com-legal-guardian" data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
+                <li class="list-group-item tab-eco-com-summited-document" data-toggle="tab" href="#tab-eco-com-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
+                <li class="list-group-item tab-eco-com-qualification" data-toggle="tab" href="#tab-eco-com-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
                 <li class="list-group-item tab-eco-com-observations" data-toggle="tab" href="#tab-eco-com-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                 <li class="list-group-item tab-eco-com-record" data-toggle="tab" href="#tab-eco-com-record" ><a href="#"><i class="fa fa-history"></i> Historial</a></li>
             </ul>
@@ -88,9 +88,7 @@
         <div class="tab-content">
             <div id="tab-eco-com" class="tab-pane active">
                 <eco-com-info :eco-com="{{ $economic_complement }}" :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}" :states="{{ $states }}"
-                    :pension-entities="{{ $pension_entities }}" :degrees="{{ $degrees }}" :categories="{{ $categories }}" :affiliate="{{ $affiliate }}"
-                    :cities="{{ $cities }}" inline-template>
-    @include('eco_com.info')
+                :cities="{{ $cities }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
                 </eco-com-info>
             </div>
             <div id="tab-eco-coms" class="tab-pane">
@@ -117,17 +115,13 @@
             <div id="tab-eco-com-legal-guardian" class="tab-pane">
                 <eco-com-legal-guardian :eco-com="{{ $economic_complement }}" :eco-com-legal-guardian-types="{{ $eco_com_legal_guardian_types }}" :cities="{{ $cities }}" :permissions="{{ $permissions }}">
                 </eco-com-legal-guardian>
-                {{-- @include('eco_com.beneficiary', ['eco_com_beneficiary'=>$eco_com_beneficiary,
-                'cities'=>$cities]) --}}
             </div>
             <div id="tab-eco-com-summited-document" class="tab-pane">
-                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
                 <eco-com-step1-requirements-edit :eco-com="{{ $economic_complement }}" :procedure-modalities="{{ $procedure_modalities }}"
                     :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
                     :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
     @include('eco_com.step1_requirements_edit')
                 </eco-com-step1-requirements-edit>
-                {{-- @endcan --}}
             </div>
             <div id="tab-eco-com-qualification" class="tab-pane">
             <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}">
@@ -135,7 +129,6 @@
             </div>
             <div id="tab-eco-com-observations" class="tab-pane">
             <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-observations>
-                {{-- @include('eco_com.observation') --}}
             </div>
             <div id="tab-eco-com-record" class="tab-pane">
                 <eco-com-record :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-record>

@@ -215,7 +215,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para crear el tramite'],
+                'errors' => ['No tiene permisos para crear el Trámite'],
             ], 403);
         }
         $eco_com_procedure = EcoComProcedure::find($request->eco_com_procedure_id);
@@ -316,23 +316,26 @@ class EconomicComplementController extends Controller
         /**
          ** verify observation id = 6
          */
-        $number_docs = ProcedureModality::find($request->modality_id)->procedure_requirements->pluck('number')->unique()->sort();
-        if ($number_docs->contains(0)) {
-            $number_docs = $number_docs->slice(1);
-        }
-        $count = 0;
-        foreach ($request->all() as $key => $value) {
-            if (strpos($key, 'document') !== false  && $value == 'checked') {
-                $count++;
+        if($request->reception_type == ID::ecoCom()->inclusion){
+
+            $number_docs = ProcedureModality::find($request->modality_id)->procedure_requirements->pluck('number')->unique()->sort();
+            if ($number_docs->contains(0)) {
+                $number_docs = $number_docs->slice(1);
             }
-        }
-        if ($count != $number_docs->count()) {
-            $economic_complement->observations()->save(ObservationType::find(6), [
-                'user_id' => auth()->id(),
-                'date' => now(),
-                'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
-                'enabled' => false
-            ]);
+            $count = 0;
+            foreach ($request->all() as $key => $value) {
+                if (strpos($key, 'document') !== false  && $value == 'checked') {
+                    $count++;
+                }
+            }
+            if ($count != $number_docs->count()) {
+                $economic_complement->observations()->save(ObservationType::find(6), [
+                    'user_id' => auth()->id(),
+                    'date' => now(),
+                    'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
+                    'enabled' => false
+                ]);
+            }
         }
         /**
          ** Save legal guardian
@@ -405,41 +408,28 @@ class EconomicComplementController extends Controller
         /**
          ** Update or create address
          */
-        if (sizeOf($eco_com_beneficiary->address) > 0) {
-            $address_id = $eco_com_beneficiary->address()->first()->id;
-            $address = Address::find($address_id);
-            if ($request->beneficiary_zone || $request->beneficiary_street || $request->beneficiary_number_address) {
-                $address->city_address_id = $request->beneficiary_city_address_id ?? ID::cityId()->BN;
-                $address->zone = $request->beneficiary_zone;
-                $address->street = $request->beneficiary_street;
-                $address->number_address = $request->beneficiary_number_address;
-                $address->save();
-                if ($economic_complement->procedure_modality_id == ID::ecoCom()->old_age) {
-                    $update_affiliate = Affiliate::find($economic_complement->affiliate_id);
-                    if ($update_affiliate->address->contains($address->id)) { } else {
-                        $update_affiliate->address()->save($address);
-                    }
+        if ($request->eco_com_beneficiary_address_id) {
+            if ($economic_complement->isOldAge()) {
+                if (!$affiliate->address->contains($request->eco_com_beneficiary_address_id)) {
+                    $affiliate->address()->attach($request->eco_com_beneficiary_address_id);
                 }
-            } else {
-                if ($economic_complement->procedure_modality_id == ID::ecoCom()->old_age) {
-                    $update_affiliate = Affiliate::find($economic_complement->affiliate_id);
-                    $update_affiliate->address()->detach($address->id);
-                }
-                $eco_com_beneficiary->address()->detach($address->id);
-                $address->delete();
             }
+            $eco_com_beneficiary->address()->attach($request->eco_com_beneficiary_address_id);
         } else {
-            if ($request->beneficiary_city_address_id) {
-                $address = new Address();
-                $address->city_address_id = $request->beneficiary_city_address_id ?? ID::cityId()->BN;
-                $address->zone = $request->beneficiary_zone;
-                $address->street = $request->beneficiary_street;
-                $address->number_address = $request->beneficiary_number_address;
-                $address->save();
-                $eco_com_beneficiary->address()->save($address);
-                if ($economic_complement->procedure_modality_id == ID::ecoCom()->old_age) {
-                    $update_affiliate = Affiliate::find($economic_complement->affiliate_id);
-                    $update_affiliate->address()->save($address);
+            if ($request->eco_com_beneficiary_city_address_id) {
+                if ($affiliate->address->count() > 0 && $economic_complement->isOldAge()) {
+                    $eco_com_beneficiary->address()->attach($affiliate->address->first()->id);
+                }else{
+                    $address = new Address();
+                    $address->city_address_id = $request->eco_com_beneficiary_city_address_id ?? ID::cityId()->BN;
+                    $address->zone = $request->eco_com_beneficiary_zone;
+                    $address->street = $request->eco_com_beneficiary_street;
+                    $address->number_address = $request->eco_com_beneficiary_number_address;
+                    $address->save();
+                    $eco_com_beneficiary->address()->save($address);
+                    if ($economic_complement->isOldAge()) {
+                        $affiliate->address()->save($address);
+                    }
                 }
             }
         }
@@ -585,16 +575,6 @@ class EconomicComplementController extends Controller
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
 
         /**
-         ** for beneficiary info
-         */
-        $eco_com_beneficiary = $economic_complement->eco_com_beneficiary;
-        $eco_com_beneficiary->phone_number = explode(',', $eco_com_beneficiary->phone_number);
-        $eco_com_beneficiary->cell_phone_number = explode(',', $eco_com_beneficiary->cell_phone_number);
-        if (!sizeOf($eco_com_beneficiary->address) > 0) {
-            $eco_com_beneficiary->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
-        }
-
-        /**
          ** for requirements
          */
         $user = User::find(Auth::user()->id);
@@ -673,7 +653,6 @@ class EconomicComplementController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'is_editable' => $is_editable,
-            'eco_com_beneficiary' => $eco_com_beneficiary,
 
             'degrees' => $degrees,
             'categories' => $categories,
@@ -705,7 +684,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para editar el tramite'],
+                'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
         $affiliate = Affiliate::where('id', '=', $request->id)->first();
@@ -715,8 +694,6 @@ class EconomicComplementController extends Controller
         $affiliate->category_id = $request->category_id;
         $service_year = $request->service_years;
         $service_month = $request->service_months;
-        Log::info($service_year);
-        Log::info($service_month);
         if ($service_year > 0 || $service_month > 0) {
             if ($service_month > 0) {
                 $service_year++;
@@ -730,7 +707,6 @@ class EconomicComplementController extends Controller
                 $affiliate->service_months = $request->service_months;
             }
         }
-        Log::info($request->all());
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->save();
@@ -738,7 +714,6 @@ class EconomicComplementController extends Controller
         $economic_complement->degree_id = $request->degree_id;
         $economic_complement->category_id = $affiliate->category_id;
         $economic_complement->save();
-        Log::info('update affiliate and eco com');
         return array('affiliate' => $affiliate);
     }
     /**
@@ -771,14 +746,16 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para editar el tramite'],
+                'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
         $economic_complement = EconomicComplement::findOrFail($request->id);
         // $economic_complement->degree_id = $request->degree_id;
         // $economic_complement->category_id = $request->category_id;
         $economic_complement->city_id = $request->city_id;
-        $economic_complement->reception_date = $request->reception_date;
+        if (Util::getRol()->id == 5) {
+            $economic_complement->reception_date = $request->reception_date;
+        }
         $economic_complement->save();
         /**
          * update affiliate info
@@ -833,6 +810,7 @@ class EconomicComplementController extends Controller
                 } else {
                     $eco_com_beneficiary = new EcoComBeneficiary();
                 }
+                $eco_com_beneficiary->address;
                 return $eco_com_beneficiary;
             }
         }
@@ -843,6 +821,7 @@ class EconomicComplementController extends Controller
                 ]);
                 $affiliate->phone_number = $this->parsePhone($affiliate->phone_number) ?? '';
                 $affiliate->cell_phone_number = $this->parsePhone($affiliate->cell_phone_number) ?? '';
+                $affiliate->address;
                 return $affiliate;
                 break;
             case ID::ecoCom()->widowhood:
@@ -856,12 +835,14 @@ class EconomicComplementController extends Controller
                 // $spouse->cell_phone_number = $this->parsePhone($spouse->cell_phone_number ?? '') ;
                 $spouse->phone_number = [array('value' => null)];
                 $spouse->cell_phone_number = [array('value' => null)];
+                $spouse->address;
                 return $spouse;
                 break;
             default:
                 $ben = new EcoComBeneficiary();
                 $ben->phone_number = [array('value' => null)];
                 $ben->cell_phone_number = [array('value' => null)];
+                $ben->address;
                 return $ben;
                 break;
         }
@@ -895,7 +876,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para editar el tramite'],
+                'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
         $num = $count = 0;
@@ -987,7 +968,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para ver el tramite'],
+                'errors' => ['No tiene permisos para ver el Trámite'],
             ], 403);
         }
         $rol = Util::getRol();
@@ -1014,7 +995,7 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para editar el tramite'],
+                'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
         $economic_complement = EconomicComplement::with('discount_types')->find($request->id);
@@ -1186,14 +1167,23 @@ class EconomicComplementController extends Controller
         } catch (AuthorizationException $exception) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['No tiene permisos para eliminar el tramite'],
+                'errors' => ['No tiene permisos para eliminar el Trámite'],
             ], 403);
         }
         if ($id) {
-            $economic_complement = EconomicComplement::find($id);
-            $economic_complement->code = $economic_complement->code . 'A';
-            $economic_complement->save();
-            $economic_complement->delete();
+            $eco_com = EconomicComplement::find($id);
+            $eco_com->code = $eco_com->code . 'A';
+            $eco_com->save();
+            $eco_com->eco_com_beneficiary()->delete();
+            $eco_com->eco_com_legal_guardian()->delete();
+            $eco_com->submitted_documents()->delete();
+            $eco_com->wf_records()->delete();
+            $eco_com->notes()->delete();
+            $eco_com->document_records()->delete();
+            $eco_com->observations()->detach();
+            $eco_com->discount_types()->detach();
+            $eco_com->tags()->detach();
+            $eco_com->delete();
             return response()->json([
                 'message' => 'deleted',
             ], 204);

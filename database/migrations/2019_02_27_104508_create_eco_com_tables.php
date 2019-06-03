@@ -129,14 +129,14 @@ class CreateEcoComTables extends Migration
         //     $table->timestamps();
         //     $table->softDeletes();
         // });
-        Schema::create('address_eco_com_applicant', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('eco_com_applicant_id');
-            $table->unsignedBigInteger('address_id');
-            $table->foreign('eco_com_applicant_id')->references('id')->on('eco_com_applicants');
-            $table->foreign('address_id')->references('id')->on('addresses');
-            $table->timestamps();
-        });
+        // Schema::create('address_eco_com_applicant', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('eco_com_applicant_id');
+        //     $table->unsignedBigInteger('address_id');
+        //     $table->foreign('eco_com_applicant_id')->references('id')->on('eco_com_applicants');
+        //     $table->foreign('address_id')->references('id')->on('addresses');
+        //     $table->timestamps();
+        // });
 
 
         // Schema::create('eco_com_legal_guardians', function (Blueprint $table) {
@@ -166,7 +166,7 @@ class CreateEcoComTables extends Migration
     public function down()
     {
 
-        Schema::drop('address_eco_com_applicant');
+        // Schema::drop('address_eco_com_applicant');
         Schema::table('economic_complements', function (Blueprint $table) {
             $table->dropColumn('inbox_state');
         });

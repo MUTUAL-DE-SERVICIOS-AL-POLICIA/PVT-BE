@@ -127,7 +127,7 @@ class AffiliateObservationController extends Controller
             $record->message = $message . ".";
             $record->save();
         } else {
-            return response()->json(['errors' => ['El Tramite no tiene esa observación']], 422);
+            return response()->json(['errors' => ['El Trámite no tiene esa observación']], 422);
         }
         return "updated";
     }
@@ -163,7 +163,7 @@ class AffiliateObservationController extends Controller
             $record->message = "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . ".";
             $record->save();
         } else {
-            return response()->json(['errors' => ['El Tramite no tiene esa observación']], 422);
+            return response()->json(['errors' => ['El Trámite no tiene esa observación']], 422);
         }
     }
 }

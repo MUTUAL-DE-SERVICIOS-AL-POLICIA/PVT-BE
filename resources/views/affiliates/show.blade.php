@@ -183,7 +183,7 @@ th.ellipsis-text {
                     <div id="tab-eco-com" class="tab-pane">
                         <div class="ibox">
                             <div class="ibox-title">
-                                <h2 class="pull-left">Tramites de Complemento Economico</h2>
+                                <h2 class="pull-left">Trámites de Complemento Economico</h2>
                                 <div class="ibox-tools">
                                     <button class="btn btn-primary dim"
                                             type="button"
@@ -202,7 +202,7 @@ th.ellipsis-text {
                                     <table class="table table-striped table-hover">
                                         <thead>
                                             <tr class="success">
-                                            <th># de tramite</th>
+                                            <th># de Trámite</th>
                                             <th>Gestion</th>
                                             <th>Fecha de Ingreso del Trámite</th>
                                             <th>Modalidad</th>

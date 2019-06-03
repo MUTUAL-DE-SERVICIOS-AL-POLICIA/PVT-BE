@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
 use Muserpol\Models\RetirementFund\RetirementFund;
 use DB;
+use Muserpol\Helpers\Util;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
+
 class HomeController extends Controller
 {
     /**
@@ -43,6 +46,12 @@ class HomeController extends Controller
             'procedure_modalities' => $procedure_modalities,
             'wf_states' => $wf_states,
         ];
+        if (Util::rolIsEcoCom()) {
+            $eco_com_procedures = EcoComProcedure::find(Util::getEcoComCurrentProcedure());
+            $data = [
+                'eco_com_procedures' => $eco_com_procedures
+            ];
+        }
         return view('home', $data);
     }
     
