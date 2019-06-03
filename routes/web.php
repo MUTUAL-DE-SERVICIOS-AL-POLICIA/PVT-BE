@@ -738,6 +738,20 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('affiliate_observation_delete', 'AffiliateObservationController@delete');
     Route::get('affiliate_get_devolutions/{affiliate_id}', 'AffiliateDevolutionController@getDevolutions');
     Route::get('affiliate/{affiliate_id}/print/certification_devolutions', 'AffiliateDevolutionController@printCertificationDevolutions');
+
+    //eco com dashboard
+    Route::get('chart_eco_com_modalities_general', 'EcoComDashboardController@modalitiesGeneral');
+    Route::get('chart_eco_com_modalities', 'EcoComDashboardController@modalities');
+    Route::get('chart_eco_com_cities', 'EcoComDashboardController@cities');
+    Route::get('chart_eco_com_reception_type', 'EcoComDashboardController@receptionType');
+    Route::get('chart_eco_com_pension_entity', 'EcoComDashboardController@pensionEntity');
+    Route::get('chart_eco_com_states', 'EcoComDashboardController@states');
+    Route::get('chart_eco_com_state_types', 'EcoComDashboardController@stateTypes');
+    Route::get('chart_eco_com_wf_states', 'EcoComDashboardController@wfStates');
+    Route::get('chart_eco_com_last_eco_com', 'EcoComDashboardController@lastEcoCom');
+    Route::get('chart_eco_com_total_amount_last_eco_com', 'EcoComDashboardController@totalAmountLastEcoCom');
+    Route::get('chart_eco_com_reception_months', 'EcoComDashboardController@receptionMonths');
+
     Route::get('/tempo',function ()
     {
       DB::connection()->enableQueryLog();
