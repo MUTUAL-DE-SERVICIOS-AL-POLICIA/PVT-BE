@@ -38,7 +38,7 @@ class EcoComNoteController extends Controller
             'date' => Carbon::now(),
             'message' => $request->message,
         ]);
-        $eco_com->document_records()->create([
+        $eco_com->procedure_records()->create([
             'user_id' => auth()->user()->id,
             'record_type_id' => 13,
             'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -76,7 +76,7 @@ class EcoComNoteController extends Controller
             if ($old_note->message != $request->message) {
                 $message = $message . ' Mensaje de - ' . $old_note->message . ' - a - ' . $request->message . '.';
             }
-            $eco_com->document_records()->create([
+            $eco_com->procedure_records()->create([
                 'user_id' => auth()->user()->id,
                 'record_type_id' => 13,
                 'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -113,7 +113,7 @@ class EcoComNoteController extends Controller
         $message = $note->message;
         if ($note) {
             $note->delete();
-            $eco_com->document_records()->create([
+            $eco_com->procedure_records()->create([
                 'user_id' => auth()->user()->id,
                 'record_type_id' => 13,
                 'wf_state_id' => Util::getRol()->wf_states->first()->id,

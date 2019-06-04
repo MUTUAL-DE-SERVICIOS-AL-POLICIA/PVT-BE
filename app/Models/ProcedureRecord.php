@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Muserpol\User;
 use Muserpol\Models\Workflow\WorkflowState;
 
-class DocumentRecord extends Model
+class ProcedureRecord extends Model
 {
     public $guarded =  [];
 

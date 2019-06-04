@@ -112,7 +112,7 @@ class EcoComBeneficiaryController extends Controller
                     }
                 }
                 if ($message != "") {
-                    $eco_com->document_records()->create([
+                    $eco_com->procedure_records()->create([
                         'user_id' => auth()->user()->id,
                         'record_type_id' => 14,
                         'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -125,7 +125,7 @@ class EcoComBeneficiaryController extends Controller
                     $affiliate->address()->detach($address->id);
                 }
                 $beneficiary->address()->detach($address->id);
-                $eco_com->document_records()->create([
+                $eco_com->procedure_records()->create([
                     'user_id' => auth()->user()->id,
                     'record_type_id' => 14,
                     'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -146,7 +146,7 @@ class EcoComBeneficiaryController extends Controller
                 if ($eco_com->isOldAge()) {
                     $affiliate->address()->save($address);
                 }
-                $eco_com->document_records()->create([
+                $eco_com->procedure_records()->create([
                     'user_id' => auth()->user()->id,
                     'record_type_id' => 14,
                     'wf_state_id' => Util::getRol()->wf_states->first()->id,

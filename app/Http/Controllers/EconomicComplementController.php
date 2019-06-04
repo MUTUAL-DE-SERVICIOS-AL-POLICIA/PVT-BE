@@ -1111,7 +1111,7 @@ class EconomicComplementController extends Controller
         // if ($eco_com->discount_types->contains($discount_type->id)) {
         //     $eco_com->discount_types()->detach($discount_type->id);
         // }
-        $eco_com->document_records()->create([
+        $eco_com->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 10,
             'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -1179,7 +1179,7 @@ class EconomicComplementController extends Controller
             $eco_com->submitted_documents()->delete();
             $eco_com->wf_records()->delete();
             $eco_com->notes()->delete();
-            $eco_com->document_records()->delete();
+            $eco_com->procedure_records()->delete();
             $eco_com->observations()->detach();
             $eco_com->discount_types()->detach();
             $eco_com->tags()->detach();
@@ -1335,9 +1335,9 @@ class EconomicComplementController extends Controller
     public function getRecord($id)
     {
         $eco_com = EconomicComplement::find($id);
-        $document_records = $eco_com->document_records()->with(['user:id,username', 'wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
+        $procedure_records = $eco_com->procedure_records()->with(['user:id,username', 'wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
         $workflow_records = $eco_com->wf_records()->with(['user:id,username','wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
         $note_records = $eco_com->notes()->orderByDesc('date')->get();
-        return compact('document_records', 'workflow_records', 'note_records');
+        return compact('procedure_records', 'workflow_records', 'note_records');
     }
 }

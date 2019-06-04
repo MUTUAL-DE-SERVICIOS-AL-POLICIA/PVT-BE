@@ -72,7 +72,7 @@ class EcoComBeneficiaryObserver
         }
         if($temp !=  $message){
             $message = $message . ' ';
-            $eco_com_beneficiary->economic_complement->document_records()->create([
+            $eco_com_beneficiary->economic_complement->procedure_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 11,
                 'wf_state_id' => Util::getRol()->wf_states->first()->id,

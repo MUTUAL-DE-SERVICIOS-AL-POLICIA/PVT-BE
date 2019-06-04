@@ -8,7 +8,7 @@
       >
         <v-tab title="Modificaciones" icon="fa fa-edit">
           <div class="ibox-content inspinia-timeline">
-            <div class="timeline-item" v-for="dr in documentRecords" :key="dr.id">
+            <div class="timeline-item" v-for="dr in procedureRecords" :key="dr.id">
               <div class="row">
                 <div class="col-md-3 date">
                   <h3>{{ dr.date | recordDate | uppercase }}</h3>
@@ -76,7 +76,7 @@ export default {
   props: ["ecoCom", "permissions"],
   data() {
     return {
-      documentRecords: [],
+      procedureRecords: [],
       workflowRecords: [],
       noteRecords: [],
       recordTypeIcons: [
@@ -125,7 +125,7 @@ export default {
         .get(`/eco_com_record/${this.ecoCom.id}`)
         .then(response => {
           console.log(response.data);
-          this.documentRecords = response.data.document_records;
+          this.procedureRecords = response.data.procedure_records;
           this.workflowRecords = response.data.workflow_records;
           this.noteRecords = response.data.note_records;
         })
