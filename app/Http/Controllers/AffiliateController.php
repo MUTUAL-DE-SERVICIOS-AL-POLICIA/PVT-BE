@@ -549,4 +549,10 @@ class AffiliateController extends Controller
     public function printVoucher(){
         
     }
+    public function getRecord($affiliate_id)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        $affiliate_records = $affiliate->affiliate_records_pvt()->with(['user:id,username'])->orderByDesc('created_at')->get();
+        return compact('affiliate_records');
+    }
 }

@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Muserpol\User;
 use Muserpol\Models\Workflow\WorkflowState;
 
-class DocumentRecord extends Model
+class ProcedureRecord extends Model
 {
+    protected $table = 'document_records';
     public $guarded =  [];
 
     public function recordable()

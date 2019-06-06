@@ -14,7 +14,7 @@ class EcoComLegalGuardianObserver
     public function created(EcoComLegalGuardian $eco_com_legal_guardian)
     {
         $message = 'El usuario ' . Auth::user()->username . ' creó Apoderado legal';
-        $eco_com_legal_guardian->economic_complement->document_records()->create([
+        $eco_com_legal_guardian->economic_complement->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 12,
             'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -89,7 +89,7 @@ class EcoComLegalGuardianObserver
 
         if($temp !=  $message){
             $message = $message . ' ';
-            $eco_com_legal_guardian->economic_complement->document_records()->create([
+            $eco_com_legal_guardian->economic_complement->procedure_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 12,
                 'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -101,7 +101,7 @@ class EcoComLegalGuardianObserver
     public function deleted(EcoComLegalGuardian $eco_com_legal_guardian)
     {
         $message = 'El usuario ' . Auth::user()->username . ' eliminó Apoderado legal';
-        $eco_com_legal_guardian->economic_complement->document_records()->create([
+        $eco_com_legal_guardian->economic_complement->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 12,
             'wf_state_id' => Util::getRol()->wf_states->first()->id,

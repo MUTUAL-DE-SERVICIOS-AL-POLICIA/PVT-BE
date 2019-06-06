@@ -8,63 +8,28 @@
       >
         <v-tab title="Modificaciones" icon="fa fa-edit">
           <div class="ibox-content inspinia-timeline">
-            <div class="timeline-item" v-for="dr in procedureRecords" :key="dr.id">
+            <div class="timeline-item" v-for="dr in affiliateRecords" :key="dr.id">
               <div class="row">
                 <div class="col-md-3 date">
-                  <h3>{{ dr.date | recordDate | uppercase }}</h3>
-                  <i
+                  <h3>{{ dr.create_at | recordDate | uppercase }}</h3>
+                  <!-- <i
                     class="fa"
                     :class="getRecordIcon(dr.record_type_id)"
                     :title="dr.record_type.name"
-                  ></i>
-                  {{ dr.date | recordHour }}
+                  ></i> -->
+                  {{ dr.create_at | recordHour }}
                   <br>
                   <small class="text-navy">{{ dr.user.username }}</small>
                 </div>
                 <div class="col-md-9 content">
                   <p style="font-size:medium" class="p-sm">{{ dr.message }}</p>
-                  <span
+                  <!-- <span
                     style="position:absolute; top: 5px; right:10px; font-style:italic"
-                  >{{ dr.wf_state.name }}</span>
+                  >{{ dr.wf_state.name }}</span> -->
                 </div>
               </div>
             </div>
           </div>
-        </v-tab>
-
-        <v-tab title="Flujo del Trámite" icon="fa fa-random">
-          <div class="ibox-content inspinia-timeline">
-            <div class="timeline-item" v-for="wr in workflowRecords" :key="wr.id">
-              <div class="row">
-                <div class="col-md-3 date">
-                  <h3>{{ wr.date | recordDate | uppercase }}</h3>
-                  <i
-                    class="fa"
-                    :class="getRecordIcon(wr.record_type_id)"
-                    :title="wr.record_type.name"
-                  ></i>
-                  {{ wr.date | recordHour }}
-                  <br>
-                  <small class="text-navy">{{ wr.user.username }}</small>
-                </div>
-                <div class="col-md-9 content">
-                  <p style="font-size:medium" class="p-sm">{{ wr.message }}</p>
-                  <span
-                    style="position:absolute; top: 5px; right:10px; font-style:italic"
-                  >{{ wr.wf_state.name }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </v-tab>
-
-        <v-tab title="Anotaciones" icon="fa fa-file">
-          <eco-com-notes
-            :eco-com="ecoCom"
-            v-on:getUpdateRecords="getRecord()"
-            :permissions="permissions"
-            :note-records="noteRecords"
-          ></eco-com-notes>
         </v-tab>
       </vue-tabs>
     </div>
@@ -73,12 +38,10 @@
 
 <script>
 export default {
-  props: ["ecoCom", "permissions"],
+  props: ["affiliate", "permissions"],
   data() {
     return {
-      procedureRecords: [],
-      workflowRecords: [],
-      noteRecords: [],
+      affiliateRecords: [],
       recordTypeIcons: [
         { id: 1, icon: "fa-check", active: true },
         { id: 2, icon: "fa-times", active: true },
@@ -94,16 +57,12 @@ export default {
         { id: 12, icon: "fa-shield", active: true },
         { id: 13, icon: "fa-sticky-note-o", active: true },
         { id: 14, icon: "fa-map-marker", active: true },
-        { id: 15, icon: "fa-tags", active: true },
-      ],
-      form: {
-        message: null
-      },
-      method: "post"
+        { id: 15, icon: "fa-tags", active: true }
+      ]
     };
   },
   mounted() {
-    document.querySelectorAll(".tab-eco-com-record")[0].addEventListener(
+    document.querySelectorAll(".tab-affiliate-records")[0].addEventListener(
       "click",
       () => {
         this.getRecord();
@@ -120,14 +79,12 @@ export default {
       return "fa-hand-spock-o";
     },
     async getRecord() {
-      this.$scrollTo('#wrapper');
+      this.$scrollTo("#wrapper");
       await axios
-        .get(`/eco_com_record/${this.ecoCom.id}`)
+        .get(`/affiliate_record/${this.affiliate.id}`)
         .then(response => {
           console.log(response.data);
-          this.procedureRecords = response.data.procedure_records;
-          this.workflowRecords = response.data.workflow_records;
-          this.noteRecords = response.data.note_records;
+          this.affiliateRecords = response.data.affiliate_records;
         })
         .catch(error => {
           console.log(error);

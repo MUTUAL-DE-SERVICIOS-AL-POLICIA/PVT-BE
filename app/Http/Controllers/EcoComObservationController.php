@@ -77,7 +77,7 @@ class EcoComObservationController extends Controller
             'message' => $request->message,
             'enabled' => $request->enabled
         ]);
-        $eco_com->document_records()->create([
+        $eco_com->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 9,
             'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -127,7 +127,7 @@ class EcoComObservationController extends Controller
                 $message = $message . ' de '.Util::getEnabledLabel($old_observation->pivot->enabled).' a '.Util::getEnabledLabel($request->enabled).', ';
             }
             $message = $message. ".";
-            $eco_com->document_records()->create([
+            $eco_com->procedure_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 9,
                 'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -165,7 +165,7 @@ class EcoComObservationController extends Controller
             $eco_com->observations()->updateExistingPivot($observation->id, [
                 'deleted_at' => Carbon::now(),
             ]);
-            $eco_com->document_records()->create([
+            $eco_com->procedure_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 9,
                 'wf_state_id' => Util::getRol()->wf_states->first()->id,

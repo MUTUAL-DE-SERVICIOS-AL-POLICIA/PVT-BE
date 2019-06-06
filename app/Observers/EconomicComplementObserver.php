@@ -20,7 +20,7 @@ class EconomicComplementObserver
             'date' => Carbon::now(),
             'message' => 'El usuario '.Auth::user()->username.' recepcionó el trámite.'
         ]);
-        $eco_com->document_records()->create([
+        $eco_com->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 7,
             'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -84,7 +84,7 @@ class EconomicComplementObserver
         }
         if($temp !=  $message){
             $message = $message . ' ';
-            $eco_com->document_records()->create([
+            $eco_com->procedure_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 7,
                 'wf_state_id' => Util::getRol()->wf_states->first()->id,

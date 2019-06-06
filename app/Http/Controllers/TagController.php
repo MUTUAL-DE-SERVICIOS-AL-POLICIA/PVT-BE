@@ -116,7 +116,7 @@ class TagController extends Controller
             }
         }
         if ($add->count() > 0 || $remove->count() > 0) {
-            $eco_com->document_records()->create([
+            $eco_com->procedure_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 15,
                 'wf_state_id' => Util::getRol()->wf_states->first()->id,

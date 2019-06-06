@@ -514,7 +514,7 @@ class EconomicComplementController extends Controller
         /**
          ** save documents
          */
-        $requirements = ProcedureRequirement::select('id')->get();
+        $requirements = ProcedureRequirement::where('procedure_modality_id', $request->modality_id)->get();
         foreach ($requirements  as  $requirement) {
             if ($request->input('document' . $requirement->id) == 'checked') {
                 $submit = new EcoComSubmittedDocument();
@@ -523,10 +523,16 @@ class EconomicComplementController extends Controller
                 $submit->reception_date = date('Y-m-d');
                 $submit->comment = $request->input('comment' . $requirement->id);
                 $submit->save();
+                $affiliate->submitted_documents()->create([
+                    'user_id'=>auth()->user()->id,
+                    'reception_date'=>now(),
+                    'procedure_document_id'=>$requirement->procedure_document_id,
+                    'status'=>true,
+                ]);
             }
         }
-        if ($request->aditional_requirements) {
-            foreach ($request->aditional_requirements  as  $requirement) {
+        if ($request->additional_requirements) {
+            foreach ($request->additional_requirements  as  $requirement) {
                 $submit = new EcoComSubmittedDocument();
                 $submit->economic_complement_id = $economic_complement->id;
                 $submit->procedure_requirement_id = $requirement;
@@ -903,7 +909,7 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
 
-        $aditional =  $request->aditional_requirements;
+        $aditional =  $request->additional_requirements;
         $num = "";
         foreach ($procedure_requirements as $requirement) {
             $needle = EcoComSubmittedDocument::where('economic_complement_id', $id)
@@ -1111,7 +1117,7 @@ class EconomicComplementController extends Controller
         // if ($eco_com->discount_types->contains($discount_type->id)) {
         //     $eco_com->discount_types()->detach($discount_type->id);
         // }
-        $eco_com->document_records()->create([
+        $eco_com->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 10,
             'wf_state_id' => Util::getRol()->wf_states->first()->id,
@@ -1179,7 +1185,7 @@ class EconomicComplementController extends Controller
             $eco_com->submitted_documents()->delete();
             $eco_com->wf_records()->delete();
             $eco_com->notes()->delete();
-            $eco_com->document_records()->delete();
+            $eco_com->procedure_records()->delete();
             $eco_com->observations()->detach();
             $eco_com->discount_types()->detach();
             $eco_com->tags()->detach();
@@ -1255,51 +1261,55 @@ class EconomicComplementController extends Controller
         $semester_list = array_combine($semester_list, $semester_list);
 
         // complementary factor
-        $procedure = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first());
-        $year = Carbon::parse($procedure->year)->year;
-        $semester = $procedure->semester;
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first();
-            $cf1_old_age = $complementary_factor->old_age;
-            $cf1_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf1_old_age = "";
-            $cf1_widowhood = "";
-        }
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first();
-            $cf2_old_age = $complementary_factor->old_age;
-            $cf2_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf2_old_age = "";
-            $cf2_widowhood = "";
-        }
-
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first();
-            $cf3_old_age = $complementary_factor->old_age;
-            $cf3_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf3_old_age = "";
-            $cf3_widowhood = "";
-        }
-
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first();
-            $cf4_old_age = $complementary_factor->old_age;
-            $cf4_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf4_old_age = "";
-            $cf4_widowhood = "";
-        }
-
-        if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first()) {
-            $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first();
-            $cf5_old_age = $complementary_factor->old_age;
-            $cf5_widowhood = $complementary_factor->widowhood;
-        } else {
-            $cf5_old_age = "";
-            $cf5_widowhood = "";
+        $year = null;
+        $semester = null;
+        if (Util::getEcoComCurrentProcedure()->count() > 0)  {
+            $procedure = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first());
+            $year = Carbon::parse($procedure->year)->year;
+            $semester = $procedure->semester;
+            if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first()) {
+                $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 1)->first();
+                $cf1_old_age = $complementary_factor->old_age;
+                $cf1_widowhood = $complementary_factor->widowhood;
+            } else {
+                $cf1_old_age = "";
+                $cf1_widowhood = "";
+            }
+            if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first()) {
+                $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 2)->first();
+                $cf2_old_age = $complementary_factor->old_age;
+                $cf2_widowhood = $complementary_factor->widowhood;
+            } else {
+                $cf2_old_age = "";
+                $cf2_widowhood = "";
+            }
+    
+            if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first()) {
+                $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 3)->first();
+                $cf3_old_age = $complementary_factor->old_age;
+                $cf3_widowhood = $complementary_factor->widowhood;
+            } else {
+                $cf3_old_age = "";
+                $cf3_widowhood = "";
+            }
+    
+            if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first()) {
+                $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 4)->first();
+                $cf4_old_age = $complementary_factor->old_age;
+                $cf4_widowhood = $complementary_factor->widowhood;
+            } else {
+                $cf4_old_age = "";
+                $cf4_widowhood = "";
+            }
+    
+            if (ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first()) {
+                $complementary_factor = ComplementaryFactor::whereYear('year', '=', $year)->where('semester', '=', $semester)->where('hierarchy_id', '=', 5)->first();
+                $cf5_old_age = $complementary_factor->old_age;
+                $cf5_widowhood = $complementary_factor->widowhood;
+            } else {
+                $cf5_old_age = "";
+                $cf5_widowhood = "";
+            }
         }
 
         /**
@@ -1313,16 +1323,16 @@ class EconomicComplementController extends Controller
             'complementary_factor' => new ComplementaryFactor(),
             'year' => $year,
             'semester' => $semester,
-            'cf1_old_age' => $cf1_old_age,
-            'cf1_widowhood' => $cf1_widowhood,
-            'cf2_old_age' => $cf2_old_age,
-            'cf2_widowhood' => $cf2_widowhood,
-            'cf3_old_age' => $cf3_old_age,
-            'cf3_widowhood' => $cf3_widowhood,
-            'cf4_old_age' => $cf4_old_age,
-            'cf4_widowhood' => $cf4_widowhood,
-            'cf5_old_age' => $cf5_old_age,
-            'cf5_widowhood' => $cf5_widowhood,
+            'cf1_old_age' => $cf1_old_age ?? [],
+            'cf1_widowhood' => $cf1_widowhood ?? [],
+            'cf2_old_age' => $cf2_old_age ?? [],
+            'cf2_widowhood' => $cf2_widowhood ?? [],
+            'cf3_old_age' => $cf3_old_age ?? [],
+            'cf3_widowhood' => $cf3_widowhood ?? [],
+            'cf4_old_age' => $cf4_old_age ?? [],
+            'cf4_widowhood' => $cf4_widowhood ?? [],
+            'cf5_old_age' => $cf5_old_age ?? [],
+            'cf5_widowhood' => $cf5_widowhood ?? [],
 
             'year_list' => $year_list,
             'semester_list' => $semester_list,
@@ -1335,9 +1345,9 @@ class EconomicComplementController extends Controller
     public function getRecord($id)
     {
         $eco_com = EconomicComplement::find($id);
-        $document_records = $eco_com->document_records()->with(['user:id,username', 'wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
+        $procedure_records = $eco_com->procedure_records()->with(['user:id,username', 'wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
         $workflow_records = $eco_com->wf_records()->with(['user:id,username','wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
         $note_records = $eco_com->notes()->orderByDesc('date')->get();
-        return compact('document_records', 'workflow_records', 'note_records');
+        return compact('procedure_records', 'workflow_records', 'note_records');
     }
 }

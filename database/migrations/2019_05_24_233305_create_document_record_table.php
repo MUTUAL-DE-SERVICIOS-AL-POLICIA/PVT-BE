@@ -13,7 +13,7 @@ class CreateDocumentRecordTable extends Migration
      */
     public function up()
     {
-        Schema::create('document_records', function (Blueprint $table) {
+        Schema::create('procedure_records', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('record_type_id');
@@ -36,6 +36,6 @@ class CreateDocumentRecordTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('document_records');
+        Schema::dropIfExists('procedure_records');
     }
 }

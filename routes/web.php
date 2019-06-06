@@ -739,6 +739,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('affiliate_get_devolutions/{affiliate_id}', 'AffiliateDevolutionController@getDevolutions');
     Route::get('affiliate/{affiliate_id}/print/certification_devolutions', 'AffiliateDevolutionController@printCertificationDevolutions');
 
+    // affiliate records
+    Route::get('affiliate_record/{id}', 'AffiliateController@getRecord');
+
     //eco com dashboard
     Route::get('chart_eco_com_modalities_general', 'EcoComDashboardController@modalitiesGeneral');
     Route::get('chart_eco_com_modalities', 'EcoComDashboardController@modalities');
@@ -751,6 +754,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('chart_eco_com_last_eco_com', 'EcoComDashboardController@lastEcoCom');
     Route::get('chart_eco_com_total_amount_last_eco_com', 'EcoComDashboardController@totalAmountLastEcoCom');
     Route::get('chart_eco_com_reception_months', 'EcoComDashboardController@receptionMonths');
+
+    // affiliate submitted documents
+    Route::get('get_procedure_requirements', 'AffiliateSubmittedDocumentsController@getRequirements');
 
     Route::get('/tempo',function ()
     {

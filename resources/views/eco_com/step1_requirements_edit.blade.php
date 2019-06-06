@@ -12,7 +12,7 @@
                 </div>
             </div>
             <form id="brianytati">
-                <div class="row" v-if="ecoCom.eco_com_reception_type_id == 2">
+                <div class="row">
                     <div v-for="(requirement, index) in requirementList" :key="index">
                         <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement"
                             :class="rq.background" style="cursor:pointer" :key="i" v-if="isVisible(rq)">
