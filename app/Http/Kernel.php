@@ -3,6 +3,8 @@
 namespace Muserpol\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Console\Scheduling\Schedule;
+use Muserpol\Console\Commands\UpdateAffiliateSubmittedDocuments;
 
 class Kernel extends HttpKernel
 {
@@ -60,4 +62,13 @@ class Kernel extends HttpKernel
         'session' => \Muserpol\Http\Middleware\SessionMiddleware::class,
         'affiliate_has_ret_fun' => \Muserpol\Http\Middleware\AffiliateHasRetFun::class,
     ];
+    protected $commands = [
+        UpdateAffiliateSubmittedDocuments::class,
+    ];
+
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->command('update:afi_sub_doc')->everyMinute();
+        $schedule->exec("php artisan update:afi_sub_doc");
+    }
 }

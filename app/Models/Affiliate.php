@@ -172,6 +172,10 @@ class Affiliate extends Model
     return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
   }
 
+  public function submitted_documents()
+  {
+    return $this->hasMany(AffiliateSubmittedDocument::class);
+  }
   /**
    * methods
    */

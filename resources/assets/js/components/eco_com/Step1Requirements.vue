@@ -98,25 +98,22 @@
       </div>
     </div>
     <h2>Lista de Requisitos</h2>
-    <div v-if="reception_type_id == 1">
-      <h3>Documentos ya presentados</h3>
-    </div>
-    <div v-else class="wrapper wrapper-content animated fadeInRight">
-      <div v-for="(requirement, index) in requirementList" :key="index">
+    <div class="wrapper wrapper-content animated fadeInRight">
+      <div v-for="(requirement, key)  in requirementList" :key="key">
         <div
           class="vote-item"
-          @click="checked(index, i)"
           v-for="(rq, i) in requirement"
+          @click="checked(key, i)"
           :class="rq.background"
           style="cursor:pointer"
-          :key="i"
+          :key="rq.id"
         >
           <div class="row">
             <div class="col-md-10">
               <div class="vote-actions">
                 <h1>{{rq.number}}</h1>
               </div>
-              <span class="vote-title">{{rq.document}}</span>
+              <span class="vote-title">{{rq.procedure_document.name}}</span>
               <div class="vote-info">
                 <div class="col-md-2 no-margins no-padding">
                   <i class="fa fa-comments-o"></i> Comentario:
@@ -146,30 +143,30 @@
           </div>
         </div>
       </div>
-      <br>
-      <div v-if="aditionalRequirements.length > 0">
-        <h4>Documentos adicionales</h4>
-        <select
-          data-placeholder="Documentos adicionales..."
-          class="chosen-select"
-          name="aditional_requirements[]"
-          multiple
-          style="width: 350px; display: none;"
-          tabindex="-1"
-        >
-          <option
-            v-for="(requirement, index) in aditionalRequirements"
-            :value="requirement.id"
-            :key="index"
-          >{{ requirement.document }}</option>
-        </select>
-      </div>
-      <transition name="show-requirements-error" enter-active-class="animated bounceInLeft">
-        <div class="alert alert-danger" v-if="showRequirementsError">
-          <h2>Debe seleccionar los requisitos</h2>
-        </div>
-      </transition>
     </div>
+    <br>
+    <div v-if="additionalRequirements.length > 0">
+      <h4>Documentos adicionales</h4>
+      <select
+        data-placeholder="Documentos adicionales..."
+        class="chosen-select"
+        name="aditional_requirements[]"
+        multiple
+        style="width: 350px; display: none;"
+        tabindex="-1"
+      >
+        <option
+          v-for="(requirement, index) in additionalRequirements"
+          :value="requirement.id"
+          :key="index"
+        >{{ requirement.procedure_document.name }}</option>
+      </select>
+    </div>
+    <transition name="show-requirements-error" enter-active-class="animated bounceInLeft">
+      <div class="alert alert-danger" v-if="showRequirementsError">
+        <h2>Debe seleccionar los requisitos</h2>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -177,7 +174,6 @@ import { mapState, mapMutations } from "vuex";
 export default {
   props: [
     "modalities",
-    "requirements",
     "user",
     "cities",
     "showRequirementsError",
@@ -189,13 +185,13 @@ export default {
   ],
   data() {
     return {
+      requirements: [],
       requirementList: [],
-      aditionalRequirements: [],
+      additionalRequirements: [],
       modality_id: !!this.lastEcoCom
         ? this.lastEcoCom.procedure_modality_id
         : null,
       city_id: this.user.city_id,
-      my_index: 1,
       pension_entity_id: !!this.affiliate.pension_entity_id
         ? this.affiliate.pension_entity_id
         : null,
@@ -203,33 +199,23 @@ export default {
     };
   },
   mounted() {
+    this.getRequirements();
     this.setPensionEntity();
     this.setReceptionType();
     this.setModality();
     this.setCity();
-    // this.$store.commit("ecoComForm/setAffiliate", this.affiliate);
   },
   methods: {
     async onChooseModality(event) {
-      // const options = event.target.options;
-      // const selectedOption = options[options.selectedIndex];
-      // if (selectedOption) {
-      //   const selectedText = selectedOption.textContent;
-      //   var object = {
-      //     name: selectedText,
-      //     id: this.procedure_modality_id
-      //   };
-      //   this.$store.commit("retFunForm/setModality", object);
-      // }
       await this.setReceptionType();
       await this.getRequirements();
-      await this.getAditionalRequirements();
       await this.setModality();
     },
     setPensionEntity() {
       let name = null;
-      if(this.pension_entity_id){
-        name = this.pensionEntities.find(x => x.id == this.pension_entity_id).name;
+      if (this.pension_entity_id) {
+        name = this.pensionEntities.find(x => x.id == this.pension_entity_id)
+          .name;
       }
       this.$store.commit("ecoComForm/setPensionEntity", {
         id: this.pension_entity_id,
@@ -238,14 +224,14 @@ export default {
     },
     setCity() {
       let name = null;
-      if(this.city_id){
+      if (this.city_id) {
         name = this.cities.find(x => x.id == this.city_id).name;
         this.$store.commit("ecoComForm/setCity", name);
       }
     },
     setModality() {
       let name = null;
-      if(this.modality_id){
+      if (this.modality_id) {
         name = this.modalities.find(x => x.id == this.modality_id).name;
       }
       this.$store.commit("ecoComForm/setModality", {
@@ -268,7 +254,10 @@ export default {
         .catch(error => {
           console.log(error);
         });
-      await this.$store.commit("ecoComForm/setReceptionType",this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id));
+      await this.$store.commit(
+        "ecoComForm/setReceptionType",
+        this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id)
+      );
       await this.findBeneficiary();
     },
     async findBeneficiary() {
@@ -306,52 +295,39 @@ export default {
           console.log(error);
         });
     },
-    getRequirements() {
+    async getRequirements() {
       if (!this.modality_id) {
         this.requirementList = [];
       }
-      this.requirementList = this.requirements.filter(r => {
-        if (r.modality_id == this.modality_id && r.number != 0) {
-          r["status"] = false;
-          r["background"] = "";
-          return r;
-        }
-      });
-      Array.prototype.groupBy = function(prop) {
-        return this.reduce(function(groups, item) {
-          const val = item[prop];
-          groups[val] = groups[val] || [];
-          groups[val].push(item);
-          return groups;
-        }, {});
-      };
-      this.requirementList = this.requirementList.groupBy("number");
-    },
-    getAditionalRequirements() {
-      if (!this.modality_id) {
-        this.aditionalRequirements = [];
-      }
-      this.aditionalRequirements = this.requirements.filter(requirement => {
-        if (
-          requirement.modality_id == this.modality_id &&
-          requirement.number == 0
-        ) {
-          return requirement;
-        }
-      });
-      setTimeout(() => {
-        $(".chosen-select")
-          .chosen({ width: "100%" })
-          .trigger("chosen:updated");
-      }, 500);
+      await axios
+        .get("/get_procedure_requirements", {
+          params: {
+            affiliate_id: this.affiliate.id,
+            procedure_modality_id: this.modality_id
+          }
+        })
+        .then(response => {
+          this.requirementList = response.data.requirements;
+          this.additionalRequirements = response.data.additional_requirements;
+          setTimeout(() => {
+            $(".chosen-select")
+              .chosen({ width: "100%" })
+              .trigger("chosen:updated");
+          }, 500);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     checked(index, i) {
+      console.log(index, i);
       for (var k = 0; k < this.requirementList[index].length; k++) {
         if (k != i) {
           this.requirementList[index][k].status = false;
           this.requirementList[index][k].background = "bg-warning-yellow";
         }
       }
+      console.log(this.requirementList[index][i].status);
       this.requirementList[index][i].status = !this.requirementList[index][i]
         .status;
       this.requirementList[index][i].background =
@@ -367,7 +343,7 @@ export default {
       }
     },
     onChooseCity() {
-      this.setCity()
+      this.setCity();
     }
   }
 };

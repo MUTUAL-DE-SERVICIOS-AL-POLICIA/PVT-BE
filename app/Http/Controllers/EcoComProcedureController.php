@@ -15,7 +15,7 @@ class EcoComProcedureController extends Controller
     public function getProcedureActives(Request $request)
     {
         $eco_com_procedure_ids = Util::getEcoComCurrentProcedure();
-        if (!$eco_com_procedure_ids) {
+        if ($eco_com_procedure_ids->count() == 0 ){
             return response()->json([], 204);
         }
         $affiliate = Affiliate::find($request->affiliate_id);

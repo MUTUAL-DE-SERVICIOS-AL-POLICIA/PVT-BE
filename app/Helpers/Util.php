@@ -989,8 +989,11 @@ class Util
   public static function getEcoComCurrentProcedure()
   {
     //!! TODO add validate dates
-    $ids = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->take(2)->get()->pluck('id');
-    return $ids;
+    $ids = EcoComProcedure::whereRaw("(current_date between  normal_start_date and normal_end_date) or (current_date between lagging_start_date and lagging_end_date) or (current_date between additional_start_date and additional_end_date)")->orderByDesc('year')->orderByDesc('semester')->take(2)->get()->pluck('id');
+    if ($ids->count() > 0) {
+      return $ids;
+    }
+    return collect([]);
   }
   public static function rolIsEcoCom()
   {

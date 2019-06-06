@@ -755,6 +755,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('chart_eco_com_total_amount_last_eco_com', 'EcoComDashboardController@totalAmountLastEcoCom');
     Route::get('chart_eco_com_reception_months', 'EcoComDashboardController@receptionMonths');
 
+    // affiliate submitted documents
+    Route::get('get_procedure_requirements', 'AffiliateSubmittedDocumentsController@getRequirements');
+
     Route::get('/tempo',function ()
     {
       DB::connection()->enableQueryLog();
