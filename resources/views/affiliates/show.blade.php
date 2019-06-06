@@ -122,6 +122,7 @@ th.ellipsis-text {
                         {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
                         <li class="list-group-item " data-toggle="tab" href="#tab-devolutions"><a href="#"><i class="fa fa-balance-scale"></i> Devoluciones</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
+                        <li class="list-group-item tab-affiliate-records" data-toggle="tab" href="#tab-affiliate-records"><a href="#"><i class="fa fa-eye-slash"></i> Historial</a></li>
 
                     </ul>
             </div>
@@ -310,6 +311,9 @@ th.ellipsis-text {
                     </div>
                     <div id="tab-devolutions" class="tab-pane">
                         <affiliate-devolutions :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}"></affiliate-devolutions>
+                    </div>
+                    <div id="tab-affiliate-records" class="tab-pane">
+                        <affiliate-record :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}"></affiliate-record>
                     </div>
 
 

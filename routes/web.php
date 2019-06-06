@@ -739,6 +739,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('affiliate_get_devolutions/{affiliate_id}', 'AffiliateDevolutionController@getDevolutions');
     Route::get('affiliate/{affiliate_id}/print/certification_devolutions', 'AffiliateDevolutionController@printCertificationDevolutions');
 
+    // affiliate records
+    Route::get('affiliate_record/{id}', 'AffiliateController@getRecord');
+
     //eco com dashboard
     Route::get('chart_eco_com_modalities_general', 'EcoComDashboardController@modalitiesGeneral');
     Route::get('chart_eco_com_modalities', 'EcoComDashboardController@modalities');
