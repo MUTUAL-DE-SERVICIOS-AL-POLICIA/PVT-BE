@@ -88,12 +88,44 @@
                                      </div>
                                 </div>
                             </div>
+                            <div class="row m-b-md" :class="{'has-error': errors.has('due_date') && !form.is_duedate_undefined }">
+                                <div class="col-md-4"><label class="control-label">Fecha de Vencimiento del CI</label></div>
+                                  <div class="col-md-8">
+                                    <input
+                                      type="text"
+                                      :disabled="form.is_duedate_undefined || !editing"
+                                      name="due_date"
+                                      v-model.trim="form.due_date"
+                                      class="form-control"
+                                      v-date
+                                      v-validate="'required|date_format:dd/MM/yyyy|max_due_date'"
+                                    >
+                                    <br>
+                                    <input
+                                        class="mediumCheckbox"
+                                        type="checkbox"
+                                        :disabled="!editing"
+                                        name="is_duedate_undefined"
+                                        v-model="form.is_duedate_undefined"
+                                        id="is_duedate_undefined"
+                                    >
+                                    <label for="is_duedate_undefined" class="pointer v-middle">
+                                        Indefinido
+                                    </label>
+                                    <div
+                                      v-show="errors.has('form.due_date') && !form.is_duedate_undefined "
+                                    >
+                                      <i class="fa fa-warning text-danger"></i>
+                                      <span class="text-danger">@{{ errors.first('due_date') }}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         {{-- right --}}
                         <div class="col-md-6">
                             <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('birth_date') && editing }">
                                 <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
-                                <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" v-date type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:DD/MM/YYYY|max_date'">
+                                <div class="col-md-5"><input name="birth_date" v-model="form.birth_date" v-date type="text" class="form-control" :disabled="!editing" v-validate="'required|date_format:dd/MM/yyyy|max_date'">
                                     <div v-show="errors.has('birth_date') && editing">
                                         <i class="fa fa-warning text-danger"></i>
                                         <span class="text-danger">@{{ errors.first('birth_date') }}</span>
@@ -114,7 +146,7 @@
 
                             <div class="row m-b-md">
                             <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Fallecimiento:</label></div>
-                            <div class="col-md-9"><input name="date_death" v-model="form.date_death" v-date type="text" class="form-control" :disabled="!editing" v-validate="'date_format:DD/MM/YYYY|max_current_date'">
+                            <div class="col-md-9"><input name="date_death" v-model="form.date_death" v-date type="text" class="form-control" :disabled="!editing" v-validate="'date_format:dd/MM/yyyy|max_current_date'">
                                 <div v-show="errors.has('date_death') && editing">
                                     <i class="fa fa-warning text-danger"></i>
                                     <span class="text-danger">@{{ errors.first('date_death') }}</span>

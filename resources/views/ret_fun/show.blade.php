@@ -3,10 +3,6 @@
 @section('title', 'Fondo de Retiro')
 @section('styles')
 <style>
-.elements-list .list-group-item:hover{
-    cursor: pointer;
-}
-
 .progressbar-container{
 
     /* height: 100px; */

@@ -3,6 +3,6 @@
         Plataforma Virtual de Trámites
     </div>
     <div>
-        <strong>Copyright</strong> Muserpol &copy; 2018
+        <strong>Copyright</strong> Muserpol &copy; {{ now()->year }}
     </div>
 </div>

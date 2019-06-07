@@ -651,7 +651,7 @@ class QuotaAidMortuaryController extends Controller
     $module = Role::find($rol->id)->module;
     $wf_current_state = WorkflowState::where('role_id', $rol->id)->where('module_id', '=', $module->id)->first();
 
-    $can_validate = $wf_current_state->id == $quota_aid->wf_state_current_id;
+    $can_validate = optional($wf_current_state)->id == $quota_aid->wf_state_current_id;
     $can_cancel = ($quota_aid->user_id == $user->id && $quota_aid->inbox_state == true);
 
     // workflow record

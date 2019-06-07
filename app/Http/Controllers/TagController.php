@@ -6,18 +6,27 @@ use Illuminate\Http\Request;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\RetirementFund\RetirementFund;
-use Log;
+use Auth;
 use Muserpol\Models\Tag;
 use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Module;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\Affiliate;
+use Muserpol\Models\AffiliateRecord;
+
 class TagController extends Controller
 {
     public function wfState()
     {
         $wf_current_state = WorkflowState::where('role_id', Util::getRol()->id)->first();
         return $wf_current_state->tags;
+    }
+    public function module()
+    {
+        $module = Module::find(Util::getRol()->module_id);
+        return $module->tags;
     }
     public function retFun($ret_fun_id)
     {
@@ -26,6 +35,14 @@ class TagController extends Controller
     public function quotaAid($quota_aid_id)
     {
         return QuotaAidMortuary::find($quota_aid_id)->tags;
+    }
+    public function ecoCom($eco_com_id)
+    {
+        return EconomicComplement::find($eco_com_id)->tags;
+    }
+    public function affiliate($affiliate_id)
+    {
+        return Affiliate::find($affiliate_id)->tags;
     }
     public function updateRetFun(Request $request, $ret_fun_id)
     {
@@ -39,10 +56,10 @@ class TagController extends Controller
             if ($found) {
                 if ($retirement_fund->tags->contains($tag_wf_state->id)) {
                     // $retirement_fund->tags()->updateExistingPivot($tag_wf_state->id);
-                }else{
-                    $retirement_fund->tags()->save($tag_wf_state, ['date'=>Carbon::now(), 'user_id'=>Util::getAuthUser()->id]);
+                } else {
+                    $retirement_fund->tags()->save($tag_wf_state, ['date' => Carbon::now(), 'user_id' => Util::getAuthUser()->id]);
                 }
-            }else{
+            } else {
                 if ($retirement_fund->tags->contains($tag_wf_state->id)) {
                     $retirement_fund->tags()->detach($tag_wf_state->id);
                 }
@@ -62,16 +79,84 @@ class TagController extends Controller
             if ($found) {
                 if ($quota_aid->tags->contains($tag_wf_state->id)) {
                     // $quota_aid->tags()->updateExistingPivot($tag_wf_state->id);
-                }else{
-                    $quota_aid->tags()->save($tag_wf_state, ['date'=>Carbon::now(), 'user_id'=>Util::getAuthUser()->id]);
+                } else {
+                    $quota_aid->tags()->save($tag_wf_state, ['date' => Carbon::now(), 'user_id' => Util::getAuthUser()->id]);
                 }
-            }else{
+            } else {
                 if ($quota_aid->tags->contains($tag_wf_state->id)) {
                     $quota_aid->tags()->detach($tag_wf_state->id);
                 }
             }
         }
         return $quota_aid->tags;
+    }
+    public function updateEcoCom(Request $request, $eco_com_id)
+    {
+
+        $eco_com = EconomicComplement::find($eco_com_id);
+        $tags_wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first()->tags;
+        $add = collect([]);
+        $remove = collect([]);
+        foreach ($tags_wf_state as $tag_wf_state) {
+            $found = array_filter($request->ids, function ($id) use ($tag_wf_state) {
+                return $id == $tag_wf_state['id'];
+            });
+            if ($found) {
+                if ($eco_com->tags->contains($tag_wf_state->id)) {
+                    // $eco_com->tags()->updateExistingPivot($tag_wf_state->id);
+                } else {
+                    $eco_com->tags()->save($tag_wf_state, ['date' => Carbon::now(), 'user_id' => Util::getAuthUser()->id]);
+                    $add->push('agrego la etiqueta '.$tag_wf_state->name);
+                }
+            } else {
+                if ($eco_com->tags->contains($tag_wf_state->id)) {
+                    $remove->push('eliminó la etiqueta '.$tag_wf_state->name);
+                    $eco_com->tags()->detach($tag_wf_state->id);
+                }
+            }
+        }
+        if ($add->count() > 0 || $remove->count() > 0) {
+            $eco_com->procedure_records()->create([
+                'user_id' => Auth::user()->id,
+                'record_type_id' => 15,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id,
+                'date' => Carbon::now(),
+                'message' => 'El usuario ' . Auth::user()->username. " ".$add->implode(', ').", ". $remove->implode(', ')
+            ]);
+        }
+        return $eco_com->tags;
+    }
+    public function updateAffiliate(Request $request, $affiliate_id)
+    {
+
+        $affiliate = Affiliate::find($affiliate_id);
+        $tags_module = Module::find(Util::getRol()->module_id)->tags;
+        $add = collect([]);
+        $remove = collect([]);
+        foreach ($tags_module as $tag_module) {
+            $found = array_filter($request->ids, function ($id) use ($tag_module) {
+                return $id == $tag_module['id'];
+            });
+            if ($found) {
+                if ($affiliate->tags->contains($tag_module->id)) {
+                    // $affiliate->tags()->updateExistingPivot($tag_module->id);
+                } else {
+                    $affiliate->tags()->save($tag_module, ['date' => Carbon::now(), 'user_id' => Util::getAuthUser()->id]);
+                    $add->push('agrego la etiqueta '.$tag_module->name);
+                }
+            } else {
+                if ($affiliate->tags->contains($tag_module->id)) {
+                    $remove->push('eliminó la etiqueta '.$tag_module->name);
+                    $affiliate->tags()->detach($tag_module->id);
+                }
+            }
+        }
+        $affiliate_record = new AffiliateRecord();
+        $affiliate_record->user_id = Auth::user()->id;
+        $affiliate_record->affiliate_id = $affiliate->id;
+        $affiliate_record->message =  'El usuario ' . Auth::user()->username. " ".$add->implode(', ').", ". $remove->implode(', ');
+        $affiliate_record->save();
+        return $affiliate->tags;
     }
     public function getTags()
     {
@@ -101,12 +186,12 @@ class TagController extends Controller
         $wf_states = WorkflowState::all();
         // $wf_states = WorkflowState::where('module_id', Util::getRol()->module_id)->get();
         $tags = Tag::all();
-        $data =[
-            'tags'=> $tags,
-            'modules'=> $modules,
-            'wf_states'=> $wf_states,
+        $data = [
+            'tags' => $tags,
+            'modules' => $modules,
+            'wf_states' => $wf_states,
         ];
-        return view('tags.wf_state',$data);
+        return view('tags.wf_state', $data);
     }
     public function updateTagWfState(Request $request)
     {
@@ -118,9 +203,9 @@ class TagController extends Controller
             $syncData = array_combine($ids, $pivotData);
 
             $wf_state->tags()->sync($syncData);
-            return response('updated tag wf state',202);
+            return response('updated tag wf state', 202);
         }
-        abort(500,'WorkflowState not found.');
+        abort(500, 'WorkflowState not found.');
     }
     public function index()
     {
@@ -132,15 +217,15 @@ class TagController extends Controller
         $modules = Module::all();
         $wf_states = WorkflowState::all();
         $data = [
-            'modules'=> $modules,
-            'wf_states'=> $wf_states,
+            'modules' => $modules,
+            'wf_states' => $wf_states,
         ];
-        return view('tags.create',$data);
+        return view('tags.create', $data);
     }
     public function store(Request $request)
     {
         $found = Tag::where('name', $request->name)->where('shortened', $request->shortened)->first();
-        if (! $found) {
+        if (!$found) {
             $t = new Tag();
             $t->name = $request->name;
             $t->shortened = $request->shortened;
@@ -152,7 +237,7 @@ class TagController extends Controller
                     $wf_state->tags()->save($t, ['date' => Carbon::now(), 'user_id' => Util::getAuthUser()->id]);
                 }
             }
-            return response('Created tag',201);
+            return response('Created tag', 201);
         }
         abort(500, 'error al guardar.');
     }
@@ -160,16 +245,16 @@ class TagController extends Controller
     {
         $tags = Tag::all();
         $data = [
-            'tags'=>$tags,
-            'tag'=>$tag,
+            'tags' => $tags,
+            'tag' => $tag,
         ];
-        return view('tags.edit',$data);
+        return view('tags.edit', $data);
     }
     public function update(Request $request, Tag $tag)
     {
         $found = Tag::where('name', $request->name)->where('shortened', $request->shortened)->first();
         if ($found) {
-            abort(500,'tag duplicated');
+            abort(500, 'tag duplicated');
         }
         $t = Tag::find($request->id);
         if ($t) {
@@ -177,8 +262,8 @@ class TagController extends Controller
             $t->shortened = $request->shortened;
             $t->slug = str_slug($request->name, '-');
             $t->save();
-            return response("updated",202);
+            return response("updated", 202);
         }
-        abort(500,'tag not found');
+        abort(500, 'tag not found');
     }
 }

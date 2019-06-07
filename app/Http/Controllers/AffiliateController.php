@@ -31,6 +31,8 @@ use Muserpol\Models\ChargeType;
 use Muserpol\Models\PaymentType;
 use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
+use Muserpol\Models\ObservationType;
+use DB;
 class AffiliateController extends Controller
 {
     /**
@@ -316,6 +318,22 @@ class AffiliateController extends Controller
         $voucher_type_ids = $voucher_types->pluck('id');
         $vouchers = Voucher::where('affiliate_id',$affiliate->id)->whereIn('voucher_type_id',$voucher_type_ids)->with(['type'])->get();        
         //return $vouchers;
+
+
+        /**
+         ** for observations
+         */
+        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->whereIn('type', ['A', 'AT'])->get();
+        /**
+         ** Permissions
+         */
+        $permissions = Util::getPermissions(
+            ObservationType::class
+        );
+        /**
+         ** eco coms
+         */
+        $eco_coms = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->reverse();
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -351,7 +369,12 @@ class AffiliateController extends Controller
             'payment_types' =>  $payment_types,
             'voucher_types' =>  $voucher_types,
             'vouchers'  =>  $vouchers,
+            'categories_1'  =>  Category::all(),
             //'records_message'=>$records_message
+
+            'observation_types'  =>  $observation_types,
+            'permissions'  =>  $permissions,
+            'eco_coms'  =>  $eco_coms
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
@@ -379,7 +402,7 @@ class AffiliateController extends Controller
     public function update(Request $request, Affiliate $affiliate)
     {
         $affiliate =  Affiliate::where('id','=', $affiliate->id)->first();
-        $this->authorize('update', $affiliate);
+        // $this->authorize('update', $affiliate);
         /*
         TODO
         add regex into identity_card validate: 51561 and 4451-1L
@@ -402,6 +425,11 @@ class AffiliateController extends Controller
             $messages =[
                 'last_name.required' => 'El campo Apellido Paterno o Materno es requerido.',
             ];
+        }
+        if($request->is_duedate_undefined == 'on'){
+            $rules['is_duedate_undefined'] = 'required';
+        }else{
+            $rules['due_date'] = 'required';
         }
         try {
             $validator = Validator::make($request->all(), $rules, $messages)->validate();
@@ -428,6 +456,12 @@ class AffiliateController extends Controller
         $affiliate->city_birth_id = $request->city_birth_id;
         $affiliate->city_identity_card_id =$request->city_identity_card_id;
         $affiliate->surname_husband = $request->surname_husband;        
+        $affiliate->due_date = Util::verifyBarDate($request->due_date) ? Util::parseBarDate($request->due_date) : $request->due_date;
+        $affiliate->is_duedate_undefined = $request->is_duedate_undefined == 'on';
+        if ($request->is_duedate_undefined == 'on') {
+            $affiliate->due_date = null;
+        }
+        $affiliate->save();
 
         if (sizeOf($affiliate->address) > 0) {
             $address_id = $affiliate->address()->first()->id;
@@ -514,5 +548,11 @@ class AffiliateController extends Controller
 
     public function printVoucher(){
         
+    }
+    public function getRecord($affiliate_id)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        $affiliate_records = $affiliate->affiliate_records_pvt()->with(['user:id,username'])->orderByDesc('created_at')->get();
+        return compact('affiliate_records');
     }
 }

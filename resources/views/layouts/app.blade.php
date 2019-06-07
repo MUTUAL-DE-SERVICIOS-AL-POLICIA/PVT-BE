@@ -42,6 +42,7 @@
     </div>
     <!-- End wrapper-->
 
+<script src="https://cdn.jsdelivr.net/npm/tween.js@16.3.4"></script>
 <script src="{{ mix('/js/app.js') }}" type="text/javascript"></script>
 <script>
     $(document).ready(function(){

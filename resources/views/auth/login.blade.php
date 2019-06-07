@@ -27,7 +27,7 @@
             
            
         </form>
-        <p class="m-t"> <small>Muserpol &copy; 2018</small> </p>
+        <p class="m-t"> <small>Muserpol &copy; {{ now()->year }}</small> </p>
     </div>
  
 @endsection
