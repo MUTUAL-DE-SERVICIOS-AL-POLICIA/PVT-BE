@@ -199,17 +199,17 @@ export default {
     };
   },
   mounted() {
-    this.getRequirements();
-    this.setPensionEntity();
     this.setReceptionType();
+    this.setPensionEntity();
     this.setModality();
     this.setCity();
+    this.getRequirements();
   },
   methods: {
     async onChooseModality(event) {
       await this.setReceptionType();
-      await this.getRequirements();
       await this.setModality();
+      await this.getRequirements();
     },
     setPensionEntity() {
       let name = null;
@@ -303,7 +303,8 @@ export default {
         .get("/get_procedure_requirements", {
           params: {
             affiliate_id: this.affiliate.id,
-            procedure_modality_id: this.modality_id
+            procedure_modality_id: this.modality_id,
+            reception_type_id: this.reception_type_id
           }
         })
         .then(response => {
