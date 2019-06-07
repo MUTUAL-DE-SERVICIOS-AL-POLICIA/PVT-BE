@@ -23,16 +23,22 @@
                     </thead>
                     <tbody>
                         <tr>
+                        @if ($quota_aid->procedure_modality->id == 15)
+                            @php($spouse=$affiliate->spouse->first())
+                            <td>Cónyugue</td>
+                            <td>{{ $spouse->fullName() }}</td>
+                        @else
                             <td>Grado</td>
                             <td>{{ $affiliate->degree->shortened ?? '-'}}</td>
+                        @endif
                         </tr>
                         <tr>
                             <td>Fecha de Fallecimiento</td>
-                            <td class="text-uppercase">{{ $affiliate->getDateDeath() }}</td>
+                            <td class="text-uppercase">{{ $quota_aid->procedure_modality->id == 15 ? $spouse->getDateDeath() : $affiliate->getDateDeath() }}</td>
                         </tr>
                         <tr>
                             <td>Causa de Fallecimiento</td>
-                            <td>{{ $affiliate->reason_death }}</td>
+                            <td>{{ $quota_aid->procedure_modality->id == 15 ? $spouse->reason_death : $affiliate->reason_death }}</td>
                         </tr>
                         <tr class="font-bold">
                             <td>Total {{ $quota_aid->procedure_modality->procedure_type->name }}</td>

@@ -692,8 +692,8 @@ class QuotaAidMortuaryController extends Controller
     //return $correlatives;
 
     //summary individual accounts
-    $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid();
-    $quota_aid_contributions = $affiliate->getQuotaAidContributions();
+    $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid($id);
+    $quota_aid_contributions = $affiliate->getQuotaAidContributions($id);
     $total_dates = Util::sumTotalContributions($quota_aid_dates);
     $dates = array(
       'id' => 0,
@@ -1226,8 +1226,15 @@ class QuotaAidMortuaryController extends Controller
   public function getTestimonies($quota_aid_id)
   {
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
-    $affiliate = $quota_aid->affiliate;
-    $testimonies = $affiliate->testimony()->with('quota_aid_beneficiaries')->get();
+    $applicants = $quota_aid->quota_aid_beneficiaries()->where('type', 'S')->get()->all();
+    $testimonies = [];
+    if (count($applicants) > 0) {
+      foreach ($applicants as $applicant) {
+        $testimonies = array_merge($testimonies, $applicant->testimonies()->with('quota_aid_beneficiaries')->get()->all());
+      }
+    }
+    // $affiliate = $quota_aid->affiliate;
+    // $testimonies = $affiliate->testimony()->with('quota_aid_beneficiaries')->get();
     return $testimonies;
   }
   public function updateBeneficiaryTestimony(Request $request, $quota_aid_id)
@@ -1245,7 +1252,13 @@ class QuotaAidMortuaryController extends Controller
     foreach ($testimonies as $key => $t) {
       $index = array_search($t->id, $testimonies_array_request);
       if ($index === false) {
-        $t->delete();
+        $beneficiaries = $t->quota_aid_beneficiaries()->where('type', 'S')->get();
+        foreach ($beneficiaries as $b) {
+          if ($b->quota_aid_mortuary_id == $quota_aid_id) {
+            $t->delete();
+            break;
+          }
+        }
       }
     }
     foreach ($request->all() as $key => $t) {
@@ -1286,8 +1299,8 @@ class QuotaAidMortuaryController extends Controller
       ->where('hierarchy_id', $degree->hierarchy_id)
       ->where('is_enabled', true)
       ->first();
-    $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid();
-    $quota_aid_contributions = $affiliate->getQuotaAidContributions();
+    $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid($quota_aid_id);
+    $quota_aid_contributions = $affiliate->getQuotaAidContributions($quota_aid_id);
     if (!$quota_aid_contributions['is_continuous']) {
       return 'Verifique que el titular tenga la cantidad de aportes correctas';
     }

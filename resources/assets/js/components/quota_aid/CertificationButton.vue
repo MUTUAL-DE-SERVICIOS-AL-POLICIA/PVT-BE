@@ -29,7 +29,10 @@ import { mapGetters } from 'vuex';
             printable: `${this.urlPrint}`,
             type: "pdf",
             modalMessage: "Generando documentos de impresión, por favor espere un momento.",
-            showModal: true
+            showModal: true,
+            onError: err => console.log(err),
+            onLoadingStart: () => this.loading = true,
+            onLoadingEnd: () => this.loading = false
           };
         },
         modal() {

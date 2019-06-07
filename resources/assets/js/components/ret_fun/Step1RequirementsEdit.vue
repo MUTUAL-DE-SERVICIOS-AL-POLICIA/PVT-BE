@@ -11,7 +11,7 @@
             'submitted',
             'rol'
             //'showRequirementsError',
-            
+
 		],
         data(){
             return{
@@ -58,12 +58,15 @@
                 //         name:selectedText,
                 //         id: this.modality
                 //     }
-                //     //this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento 
+                //     //this.$store.commit('setModality',object);//solo se puede enviar un(1) argumento
                 // }
                 // this.getRequirements();
             },
             toggle_editing:function () {
                 this.editing = !this.editing;
+                if (!this.editing) {
+                    this.getRequirements()
+                }
                 setTimeout(() => {
                     $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
                 }, 500);
@@ -77,9 +80,9 @@
                         this.counter_aditional_document++;
                     }
                     if (r.modality_id == this.modality && r.number != 0) {
-                        
+
                         // if(this.submitted[r.number] == r.id){
-                       
+
                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });
                          //console.log(submit_document);
                         if(this.rol!=11){ //revision legal
@@ -87,13 +90,13 @@
                                 r['status'] = true;
                                 r['background'] = 'bg-success-green';
                                 r['comment'] = submit_document.comment;
-                                
+
                             }
                             else{
                                 r['status'] = false;
                                 r['background'] = '';
                                 r['comment'] = null;
-                            }                        
+                            }
                             return r;
                         }else{
                             if(submit_document)
@@ -116,7 +119,7 @@
                     }
                 });
 
-                
+
                 Array.prototype.groupBy = function(prop) {
                     return this.reduce(function(groups, item) {
                         const val = item[prop]
@@ -126,7 +129,7 @@
                     }, {})
                 }
 
-                this.requirementList =  this.requirementList.groupBy('number')                
+                this.requirementList =  this.requirementList.groupBy('number')
                 this.getAditionalRequirements();
                 // this.requirementList = this.requirementList.reduce(function(r, v) {
                 //     r[v.number] = r[v.number] || [];
@@ -138,25 +141,25 @@
             getAditionalRequirements(){
                 if(!this.modality){this.aditionalRequirements = []}
                 if(!this.modality){this.aditionalRequirementsSelected = []}
-                this.aditionalRequirements = this.requirements.filter((requirement) => {                    
+                this.aditionalRequirements = this.requirements.filter((requirement) => {
                     if (requirement.modality_id == this.modality && requirement.number == 0) {
                         let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === requirement.id });
                         if(!submit_document)
                             return requirement;
                     }
                 });
-                this.aditionalRequirementsSelected = this.requirements.filter((requirement) => {                    
+                this.aditionalRequirementsSelected = this.requirements.filter((requirement) => {
                     if (requirement.modality_id == this.modality && requirement.number == 0) {
                         let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === requirement.id });
                         if(submit_document)
                             return requirement;
                     }
                 });
-                
+
                 setTimeout(() => {
                     $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-                }, 500);                
-            },            
+                }, 500);
+            },
             checked(index, i){
                 if(this.editing){
                     for(var k = 0; k < this.requirementList[index].length; k++ ){
@@ -177,7 +180,7 @@
                         }
                     }
                 }else{
-                    
+
                 }
 
             },
@@ -186,7 +189,7 @@
                 if(this.rol!=11)
                 {
                     if(this.editing){
-                    return true; 
+                    return true;
                     }else{
                         return requeriment.status;
                     }
@@ -198,7 +201,7 @@
             onChooseCity(event){
                 const options = event.target.options;
                 const selectedOption = options[options.selectedIndex];
-                const selectedText = selectedOption.textContent;                
+                const selectedText = selectedOption.textContent;
             },
             groupNumbers(number){
                 // return (parseInt(number) % 2) == 0;
@@ -211,7 +214,7 @@
             },
             store(ret_fun){
                 if(this.rol!=11){
-                    let uri = `/ret_fun/${this.ret_fun.id}/edit_requirements`;   
+                    let uri = `/ret_fun/${this.ret_fun.id}/edit_requirements`;
                     let req = $('#aditional_requirements').val();
                     console.log(`items-> ${this.aditionalRequirementsSelected}`);
                     axios.post(uri,
@@ -222,15 +225,15 @@
                     ).then(response =>{
                         flash("Verificacion Correcta");
                         this.toggle_editing();
-                    
+
                         //this.showEconomicData = true
                         //TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
                     }).catch(error =>{
                         flash("Los Datos no Coinciden", "error");
                         //this.showEconomicData = false;
-                    });                
+                    });
                 }else{
-                    let uri = `/ret_fun/${this.ret_fun.id}/legal_review/create`;                
+                    let uri = `/ret_fun/${this.ret_fun.id}/legal_review/create`;
                         axios.post(uri,
                             {
                             submit_documents: this.requirementList
@@ -238,18 +241,18 @@
                         ).then(response =>{
                             flash("Verificacion Correcta");
                             this.toggle_editing();
-                        
+
                             //this.showEconomicData = true
                             //TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
                         }).catch(error =>{
                             flash("Los Datos no Coinciden", "error");
                             //this.showEconomicData = false;
-                        }); 
+                        });
                 }
 
                 //console.log(this.requirementList);
             }
-   
+
         },
 
 	}

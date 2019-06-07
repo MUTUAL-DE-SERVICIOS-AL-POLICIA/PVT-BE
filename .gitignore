@@ -22,7 +22,4 @@ yarn-error.log
 /nbproject/project.properties
 /nbproject/project.xml
 /public/fonts/vendor/mdi
-laradock/
-package-lock.json
-yarn.lock
-
+/laradock
