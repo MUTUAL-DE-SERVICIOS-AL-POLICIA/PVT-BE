@@ -18,8 +18,9 @@
         </div>
         <!-- v-if="can('read_observation_type')" -->
         <div class="ibox-content">
-          <div v-if="devolution">
-            <table class="table table-striped table-hover table-bordered">
+          <div v-for="devolution in devolutions" :key="devolution.id">
+            <h2>Por: {{devolution.observation_type.name}}</h2>
+            <table class="table table-striped table-hover table-bordered" v-if='dues.length'>
               <thead>
                 <tr>
                   <th>Nro.</th>
@@ -50,9 +51,9 @@
               </tr>
             </table>
           </div>
-          <div v-else>
+          <!-- <div >
             <div class="alert alert-info">El afiliado no tiene deudas.</div>
-          </div>
+          </div> -->
         </div>
         <!-- v-else -->
         <div class="ibox-content">
@@ -149,6 +150,7 @@ export default {
       },
       method: "post",
       devolution: {},
+      devolutions: [],
       dues: []
     };
   },
@@ -230,6 +232,7 @@ export default {
       await axios
         .get(`/affiliate_get_devolutions/${this.affiliate.id}`)
         .then(response => {
+          this.devolutions = response.data.devolutions;
           this.devolution = response.data.devolution;
           this.dues = response.data.dues;
         })
