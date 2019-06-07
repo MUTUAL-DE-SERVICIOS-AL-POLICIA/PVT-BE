@@ -13,45 +13,7 @@ class AffiliateSubmittedDocumentsController extends Controller
     {
         logger($request->all());
         $affiliate = Affiliate::find($request->affiliate_id);
-        if ($request->reception_type_id == 1) {
-            $requirements_habitual = [];
-            switch ($request->procedure_modality_id) {
-                case 29:
-                    $requirements_habitual = [1,2];
-                    break;
-                case 30:
-                    $requirements_habitual = [2,4];
-                    break;
-                case 31:
-                    $requirements_habitual = [46,2];
-                    break;
-                default:
-                    # code...
-                    break;
-            }
-            $procedure_requirements_original = ProcedureRequirement::with('procedure_document')
-            // ->where('procedure_modality_id', $request->procedure_modality_id)
-            ->where('number', '<>', 0)
-            ->whereIn('id', $requirements_habitual)
-            ->orderBy('number')->get();
-            $additional_requirements = ProcedureRequirement::with('procedure_document')
-            ->where('procedure_modality_id', $request->procedure_modality_id)
-            ->where('number', '=', 0)
-            ->orderBy('number')->get();
-            $requirements = collect([]);
-            foreach ($procedure_requirements_original as $po) {
-                $po->background = "";
-                $po->status = false;
-                $po->number = "N" . $po->number;
-                $requirements->push($po);
-            }
-            $requirements = $requirements->groupBy('number')->toArray();
-            $data = [
-                'additional_requirements' => $additional_requirements,
-                'requirements' => $requirements
-            ];
-            return $data;
-        }else{
+        if ($request->reception_type_id == 2) {
             $procedure_requirements_original = ProcedureRequirement::with('procedure_document')->where('procedure_modality_id', $request->procedure_modality_id)->where('number', '<>', 0)->orderBy('number')->get();
             $additional_requirements = ProcedureRequirement::with('procedure_document')->where('procedure_modality_id', $request->procedure_modality_id)->where('number', '=', 0)->orderBy('number')->get();
             $procedure_requirements = ProcedureRequirement::where('procedure_modality_id', $request->procedure_modality_id)
@@ -79,6 +41,44 @@ class AffiliateSubmittedDocumentsController extends Controller
                     $po->number = "N" . $po->number;
                     $requirements->push($po);
                 }
+            }
+            $requirements = $requirements->groupBy('number')->toArray();
+            $data = [
+                'additional_requirements' => $additional_requirements,
+                'requirements' => $requirements
+            ];
+            return $data;
+        } else {
+            $requirements_habitual = [];
+            switch ($request->procedure_modality_id) {
+                case 29:
+                    $requirements_habitual = [1226, 1235];
+                    break;
+                case 30:
+                    $requirements_habitual = [1252, 1263, 1262, 1264, 1266];
+                    break;
+                case 31:
+                    $requirements_habitual = [1285, 1298, 1297, 1300];
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $procedure_requirements_original = ProcedureRequirement::with('procedure_document')
+                // ->where('procedure_modality_id', $request->procedure_modality_id)
+                ->where('number', '<>', 0)
+                ->whereIn('id', $requirements_habitual)
+                ->orderBy('number')->get();
+            $additional_requirements = ProcedureRequirement::with('procedure_document')
+                ->where('procedure_modality_id', $request->procedure_modality_id)
+                ->where('number', '=', 0)
+                ->orderBy('number')->get();
+            $requirements = collect([]);
+            foreach ($procedure_requirements_original as $po) {
+                $po->background = "";
+                $po->status = false;
+                $po->number = "N" . $po->number;
+                $requirements->push($po);
             }
             $requirements = $requirements->groupBy('number')->toArray();
             $data = [
