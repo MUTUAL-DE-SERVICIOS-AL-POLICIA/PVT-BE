@@ -124,19 +124,27 @@ class AffiliateObserver
 
         if($affiliate->degree_id != $old->degree_id)
         {
-            $message = $message . ' grado '.$old->degree->name.' a '.$affiliate->degree->name.', ';
+            $message = $message . ' grado '.optional($old->degree)->name.' a '.optional($affiliate->degree)->name.', ';
 
         }
 
         if($affiliate->pension_entity_id != $old->pension_entity_id)
         {
-            $message = $message . ' ente gestor '.($old->pension_entity->name??"Sin ente gestor").' a '.($affiliate->pension_entity->name??"Sin ente gestor").', ';
+            $message = $message . ' ente gestor '.(optional($old->pension_entity)->name??"Sin ente gestor").' a '.(optional($affiliate->pension_entity)->name??"Sin ente gestor").', ';
 
         }
 
         if($affiliate->item != $old->item)
         {
             $message = $message . ' número de ítem '.$old->item.' a '.$affiliate->item.', ';
+        }
+        if($affiliate->service_years != $old->service_years)
+        {
+            $message = $message . ' Años de servicio '.$old->service_years.' a '.$affiliate->service_years.', ';
+        }
+        if($affiliate->service_months != $old->service_months)
+        {
+            $message = $message . ' Meses de servicio '.$old->service_months.' a '.$affiliate->service_months.', ';
         }
 
         Log::info('updating');

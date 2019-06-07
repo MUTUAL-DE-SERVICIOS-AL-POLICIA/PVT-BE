@@ -1,5 +1,5 @@
 let mix = require("laravel-mix");
-// require("laravel-mix-purgecss");
+require("laravel-mix-purgecss");
 require("dotenv").config();
 /*
  |--------------------------------------------------------------------------
@@ -13,6 +13,8 @@ require("dotenv").config();
  */
 const app = process.env.MIX_APP;
 mix
+
+  .webpackConfig({ devtool: "inline-source-map" })
   .sourceMaps()
   .js("resources/assets/js/app.js", "public/js")
   .js("resources/assets/js/datatable.js", "public/js")
@@ -25,22 +27,23 @@ switch (app) {
     mix
     .sass("resources/assets/sass/app.scss", "public/css")
     .version()
-    // .purgeCss({
-    //   enabled: true,
+    .purgeCss({
+      enabled: true,
 
-    //   globs: [
-    //     path.join(__dirname, "resources/views/**/*.blade.php"),
-    //     path.join(__dirname, "resources/assets/js/**/*.vue")
-    //   ],
-    //   extensions: ["html", "js", "php", "vue"],
-    //   whitelistPatterns: [/language/, /hljs/]
-    // })
+      globs: [
+        path.join(__dirname, "resources/views/**/*.blade.php"),
+        path.join(__dirname, "resources/assets/js/**/*.vue")
+      ],
+      extensions: ["html", "js", "php", "vue"],
+      whitelistPatterns: [/language/, /hljs/]
+    })
     ;
    break;
 
   case 'test':
     mix
     .sass("resources/assets/sass/app_test.scss", "public/css/app.css")
+    .version()
    break;
   case 'dev':
     mix

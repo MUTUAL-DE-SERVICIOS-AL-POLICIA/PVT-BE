@@ -22,6 +22,10 @@ class Spouse extends Model
         'city_birth_id' => null,
         'city_identity_card_id' => null,
     );
+    public function affiliate()
+    {
+        return $this->belongsTo(Affiliate::class);
+    }
     public function city_identity_card()
     {
         return $this->belongsTo(City::class, 'city_identity_card_id', 'id');
@@ -34,6 +38,13 @@ class Spouse extends Model
     public function getBirthDateAttribute($value)
     {
         if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getDueDateAttribute($value)
+    {
+        if(!$value){
             return null;
         }
         return Carbon::parse($value)->format('d/m/Y');

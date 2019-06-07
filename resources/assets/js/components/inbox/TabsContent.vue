@@ -2,7 +2,7 @@
 import {mapGetters, mapMutations} from 'vuex';
 import { flashErrors } from "../../helper.js";
 export default {
-    props:['rolId','user', 'inboxState'],
+    props:['rolId','user', 'inboxState', 'cities', 'procedureModalities', 'ecoComModalities', 'receptionTypes'],
     data(){
         return{
             workflows: [],
@@ -17,20 +17,27 @@ export default {
             showLoading:true,
             documentsReceivedTotal:null,
             documentsEditedTotal:null,
+            filter:{
+                city_id: 0,
+                procedure_modality_id: 0,
+                eco_com_reception_type_id: 0,
+                eco_com_modality_id: 0,
+            },
+            tempFilter: {}
         }
     },
     mounted(){
         this.getData();
+        this.tempFilter = JSON.parse(JSON.stringify(this.filter));
     },
     methods:{
-        getData(){
+        async getData(){
             this.showLoading=true;
             let uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
-            axios.get(uri).then(({data})=>{
+            await axios.get(uri, {params: this.filter}).then(({data})=>{
                 this.workflows =  data.workflows;
                 this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
                 this.area_documents =  data.documents
-                console
                 if(this.inboxState == 'received') {
                     this.documents = this.area_documents
                 } else {
@@ -46,6 +53,10 @@ export default {
                 this.$store.commit('inbox/setHeaders', data.headers);
             });
         },
+        cancelFilter(){
+            this.filter = JSON.parse(JSON.stringify(this.tempFilter))
+            this.getData();
+        },
         switchShow() {
             this.documents = this.area_documents
         },
@@ -57,7 +68,7 @@ export default {
                         if (docs.workflow_id == w.workflow_id) {
                             w.docs.forEach(d => {
                                 if (d.id == docs.id) {
-                                    docs.status = d.status; 
+                                    docs.status = d.status;
                                 }
                             });
                         }
@@ -125,7 +136,7 @@ export default {
                         })
                         this.getData();
                         this.classification(this.activeWorkflowId);
-                        this.printCertification(procedures)
+                        this.printCertification(false, procedures)
                     }
                 });
             }else{
@@ -187,21 +198,28 @@ export default {
                         })
                         this.getData();
                         this.classification(this.activeWorkflowId);
-                        this.printCertification()
+                        this.printCertification(false)
                     }
                 });
             }else{
                 alert("error");
             }
         },
-        async printCertification(procedures) {
+        async printCertification(retrieve=false, procedures) {
             let found = this.dataInbox.workflows.find(w =>{
                 return w.workflow_id == this.activeWorkflowId
             });
+            if (retrieve) {
+                procedures = found.docs
+            }
+            let uri = '/procedure/print/send';
+            if (this.rolId.module_id  == 2) {
+                uri = '/procedure/print/send_eco_com';
+            }
             try {
                 let res = await axios({
                 method: "POST",
-                url: '/procedure/print/send',
+                url: uri,
                 data: {'procedures' : procedures, from_area:this.wfCurrentState.id, to_area: this.wfSequenceNext},
                 responseType: "arraybuffer",
                 });

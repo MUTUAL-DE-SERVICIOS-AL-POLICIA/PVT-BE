@@ -5,18 +5,18 @@
           data-placement="top"
           :title="title"
           :disabled="loading"
-          @click="modal()"
+          @click.prevent="modal()"
           v-if="doc.isValidated"
           >
       <i v-if="loading" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
       <i v-else class="fa fa-print"></i>
       &nbsp;
-      {{ loading ? 'Imprimiendo...' : 'Imprimir' }}
+      {{ loading ? 'Generando...' : 'Imprimir' }}
   </button>
 </template>
 <script>
 import { mapGetters } from 'vuex';
-import { camelCaseToSnakeCase } from "../../helper.js";
+import { camelCaseToSnakeCase, flashErrors } from "../../helper.js";
     export default {
       props: ["type","title", "urlPrint", "docId", "message"],
       data(){
@@ -25,18 +25,19 @@ import { camelCaseToSnakeCase } from "../../helper.js";
         }
       },
       methods: {
-        print() {
+        print(data) {
           return {
-            printable: `${this.urlPrint}`,
+            printable: data,
             type: "pdf",
+            base64: true,
             modalMessage: "Generando documentos de impresión, por favor espere un momento.",
             showModal: true
           };
         },
-        modal() {
+        async modal() {
           this.loading = true;
           if (this.message) {
-            this.$swal({
+            await this.$swal({
               title: "Escribe una nota:",
               input: "textarea",
               inputValue: '',
@@ -66,17 +67,32 @@ import { camelCaseToSnakeCase } from "../../helper.js";
               // allowOutsideClick: () => !this.swal.isLoading()
             }).then(result => {
               if (result.value) {
-                printJS(this.print());
+                let res1 = axios({
+                  method: "GET",
+                  url: this.urlPrint,
+                  responseType: "arraybuffer"
+                });
+                const pdfBlob = new Blob([res1.data], { type: "application/pdf" });
+                printJS(URL.createObjectURL(pdfBlob));
                 this.loading = false;
               }else{
                 this.loading = false;
               }
             });
           }else{
-            printJS(this.print());
-            setTimeout(() => {
+            try{
+              let res = await axios({
+                method: "GET",
+                url: this.urlPrint,
+                responseType: "arraybuffer"
+              });
+              const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+              printJS(URL.createObjectURL(pdfBlob));
               this.loading = false;
-            }, 1000);
+            } catch(error){
+              this.loading = false;
+              flashErrors("Error: ", ['Ocurrio un error al generar el documento']);
+            }
           }
         }
       },

@@ -699,4 +699,38 @@ input.mediumCheckbox {
 	border-radius:50%;
 	color:#fff;
 }
+.cursor-not-allowed {
+	cursor: not-allowed;
+	opacity: 0.5;
+	text-decoration: none;
+}
+a[aria-disabled="true"] {
+	cursor: not-allowed;
+	opacity: 0.5;
+	text-decoration: none;
+}
+button[aria-disabled="true"] {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
 
+.alert-orange{
+	color: #703b07;
+	background-color:#ffdfbf;
+	border-color: #f29539;
+}
+.elements-list .list-group-item:hover{
+    cursor: pointer;
+}
+.pointer:hover{
+	cursor: pointer;
+}
+.v-middle{
+	vertical-align: middle;
+}
+.timeline-item .date {
+    text-align: right;
+    width: 135px;
+    position: relative;
+    padding-top: 27px;
+}

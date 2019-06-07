@@ -4,8 +4,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>PLATAFORMA VIRTUAL - MUSERPOL {{ $title ?? '' }}</title>
-    <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
-    <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
+    <style>
+        <?php include public_path('css/materialicons.css') ?>
+        <?php include public_path('css/wkhtml.css') ?>
+    </style>
 </head>
 
 <body>
@@ -71,8 +73,15 @@
                             <td class="uppercase px-5 text-right">{{ $year }}</td>
                             <td class="uppercase px-5 text-right">{{ $procedure->reception_date }}</td>
                             <td class="uppercase px-5 text-right">{{ $procedure->code }}</td>
-                            <td class="uppercase px-5 text-right">{{ $procedure->getCorrelative(26)->date }}</td>
-                            <td class="uppercase px-5 text-right">{{ $procedure->getCorrelative(26)->code }}</td>
+                            @php ($correlative = $procedure->getCorrelative(26))
+                            @if ($correlative)
+                                <td class="uppercase px-5 text-right">{{ $correlative->date }}</td>
+                                <td class="uppercase px-5 text-right">{{ $correlative->code }}</td>
+                            @else
+                                @for ($i=0; $i<2; $i++)
+                                    <td class="uppercase px-5 text-center">-</td>
+                                @endfor
+                            @endif
                             <td class="uppercase px-15 text-left">{{ $procedure->affiliate->degree->shortened }}</td>
                             <td class="uppercase px-15 text-left">{{ $procedure->affiliate->ciWithExt() }}</td>
                             <td class="uppercase px-15 text-left">{{ $procedure->affiliate->fullName() }}</td>

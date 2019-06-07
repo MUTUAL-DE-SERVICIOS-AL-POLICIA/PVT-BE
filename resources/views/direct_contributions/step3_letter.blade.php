@@ -20,7 +20,7 @@
                             <label class="control-label">Fecha de Documento</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" v-date name="document_date" v-model.trim="document_date" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
+                            <input type="text" class="form-control" v-date name="document_date" v-model.trim="document_date" v-validate.initial="'required|date_format:dd/MM/yyyy|max_current_date'">
                             <i v-show="errors.has('document_date')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('document_date')" class="text-danger">@{{ errors.first('document_date') }}</span>
                         </div>
@@ -33,7 +33,7 @@
                             <label class="control-label">Fecha de compromiso</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" v-date name="commitment_date" v-model.trim="commitment_date" v-validate.initial="'required|date_format:DD/MM/YYYY|max_current_date'">
+                            <input type="text" class="form-control" v-date name="commitment_date" v-model.trim="commitment_date" v-validate.initial="'required|date_format:dd/MM/yyyy|max_current_date'">
                             <i v-show="errors.has('commitment_date')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('commitment_date')" class="text-danger">@{{ errors.first('commitment_date') }}</span>
                         </div>
@@ -46,7 +46,7 @@
                             <label class="control-label">Periodo de primer aporte</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" v-month-year name="start_contribution_date" v-model.trim="start_contribution_date" v-validate.initial="'required|date_format:MM/YYYY|max_current_date_month_year'">
+                            <input type="text" class="form-control" v-month-year name="start_contribution_date" v-model.trim="start_contribution_date" v-validate.initial="'required|date_format:MM/yyyy|max_current_date_month_year'">
                             <i v-show="errors.has('start_contribution_date')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('start_contribution_date')" class="text-danger">@{{ errors.first('start_contribution_date') }}</span>
                         </div>

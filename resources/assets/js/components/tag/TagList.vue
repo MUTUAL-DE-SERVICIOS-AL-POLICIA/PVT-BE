@@ -85,9 +85,9 @@ import { camelCaseToSnakeCase } from "../../helper.js";
         this.getCurrentTags();
       },
       methods: {
-        getCurrentTags(){
+        async getCurrentTags(){
             this.showSpinner = true;
-            axios.get(`/tag_${camelCaseToSnakeCase(this.type)}/${this.docId}`)
+            await axios.get(`/tag_${camelCaseToSnakeCase(this.type)}/${this.docId}`)
             .then(response=>{
                 this.tagsList = response.data
                 this.showSpinner = false;
@@ -96,9 +96,13 @@ import { camelCaseToSnakeCase } from "../../helper.js";
                 this.showSpinner = false;
             })
         },
-        toggleEditing() {
+        async toggleEditing() {
           this.editing = !this.editing;
-          axios.get(`/tag_wf_state`)
+          let uri = `/tag_wf_state`;
+          if (this.type == 'affiliate') {
+              uri = `/tag_module`
+          }
+          await axios.get(uri)
             .then(response=>{
                 this.tagsWfState = response.data
             }).catch(error=>{
@@ -118,10 +122,10 @@ import { camelCaseToSnakeCase } from "../../helper.js";
           this.getCurrentTags();
           this.editing = false;
         },
-        save() {
+        async save() {
           this.showSpinner = true;
           $(".chosen-select").val()
-          axios.post(`/update_tag_${camelCaseToSnakeCase(this.type)}/${this.docId}`,{
+          await axios.post(`/update_tag_${camelCaseToSnakeCase(this.type)}/${this.docId}`,{
               ids: $(".chosen-select").val()
           }).then(response=>{
               flash('Actualizacion correcta.');
@@ -131,7 +135,7 @@ import { camelCaseToSnakeCase } from "../../helper.js";
           setTimeout(() => {
               this.getCurrentTags()
               this.showSpinner = false;
-          }, 5000);
+          }, 4000);
           this.editing = false;
         },
         colorClass() {
