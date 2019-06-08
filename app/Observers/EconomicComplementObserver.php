@@ -46,7 +46,7 @@ class EconomicComplementObserver
         $message = 'El usuario ' . Auth::user()->username . ' modifico ';
         $temp = $message;
         if ($eco_com->city_id != $old->city_id) {
-            $message = $message . ' regional de ' . $old->city->name . ' a ' . $eco_com->city->name . ', ';
+            $message = $message . ' regional de ' . optional($old->city)->name . ' a ' . optional($eco_com->city)->name . ', ';
         }
         if ($eco_com->reception_date != $old->reception_date) {
             $message = $message . ' fecha de recepción ' . $old->reception_date . ' a ' . $eco_com->reception_date . ', ';
