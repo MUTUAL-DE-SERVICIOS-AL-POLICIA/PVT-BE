@@ -154,7 +154,7 @@ class EconomicComplementController extends Controller
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_id)->first()->id]);
         }
-        if ($affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('type', 'A')->get()->pluck('id'))->get()->count()) {
+        if ($affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->get()->pluck('id'))->count() > 0) {
             return redirect()->action('AffiliateController@show', ['id' => $affiliate->id]);
         }
         $cities = City::all();
@@ -249,6 +249,7 @@ class EconomicComplementController extends Controller
             }
             $affiliate->degree_id = $request->affiliate_degree_id;
             $affiliate->pension_entity_id = $request->pension_entity_id;
+            $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
             $affiliate->save();
         }
         /**
