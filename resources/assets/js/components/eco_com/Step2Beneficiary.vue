@@ -772,6 +772,26 @@
                   </div>
                 </div>
               </div>
+              <div class="col-lg-6" :class="{'has-error': errors.has('affiliate_date_derelict') }">
+                <div class="col-md-4">
+                  <label class="control-label">Fecha de desvinculaci&oacute;n</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="affiliate_date_derelict"
+                    v-model="affiliate.date_derelict"
+                    v-month-year
+                    class="form-control"
+                    v-validate.initial="'required|max_current_date_month_year'"
+                    :disabled="isHabitual"
+                  >
+                  <div v-show="errors.has('affiliate_date_derelict')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_date_derelict') }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <br>
           </div>
