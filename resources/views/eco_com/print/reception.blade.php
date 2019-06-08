@@ -135,7 +135,7 @@
             Los datos insertos en la presente solicitud son de plena responsabilidad del solicitante.
             <br>
             Autorizo a la MUSERPOL acceder a mi información personal (y causante si corresponde) en las bases de datos
-            de SERECI, SEGIP y otras instituciones públicas y/o privadas para su revisión, verificación o contrastación
+            de SERECI, SEGIP y otras instituciones públicas y/o privadas para su revisión, verificación o contrastación.
         </div>
     </div>
 </div>
