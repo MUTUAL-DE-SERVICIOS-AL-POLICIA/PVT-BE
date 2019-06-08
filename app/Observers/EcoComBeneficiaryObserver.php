@@ -22,7 +22,7 @@ class EcoComBeneficiaryObserver
     //  "death_certificate_number",
      
         if ($eco_com_beneficiary->city_identity_card_id != $old->city_identity_card_id) {
-            $message = $message . ' extension de la cedula de identidad de ' . $old->city_identity_card->name . ' a ' . $eco_com_beneficiary->city_identity_card->name . ', ';
+            $message = $message . ' extension de la cedula de identidad de ' . optional($old->city_identity_card)->name . ' a ' . optional($eco_com_beneficiary->city_identity_card)->name . ', ';
         }
         if ($eco_com_beneficiary->identity_card != $old->identity_card) {
             $message = $message . 'la cedula de identidad de ' . $old->identity_card . ' a ' . $eco_com_beneficiary->identity_card . ', ';

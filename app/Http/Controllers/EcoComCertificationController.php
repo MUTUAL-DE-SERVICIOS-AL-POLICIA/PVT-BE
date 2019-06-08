@@ -18,7 +18,8 @@ class EcoComCertificationController extends Controller
         $affiliate = $eco_com->affiliate;
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
         $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
-        $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', $eco_com->submitted_documents->pluck('procedure_requirement_id'))->get();
+        $submitted_document_ids = $eco_com->submitted_documents->pluck('procedure_requirement_id');
+        $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', $submitted_document_ids)->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
@@ -64,7 +65,7 @@ class EcoComCertificationController extends Controller
             }
         }
         // other ddjj
-        if ($eco_com->isWidowhood()) {
+        if ($eco_com->isWidowhood() && $submitted_document_ids->contains(1263)) {
             $number_pages = Util::isRegionalRole() ? 3 : 2;
             for ($i = 1; $i <= $number_pages; $i++) {
                 $pages[] = \View::make('eco_com.print.sworn_declaration_beneficiary', self::printSwornDeclarationBeneficiary($id))->render();
