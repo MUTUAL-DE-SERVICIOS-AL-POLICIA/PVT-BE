@@ -1,7 +1,7 @@
 @extends('print_global.print') 
 @section('content')
 <div>
-    <div style="min-height:900px;height:900px; max-height:900px;">
+    <div>
         {{--
         <div class="font-bold uppercase m-b-5 counter">
             Datos del Trámite
@@ -16,12 +16,11 @@
         </div>
     {{-- @include('eco_com.print.only_police_info', ['affiliate'=>$affiliate]) --}}
     @include('eco_com.print.police_info', ['affiliate' => $affiliate ])
-
         <div>
-            <p class="justify"> Yo, <span class="font-bold uppercase">{{ $eco_com_beneficiary->fullName() }}</span> boliviano (a) de nacimiento
+            <p class="text-justify"> Yo, <span class="font-bold uppercase">{{ $eco_com_beneficiary->fullName() }}</span> boliviano (a) de nacimiento
                 con Cédula de Identidad <span class="font-bold uppercase">N° {{ $eco_com_beneficiary->ciWithExt() }} </span>.
                 con estado civil <span class="font-bold uppercase">{{ $eco_com_beneficiary->getCivilStatus() }}</span> y
-                con residencia actualmente en el Departamento de <span class="font-bold">{{ $economic_complement->city->name ?? '' }}</span>.;mayor
+                con residencia actualmente en el Departamento de <span class="font-bold">{{ $eco_com->city->name ?? '' }}</span>.; mayor
                 de edad, y hábil por derecho; consiente de la responsabilidad que asumo ante la Mutual de Servicios al Policía
                 – MUSERPOL, de manera voluntaria y sin que medie ningún tipo de presión, mediante la presente, <span class="font-bold">DECLARO LO SIGUIENTE:</span>
             </p>
@@ -29,10 +28,10 @@
                 <thead class="bg-grey-darker">
                     <tr class="font-medium text-white text-sm">
                         <td class="text-center p-5">N°</td>
-                        <td class="text-center p-5">.............</td>
+                        <td class="text-center p-5">DETALLE</td>
                     </tr>
                 </thead>
-                <tbody class="text-sm">
+                <tbody style="font-size:13px">
                     <tr>
                         <td class="text-center p-5 intext"></td>
                         <td class="text-justify p-5">
@@ -131,7 +130,7 @@
                     @endif
                 </tbody>
             </table>
-            <p class="justify">En mérito de los datos registrados en forma precedente, el interesado aprueba y ratifica su tenor de manera íntegra, quien en señal de conformidad en forma expresa y voluntaria firma el presente documento en la ciudad de {{ $user->city->name ?? 'La Paz' }}, {{ Util::getTextDate() }}.</p>
+            <div class="text-justify">En mérito de los datos registrados en forma precedente, el interesado aprueba y ratifica su tenor de manera íntegra, quien en señal de conformidad en forma expresa y voluntaria firma el presente documento en la ciudad de {{ $user->city->name ?? 'La Paz' }}, {{ Util::getTextDate() }}.</div>
             <table class="m-t-50">
                 <tr>
                     <td class="no-border text-center text-base w-50 align-bottom">
@@ -159,7 +158,7 @@
                     </td>
                 </tr>
             </table>
-            <p class="m-t-40 font-bold text-xxs">Nota.- El presente documento tiene carácter de DECLARACIÓN JURADA, por lo que en caso de evidenciarse la falsedad
+            <p class="font-bold text-xxs">Nota.- El presente documento tiene carácter de DECLARACIÓN JURADA, por lo que en caso de evidenciarse la falsedad
                 de este, se procederá con las acciones legales pertinentes.</p>
         </div>
     </div>
