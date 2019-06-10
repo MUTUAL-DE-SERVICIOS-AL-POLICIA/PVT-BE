@@ -324,7 +324,7 @@ export default {
       affiliateFound: false,
       showButton: false,
       // identityCard: "5633617",
-      identityCard: "1379469",
+      identityCard: null,
       ecoComProcedureCreateName: null,
       ecoComProcedure: {},
       searching: false,
