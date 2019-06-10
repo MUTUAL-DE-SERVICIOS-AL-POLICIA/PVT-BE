@@ -659,7 +659,7 @@ export default {
         })
         .then(response => {
           let data = response.data;
-          this.$store.dispatch("ecoComForm/setecoComBeneficiary", data);
+          this.$store.commit("ecoComForm/setEcoComBeneficiary", data);
         })
         .catch(function(error) {
           console.log(error);
