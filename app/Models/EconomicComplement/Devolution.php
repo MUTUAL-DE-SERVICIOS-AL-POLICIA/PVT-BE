@@ -8,6 +8,7 @@ use Muserpol\Models\ObservationType;
 
 class Devolution extends Model
 {
+    protected $guarded = [];
     public function affiliate()
     {
         return $this->belongsTo(Affiliate::class);

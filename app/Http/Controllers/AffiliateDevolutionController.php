@@ -27,6 +27,7 @@ class AffiliateDevolutionController extends Controller
             }
         }
         $data = [
+            'devolutions' => $devolutions,
             'devolution' => $devolution,
             'dues' => $dues,
         ];

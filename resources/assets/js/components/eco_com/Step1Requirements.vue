@@ -199,17 +199,17 @@ export default {
     };
   },
   mounted() {
-    this.getRequirements();
-    this.setPensionEntity();
     this.setReceptionType();
+    this.setPensionEntity();
     this.setModality();
     this.setCity();
+    this.getRequirements();
   },
   methods: {
     async onChooseModality(event) {
       await this.setReceptionType();
-      await this.getRequirements();
       await this.setModality();
+      await this.getRequirements();
     },
     setPensionEntity() {
       let name = null;
@@ -303,7 +303,8 @@ export default {
         .get("/get_procedure_requirements", {
           params: {
             affiliate_id: this.affiliate.id,
-            procedure_modality_id: this.modality_id
+            procedure_modality_id: this.modality_id,
+            reception_type_id: this.reception_type_id
           }
         })
         .then(response => {
@@ -314,13 +315,28 @@ export default {
               .chosen({ width: "100%" })
               .trigger("chosen:updated");
           }, 500);
+          this.verifyOneNumber();
         })
         .catch(error => {
           console.log(error);
         });
     },
+    verifyOneNumber(){
+      let sw = true;
+      for (const key in this.requirementList) {
+        if (this.requirementList[key].length != 1) {
+          sw = false;
+          break;
+        }
+      }
+      if (sw) {
+        for (const key in this.requirementList) {
+          this.requirementList[key][0].background = "bg-success-green";
+          this.requirementList[key][0].status = true;
+        }
+      }
+    },
     checked(index, i) {
-      console.log(index, i);
       for (var k = 0; k < this.requirementList[index].length; k++) {
         if (k != i) {
           this.requirementList[index][k].status = false;

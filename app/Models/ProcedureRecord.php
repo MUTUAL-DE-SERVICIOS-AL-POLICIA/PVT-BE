@@ -8,7 +8,6 @@ use Muserpol\Models\Workflow\WorkflowState;
 
 class ProcedureRecord extends Model
 {
-    protected $table = 'document_records';
     public $guarded =  [];
 
     public function recordable()

@@ -56,7 +56,11 @@ class DocumentController extends Controller
           ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
           ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
           ->where('wf_states.role_id', '=', $rol_id)
-          ->where('economic_complements.inbox_state', '=', false);
+          ->where('economic_complements.inbox_state', '=', false)
+          ->orderByDesc(DB::raw("regexp_replace(split_part(economic_complements.code, '/',3),'\D','','g')::integer"))
+          ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',2)"))
+          ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',1)::integer"));
+
           if($request->city_id){
             $documents->whereIn('city_id', [$request->city_id]);
           }
@@ -276,7 +280,10 @@ class DocumentController extends Controller
           ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
           ->where('wf_states.role_id', '=', $rol_id)
           ->where('economic_complements.inbox_state', '=', true)
-          ->where('economic_complements.user_id', '=', $user_id);
+          ->where('economic_complements.user_id', '=', $user_id)
+          ->orderByDesc(DB::raw("regexp_replace(split_part(economic_complements.code, '/',3),'\D','','g')::integer"))
+          ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',2)"))
+          ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',1)::integer"));
           if($request->city_id){
             $documents->whereIn('city_id', [$request->city_id]);
           }
