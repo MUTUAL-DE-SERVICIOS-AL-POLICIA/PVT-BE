@@ -279,14 +279,6 @@
             <i class="fa fa-external-link"></i>
           </a>
         </div>
-        <div class="alert alert-warning block" v-if="affiliateObservationsAmortizable.length">
-          <h4>Suspendido por:</h4>
-          <table>
-            <tr v-for="o in affiliateObservationsAmortizable" :key="o.id">
-              <td>{{ o.name }}</td>
-            </tr>
-          </table>
-        </div>
         <div class="alert alert-danger block" v-if="affiliateObservations.length">
           <h4>Observado por:</h4>
           <ul>
@@ -329,7 +321,6 @@ export default {
       ecoComProcedure: {},
       searching: false,
       affiliateObservationsExclude: [],
-      affiliateObservationsAmortizable: [],
       affiliateObservations: [],
       affiliateDevolutions: [],
       otherObservations: [],
@@ -371,8 +362,6 @@ export default {
             this.affiliate = response.data.affiliate;
             this.affiliateObservationsExclude =
               response.data.affiliate_observations_exclude;
-            this.affiliateObservationsAmortizable =
-              response.data.affiliate_observations_amortizable;
             this.affiliateObservations = response.data.affiliate_observations;
             this.affiliateDevolutions = response.data.affiliate_devolutions;
             this.otherObservations = response.data.other_observations;
