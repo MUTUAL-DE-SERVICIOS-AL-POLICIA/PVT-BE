@@ -21,13 +21,16 @@ class EcoComBeneficiaryController extends Controller
     {
         $eco_com = EconomicComplement::find($id);
         $beneficiary = $eco_com->eco_com_beneficiary;
-        $beneficiary->address;
         if($beneficiary){
             $beneficiary->phone_number = Util::parsePhone($beneficiary->phone_number);
             $beneficiary->cell_phone_number = Util::parsePhone($beneficiary->cell_phone_number);
+            $beneficiary->address;
             return $beneficiary;
         }else{
-            return new EcoComBeneficiary();
+            $beneficiary = new EcoComBeneficiary();
+            $beneficiary->address;
+            return $beneficiary;
+            // return new EcoComBeneficiary();
         }
     }
     public function update(Request $request)
@@ -60,6 +63,10 @@ class EcoComBeneficiaryController extends Controller
         }
         $eco_com = EconomicComplement::find($request->eco_com_id);
         $beneficiary = $eco_com->eco_com_beneficiary;
+        if (!$beneficiary) {
+            $beneficiary = new EcoComBeneficiary();
+            $beneficiary->economic_complement_id = $eco_com->id;
+        }
         $beneficiary->city_identity_card_id = $request->city_identity_card_id;
         $beneficiary->identity_card = mb_strtoupper(trim($request->identity_card));
         $beneficiary->last_name = mb_strtoupper(trim($request->last_name));

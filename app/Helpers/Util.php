@@ -616,7 +616,7 @@ class Util
     $array_discounts = array();
     $array_discounts_text = array();
 
-    $array = DiscountType::all()->pluck('id');
+    $array = DiscountType::where('module_id', 3)->get()->pluck('id');
     $results = array(array());
     foreach ($array as $element) {
       foreach ($results as $combination) {
@@ -894,6 +894,16 @@ class Util
   {
     return optional($model::where('code', 'not like', '%A')->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
   }
+  
+  public static function getLastCodeQM($model)
+  {  
+    return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code','not like','%A')->whereIn('procedure_modality_id',[8,9])->get()->last())->code;
+  }
+  public static function getLastCodeAM($model)
+  { 
+     return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code','not like','%A')->whereIn('procedure_modality_id',[13,14,15])->get()->last())->code;
+  }
+  
   public static function getLastCodeEconomicComplement($eco_com_procedure_id)
   {
     $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);

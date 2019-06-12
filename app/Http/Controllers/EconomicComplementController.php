@@ -837,12 +837,16 @@ class EconomicComplementController extends Controller
                     // $spouse = new Spouse();
                     $spouse = new EcoComBeneficiary();
                 }
-                // $spouse->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
+                if ($spouse instanceof Spouse) {
+                    $spouse->address = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
+                }else{
+                    $spouse->address;
+                }
                 // $spouse->phone_number = $this->parsePhone($spouse->phone_number ?? '') ;
                 // $spouse->cell_phone_number = $this->parsePhone($spouse->cell_phone_number ?? '') ;
                 $spouse->phone_number = [array('value' => null)];
                 $spouse->cell_phone_number = [array('value' => null)];
-                $spouse->address;
+                // $spouse->address;
                 return $spouse;
                 break;
             default:
