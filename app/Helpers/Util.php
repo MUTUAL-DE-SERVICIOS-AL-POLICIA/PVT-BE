@@ -616,7 +616,7 @@ class Util
     $array_discounts = array();
     $array_discounts_text = array();
 
-    $array = DiscountType::all()->pluck('id');
+    $array = DiscountType::where('module_id', 3)->get()->pluck('id');
     $results = array(array());
     foreach ($array as $element) {
       foreach ($results as $combination) {

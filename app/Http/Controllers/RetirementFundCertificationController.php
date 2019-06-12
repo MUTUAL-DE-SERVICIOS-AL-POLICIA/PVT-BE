@@ -452,7 +452,7 @@ class RetirementFundCertificationController extends Controller
 
     /*  discount combinations*/
     $array_discounts = array();
-    $array = DiscountType::all()->pluck('id');
+    $array = DiscountType::where('module_id', 3)->get()->pluck('id');
     $results = array(array());
     foreach ($array as $element) {
       foreach ($results as $combination) {
@@ -596,7 +596,7 @@ class RetirementFundCertificationController extends Controller
 
     /*  discount combinations*/
     $array_discounts = array();
-    $array = DiscountType::all()->pluck('id');
+    $array = DiscountType::where('module_id', 3)->get()->pluck('id');
     $results = array(array());
     foreach ($array as $element) {
       foreach ($results as $combination) {
@@ -679,7 +679,7 @@ class RetirementFundCertificationController extends Controller
 
     /*  discount combinations*/
     $array_discounts = array();
-    $array = DiscountType::all()->pluck('id');
+    $array = DiscountType::where('module_id', 3)->get()->pluck('id');
     $results = array(array());
     foreach ($array as $element) {
       foreach ($results as $combination) {
