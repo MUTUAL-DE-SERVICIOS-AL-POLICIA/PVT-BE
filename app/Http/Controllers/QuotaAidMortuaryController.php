@@ -1115,6 +1115,9 @@ class QuotaAidMortuaryController extends Controller
 
     //return $affiliate;
     //$this->authorize('create',QuotaAidMortuary::class);
+    if (!$affiliate->degree) {
+      return redirect("/affiliate/$affiliate->id")->with('message', "Debe actualizar el grado antes");
+    }
     $hierarchy = $affiliate->degree->hierarchy;
     $procedure_types = ProcedureType::where('id', '3')->orWhere('id', '4')->get();
 
