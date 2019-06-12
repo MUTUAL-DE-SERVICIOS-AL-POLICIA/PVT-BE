@@ -523,7 +523,26 @@ class AffiliateController extends Controller
         $affiliate->type = $request->type;
         $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;;
         $affiliate->item = $request->item;
-        $affiliate->category_id = $request->category_id;
+        // $affiliate->category_id = $request->category_id;
+        $service_year = $request->service_years;
+        $service_month = $request->service_months;
+        if ($service_year > 0 || $service_month > 0) {
+            if ($service_month > 0) {
+                $service_year++;
+            }
+            $category = Category::where('from', '<=', $service_year)
+                ->where('to', '>=', $service_year)
+                ->first();
+            if ($category) {
+                $affiliate->category_id = $category->id;
+                $affiliate->service_years = $request->service_years;
+                $affiliate->service_months = $request->service_months;
+            }
+        }
+        $affiliate->degree_id = $request->affiliate_degree_id;
+        $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
+
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
