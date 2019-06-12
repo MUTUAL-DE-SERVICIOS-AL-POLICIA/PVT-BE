@@ -8,7 +8,7 @@
                         <label class="col-sm-4 control-label">
                                 Fecha de Fallecimiento</label>
                         <div class="col-sm-8">
-                            <input type="text" name="date_death" v-model="date_death" data-date="true" class="form-control">
+                            <input type="text" name="date_death" v-model="date_death" v-date class="form-control">
                             <i v-show="errors.has('date_death')" class="fa fa-warning text-danger"></i>
                             <span v-show="errors.has('date_death')" class="text-danger">@{{ errors.first('date_death') }}</span>
                         </div>
@@ -161,7 +161,7 @@
                                 <label class="control-label">Fecha de Nacimiento</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" data-date="true" name="applicant_birth_date" v-model.trim="applicant_birth_date" v-validate.initial="'required|date_format:dd/MM/yyyy'">
+                                <input type="text" class="form-control" v-date name="applicant_birth_date" v-model.trim="applicant_birth_date" v-validate.initial="'required|date_format:dd/MM/yyyy'">
                                 <i v-show="errors.has('applicant_birth_date')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('applicant_birth_date')" class="text-danger">@{{ errors.first('applicant_birth_date') }}</span>
                             </div>
@@ -517,7 +517,7 @@
                 <div class="col-md-6">
                     <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('spouse_birth_date')  }">
                         <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Nacimiento:</label></div>
-                        <div class="col-md-5"><input name="spouse_birth_date" v-model="spouse_birth_date" data-date="true" type="text" class="form-control" v-validate.initial="'required|date_format:dd/MM/yyyy'">
+                        <div class="col-md-5"><input name="spouse_birth_date" v-model="spouse_birth_date" v-date type="text" class="form-control" v-validate.initial="'required|date_format:dd/MM/yyyy'">
                             <div v-show="errors.has('spouse_birth_date') ">
                                 <i class="fa fa-warning text-danger"></i>
                                 <span class="text-danger">@{{ errors.first('spouse_birth_date') }}</span>
@@ -547,7 +547,7 @@
                     </div>
                     <div class="form-group row m-b-md" :class="{ 'has-error': errors.has('spouse_date_death')  }">
                         <div class="col-sm-3 col-form-label"><label class="control-label">Fecha de Fallecimiento:</label></div>
-                        <div class="col-md-9"><input name="spouse_date_death" v-model="spouse_date_death" data-date="true" type="text" class="form-control" v-validate.initial="'required|date_format:dd/MM/yyyy'">
+                        <div class="col-md-9"><input name="spouse_date_death" v-model="spouse_date_death" v-date type="text" class="form-control" v-validate.initial="'required|date_format:dd/MM/yyyy'">
                             <div v-show="errors.has('spouse_date_death') ">
                                 <i class="fa fa-warning text-danger"></i>
                                 <span class="text-danger">@{{ errors.first('spouse_date_death') }}</span>

@@ -106,7 +106,7 @@
                     <label class="control-label">Fecha de Nacimiento</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" data-date="true" v-model.trim="beneficiary.birth_date" name="beneficiary_birth_date[]" class="form-control" :disabled="!editable">
+                    <input type="text" v-date v-model.trim="beneficiary.birth_date" name="beneficiary_birth_date[]" class="form-control" :disabled="!editable">
                 </div>
             </div>
             <div class="col-md-6">
