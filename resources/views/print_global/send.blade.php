@@ -4,10 +4,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>PLATAFORMA VIRTUAL - MUSERPOL {{ $title ?? '' }}</title>
-    <style>
-        <?php include public_path('css/materialicons.css') ?>
-        <?php include public_path('css/wkhtml.css') ?>
-    </style>
+    <link rel="stylesheet" href="{{ public_path('css/materialicons.css') }}" media="all" />
+
+    <link rel="stylesheet" href="{{ public_path('css/wkhtml.css') }}" media="all" />
+
 </head>
 
 <body>
@@ -16,7 +16,7 @@
             <tr>
                 <th class="w-15 text-left no-padding no-margins align-middle">
                     <div class="text-center">
-                        <img src="{{ asset('images/logo.jpg') }}" class="w-100">
+                        <img src="{{ public_path('images/logo.jpg') }}" class="w-100">
                     </div>
                 </th>
                 <th class="w-50 align-top">
