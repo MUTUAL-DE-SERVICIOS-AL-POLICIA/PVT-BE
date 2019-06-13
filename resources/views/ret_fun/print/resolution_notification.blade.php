@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
+    <link rel="stylesheet" href="{{ public_path('css/wkhtml.css') }}" media="all" />
 </head>
 
 <body class="no-border">
@@ -14,7 +14,7 @@
             <tr>
                 <th class="w-20 text-left no-padding no-margins align-middle" style="width:20%">
                     <div class="text-center">
-                        <img src="{{asset('images/logo.jpg')}}" class="w-100">
+                        <img src="{{public_path('images/logo.jpg')}}" class="w-100">
                     </div>
                 </th>
                 <th class="w-60 align-top" style="width:60%">
@@ -26,7 +26,7 @@
                 </th>
                 <th class="w-20 no-padding no-margins align-top" style="width:20%">
                     <div class="text-center">
-                        <img src="{{asset('images/escudo.jpg')}}" class="w-60">
+                        <img src="{{public_path('images/escudo.jpg')}}" class="w-60">
                     </div>
                 </th>
             </tr>

@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>PLATAFORMA VIRTUAL - MUSERPOL {{ $title ?? '' }}</title>
-    <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
-    <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
+    <link rel="stylesheet" href="{{ public_path('css/materialicons.css') }}" media="all" />
+    <link rel="stylesheet" href="{{ public_path('css/wkhtml.css') }}" media="all" />
 </head>
 <body style="padding:0 65px 0px 65px; " class="no-border {{ Session::get('size') ?? 'text-base' }}">
     <div class="page-break">
