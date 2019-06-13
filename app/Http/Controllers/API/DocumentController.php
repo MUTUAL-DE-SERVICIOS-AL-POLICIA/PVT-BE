@@ -24,6 +24,8 @@ class DocumentController extends Controller
   {
     $module = Role::find($rol_id)->module;
     $headers = Util::getHeadersInboxRetFunQuotaAid();
+    $documents = collect([]);
+    $documents_edited_total = collect([]);
     switch ($module->id) {
       case 1:
         # code...
@@ -245,6 +247,8 @@ class DocumentController extends Controller
   {
     $module = Role::find($rol_id)->module;
     $headers = Util::getHeadersInboxRetFunQuotaAid();
+    $documents = collect([]);
+    $documents_received_total = collect([]);
     switch ($module->id) {
       case 1:
         # code...

@@ -52,9 +52,9 @@
                         </div>
                     </div>
                 </div>
-                <div v-else>
+                {{-- <div v-else>
                     <div v-if="editing" class="alert alert-warning">No hay requisitos por editar</div>
-                </div>
+                </div> --}}
                 <br>
                 <div>
                     <h4>Documentos adicionales</h4>

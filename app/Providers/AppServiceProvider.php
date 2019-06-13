@@ -59,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
 
         // carbon settings
         Carbon::useMonthsOverflow(false);
-        setlocale(LC_TIME, 'es_BO.utf8');
+        setlocale(LC_TIME, 'es_ES.utf8');
         Carbon::setLocale(config('app.locale'));
     }
 

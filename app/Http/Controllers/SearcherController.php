@@ -142,13 +142,13 @@ class SearcherController
             $affiliate->category_percentage = $affiliate->category->name ?? '';
             $affiliate->pension_entity_name = $affiliate->pension_entity->name ?? '';
             // !! TODO borrar id 33 y 35 despues de borrar las observaciones
-            $affiliate_observations_exclude = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->get()->pluck('id'))->get();
-            $affiliate_observations_amortizable = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::where('description', 'like', 'Amortizable')->where('id','<>', 13)->get()->pluck('id'))->get();
+            $affiliate_observations_exclude = $affiliate->observations()->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->get()->pluck('id'))->get();
             $affiliate_devolutions = $affiliate->devolutions()->with('observation_type:id,name,type')->get();
-            $affiliate_observations = $affiliate->observations()->where('enabled', false)->whereIn('id', ObservationType::whereIn('description', ['Subsanable', 'Amortizable'])->get()->pluck('id'))->get();
-            $eco_com = $affiliate->economic_complements()->select('id', 'code', 'total','eco_com_procedure_id', 'eco_com_modality_id', 'eco_com_state_id')->with([
+            $affiliate_observations = $affiliate->observations()->whereIn('id', ObservationType::whereIn('description', ['Subsanable', 'Amortizable'])->get()->pluck('id'))->get();
+            $eco_com = $affiliate->economic_complements()->select('id', 'code', 'total','eco_com_procedure_id', 'eco_com_modality_id', 'eco_com_state_id', 'aps_disability')->with([
                 'eco_com_modality:id,name,shortened,procedure_modality_id',
                 'eco_com_state:id,name',
+                'eco_com_beneficiary',
                 'eco_com_procedure:id,semester,year'
             ])->orderByDesc(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))
                 ->orderByDesc(DB::raw("split_part(code, '/',2)"))
@@ -177,7 +177,6 @@ class SearcherController
         $data = [
             'affiliate' => $affiliate,
             'affiliate_observations_exclude' =>$affiliate_observations_exclude,
-            'affiliate_observations_amortizable' =>$affiliate_observations_amortizable,
             'affiliate_observations' =>$affiliate_observations,
             'affiliate_devolutions' =>$affiliate_devolutions,
             'other_observations' =>$other_observations,

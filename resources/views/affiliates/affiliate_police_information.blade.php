@@ -42,7 +42,7 @@
                 <div class="row">
                     <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
                     <div class="col-md-4">
-                        <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing" @change="getCalculateCategory()" max="100" min="0">
+                        <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
                         <div v-show="errors.has('service_years') && editing" >
                             <i class="fa fa-warning text-danger"></i>
                             <span class="text-danger">@{{ errors.first('service_years') }}</span>
@@ -61,10 +61,10 @@
                 <div class="row">
                     <div class="col-md-2"><label class="control-label">Meses de servicio</label></div>
                     <div class="col-md-4">
-                        <input type="number" v-model="form.service_months" class="form-control" :disabled="!editing" @change="getCalculateCategory()" max="12" min="0">
-                        <div v-show="errors.has('pension_entity_id') && editing" >
+                        <input type="number" name="service_months" v-model="form.service_months" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:11'" min="0" max="11">
+                        <div v-show="errors.has('service_months') && editing" >
                             <i class="fa fa-warning text-danger"></i>
-                            <span class="text-danger">@{{ errors.first('pension_entity_id') }}</span>
+                            <span class="text-danger">@{{ errors.first('service_months') }}</span>
                         </div>
                     </div>
                     <div class="col-md-2"><strong>Fecha de Desvinculaci&oacute;n:</strong></div>
