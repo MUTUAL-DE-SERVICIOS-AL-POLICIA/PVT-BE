@@ -2,6 +2,7 @@
 
 namespace Muserpol\Console\Commands;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use DB;
@@ -25,6 +26,9 @@ class SyncLoanObservation extends Command
    * @var string
    */
   protected $description = 'Overdue loans synchronization';
+  protected $file_content;
+  protected $file_name;
+  protected $file_path;
 
   /**
    * Create a new command instance.
@@ -33,6 +37,9 @@ class SyncLoanObservation extends Command
    */
   public function __construct()
   {
+    $this->file_content = '';
+    $this->file_path = 'sincronizacion_prestamos';
+    $this->file_name = implode('/', [$this->file_path . Carbon::now()->format('d_M_y_\a_\h\r\s_H_i'), '.txt']);
     parent::__construct();
   }
 
@@ -43,11 +50,23 @@ class SyncLoanObservation extends Command
    */
   public function handle()
   {
-    if (!$this->argument('date')) $date = Carbon::now();
+    if (!$this->argument('date')) {
+      $date = Carbon::now();
+    } else {
+      try {
+        $date = Carbon::parse($date);
+      } catch (\Exception $e) {
+        $this->error('Invalid input date');
+        exit($e->getMessage());
+      }
+    }
+
     // 2 = Suspendido - Préstamo en Mora
     $id_overdue = 2;
-
-    \Log::info('Synchronization started ' . Carbon::now());
+    $message = ' Sincronización iniciada ' . Carbon::now();
+    $this->new_line($message);
+    $this->info($message);
+    \Log::info($message);
     \Log::info('Removing old data...');
     DB::table('observables')->where('observable_id', $id_overdue)->delete();
 
@@ -55,11 +74,18 @@ class SyncLoanObservation extends Command
 
     $loans = DB::connection('sqlsrv')->select("SELECT dbo.Prestamos.IdPrestamo, dbo.Prestamos.PresNumero, dbo.Padron.IdPadron, DATEDIFF(month, Amortizacion.AmrFecPag, '" . $date . "') as Overdue from dbo.Prestamos join dbo.Padron on Prestamos.IdPadron = Padron.IdPadron join dbo.Producto on Prestamos.PrdCod = Producto.PrdCod join dbo.Amortizacion on (Prestamos.IdPrestamo = Amortizacion.IdPrestamo and Amortizacion.AmrNroPag = (select max(AmrNroPag) from Amortizacion where Amortizacion.IdPrestamo = Prestamos.IdPrestamo and Amortizacion.AMRSTS <>'X' )) where Prestamos.PresEstPtmo = 'V' and dbo.Prestamos.PresSaldoAct > 0 and Amortizacion.AmrFecPag <  cast('" . $date . "' as datetime) and DATEDIFF(month, Amortizacion.AmrFecPag, '" . $date . "') >= 2;");
 
+    $bar = $this->output->createProgressBar(count($loans));
+    $bar->start();
+    $count = 0;
+
     foreach ($loans as $loan) {
+      $bar->advance();
       $padron = DB::connection('sqlsrv')->table('Padron')->where('IdPadron', $loan->IdPadron)->first();
 
       if (!$padron) {
-        \Log::error('Padron with IdPadron: ' . $loan->IdPadron . 'does not exist');
+        $message = ' ID de padrón: ' . $loan->IdPadron . ' inexistente';
+        $this->new_line($message);
+        $this->error($message);
         continue;
       }
 
@@ -81,7 +107,9 @@ class SyncLoanObservation extends Command
           //   \Log::error('PadMatriculaTit: ' . $padron->PadMatriculaTit . 'does not contain numbers');
           //   continue;
           // }
-          \Log::info('Padron with PadMatricula: ' . $padron->PadMatriculaTit . ' does not exist');
+          $message = ' Matrícula de padrón: ' . $padron->PadMatriculaTit . ' inexistente';
+          $this->new_line($message);
+          $this->error($message);
           continue;
         }
       }
@@ -98,19 +126,29 @@ class SyncLoanObservation extends Command
         }
       }
       if (!$affiliate) {
-        \Log::error('Affiliate with identity_card: ' . $loan->PadCedulaIdentidad . ' does not exist');
+        $message = ' Afiliado con CI: ' . $loan->PadCedulaIdentidad . ' inexistente';
+        $this->new_line($message);
+        $this->error($message);
         $affiliates = Affiliate::where('identity_card', 'like', $loan->PadCedulaIdentidad . '%')->get();
         $affiliates->merge(Spouse::where('identity_card', 'like', $loan->PadCedulaIdentidad . '%')->get());
         if ($affiliates->count() > 0) {
           $names = [];
+          $db_name = DB::connection('pgsql')->getDatabaseName();
           foreach ($affiliates as $option) {
-            $names[] = implode(' ', [$option->identity_card, $option->last_name ?? '', $option->mothers_last_name ?? '', $option->first_name ?? '', $option->second_name ?? '', '- id:', $option->id]);
+            $names[] = [
+              $db_name,
+              $option->id,
+              $option->identity_card,
+              implode(' ', [$option->last_name ?? '', $option->mothers_last_name ?? '', $option->first_name ?? '', $option->second_name ?? ''])
+            ];
           }
-          $message = 'Possible options for identity_card: ' . $loan->PadCedulaIdentidad . PHP_EOL;
+          $message = ' Posibles opciones para el CI: ' . $loan->PadCedulaIdentidad . PHP_EOL;
+          $this->new_line($message);
           foreach ($names as $name) {
-            $message .= $loan->PadCedulaIdentidad . ' ' . $loan->PadName . ' --> ' . $name . PHP_EOL;
+            $message .= $loan->PadCedulaIdentidad . ' ' . $loan->PadName . ' --> ' . $name[2] . ' ' . $name[3] . ' - id: ' . $name[1] . PHP_EOL;
+            $this->new_line($message);
           }
-          \Log::error($message);
+          $this->table(['BD', 'Id', 'CI', 'Nombre'], array_merge([[DB::connection('sqlsrv')->getDatabaseName(), $loan->IdPadron, $loan->PadCedulaIdentidad, $loan->PadName]], $names));
         }
         continue;
       }
@@ -123,8 +161,24 @@ class SyncLoanObservation extends Command
         'message' => 'Préstamo con mora de ' . $loan->Overdue,
         'enabled' => true
       ]);
+      $count++;
     }
 
-    \Log::info('Sincronización terminada ' . Carbon::now());
+    $message = ' Número de trámites observados: ' . $count;
+    $this->new_line($message);
+    $this->info($message);
+
+    $bar->finish();
+
+    $message = ' Sincronización terminada ' . Carbon::now();
+    $this->new_line($message);
+    $this->info($message);
+    \Log::info($message);
+    Storage::disk('local')->put($this->file_name, $this->file_content);
+  }
+
+  private function new_line($line)
+  {
+    $this->file_content =  $this->file_content . PHP_EOL . $line;
   }
 }

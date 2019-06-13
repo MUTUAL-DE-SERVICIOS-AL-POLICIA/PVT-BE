@@ -45,6 +45,12 @@
                 <a href="{{ url('/affiliate') }}"><i class="fa fa-user"></i> <span
                         class="nav-label">Afiliados</span></a>
             </li>
+            @if (Util::rolIsLoan())
+                <li data-toggle="tooltip" data-placement="right" title="Préstamos en Mora">
+                    <a href="{{ route('overdue_loans') }}"><i class="fa fa-search-dollar"></i> <span
+                            class="nav-label">Préstamos en Mora</span></a>
+                </li>
+            @endif
             @if (Util::rolIsEcoCom())
                 <li class="{{ isActiveRoute('eco_com.index') }}" data-toggle="tooltip" data-placement="right"
                     title="Complemento Economico">
