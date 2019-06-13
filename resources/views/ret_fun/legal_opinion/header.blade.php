@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>PLATAFORMA VIRTUAL - MUSERPOL {{ $title  }}</title>
-    <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
-    <link rel="stylesheet" href="{{ asset('css/wkhtml.css') }}" media="all" />
+    <link rel="stylesheet" href="{{ public_path('css/materialicons.css') }}" media="all" />
+    <link rel="stylesheet" href="{{ public_path('css/wkhtml.css') }}" media="all" />
 </head>
 <body class="no-border">
     <div class="px-15">
@@ -12,7 +12,7 @@
             <tr>
                 <th class="w-20 text-left no-padding no-margins align-middle">
                     <div class="text-center">
-                        <img src="{{asset('images/logo.jpg')}}" class="w-100">
+                        <img src="{{public_path('images/logo.jpg')}}" class="w-100">
                     </div>
                 </th>
                 <th class="w-50 align-top">
@@ -24,7 +24,7 @@
                 </th>
                 <th class="w-20 no-padding no-margins align-top">
                     <div class="text-center">
-                        <img src="{{asset('images/escudo.jpg')}}" class="w-50">
+                        <img src="{{public_path('images/escudo.jpg')}}" class="w-50">
                     </div>
                 </th>
             </tr>

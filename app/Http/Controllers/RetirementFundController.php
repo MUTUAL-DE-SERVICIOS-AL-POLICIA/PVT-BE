@@ -2242,6 +2242,7 @@ class RetirementFundController extends Controller
     public function saveCertificationNote(Request $request, $ret_fun_id)
     {
         $retirement_fund = RetirementFund::find($ret_fun_id);
+        Session::put('size', $request->size);
         if ($request->note) {
             $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->first();
             Util::getNextAreaCode($ret_fun_id);

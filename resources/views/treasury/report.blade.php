@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ asset('/css/wkhtml.css') }}">
+    <link rel="stylesheet" href="{{ pulbic_path('/css/wkhtml.css') }}">
     <title>REPORT</title>
     <style>
         .table-info tr:nth-child(2n){
@@ -16,7 +16,7 @@
             <tr>
                 <th class="w-20 text-left no-padding no-margins align-middle">
                     <div class="text-center">
-                        <img src="{{ asset('images/logo.jpg') }}" class="w-100">
+                        <img src="{{ pulbic_path('images/logo.jpg') }}" class="w-100">
                     </div>
                 </th>
                 <th class="w-50 align-top">
