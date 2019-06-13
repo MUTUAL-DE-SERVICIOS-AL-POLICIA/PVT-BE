@@ -47,7 +47,7 @@
             </li>
             @if (Util::rolIsLoan())
                 <li data-toggle="tooltip" data-placement="right" title="Préstamos en Mora">
-                    <a href="{{ route('overdue_loans') }}"><i class="fa fa-search-dollar"></i> <span
+                    <a href="{{ url('overdue_loan') }}"><i class="fa fa-dollar"></i> <span
                             class="nav-label">Préstamos en Mora</span></a>
                 </li>
             @endif

@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('ret_fun_procedure', 'RetFunProcedureController');
 
     Route::resource('affiliate', 'AffiliateController');
+    Route::resource('overdue_loan', 'LoanController');
 
     Route::patch('/update_affiliate/{affiliate}', 'AffiliateController@update')->name('update_affiliate');
     Route::patch('/update_affiliate_police/{affiliate}', 'AffiliateController@update_affiliate_police')->name('update_affiliate_police');
@@ -758,8 +759,7 @@ Route::group(['middleware' => ['auth']], function () {
     // affiliate submitted documents
     Route::get('get_procedure_requirements', 'AffiliateSubmittedDocumentsController@getRequirements');
 
-    Route::get('/tempo',function ()
-    {
+    Route::get('/tempo', function () {
       DB::connection()->enableQueryLog();
       $year  = request()->year;
       $semester  = request()->semester;
@@ -767,31 +767,31 @@ Route::group(['middleware' => ['auth']], function () {
       return Excel::download(new EcoComBankExport($eco_com_procedure->id), 'products.xlsx');
 
       $ecos = EconomicComplement::with([
-            'observations',
-            'eco_com_beneficiary',
-            'eco_com_legal_guardian',
-            'affiliate.spouse'
-            ])
-            ->ecoComProcedure(7) // procedure_id
-            ->NotHasEcoComState(1, 3, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
-            ->workflow(1, 2, 3) // los 3 workflows
-            ->wfState(3) // Area tecnica
-            ->inboxState(true) // Trámites en la segunda bandeja
-            // ->leftJoin('observables')
-            ->city() // eco_com_city
-            ->beneficiary() // beneficiary
-            ->select('economic_complements.*')
-            ->where('economic_complements.total', '>', 0)
-            ->whereRaw("not exists(SELECT observables.observable_id FROM observables
+        'observations',
+        'eco_com_beneficiary',
+        'eco_com_legal_guardian',
+        'affiliate.spouse'
+      ])
+        ->ecoComProcedure(7) // procedure_id
+        ->NotHasEcoComState(1, 3, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
+        ->workflow(1, 2, 3) // los 3 workflows
+        ->wfState(3) // Area tecnica
+        ->inboxState(true) // Trámites en la segunda bandeja
+        // ->leftJoin('observables')
+        ->city() // eco_com_city
+        ->beneficiary() // beneficiary
+        ->select('economic_complements.*')
+        ->where('economic_complements.total', '>', 0)
+        ->whereRaw("not exists(SELECT observables.observable_id FROM observables
       WHERE economic_complements.id = observables.observable_id AND observables.observable_type like 'economic_complements' AND
         observables.observation_type_id IN (1, 2, 13, 22) AND
         observables.enabled = FALSE AND observables.deleted_at is null)")
-            ->get();
-        return $ecos;
+        ->get();
+      return $ecos;
       // return $ecos;
       return Excel::download($ecos, 'products.xlsx');
       return $ecos->filter(function ($value, $key) {
-          return $value->hasObservationTypeAndNotCorrect(13);
+        return $value->hasObservationTypeAndNotCorrect(13);
       });
     });
   });
