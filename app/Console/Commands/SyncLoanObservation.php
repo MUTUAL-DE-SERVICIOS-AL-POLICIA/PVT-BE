@@ -10,6 +10,7 @@ use Muserpol\Models\Affiliate;
 use Muserpol\Models\ObservationType;
 use Muserpol\Models\Spouse;
 use Muserpol\User;
+use Muserpol\Helpers\Util;
 
 class SyncLoanObservation extends Command
 {
@@ -60,6 +61,7 @@ class SyncLoanObservation extends Command
         exit($e->getMessage());
       }
     }
+    $date = $date->format('Ymd');
 
     // 2 = Suspendido - Préstamo en Mora
     $id_overdue = 2;
@@ -68,7 +70,7 @@ class SyncLoanObservation extends Command
     $this->info($message);
     \Log::info($message);
     \Log::info('Removing old data...');
-    DB::table('observables')->where('observable_id', $id_overdue)->delete();
+    DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'affiliates')->delete();
 
     $user = User::first();
 
@@ -77,6 +79,7 @@ class SyncLoanObservation extends Command
     $bar = $this->output->createProgressBar(count($loans));
     $bar->start();
     $count = 0;
+    $eco_count = 0;
 
     foreach ($loans as $loan) {
       $bar->advance();
@@ -155,16 +158,34 @@ class SyncLoanObservation extends Command
 
       // 2 = Suspendido - Préstamo en Mora
       $observation = ObservationType::find($id_overdue);
+
       $affiliate->observations()->save($observation, [
         'user_id' => $user->id,
         'date' => Carbon::now(),
-        'message' => 'Préstamo con mora de ' . $loan->Overdue,
-        'enabled' => true
+        'message' => 'Préstamo con mora de ' . $loan->Overdue . ' meses',
+        'enabled' => false
       ]);
+
+      $eco_coms = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', Util::getEcoComCurrentProcedure())->get();
+      foreach ($eco_coms as $eco) {
+        if (!$eco->hasObservationType($id_overdue) && $eco->eco_com_state_id == 16) {
+          $eco->observations()->save($observation, [
+            'user_id' => $user->id,
+            'date' => Carbon::now(),
+            'message' => 'Préstamo con mora de ' . $loan->Overdue . ' meses',
+            'enabled' => false
+          ]);
+          $eco_count++;
+        }
+      }
       $count++;
     }
 
-    $message = ' Número de trámites observados: ' . $count;
+    $message = ' Número de afiliados observados: ' . $count;
+    $this->new_line($message);
+    $this->info($message);
+
+    $message = ' Número de trámites de complemento económico observados: ' . $eco_count;
     $this->new_line($message);
     $this->info($message);
 
