@@ -47,7 +47,7 @@ class HomeController extends Controller
             'wf_states' => $wf_states,
         ];
         if (Util::rolIsEcoCom()) {
-            $eco_com_procedures = EcoComProcedure::find(Util::getEcoComCurrentProcedure());
+            $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->take(3)->get();
             $data = [
                 'eco_com_procedures' => $eco_com_procedures
             ];
