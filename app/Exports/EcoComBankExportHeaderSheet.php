@@ -80,8 +80,10 @@ class EcoComBankExportHeaderSheet implements FromArray, WithTitle, WithHeadings,
     public function columnFormats(): array
     {
         return [
-            'E' => NumberFormat::FORMAT_GENERAL,
+            'A' => NumberFormat::FORMAT_TEXT,
+            'E' => NumberFormat::FORMAT_NUMBER,
             'G' => NumberFormat::FORMAT_NUMBER_00,
+            'K' => NumberFormat::FORMAT_TEXT,
         ];
     }
 
