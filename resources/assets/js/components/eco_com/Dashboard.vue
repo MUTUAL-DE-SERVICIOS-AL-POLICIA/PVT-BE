@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-md-5">
+      <div class="col-md-6">
         <pie-bar
           title="Modalidades"
           url="chart_eco_com_modalities_general"
@@ -9,7 +9,7 @@
           :eco-com-procedures="ecoComProcedures"
         ></pie-bar>
       </div>
-      <div class="col-md-7">
+      <div class="col-md-6">
         <pie-bar
           title="Tipos de Modalidad"
           url="chart_eco_com_modalities"
@@ -80,7 +80,7 @@
           url="chart_eco_com_last_eco_com"
           type="bar"
           :load="false"
-          :eco-com-procedures="ecoComProcedures"
+          :eco-com-procedures="[]"
           :options="{responsive: true,
 		scales: {
 			yAxes: [{
@@ -98,7 +98,7 @@
           url="chart_eco_com_total_amount_last_eco_com"
           type="bar"
           :load="false"
-          :eco-com-procedures="ecoComProcedures"
+          :eco-com-procedures="[]"
           :options="{
 		legend:{
 			display:false
