@@ -6,8 +6,7 @@
         <button @click="draw()" class="btn">
           <i class="fa fa-refresh"></i>
         </button>
-        <select v-model="ecoComProcedureId" @change="draw()" class>
-          <option :value="null"></option>
+        <select v-model="ecoComProcedureId" @change="draw()" v-if="ecoComProcedures.length > 0">
           <option
             v-for="e in ecoComProcedures"
             :key="e.id"
@@ -30,7 +29,7 @@ export default {
     return {
       ecoComProcedureId:
         this.ecoComProcedures.length > 0
-          ? this.ecoComProcedures[this.ecoComProcedures.length - 1].id
+          ? this.ecoComProcedures[0].id
           : null,
       dataSet: []
     };

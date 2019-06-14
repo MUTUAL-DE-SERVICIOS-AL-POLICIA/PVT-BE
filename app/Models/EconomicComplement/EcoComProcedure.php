@@ -28,6 +28,10 @@ class EcoComProcedure extends Model
     {
         return "MUSERPOL PAGO COMPLEMENTO ECONOMICO ". ($this->semester == 'Primer' ?  '1ER' : '2DO') ." SEM ". $this->getYear();
     }
+    public function getSemesterText()
+    {
+        return ($this->semester == 'Primer' ?  '1ER' : '2DO') ." SEMESTRE";
+    }
     public function getTextName()
     {
         return ($this->semester == 'Primer' ?  '1ER.' : '2DO.') ." SEMESTRE ". $this->getYear();

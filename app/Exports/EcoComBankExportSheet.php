@@ -1,40 +1,43 @@
 <?php
 namespace Muserpol\Exports;
 
-use Muserpol\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Muserpol\Models\EconomicComplement\EconomicComplement;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
-use DB;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class EcoComBankExport implements WithColumnFormatting, WithHeadings, ShouldAutoSize, WithMultipleSheets
+
+use DB;
+use Muserpol\Models\City;
+use Muserpol\Helpers\Util;
+
+class EcoComBankExportSheet implements FromCollection, WithTitle, WithHeadings,WithColumnFormatting, ShouldAutoSize
 {
-    protected $eco_com_procedure_id;
+    private $eco_com_procedure_id;
+
     public function __construct(int $id)
     {
         $this->eco_com_procedure_id = $id;
     }
 
-    // public function collection()
-    // {
-    //     
-    // }
-    public function sheets(): array
+    /**
+     * @return Builder
+     */
+    public function collection()
     {
-        $sheets = [];
+        return Util::getEconomicComplementSendToBank($this->eco_com_procedure_id)['result'];
+    }
 
-        // for ($month = 1; $month <= 2; $month++) {
-        $sheets[] = new EcoComBankExportHeaderSheet($this->eco_com_procedure_id);
-        $sheets[] = new EcoComBankExportSheet($this->eco_com_procedure_id);
-        // }
-
-        return $sheets;
+    /**
+     * @return string
+     */
+    public function title(): string
+    {
+        return 'Detalle';
     }
     public function headings(): array
     {
@@ -56,24 +59,14 @@ class EcoComBankExport implements WithColumnFormatting, WithHeadings, ShouldAuto
             'Descripcion 2', //2307 por defecto
             'Descripcion 3' // affiliate_id
         ];
-        return [
-            'DEPARTAMENTO',
-            'IDENTIFICACION',
-            'NOMBRE_Y_APELLIDO',
-            'IMPORTE_A_PAGAR',
-            'MONEDA_DEL_IMPORTE',
-            'DESCRIPCION_1',
-            'DESCRIPCION_2',
-            'DESCRIPCION_3',
-        ];
     }
     public function columnFormats(): array
     {
         return [
-            // 'D' => '#,##0.00', //1.000,10 (depende de windows
-            // 'D' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,  //1.000,10
-            // 'M' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-            // 'W' => NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE,
+            'B' => NumberFormat::FORMAT_GENERAL,
+            'D' => NumberFormat::FORMAT_GENERAL,
+            'G' => NumberFormat::FORMAT_NUMBER_00,
         ];
     }
+
 }
