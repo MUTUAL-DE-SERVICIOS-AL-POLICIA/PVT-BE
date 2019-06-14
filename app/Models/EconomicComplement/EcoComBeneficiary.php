@@ -48,6 +48,10 @@ class EcoComBeneficiary extends Model
     {
         return Util::removeSpaces($this->identity_card . ' ' .($this->city_identity_card->first_shortened ?? ''));
     }
+    public function ciWithExtToBank()
+    {
+        return Util::removeSpaces($this->identity_card . ' ' .($this->city_identity_card->to_bank ?? ''));
+    }
     public function getCivilStatus()
     {
         return Util::getCivilStatus($this->civil_status, $this->gender);
