@@ -80,6 +80,7 @@
                             <th>Fecha Jefatura</th>
                             <th># de Resolucion</th>
                             <th>Fecha Resolucion</th>
+                            <th>Fecha Resolucion2</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
@@ -187,6 +188,7 @@
                 { data: 'headship_code', visible: false },
                 { data: 'headship_date', visible: false },
                 { data: 'resolution_code', visible: false },
+                { data: 'resolution_date', visible: false },
                 { data: 'resolution_date', visible: false },
                 { data: 'action' },
             ],
