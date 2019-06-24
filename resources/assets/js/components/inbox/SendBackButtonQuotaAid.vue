@@ -30,7 +30,7 @@
                 v-model="wfSequenceBack"
                 class="form-control"
                 v-validate="'required'">
-            <option :value="null">Seleccione</option>
+    
             <option :value="wfs.wf_state_id"
                     v-for="(wfs, index) in wfSequenceBackList"
                     :key="index">{{wfs.wf_state_name}}</option>

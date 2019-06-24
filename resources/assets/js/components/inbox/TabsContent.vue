@@ -2,7 +2,7 @@
 import {mapGetters, mapMutations} from 'vuex';
 import { flashErrors } from "../../helper.js";
 export default {
-    props:['rolId','user', 'inboxState'],
+    props:['rolId','user', 'inboxState','wfdef'],
     data(){
         return{
             workflows: [],
@@ -11,7 +11,7 @@ export default {
             activeWorkflowId:null,
             wfSequenceNextL:[],
             wfSequenceBackL:[],
-            wfSequenceNext:null,
+            wfSequenceNext:this.wfdef,
             wfSequenceBack:null,
             wfCurrentState:null,
             showLoading:true,

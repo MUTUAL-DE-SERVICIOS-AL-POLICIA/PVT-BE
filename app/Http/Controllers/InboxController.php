@@ -27,8 +27,11 @@ class InboxController extends Controller
         return view('inbox.received');
     }
     public function edited()
-    {
-        return view('inbox.edited');
+    {   $wfdeff=20;
+        $data = [
+            'wfdeff' => $wfdeff
+        ];
+        return view('inbox.edited',$data);
     }
     public function sendForward(Request $request)
     {

@@ -1,4 +1,6 @@
+
 @extends('layouts.app') 
+
 @section('title', 'Mi bandeja') 
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -18,7 +20,7 @@
 </div>
 <div class="wrapper wrapper-content">
     <div class="row">
-        <tabs-content :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`"
+        <tabs-content :wfdef="{{ $wfdeff }}" :rol-id="{{Muserpol\Helpers\Util::getRol()}}" :user="{{Muserpol\Helpers\Util::getAuthUser()}}" :inbox-state="`edited`"
             inline-template>
             <div>
                 <div class="col-lg-3">
@@ -88,11 +90,15 @@
                                         </div> --}}
                                         {{-- forward --}}
                                         <div class="col-md-6 col-xs-offset-6  text-center">
-                                                <div class="input-group" >
-                                                    <select name="" v-model="wfSequenceNext" id="" class="form-control">
-                                                        <option :value="null"> Seleccione a donde derivará los Trámites </option>
-                                                        <option :value="wfs.wf_state_id"  v-for="(wfs, index) in wfSequenceNextList">@{{wfs.wf_state_name}}</option>
+                                                <div id="app" class="input-group" >
+                                                  
+                                                    <select name="derivara" v-model="wfSequenceNext" id="derivara" class="form-control">
+                                                        <!-- <option :value="null"> Seleccione a donde derivará los Trámites </option> -->
+                                                        <option :value="wfs.wf_state_id" selected="selected" v-for="(wfs, index) in wfSequenceNextList">@{{wfs.wf_state_name}}</option>
                                                     </select>
+                                                        <script type="application/javascript">
+                                                        document.getElementById("derivara").selectedIndex=20;
+                                                        </script>
                                                     <span class="input-group-btn">
                                                         <button :disabled="! (docs > 0 && wfSequenceNext != null)" class="btn" :class="{'btn-primary': docs > 0  }" @click="sendForward" data-toggle="tooltip"
                                                             data-placement="top" title="Enviar los Trámites seleccionados"> DERIVAR <i class="fa fa-send"></i> <strong>(@{{docs}})</strong>  <i class="fa fa-arrow-right">  </i></button>
@@ -100,7 +106,7 @@
                                                 </div>
                                             
                                         </div>
-                                    </div>
+                                     </div>
                                     <div v-else key="refresh">
                                         <div class="col-md-6 text-right" >
                                             <button class="btn btn-default" @click="getData()" data-toggle="tooltip" data-placement="top" title="Actualizar">
@@ -109,7 +115,7 @@
                                         </div>
                                         <div class="col-md-6 text-right" >
                                             <button class="btn btn-default" @click="switchShow()" data-toggle="tooltip" data-placement="top " title="Actualizar">
-                                                Mostart todo
+                                                Mostrar todo
                                             </button>
                                         </div>
                                     </div>
@@ -137,6 +143,7 @@
             </div>
         </tabs-content>
     </div>
+   
 @endsection
 @section('styles')
     {{-- <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet"> --}}
