@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('ret_fun_procedure', 'RetFunProcedureController');
 
     Route::resource('affiliate', 'AffiliateController');
+    Route::resource('overdue_loan', 'LoanController');
 
     Route::patch('/update_affiliate/{affiliate}', 'AffiliateController@update')->name('update_affiliate');
     Route::patch('/update_affiliate_police/{affiliate}', 'AffiliateController@update_affiliate_police')->name('update_affiliate_police');
@@ -757,6 +758,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // affiliate submitted documents
     Route::get('get_procedure_requirements', 'AffiliateSubmittedDocumentsController@getRequirements');
+
 
     Route::get('/export_bank',function ()
     {
