@@ -6,8 +6,7 @@
         <button @click="reload()" class="btn">
           <i class="fa fa-refresh"></i>
         </button>
-        <select v-model="ecoComProcedureId" @change="reload()" class>
-          <option :value="null"></option>
+        <select v-model="ecoComProcedureId" @change="reload()" v-if="ecoComProcedures.length > 0">
           <option
             v-for="e in ecoComProcedures"
             :key="e.id"
@@ -38,7 +37,7 @@ export default {
     return {
       ecoComProcedureId:
         this.ecoComProcedures.length > 0
-          ? this.ecoComProcedures[this.ecoComProcedures.length - 1].id
+          ? this.ecoComProcedures[0].id
           : null,
       dataSet: [],
       data: [],
@@ -73,7 +72,11 @@ export default {
                   "rgba(255, 206, 86, 0.6)",
                   "rgba(75, 192, 192, 0.6)",
                   "rgba(153, 102, 255, 0.6)",
-                  "rgba(255, 159, 64, 0.6)"
+                  "rgba(255, 159, 64, 0.6)",
+                  "rgba(231, 76, 60, 0.6)",
+                  "rgba(52, 73, 94, 0.6)",
+                  "rgba(46, 204, 113, 0.6)",
+                  "rgba(201, 28, 91, 0.6)"
                 ],
                 borderColor: [
                   "rgba(255,99,132,1)",
@@ -81,7 +84,12 @@ export default {
                   "rgba(255, 206, 86, 1)",
                   "rgba(75, 192, 192, 1)",
                   "rgba(153, 102, 255, 1)",
-                  "rgba(255, 159, 64, 1)"
+                  "rgba(255, 159, 64, 1)",
+                  "rgba(231, 76, 60, 1)",
+                  "rgba(52, 73, 94, 1)",
+                  "rgba(46, 204, 113, 1)",
+                  "rgba(201, 28, 91, 1)"
+
                 ]
                 //   borderWidth: 1
               }

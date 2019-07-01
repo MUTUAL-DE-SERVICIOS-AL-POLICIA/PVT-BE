@@ -191,7 +191,7 @@ export default {
       modality_id: !!this.lastEcoCom
         ? this.lastEcoCom.procedure_modality_id
         : null,
-      city_id: this.user.city_id,
+      city_id: !!this.lastEcoCom ? this.lastEcoCom.city_id : this.user.city_id,
       pension_entity_id: !!this.affiliate.pension_entity_id
         ? this.affiliate.pension_entity_id
         : null,
