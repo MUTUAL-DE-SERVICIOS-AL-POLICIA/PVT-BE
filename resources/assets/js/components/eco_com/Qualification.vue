@@ -111,6 +111,10 @@
                   <td>Factor de Complementación</td>
                   <td>{{ ecoCom.complementary_factor }}</td>
                 </tr>
+                <tr class="warning">
+                  <td>Total Complemento Economico</td>
+                  <td>{{ ecoCom.total_eco_com | currency }}</td>
+                </tr>
                 <tr v-for="d in ecoCom.discount_types" :key="d.id" class="danger">
                   <td>{{ d.name }}</td>
                   <td>{{ d.pivot.amount | currency}}</td>
