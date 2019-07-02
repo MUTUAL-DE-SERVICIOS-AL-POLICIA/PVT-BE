@@ -42,6 +42,13 @@ class Spouse extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function getMarriageDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     public function getDueDateAttribute($value)
     {
         if(!$value){
