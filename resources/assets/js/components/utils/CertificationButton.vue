@@ -25,11 +25,10 @@ import { camelCaseToSnakeCase, flashErrors } from "../../helper.js";
         }
       },
       methods: {
-        print(data) {
+        print() {
           return {
-            printable: data,
+            printable: `${this.urlPrint}`,
             type: "pdf",
-            base64: true,
             modalMessage: "Generando documentos de impresión, por favor espere un momento.",
             showModal: true
           };
@@ -67,13 +66,14 @@ import { camelCaseToSnakeCase, flashErrors } from "../../helper.js";
               // allowOutsideClick: () => !this.swal.isLoading()
             }).then(result => {
               if (result.value) {
-                let res1 = axios({
-                  method: "GET",
-                  url: this.urlPrint,
-                  responseType: "arraybuffer"
-                });
-                const pdfBlob = new Blob([res1.data], { type: "application/pdf" });
-                printJS(URL.createObjectURL(pdfBlob));
+                printJS(this.print())
+                // let res1 = axios({
+                //   method: "GET",
+                //   url: this.urlPrint,
+                //   responseType: "arraybuffer"
+                // });
+                // const pdfBlob = new Blob([res1.data], { type: "application/pdf" });
+                // printJS(URL.createObjectURL(pdfBlob));
                 this.loading = false;
               }else{
                 this.loading = false;
