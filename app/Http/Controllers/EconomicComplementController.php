@@ -997,6 +997,7 @@ class EconomicComplementController extends Controller
         }
         $eco_com = EconomicComplement::with('discount_types')->findOrFail($id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
+        $eco_com->total_eco_com = $eco_com->getOnlyTotalEcoCom();
         return $eco_com;
     }
     public function updateRents(Request $request)
