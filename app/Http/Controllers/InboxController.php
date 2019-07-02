@@ -524,6 +524,7 @@ class InboxController extends Controller
     $procedures = EconomicComplement::with([
       'eco_com_beneficiary',
       'eco_com_procedure',
+      'eco_com_reception_type',
       'affiliate',
       'degree',
       'category',

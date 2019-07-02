@@ -689,6 +689,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('eco_com/{eco_com_id}/print/reception', 'EcoComCertificationController@printReception')->name('eco_com_print_reception');
     Route::get('eco_com/{eco_com_id}/print/sworn_declaration', 'EcoComCertificationController@printSwornDeclaration')->name('eco_com_print_sworn_declaration');
     Route::get('eco_com/{eco_com_id}/print/qualification', 'EcoComCertificationController@printQualification')->name('eco_com_print_qualification');
+    Route::post('eco_com/{eco_com_id}/save_certification_note', 'EcoComCertificationController@saveCertificationNote')->name('save_certification_note');
     Route::get('eco_com/print/certification_all_eco_coms/{affiliate_id}', 'EcoComCertificationController@certificationAllEcoComs')->name('eco_com_print_certification_all_eco_coms');
 
 

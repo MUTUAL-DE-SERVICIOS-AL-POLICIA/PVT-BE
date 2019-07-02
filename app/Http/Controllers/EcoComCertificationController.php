@@ -286,4 +286,14 @@ class EcoComCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("certificacion.pdf");
     }
+    public function saveCertificationNote(Request $request, $eco_com_id)
+    {
+        $eco_com = EconomicComplement::find($eco_com_id);
+        // Session::put('size', $request->size);
+        if ($request->note) {
+            $eco_com->comment = $request->note;
+            $eco_com->save();
+        }
+        return $eco_com;
+    }
 }

@@ -82,6 +82,9 @@ class EconomicComplementObserver
         if ($eco_com->category_id != $old->category_id) {
             $message = $message . ' Categoría ' . optional($old->category)->name . ' a ' . optional($eco_com->category)->name . ', ';
         }
+        if ($eco_com->comment != $old->comment) {
+            $message = $message . ' Nota de Calificación: de ' . $old->comment . ' a ' . $eco_com->comment. ', ';
+        }
         if($temp !=  $message){
             $message = $message . ' ';
             $eco_com->procedure_records()->create([
