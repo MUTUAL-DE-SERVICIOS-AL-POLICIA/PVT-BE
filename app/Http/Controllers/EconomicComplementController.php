@@ -696,6 +696,8 @@ class EconomicComplementController extends Controller
         }
         $affiliate = Affiliate::where('id', '=', $request->id)->first();
         // $this->authorize('update', $affiliate);
+        $affiliate->affiliate_state_id = $request->affiliate_state_id;
+        $affiliate->type = $request->type;
         $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
         $affiliate->item = $request->item;
         $affiliate->category_id = $request->category_id;
@@ -716,6 +718,8 @@ class EconomicComplementController extends Controller
         }
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        $affiliate->file_code = mb_strtoupper($request->file_code);
         $affiliate->save();
         $economic_complement = EconomicComplement::find($request->eco_com_id);
         $economic_complement->degree_id = $request->degree_id;
