@@ -587,16 +587,14 @@ class QuotaAidMortuaryController extends Controller
 
     $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
 
-<<<<<<< HEAD
-    if (isset($beneficiary_avdisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $applicant->id)->first();))
-=======
-
-    if (isset(QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $applicant->id)->first()))
->>>>>>> origin/master
+    if (QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $applicant->id)->first()){
       $beneficiary_avdisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $applicant->id)->first();
+    }
+    if (isset($beneficiary_avdisor->id)){
       $advisor = QuotaAidAdvisor::find($beneficiary_avdisor->quota_aid_advisor_id);
-    else
+    }else{
       $advisor = new QuotaAidAdvisor();
+    }
 
 
     $beneficiary_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $applicant->id)->first();
