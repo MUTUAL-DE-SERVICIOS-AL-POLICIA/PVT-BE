@@ -53,6 +53,7 @@
                         <th>C.I. BENEFICIARIO</th>
                         <th>NOMBRE BENEFICIARIO</th>
                         <th>MODALIDAD</th>
+                        <th>TIPO</th>
                         <th>GRADO</th>
                         <th>CATEGORIA</th>
                         <th>TOTAL</th>
@@ -69,6 +70,7 @@
                         <td class="uppercase px-5 text-left">{{ $procedure->eco_com_beneficiary->fullName() }}</td>
                         <td class="uppercase px-5 text-center">
                             {{ $procedure->eco_com_modality->procedure_modality->name }}</td>
+                        <td class="uppercase px-5 text-center">{{ $procedure->eco_com_reception_type->name }}</td>
                         <td class="uppercase px-5 text-center">{{ $procedure->degree->shortened }}</td>
                         <td class="uppercase px-5 text-center">{{ $procedure->category->name }}</td>
                         <td class="uppercase px-5 text-right">Bs. {{ Util::formatMoney($procedure->total) }}</td>
