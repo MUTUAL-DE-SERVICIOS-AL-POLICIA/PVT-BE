@@ -66,7 +66,7 @@ import { camelCaseToSnakeCase, flashErrors } from "../../helper.js";
               // allowOutsideClick: () => !this.swal.isLoading()
             }).then(result => {
               if (result.value) {
-                printJS(this.print());
+                printJS(this.print())
                 // let res1 = axios({
                 //   method: "GET",
                 //   url: this.urlPrint,

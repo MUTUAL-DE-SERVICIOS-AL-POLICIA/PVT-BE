@@ -86,6 +86,12 @@ class EcoComBeneficiaryController extends Controller
         if ($request->is_duedate_undefined == 'on') {
             $beneficiary->due_date = null;
         }
+        if ($eco_com->isWidowhood()) {
+            $beneficiary->official = $request->official;
+            $beneficiary->book = $request->book;
+            $beneficiary->departure = $request->departure;
+            $beneficiary->marriage_date = Util::verifyBarDate($request->marriage_date) ? Util::parseBarDate($request->marriage_date) : $request->marriage_date;
+        }
         $beneficiary->save();
 
         $eco_com = $beneficiary->economic_complement;
@@ -230,6 +236,11 @@ class EcoComBeneficiaryController extends Controller
                 if ($request->is_duedate_undefined == 'on') {
                     $spouse->due_date = null;
                 }
+                $spouse->official = $request->official;
+                $spouse->book = $request->book;
+                $spouse->departure = $request->departure;
+                $spouse->marriage_date = Util::verifyBarDate($request->marriage_date) ? Util::parseBarDate($request->marriage_date) : $request->marriage_date;
+
                 $spouse->save();
                 break;
             default:

@@ -696,6 +696,11 @@ class Util
     $spouse->city_identity_card_id = $object->city_identity_card_id;
     $spouse->date_death = $object->date_death ? Util::verifyBarDate($object->date_death) ? Util::parseBarDate($object->date_death) : $object->date_death  : null;
     $spouse->reason_death = $object->reason_death ?? null;
+    $spouse->official = $object->official;
+    $spouse->book = $object->book;
+    $spouse->departure = $object->departure;
+    $spouse->marriage_date = Util::verifyBarDate($object->marriage_date) ? Util::parseBarDate($object->marriage_date) : $object->marriage_date;
+
     $spouse->save();
   }
   public static function classificationContribution($contribution_type_id, $breakdown_id, $total)

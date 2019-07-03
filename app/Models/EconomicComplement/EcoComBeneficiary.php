@@ -24,6 +24,13 @@ class EcoComBeneficiary extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function getMarriageDateAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     public function economic_complement()
     {
         return $this->belongsTo('Muserpol\Models\EconomicComplement\EconomicComplement');
