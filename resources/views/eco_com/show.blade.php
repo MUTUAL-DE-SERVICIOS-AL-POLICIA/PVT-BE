@@ -46,14 +46,12 @@
         </div>
     </div>
 </div>
-
 @if(Session::has('message'))
 <br>
 <div class="alert alert-danger alert-dismissable">
     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button> {{Session::get('message')}}
 </div>
 @endif
-
 <div class="row">
     <div class="col-md-3" style="padding-right: 3px">
         <div class="widget-head-color-box blue-bg text-center">
@@ -85,7 +83,6 @@
     </div>
     <br>
     <div class="col-md-9" style="padding-left: 6px">
-
         <div class="tab-content">
             <div id="tab-eco-com" class="tab-pane active">
                 <eco-com-info :eco-com="{{ $economic_complement }}" :affiliate="{{$affiliate}}" :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}" :states="{{ $states }}"
