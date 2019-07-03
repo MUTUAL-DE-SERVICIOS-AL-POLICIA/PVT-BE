@@ -694,7 +694,7 @@ class Util
     $spouse->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
     $spouse->city_birth_id = $object->city_birth_id;
     $spouse->city_identity_card_id = $object->city_identity_card_id;
-    $spouse->date_death = $object->date_death ?? null;
+    $spouse->date_death = $object->date_death ? Util::verifyBarDate($object->date_death) ? Util::parseBarDate($object->date_death) : $object->date_death  : null;
     $spouse->reason_death = $object->reason_death ?? null;
     $spouse->save();
   }
