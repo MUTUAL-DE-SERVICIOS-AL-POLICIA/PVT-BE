@@ -116,6 +116,71 @@
           </div>-->
         </div>
         <br>
+        <div>
+          <!-- <div class="hr-line-dashed"></div>
+          <h3>Información Policial del Titular:</h3> -->
+          <div class="row">
+            <div class="col-md-6" :class="{'has-error': errors.has('degree_id') }">
+              <div class="col-md-4">
+                <label class="control-label">Categoria</label>
+              </div>
+              <div class="col-md-8">
+                <select class="form-control" v-model="form.category_id" name="category_id" :disabled="!editing" v-validate="'required'">
+                  <option v-for="(c, index) in categories" :value="c.id" :key="index">{{c.name}}</option>
+                </select>
+                <div v-show="errors.has('category_id')">
+                  <i class="fa fa-warning text-danger"></i>
+                  <span class="text-danger">{{ errors.first('category_id') }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6" :class="{'has-error': errors.has('category_id') }">
+              <div class="col-md-4">
+                <label class="control-label">Grado</label>
+              </div>
+              <div class="col-md-8">
+                <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing" v-validate="'required'">
+                  <option v-for="(c, index) in degrees" :value="c.id" :key="index">{{c.name}}</option>
+                </select>
+                <div v-show="errors.has('degree_id')">
+                  <i class="fa fa-warning text-danger"></i>
+                  <span class="text-danger">{{ errors.first('degree_id') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
+            <div class="col-md-4">
+                <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
+                <div v-show="errors.has('service_years') && editing" >
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">@{{ errors.first('service_years') }}</span>
+                </div>
+            </div>
+            <!-- <div class="col-md-2"><label class="control-label">Ente gestor:</label></div>
+            <div class="col-md-4">
+                {!! Form::select('pension_entity_id', $pension_entities, null, ['placeholder' => 'Seleccione el ente gestor', 'class' => 'form-control','v-model'=> 'form.pension_entity_id',':disabled'=>'!editing' ]) !!}
+                <div v-show="errors.has('pension_entity_id') && editing" >
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">@{{ errors.first('pension_entity_id') }}</span>
+                </div>
+            </div> -->
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-2"><label class="control-label">Meses de servicio</label></div>
+            <div class="col-md-4">
+                <input type="number" name="service_months" v-model="form.service_months" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:11'" min="0" max="11">
+                <div v-show="errors.has('service_months') && editing" >
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">@{{ errors.first('service_months') }}</span>
+                </div>
+            </div>
+        </div>
+        <br>
+        </div>
         <div v-if="editing">
           <div class="text-center">
             <button class="btn btn-danger" type="button" @click="cancel()">
@@ -137,10 +202,13 @@ import { flashErrors, canOperation } from "../../helper";
 export default {
   props: [
     "ecoCom",
+    "affiliate",
     "ecoComProcedure",
     "states",
     "cities",
     "permissions",
+    "degrees",
+    "categories",
     "roleId"
   ],
   data() {
@@ -152,7 +220,9 @@ export default {
         procedure_state_id: this.ecoCom.procedure_state_id,
         city_id: this.ecoCom.city_id,
         degree_id: this.ecoCom.degree_id,
-        category_id: this.ecoCom.category_id
+        category_id: this.ecoCom.category_id,
+        service_years: this.affiliate.service_years,
+        service_months: this.affiliate.service_months
       },
       editing: false,
       show_spinner: false,
@@ -172,6 +242,22 @@ export default {
     can(operation) {
       return canOperation(operation, this.permissions);
     },
+    getCalculateCategory(){
+				let years = this.form.service_years;
+				let months = this.form.service_months;
+				if (years < 0 || months < 0 || years >100 || months > 12 ) {
+					return "error";
+				}
+				if (months > 0) {
+					years++;
+				}
+				let category = this.categories.find(c =>{
+					return c.from <= years && c.to >= years
+				})
+				if(!!category){
+					this.form.category_id = category.id
+				}
+			},
     edit() {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;

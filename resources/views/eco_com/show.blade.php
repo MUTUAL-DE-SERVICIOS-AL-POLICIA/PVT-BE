@@ -71,7 +71,7 @@
         <div class="widget-text-box">
             <ul class="list-group elements-list">
                 <li class="list-group-item active tab-eco-com" data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="fa fa-puzzle-piece"></i> Información del Trámite</a></li>
-                <li class="list-group-item tab-police-info" data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información Policial </a></li>
+                <li class="list-group-item tab-police-info" data-toggle="tab" href="#tab-police-info"><a href="#"><i class="fa fa-address-card"></i> Información del Policia Actualizada</a></li>
                 <li class="list-group-item tab-eco-com-beneficiary" data-toggle="tab" href="#tab-eco-com-beneficiary"><a href="#"><i class="fa fa-users"></i> Beneficiario</a></li>
                 <li class="list-group-item tab-eco-com-legal-guardian" data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>
                 <li class="list-group-item tab-eco-com-summited-document" data-toggle="tab" href="#tab-eco-com-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
@@ -88,8 +88,8 @@
 
         <div class="tab-content">
             <div id="tab-eco-com" class="tab-pane active">
-                <eco-com-info :eco-com="{{ $economic_complement }}" :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}" :states="{{ $states }}"
-                :cities="{{ $cities }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
+                <eco-com-info :eco-com="{{ $economic_complement }}" :affiliate="{{$affiliate}}" :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}" :states="{{ $states }}"
+                :cities="{{ $cities }}" :degrees="{{$degrees}}" :categories="{{ $categories }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
                 </eco-com-info>
             </div>
             <div id="tab-eco-coms" class="tab-pane">
@@ -101,8 +101,7 @@
                 </affiliate-show>
             </div>
             <div id="tab-police-info" class="tab-pane">
-                <affiliate-police :affiliate="{{ $affiliate }}" :eco-com-id="{{ $economic_complement->id }}" inline-template :type-eco-com="true"
-                    :categories="{{$categories}}">
+                <affiliate-police :affiliate="{{ $affiliate }}" :eco-com-id="{{ $economic_complement->id }}" inline-template :categories="{{$categories}}">
     @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate, 'affiliate_states'=>$affiliate_states, 'categories'
                     => $categories->pluck('name', 'id'), 'degrees'=> $degrees->pluck('name', 'id'), 'pension_entities'=>
                     $pension_entities->pluck('name', 'id')])
