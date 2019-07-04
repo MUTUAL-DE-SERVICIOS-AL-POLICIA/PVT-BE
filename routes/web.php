@@ -673,6 +673,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
     Route::get('eco_com_record/{id}', 'EconomicComplementController@getRecord');
+    Route::post('eco_com_import_rents', 'EcoComImportExportController@importSenasir');
 
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
