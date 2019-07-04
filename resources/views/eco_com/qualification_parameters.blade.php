@@ -34,6 +34,8 @@
                             class="fa fa-users"></i> Factor de Complementacion</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-procedure"><a href="#"><i
                             class="fa fa-users"></i> Rango de Fechas</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-import-rents"><a href="#"><i
+                            class="fa fa-users"></i> Importar Rentas</a></li>
             </ul>
         </div>
     </div>
@@ -51,6 +53,9 @@
             </div>
             <div id="tab-eco-com-procedure" class="tab-pane">
             <eco-com-procedure :permissions="{{ $permissions }}"></eco-com-procedure>
+            </div>
+            <div id="tab-eco-com-import-rents" class="tab-pane">
+            <eco-com-import-rents :permissions="{{ $permissions }}"></eco-com-import-rents>
             </div>
         </div>
     </div>
