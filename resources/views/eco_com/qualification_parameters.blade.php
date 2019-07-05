@@ -51,7 +51,7 @@
     @include('eco_com.average')
             </div>
             <div id="tab-complementary-factor" class="tab-pane">
-    {{-- @include('complementary_factor.index') --}}
+    @include('complementary_factor.index')
             </div>
             <div id="tab-eco-com-procedure" class="tab-pane">
             <eco-com-procedure :permissions="{{ $permissions }}"></eco-com-procedure>

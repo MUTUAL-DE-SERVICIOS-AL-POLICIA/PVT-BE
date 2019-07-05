@@ -1109,7 +1109,9 @@ class EconomicComplementController extends Controller
                 break;
         }
         if (Gate::allows('qualify', $economic_complement)) {
-            $economic_complement->qualify();
+            if ($economic_complement->qualify()->status() == 422) {
+                return $economic_complement->qualify() ;
+            }
         }
         $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         return $economic_complement;
