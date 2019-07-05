@@ -493,6 +493,15 @@ class EconomicComplementController extends Controller
                 $spouse->save();
 
                 /**
+                 * update beneficiary sereci info
+                 */
+                $eco_com_beneficiary->official = $spouse->official;
+                $eco_com_beneficiary->book = $spouse->book;
+                $eco_com_beneficiary->departure = $spouse->departure;
+                $eco_com_beneficiary->marriage_date = $spouse->marriage_date;
+                $eco_com_beneficiary->save();
+
+                /**
                  *update affiliate
                  */
                 $affiliate->identity_card = $request->affiliate_identity_card;

@@ -162,6 +162,15 @@
                                 </div>
                             </div>
                             </div>
+                            <div class="row m-b-md">
+                            <div class="col-sm-3 col-form-label"><label class="control-label">Nro de certificado de defunción::</label></div>
+                            <div class="col-md-9"><input name="death_certificate_number" v-model="form.death_certificate_number" type="text" class="form-control" :disabled="!editing">
+                                <div v-show="errors.has('death_certificate_number') && editing">
+                                    <i class="fa fa-warning text-danger"></i>
+                                    <span class="text-danger">@{{ errors.first('death_certificate_number') }}</span>
+                                </div>
+                            </div>
+                            </div>
 
                             <div class="row m-b-md">
                                 <div class="col-md-3"><label class="control-label">Celular:</label></div>
