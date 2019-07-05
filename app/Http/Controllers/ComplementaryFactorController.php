@@ -349,7 +349,6 @@ class ComplementaryFactorController extends Controller
 
             $message = "Factores de Complementación actualizados con éxito";
          }
-
-        return redirect('complementary_factor')->with('flash', $message);
+        return redirect('eco_com_qualification_parameters');
     }
 }

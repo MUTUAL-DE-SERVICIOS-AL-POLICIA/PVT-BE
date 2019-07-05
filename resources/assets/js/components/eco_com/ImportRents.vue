@@ -39,20 +39,22 @@
             <table class="table table-striped table-bordered">
               <thead>
                 <tr>
-                  <th>CI</th>
-                  <th>Paterno</th>
-                  <th>Materno</th>
-                  <th>Primer Nombre</th>
-                  <th>Segundo Nombre</th>
+                  <th>Nro Tramite</th>
+                  <th>CI Beneficiario</th>
+                  <th>Paterno Beneficiario</th>
+                  <th>Materno Beneficiario</th>
+                  <th>Primer Nombre Beneficiario</th>
+                  <th>Segundo Nombre Beneficiario</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(nf, index) in notFound" :key="index" >
-                  <td>{{ nf.ci }}</td>
-                  <td>{{ nf.paterno }}</td>
-                  <td>{{ nf.materno }}</td>
-                  <td>{{ nf.p_nombre }}</td>
-                  <td>{{ nf.s_nombre }}</td>
+                  <td><a :href="`/eco_com/${nf.id}`">{{ nf.code }}</a></td>
+                  <td>{{ nf.eco_com_beneficiary.identity_card }}</td>
+                  <td>{{ nf.eco_com_beneficiary.last_name }}</td>
+                  <td>{{ nf.eco_com_beneficiary.mothers_last_name }}</td>
+                  <td>{{ nf.eco_com_beneficiary.first_name }}</td>
+                  <td>{{ nf.eco_com_beneficiary.second_name }}</td>
                 </tr>
               </tbody>
             </table>

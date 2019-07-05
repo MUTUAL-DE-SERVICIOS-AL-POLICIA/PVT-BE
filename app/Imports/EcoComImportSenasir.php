@@ -104,7 +104,7 @@ class EcoComImportSenasir implements ToCollection
         }
         $data = [
             'found' => $found,
-            'not_found' => $not_found,
+            // 'not_found' => $not_found,
         ];
         logger($data);
         session()->put('senasir_data', $data);
