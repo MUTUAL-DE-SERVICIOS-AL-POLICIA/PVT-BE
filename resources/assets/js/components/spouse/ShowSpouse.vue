@@ -25,6 +25,7 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                     birth_date: !! this.spouse.birth_date ? this.spouse.birth_date :null ,
                     date_death: !! this.spouse.date_death ? this.spouse.date_death :null ,
                     reason_death: !! this.spouse.reason_death ? this.spouse.reason_death :null ,
+                    death_certificate_number: !! this.spouse.death_certificate_number ? this.spouse.death_certificate_number :null ,
                 }
             }
         },
@@ -123,6 +124,7 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                     this.form.registration = this.values.registration;
                     this.form.date_death = this.values.date_death;
                     this.form.reason_death = this.values.reason_death;
+                    this.form.death_certificate_number = this.values.death_certificate_number;
                 }else{
                     this.validateBeforeSubmit();
                 }
@@ -153,6 +155,7 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                         this.values.civil_status = response.data.spouse.civil_status;
                         this.values.date_death = response.data.spouse.date_death;
                         this.values.reason_death = response.data.spouse.reason_death;
+                        this.values.death_certificate_number = response.data.spouse.death_certificate_number;
                         flash('Informacion de Esposa(o) Actualizada');
                     }).catch((error)=>{
                         this.show_spinner=false;

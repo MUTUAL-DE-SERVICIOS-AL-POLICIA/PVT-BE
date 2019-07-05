@@ -79,6 +79,24 @@
                 </div>
               </div>
             </div>
+            <br>
+            <div class="row">
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Renta Dignidad</label>
+                <div class="col-sm-4">
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-money
+                    name="renta_dignidad"
+                    v-model="ecoCom.renta_dignidad"
+                  >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
+                </div>
+              </div>
+            </div>
             <div class="hr-line-dashed"></div>
 
             <div class="row">
@@ -217,7 +235,8 @@ export default {
         parseFloat(parseMoney(this.ecoCom.aps_total_fsa)) +
         parseFloat(parseMoney(this.ecoCom.aps_total_cc)) +
         parseFloat(parseMoney(this.ecoCom.aps_total_fs)) +
-        parseFloat(parseMoney(this.ecoCom.aps_disability))
+        parseFloat(parseMoney(this.ecoCom.aps_disability)) +
+        parseFloat(parseMoney(this.ecoCom.renta_dignidad))
       );
     },
     totalSumSenasir() {

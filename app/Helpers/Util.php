@@ -696,6 +696,7 @@ class Util
     $spouse->city_identity_card_id = $object->city_identity_card_id;
     $spouse->date_death = $object->date_death ? Util::verifyBarDate($object->date_death) ? Util::parseBarDate($object->date_death) : $object->date_death  : null;
     $spouse->reason_death = $object->reason_death ?? null;
+    $spouse->death_certificate_number = $object->death_certificate_number ?? null;
     $spouse->official = $object->official;
     $spouse->book = $object->book;
     $spouse->departure = $object->departure;

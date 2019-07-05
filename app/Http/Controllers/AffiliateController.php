@@ -451,6 +451,7 @@ class AffiliateController extends Controller
         $affiliate->birth_date = Util::verifyBarDate($request->birth_date) ? Util::parseBarDate($request->birth_date) : $request->birth_date;
         $affiliate->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
         $affiliate->reason_death = $request->reason_death;
+        $affiliate->death_certificate_number = $request->death_certificate_number;
         $affiliate->phone_number = trim(implode(",", $request->phone_number));
         $affiliate->cell_phone_number = trim(implode(",", $request->cell_phone_number));
         $affiliate->city_birth_id = $request->city_birth_id;
