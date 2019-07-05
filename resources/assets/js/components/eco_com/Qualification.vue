@@ -49,7 +49,10 @@
                   <td>Prestación por Invalidéz</td>
                   <td>{{ ecoCom.aps_disability | currency }}</td>
                 </tr>
-
+                <tr v-if="!isSenasir" class="success">
+                  <td>Total Renta ó Pensión</td>
+                  <td>{{ totalSumFractions | currency }}</td>
+                </tr>
                 <tr v-if="isSenasir">
                   <td>Total Ganado Renta ó Pensión</td>
                   <td>{{ ecoCom.sub_total_rent | currency }}</td>
@@ -62,9 +65,9 @@
                   <td>- Renta Dignidad</td>
                   <td>{{ ecoCom.dignity_pension | currency }}</td>
                 </tr>
-                <tr class="success">
+                <tr v-if="isSenasir" class="success">
                   <td>Total Renta ó Pensión</td>
-                  <td>{{ ecoCom.total_rent | currency }}</td>
+                  <td>{{ totalSumSenasir | currency }}</td>
                 </tr>
               </tbody>
             </table>
