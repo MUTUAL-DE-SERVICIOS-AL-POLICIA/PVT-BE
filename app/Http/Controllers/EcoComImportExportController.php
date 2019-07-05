@@ -13,13 +13,15 @@ class EcoComImportExportController extends Controller
 {
     public function importSenasir(Request $request)
     {
-        $uploadedFile = $request->file('image');
-        $filename = 'senasir.' . $uploadedFile->getClientOriginalExtension();
-        Storage::disk('local')->putFileAs(
-            'senasir/' . now()->year,
-            $uploadedFile,
-            $filename
-        );
+        if ($request->refresh != 'true') {
+            $uploadedFile = $request->file('image');
+            $filename = 'senasir.' . $uploadedFile->getClientOriginalExtension();
+            Storage::disk('local')->putFileAs(
+                'senasir/' . now()->year,
+                $uploadedFile,
+                $filename
+            );
+        }
         Excel::import(new EcoComImportSenasir, 'senasir/'.now()->year.'/senasir.xlsx');
         $no_import = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
             ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
