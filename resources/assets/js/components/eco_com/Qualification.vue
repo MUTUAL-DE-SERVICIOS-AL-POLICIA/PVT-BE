@@ -51,7 +51,7 @@
                 </tr>
                 <tr v-if="!isSenasir" class="success">
                   <td>Total Renta ó Pensión</td>
-                  <td>{{ totalSumFractions | currency }}</td>
+                  <td>{{ getTotalSumFractions() | currency }}</td>
                 </tr>
                 <tr v-if="isSenasir">
                   <td>Total Ganado Renta ó Pensión</td>
@@ -67,7 +67,7 @@
                 </tr>
                 <tr v-if="isSenasir" class="success">
                   <td>Total Renta ó Pensión</td>
-                  <td>{{ totalSumSenasir | currency }}</td>
+                  <td>{{ getTotalSumSenasir() | currency }}</td>
                 </tr>
               </tbody>
             </table>
@@ -446,6 +446,22 @@ export default {
         });
       this.loadingButton = false;
       this.editing = true;
+    },
+    getTotalSumFractions() {
+      return (
+        parseFloat(parseMoney(this.ecoCom.aps_total_fsa)) +
+        parseFloat(parseMoney(this.ecoCom.aps_total_cc)) +
+        parseFloat(parseMoney(this.ecoCom.aps_total_fs)) +
+        parseFloat(parseMoney(this.ecoCom.aps_disability))
+      );
+    },
+    getTotalSumSenasir() {
+      return (
+        parseFloat(parseMoney(this.ecoCom.sub_total_rent)) -
+        parseFloat(parseMoney(this.ecoCom.reimbursement)) -
+        parseFloat(parseMoney(this.ecoCom.dignity_pension)) +
+        parseFloat(parseMoney(this.ecoCom.aps_disability))
+      );
     }
   }
 }
