@@ -124,6 +124,10 @@
                         <div class="col-md-3"><label class="control-label">Causa de Fallecimiento:</label></div>
                         <div class="col-md-9"><input name="reason_death" v-model="form.reason_death"  type="text" class="form-control" :disabled="!editing"></div>
                     </div>
+                    <div class="row m-b-md">
+                        <div class="col-md-3"><label class="control-label">Nro de certificado de defunción:</label></div>
+                        <div class="col-md-9"><input name="death_certificate_number" v-model="form.death_certificate_number"  type="text" class="form-control" :disabled="!editing"></div>
+                    </div>
                 </div>
             </div>
             <div>

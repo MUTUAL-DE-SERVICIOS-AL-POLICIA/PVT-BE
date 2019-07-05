@@ -6,17 +6,19 @@
           <h2 class="pull-left">Devoluciones</h2>
           <div class="ibox-tools">
             <!-- @click="createObs()" -->
-            <button v-if="devolution" class="btn btn-primary" @click="printCertification()">
-              <i class="fa fa-print"></i> Imprimir Certificacion
-            </button>
-            <button :disabled="devolution.hasPaymentCommitment" class="btn btn-primary" @click="printPaymentCommitment()">
-              <i class="fa fa-print"></i> Imprimir Compromiso
-            </button>
-            <button class="btn btn-primary" data-toggle="tooltip" title="Crear compromiso de Pago" @click="createPaymentCommitment()">
-              <!-- :disabled="!can('create_observation_type')"
-              v-if="can('read_observation_type')" -->
-              <i class="fa fa-plus"></i> Crear compromiso de Pago
-            </button>
+            <div v-if="devolution">
+              <button  class="btn btn-primary" @click="printCertification()">
+                <i class="fa fa-print"></i> Imprimir Certificacion
+              </button>
+              <button :disabled="devolution.hasPaymentCommitment" class="btn btn-primary" @click="printPaymentCommitment()">
+                <i class="fa fa-print"></i> Imprimir Compromiso
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" title="Crear compromiso de Pago" @click="createPaymentCommitment()">
+                <!-- :disabled="!can('create_observation_type')"
+                v-if="can('read_observation_type')" -->
+                <i class="fa fa-plus"></i> Crear compromiso de Pago
+              </button>
+            </div>
           </div>
         </div>
         <!-- v-if="can('read_observation_type')" -->
