@@ -57,7 +57,7 @@ class CalculateAverage extends Command
                 $this->error("\n\n Eco Com procedure not found  $year/$semester.\n");
                 exit();
             }
-            if (BaseWage::whereYear('month_year', $year)->get()) {
+            if (BaseWage::whereYear('month_year', $year)->get()->count() == 0 ) {
                 $this->error("\n\n BAse wage not found for year  $year.\n");
                 exit();
             }
