@@ -20,6 +20,18 @@
             &nbsp;
             {{ loadingButton ? 'Procesando...' : 'Subir Archivo' }}
           </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="refreshData()"
+            :disabled="loadingButton"
+            title="verificar nuevamente"
+          >
+            <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
+            <i v-else class="fa fa-refresh"></i>
+            &nbsp;
+            {{ loadingButton ? 'Procesando...' : '' }}
+          </button>
         </div>
       </div>
     </div>
@@ -73,15 +85,21 @@ export default {
       loadingButton: false,
       found: 0,
       notFound: [],
-      showResults: false
+      showResults: false,
+      refresh: false,
     };
   },
   methods: {
+    async refreshData() {
+      this.refresh = true;
+      this.sendForm()
+    },
     async sendForm() {
       this.showResults = false;
       const fileInput = document.querySelector("#file-upload");
       const formData = new FormData();
       formData.append("image", fileInput.files[0]);
+      formData.append("refresh", this.refresh);
       this.loadingButton = true;
       await axios
         .post("eco_com_import_rents", formData)
@@ -94,7 +112,8 @@ export default {
           console.log(error);
         });
       this.showResults = true;
-      this.loadingButton = false
+      this.loadingButton = false;
+      this.refresh = false
     }
   }
 };
