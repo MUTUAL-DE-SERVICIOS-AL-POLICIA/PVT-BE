@@ -14,11 +14,24 @@
             class="btn btn-primary"
             @click="sendForm()"
             :disabled="loadingButton"
+            title="Esta accion sobreescribira el archivo que se cargo anteriormente"
           >
             <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
             <i v-else class="fa fa-save"></i>
             &nbsp;
-            {{ loadingButton ? 'Procesando...' : 'Subir Archivo' }}
+            {{ loadingButton ? 'Procesando...' : 'Subir Archivo Nuevo' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="refreshData()"
+            :disabled="loadingButton"
+            title="verificar nuevamente"
+          >
+            <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
+            <i v-else class="fa fa-refresh"></i>
+            &nbsp;
+            {{ loadingButton ? 'Procesando...' : '' }}
           </button>
         </div>
       </div>
@@ -100,6 +113,7 @@ export default {
       found: 0,
       fails: [],
       showResults: false,
+      refresh: false,
       override: false,
     };
   },
@@ -142,6 +156,10 @@ export default {
         }
       });
     },
+    async refreshData() {
+      this.refresh = true;
+      this.sendForm()
+    },
     async sendForm() {
       this.showResults = false;
       this.override = false;
@@ -149,6 +167,7 @@ export default {
       const formData = new FormData();
       formData.append("image", fileInput.files[0]);
       formData.append("override", this.override);
+      formData.append("refresh", this.refresh);
       this.loadingButton = true;
       await axios
         .post("eco_com_import_rents_aps", formData)
@@ -162,6 +181,7 @@ export default {
         });
       this.showResults = true;
       this.loadingButton = false
+      this.refresh = false
     }
   }
 };
