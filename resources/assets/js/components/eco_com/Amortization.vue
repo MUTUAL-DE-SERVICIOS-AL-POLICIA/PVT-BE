@@ -3,8 +3,8 @@
     <button
       @click="showModal()"
       class="btn btn-primary"
-      :disabled="!can('amortize_economic_complement')"
     >
+      <!-- :disabled="!can('amortize_economic_complement')" -->
       <i class="fa fa-dollar"></i> Amortizar
     </button>
     <modal name="amortization-modal" class="p-lg" height="auto">
@@ -78,10 +78,10 @@ export default {
       return canOperation(operation, this.permissions);
     },
     showModal() {
-      if (!this.can("amortize_economic_complement", this.permissions)) {
-        flash("No tiene permisos para realizar la amortizacion", "error");
-        return;
-      }
+      // if (!this.can("amortize_economic_complement", this.permissions)) {
+      //   flash("No tiene permisos para realizar la amortizacion", "error");
+      //   return;
+      // }
       this.$modal.show("amortization-modal");
     },
     async save() {
