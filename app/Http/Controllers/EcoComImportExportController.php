@@ -34,12 +34,16 @@ class EcoComImportExportController extends Controller
     public function importAPS(Request $request)
     {
         logger($request->all());
-        $sw = false;
-        if ($request->override == 'true') {
-            $sw = true;
+        $sw_refresh = false;
+        $sw_override = false;
+        if ($request->refresh == 'true') {
+            $sw_refresh = true;
         }
-        logger("Sw".$sw."sw");
-        if (!$sw) {
+        if ($request->override == 'true') {
+            $sw_override = true;
+        }
+        if (!$sw_override && !$sw_refresh) {
+            logger("entre");
             $uploadedFile = $request->file('image');
             $filename = 'aps.' . $uploadedFile->getClientOriginalExtension();
             Storage::disk('local')->putFileAs(
@@ -82,7 +86,7 @@ class EcoComImportExportController extends Controller
                 $ci_aps = explode("-", ltrim($c[10], "0"))[0];
                 if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
                     if ($e->aps_total_cc <> round($c[13],2) || $e->aps_total_fsa <> round($c[19],2) || $e->aps_total_fs <> round($c[25],2) ) {
-                        if ($sw) {
+                        if ($sw_override) {
                             $e->aps_total_cc = round($c[13],2);
                             $e->aps_total_fsa = round($c[19],2);
                             $e->aps_total_fs = round($c[25],2);
