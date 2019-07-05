@@ -436,6 +436,7 @@ Vue.component('eco-com-record', require('./components/eco_com/Record.vue'));
 Vue.component('eco-com-notes', require('./components/eco_com/Notes.vue'));
 Vue.component('eco-com-procedure', require('./components/eco_com/Procedure.vue'));
 Vue.component('eco-com-import-rents', require('./components/eco_com/ImportRents.vue'));
+Vue.component('eco-com-import-rents-aps', require('./components/eco_com/ImportRentsAPS.vue'));
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));

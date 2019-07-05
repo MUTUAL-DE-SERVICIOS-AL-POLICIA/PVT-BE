@@ -257,7 +257,7 @@ class EconomicComplement extends Model
                 //Orfandad
                 $this->eco_com_modality_id = 12;
             } else {
-                $this->eco_com_modality_id = $this->eco_com_modality->procedure_modality_id;
+                // $this->eco_com_modality_id = $this->eco_com_modality->procedure_modality_id;
             }
         }
         // $economic_complement->aps_disability = floatval(str_replace(',', '', $aps_disability));
@@ -385,7 +385,9 @@ class EconomicComplement extends Model
             }
         }
         $this->save();
-        // return $this;
+        return response()->json([
+            'status' => 'success',
+        ], 200);
     }
     public function isOldAge()
     {

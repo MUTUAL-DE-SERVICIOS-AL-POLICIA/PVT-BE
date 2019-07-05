@@ -674,6 +674,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
     Route::get('eco_com_record/{id}', 'EconomicComplementController@getRecord');
     Route::post('eco_com_import_rents', 'EcoComImportExportController@importSenasir');
+    Route::post('eco_com_import_rents_aps', 'EcoComImportExportController@importAPS');
 
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
@@ -740,7 +741,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('affiliate_observation_update', 'AffiliateObservationController@update');
     Route::delete('affiliate_observation_delete', 'AffiliateObservationController@delete');
     Route::get('affiliate_get_devolutions/{affiliate_id}', 'AffiliateDevolutionController@getDevolutions');
+    Route::post('affiliate_devolution_payment_commitment', 'AffiliateDevolutionController@store');
     Route::get('affiliate/{affiliate_id}/print/certification_devolutions', 'AffiliateDevolutionController@printCertificationDevolutions');
+    Route::get('affiliate/{affiliate_id}/print/devolution_payment_commitment', 'AffiliateDevolutionController@printDevolutionPaymentCommitment');
 
     // affiliate records
     Route::get('affiliate_record/{id}', 'AffiliateController@getRecord');
