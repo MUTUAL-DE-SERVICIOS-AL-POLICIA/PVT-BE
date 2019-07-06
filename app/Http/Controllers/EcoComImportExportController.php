@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Muserpol\Imports\EcoComImportSenasir;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Imports\EcoComImportAPS;
+use Muserpol\Helpers\Util;
 
 class EcoComImportExportController extends Controller
 {
@@ -64,9 +65,9 @@ class EcoComImportExportController extends Controller
             if ((is_null($d1[34]) || $d1[34] == 'C') && !$process->contains($d1[0])) {
                 foreach ($data as $d2) {
                     if ($d1[3] == $d2[3] && ($d2[34] == 'C' || is_null($d2[34])) && $d1[0] != $d2[0]) {
-                        $temp[13] =  $temp[13] + $d2[13]; //TOTAL_CC
-                        $temp[19] =  $temp[19] + $d2[19]; //TOTAL_FSA
-                        $temp[25] =  $temp[25] + $d2[25]; //TOTAL_FS
+                        $temp[13] =  Util::verifyAndParseNumber($temp[13]) + Util::verifyAndParseNumber($d2[13]); //TOTAL_CC
+                        $temp[19] =  Util::verifyAndParseNumber($temp[19]) + Util::verifyAndParseNumber($d2[19]); //TOTAL_FSA
+                        $temp[25] =  Util::verifyAndParseNumber($temp[25]) + Util::verifyAndParseNumber($d2[25]); //TOTAL_FS
                         $process->push($d2[0]);
                     }
                 }
@@ -99,6 +100,13 @@ class EcoComImportExportController extends Controller
                             $e->aps_total_fs_aps = round($c[25],2);
                             $fails->push($e);
                         }
+                    }else{
+                        // if ($e->aps_total_cc == round($c[13],2) && $e->aps_total_fsa == round($c[19],2) && $e->aps_total_fs == round($c[25],2) ) {
+                        //     if ($e->wf_current_state_id == 3 && $e->eco_com_reception_type_id == 1 ) {
+                        //         $e->inbox_state = true;
+                        //         $e->save();
+                        //     }
+                        // }
                     }
                 }
             }

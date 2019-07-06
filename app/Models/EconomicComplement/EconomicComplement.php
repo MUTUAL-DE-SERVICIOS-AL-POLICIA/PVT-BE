@@ -266,7 +266,7 @@ class EconomicComplement extends Model
         /**
          ** /updating modality with components
          */
-        // $this->total_rent_calc = $this->total_rent;
+        $this->total_rent_calc = $this->total_rent;
 
         /**
          ** averages
