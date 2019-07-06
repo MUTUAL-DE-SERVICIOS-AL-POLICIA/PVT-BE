@@ -9,6 +9,7 @@ use Muserpol\Imports\EcoComImportSenasir;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Imports\EcoComImportAPS;
 use Muserpol\Helpers\Util;
+use Muserpol\Imports\EcoComImportPagoFuturo;
 
 class EcoComImportExportController extends Controller
 {
@@ -126,5 +127,22 @@ class EcoComImportExportController extends Controller
         //     ->where('affiliates.pension_entity_id',5)
         //     ->get();
         // return array_merge(session()->get('senasir_data'), ['not_found'=>$no_import]);
+    }
+    public function importPagoFuturo(Request $request)
+    {
+        logger($request->all());
+        if ($request->refresh != 'true') {
+            $uploadedFile = $request->file('image');
+            $filename = 'pago_futuro.' . $uploadedFile->getClientOriginalExtension();
+            Storage::disk('local')->putFileAs(
+                'pago_futuro/' . now()->year,
+                $uploadedFile,
+                $filename
+            );
+        }
+        Excel::import(new EcoComImportPagoFuturo, 'pago_futuro/'.now()->year.'/pago_futuro.csv');
+        return session()->get('pago_futuro_data');
+        // return array_merge(session()->get('senasir_data'), []);
+
     }
 }
