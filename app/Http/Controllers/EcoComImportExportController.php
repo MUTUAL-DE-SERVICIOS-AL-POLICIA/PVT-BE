@@ -71,6 +71,9 @@ class EcoComImportExportController extends Controller
                         $process->push($d2[0]);
                     }
                 }
+                $temp[13] = Util::verifyAndParseNumber($temp[13]);
+                $temp[19] = Util::verifyAndParseNumber($temp[19]);
+                $temp[25] = Util::verifyAndParseNumber($temp[25]);
                 $collect->push($temp);
             }
         }
