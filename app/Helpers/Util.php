@@ -1144,4 +1144,11 @@ class Util
       }
       return ['result'=>$result, 'total_amount' => $total_amount, 'total_eco_coms' => $total_eco_coms];
   }
+  public static function verifyAndParseNumber($value)
+  {
+    if (is_string($value)) {
+      return floatval(str_replace(',', '.', $value));
+    }
+    return $value;
+  }
 }
