@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
     protected $commands = [
         UpdateAffiliateSubmittedDocuments::class,
         CalculateAverage::class,
+        AutomaticQualification::class,
     ];
 
     protected function schedule(Schedule $schedule)
