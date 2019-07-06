@@ -1149,6 +1149,6 @@ class Util
     if (is_string($value)) {
       return floatval(str_replace(',', '.', $value));
     }
-    return $value;
+    return floatval($value);
   }
 }
