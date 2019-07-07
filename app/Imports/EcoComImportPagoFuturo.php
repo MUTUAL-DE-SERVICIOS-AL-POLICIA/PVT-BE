@@ -41,7 +41,7 @@ class EcoComImportPagoFuturo implements ToCollection
                     $eco_com->observations()->save($observation, [
                         'user_id' => Auth::user()->id,
                         'date' => now(),
-                        'message' => null,
+                        'message' => "Observación Importada",
                         'enabled' => false
                     ]);
                 }
