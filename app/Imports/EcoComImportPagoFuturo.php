@@ -8,6 +8,8 @@ use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
+use Muserpol\Models\ObservationType;
+use Auth;
 
 class EcoComImportPagoFuturo implements ToCollection
 {
@@ -24,6 +26,8 @@ class EcoComImportPagoFuturo implements ToCollection
         $not_found = collect([]);
         $eco_com_procedure = EcoComProcedure::find(14);
         //  EconomicComplementProcedure::whereYear('year', '=', $year)->where('semester', '=', $semester)->first();
+        $pago_futuro_id = 31;
+        $observation = ObservationType::find($pago_futuro_id);
         foreach ($rows as $row) {
             $ci = strval($row[1]); //ci
             $amount = Util::verifyAndParseNumber($row[11]); //semestral
@@ -33,17 +37,25 @@ class EcoComImportPagoFuturo implements ToCollection
                 // ->where('eco_com_applicants.identity_card', $ci)
                 ->first();
             if ($eco_com) {
-                if (!Util::isDoblePerceptionEcoCom($ci)) {
-                    $discount_type = DiscountType::findOrFail(7);
-                    if ($eco_com->discount_types->contains($discount_type->id)) {
-                        $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $amount, 'date' => now()]);
-                    } else {
-                        $eco_com->discount_types()->save($discount_type, ['amount' => $amount, 'date' => now()]);
-                    }
-                    $found++;
-                }else{
-                    logger("sii".$ci);
+                if (!$eco_com->hasObservationType($pago_futuro_id)) {
+                    $eco_com->observations()->save($observation, [
+                        'user_id' => Auth::user()->id,
+                        'date' => now(),
+                        'message' => null,
+                        'enabled' => false
+                    ]);
                 }
+                // if (!Util::isDoblePerceptionEcoCom($ci)) {
+                //     $discount_type = DiscountType::findOrFail($pago_futuro_id);
+                //     if ($eco_com->discount_types->contains($discount_type->id)) {
+                //         $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $amount, 'date' => now()]);
+                //     } else {
+                //         $eco_com->discount_types()->save($discount_type, ['amount' => $amount, 'date' => now()]);
+                //     }
+                //     $found++;
+                // }else{
+                //     logger("sii".$ci);
+                // }
             }else{
                 $not_found->push($ci);
             }
