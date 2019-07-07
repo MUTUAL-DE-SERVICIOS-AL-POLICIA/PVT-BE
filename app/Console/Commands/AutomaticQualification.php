@@ -48,7 +48,7 @@ class AutomaticQualification extends Command
             ->first();
         $eco_coms = EconomicComplement::with('eco_com_state')->where('eco_com_procedure_id', $eco_com_procedure->id)
             ->where('total_rent', '>', 0)
-            ->whereNull('total')
+            // ->whereNull('total')
             ->get();
         $count_all = 0;
 
