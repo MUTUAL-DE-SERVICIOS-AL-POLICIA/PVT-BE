@@ -36,7 +36,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->beneficiary()
                     ->affiliateInfo()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . "," .EconomicComplement::basic_info_affiliates() . $columns))
                     ->get();
                 break;
             case 2:
@@ -46,7 +46,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->beneficiary()
                     ->affiliateInfo()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",".EconomicComplement::basic_info_affiliates() . $columns))
                     ->where('aps_disability', '>', 0)
                     ->get();
                 break;
@@ -58,7 +58,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->affiliateInfo()
                     ->legalGuardianInfo()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_affiliates() . "," . EconomicComplement::basic_info_legal_guardian() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",". EconomicComplement::basic_info_affiliates() . "," . EconomicComplement::basic_info_legal_guardian() . $columns))
                     ->has('eco_com_legal_guardian')
                     ->get();
                 break;
@@ -71,7 +71,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->affiliateInfo()
                     ->observationType()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",". EconomicComplement::basic_info_affiliates() . $columns))
                     ->whereHas('observations', function ($query) {
                         $query->whereIn('observation_type_id', $this->observation_type_ids);
                     })
@@ -84,7 +84,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->beneficiary()
                     ->affiliateInfo()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",". EconomicComplement::basic_info_affiliates() . $columns))
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
                     ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
                     ->where('economic_complements.inbox_state', false)
@@ -97,7 +97,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->beneficiary()
                     ->affiliateInfo()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . ",". EconomicComplement::basic_info_complements() . "," . EconomicComplement::basic_info_affiliates() . $columns))
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
                     ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
                     ->where('economic_complements.inbox_state', true)
@@ -110,7 +110,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->beneficiary()
                     ->affiliateInfo()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",". EconomicComplement::basic_info_affiliates() . $columns))
                     ->onlyTrashed()
                     ->get();
                 break;
@@ -176,7 +176,19 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "Categoria",
             "Tipo de Prestacion",
             "Tipo",
+            "fecha_de_recepcion",
+            "reintegro",
+            "renta_dignidad",
+            "renta_neto",
+            "neto",
+            "salario_referencial",
+            "antiguedad",
+            "diferencia",
+            "factor_complementario",
+            "total_complemento",
             "NUP",
+            "ci_causahabiente",
+            "ci_exp_causahabiente",
             "primer_nombre_causahabiente",
             "segundo_nombre_causahabiente",
             "ap_paterno_causahabiente",
