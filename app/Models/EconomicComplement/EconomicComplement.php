@@ -577,11 +577,11 @@ class EconomicComplement extends Model
     // }
     public static function basic_info_complements()
     {
-        return "economic_complements.reception_date as fecha_de_recepcion, economic_complements.reimbursement as reintegro, economic_complements.dignity_pension as renta_dignidad, economic_complements.total_rent as renta_neto, economic_complements.total_rent_calc as neto, economic_complements.salary_reference as salario_referencial, economic_complements.seniority as antiguedad, economic_complements.seniority as antiguedad, economic_complements.difference as diferencia, economic_complements.complementary_factor as factor_complementario, economic_complements.complementary_factor as factor_complementario, economic_complements.total as total_complemento";
+        return "economic_complements.reception_date as fecha_de_recepcion, economic_complements.reimbursement as reintegro, economic_complements.dignity_pension as renta_dignidad, economic_complements.total_rent as renta_neto, economic_complements.total_rent_calc as neto, economic_complements.salary_reference as salario_referencial, economic_complements.seniority as antiguedad, economic_complements.difference as diferencia, economic_complements.complementary_factor as factor_complementario, economic_complements.total as total_complemento";
     }
     public static function basic_info_affiliates()
     {
-        return "affiliates.id as nup, affiliates.first_name as primer_nombre_causahabiente, affiliates.second_name as segundo_nombre_causahabiente, affiliates.last_name as ap_paterno_causahabiente, affiliates.mothers_last_name as ap_materno_causahabiente, affiliates.surname_husband as ape_casada_causahabiente, affiliates.birth_date as fecha_nacimiento, affiliates.nua as codigo_nua_cua";
+        return "affiliates.id as nup, affiliates.identity_card, affiliate_city.first_shortened, affiliates.first_name as primer_nombre_causahabiente, affiliates.second_name as segundo_nombre_causahabiente, affiliates.last_name as ap_paterno_causahabiente, affiliates.mothers_last_name as ap_materno_causahabiente, affiliates.surname_husband as ape_casada_causahabiente, affiliates.birth_date as fecha_nacimiento, affiliates.nua as codigo_nua_cua";
     }
     public static function basic_info_legal_guardian()
     {
@@ -606,6 +606,7 @@ class EconomicComplement extends Model
     public function scopeAffiliateinfo($query)
     {
         return $query->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+            ->leftJoin('cities as affiliate_city', 'affiliates.city_identity_card_id', '=', 'affiliate_city.id')
             ->leftJoin('pension_entities', 'affiliates.pension_entity_id', '=', 'pension_entities.id');
     }
     public function scopeEcocomstates($query)
