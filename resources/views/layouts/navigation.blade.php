@@ -45,11 +45,22 @@
                 <a href="{{ url('/affiliate') }}"><i class="fa fa-user"></i> <span
                         class="nav-label">Afiliados</span></a>
             </li>
+            @if (Util::rolIsLoan())
+                <li data-toggle="tooltip" data-placement="right" title="Préstamos en Mora">
+                    <a href="{{ url('overdue_loan') }}"><i class="fa fa-dollar"></i> <span
+                            class="nav-label">Préstamos en Mora</span></a>
+                </li>
+            @endif
             @if (Util::rolIsEcoCom())
                 <li class="{{ isActiveRoute('eco_com.index') }}" data-toggle="tooltip" data-placement="right"
                     title="Complemento Economico">
                     <a href="{{ url('/eco_com') }}"><i class="{{Muserpol\Helpers\Util::IconModule(2)}}"></i> <span
                             class="nav-label">Complemento Economico</span></a>
+                </li>
+                <li  data-toggle="tooltip" data-placement="right"
+                    title="Reportes">
+                    <a href="{{ url('/eco_com_report') }}"><i class="fa fa-file"></i> <span
+                            class="nav-label">Reportes Complemento Economico</span></a>
                 </li>
             @endif
             @if (Util::rolIsRetFun())

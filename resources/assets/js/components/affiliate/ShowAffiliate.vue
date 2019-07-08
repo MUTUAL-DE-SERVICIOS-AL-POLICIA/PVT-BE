@@ -25,6 +25,7 @@ import { flashErrors } from "../../helper.js";
                     birth_date: this.affiliate.birth_date,
                     date_death: this.affiliate.date_death,
                     reason_death: this.affiliate.reason_death,
+                    death_certificate_number: this.affiliate.death_certificate_number,
                     phone_number: this.affiliate.phone_number,
                     cell_phone_number: this.affiliate.cell_phone_number,
                     gender: this.affiliate.gender,
@@ -129,6 +130,7 @@ import { flashErrors } from "../../helper.js";
                     this.form.birth_date =  this.values.birth_date;
                     this.form.date_death =  this.values.date_death;
                     this.form.reason_death =  this.values.reason_death;
+                    this.form.death_certificate_number =  this.values.death_certificate_number;
                     this.form.phone_number =  this.values.phone_number;
                     this.form.cell_phone_number =  this.values.cell_phone_number;
                     this.form.gender = this.values.gender;
@@ -167,6 +169,7 @@ import { flashErrors } from "../../helper.js";
                         this.values.birth_date =  response.data.affiliate.birth_date;
                         this.values.date_death =  response.data.affiliate.date_death;
                         this.values.reason_death =  response.data.affiliate.reason_death;
+                        this.values.death_certificate_number =  response.data.affiliate.death_certificate_number;
                         this.values.phone_number =  response.data.affiliate.phone_number;
                         this.values.cell_phone_number =  response.data.affiliate.cell_phone_number;
                         this.values.gender = response.data.affiliate.gender;

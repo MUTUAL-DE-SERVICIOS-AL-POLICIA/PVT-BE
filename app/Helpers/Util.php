@@ -694,8 +694,14 @@ class Util
     $spouse->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
     $spouse->city_birth_id = $object->city_birth_id;
     $spouse->city_identity_card_id = $object->city_identity_card_id;
-    $spouse->date_death = $object->date_death ?? null;
+    $spouse->date_death = $object->date_death ? Util::verifyBarDate($object->date_death) ? Util::parseBarDate($object->date_death) : $object->date_death  : null;
     $spouse->reason_death = $object->reason_death ?? null;
+    $spouse->death_certificate_number = $object->death_certificate_number ?? null;
+    $spouse->official = $object->official;
+    $spouse->book = $object->book;
+    $spouse->departure = $object->departure;
+    $spouse->marriage_date = Util::verifyBarDate($object->marriage_date) ? Util::parseBarDate($object->marriage_date) : $object->marriage_date;
+
     $spouse->save();
   }
   public static function classificationContribution($contribution_type_id, $breakdown_id, $total)
@@ -895,16 +901,16 @@ class Util
   {
     return optional($model::where('code', 'not like', '%A')->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
   }
-  
+
   public static function getLastCodeQM($model)
-  {  
-    return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code','not like','%A')->whereIn('procedure_modality_id',[8,9])->get()->last())->code;
+  {
+    return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code', 'not like', '%A')->whereIn('procedure_modality_id', [8, 9])->get()->last())->code;
   }
   public static function getLastCodeAM($model)
-  { 
-     return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code','not like','%A')->whereIn('procedure_modality_id',[13,14,15])->get()->last())->code;
+  {
+    return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code', 'not like', '%A')->whereIn('procedure_modality_id', [13, 14, 15])->get()->last())->code;
   }
-  
+
   public static function getLastCodeEconomicComplement($eco_com_procedure_id)
   {
     $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
@@ -930,13 +936,13 @@ class Util
   }
   public static function parsePhone($phones)
   {
-      $array_phone=[];
-      foreach (explode(',', $phones) as $phone) {
-        $json_phone = new \stdClass;
-        $json_phone->value = $phone;
-        array_push($array_phone, $json_phone);
-      }
-      return $array_phone;
+    $array_phone = [];
+    foreach (explode(',', $phones) as $phone) {
+      $json_phone = new \stdClass;
+      $json_phone->value = $phone;
+      array_push($array_phone, $json_phone);
+    }
+    return $array_phone;
   }
   public static function compoundInterest($contributions, Affiliate $affiliate)
   {
@@ -1006,6 +1012,10 @@ class Util
     }
     return collect([]);
   }
+  public static function rolIsLoan()
+  {
+    return self::getRol()->module_id == 6;
+  }
   public static function rolIsEcoCom()
   {
     return self::getRol()->module_id == 2;
@@ -1020,7 +1030,7 @@ class Util
   }
   public static function rolIsQuotaAid()
   {
-    return self::getRol()->module_id == 4 || self::getRol()->module_id == 5 ;
+    return self::getRol()->module_id == 4 || self::getRol()->module_id == 5;
   }
   public static function rolIsContributions()
   {
@@ -1047,21 +1057,20 @@ class Util
   public static function isDoblePerceptionEcoCom($ci)
   {
     return collect(EconomicComplement::select(DB::raw('eco_com_procedures.id, eco_com_procedures.year, eco_com_procedures.semester, eco_com_applicants.identity_card, count(*)'))
-    ->leftJoin('eco_com_procedures','economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
-    ->leftJoin('eco_com_applicants','economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
-    ->groupBy('eco_com_procedures.id')
-    ->groupBy('eco_com_procedures.year')
-    ->groupBy('eco_com_procedures.semester')
-    ->groupBy('eco_com_applicants.identity_card')
-    ->havingRaw('count(*) > ?', [1])
-    ->orderBYDesc('eco_com_procedures.year')
-    ->orderBYDesc('eco_com_procedures.semester')
-    ->get())->where('identity_card', 'like', $ci)->count() > 0
-    ;
+      ->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+      ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
+      ->groupBy('eco_com_procedures.id')
+      ->groupBy('eco_com_procedures.year')
+      ->groupBy('eco_com_procedures.semester')
+      ->groupBy('eco_com_applicants.identity_card')
+      ->havingRaw('count(*) > ?', [1])
+      ->orderBYDesc('eco_com_procedures.year')
+      ->orderBYDesc('eco_com_procedures.semester')
+      ->get())->where('identity_card', 'like', $ci)->count() > 0;
   }
   public static function getTextDate($date = null)
   {
-    if(! $date){
+    if (!$date) {
       $date = now();
     }
     return Carbon::parse($date)->formatLocalized('%d de %B de %Y');
@@ -1134,5 +1143,12 @@ class Util
           $index++;
       }
       return ['result'=>$result, 'total_amount' => $total_amount, 'total_eco_coms' => $total_eco_coms];
+  }
+  public static function verifyAndParseNumber($value)
+  {
+    if (is_string($value)) {
+      return floatval(str_replace(',', '.', $value));
+    }
+    return floatval($value);
   }
 }

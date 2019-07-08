@@ -6,14 +6,19 @@
           <h2 class="pull-left">Devoluciones</h2>
           <div class="ibox-tools">
             <!-- @click="createObs()" -->
-            <button v-if="devolution" class="btn btn-primary" @click="printCertification()">
-              <i class="fa fa-print"></i> Imprimir Certificacion
-            </button>
-            <!-- <button class="btn btn-primary" data-toggle="tooltip" title="Adicionar Observacion"> -->
-              <!-- :disabled="!can('create_observation_type')"
-              v-if="can('read_observation_type')"-->
-              <!-- <i class="fa fa-plus"></i> Adicionar
-            </button> -->
+            <div v-if="devolution">
+              <button  class="btn btn-primary" @click="printCertification()">
+                <i class="fa fa-print"></i> Imprimir Certificacion
+              </button>
+              <button :disabled="devolution.hasPaymentCommitment" class="btn btn-primary" @click="printPaymentCommitment()">
+                <i class="fa fa-print"></i> Imprimir Compromiso
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" title="Crear compromiso de Pago" @click="createPaymentCommitment()">
+                <!-- :disabled="!can('create_observation_type')"
+                v-if="can('read_observation_type')" -->
+                <i class="fa fa-plus"></i> Crear compromiso de Pago
+              </button>
+            </div>
           </div>
         </div>
         <!-- v-if="can('read_observation_type')" -->
@@ -61,66 +66,41 @@
         </div>
       </div>
     </div>
-    <!-- <modal name="observation-modal" class="p-sm" height="auto">
+    <modal name="create-payment-commitment-modal" class="p-sm" height="auto">
       <div class="ibox-title">
-        <h1>{{ method == 'post' ? 'Agregar' : 'Editar'}} Observacion</h1>
+        <h1>Crea compromiso de Pago</h1>
       </div>
       <div class="row">
-        <div class="col-md-12" :class="{'has-error': errors.has('observation_type_id')}">
+        <div class="col-md-12" :class="{'has-error': errors.has('type_discount')}">
           <div class="col-md-3">
-            <label class="control-label">Tipo</label>
+            <label class="control-label">Tipo De descuento</label>
           </div>
           <div class="col-md-9">
+            <input type="radio" id="total_discount" name="type_discount" value="total" v-model="form.discountType" v-validate.initial="'required'">
+            <label for="total_discount" class="pointer">Por el Total de la Deuda Pendiente</label>
+            <br>
+            <input type="radio" id="percentage_discount" name="type_discount" value="percentage" v-model="form.discountType" v-validate.initial="'required'">
+            <label for="percentage_discount" class="pointer">Porcentaje para Amortizar</label>
+            <br>
             <select
               class="form-control m-b"
-              name="observation_type_id"
-              v-model="form.observationTypeId"
-              v-validate.initial="'required'"
-              :disabled="method == 'patch'"
-              v-if="method == 'post'"
+              name="percentage"
+              v-model="form.percentage"
+              v-if="form.discountType == 'percentage'"
             >
-              <option :value="null"><me }}</option>
+              <option v-for="p in percentages" :value="p.percentage" :key="p.percentage">{{ p.name}}</option>
             </select>
-            <select
-              class="form-control m-b"
-              name="observation_type_id"
-              v-model="form.observationTypeId"
-              v-validate.initial="'required'"
-              :disabled="method == 'patch'"
-              v-else
-            >
-              <option :value="null"></option>
-              <option
-                v-for="(o, index) in observationTypes"
-                :value="o.id"
-                :key="index"
-              >[{{ o.type }}] {{ o.name }}</option>
-            </select>
-            <i v-show="errors.has('observation_type_id')" class="fa fa-warning text-danger"></i>
+            <i v-show="errors.has('percentage')" class="fa fa-warning text-danger"></i>
             <span
-              v-show="errors.has('observation_type_id')"
+              v-show="errors.has('percentage')"
               class="text-danger"
-            >{{ errors.first('observation_type_id') }}</span>
+            >{{ errors.first('percentage') }}</span>
           </div>
-        </div>
-        <div class="col-md-12" :class="{'has-error': errors.has('message') }">
-          <div class="col-md-3">
-            <label class="control-label">Mensaje</label>
-          </div>
-          <div class="col-md-9">
-            <textarea
-              cols="30"
-              rows="10"
-              name="message"
-              v-model.trim="form.message"
-              class="form-control"
-              v-validate.initial="'required|min:10|max:250'"
-            ></textarea>
-            <div v-show="errors.has('message')">
-              <i class="fa fa-warning text-danger"></i>
-              <span class="text-danger">{{ errors.first('message') }}</span>
-            </div>
-          </div>
+          <i v-show="errors.has('type_discount')" class="fa fa-warning text-danger"></i>
+            <span
+              v-show="errors.has('type_discount')"
+              class="text-danger"
+            >{{ errors.first('type_discount') }}</span>
         </div>
         <div class="col-md-12">
           <div class="text-center m-sm">
@@ -128,13 +108,13 @@
               <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
               <span class="bold">Cancelar</span>
             </button>
-            <button class="btn btn-primary" type="button" @click="save()">
+            <button class="btn btn-primary" type="button" @click="savePaymentCommitment()">
               <i class="fa fa-check-circle"></i>&nbsp;Guardar
             </button>
           </div>
         </div>
       </div>
-    </modal>-->
+    </modal>
   </div>
 </template>
 <script>
@@ -144,11 +124,36 @@ export default {
   data() {
     return {
       form: {
-        message: null,
-        observationTypeId: null,
-        enabled: true
+        affiliate_id: this.affiliate.id,
+        percentage: '0.50',
+        discountType: null,
       },
-      method: "post",
+      percentages:[
+        {
+          percentage: '0.50',
+          name: "50%"
+        },
+        {
+          percentage: '0.60',
+          name: "60%"
+        },
+        {
+          percentage: '0.70',
+          name: "70%"
+        },
+        {
+          percentage: '0.80',
+          name: "80%"
+        },
+        {
+          percentage: '0.90',
+          name: "90%"
+        },
+        {
+          percentage: "1.00",
+          name: "100%"
+        },
+      ],
       devolution: {},
       devolutions: [],
       dues: []
@@ -235,10 +240,46 @@ export default {
           this.devolutions = response.data.devolutions;
           this.devolution = response.data.devolution;
           this.dues = response.data.dues;
+          if (this.devolution) {
+            if (this.devolution.has_payment_commitment) {
+              this.form.discountType = 'total'
+              if (this.devolution.percentage > 0) {
+                this.form.discountType =  'percentage';
+                this.form.percentage =  this.devolution.percentage;
+              }
+            }
+          }
         })
         .catch(error => {
           console.log(error);
         });
+    },
+    createPaymentCommitment(){
+      this.$modal.show("create-payment-commitment-modal");
+    },
+    async savePaymentCommitment(){
+      await axios.post('/affiliate_devolution_payment_commitment', this.form)
+      .then(response => {
+        console.log(response)
+        this.$modal.hide("create-payment-commitment-modal");
+      }).catch(error => {
+        flashErrors("Error: ", error.response.data.errors);
+      })
+    },
+    async printPaymentCommitment(){
+      try {
+        let res = await axios({
+          method: "GET",
+          url: `/affiliate/${this.affiliate.id}/print/devolution_payment_commitment`,
+          responseType: "arraybuffer"
+        });
+        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+        printJS(URL.createObjectURL(pdfBlob));
+        this.loading = false;
+      } catch (error) {
+        this.loading = false;
+        flashErrors("Error: ", ["Ocurrio un error al generar el documento"]);
+      }
     }
   }
 };

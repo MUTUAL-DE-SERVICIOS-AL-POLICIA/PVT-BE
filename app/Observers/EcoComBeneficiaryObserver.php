@@ -70,6 +70,18 @@ class EcoComBeneficiaryObserver
         if ($eco_com_beneficiary->is_duedate_undefined != $old->is_duedate_undefined) {
             $message = $message . ' el ... de ' . $old->is_duedate_undefined . ' a ' . $eco_com_beneficiary->is_duedate_undefined . ', ';
         }
+        if ($eco_com_beneficiary->official != $old->official) {
+            $message = $message . ' la oficialia de ' . $old->official . ' a ' . $eco_com_beneficiary->official . ', ';
+        }
+        if ($eco_com_beneficiary->book != $old->book) {
+            $message = $message . ' el libro de ' . $old->book . ' a ' . $eco_com_beneficiary->book . ', ';
+        }
+        if ($eco_com_beneficiary->departure != $old->departure) {
+            $message = $message . ' la partida de ' . $old->departure . ' a ' . $eco_com_beneficiary->departure . ', ';
+        }
+        if ($eco_com_beneficiary->marriage_date != $old->marriage_date) {
+            $message = $message . ' la fecha de matrimonio de ' . $old->marriage_date . ' a ' . $eco_com_beneficiary->marriage_date . ', ';
+        }
         if($temp !=  $message){
             $message = $message . ' ';
             $eco_com_beneficiary->economic_complement->procedure_records()->create([

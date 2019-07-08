@@ -34,6 +34,12 @@
                             class="fa fa-users"></i> Factor de Complementacion</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-procedure"><a href="#"><i
                             class="fa fa-users"></i> Rango de Fechas</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-import-rents"><a href="#"><i
+                            class="fa fa-users"></i> Importar Rentas</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-import-rents-aps"><a href="#"><i
+                            class="fa fa-users"></i> Rentas APS</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-import-pago-futuro"><a href="#"><i
+                            class="fa fa-users"></i> Importar Pago a Futuro</a></li>
             </ul>
         </div>
     </div>
@@ -47,10 +53,19 @@
     @include('eco_com.average')
             </div>
             <div id="tab-complementary-factor" class="tab-pane">
-    {{-- @include('complementary_factor.index') --}}
+    @include('complementary_factor.index')
             </div>
             <div id="tab-eco-com-procedure" class="tab-pane">
             <eco-com-procedure :permissions="{{ $permissions }}"></eco-com-procedure>
+            </div>
+            <div id="tab-eco-com-import-rents" class="tab-pane">
+            <eco-com-import-rents :permissions="{{ $permissions }}"></eco-com-import-rents>
+            </div>
+            <div id="tab-eco-com-import-rents-aps" class="tab-pane">
+            <eco-com-import-rents-aps :permissions="{{ $permissions }}"></eco-com-import-rents-aps>
+            </div>
+            <div id="tab-eco-com-import-pago-futuro" class="tab-pane">
+            <eco-com-import-pago-futuro :permissions="{{ $permissions }}"></eco-com-import-pago-futuro>
             </div>
         </div>
     </div>

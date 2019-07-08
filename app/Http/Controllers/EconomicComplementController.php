@@ -493,6 +493,15 @@ class EconomicComplementController extends Controller
                 $spouse->save();
 
                 /**
+                 * update beneficiary sereci info
+                 */
+                $eco_com_beneficiary->official = $spouse->official;
+                $eco_com_beneficiary->book = $spouse->book;
+                $eco_com_beneficiary->departure = $spouse->departure;
+                $eco_com_beneficiary->marriage_date = $spouse->marriage_date;
+                $eco_com_beneficiary->save();
+
+                /**
                  *update affiliate
                  */
                 $affiliate->identity_card = $request->affiliate_identity_card;
@@ -696,6 +705,8 @@ class EconomicComplementController extends Controller
         }
         $affiliate = Affiliate::where('id', '=', $request->id)->first();
         // $this->authorize('update', $affiliate);
+        $affiliate->affiliate_state_id = $request->affiliate_state_id;
+        $affiliate->type = $request->type;
         $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
         $affiliate->item = $request->item;
         $affiliate->category_id = $request->category_id;
@@ -716,6 +727,8 @@ class EconomicComplementController extends Controller
         }
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
+        $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        $affiliate->file_code = mb_strtoupper($request->file_code);
         $affiliate->save();
         $economic_complement = EconomicComplement::find($request->eco_com_id);
         $economic_complement->degree_id = $request->degree_id;
@@ -763,6 +776,36 @@ class EconomicComplementController extends Controller
         if (Util::getRol()->id == 5) {
             $economic_complement->reception_date = $request->reception_date;
         }
+        $affiliate = $economic_complement->affiliate;
+        
+        // $affiliate->affiliate_state_id = $request->affiliate_state_id;
+        // $affiliate->type = $request->type;
+        // $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
+        // $affiliate->item = $request->item;
+        $affiliate->category_id = $request->category_id;
+        $service_year = $request->service_years;
+        $service_month = $request->service_months;
+        if ($service_year > 0 || $service_month > 0) {
+            if ($service_month > 0) {
+                $service_year++;
+            }
+            $category = Category::where('from', '<=', $service_year)
+                ->where('to', '>=', $service_year)
+                ->first();
+            if ($category) {
+                $affiliate->category_id = $category->id;
+                $affiliate->service_years = $request->service_years;
+                $affiliate->service_months = $request->service_months;
+            }
+        }
+        $affiliate->degree_id = $request->degree_id;
+        // $affiliate->pension_entity_id = $request->pension_entity_id;
+        // $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        // $affiliate->file_code = mb_strtoupper($request->file_code);
+        $affiliate->save();
+
+        $economic_complement->degree_id = $affiliate->degree_id;
+        $economic_complement->category_id = $affiliate->category_id;
         $economic_complement->save();
         /**
          * update affiliate info
@@ -772,6 +815,8 @@ class EconomicComplementController extends Controller
         // $affiliate->category_id = $request->category_id;
         // $affiliate->pension_entity_id = $request->pension_entity_id;
         // $affiliate->save();
+        $economic_complement->service_years = $affiliate->service_years;
+        $economic_complement->service_months = $affiliate->service_months;
         return $economic_complement;
     }
     public function firstStep()
@@ -997,6 +1042,15 @@ class EconomicComplementController extends Controller
         }
         $eco_com = EconomicComplement::with('discount_types')->findOrFail($id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
+        if ($rol->id == 4) {
+            logger("si uno");
+            $devolution = $eco_com->affiliate->devolutions()->where('observation_type_id',13)->first();
+            logger($devolution);
+            if ($devolution) {
+                $eco_com->discount_amount = $eco_com->getOnlyTotalEcoCom() * $devolution->percentage;
+            }
+        }
+        $eco_com->total_eco_com = $eco_com->getOnlyTotalEcoCom();
         return $eco_com;
     }
     public function updateRents(Request $request)
@@ -1064,7 +1118,9 @@ class EconomicComplementController extends Controller
                 break;
         }
         if (Gate::allows('qualify', $economic_complement)) {
-            $economic_complement->qualify();
+            if ($economic_complement->qualify()->status() == 422) {
+                return $economic_complement->qualify() ;
+            }
         }
         $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         return $economic_complement;

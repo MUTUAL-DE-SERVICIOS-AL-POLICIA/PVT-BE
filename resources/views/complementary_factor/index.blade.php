@@ -274,7 +274,7 @@
                 <h4 class="modal-title">Añadir Factores de Complemantación</h4>
             </div>
             <div class="modal-body">
-                {!! Form::open(['method' => 'POST', 'route' => ['complementary_factor.store'], 'class' =>
+                {!! Form::open(['method' => 'POST', 'url' =>'/complementary_factor', 'class' =>
                 'form-horizontal']) !!}
                 <br>
                 <div class="row">
@@ -406,7 +406,7 @@
                 <div class="row text-center">
                     <div class="form-group">
                         <div class="col-md-12">
-                            <a href="{!! route('complementary_factor') !!}" class="btn btn-raised btn-danger"
+                            <a href="{!! url('complementary_factor') !!}" class="btn btn-raised btn-danger"
                                 data-toggle="tooltip" data-placement="bottom" data-original-title="Cancelar">&nbsp;<i
                                     class="glyphicon glyphicon-remove"></i>&nbsp;</a> &nbsp;&nbsp;
                             <button type="submit" class="btn btn-raised btn-primary" data-toggle="tooltip"

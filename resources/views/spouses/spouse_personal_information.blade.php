@@ -124,8 +124,96 @@
                         <div class="col-md-3"><label class="control-label">Causa de Fallecimiento:</label></div>
                         <div class="col-md-9"><input name="reason_death" v-model="form.reason_death"  type="text" class="form-control" :disabled="!editing"></div>
                     </div>
+                    <div class="row m-b-md">
+                        <div class="col-md-3"><label class="control-label">Nro de certificado de defunción:</label></div>
+                        <div class="col-md-9"><input name="death_certificate_number" v-model="form.death_certificate_number"  type="text" class="form-control" :disabled="!editing"></div>
+                    </div>
                 </div>
             </div>
+            <div>
+                <div class="hr-line-dashed"></div>
+                <h3>Información de SERECI:</h3>
+                <div class="row">
+                  <div class="col-md-6" :class="{'has-error': errors.has('official') && editing }">
+                    <div class="col-md-4">
+                      <label class="control-label">Oficialia</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input
+                        type="text"
+                        name="official"
+                        v-model.trim="form.official"
+                        class="form-control"
+                        :disabled="!editing"
+                      >
+                      <div v-show="errors.has('official') && editing">
+                        <i class="fa fa-warning text-danger"></i>
+                        <span class="text-danger">@{{ errors.first('official') }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6" :class="{'has-error': errors.has('book') && editing }">
+                    <div class="col-md-4">
+                      <label class="control-label">Libro</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input
+                        type="text"
+                        name="book"
+                        v-model.trim="form.book"
+                        class="form-control"
+                        :disabled="!editing"
+                      >
+                      <div v-show="errors.has('book') && editing">
+                        <i class="fa fa-warning text-danger"></i>
+                        <span class="text-danger">@{{ errors.first('book') }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-md-6" :class="{'has-error': errors.has('departure') && editing }">
+                    <div class="col-md-4">
+                      <label class="control-label">Partida</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input
+                        type="text"
+                        name="departure"
+                        v-model.trim="form.departure"
+                        class="form-control"
+                        :disabled="!editing"
+                      >
+                      <div v-show="errors.has('departure') && editing">
+                        <i class="fa fa-warning text-danger"></i>
+                        <span class="text-danger">@{{ errors.first('departure') }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6" :class="{'has-error': errors.has('marriage_date') && editing}">
+                    <div class="col-md-4">
+                      <label class="control-label">Fecha Matrimonio</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input
+                        type="text"
+                        name="marriage_date"
+                        v-model.trim="form.marriage_date"
+                        class="form-control"
+                        v-date
+                        v-validate="'date_format:dd/MM/yyyy|max_current_date'"
+                        :disabled="!editing"
+                      >
+                      <div v-show="errors.has('marriage_date') && editing">
+                        <i class="fa fa-warning text-danger"></i>
+                        <span class="text-danger">@{{ errors.first('marriage_date') }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+              </div>
             <div class="row" v-if="editing">
                 <div class="text-center">
                     <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>

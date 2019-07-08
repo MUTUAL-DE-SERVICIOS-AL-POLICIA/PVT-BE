@@ -49,7 +49,10 @@
                   <td>Prestación por Invalidéz</td>
                   <td>{{ ecoCom.aps_disability | currency }}</td>
                 </tr>
-
+                <tr v-if="!isSenasir" class="success">
+                  <td>Total Renta ó Pensión</td>
+                  <td>{{ getTotalSumFractions() | currency }}</td>
+                </tr>
                 <tr v-if="isSenasir">
                   <td>Total Ganado Renta ó Pensión</td>
                   <td>{{ ecoCom.sub_total_rent | currency }}</td>
@@ -61,6 +64,10 @@
                 <tr v-if="isSenasir">
                   <td>- Renta Dignidad</td>
                   <td>{{ ecoCom.dignity_pension | currency }}</td>
+                </tr>
+                <tr v-if="isSenasir" class="success">
+                  <td>Total Renta ó Pensión</td>
+                  <td>{{ getTotalSumSenasir() | currency }}</td>
                 </tr>
               </tbody>
             </table>
@@ -106,6 +113,10 @@
                 <tr>
                   <td>Factor de Complementación</td>
                   <td>{{ ecoCom.complementary_factor }}</td>
+                </tr>
+                <tr class="warning">
+                  <td>Total Complemento Economico</td>
+                  <td>{{ ecoCom.total_eco_com | currency }}</td>
                 </tr>
                 <tr v-for="d in ecoCom.discount_types" :key="d.id" class="danger">
                   <td>{{ d.name }}</td>
@@ -214,7 +225,7 @@
                 <label class="col-sm-4 control-label">Total Fracciones</label>
                 <div class="col-sm-4">
                   <strong>
-                    <!-- <animated-integer v-bind:value="totalSumFractions"></animated-integer> -->
+                    <animated-integer v-bind:value="totalSumFractions"></animated-integer>
                   </strong>
                 </div>
               </div>
@@ -305,7 +316,7 @@
                 <label class="col-sm-4 control-label">Total Renta ó Pensión</label>
                 <div class="col-sm-4">
                   <strong>
-                    <!-- <animated-integer v-bind:value="totalSumSenasir"></animated-integer> -->
+                    <animated-integer v-bind:value="totalSumSenasir"></animated-integer>
                   </strong>
                 </div>
               </div>
@@ -368,6 +379,22 @@ export default {
     },
     namePensionEntity() {
       return getNamePensionEntity(this.affiliate.pension_entity_id);
+    },
+    totalSumFractions() {
+      return (
+        parseFloat(parseMoney(this.ecoComModal.aps_total_fsa)) +
+        parseFloat(parseMoney(this.ecoComModal.aps_total_cc)) +
+        parseFloat(parseMoney(this.ecoComModal.aps_total_fs)) +
+        parseFloat(parseMoney(this.ecoComModal.aps_disability))
+      );
+    },
+    totalSumSenasir() {
+      return (
+        parseFloat(parseMoney(this.ecoComModal.sub_total_rent)) -
+        parseFloat(parseMoney(this.ecoComModal.reimbursement)) -
+        parseFloat(parseMoney(this.ecoComModal.dignity_pension)) +
+        parseFloat(parseMoney(this.ecoComModal.aps_disability))
+      );
     }
   },
   methods: {
@@ -419,7 +446,23 @@ export default {
         });
       this.loadingButton = false;
       this.editing = true;
+    },
+    getTotalSumFractions() {
+      return (
+        parseFloat(parseMoney(this.ecoCom.aps_total_fsa)) +
+        parseFloat(parseMoney(this.ecoCom.aps_total_cc)) +
+        parseFloat(parseMoney(this.ecoCom.aps_total_fs)) +
+        parseFloat(parseMoney(this.ecoCom.aps_disability))
+      );
+    },
+    getTotalSumSenasir() {
+      return (
+        parseFloat(parseMoney(this.ecoCom.sub_total_rent)) -
+        parseFloat(parseMoney(this.ecoCom.reimbursement)) -
+        parseFloat(parseMoney(this.ecoCom.dignity_pension)) +
+        parseFloat(parseMoney(this.ecoCom.aps_disability))
+      );
     }
   }
-};
+}
 </script>
