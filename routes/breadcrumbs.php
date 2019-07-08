@@ -149,6 +149,9 @@ Breadcrumbs::register('treasury_select_report', function ($breadcrumbs) {
 Breadcrumbs::register('eco_com_qualification_parameters', function ($breadcrumbs) {
   $breadcrumbs->push('Parámetros para la calificación del Complemento Económico');
 });
+Breadcrumbs::register('eco_com_report', function ($breadcrumbs) {
+  $breadcrumbs->push('Reportes de Complemento Económico');
+});
 
 
 /**
