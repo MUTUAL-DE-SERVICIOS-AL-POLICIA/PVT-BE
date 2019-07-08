@@ -37,6 +37,7 @@ class EcoComReportController extends Controller
             case 2:
             case 3:
             case 8:
+            case 9:
                 return Excel::download(new EcoComReports($eco_com_procedure->id, $request->reportTypeId, [],[]), 'Reporte.xlsx');
                 break;
             case 4:
