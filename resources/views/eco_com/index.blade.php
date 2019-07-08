@@ -13,12 +13,13 @@
                 <table class="table table-striped table-bordered table-hover display" id="datatables-retirement-funds"
                     cellspacing="0" width="100%" style="font-size: 12px">
                     <tfoot>
-                        <tr>
+                        <tr style=>
+                            
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control"
                                     style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control"
                                     style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
+                            <th style="padding:5px; width:20px;"><input type="text" class="form-control"
                                     style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control"
                                     style="width:100%"></th>
@@ -36,29 +37,23 @@
                                     style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control"
                                     style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
-                                    style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
-                                    style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control"
-                                    style="width:100%"></th>
+                           
+                           
+                         
                         </tr>
                     </tfoot>
                     <thead>
                         <tr>
+                            <th>Num</th>
                             <th># de Trámite</th>
-                            <th>Fecha de Recepción</th>
                             <th>C.I Beneficiario</th>
                             <th>Nombre del Beneficiario</th>
-                            <th>C.I Titular</th>
-                            <th>Nombre del Titular</th>
                             <th>Regional</th>
-                            <th>Gestion</th>
+                            <th>Semestre</th>
                             <th>Modalidad</th>
-                            <th>Ente gestor</th>
                             <th>Ubicacion</th>
                             <th>Estado de Bandeja</th>
-                            <th>Total</th>
+                            <th>Total Complemento</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
@@ -147,17 +142,13 @@
                 { extend: 'excel', text:"Descargar en Excel", title: "Trámites de Fondo de Retiro "+moment().format('L_Hmm'), exportOptions: { columns: ':visible' }},
             ],
             columns:[
-                // { data: 'id' },
+                { data: 'id' },
                 { data: 'code' },
-                { data: 'reception_date' },
                 { data: 'eco_com_beneficiary_identity_card' },
                 { data: 'eco_com_beneficiary_full_name' },
-                { data: 'affiliate_identity_card' },
-                { data: 'affiliate_full_name' },
                 { data: 'eco_com_city_name'},
                 { data: 'eco_com_procedure_year'},
                 { data: 'procedure_modality' },
-                { data: 'pension_entity_name' },
                 { data: 'wf_state_name' },
                 { data: 'eco_com_inbox_state' },
                 { data: 'total' },
