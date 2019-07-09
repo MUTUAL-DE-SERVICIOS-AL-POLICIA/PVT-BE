@@ -110,10 +110,11 @@ export default {
         {
           id: 8,
           name: "Tramites Eliminados"
-        },{
-          id: 9,
-          name: "Doble Beneficio"
-        }
+        },
+        // {
+        //   id: 9,
+        //   name: "Doble Beneficio"
+        // }
       ],
       form: {
         ecoComProcedureId:

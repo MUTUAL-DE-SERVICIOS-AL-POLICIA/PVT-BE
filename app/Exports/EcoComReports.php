@@ -35,8 +35,9 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
+                    ->wfstates()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . "," .EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums(). $columns))
                     ->get();
                 break;
             case 2:
@@ -45,8 +46,9 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
+                    ->wfstates()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",".EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums(). $columns))
                     ->where('aps_disability', '>', 0)
                     ->get();
                 break;
@@ -56,9 +58,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
+                    ->wfstates()
                     ->legalGuardianInfo()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",". EconomicComplement::basic_info_affiliates() . "," . EconomicComplement::basic_info_legal_guardian() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_legal_guardian() . $columns))
                     ->has('eco_com_legal_guardian')
                     ->get();
                 break;
@@ -69,9 +72,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
+                    ->wfstates()
                     ->observationType()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",". EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums()  . $columns))
                     ->whereHas('observations', function ($query) {
                         $query->whereIn('observation_type_id', $this->observation_type_ids);
                     })
@@ -83,10 +87,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
+                    ->wfstates()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",". EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
-                    ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
                     ->where('economic_complements.inbox_state', false)
                     ->get();
                 break;
@@ -96,10 +100,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
+                    ->wfstates()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . ",". EconomicComplement::basic_info_complements() . "," . EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
-                    ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
                     ->where('economic_complements.inbox_state', true)
                     ->get();
                 break;
@@ -109,8 +113,9 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
+                    ->wfstates()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_complements() . ",". EconomicComplement::basic_info_affiliates() . $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
                     ->onlyTrashed()
                     ->get();
                 break;
@@ -147,7 +152,6 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             case 6:
             case 7:
                 $new_columns = [
-                    'ubicacion',
                     'estado'
                 ];
                 break;
@@ -162,33 +166,27 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
         }
         $default = [
             'NRO',
+            'NUP',
             'Nro Tramite',
+            "fecha_de_recepcion",
             'CI Beneficiario',
-            'CI Exp',
+            'CI Exp BEN',
+            'CI COMPLETO BEN',
             "Primer Nombre Beneficiario",
             "Segundo Nombre Beneficiario",
             "Paterno Beneficiario",
             "Materno Beneficiario",
             "Apellido casda Beneficiario",
             "Fecha Nacimiento Beneficiario",
-            "Regional",
-            "Grado",
-            "Categoria",
-            "Tipo de Prestacion",
-            "Tipo",
-            "fecha_de_recepcion",
-            "reintegro",
-            "renta_dignidad",
-            "renta_neto",
-            "neto",
-            "salario_referencial",
-            "antiguedad",
-            "diferencia",
-            "factor_complementario",
-            "total_complemento",
-            "NUP",
-            "ci_causahabiente",
-            "ci_exp_causahabiente",
+            "Telefonos Beneficiario",
+            "celulares Beneficiario",
+            "oficialia Beneficiario",
+            "libro Beneficiario",
+            "partida Beneficiario",
+            "fecha_matrimonio Beneficiario",
+            "ci_causa",
+            "exp_causa",
+            "ci_completo_causa",
             "primer_nombre_causahabiente",
             "segundo_nombre_causahabiente",
             "ap_paterno_causahabiente",
@@ -196,6 +194,30 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "ape_casada_causahabiente",
             "fecha_nacimiento",
             "codigo_nua_cua",
+            "Regional",
+            "Tipo de Prestacion",
+            "Tipo de Recepcion",
+            "Categoria",
+            "Grado",
+            "Ente Gestor",
+            "total_ganado_renta_pensión_SENASIR",
+            "reintegro_SENASIR",
+            "renta_dignidad_SENASIR",
+            "fraccion_saldo_acumulada_APS",
+            "fraccion_compensacion_cotizaciones_APS",
+            "fraccion_solidaria_vejez_APS",
+            "total_renta",
+            "total_renta_neto",
+            "antiguedad",
+            "salario_referencial",
+            "salario_cotizable",
+            "diferencia",
+            "total_semestre",
+            "factor_complementario",
+            "total_complemento",
+            "Ubicacion",
+            "tipoe_beneficiario",
+            "flujo",
         ];
         return array_merge($default, $new_columns);
     }
