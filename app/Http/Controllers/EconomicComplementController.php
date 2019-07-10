@@ -271,12 +271,12 @@ class EconomicComplementController extends Controller
         $economic_complement->city_id = $request->city_id;
         $economic_complement->degree_id = $affiliate->degree->id;
         $economic_complement->category_id = $affiliate->category->id;
-        $economic_complement->year = Carbon::parse($eco_com_procedure->year)->year . '-01-01'; // !! TODO Borrar columna
-        $economic_complement->semester = $eco_com_procedure->semester; // !! TODO Borrar columna
+        // $economic_complement->year = Carbon::parse($eco_com_procedure->year)->year . '-01-01'; // !! TODO Borrar columna
+        // $economic_complement->semester = $eco_com_procedure->semester; // !! TODO Borrar columna
         $economic_complement->code = Util::getLastCodeEconomicComplement($request->eco_com_procedure_id);
         $economic_complement->reception_date = now();
         $economic_complement->inbox_state = true;
-        $economic_complement->state = 'Received'; // !! TODO Borrar columna
+        // $economic_complement->state = 'Received'; // !! TODO Borrar columna
         $economic_complement->eco_com_reception_type_id = $request->reception_type;
 
         if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
