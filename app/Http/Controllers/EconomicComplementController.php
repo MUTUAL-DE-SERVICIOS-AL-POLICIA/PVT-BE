@@ -271,12 +271,12 @@ class EconomicComplementController extends Controller
         $economic_complement->city_id = $request->city_id;
         $economic_complement->degree_id = $affiliate->degree->id;
         $economic_complement->category_id = $affiliate->category->id;
-        $economic_complement->year = Carbon::parse($eco_com_procedure->year)->year . '-01-01'; // !! TODO Borrar columna
-        $economic_complement->semester = $eco_com_procedure->semester; // !! TODO Borrar columna
+        // $economic_complement->year = Carbon::parse($eco_com_procedure->year)->year . '-01-01'; // !! TODO Borrar columna
+        // $economic_complement->semester = $eco_com_procedure->semester; // !! TODO Borrar columna
         $economic_complement->code = Util::getLastCodeEconomicComplement($request->eco_com_procedure_id);
         $economic_complement->reception_date = now();
         $economic_complement->inbox_state = true;
-        $economic_complement->state = 'Received'; // !! TODO Borrar columna
+        // $economic_complement->state = 'Received'; // !! TODO Borrar columna
         $economic_complement->eco_com_reception_type_id = $request->reception_type;
 
         if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
@@ -295,6 +295,19 @@ class EconomicComplementController extends Controller
             $economic_complement->sub_total_rent = null;
             $economic_complement->reimbursement = null;
             $economic_complement->dignity_pension = null;
+        }
+        if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
+            $economic_complement->total_rent =
+            $economic_complement->sub_total_rent -
+            $economic_complement->reimbursement -
+            $economic_complement->dignity_pension +
+            $economic_complement->aps_disability;
+        }else{
+            $economic_complement->total_rent =
+            $economic_complement->aps_total_fsa +
+            $economic_complement->aps_total_cc +
+            $economic_complement->aps_total_fs +
+            $economic_complement->aps_disability;
         }
         $economic_complement->save();
         /**
@@ -1373,6 +1386,10 @@ class EconomicComplementController extends Controller
             }
         }
 
+        $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->get();
+        foreach ($eco_com_procedures as $e) {
+            $e->full_name = $e->fullName();
+        }
         /**
          ** Permissions
          */
@@ -1399,6 +1416,7 @@ class EconomicComplementController extends Controller
             'semester_list' => $semester_list,
 
             'permissions' => $permissions,
+            'eco_com_procedures' => $eco_com_procedures,
         ];
 
         return view('eco_com.qualification_parameters', $data);
@@ -1410,5 +1428,28 @@ class EconomicComplementController extends Controller
         $workflow_records = $eco_com->wf_records()->with(['user:id,username','wf_state:id,name', 'record_type:id,name'])->orderByDesc('date')->get();
         $note_records = $eco_com->notes()->orderByDesc('date')->get();
         return compact('procedure_records', 'workflow_records', 'note_records');
+    }
+    public function automatiQualification(Request $request)
+    {
+        ini_set('max_execution_time', 300);
+        logger($request->all());
+        $eco_com_procedure = EcoComProcedure::find($request->ecoComProcedureId);
+        $eco_coms = EconomicComplement::with('eco_com_state')->where('eco_com_procedure_id', $eco_com_procedure->id)
+            ->where('total_rent', '>', 0);
+        if (!$request->overrideTotal) {
+            $eco_coms->whereNull('total');
+        }
+
+        $eco_coms = $eco_coms->get();
+        logger($eco_coms->count());
+        $count = 0;
+        foreach ($eco_coms as $e) {
+            if (($e->eco_com_state->eco_com_state_type_id != 1 || $e->eco_com_state->eco_com_state_type_id != 6)) {
+                $e->qualify();
+                $count++;
+            }
+            logger($count);
+        }
+        return $count;
     }
 }
