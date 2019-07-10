@@ -58,7 +58,13 @@
                             <thead>
                                 <tr class="success">
                                     <th class="text-center">
-                                        <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Grado">Grado</div>
+                                        <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Grado">Correlativo</div>
+                                    </th>
+                                    <th class="text-center">
+                                        <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Grado">Codigo</div>
+                                    </th>
+                                    <th class="text-center">
+                                        <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Grado">Grados</div>
                                     </th>
                                     <th class="text-left">
                                         <div data-toggle="tooltip" data-placement="top" data-container="body" data-original-title="Renta">Renta</div>
