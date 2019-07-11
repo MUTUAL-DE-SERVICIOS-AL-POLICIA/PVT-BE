@@ -95,10 +95,10 @@ class EcoComImportExportController extends Controller
                     foreach ($collect as $c) {
                         // logger($e->affiliate->identity_card);
                         // logger($c[3]);
-                        // $affiliate_ci_eco_com = explode("-", ltrim($e->affiliate->identity_card, "0"))[0];
-                        $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
-                        // $ci_aps = explode("-", ltrim($c[10], "0"))[0];
-                        $ci_aps = ltrim($c[10], "0");
+                        $affiliate_ci_eco_com = explode("-", ltrim($e->affiliate->identity_card, "0"))[0];
+                        // $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
+                        $ci_aps = explode("-", ltrim($c[10], "0"))[0];
+                        // $ci_aps = ltrim($c[10], "0");
                         if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
                             // if ($e->aps_total_cc <> round($c[13], 2) || $e->aps_total_fsa <> round($c[19], 2) || $e->aps_total_fs <> round($c[25], 2)) {
                             // if ($sw_override) {
@@ -113,8 +113,8 @@ class EcoComImportExportController extends Controller
                     }
                 }
                 foreach ($collect as $c) {
-                    $ci_aps = ltrim($c[10], "0");
-                    $affiliate = Affiliate::whereRaw("ltrim(trim(affiliates.identity_card),'0') ='" . ltrim(trim($ci_aps), '0') . "'")
+                    $ci_aps = explode("-", ltrim($c[10], "0"))[0];
+                    $affiliate = Affiliate::whereRaw("split_part(ltrim(trim(affiliates.identity_card),'0'), '-', 1) ='" . ltrim(trim($ci_aps), '0') . "'")
                         ->where('nua', $c[3])->first();
                     if ($affiliate) {
                         if (!$affiliate->hasEconomicComplementWithProcedure(14)) {
@@ -172,8 +172,10 @@ class EcoComImportExportController extends Controller
                 $fails = collect([]);
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
-                        $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
-                        $ci_aps = ltrim($c[10], "0");
+                        $affiliate_ci_eco_com = explode("-", ltrim($e->affiliate->identity_card, "0"))[0];
+                        // $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
+                        $ci_aps = explode("-", ltrim($c[10], "0"))[0];
+                        // $ci_aps = ltrim($c[10], "0");
                         if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
                             // if ($e->aps_disability <> round($c[16], 2)) {
                             //     if ($sw_override) {
@@ -187,8 +189,8 @@ class EcoComImportExportController extends Controller
                 $temp = 0;
                 foreach ($collect as $c) {
                     if ($temp > 0) {
-                        $ci_aps = ltrim($c[10], "0");
-                        $affiliate = Affiliate::whereRaw("ltrim(trim(affiliates.identity_card),'0') ='" . ltrim(trim($ci_aps), '0') . "'")
+                        $ci_aps = explode("-", ltrim($c[10], "0"))[0];
+                        $affiliate = Affiliate::whereRaw("split_part(ltrim(trim(affiliates.identity_card),'0'), '-', 1) ='" . ltrim(trim($ci_aps), '0') . "'")
                             ->where('nua', $c[3])->first();
                         if ($affiliate) {
                             if (!$affiliate->hasEconomicComplementWithProcedure(14)) {
@@ -247,8 +249,8 @@ class EcoComImportExportController extends Controller
                 $fails = collect([]);
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
-                        $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
-                        $ci_aps = ltrim($c[11], "0");
+                        $affiliate_ci_eco_com = explode("-", ltrim($e->affiliate->identity_card, "0"))[0];
+                        $ci_aps = explode("-", ltrim($c[11], "0"))[0];
                         if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
                             $e->aps_total_death = round($c[17], 2);
                             $e->save();
@@ -261,7 +263,7 @@ class EcoComImportExportController extends Controller
                 foreach ($collect as $c) {
                     if ($temp > 0) {
                         $ci_aps = ltrim($c[11], "0");
-                        $affiliate = Affiliate::whereRaw("ltrim(trim(affiliates.identity_card),'0') ='" . ltrim(trim($ci_aps), '0') . "'")
+                        $affiliate = Affiliate::whereRaw("split_part(ltrim(trim(affiliates.identity_card),'0'), '-', 1) ='" . ltrim(trim($ci_aps), '0') . "'")
                             ->where('nua', $c[3])->first();
                         if ($affiliate) {
                             if (!$affiliate->hasEconomicComplementWithProcedure(14)) {

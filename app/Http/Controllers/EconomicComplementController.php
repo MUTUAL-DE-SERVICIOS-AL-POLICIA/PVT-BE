@@ -1110,11 +1110,7 @@ class EconomicComplementController extends Controller
             $economic_complement->dignity_pension +
             $economic_complement->aps_disability;
         }else{
-            $economic_complement->total_rent =
-            $economic_complement->aps_total_fsa +
-            $economic_complement->aps_total_cc +
-            $economic_complement->aps_total_fs +
-            $economic_complement->aps_disability;
+            $economic_complement->calculateTotalRentAps();
         }
         $economic_complement->save();
         $discount_type_id = null;

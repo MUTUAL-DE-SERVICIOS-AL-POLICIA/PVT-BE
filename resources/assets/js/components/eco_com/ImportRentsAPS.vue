@@ -118,9 +118,6 @@
             <h2>Importados Satisfactoriamente: {{ success }}</h2>
           </div>
           <div class="row">
-            <h2>Afiliados que no tiene Tramite: {{ notHasEcoCom.length }}</h2>
-          </div>
-          <div class="row">
             <h2>Datos que aun no fueron importados: {{notFound.length}}</h2>
             <table class="table table-striped table-bordered">
               <thead>
@@ -144,6 +141,9 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="row">
+            <h2>Afiliados que no tiene Tramite: {{ notHasEcoCom.length }}</h2>
           </div>
           <div class="row">
             <h2>Afiliados que no estan en la BASE DE DATOS de la MUSERPOL: {{ notFoundDB.length}}</h2>
