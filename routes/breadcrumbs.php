@@ -1,4 +1,5 @@
 <?php
+
 use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
 
 
@@ -178,5 +179,5 @@ Breadcrumbs::register('loans', function ($breadcrumbs) {
 });
 Breadcrumbs::register('show_loan', function ($breadcrumbs, $loan) {
   $breadcrumbs->parent('loans');
-  $breadcrumbs->push('Sincronización del: ' . $loan, URL::to('overdue_loan/' . $loan));
+  $breadcrumbs->push('Sincronización del ' . $loan, URL::to('overdue_loan/' . $loan));
 });
