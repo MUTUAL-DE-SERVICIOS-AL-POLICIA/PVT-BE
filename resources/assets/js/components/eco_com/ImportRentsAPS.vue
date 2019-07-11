@@ -104,7 +104,7 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-12" v-if="showResults">
+    <div class="col-lg-12" v-if="showResults" >
       <div class="ibox">
         <div class="ibox-title">
           <h2 class="pull-left">Resultados</h2>
@@ -112,52 +112,66 @@
         </div>
         <div class="ibox-content">
           <div class="row">
-            <h2>Importados Satisfactoriamente: {{ found }}</h2>
+            <h2>Catidad Total de Datos del EXCEL/CSV {{ csvTotal }}</h2>
           </div>
-          <br />
           <div class="row">
-            <h2>Datos Distintos: {{fails.length}}</h2>
-            <table class="table table-striped table-bordered" v-if="type == 'vejez'">
+            <h2>Importados Satisfactoriamente: {{ success }}</h2>
+          </div>
+          <div class="row">
+            <h2>Afiliados que no tiene Tramite: {{ notHasEcoCom.length }}</h2>
+          </div>
+          <div class="row">
+            <h2>Datos que aun no fueron importados: {{notFound.length}}</h2>
+            <table class="table table-striped table-bordered">
               <thead>
                 <tr>
                   <th>Nro Tramite</th>
-                  <th>aps_total_cc TRAMITE</th>
-                  <th>aps_total_cc APS</th>
-                  <th>aps_total_fsa TRAMITE</th>
-                  <th>aps_total_fsa APS</th>
-                  <th>aps_total_fs TRAMITE</th>
-                  <th>aps_total_fs APS</th>
+                  <th>CI Beneficiario</th>
+                  <th>Paterno Beneficiario</th>
+                  <th>Materno Beneficiario</th>
+                  <th>Primer Nombre Beneficiario</th>
+                  <th>Segundo Nombre Beneficiario</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(nf, index) in fails" :key="index">
-                  <td>
-                    <a :href="`/eco_com/${nf.id}`">{{ nf.code }}</a>
-                  </td>
-                  <td
-                    :class="{'danger':  nf.aps_total_cc != nf.aps_total_cc_aps}"
-                  >{{ nf.aps_total_cc}}</td>
-                  <td
-                    :class="{'danger':  nf.aps_total_cc != nf.aps_total_cc_aps}"
-                  >{{ nf.aps_total_cc_aps}}</td>
-
-                  <td
-                    :class="{'danger':  nf.aps_total_fsa != nf.aps_total_fsa_aps}"
-                  >{{ nf.aps_total_fsa}}</td>
-                  <td
-                    :class="{'danger':  nf.aps_total_fsa != nf.aps_total_fsa_aps}"
-                  >{{ nf.aps_total_fsa_aps}}</td>
-
-                  <td
-                    :class="{'danger':  nf.aps_total_fs != nf.aps_total_fs_aps}"
-                  >{{ nf.aps_total_fs}}</td>
-                  <td
-                    :class="{'danger':  nf.aps_total_fs != nf.aps_total_fs_aps}"
-                  >{{ nf.aps_total_fs_aps}}</td>
+                <tr v-for="(nf, index) in notFound" :key="index" >
+                  <td><a :href="`/eco_com/${nf.id}`">{{ nf.code }}</a></td>
+                  <td>{{ nf.eco_com_beneficiary.identity_card }}</td>
+                  <td>{{ nf.eco_com_beneficiary.last_name }}</td>
+                  <td>{{ nf.eco_com_beneficiary.mothers_last_name }}</td>
+                  <td>{{ nf.eco_com_beneficiary.first_name }}</td>
+                  <td>{{ nf.eco_com_beneficiary.second_name }}</td>
                 </tr>
               </tbody>
             </table>
-            <table class="table table-striped table-bordered" v-if="type == 'invalidez'">
+          </div>
+          <div class="row">
+            <h2>Afiliados que no estan en la BASE DE DATOS de la MUSERPOL: {{ notFoundDB.length}}</h2>
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>CI</th>
+                  <th>NUA</th>
+                  <th>PATERNO</th>
+                  <th>MATERNO</th>
+                  <th>AP CASADA</th>
+                  <th>p NOMBRE</th>
+                  <th>s NOMBRE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(nf, index) in notFoundDB" :key="index">
+                  <td>{{ nf[10]}}</td>
+                  <td>{{ nf[3]}}</td>
+                  <td>{{ nf[6]}}</td>
+                  <td>{{ nf[7]}}</td>
+                  <td>{{ nf[8]}}</td>
+                  <td>{{ nf[4]}}</td>
+                  <td>{{ nf[5]}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- <table class="table table-striped table-bordered" v-if="type == 'invalidez'">
               <thead>
                 <tr>
                   <th>Nro Tramite</th>
@@ -166,7 +180,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(nf, index) in fails" :key="index">
+                <tr v-for="(nf, index) in notFound" :key="index">
                   <td>
                     <a :href="`/eco_com/${nf.id}`">{{ nf.code }}</a>
                   </td>
@@ -178,8 +192,8 @@
                   >{{ nf.aps_disability_aps}}</td>
                 </tr>
               </tbody>
-            </table>
-            <table class="table table-striped table-bordered" v-if="type == 'muerte'">
+            </table> -->
+            <!-- <table class="table table-striped table-bordered" v-if="type == 'muerte'">
               <thead>
                 <tr>
                   <th>Nro Tramite</th>
@@ -188,7 +202,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(nf, index) in fails" :key="index">
+                <tr v-for="(nf, index) in notFound" :key="index">
                   <td>
                     <a :href="`/eco_com/${nf.id}`">{{ nf.code }}</a>
                   </td>
@@ -200,30 +214,36 @@
                   >{{ nf.aps_total_death_aps}}</td>
                 </tr>
               </tbody>
-            </table>
+            </table> -->
           </div>
           <br>
-          <div class="row">
+          <!-- <div class="row">
             <div class="text-center m-sm">
               <button class="btn btn-danger" type="button" @click="confirm()">
                 <i class="fa fa-check-circle"></i>&nbsp;Sobreescribir Informacion
               </button>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
+    <div id="results-import-aps"></div>
   </div>
 </template>
 
 <script>
+import { flashErrors, canOperation } from "../../helper.js";
 export default {
   props: ["permissions"],
   data() {
     return {
       loadingButton: false,
       found: 0,
-      fails: [],
+      success: 0,
+      notHasEcoCom: 0,
+      csvTotal: 0,
+      notFound: [],
+      notFoundDB: [],
       showResults: false,
       refresh: false,
       override: false,
@@ -288,15 +308,24 @@ export default {
         .then(response => {
           console.log(response.data);
           // this.found = response.data.found;
-          this.fails = response.data.fails;
+          this.success = response.data.success;
+          this.notFound = response.data.notFound;
+          this.notFoundDB = response.data.notFoundDB;
+          this.csvTotal = response.data.csvTotal;
+          this.notHasEcoCom = response.data.notHasEcoCom;
           this.type = type;
         })
         .catch(error => {
+          // flashErrors(
+          //   "Error al procesar la observacion: ",
+          //   error.response.data
+          // );
           console.log(error);
         });
       this.showResults = true;
       this.loadingButton = false
       this.refresh = false
+      this.$scrollTo("#results-import-aps");
     }
   }
 };
