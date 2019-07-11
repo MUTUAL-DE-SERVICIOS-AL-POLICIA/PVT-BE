@@ -194,11 +194,12 @@ class EconomicComplement extends Model
             ], 422);
         }
         $indicator = $eco_com_procedure->indicator;
+        logger("indicador " . $indicator);
         /**
          ** updating modality with components
          */
         //APS
-        if ($this->affiliate->pension_entity->type == 'APS') {
+        if ($this->affiliate->pension_entity_id <> 5) { // si es APS
             $component = 0;
             if ($this->aps_total_fsa > 0) {
                 $component++;
@@ -257,11 +258,17 @@ class EconomicComplement extends Model
                 //Orfandad
                 $this->eco_com_modality_id = 12;
             } else {
-                // $this->eco_com_modality_id = $this->eco_com_modality->procedure_modality_id;
+                if ($this->isOldAge()) {
+                    $this->eco_com_modality_id = 1;
+                }
+                if ($this->isWidowhood()) {
+                    $this->eco_com_modality_id = 2;
+                }
+                if ($this->isOrphanhood()) {
+                    $this->eco_com_modality_id = 3;
+                }
             }
         }
-        // $economic_complement->aps_disability = floatval(str_replace(',', '', $aps_disability));
-        // $economic_complement->total_rent = $total_rent;
         $this->save();
         /**
          ** /updating modality with components
@@ -273,37 +280,24 @@ class EconomicComplement extends Model
          ** actualizacion de las rentas netas
          */
 
-        $total_rent = $this->total_rent;
-
-        if ($this->eco_com_modality_id > 3 && $this->eco_com_modality_id < 10) { // no se esta tomando en cuenta a orfandad
+        logger($this->eco_com_modality->name);
+        if (array_search($this->eco_com_modality_id,  [4, 5, 6, 7, 8, 9, 10, 11, 12]) !== false) {
+            // solo se esta tomando las modalidades de vejez y viudedad
             $eco_com_rent = EcoComRent::where('degree_id', '=', $this->degree_id)
-                ->where('procedure_modality_id', '=', $this->eco_com_modality->procedure_modality_id)
+                ->where('procedure_modality_id', '=', ($this->isOrphanhood() ? 29 : $this->eco_com_modality->procedure_modality_id))
                 ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
                 ->where('semester', '=', $eco_com_procedure->semester)
                 ->first();
-            // EXCEPTION WHEN TOTAL_RENT > AVERAGE IN MODALITIES 4 AND 5
-            if ($this->total_rent > $eco_com_rent->average and ($this->eco_com_modality_id == 4 || $this->eco_com_modality_id == 5 || $this->eco_com_modality_id == 10)) { // se verifica si el total rent es mayor al promedio y que sea de un solo componente
-                $total_rent = $this->total_rent;
-                $this->total_rent_calc = $this->total_rent;
-            } else {
-                $total_rent = $eco_com_rent->average;
+            logger("promedio " . $eco_com_rent->average);
+            if (array_search($this->eco_com_modality_id,  [6, 7, 8, 9, 11, 12]) !== false) {
+                logger("menor renta ");
                 $this->total_rent_calc = $eco_com_rent->average;
-            }
-        } else if ($this->eco_com_modality_id >= 10) { // solo orfandad
-            $eco_com_rent = EcoComRent::where('degree_id', '=', $this->degree_id)
-                //!! porque se toma en cuenta vejez?????
-                ->where('procedure_modality_id', '=', 1)
-                ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
-                ->where('semester', '=', $eco_com_procedure->semester)
-                ->first();
-            if ($this->total_rent > $eco_com_rent->average and $this->eco_com_modality_id == 10) {
-                $total_rent = $this->total_rent;
-                $this->total_rent_calc = $this->total_rent;
-            } else {
-                $total_rent = $eco_com_rent->average;
+            } else if ($this->total_rent < $eco_com_rent->average && array_search($this->eco_com_modality_id,  [4, 5, 10]) !== false) {
+                logger("menor al promedio ");
                 $this->total_rent_calc = $eco_com_rent->average;
             }
         }
+        $this->save();
         /**
          ** /averages
          */
@@ -323,7 +317,7 @@ class EconomicComplement extends Model
         $this->seniority = $seniority;
         $salary_quotable = $salary_reference + $seniority;
         $this->salary_quotable = $salary_quotable;
-        $difference = $salary_quotable - $total_rent;
+        $difference = $salary_quotable - $this->total_rent;
         $this->difference = $difference;
         $months_of_payment = 6;
         $total_amount_semester = $difference * $months_of_payment;
@@ -523,20 +517,20 @@ class EconomicComplement extends Model
     public function scopeInfo($query)
     {
         return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
-        ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
-        ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
-        ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
-        ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id');
+            ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
+            ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+            ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
+            ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id');
     }
     public function scopeOrder($query)
     {
         return $query->orderBy(DB::raw("regexp_replace(split_part(economic_complements.code, '/',3),'\D','','g')::integer"))
-        ->orderBy(DB::raw("split_part(economic_complements.code, '/',2)"))
-        ->orderBy(DB::raw("split_part(economic_complements.code, '/',1)::integer"));
+            ->orderBy(DB::raw("split_part(economic_complements.code, '/',2)"))
+            ->orderBy(DB::raw("split_part(economic_complements.code, '/',1)::integer"));
     }
     public function scopeObservationType($query)
     {
-        return $query->leftJoin('observables', 'economic_complements.id', 'observables.observable_id')->where('observables.observable_type', 'like','economic_complements')->leftJoin('observation_types', 'observables.observation_type_id', '=', 'observation_types.id');
+        return $query->leftJoin('observables', 'economic_complements.id', 'observables.observable_id')->where('observables.observable_type', 'like', 'economic_complements')->leftJoin('observation_types', 'observables.observation_type_id', '=', 'observation_types.id');
     }
     public function getType()
     {
@@ -563,7 +557,6 @@ class EconomicComplement extends Model
     {
         $this->total_rent = $this->aps_total_death +  $this->aps_disability + $this->aps_total_cc + $this->aps_total_fsa + $this->aps_total_fs;
         $this->save();
-
     }
     public function notes()
     {
@@ -578,16 +571,16 @@ class EconomicComplement extends Model
         return "row_number() OVER () AS NRO,
         economic_complements.affiliate_id as NUP,
         economic_complements.code as eco_com_code,
-        economic_complements.reception_date as fecha_recepcion,".
-        EconomicComplement::basic_info_beneficiary().",".
-        EconomicComplement::basic_info_affiliates().",
+        economic_complements.reception_date as fecha_recepcion," .
+            EconomicComplement::basic_info_beneficiary() . "," .
+            EconomicComplement::basic_info_affiliates() . ",
         eco_com_city.name as regional,
         procedure_modalities.name as tipo_de_prestacion,
         eco_com_reception_types.name as reception_type,
         eco_com_category.name as categoria,
         eco_com_degree.name as grado,
-        pension_entities.name,".
-        EconomicComplement::basic_info_complements().",
+        pension_entities.name," .
+            EconomicComplement::basic_info_complements() . ",
         wf_states.first_shortened as ubicacion,
         eco_com_modalities.name as tipo_beneficiario,
         workflows.name as flujo";
@@ -627,8 +620,7 @@ class EconomicComplement extends Model
         economic_complements.difference as diferencia,
         economic_complements.total_amount_semester as total_semestre,
         economic_complements.complementary_factor as factor_complementario,
-        economic_complements.total as total_complemento"
-        ;
+        economic_complements.total as total_complemento";
     }
     public static function basic_info_affiliates()
     {
