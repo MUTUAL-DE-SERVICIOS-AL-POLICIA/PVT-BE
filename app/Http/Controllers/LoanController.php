@@ -35,9 +35,10 @@ class LoanController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store()
   {
-    //
+    Artisan::call('loan:sync');
+    return redirect('overdue_loan');
   }
 
   /**
@@ -48,8 +49,11 @@ class LoanController extends Controller
    */
   public function show($file)
   {
-    if (Storage::disk('local')->has('sincronizacion_prestamos/' . $file)) {
-      return view('loans.show', ['content' => Storage::disk('local')->get('sincronizacion_prestamos/' . $file), 'title' => substr_replace(str_replace("_", " ", explode('.', $file)[0]), ':', -3, -2)]);
+    $file_path = 'sincronizacion_prestamos';
+    $filename = explode('_', $file);
+    $file_path = implode('/', [$file_path, $filename[2], $filename[1]]);
+    if (Storage::disk('local')->has($file_path . '/' . $file)) {
+      return view('loans.show', ['content' => Storage::disk('local')->get($file_path . '/' . $file), 'title' => substr_replace(str_replace("_", " ", explode('.', $file)[0]), ':', -3, -2)]);
     } else {
       abort(404);
     }
