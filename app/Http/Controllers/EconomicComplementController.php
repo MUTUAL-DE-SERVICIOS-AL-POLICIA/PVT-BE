@@ -580,7 +580,9 @@ class EconomicComplementController extends Controller
             'wf_state:id,name',
             'workflow:id,name',
             'eco_com_modality:id,name,shortened,procedure_modality_id',
-            'eco_com_reception_type:id,name'
+            'eco_com_reception_type:id,name',
+            'degree',
+            'category'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
@@ -1053,7 +1055,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 6;
                 break;
         }
-        $eco_com = EconomicComplement::with('discount_types')->findOrFail($id);
+        $eco_com = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality'])->findOrFail($id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         if ($rol->id == 4) {
             logger("si uno");
@@ -1063,6 +1065,7 @@ class EconomicComplementController extends Controller
                 $eco_com->discount_amount = $eco_com->getOnlyTotalEcoCom() * $devolution->percentage;
             }
         }
+        logger($eco_com);
         $eco_com->total_eco_com = $eco_com->getOnlyTotalEcoCom();
         return $eco_com;
     }
@@ -1093,11 +1096,13 @@ class EconomicComplementController extends Controller
             $economic_complement->aps_total_fsa = null;
             $economic_complement->aps_total_cc = null;
             $economic_complement->aps_total_fs = null;
+            $economic_complement->aps_total_death = null;
         } else {
             $economic_complement->aps_total_fsa = Util::parseMoney($request->aps_total_fsa);
             $economic_complement->aps_total_cc = Util::parseMoney($request->aps_total_cc);
             $economic_complement->aps_total_fs = Util::parseMoney($request->aps_total_fs);
             $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
+            $economic_complement->aps_total_death = Util::parseMoney($request->aps_total_death);
             $economic_complement->sub_total_rent = null;
             $economic_complement->reimbursement = null;
             $economic_complement->dignity_pension = null;
@@ -1131,7 +1136,9 @@ class EconomicComplementController extends Controller
                 return $economic_complement->qualify() ;
             }
         }
+        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality'])->find($economic_complement->id);
         $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
+        $economic_complement->total_eco_com = $economic_complement->getOnlyTotalEcoCom();
         return $economic_complement;
     }
     public function saveAmortization(Request $request)
