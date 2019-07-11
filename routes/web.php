@@ -675,6 +675,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('eco_com_record/{id}', 'EconomicComplementController@getRecord');
     Route::post('eco_com_import_rents', 'EcoComImportExportController@importSenasir');
     Route::post('eco_com_import_rents_aps', 'EcoComImportExportController@importAPS');
+    Route::post('eco_com_import_pago_futuro', 'EcoComImportExportController@importPagoFuturo');
 
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
@@ -697,6 +698,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     // eco com qualification parameters
     Route::get('eco_com_qualification_parameters', 'EconomicComplementController@qualificationParameters')->name('eco_com_qualification_parameters');
+    // eco com reports
+    Route::get('eco_com_report', 'EcoComReportController@index')->name('eco_com_report');
+    Route::post('eco_com_report_excel', 'EcoComReportController@generate');
 
     // base wage
     Route::resource('base_wage', 'BaseWageController');

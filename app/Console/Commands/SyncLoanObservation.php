@@ -11,6 +11,7 @@ use Muserpol\Models\ObservationType;
 use Muserpol\Models\Spouse;
 use Muserpol\User;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
 
 class SyncLoanObservation extends Command
 {
@@ -40,7 +41,8 @@ class SyncLoanObservation extends Command
   {
     $this->file_content = '';
     $this->file_path = 'sincronizacion_prestamos';
-    $this->file_name = $this->file_path . '/' . Carbon::now()->format('d_M_Y_\a_\h\r\s_H_i') . '.txt';
+    $date = Carbon::now();
+    $this->file_name = implode('/', [$this->file_path, $date->year, $date->format('m'), $date->format('d_m_Y_\a_\h\r\s_H_i') . '.txt']);
     parent::__construct();
   }
 
@@ -61,18 +63,29 @@ class SyncLoanObservation extends Command
         exit($e->getMessage());
       }
     }
-    $date = $date->format('Ymd');
+    $date = $date->subMonth()->endOfMonth()->format('Ymd');
+    $user = User::first();
 
     // 2 = Suspendido - Préstamo en Mora
     $id_overdue = 2;
+    // 16 = Complement económico en proceso
+    $in_process_id = 16;
     $message = ' Sincronización iniciada ' . Carbon::now();
     $this->new_line($message);
     $this->info($message);
     \Log::info($message);
     \Log::info('Removing old data...');
-    DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'affiliates')->delete();
+    DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'affiliates')->where('message', 'not like', 'PRIORITARIO%')->delete();
 
-    $user = User::first();
+    $current_procedures = Util::getEcoComCurrentProcedure();
+    $overdue_eco_coms = DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'economic_complements')->where('message', 'not like', 'PRIORITARIO%')->pluck('observable_id');
+
+    foreach ($overdue_eco_coms as $eco_com) {
+      $economic_complement = EconomicComplement::find($eco_com);
+      if (in_array($economic_complement->eco_com_procedure_id, $current_procedures->all()) && $economic_complement->eco_com_state_id == $in_process_id) {
+        DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'economic_complements')->where('observable_id', $eco_com)->delete();
+      }
+    }
 
     $loans = DB::connection('sqlsrv')->select("SELECT dbo.Prestamos.IdPrestamo, dbo.Prestamos.PresNumero, dbo.Padron.IdPadron, DATEDIFF(month, Amortizacion.AmrFecPag, '" . $date . "') as Overdue from dbo.Prestamos join dbo.Padron on Prestamos.IdPadron = Padron.IdPadron join dbo.Producto on Prestamos.PrdCod = Producto.PrdCod join dbo.Amortizacion on (Prestamos.IdPrestamo = Amortizacion.IdPrestamo and Amortizacion.AmrNroPag = (select max(AmrNroPag) from Amortizacion where Amortizacion.IdPrestamo = Prestamos.IdPrestamo and Amortizacion.AMRSTS <>'X' )) where Prestamos.PresEstPtmo = 'V' and dbo.Prestamos.PresSaldoAct > 0 and Amortizacion.AmrFecPag <  cast('" . $date . "' as datetime) and DATEDIFF(month, Amortizacion.AmrFecPag, '" . $date . "') >= 2;");
 
@@ -162,17 +175,17 @@ class SyncLoanObservation extends Command
       $affiliate->observations()->save($observation, [
         'user_id' => $user->id,
         'date' => Carbon::now(),
-        'message' => 'Préstamo con mora de ' . $loan->Overdue . ' meses',
+        'message' => 'Préstamo con mora de ' . $loan->Overdue . ' meses (generado automáticamente)',
         'enabled' => false
       ]);
 
-      $eco_coms = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', Util::getEcoComCurrentProcedure())->get();
+      $eco_coms = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $current_procedures)->get();
       foreach ($eco_coms as $eco) {
-        if (!$eco->hasObservationType($id_overdue) && $eco->eco_com_state_id == 16) {
+        if (!$eco->hasObservationType($id_overdue) && $eco->eco_com_state_id == $in_process_id) {
           $eco->observations()->save($observation, [
             'user_id' => $user->id,
             'date' => Carbon::now(),
-            'message' => 'Préstamo con mora de ' . $loan->Overdue . ' meses',
+            'message' => 'Préstamo con mora de ' . $loan->Overdue . ' meses (generado automáticamente)',
             'enabled' => false
           ]);
           $eco_count++;
