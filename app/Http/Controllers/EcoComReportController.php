@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Muserpol\Exports\EcoComReports;
 use Muserpol\Models\ObservationType;
 use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\Exports\AffiliateReport;
 
 class EcoComReportController extends Controller
 {
@@ -16,12 +17,14 @@ class EcoComReportController extends Controller
     {
         $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->get();
         $observation_types = ObservationType::whereIn('type', ["T", "AT"])->get();
+        $affiliate_observations = ObservationType::whereIn('type', ["A", "AT"])->get();
         $wf_states = WorkflowState::where('module_id', 2)->get();
         foreach ($eco_com_procedures as $e) {
             $e->full_name = $e->fullName();
         }
         $data = [
             'eco_com_procedures' => $eco_com_procedures,
+            'affiliate_observations' => $affiliate_observations,
             'observation_types' => $observation_types,
             'wf_states' => $wf_states,
         ];
@@ -37,8 +40,7 @@ class EcoComReportController extends Controller
             case 2:
             case 3:
             case 8:
-            case 9:
-                return Excel::download(new EcoComReports($eco_com_procedure->id, $request->reportTypeId, [],[]), 'Reporte.xlsx');
+                return Excel::download(new EcoComReports($eco_com_procedure->id, $request->reportTypeId, [], []), 'Reporte.xlsx');
                 break;
             case 4:
                 $observation_type_ids = collect($request->observationTypeIds)->pluck('id');
@@ -46,8 +48,13 @@ class EcoComReportController extends Controller
                 break;
             case 6:
             case 7:
-                $wf_states_ids= collect($request->wfCurrentStateIds)->pluck('id');
+                $wf_states_ids = collect($request->wfCurrentStateIds)->pluck('id');
                 return Excel::download(new EcoComReports($eco_com_procedure->id, $request->reportTypeId, [], $wf_states_ids), 'Reporte.xlsx');
+                break;
+            case 9:
+                $observation_type_ids = collect($request->affiliateObservationsId)->pluck('id');
+                logger($observation_type_ids);
+            return Excel::download(new AffiliateReport($request->reportTypeId, $observation_type_ids), 'Reporte.xlsx');
                 break;
             default:
                 # code...
