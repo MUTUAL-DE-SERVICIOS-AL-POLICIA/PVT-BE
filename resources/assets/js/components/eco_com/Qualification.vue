@@ -45,6 +45,10 @@
                   <td>Fracción Solidaria de Vejéz</td>
                   <td>{{ ecoCom.aps_total_fs | currency}}</td>
                 </tr>
+                <tr v-if="! isSenasir">
+                  <td>Fracción por Muerte</td>
+                  <td>{{ ecoCom.aps_total_death | currency}}</td>
+                </tr>
                 <tr class="danger" v-if="ecoCom.aps_disability > 0">
                   <td>Prestación por Invalidéz</td>
                   <td>{{ ecoCom.aps_disability | currency }}</td>
@@ -385,6 +389,7 @@ export default {
         parseFloat(parseMoney(this.ecoComModal.aps_total_fsa)) +
         parseFloat(parseMoney(this.ecoComModal.aps_total_cc)) +
         parseFloat(parseMoney(this.ecoComModal.aps_total_fs)) +
+        parseFloat(parseMoney(this.ecoComModal.aps_total_death)) +
         parseFloat(parseMoney(this.ecoComModal.aps_disability))
       );
     },
