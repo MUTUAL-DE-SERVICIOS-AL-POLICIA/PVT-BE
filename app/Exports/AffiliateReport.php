@@ -1,0 +1,75 @@
+<?php
+
+namespace Muserpol\Exports;
+
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Muserpol\Models\Affiliate;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use DB;
+
+class AffiliateReport implements FromCollection, WithHeadings, ShouldAutoSize
+{
+    protected $report_type_id;
+    protected $observation_type_ids;
+    public function __construct($report_type_id, $observation_type_ids)
+    {
+        $this->report_type_id = $report_type_id;
+        $this->observation_type_ids = $observation_type_ids;
+    }
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function collection()
+    {
+        $data = null;
+        $columns = "";
+        switch ($this->report_type_id) {
+            case 9:
+                // logger($this->observation_type_ids);
+                // $columns = ', observation_types.name as observaciones';
+                $columns = '';
+                $data = Affiliate::select(DB::raw(Affiliate::basic_info_colums() . $columns))
+                    ->affiliateinfo()
+                    ->observationType()
+                    ->whereHas('observations', function ($query) {
+                        $query->whereIn('observation_type_id', $this->observation_type_ids);
+                    })
+                    ->get();
+                    logger($data->first());
+                break;
+                break;
+
+            default:
+                # code...
+                break;
+        }
+        return $data;
+    }
+    public function headings(): array
+    {
+        $new_columns = [];
+        switch ($this->report_type_id) {
+            case 9:
+                $new_columns = [
+                    'observaciones'
+                ];
+                break;
+        }
+        $default = [
+            'NRO',
+            'NUP',
+            'CI',
+            'CI Exp ',
+            'CI COMPLETO ',
+            "Primer Nombre ",
+            "Segundo Nombre ",
+            "Paterno ",
+            "Materno ",
+            "Apellido casda ",
+            "Fecha Nacimiento ",
+            "NUA",
+        ];
+        return array_merge($default, $new_columns);
+    }
+}

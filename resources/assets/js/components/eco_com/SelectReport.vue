@@ -22,6 +22,7 @@
         track-by="id"
         :show-labels="false"
         label="name"
+        :max="1"
       >
         <!-- :custom-label="customLabel" -->
         <!-- <template slot="tag" slot-scope="props">
@@ -55,6 +56,24 @@
         </template> -->
       </multiselect>
     </div>
+    <div v-if="form.reportTypeId == 9 ">
+      <multiselect
+        v-model="form.affiliateObservationsId"
+        :options="affiliateObservations"
+        :multiple="true"
+        :close-on-select="false"
+        :clear-on-select="false"
+        :hide-selected="true"
+        :disabled="loadingButton"
+        placeholder="Seleccione la observacion"
+        track-by="id"
+        :show-labels="false"
+        label="name"
+        :max="1"
+      >
+      </multiselect>
+    </div>
+    
     <div class="col-md-12">
       <div class="text-center m-sm">
         <button class="btn btn-primary" type="button" @click="send()" :disabled="loadingButton">
@@ -74,7 +93,7 @@ export default {
   components: {
     Multiselect
   },
-  props: ["ecoComProcedures", "observationTypes", 'wfStates'],
+  props: ["ecoComProcedures", "observationTypes" , 'affiliateObservations', 'wfStates'],
   data() {
     return {
       loadingButton: false,
@@ -110,6 +129,10 @@ export default {
         {
           id: 8,
           name: "Tramites Eliminados"
+        },
+        {
+          id: 9,
+          name: "Afiliados obsevados por:"
         },
         // {
         //   id: 9,

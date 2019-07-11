@@ -67,7 +67,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                 break;
             case 4:
                 //! TODO VERIFICAR SI TIENE @ OBSERVACIONES
-                $columns = ', observation_types.name as observaciones';
+                // $columns = ', observation_types.name as observaciones';
+                $columns = '';
                 $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                     ->info()
                     ->beneficiary()

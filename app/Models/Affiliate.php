@@ -810,4 +810,31 @@ class Affiliate extends Model
       }
       return null;
   }
+  public function scopeAffiliateinfo($query)
+  {
+    return $query->leftJoin('cities as affiliate_city', 'affiliates.city_identity_card_id', '=', 'affiliate_city.id')
+        ->leftJoin('pension_entities', 'affiliates.pension_entity_id', '=', 'pension_entities.id');
+  }
+  public function scopeObservationType($query)
+  {
+    return $query->leftJoin('observables', 'affiliates.id', 'observables.observable_id')
+    ->where('observables.observable_type', 'like', 'affiliates')
+    ->leftJoin('observation_types', 'observables.observation_type_id', '=', 'observation_types.id');
+  }
+  public static function basic_info_colums()
+    {
+        return "
+        row_number() OVER () AS NRO,
+        affiliates.id as NUP,
+        affiliates.identity_card as ci_causa,
+        affiliate_city.first_shortened as exp_causa,
+        concat_ws(' ', affiliates.identity_card,affiliate_city.first_shortened) as ci_completo_causa,
+        affiliates.first_name as primer_nombre_causahabiente,
+        affiliates.second_name as segundo_nombre_causahabiente,
+        affiliates.last_name as ap_paterno_causahabiente,
+        affiliates.mothers_last_name as ap_materno_causahabiente,
+        affiliates.surname_husband as ape_casada_causahabiente,
+        affiliates.birth_date as fecha_nacimiento,
+        affiliates.nua as codigo_nua_cua";
+    }
 }
