@@ -39,6 +39,7 @@ class EcoComObservationSheet  implements FromCollection, WithTitle, WithHeadings
     }
     public function title(): string
     {
+        // return Str::limit(collect(explode('-', $this->observation_type->name))->last(), 25);
         return Str::limit(collect(explode('-', $this->observation_type->shortened))->last(), 25);
     }
     public function headings(): array
