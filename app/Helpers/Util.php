@@ -1151,4 +1151,22 @@ class Util
     }
     return floatval($value);
   }
+  public static function getObservationIdFromRoleId()
+  {
+    switch (self::getRol()->id) {
+      case 4:
+        return 13;
+        break;
+      case 7:
+        return 1;
+        break;
+      case 16:
+        return 2;
+        break;
+      default:
+        # code...
+        break;
+    }
+    return 0;
+  }
 }
