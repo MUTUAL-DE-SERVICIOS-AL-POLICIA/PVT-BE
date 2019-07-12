@@ -10,7 +10,7 @@
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
       </select>
     </div>
-    <div v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 ">
+    <div v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13">
       <label>Comparar Con:</label>
       <select v-model="form.secondEcoComProcedureId" :disabled="loadingButton">
         <option v-for="r in ecoComProceduresFilter" :value="r.id" :key="r.id">{{r.full_name}}</option>
@@ -100,7 +100,7 @@ export default {
         },
         {
           id: 4,
-          name: "Tramites Observados Por:"
+          name: "Tramites Observados"
         },
         // {
         //   id: 5,
@@ -132,7 +132,11 @@ export default {
         },
         {
           id: 12,
-          name: "DIFERENCIA DE PROMEDIO"
+          name: "Diferencia de Promedio"
+        },
+        {
+          id: 13,
+          name: "Comparacion de Componentes solo APS"
         }
         // {
         //   id: 9,

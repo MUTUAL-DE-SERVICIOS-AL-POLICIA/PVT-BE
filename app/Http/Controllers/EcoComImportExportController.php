@@ -71,7 +71,8 @@ class EcoComImportExportController extends Controller
                     // [34] PTC_DERECHOHABIENTE
                     if ((is_null($d1[34]) || $d1[34] == 'C') && !$process->contains($d1[0])) {
                         foreach ($data as $d2) {
-                            if ($d1[3] == $d2[3] && $d1[10] == $d2[10] && ($d2[34] == 'C' || is_null($d2[34])) && $d1[0] != $d2[0]) {
+                            // if ($d1[3] == $d2[3] && $d1[10] == $d2[10] && ($d2[34] == 'C' || is_null($d2[34])) && $d1[0] != $d2[0]) {
+                            if ($d1[3] == $d2[3] && ($d2[34] == 'C' || is_null($d2[34])) && $d1[0] != $d2[0]) {
                                 $temp[13] =  Util::verifyAndParseNumber($temp[13]) + Util::verifyAndParseNumber($d2[13]); //TOTAL_CC
                                 $temp[19] =  Util::verifyAndParseNumber($temp[19]) + Util::verifyAndParseNumber($d2[19]); //TOTAL_FSA
                                 $temp[25] =  Util::verifyAndParseNumber($temp[25]) + Util::verifyAndParseNumber($d2[25]); //TOTAL_FS
@@ -99,7 +100,8 @@ class EcoComImportExportController extends Controller
                         // $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
                         $ci_aps = explode("-", ltrim($c[10], "0"))[0];
                         // $ci_aps = ltrim($c[10], "0");
-                        if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
+                        // if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
+                        if ($c[3] == $e->affiliate->nua) {
                             // if ($e->aps_total_cc <> round($c[13], 2) || $e->aps_total_fsa <> round($c[19], 2) || $e->aps_total_fs <> round($c[25], 2)) {
                             // if ($sw_override) {
                             $e->aps_total_cc = round($c[13], 2);
@@ -176,7 +178,8 @@ class EcoComImportExportController extends Controller
                         // $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
                         $ci_aps = explode("-", ltrim($c[10], "0"))[0];
                         // $ci_aps = ltrim($c[10], "0");
-                        if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
+                        // if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
+                        if ($c[3] == $e->affiliate->nua) {
                             // if ($e->aps_disability <> round($c[16], 2)) {
                             //     if ($sw_override) {
                             $e->aps_disability = round($c[16], 2);
@@ -232,7 +235,8 @@ class EcoComImportExportController extends Controller
                     $temp = $d1;
                     if ((is_null($d1[27]) || $d1[27] == 'C') && !$process->contains($d1[0])) {
                         foreach ($data as $d2) {
-                            if ($d1[3] == $d2[3] && $d1[11] == $d2[11] && ($d2[27] == 'C' || is_null($d2[27])) && $d1[0] != $d2[0]) {
+                            // if ($d1[3] == $d2[3] && $d1[11] == $d2[11] && ($d2[27] == 'C' || is_null($d2[27])) && $d1[0] != $d2[0]) {
+                            if ($d1[3] == $d2[3] && ($d2[27] == 'C' || is_null($d2[27])) && $d1[0] != $d2[0]) {
                                 $temp[17] =  Util::verifyAndParseNumber($temp[17]) + Util::verifyAndParseNumber($d2[17]);
                                 $process->push($d2[0]);
                             }
@@ -251,7 +255,8 @@ class EcoComImportExportController extends Controller
                     foreach ($collect as $c) {
                         $affiliate_ci_eco_com = explode("-", ltrim($e->affiliate->identity_card, "0"))[0];
                         $ci_aps = explode("-", ltrim($c[11], "0"))[0];
-                        if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
+                        // if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
+                        if ($c[3] == $e->affiliate->nua) {
                             $e->aps_total_death = round($c[17], 2);
                             $e->save();
                             $e->calculateTotalRentAps();
