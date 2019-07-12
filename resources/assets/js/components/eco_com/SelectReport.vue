@@ -11,30 +11,6 @@
       </select>
     </div>
     <br />
-    <div v-if="form.reportTypeId == 4">
-      <multiselect
-        v-model="form.observationTypeIds"
-        :options="observationTypes"
-        :multiple="true"
-        :close-on-select="false"
-        :clear-on-select="false"
-        :hide-selected="true"
-        :disabled="loadingButton"
-        placeholder="Seleccione la observacion"
-        track-by="id"
-        :show-labels="false"
-        label="name"
-        :max="1"
-      >
-        <!-- :custom-label="customLabel" -->
-        <!-- <template slot="tag" slot-scope="props">
-          <span class="custom__tag">
-            <span>{{ props.option }}</span>
-            <span class="custom__remove" @click="props.remove(props.option)">❌</span>
-          </span>
-        </template>-->
-      </multiselect>
-    </div>
     <div v-if="form.reportTypeId == 6 || form.reportTypeId == 7">
       <multiselect
         v-model="form.wfCurrentStateIds"
