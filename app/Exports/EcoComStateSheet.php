@@ -7,31 +7,26 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Illuminate\Support\Collection;
-use Muserpol\Models\ObservationType;
 use Illuminate\Support\Str;
+use Muserpol\Models\EconomicComplement\EcoComState;
 
-class EcoComObservationSheet  implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
+class EcoComStateSheet implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
 {
-    private $observation_type;
+    private $eco_com_state;
     private $eco_coms;
-
-    public function __construct(ObservationType $observation_type, Collection $eco_coms)
+    public function __construct(EcoComState $eco_com_state, Collection $eco_coms)
     {
-        $this->observation_type = $observation_type;
+        $this->eco_com_state = $eco_com_state;
         $this->eco_coms = $eco_coms;
     }
-    /**
-     * @return \Illuminate\Support\Collection
-     */
     public function collection()
     {
+        logger($this->eco_com_state);
         $data = collect([]);
         foreach ($this->eco_coms as $e) {
-            $observation = $e->observations->where('id', $this->observation_type->id)->first();
-            // if ($e->observations->contains($this->observation_type->id)) {
-            if ($observation) {
-                $e->observation_name = $this->observation_type->name;
-                $e->observation_state = $observation->pivot->enabled ? 'Subsanado' : 'No subsanado';
+
+            if ($e->eco_com_state_id ==  $this->eco_com_state->id) {
+                $e->eco_com_state_name = $this->eco_com_state->name;
                 $data->push($e);
             }
         }
@@ -39,7 +34,7 @@ class EcoComObservationSheet  implements FromCollection, WithTitle, WithHeadings
     }
     public function title(): string
     {
-        return Str::limit(collect(explode('-', $this->observation_type->shortened))->last(), 25);
+        return Str::limit(collect(explode('-', $this->eco_com_state->name))->last(), 25);
     }
     public function headings(): array
     {
@@ -98,6 +93,7 @@ class EcoComObservationSheet  implements FromCollection, WithTitle, WithHeadings
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
+            "estado",
         ];
         return array_merge($default, $new_columns);
     }
