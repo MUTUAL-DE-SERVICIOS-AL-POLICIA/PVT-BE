@@ -13,6 +13,9 @@ use Muserpol\Exports\AffiliateReport;
 use Muserpol\Exports\AffiliateObservationsReport;
 use Muserpol\Exports\EcoComObservationReport;
 use Muserpol\Exports\EcoComCompareReport;
+use Muserpol\Exports\AffiliateTagsReport;
+use Muserpol\Exports\EcoComStateReport;
+use Muserpol\Exports\EcoComTagsReport;
 
 class EcoComReportController extends Controller
 {
@@ -61,7 +64,16 @@ class EcoComReportController extends Controller
             case 12:
             case 13:
                 $second_eco_com_procedure = EcoComProcedure::find($request->secondEcoComProcedureId);
-                return Excel::download(new EcoComCompareReport($request->reportTypeId,$eco_com_procedure->id, $second_eco_com_procedure->id), 'Reporte.xlsx');
+                return Excel::download(new EcoComCompareReport($request->reportTypeId, $eco_com_procedure->id, $second_eco_com_procedure->id), 'Reporte.xlsx');
+                break;
+            case 14:
+                return Excel::download(new AffiliateTagsReport(), 'Reporte.xlsx');
+                break;
+            case 15:
+                return Excel::download(new EcoComStateReport($eco_com_procedure->id), 'Reporte.xlsx');
+                break;
+            case 16:
+                return Excel::download(new EcoComTagsReport($eco_com_procedure->id), 'Reporte.xlsx');
                 break;
             default:
                 # code...

@@ -75,9 +75,9 @@
                 </tr>
               </tbody>
             </table>
-            <h3>Grado: {{ ecoCom.degree.name}} </h3>
-            <h3>Categoria: {{ ecoCom.category.name}} </h3>
-            <h3>Modalidad: {{ ecoCom.eco_com_modality.name }} ({{ ecoCom.eco_com_modality.shortened }})</h3>
+            <h3 v-if="ecoCom.degree">Grado: {{ ecoCom.degree.name}} </h3>
+            <h3 v-if="ecoCom.category">Categoria: {{ ecoCom.category.name}} </h3>
+            <h3 v-if="ecoCom.eco_com_modality">Modalidad: {{ ecoCom.eco_com_modality.name }} ({{ ecoCom.eco_com_modality.shortened }})</h3>
           </div>
           <div class="col-md-6">
             <p>Datos del Calculo del total del Complemento Economico</p>
