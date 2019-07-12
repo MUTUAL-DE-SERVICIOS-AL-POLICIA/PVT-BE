@@ -75,10 +75,10 @@ class SyncLoanObservation extends Command
     $this->info($message);
     \Log::info($message);
     \Log::info('Removing old data...');
-    DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'affiliates')->delete();
+    DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'affiliates')->where('message', 'not like', 'PRIORITARIO%')->delete();
 
     $current_procedures = Util::getEcoComCurrentProcedure();
-    $overdue_eco_coms = DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'economic_complements')->pluck('observable_id');
+    $overdue_eco_coms = DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'economic_complements')->where('message', 'not like', 'PRIORITARIO%')->whereEnabled(false)->pluck('observable_id');
 
     foreach ($overdue_eco_coms as $eco_com) {
       $economic_complement = EconomicComplement::find($eco_com);
