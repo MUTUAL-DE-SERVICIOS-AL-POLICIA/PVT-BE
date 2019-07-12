@@ -59,6 +59,7 @@ class EcoComReportController extends Controller
             case 10:
             case 11:
             case 12:
+            case 13:
                 $second_eco_com_procedure = EcoComProcedure::find($request->secondEcoComProcedureId);
                 return Excel::download(new EcoComCompareReport($request->reportTypeId,$eco_com_procedure->id, $second_eco_com_procedure->id), 'Reporte.xlsx');
                 break;
