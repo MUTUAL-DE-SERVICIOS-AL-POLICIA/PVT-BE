@@ -12,6 +12,7 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Exports\AffiliateReport;
 use Muserpol\Exports\AffiliateObservationsReport;
 use Muserpol\Exports\EcoComObservationReport;
+use Muserpol\Exports\EcoComCompareReport;
 
 class EcoComReportController extends Controller
 {
@@ -54,6 +55,12 @@ class EcoComReportController extends Controller
                 break;
             case 9:
                 return Excel::download(new AffiliateObservationsReport(), 'Reporte.xlsx');
+                break;
+            case 10:
+            case 11:
+            case 12:
+                $second_eco_com_procedure = EcoComProcedure::find($request->secondEcoComProcedureId);
+                return Excel::download(new EcoComCompareReport($request->reportTypeId,$eco_com_procedure->id, $second_eco_com_procedure->id), 'Reporte.xlsx');
                 break;
             default:
                 # code...

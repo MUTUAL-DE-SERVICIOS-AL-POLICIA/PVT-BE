@@ -10,6 +10,12 @@
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
       </select>
     </div>
+    <div v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 ">
+      <label>Comparar Con:</label>
+      <select v-model="form.secondEcoComProcedureId" :disabled="loadingButton">
+        <option v-for="r in ecoComProceduresFilter" :value="r.id" :key="r.id">{{r.full_name}}</option>
+      </select>
+    </div>
     <br />
     <div v-if="form.reportTypeId == 6 || form.reportTypeId == 7">
       <multiselect
@@ -115,6 +121,18 @@ export default {
         {
           id: 9,
           name: "Afiliados obsevados"
+        },
+        {
+          id: 10,
+          name: "Comparacion de Grado"
+        },
+        {
+          id: 11,
+          name: "Comparacion de Categoria"
+        },
+        {
+          id: 12,
+          name: "DIFERENCIA DE PROMEDIO"
         }
         // {
         //   id: 9,
@@ -151,6 +169,13 @@ export default {
           console.log(error);
         });
       this.loadingButton = false;
+    }
+  },
+  computed:{
+    ecoComProceduresFilter(){
+      return this.ecoComProcedures.filter(x=>{
+        return x.id != this.form.ecoComProcedureId;
+      })
     }
   }
 };
