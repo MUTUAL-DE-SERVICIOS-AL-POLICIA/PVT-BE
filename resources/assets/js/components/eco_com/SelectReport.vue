@@ -4,10 +4,12 @@
     <select v-model="form.reportTypeId" :disabled="loadingButton">
       <option v-for="r in reportsType" :value="r.id" :key="r.id">{{r.name}}</option>
     </select>
-    <label>Gestion</label>
-    <select v-model="form.ecoComProcedureId" :disabled="loadingButton">
-      <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
-    </select>
+    <div v-if="form.reportTypeId != 9">
+      <label>Gestion</label>
+      <select v-model="form.ecoComProcedureId" :disabled="loadingButton">
+        <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
+      </select>
+    </div>
     <br />
     <div v-if="form.reportTypeId == 4">
       <multiselect
@@ -30,7 +32,7 @@
             <span>{{ props.option }}</span>
             <span class="custom__remove" @click="props.remove(props.option)">❌</span>
           </span>
-        </template> -->
+        </template>-->
       </multiselect>
     </div>
     <div v-if="form.reportTypeId == 6 || form.reportTypeId == 7">
@@ -53,10 +55,10 @@
             <span>{{ props.option }}</span>
             <span class="custom__remove" @click="props.remove(props.option)">❌</span>
           </span>
-        </template> -->
+        </template>-->
       </multiselect>
     </div>
-    <div v-if="form.reportTypeId == 9 ">
+    <!-- <div v-if="form.reportTypeId == 9 ">
       <multiselect
         v-model="form.affiliateObservationsId"
         :options="affiliateObservations"
@@ -70,10 +72,9 @@
         :show-labels="false"
         label="name"
         :max="1"
-      >
-      </multiselect>
-    </div>
-    
+      ></multiselect>
+    </div> -->
+
     <div class="col-md-12">
       <div class="text-center m-sm">
         <button class="btn btn-primary" type="button" @click="send()" :disabled="loadingButton">
@@ -93,7 +94,12 @@ export default {
   components: {
     Multiselect
   },
-  props: ["ecoComProcedures", "observationTypes" , 'affiliateObservations', 'wfStates'],
+  props: [
+    "ecoComProcedures",
+    "observationTypes",
+    "affiliateObservations",
+    "wfStates"
+  ],
   data() {
     return {
       loadingButton: false,
@@ -132,8 +138,8 @@ export default {
         },
         {
           id: 9,
-          name: "Afiliados obsevados por:"
-        },
+          name: "Afiliados obsevados"
+        }
         // {
         //   id: 9,
         //   name: "Doble Beneficio"
