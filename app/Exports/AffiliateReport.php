@@ -7,15 +7,14 @@ use Muserpol\Models\Affiliate;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use DB;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class AffiliateReport implements FromCollection, WithHeadings, ShouldAutoSize
+class AffiliateReport implements FromCollection, WithHeadings, ShouldAutoSize, WithMultipleSheets
 {
     protected $report_type_id;
-    protected $observation_type_ids;
-    public function __construct($report_type_id, $observation_type_ids)
+    public function __construct($report_type_id)
     {
         $this->report_type_id = $report_type_id;
-        $this->observation_type_ids = $observation_type_ids;
     }
     /**
      * @return \Illuminate\Support\Collection
@@ -33,10 +32,10 @@ class AffiliateReport implements FromCollection, WithHeadings, ShouldAutoSize
                     ->affiliateinfo()
                     ->observationType()
                     ->whereHas('observations', function ($query) {
-                        $query->whereIn('observation_type_id', $this->observation_type_ids);
+                        $query->whereIn('observation_type_id', [13]);
                     })
-                    ->get();
-                    logger($data->first());
+                    ->toSql();
+                    logger($data);
                 break;
                 break;
 

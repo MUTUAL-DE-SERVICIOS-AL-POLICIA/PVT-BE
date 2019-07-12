@@ -10,6 +10,7 @@ use Muserpol\Exports\EcoComReports;
 use Muserpol\Models\ObservationType;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Exports\AffiliateReport;
+use Muserpol\Exports\AffiliateObservationsReport;
 
 class EcoComReportController extends Controller
 {
@@ -52,9 +53,7 @@ class EcoComReportController extends Controller
                 return Excel::download(new EcoComReports($eco_com_procedure->id, $request->reportTypeId, [], $wf_states_ids), 'Reporte.xlsx');
                 break;
             case 9:
-                $observation_type_ids = collect($request->affiliateObservationsId)->pluck('id');
-                logger($observation_type_ids);
-            return Excel::download(new AffiliateReport($request->reportTypeId, $observation_type_ids), 'Reporte.xlsx');
+                return Excel::download(new AffiliateObservationsReport(), 'Reporte.xlsx');
                 break;
             default:
                 # code...
