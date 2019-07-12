@@ -4,34 +4,19 @@
     <select v-model="form.reportTypeId" :disabled="loadingButton">
       <option v-for="r in reportsType" :value="r.id" :key="r.id">{{r.name}}</option>
     </select>
-    <label>Gestion</label>
-    <select v-model="form.ecoComProcedureId" :disabled="loadingButton">
-      <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
-    </select>
-    <br />
-    <div v-if="form.reportTypeId == 4">
-      <multiselect
-        v-model="form.observationTypeIds"
-        :options="observationTypes"
-        :multiple="true"
-        :close-on-select="false"
-        :clear-on-select="false"
-        :hide-selected="true"
-        :disabled="loadingButton"
-        placeholder="Seleccione la observacion"
-        track-by="id"
-        :show-labels="false"
-        label="name"
-      >
-        <!-- :custom-label="customLabel" -->
-        <!-- <template slot="tag" slot-scope="props">
-          <span class="custom__tag">
-            <span>{{ props.option }}</span>
-            <span class="custom__remove" @click="props.remove(props.option)">❌</span>
-          </span>
-        </template> -->
-      </multiselect>
+    <div v-if="form.reportTypeId != 9">
+      <label>Gestion</label>
+      <select v-model="form.ecoComProcedureId" :disabled="loadingButton">
+        <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
+      </select>
     </div>
+    <div v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13">
+      <label>Comparar Con:</label>
+      <select v-model="form.secondEcoComProcedureId" :disabled="loadingButton">
+        <option v-for="r in ecoComProceduresFilter" :value="r.id" :key="r.id">{{r.full_name}}</option>
+      </select>
+    </div>
+    <br />
     <div v-if="form.reportTypeId == 6 || form.reportTypeId == 7">
       <multiselect
         v-model="form.wfCurrentStateIds"
@@ -52,9 +37,26 @@
             <span>{{ props.option }}</span>
             <span class="custom__remove" @click="props.remove(props.option)">❌</span>
           </span>
-        </template> -->
+        </template>-->
       </multiselect>
     </div>
+    <!-- <div v-if="form.reportTypeId == 9 ">
+      <multiselect
+        v-model="form.affiliateObservationsId"
+        :options="affiliateObservations"
+        :multiple="true"
+        :close-on-select="false"
+        :clear-on-select="false"
+        :hide-selected="true"
+        :disabled="loadingButton"
+        placeholder="Seleccione la observacion"
+        track-by="id"
+        :show-labels="false"
+        label="name"
+        :max="1"
+      ></multiselect>
+    </div> -->
+
     <div class="col-md-12">
       <div class="text-center m-sm">
         <button class="btn btn-primary" type="button" @click="send()" :disabled="loadingButton">
@@ -74,7 +76,12 @@ export default {
   components: {
     Multiselect
   },
-  props: ["ecoComProcedures", "observationTypes", 'wfStates'],
+  props: [
+    "ecoComProcedures",
+    "observationTypes",
+    "affiliateObservations",
+    "wfStates"
+  ],
   data() {
     return {
       loadingButton: false,
@@ -93,7 +100,7 @@ export default {
         },
         {
           id: 4,
-          name: "Tramites Observados Por:"
+          name: "Tramites Observados"
         },
         // {
         //   id: 5,
@@ -111,6 +118,38 @@ export default {
           id: 8,
           name: "Tramites Eliminados"
         },
+        {
+          id: 9,
+          name: "Afiliados obsevados"
+        },
+        {
+          id: 10,
+          name: "Comparacion de Grado"
+        },
+        {
+          id: 11,
+          name: "Comparacion de Categoria"
+        },
+        {
+          id: 12,
+          name: "Diferencia de Promedio"
+        },
+        {
+          id: 13,
+          name: "Comparacion de Componentes solo APS"
+        },
+        {
+          id: 14,
+          name: "Afiliados por Tags"
+        },
+        {
+          id: 15,
+          name: "Estado de los Tramites"
+        },
+        {
+          id: 16,
+          name: "Etiquetas de los Tramites"
+        }
         // {
         //   id: 9,
         //   name: "Doble Beneficio"
@@ -146,6 +185,13 @@ export default {
           console.log(error);
         });
       this.loadingButton = false;
+    }
+  },
+  computed:{
+    ecoComProceduresFilter(){
+      return this.ecoComProcedures.filter(x=>{
+        return x.id != this.form.ecoComProcedureId;
+      })
     }
   }
 };

@@ -439,6 +439,7 @@ Vue.component('eco-com-select-report', require('./components/eco_com/SelectRepor
 Vue.component('eco-com-import-rents', require('./components/eco_com/ImportRents.vue'));
 Vue.component('eco-com-import-rents-aps', require('./components/eco_com/ImportRentsAPS.vue'));
 Vue.component('eco-com-import-pago-futuro', require('./components/eco_com/ImportPagoFuturo.vue'));
+Vue.component('eco-com-automatic-qualification', require('./components/eco_com/AutomaticQualification.vue'));
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));

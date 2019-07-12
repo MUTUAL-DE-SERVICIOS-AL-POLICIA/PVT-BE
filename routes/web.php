@@ -698,6 +698,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // eco com qualification parameters
     Route::get('eco_com_qualification_parameters', 'EconomicComplementController@qualificationParameters')->name('eco_com_qualification_parameters');
+    Route::post('eco_com_automatic_qualification', 'EconomicComplementController@automatiQualification');
     // eco com reports
     Route::get('eco_com_report', 'EcoComReportController@index')->name('eco_com_report');
     Route::post('eco_com_report_excel', 'EcoComReportController@generate');
