@@ -11,15 +11,15 @@ use Muserpol\Models\Affiliate;
 use Illuminate\Support\Collection;
 use Muserpol\Models\ObservationType;
 use Illuminate\Support\Str;
+use Muserpol\Models\Tag;
 
-class AffiliateObservationSheet implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
+class AffiliateTagSheet implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
 {
-    private $observation_type;
+    private $tag;
     private $affiliates;
-
-    public function __construct(ObservationType $observation_type, Collection $affiliates)
+    public function __construct(Tag $tag, Collection $affiliates)
     {
-        $this->observation_type = $observation_type;
+        $this->tag = $tag;
         $this->affiliates = $affiliates;
     }
 
@@ -27,25 +27,21 @@ class AffiliateObservationSheet implements FromCollection, WithTitle, WithHeadin
     {
         $data = collect([]);
         foreach ($this->affiliates as $a) {
-            $observation = $a->observations->where('id',$this->observation_type->id)->first();
-            // if ($a->observations->contains($this->observation_type->id)) {
-            if ($observation) {
-                $a->observation_name = $this->observation_type->name;
+            $tag = $a->tags->where('id', $this->tag->id)->first();
+            if ($tag) {
+                $a->tag_name = $this->tag->name;
                 $data->push($a);
             }
         }
         return $data;
     }
-    /**
-     * @return string
-     */
     public function title(): string
     {
-        return Str::limit(collect(explode('-', $this->observation_type->shortened))->last(), 25);
+        return Str::limit(collect(explode('-', $this->tag->name))->last(), 20);
     }
     public function headings(): array
     {
-        $new_columns = ['Nombre observacion'];
+        $new_columns = ['Etiqueta'];
         $default = [
             // 'NRO',
             'NUP',

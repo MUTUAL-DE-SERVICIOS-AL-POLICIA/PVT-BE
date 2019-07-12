@@ -137,6 +137,18 @@ export default {
         {
           id: 13,
           name: "Comparacion de Componentes solo APS"
+        },
+        {
+          id: 14,
+          name: "Afiliados por Tags"
+        },
+        {
+          id: 15,
+          name: "Estado de los Tramites"
+        },
+        {
+          id: 16,
+          name: "Etiquetas de los Tramites"
         }
         // {
         //   id: 9,
