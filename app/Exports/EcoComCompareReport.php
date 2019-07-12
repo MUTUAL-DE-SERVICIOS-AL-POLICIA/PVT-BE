@@ -109,6 +109,41 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                 }
                 return $rows;
                 break;
+            case 13:
+                $ecos_one = $eco_com_procedure->economic_complements;
+                $ecos_second = $second_eco_com_procedure->economic_complements;
+                $rows = collect([]);
+                foreach ($ecos_one as $one) {
+                    $afi_id = $one->affiliate_id;
+                    $old = EconomicComplement::where('affiliate_id', '=', $afi_id)
+                        ->where('eco_com_procedure_id', '=', $second_eco_com_procedure->id)
+                        ->first();
+                    if ($old) {
+                        if (
+                            ($one->aps_total_fsa > 0 && (is_null($old->aps_total_fsa) || $old->aps_total_fsa == 0 ) || (is_null($one->aps_total_fsa) || $one->aps_total_fsa == 0 ) && $old->aps_total_fsa > 0)
+                            || ($one->aps_total_fs > 0 && (is_null($old->aps_total_fs) || $old->aps_total_fs == 0 ) || (is_null($one->aps_total_fs) || $one->aps_total_fs == 0 ) && $old->aps_total_fs > 0)
+                            || ($one->aps_total_cc > 0 && (is_null($old->aps_total_cc) || $old->aps_total_cc == 0 ) || (is_null($one->aps_total_cc) || $one->aps_total_cc == 0 ) && $old->aps_total_cc > 0)
+                            || ($one->aps_disability > 0 && is_null($old->aps_disability) || is_null($one->aps_disability) && $old->aps_disability > 0)
+                        ) {
+                            $rows->push(array(
+                                'afiliado_nup' => $one->affiliate->id,
+                                'afiliado_ci' => $one->affiliate->identity_card,
+                                'tramite_anterior' => $old->code,
+                                'tramite_actual' => $one->code,
+                                "aps_total_FSA Anterior" => $one->aps_total_fsa,
+                                "aps_total_FSA Actual" => $old->aps_total_fsa,
+                                "aps_total_FS Anterior" => $one->aps_total_fs,
+                                "aps_total_FS Actual" => $old->aps_total_fs,
+                                "aps_total_CC Anterior" => $one->aps_total_cc,
+                                "aps_total_CC Actual" => $old->aps_total_cc,
+                                "aps_total_invalidez Anterior" => $one->aps_disability,
+                                "aps_total_invalidez Actual" => $old->aps_disability,
+                            ));
+                        }
+                    }
+                }
+                return $rows;
+                break;
 
             default:
                 # code...
@@ -149,6 +184,18 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                     'average_current',
                     'difference',
                     'modality'
+                ];
+                break;
+            case 13:
+                $new_columns = [
+                    "aps_total_FSA Anterior",
+                    "aps_total_FSA Actual",
+                    "aps_total_FS Anterior",
+                    "aps_total_FS Actual",
+                    "aps_total_CC Anterior",
+                    "aps_total_CC Actual",
+                    "aps_total_invalidez Anterior",
+                    "aps_total_invalidez Actual",
                 ];
                 break;
             default:
