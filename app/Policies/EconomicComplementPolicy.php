@@ -72,6 +72,8 @@ class EconomicComplementPolicy
     }
     public function amortize(User $user,EconomicComplement $EconomicComplement)
     {
-        return $EconomicComplement->wf_current_state_id == 3 && array_search(Util::getRol()->id, [4,7,16]) !== false && $EconomicComplement->inbox_state == false;
+        $observation = $EconomicComplement->observations()->where('id', Util::getObservationIdFromRoleId())->first();
+        return $EconomicComplement->wf_current_state_id == 3 && array_search(Util::getRol()->id, [4,7,16]) !== false && $EconomicComplement->inbox_state == false && ($observation ? $observation->pivot->enabled : false);
+        ;
     }
 }
