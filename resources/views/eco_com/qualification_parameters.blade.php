@@ -40,6 +40,8 @@
                             class="fa fa-users"></i> Rentas APS</a></li>
                 <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-import-pago-futuro"><a href="#"><i
                             class="fa fa-users"></i> Importar Pago a Futuro</a></li>
+                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-automatic-qualification"><a href="#"><i
+                            class="fa fa-users"></i> Calificacion Automatica</a></li>
             </ul>
         </div>
     </div>
@@ -66,6 +68,9 @@
             </div>
             <div id="tab-eco-com-import-pago-futuro" class="tab-pane">
             <eco-com-import-pago-futuro :permissions="{{ $permissions }}"></eco-com-import-pago-futuro>
+            </div>
+            <div id="tab-eco-com-automatic-qualification" class="tab-pane">
+            <eco-com-automatic-qualification :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-automatic-qualification>
             </div>
         </div>
     </div>
