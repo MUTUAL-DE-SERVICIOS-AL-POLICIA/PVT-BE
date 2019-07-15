@@ -45,13 +45,17 @@
                   <td>Fracción Solidaria de Vejéz</td>
                   <td>{{ ecoCom.aps_total_fs | currency}}</td>
                 </tr>
+                <tr class="danger" v-if="ecoCom.aps_total_death > 0">
+                  <td>Fracción por Muerte</td>
+                  <td>{{ ecoCom.aps_total_death | currency}}</td>
+                </tr>
                 <tr class="danger" v-if="ecoCom.aps_disability > 0">
                   <td>Prestación por Invalidéz</td>
                   <td>{{ ecoCom.aps_disability | currency }}</td>
                 </tr>
                 <tr v-if="!isSenasir" class="success">
                   <td>Total Renta ó Pensión</td>
-                  <td>{{ getTotalSumFractions() | currency }}</td>
+                  <td>{{ ecoCom.total_rent | currency }}</td>
                 </tr>
                 <tr v-if="isSenasir">
                   <td>Total Ganado Renta ó Pensión</td>
@@ -67,10 +71,13 @@
                 </tr>
                 <tr v-if="isSenasir" class="success">
                   <td>Total Renta ó Pensión</td>
-                  <td>{{ getTotalSumSenasir() | currency }}</td>
+                  <td>{{ ecoCom.total_rent | currency }}</td>
                 </tr>
               </tbody>
             </table>
+            <h3 v-if="ecoCom.degree">Grado: {{ ecoCom.degree.name}} </h3>
+            <h3 v-if="ecoCom.category">Categoria: {{ ecoCom.category.name}} </h3>
+            <h3 v-if="ecoCom.eco_com_modality">Modalidad: {{ ecoCom.eco_com_modality.name }} ({{ ecoCom.eco_com_modality.shortened }})</h3>
           </div>
           <div class="col-md-6">
             <p>Datos del Calculo del total del Complemento Economico</p>
@@ -124,7 +131,7 @@
                 </tr>
                 <tr class="success">
                   <td>
-                    <strong>Total</strong>
+                    <strong>Total Liquio Pagable</strong>
                   </td>
                   <td>{{ ecoCom.total | currency }}</td>
                 </tr>
@@ -211,6 +218,25 @@
                     v-money
                     name="aps_disability"
                     v-model="ecoComModal.aps_disability"
+                    :disabled="!editing"
+                  >
+                </div>
+                <div class="col-sm-2">
+                  <i class="fa fa-plus" style="font-size:20px"></i>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Renta Muerte</label>
+                <div class="col-sm-4">
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-money
+                    name="aps_disability"
+                    v-model="ecoComModal.aps_total_death"
                     :disabled="!editing"
                   >
                 </div>
@@ -385,6 +411,7 @@ export default {
         parseFloat(parseMoney(this.ecoComModal.aps_total_fsa)) +
         parseFloat(parseMoney(this.ecoComModal.aps_total_cc)) +
         parseFloat(parseMoney(this.ecoComModal.aps_total_fs)) +
+        parseFloat(parseMoney(this.ecoComModal.aps_total_death)) +
         parseFloat(parseMoney(this.ecoComModal.aps_disability))
       );
     },
@@ -452,6 +479,7 @@ export default {
         parseFloat(parseMoney(this.ecoCom.aps_total_fsa)) +
         parseFloat(parseMoney(this.ecoCom.aps_total_cc)) +
         parseFloat(parseMoney(this.ecoCom.aps_total_fs)) +
+        parseFloat(parseMoney(this.ecoCom.aps_total_death)) +
         parseFloat(parseMoney(this.ecoCom.aps_disability))
       );
     },
