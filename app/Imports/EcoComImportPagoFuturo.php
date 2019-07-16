@@ -44,7 +44,25 @@ class EcoComImportPagoFuturo implements ToCollection
                         'message' => "Observación Importada",
                         'enabled' => false
                     ]);
+                    $eco_com->observations()->save($eco_com, [
+                        'user_id' => Auth::user()->id,
+                        'date' => now(),
+                        'message' => "Observación Importada",
+                        'enabled' => false
+                    ]);
                 }
+
+                $subtotal = $eco_com->aps_total_cc + $eco_com->aps_total_fsa + $eco_com->aps_total_fs + $eco_com->aps_disability + $eco_com->aps_total_death;
+                $total = $subtotal * 2.03 / 100;
+                $aux = $total * 6;
+                $discount_type = DiscountType::findOrFail(7);
+                if ($eco_com->discount_types->contains($discount_type->id)) {
+                    $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
+                } else {
+                    $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
+                }
+
+
                 // if (!Util::isDoblePerceptionEcoCom($ci)) {
                 //     $discount_type = DiscountType::findOrFail($pago_futuro_id);
                 //     if ($eco_com->discount_types->contains($discount_type->id)) {
@@ -55,8 +73,8 @@ class EcoComImportPagoFuturo implements ToCollection
                 //     $found++;
                 // }else{
                 //     logger("sii".$ci);
-                // }
-            }else{
+                //  }
+            } else {
                 $not_found->push($ci);
             }
         }

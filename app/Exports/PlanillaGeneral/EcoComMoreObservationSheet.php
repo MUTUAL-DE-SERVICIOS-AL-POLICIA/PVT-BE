@@ -1,30 +1,35 @@
 <?php
 
-namespace Muserpol\Exports;
+namespace Muserpol\Exports\PlanillaGeneral;
 
-use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use Muserpol\Models\ObservationType;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
-class EcoComObservationReport implements WithMultipleSheets
+use DB;
+use Muserpol\Models\ObservationType;
+use Muserpol\Helpers\Util;
+
+class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
 {
-    use Exportable;
-
     protected $eco_com_procedure_id;
-    protected $wf_states_ids;
-
-    public function __construct(int $eco_com_procedure_id,$wf_states_ids)
+    public function __construct($eco_com_procedure_id)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
-        $this->wf_states_ids = $wf_states_ids;
     }
-
-    public function sheets(): array
+    public function collection()
     {
-        $sheets = [];
-        $observation_types = ObservationType::whereIn('type', ['T', 'AT'])->get();
-        $eco_coms = EconomicComplement::with('observations')
+        $columns = '';
+        $eco_coms =  EconomicComplement::with('observations')->ecoComProcedure($this->eco_com_procedure_id)
+            ->info()
+            ->beneficiary()
+            ->affiliateInfo()
+            ->wfstates()
+            ->where('economic_complements.wf_current_state_id', 3)
+            ->where('economic_complements.eco_com_state_id', 16)
+            ->where('economic_complements.total', '>', 0)
+            ->has('observations')
             ->select(
                 'economic_complements.id as id',
                 'economic_complements.affiliate_id as NUP',
@@ -80,18 +85,90 @@ class EcoComObservationReport implements WithMultipleSheets
                 'eco_com_modalities.name as tipo_beneficiario',
                 'workflows.name as flujo'
             )
-            ->has('observations')
-            ->info()
-            ->beneficiary()
-            ->affiliateInfo()
-            ->wfstates()
-            ->ecoComProcedure($this->eco_com_procedure_id)
-            ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
+            // ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
             ->get();
-        logger($eco_coms->count());
-        foreach ($observation_types as $o) {
-            $sheets[] = new EcoComObservationSheet($o, $eco_coms);
+        $collect = collect([]);
+        $observations_ids = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
+        foreach ($eco_coms as $e) {
+            $observations = $e->observations->whereIn('id', $observations_ids);
+            if ($observations->count() > 1) {
+                $sw = true;
+                foreach ($observations as $o) {
+                    if ($e->discount_types->where('id', Util::getDiscountId($o->id))->count() == 0) {
+                        $sw = false;
+                    }
+                }
+                if ($sw) {
+                    $e->observaciones = ObservationType::whereIn('id', $observations->pluck('id'))->pluck('name')->implode(' || ');
+                    $collect->push($e);
+                }
+            }
         }
-        return $sheets;
+        return $collect;
+    }
+    public function title(): string
+    {
+        return 'Multiples Obs';
+    }
+    public function headings(): array
+    {
+        $new_columns = [];
+        $default = [
+            'ID',
+            'NUP',
+            'Nro Tramite',
+            "fecha_de_recepcion",
+            'CI Beneficiario',
+            'CI Exp BEN',
+            // 'CI COMPLETO BEN',
+            "Primer Nombre Beneficiario",
+            "Segundo Nombre Beneficiario",
+            "Paterno Beneficiario",
+            "Materno Beneficiario",
+            "Apellido casda Beneficiario",
+            "Fecha Nacimiento Beneficiario",
+            "Telefonos Beneficiario",
+            "celulares Beneficiario",
+            "oficialia Beneficiario",
+            "libro Beneficiario",
+            "partida Beneficiario",
+            "fecha_matrimonio Beneficiario",
+            "ci_causa",
+            "exp_causa",
+            // "ci_completo_causa",
+            "primer_nombre_causahabiente",
+            "segundo_nombre_causahabiente",
+            "ap_paterno_causahabiente",
+            "ap_materno_causahabiente",
+            "ape_casada_causahabiente",
+            "fecha_nacimiento",
+            "codigo_nua_cua",
+            "Regional",
+            "Tipo de Prestacion",
+            "Tipo de Recepcion",
+            "Categoria",
+            "Grado",
+            "Ente Gestor",
+            "total_ganado_renta_pensión_SENASIR",
+            "reintegro_SENASIR",
+            "renta_dignidad_SENASIR",
+            "fraccion_saldo_acumulada_APS",
+            "fraccion_compensacion_cotizaciones_APS",
+            "fraccion_solidaria_vejez_APS",
+            "total_renta",
+            "total_renta_neto",
+            "antiguedad",
+            "salario_referencial",
+            "salario_cotizable",
+            "diferencia",
+            "total_semestre",
+            "factor_complementario",
+            "total_complemento",
+            "Ubicacion",
+            "tipoe_beneficiario",
+            "flujo",
+            "observaciones",
+        ];
+        return array_merge($default, $new_columns);
     }
 }

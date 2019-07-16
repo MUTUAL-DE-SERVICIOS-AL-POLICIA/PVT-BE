@@ -50,6 +50,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     // ->order()
                     ->select(DB::raw(EconomicComplement::basic_info_colums(). $columns))
                     ->where('aps_disability', '>', 0)
+                    ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
                     ->get();
                 break;
             case 3:
@@ -61,6 +62,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->wfstates()
                     ->legalGuardianInfo()
                     // ->order()
+                    ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
                     ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_legal_guardian() . $columns))
                     ->has('eco_com_legal_guardian')
                     ->get();
@@ -80,6 +82,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->whereHas('observations', function ($query) {
                         $query->whereIn('observation_type_id', $this->observation_type_ids);
                     })
+                    ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
                     ->get();
                 break;
             case 6:

@@ -17,7 +17,7 @@
       </select>
     </div>
     <br />
-    <div v-if="form.reportTypeId == 6 || form.reportTypeId == 7">
+    <div v-if="form.reportTypeId == 6 || form.reportTypeId == 7 || form.reportTypeId == 2 || form.reportTypeId == 3 || form.reportTypeId == 4 || form.reportTypeId == 15">
       <multiselect
         v-model="form.wfCurrentStateIds"
         :options="wfStates"
@@ -149,6 +149,10 @@ export default {
         {
           id: 16,
           name: "Etiquetas de los Tramites"
+        },
+        {
+          id: 17,
+          name: "Planilla General"
         }
         // {
         //   id: 9,
