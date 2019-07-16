@@ -22,7 +22,7 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
     }
     public function query()
     {
-        $columns = '';
+        $columns = ',discount_type_economic_complement.amount';
         return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
             ->info()
             ->beneficiary()
@@ -48,6 +48,7 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
             ->whereHas('discount_types', function ($query) {
                 $query->where('discount_types.id', Util::getDiscountId($this->observation_type->id));
             })
+            ->leftJoin('discount_type_economic_complement', 'discount_type_economic_complement.economic_complement_id', '=', 'economic_complements.id')
             ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns));
     }
     public function title(): string
@@ -111,6 +112,7 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
+            "Monto amortizado",
         ];
         return array_merge($default, $new_columns);
     }
