@@ -12,10 +12,12 @@ class EcoComObservationReport implements WithMultipleSheets
     use Exportable;
 
     protected $eco_com_procedure_id;
+    protected $wf_states_ids;
 
-    public function __construct(int $eco_com_procedure_id)
+    public function __construct(int $eco_com_procedure_id,$wf_states_ids)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
+        $this->wf_states_ids = $wf_states_ids;
     }
 
     public function sheets(): array
@@ -84,6 +86,7 @@ class EcoComObservationReport implements WithMultipleSheets
             ->affiliateInfo()
             ->wfstates()
             ->ecoComProcedure($this->eco_com_procedure_id)
+            ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
             ->get();
         logger($eco_coms->count());
         foreach ($observation_types as $o) {
