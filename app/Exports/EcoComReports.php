@@ -41,7 +41,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->get();
                 break;
             case 2:
-                $columns = ',economic_complements.aps_disability as concurrencia';
+                $columns = ',economic_complements.aps_disability as monto_invalidez,economic_complements.aps_total_death as monto_muerte';
                 $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                     ->info()
                     ->beneficiary()
@@ -49,7 +49,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->wfstates()
                     // ->order()
                     ->select(DB::raw(EconomicComplement::basic_info_colums(). $columns))
-                    ->where('aps_disability', '>', 0)
+                    ->where(function ($query) {
+                        $query->where('aps_disability', '>', 0)
+                              ->orWhere('aps_total_death', '>', 0);
+                    })
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
                     ->get();
                 break;
@@ -135,7 +138,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
         switch ($this->report_type_id) {
             case 2:
                 $new_columns = [
-                    'concurrencia'
+                    'MONTO INVALIDEZ',
+                    'MONTO MUERTE',
                 ];
                 break;
             case 3:
