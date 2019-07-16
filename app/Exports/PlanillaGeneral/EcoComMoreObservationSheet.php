@@ -2,6 +2,8 @@
 
 namespace Muserpol\Exports\PlanillaGeneral;
 
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -10,7 +12,9 @@ use Muserpol\Models\EconomicComplement\EconomicComplement;
 use DB;
 use Muserpol\Models\ObservationType;
 use Muserpol\Helpers\Util;
+use Illuminate\Support\Str;
 
+// class EcoComMoreObservationSheet implements FromView, WithTitle, WithHeadings, ShouldAutoSize
 class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
 {
     protected $eco_com_procedure_id;
@@ -18,6 +22,7 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
     }
+    // public function view(): View
     public function collection()
     {
         $columns = '';
@@ -93,17 +98,27 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
             $observations = $e->observations->whereIn('id', $observations_ids);
             if ($observations->count() > 1) {
                 $sw = true;
+                $temp = collect([]);
                 foreach ($observations as $o) {
                     if ($e->discount_types->where('id', Util::getDiscountId($o->id))->count() == 0) {
                         $sw = false;
+                    }else{
+                        $temp->push(Util::getDiscountId($o->id));
                     }
                 }
                 if ($sw) {
                     $e->observaciones = ObservationType::whereIn('id', $observations->pluck('id'))->pluck('name')->implode(' || ');
+                    foreach ($e->discount_types->whereIn('id', $temp) as $dd) {
+                        $e[Str::snake($dd->shortened)] = $dd->pivot->amount;
+                    }
                     $collect->push($e);
                 }
             }
         }
+        // return view('exports.eco_com.more_observations', [
+        //     'eco_coms' => $collect
+        // ]);
+
         return $collect;
     }
     public function title(): string
