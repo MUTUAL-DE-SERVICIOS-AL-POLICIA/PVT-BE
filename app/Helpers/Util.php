@@ -343,7 +343,7 @@ class Util
   ];
   public static function convertir($number, $moneda = '', $centimos = '')
   {
-    $number = number_format((float)$number, 2, '.', '');
+    $number = number_format((float) $number, 2, '.', '');
     $converted = '';
     $decimales = '';
     if (($number < 0) || ($number > 999999999)) {
@@ -352,14 +352,14 @@ class Util
     $div_decimales = explode('.', $number);
     if (count($div_decimales) > 1) {
       $number = $div_decimales[0];
-      $decNumberStr = (string)$div_decimales[1];
+      $decNumberStr = (string) $div_decimales[1];
       if (strlen($decNumberStr) == 2) {
         $decNumberStrFill = str_pad($decNumberStr, 9, '0', STR_PAD_LEFT);
         $decCientos = substr($decNumberStrFill, 6);
         $decimales = self::convertGroup($decCientos);
       }
     }
-    $numberStr = (string)$number;
+    $numberStr = (string) $number;
     $numberStrFill = str_pad($numberStr, 9, '0', STR_PAD_LEFT);
     $millones = substr($numberStrFill, 0, 3);
     $miles = substr($numberStrFill, 3, 3);
@@ -1078,71 +1078,71 @@ class Util
   public static function getEconomicComplementSendToBank($eco_com_procedure_id)
   {
     $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
-      $ecos = EconomicComplement::with([
-          'degree',
-          'category',
-          'eco_com_modality',
-          'city',
-          'observations',
-          'eco_com_beneficiary.city_identity_card',
-          'eco_com_legal_guardian',
-          'affiliate.spouse',
-      ])
-          ->ecoComProcedure($eco_com_procedure_id) // procedure_id
-          // ->NotHasEcoComState(1, 3, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
-          ->workflow(1, 2, 3) // los 3 workflows
-          // ->wfState(3) // Area tecnica
-          ->inboxState(true) // Trámites en la segunda bandeja
-          // ->leftJoin('observables')
-          ->city() // eco_com_city
-          ->beneficiary() // beneficiary
-          ->select('economic_complements.*')
-          ->where('economic_complements.total', '>', 0)
-          ->whereRaw("not exists(SELECT observables.observable_id FROM observables
+    $ecos = EconomicComplement::with([
+      'degree',
+      'category',
+      'eco_com_modality',
+      'city',
+      'observations',
+      'eco_com_beneficiary.city_identity_card',
+      'eco_com_legal_guardian',
+      'affiliate.spouse',
+    ])
+      ->ecoComProcedure($eco_com_procedure_id) // procedure_id
+      // ->NotHasEcoComState(1, 3, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
+      ->workflow(1, 2, 3) // los 3 workflows
+      // ->wfState(3) // Area tecnica
+      ->inboxState(true) // Trámites en la segunda bandeja
+      // ->leftJoin('observables')
+      ->city() // eco_com_city
+      ->beneficiary() // beneficiary
+      ->select('economic_complements.*')
+      ->where('economic_complements.total', '>', 0)
+      ->whereRaw("not exists(SELECT observables.observable_id FROM observables
     WHERE economic_complements.id = observables.observable_id AND observables.observable_type like 'economic_complements' AND
       observables.observation_type_id IN (1, 2, 13, 22) AND
       observables.enabled = FALSE AND observables.deleted_at is null)")
-          ->get();
-      // logger(DB::getQueryLog());
-      $total_amount = $ecos->sum('total');
-      $total_eco_coms = $ecos->count();
-      $index = 1;
-      $result = collect([]);
-      $city = City::find(4);
-      foreach ($ecos as $e) {
-          $ci_ext = $e->eco_com_beneficiary->city_identity_card->to_bank;
-          $ci = $e->eco_com_beneficiary->identity_card;
-          $type = "CI";
-          if ($e->eco_com_beneficiary->city_identity_card_id == 10) {
-              $ci_ext = $city->to_bank;
-              $type = 'PE';
-          }else{
-              if (strpos($ci, '-') !== false){
-                  $type = 'CIE';
-              }
-          }
-          // 'TipoDoc', // CI -> numero sin extension, //CIE -> con extension, // PE -> si en naturalizado
-          $result->push([
-              $index, // correlativo
-              $e->total, //'Monto'
-              null,
-              $e->eco_com_beneficiary->identity_card,
-              $ci_ext,
-              $type,
-              $e->eco_com_beneficiary->last_name,
-              $e->eco_com_beneficiary->mothers_last_name,
-              $e->eco_com_beneficiary->surname_husband,
-              $e->eco_com_beneficiary->first_name,
-              $e->eco_com_beneficiary->second_name,
-              $eco_com_procedure->getYear(),
-              now()->month,
-              $e->eco_com_modality->shortened . " - " . $e->degree->shortened . " - " . $e->category->name,
-              2307,
-              $e->affiliate_id,
-          ]);
-          $index++;
+      ->get();
+    // logger(DB::getQueryLog());
+    $total_amount = $ecos->sum('total');
+    $total_eco_coms = $ecos->count();
+    $index = 1;
+    $result = collect([]);
+    $city = City::find(4);
+    foreach ($ecos as $e) {
+      $ci_ext = $e->eco_com_beneficiary->city_identity_card->to_bank;
+      $ci = $e->eco_com_beneficiary->identity_card;
+      $type = "CI";
+      if ($e->eco_com_beneficiary->city_identity_card_id == 10) {
+        $ci_ext = $city->to_bank;
+        $type = 'PE';
+      } else {
+        if (strpos($ci, '-') !== false) {
+          $type = 'CIE';
+        }
       }
-      return ['result'=>$result, 'total_amount' => $total_amount, 'total_eco_coms' => $total_eco_coms];
+      // 'TipoDoc', // CI -> numero sin extension, //CIE -> con extension, // PE -> si en naturalizado
+      $result->push([
+        $index, // correlativo
+        $e->total, //'Monto'
+        null,
+        $e->eco_com_beneficiary->identity_card,
+        $ci_ext,
+        $type,
+        $e->eco_com_beneficiary->last_name,
+        $e->eco_com_beneficiary->mothers_last_name,
+        $e->eco_com_beneficiary->surname_husband,
+        $e->eco_com_beneficiary->first_name,
+        $e->eco_com_beneficiary->second_name,
+        $eco_com_procedure->getYear(),
+        now()->month,
+        $e->eco_com_modality->shortened . " - " . $e->degree->shortened . " - " . $e->category->name,
+        2307,
+        $e->affiliate_id,
+      ]);
+      $index++;
+    }
+    return ['result' => $result, 'total_amount' => $total_amount, 'total_eco_coms' => $total_eco_coms];
   }
   public static function verifyAndParseNumber($value)
   {
@@ -1168,5 +1168,25 @@ class Util
         break;
     }
     return 0;
+  }
+  public static function getDiscountId($observation_id)
+  {
+    switch ($observation_id) {
+      case 1:
+        return 4;
+        break;
+      case 2:
+        return 5;
+        break;
+      case 13:
+        return 6;
+        break;
+      case 31:
+        return 7;
+        break;
+      default:
+        return [];
+        break;
+    }
   }
 }

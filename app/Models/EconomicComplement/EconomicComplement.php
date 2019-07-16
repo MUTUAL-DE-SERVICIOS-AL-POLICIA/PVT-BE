@@ -317,7 +317,7 @@ class EconomicComplement extends Model
         $this->seniority = $seniority;
         $salary_quotable = $salary_reference + $seniority;
         $this->salary_quotable = $salary_quotable;
-        $difference = $salary_quotable - $this->total_rent;
+        $difference = $salary_quotable - $this->total_rent_calc;
         $this->difference = $difference;
         $months_of_payment = 6;
         $total_amount_semester = $difference * $months_of_payment;
