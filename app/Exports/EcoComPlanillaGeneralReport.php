@@ -24,7 +24,7 @@ class EcoComPlanillaGeneralReport implements WithMultipleSheets
     public function sheets(): array
     {
         $sheets = [];
-        // $sheets[] = new EcoComTramitesLimpiosSheet($this->eco_com_procedure_id);
+        $sheets[] = new EcoComTramitesLimpiosSheet($this->eco_com_procedure_id);
         foreach (ObservationType::where('description', 'Amortizable')->get() as $o) {
             $sheets[] = new EcoComAmortizationSheet($this->eco_com_procedure_id, $o);
         }
