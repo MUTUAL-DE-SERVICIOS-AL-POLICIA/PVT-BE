@@ -17,6 +17,7 @@ use Muserpol\Exports\AffiliateTagsReport;
 use Muserpol\Exports\EcoComStateReport;
 use Muserpol\Exports\EcoComTagsReport;
 use Muserpol\Exports\EcoComPlanillaGeneralReport;
+use Muserpol\Exports\EcoComBankExport;
 
 class EcoComReportController extends Controller
 {
@@ -81,6 +82,9 @@ class EcoComReportController extends Controller
                 break;
             case 17:
                 return Excel::download(new EcoComPlanillaGeneralReport($eco_com_procedure->id), 'Reporte.xlsx');
+                break;
+            case 18:
+                return Excel::download(new EcoComBankExport($eco_com_procedure->id), 'Reporte.xlsx');
                 break;
             default:
                 # code...
