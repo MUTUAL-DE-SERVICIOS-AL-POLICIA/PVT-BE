@@ -30,7 +30,7 @@ class EcoComNoAmortizationSheet implements FromQuery, WithTitle, WithHeadings, S
             ->wfstates()
             ->where('economic_complements.wf_current_state_id', 3)
             ->whereIn('economic_complements.eco_com_state_id', [16,18])
-            // ->where('economic_complements.total', '>=', 0)
+            ->where('economic_complements.total', '>=', 0)
             ->whereNotIn('economic_complements.id', function ($query) {
                 $query->select('observables.observable_id')
                     ->from('observables')

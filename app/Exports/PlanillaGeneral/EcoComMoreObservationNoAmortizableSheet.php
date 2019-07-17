@@ -27,8 +27,8 @@ class EcoComMoreObservationNoAmortizableSheet implements FromCollection, WithTit
             ->affiliateInfo()
             ->wfstates()
             ->where('economic_complements.wf_current_state_id', 3)
-            ->where('economic_complements.eco_com_state_id', 16)
-            ->where('economic_complements.total', '>', 0)
+            ->whereIn('economic_complements.eco_com_state_id', [16,18])
+            // ->where('economic_complements.total', '>', 0)
             ->has('observations')
             ->select(
                 'economic_complements.id as id',
