@@ -10,7 +10,7 @@
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
       </select>
     </div>
-    <div v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13">
+    <div v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13 || form.reportTypeId == 19">
       <label>Comparar Con:</label>
       <select v-model="form.secondEcoComProcedureId" :disabled="loadingButton">
         <option v-for="r in ecoComProceduresFilter" :value="r.id" :key="r.id">{{r.full_name}}</option>
@@ -157,6 +157,10 @@ export default {
         {
           id: 18,
           name: "Planilla BANCO UNION"
+        },
+        {
+          id: 19,
+          name: "Comparacion de Datos Personales"
         }
         // {
         //   id: 9,
