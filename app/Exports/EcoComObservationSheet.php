@@ -96,6 +96,7 @@ class EcoComObservationSheet  implements FromCollection, WithTitle, WithHeadings
             "total_semestre",
             "factor_complementario",
             "total_complemento",
+            "total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",

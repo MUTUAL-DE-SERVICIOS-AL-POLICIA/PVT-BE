@@ -32,8 +32,8 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
             ->affiliateInfo()
             ->wfstates()
             ->where('economic_complements.wf_current_state_id', 3)
-            ->where('economic_complements.eco_com_state_id', 16)
-            ->where('economic_complements.total', '>', 0)
+            ->whereIn('economic_complements.eco_com_state_id', [16, 18])
+            // ->where('economic_complements.total', '>', 0)
             ->has('observations')
             ->select(
                 'economic_complements.id as id',
@@ -179,6 +179,7 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
             "total_semestre",
             "factor_complementario",
             "total_complemento",
+            "total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",

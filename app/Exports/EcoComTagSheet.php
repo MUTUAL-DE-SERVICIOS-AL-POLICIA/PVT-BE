@@ -90,6 +90,7 @@ class EcoComTagSheet implements FromCollection, WithTitle, WithHeadings, ShouldA
             "total_semestre",
             "factor_complementario",
             "total_complemento",
+            "total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
