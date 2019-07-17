@@ -99,7 +99,7 @@ class EcoComMoreObservationNoAmortizableSheet implements FromCollection, WithTit
                     }
                 }
                 if ($sw) {
-                    $e->observaciones = ObservationType::whereIn('id', $observations->pluck('id'))->pluck('name')->implode(' || ');
+                    $e->observaciones = ObservationType::whereIn('id', array_merge($observations->pluck('id'), [22,39]))->pluck('name')->implode(' || ');
                     $collect->push($e);
                 }
             }
