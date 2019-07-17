@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\City;
+use Muserpol\Models\ObservationType;
 
 class Util
 {
@@ -1087,10 +1088,12 @@ class Util
       'eco_com_beneficiary.city_identity_card',
       'eco_com_legal_guardian',
       'affiliate.spouse',
+      'observations',
+      'discount_types',
     ])
       ->ecoComProcedure($eco_com_procedure_id) // procedure_id
       ->NotHasEcoComState(1, 4, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
-      ->workflow(1,2,3 ) // los 3 workflows
+      ->workflow(1, 2, 3) // los 3 workflows
       ->wfState(3) // Area tecnica
       ->inboxState(true, false) // Trámites en la segunda bandeja
       // ->leftJoin('observables')
@@ -1098,11 +1101,37 @@ class Util
       ->beneficiary() // beneficiary
       ->select('economic_complements.*')
       ->where('economic_complements.total', '>', 0)
-      ->whereRaw("not exists(SELECT observables.observable_id FROM observables
-    WHERE economic_complements.id = observables.observable_id AND observables.observable_type like 'economic_complements' AND
-      observables.observation_type_id IN (1, 2, 13, 22) AND
-      observables.enabled = FALSE AND observables.deleted_at is null)")
       ->get();
+    logger($ecos->count());
+    $observations_ids = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
+    $collect = collect([]);
+    foreach ($ecos as $e) {
+      $observations = $e->observations;
+      if ($observations->count() > 0) {
+        $sw = true;
+        foreach ($e->observations->whereIn('id', $observations_ids) as $o) {
+          if ($e->discount_types->where('id', self::getDiscountId($o->id))->count() == 0) {
+            $sw = false;
+            break;
+          }
+        }
+        if ($sw) {
+          foreach ($e->observations->where('description','Subsanable') as $o) {
+            if ($o->pivot->enabled == false) {
+              $sw = false;
+              break;
+            }
+          }
+        }
+        if ($sw) {
+          $collect->push($e);
+        }
+      } else {
+        $collect->push($e);
+      }
+    }
+    $ecos = $collect;
+    logger($ecos->count());
     // logger(DB::getQueryLog());
     $total_amount = $ecos->sum('total');
     $total_eco_coms = $ecos->count();
