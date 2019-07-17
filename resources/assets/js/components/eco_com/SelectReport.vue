@@ -153,6 +153,10 @@ export default {
         {
           id: 17,
           name: "Planilla General"
+        },
+        {
+          id: 18,
+          name: "Planilla BANCO UNION"
         }
         // {
         //   id: 9,
