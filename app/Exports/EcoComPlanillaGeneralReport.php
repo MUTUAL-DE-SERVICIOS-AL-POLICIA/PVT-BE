@@ -10,6 +10,7 @@ use Muserpol\Exports\PlanillaGeneral\EcoComAmortizationSheet;
 use Muserpol\Exports\PlanillaGeneral\EcoComNoAmortizationSheet;
 use Muserpol\Exports\PlanillaGeneral\EcoComMoreObservationSheet;
 use Muserpol\Exports\PlanillaGeneral\EcoComMoreObservationNoAmortizableSheet;
+use Muserpol\Exports\PlanillaGeneral\EcoComOneObservationSheet;
 
 class EcoComPlanillaGeneralReport implements WithMultipleSheets
 {
@@ -29,6 +30,8 @@ class EcoComPlanillaGeneralReport implements WithMultipleSheets
             $sheets[] = new EcoComAmortizationSheet($this->eco_com_procedure_id, $o);
         }
         $sheets[] = new EcoComMoreObservationSheet($this->eco_com_procedure_id);
+        $sheets[] = new EcoComOneObservationSheet($this->eco_com_procedure_id, ObservationType::find(22));
+        $sheets[] = new EcoComOneObservationSheet($this->eco_com_procedure_id, ObservationType::find(39));
         foreach (ObservationType::where('description', 'Amortizable')->get() as $o) {
             $sheets[] = new EcoComNoAmortizationSheet($this->eco_com_procedure_id, $o);
         }

@@ -14,13 +14,14 @@ use Muserpol\Models\ObservationType;
 use Muserpol\Helpers\Util;
 use Illuminate\Support\Str;
 
-// class EcoComMoreObservationSheet implements FromView, WithTitle, WithHeadings, ShouldAutoSize
-class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
+class EcoComOneObservationSheet implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
 {
     protected $eco_com_procedure_id;
-    public function __construct($eco_com_procedure_id)
+    protected $observation_type;
+    public function __construct($eco_com_procedure_id, $observation_type)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
+        $this->observation_type = $observation_type;
     }
     // public function view(): View
     public function collection()
@@ -85,7 +86,10 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
                 'economic_complements.difference as diferencia',
                 'economic_complements.total_amount_semester as total_semestre',
                 'economic_complements.complementary_factor as factor_complementario',
-                'economic_complements.total as total_complemento',
+                DB::raw(
+                    'round(economic_complements.total_amount_semester * round(economic_complements.complementary_factor/100, 2), 2) as total_complemento',
+                ),
+                'economic_complements.total as total_liquido_pagable',
                 'wf_states.first_shortened as ubicacion',
                 'eco_com_modalities.name as tipo_beneficiario',
                 'workflows.name as flujo'
@@ -93,24 +97,13 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
             // ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
             ->get();
         $collect = collect([]);
-        $observations_ids = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
+        $observations_ids = ObservationType::whereIn('id', [$this->observation_type->id])->get()->pluck('id');
         foreach ($eco_coms as $e) {
             $observations = $e->observations->whereIn('id', $observations_ids);
-            if ($observations->count() > 1) {
+            if ($observations->count() == 1) {
                 $sw = true;
-                $temp = collect([]);
-                foreach ($observations as $o) {
-                    if ($e->discount_types->where('id', Util::getDiscountId($o->id))->count() == 0) {
-                        $sw = false;
-                    }else{
-                        $temp->push(Util::getDiscountId($o->id));
-                    }
-                }
                 if ($sw) {
-                    $e->observaciones = ObservationType::whereIn('id', array_merge($observations->pluck('id')->toArray(), [22,39]))->pluck('name')->implode(' || ');
-                    foreach ($e->discount_types->whereIn('id', $temp) as $dd) {
-                        $e[Str::snake($dd->shortened)] = $dd->pivot->amount;
-                    }
+                    $e->observaciones = ObservationType::whereIn('id', $observations->pluck('id')->toArray())->pluck('name')->implode(' || ');
                     $collect->push($e);
                 }
             }
@@ -123,7 +116,7 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
     }
     public function title(): string
     {
-        return 'Multiples Obs';
+        return $this->observation_type->shortened;
     }
     public function headings(): array
     {
