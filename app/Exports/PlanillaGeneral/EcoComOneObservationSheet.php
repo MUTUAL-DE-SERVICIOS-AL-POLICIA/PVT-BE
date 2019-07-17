@@ -33,7 +33,7 @@ class EcoComOneObservationSheet implements FromCollection, WithTitle, WithHeadin
             ->affiliateInfo()
             ->wfstates()
             ->where('economic_complements.wf_current_state_id', 3)
-            ->whereIn('economic_complements.eco_com_state_id', [16,18])
+            ->whereIn('economic_complements.eco_com_state_id', [16, 18])
             ->where('economic_complements.total', '>=', 0)
             ->has('observations')
             ->select(
@@ -97,11 +97,19 @@ class EcoComOneObservationSheet implements FromCollection, WithTitle, WithHeadin
             // ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
             ->get();
         $collect = collect([]);
+        $amortizable_observations = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
         $observations_ids = ObservationType::whereIn('id', [$this->observation_type->id])->get()->pluck('id');
         foreach ($eco_coms as $e) {
             $observations = $e->observations->whereIn('id', $observations_ids);
-            if ($observations->count() == 1) {
-                $sw = true;
+
+            $sw = true;
+            foreach ($e->observations as $o) {
+                if ($amortizable_observations->contains($o->id)) {
+                    $sw = false;
+                    break;
+                }
+            }
+            if ($e->observations->pluck('id')->contains($this->observation_type->id)) {
                 if ($sw) {
                     $e->observaciones = ObservationType::whereIn('id', $observations->pluck('id')->toArray())->pluck('name')->implode(' || ');
                     $collect->push($e);
