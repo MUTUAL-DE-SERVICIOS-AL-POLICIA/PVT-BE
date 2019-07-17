@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use DB;
+use Muserpol\Models\ObservationType;
 
 class EcoComTramitesLimpiosSheet implements FromQuery,WithTitle, WithHeadings, ShouldAutoSize
 {
@@ -31,7 +32,7 @@ class EcoComTramitesLimpiosSheet implements FromQuery,WithTitle, WithHeadings, S
                 $query->select('observables.observable_id')
                     ->from('observables')
                     ->where('observables.observable_type', 'economic_complements')
-                    ->whereIn('observables.observation_type_id', [1, 2, 6, 8, 9, 13, 20, 21, 22, 24, 25, 26, 31, 36])
+                    ->whereIn('observables.observation_type_id', ObservationType::all()->pluck('id'))
                     ->whereNull('observables.deleted_at');
             })
             ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns));
@@ -94,6 +95,7 @@ class EcoComTramitesLimpiosSheet implements FromQuery,WithTitle, WithHeadings, S
             "total_semestre",
             "factor_complementario",
             "total_complemento",
+            "total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
