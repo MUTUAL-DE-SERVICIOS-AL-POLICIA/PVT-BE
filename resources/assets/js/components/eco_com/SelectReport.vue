@@ -10,14 +10,18 @@
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
       </select>
     </div>
-    <div v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13 || form.reportTypeId == 19">
+    <div
+      v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13 || form.reportTypeId == 19"
+    >
       <label>Comparar Con:</label>
       <select v-model="form.secondEcoComProcedureId" :disabled="loadingButton">
         <option v-for="r in ecoComProceduresFilter" :value="r.id" :key="r.id">{{r.full_name}}</option>
       </select>
     </div>
     <br />
-    <div v-if="form.reportTypeId == 6 || form.reportTypeId == 7 || form.reportTypeId == 2 || form.reportTypeId == 3 || form.reportTypeId == 4 || form.reportTypeId == 15">
+    <div
+      v-if="form.reportTypeId == 6 || form.reportTypeId == 7 || form.reportTypeId == 2 || form.reportTypeId == 3 || form.reportTypeId == 4 || form.reportTypeId == 15"
+    >
       <multiselect
         v-model="form.wfCurrentStateIds"
         :options="wfStates"
@@ -55,7 +59,7 @@
         label="name"
         :max="1"
       ></multiselect>
-    </div> -->
+    </div>-->
 
     <div class="col-md-12">
       <div class="text-center m-sm">
@@ -91,6 +95,14 @@ export default {
           name: "Todos los Tramites"
         },
         {
+          id: 4,
+          name: "Tramites Observados"
+        },
+        {
+          id: 15,
+          name: "Tramites por Estado"
+        },
+        {
           id: 2,
           name: "Tramites con Concurrencia"
         },
@@ -99,8 +111,12 @@ export default {
           name: "Tramites con Apoderados"
         },
         {
-          id: 4,
-          name: "Tramites Observados"
+          id: 17,
+          name: "Planilla General"
+        },
+        {
+          id: 18,
+          name: "Planilla BANCO UNION"
         },
         // {
         //   id: 5,
@@ -115,12 +131,12 @@ export default {
           name: "Tramites Validados de:"
         },
         {
-          id: 8,
-          name: "Tramites Eliminados"
+          id: 16,
+          name: "Tramites por Etiqueta"
         },
         {
-          id: 9,
-          name: "Afiliados obsevados"
+          id: 8,
+          name: "Tramites Eliminados"
         },
         {
           id: 10,
@@ -132,35 +148,23 @@ export default {
         },
         {
           id: 12,
-          name: "Diferencia de Promedio"
+          name: "Comparacion de Promedio"
         },
         {
           id: 13,
-          name: "Comparacion de Componentes solo APS"
-        },
-        {
-          id: 14,
-          name: "Afiliados por Tags"
-        },
-        {
-          id: 15,
-          name: "Estado de los Tramites"
-        },
-        {
-          id: 16,
-          name: "Etiquetas de los Tramites"
-        },
-        {
-          id: 17,
-          name: "Planilla General"
-        },
-        {
-          id: 18,
-          name: "Planilla BANCO UNION"
+          name: "Comparacion de Componentes SIP"
         },
         {
           id: 19,
           name: "Comparacion de Datos Personales"
+        },
+        {
+          id: 9,
+          name: "Afiliados Observados"
+        },
+        {
+          id: 14,
+          name: "Afiliados por Etiquetas"
         }
         // {
         //   id: 9,
@@ -199,11 +203,11 @@ export default {
       this.loadingButton = false;
     }
   },
-  computed:{
-    ecoComProceduresFilter(){
-      return this.ecoComProcedures.filter(x=>{
+  computed: {
+    ecoComProceduresFilter() {
+      return this.ecoComProcedures.filter(x => {
         return x.id != this.form.ecoComProcedureId;
-      })
+      });
     }
   }
 };
