@@ -28,6 +28,7 @@ export default {
     return {
       loadingButton: false,
       form: {
+        overrideTotal: true,
         ecoComProcedureId:
           this.ecoComProcedures.length > 0 ? this.ecoComProcedures[0].id : null
       }

@@ -1089,10 +1089,10 @@ class Util
       'affiliate.spouse',
     ])
       ->ecoComProcedure($eco_com_procedure_id) // procedure_id
-      // ->NotHasEcoComState(1, 3, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
-      ->workflow(1, 2, 3) // los 3 workflows
-      // ->wfState(3) // Area tecnica
-      ->inboxState(true) // Trámites en la segunda bandeja
+      ->NotHasEcoComState(1, 4, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
+      ->workflow(1,2,3 ) // los 3 workflows
+      ->wfState(3) // Area tecnica
+      ->inboxState(true, false) // Trámites en la segunda bandeja
       // ->leftJoin('observables')
       ->city() // eco_com_city
       ->beneficiary() // beneficiary

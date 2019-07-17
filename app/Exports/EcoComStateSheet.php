@@ -27,6 +27,7 @@ class EcoComStateSheet implements FromCollection, WithTitle, WithHeadings, Shoul
 
             if ($e->eco_com_state_id ==  $this->eco_com_state->id) {
                 $e->eco_com_state_name = $this->eco_com_state->name;
+                // $e->observaciones = $e->observations->pluck('name')->implode(' || ');
                 $data->push($e);
             }
         }
@@ -90,6 +91,7 @@ class EcoComStateSheet implements FromCollection, WithTitle, WithHeadings, Shoul
             "total_semestre",
             "factor_complementario",
             "total_complemento",
+            "total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",

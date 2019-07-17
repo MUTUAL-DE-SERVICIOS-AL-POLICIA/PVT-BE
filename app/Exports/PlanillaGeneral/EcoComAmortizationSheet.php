@@ -15,7 +15,7 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
 {
     protected $eco_com_procedure_id;
     protected $observation_type;
-    public function __construct($eco_com_procedure_id,$observation_type)
+    public function __construct($eco_com_procedure_id, $observation_type)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
         $this->observation_type = $observation_type;
@@ -29,8 +29,8 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
             ->affiliateInfo()
             ->wfstates()
             ->where('economic_complements.wf_current_state_id', 3)
-            ->where('economic_complements.eco_com_state_id', 16)
-            ->where('economic_complements.total', '>', 0)
+            ->whereIn('economic_complements.eco_com_state_id', [16, 18])
+            // ->where('economic_complements.total', '>=', 0)
             ->whereNotIn('economic_complements.id', function ($query) {
                 $query->select('observables.observable_id')
                     ->from('observables')
@@ -109,6 +109,7 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
             "total_semestre",
             "factor_complementario",
             "total_complemento",
+            "total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
