@@ -155,7 +155,8 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                         ->first();
                     if ($old) {
                         if (
-                            $one->eco_com_beneficiary->first_name  != $old->eco_com_beneficiary->first_name
+                            $one->eco_com_beneficiary->identity_card  != $old->eco_com_beneficiary->identity_card
+                            || $one->eco_com_beneficiary->first_name  != $old->eco_com_beneficiary->first_name
                             || $one->eco_com_beneficiary->second_name  != $old->eco_com_beneficiary->second_name
                             || $one->eco_com_beneficiary->last_name  != $old->eco_com_beneficiary->last_name
                             || $one->eco_com_beneficiary->mothers_last_name  != $old->eco_com_beneficiary->mothers_last_name
@@ -166,6 +167,8 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                                 'afiliado_ci' => $one->affiliate->identity_card,
                                 'tramite_anterior' => $old->code,
                                 'tramite_actual' => $one->code,
+                                'ci_ben_tramite_anterior' => $old->eco_com_beneficiary->identity_card,
+                                'ci_ben_tramite_actual' => $one->eco_com_beneficiary->identity_card,
                                 'primer_nombre_ben_tramite_anterior' => $old->eco_com_beneficiary->first_name,
                                 'primer_nombre_ben_tramite_actual' => $one->eco_com_beneficiary->first_name,
                                 'segundo_nombre_ben_tramite_anterior' => $old->eco_com_beneficiary->second_name,
@@ -238,6 +241,8 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                 break;
             case 19:
                 $new_columns = [
+                    'ci_ben_tramite_anterior',
+                    'ci_ben_tramite_actual',
                     'primer_nombre_ben_tramite_anterior',
                     'primer_nombre_ben_tramite_actual',
                     'segundo_nombre_ben_tramite_anterior',

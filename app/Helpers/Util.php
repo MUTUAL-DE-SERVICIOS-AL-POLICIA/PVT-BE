@@ -1139,10 +1139,10 @@ class Util
     $result = collect([]);
     $city = City::find(4);
     foreach ($ecos as $e) {
-      $ci_ext = $e->eco_com_beneficiary->city_identity_card->to_bank;
-      $ci = $e->eco_com_beneficiary->identity_card;
+      $ci_ext = $e->getEcoComBeneficiaryBank()->city_identity_card->to_bank;
+      $ci = $e->getEcoComBeneficiaryBank()->identity_card;
       $type = "CI";
-      if ($e->eco_com_beneficiary->city_identity_card_id == 10) {
+      if ($e->getEcoComBeneficiaryBank()->city_identity_card_id == 10) {
         $ci_ext = $city->to_bank;
         $type = 'PE';
       } else {
@@ -1155,14 +1155,14 @@ class Util
         $index, // correlativo
         $e->total, //'Monto'
         null,
-        $e->eco_com_beneficiary->identity_card,
+        $e->getEcoComBeneficiaryBank()->identity_card,
         $ci_ext,
         $type,
-        $e->eco_com_beneficiary->last_name,
-        $e->eco_com_beneficiary->mothers_last_name,
-        $e->eco_com_beneficiary->surname_husband,
-        $e->eco_com_beneficiary->first_name,
-        $e->eco_com_beneficiary->second_name,
+        $e->getEcoComBeneficiaryBank()->last_name,
+        $e->getEcoComBeneficiaryBank()->mothers_last_name,
+        $e->getEcoComBeneficiaryBank()->surname_husband,
+        $e->getEcoComBeneficiaryBank()->first_name,
+        $e->getEcoComBeneficiaryBank()->second_name,
         $eco_com_procedure->getYear(),
         now()->month,
         $e->eco_com_modality->shortened . " - " . $e->degree->shortened . " - " . $e->category->name,
