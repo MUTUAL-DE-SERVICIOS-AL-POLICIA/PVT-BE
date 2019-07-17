@@ -90,16 +90,21 @@ class EcoComMoreObservationNoAmortizableSheet implements FromCollection, WithTit
         $collect = collect([]);
         $observations_ids = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
         foreach ($eco_coms as $e) {
-            $observations = $e->observations->whereIn('id', $observations_ids);
+            $observations = $e->observations->whereIn('id', array_merge($observations_ids->toArray(), [22,39]));
             if ($observations->count() > 1) {
                 $sw = false;
                 foreach ($observations as $o) {
                     if ($e->discount_types->where('id', Util::getDiscountId($o->id))->count() == 0) {
                         $sw = true;
+                    }else{
+                        if ($o->id == 22 || $o->id == 39) {
+                            $sw = true;
+                        }
                     }
                 }
                 if ($sw) {
-                    $e->observaciones = ObservationType::whereIn('id', array_merge($observations->pluck('id')->toArray(), [22,39]))->pluck('name')->implode(' || ');
+                    $observations = $e->observations->whereIn('id', array_merge($observations_ids->toArray(), [22,39]));
+                    $e->observaciones = ObservationType::whereIn('id', $observations->pluck('id'))->pluck('name')->implode(' || ');
                     $collect->push($e);
                 }
             }
