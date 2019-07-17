@@ -95,6 +95,9 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
         $collect = collect([]);
         $observations_ids = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
         foreach ($eco_coms as $e) {
+            if ($e->code == '3483/P/2019' ) {
+                logger($e->code);
+            }
             $observations = $e->observations->whereIn('id', $observations_ids);
             if ($observations->count() > 1) {
                 $sw = true;
@@ -107,7 +110,8 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
                     }
                 }
                 if ($sw) {
-                    $e->observaciones = ObservationType::whereIn('id', array_merge($observations->pluck('id')->toArray(), [22,39]))->pluck('name')->implode(' || ');
+                    $observations = $e->observations->whereIn('id', array_merge($observations_ids->toArray(), [22,39]));
+                    $e->observaciones = ObservationType::whereIn('id', $observations->pluck('id'))->pluck('name')->implode(' || ');
                     foreach ($e->discount_types->whereIn('id', $temp) as $dd) {
                         $e[Str::snake($dd->shortened)] = $dd->pivot->amount;
                     }
