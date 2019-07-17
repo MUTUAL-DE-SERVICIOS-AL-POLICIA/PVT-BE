@@ -681,4 +681,14 @@ class EconomicComplement extends Model
     {
         return $query->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')->leftJoin('workflows', 'economic_complements.workflow_id', '=', 'workflows.id');
     }
+    public function getEcoComBeneficiaryBank()
+    {
+        $beneficiary = $this->eco_com_beneficiary;
+        if ($this->eco_com_legal_guardian) {
+            if ($this->eco_com_legal_guardian->eco_com_legal_guardian_type_id == 2 || $this->eco_com_legal_guardian->eco_com_legal_guardian_type_id == 3) {
+                $beneficiary = $this->eco_com_legal_guardian;
+            }
+        }
+        return $beneficiary;
+    }
 }
