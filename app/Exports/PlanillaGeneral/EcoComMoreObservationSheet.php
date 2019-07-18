@@ -85,7 +85,10 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
                 'economic_complements.difference as diferencia',
                 'economic_complements.total_amount_semester as total_semestre',
                 'economic_complements.complementary_factor as factor_complementario',
-                'economic_complements.total as total_complemento',
+                DB::raw(
+                    'round(economic_complements.total_amount_semester * round(economic_complements.complementary_factor/100, 2), 2) as total_complemento',
+                ),
+                'economic_complements.total as total_liquido_pagable',
                 'wf_states.first_shortened as ubicacion',
                 'eco_com_modalities.name as tipo_beneficiario',
                 'workflows.name as flujo'

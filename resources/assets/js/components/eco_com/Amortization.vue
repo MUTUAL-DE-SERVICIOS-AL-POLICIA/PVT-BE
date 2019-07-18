@@ -86,6 +86,8 @@ export default {
     },
     async save() {
       if (!this.can("amortize_economic_complement", this.permissions)) {
+        flash("No se puede realizar la Amortizacion.", 'error');
+        this.$modal.hide("amortization-modal");
         return;
       }
       this.loadingButton = true;
