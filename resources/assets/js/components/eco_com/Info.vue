@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="ibox">
       <div class="ibox-title">
-        <h2 class="pull-left">Información del Trámite</h2>
+        <h2 class="pull-left">Información del Trámite <i :class="{'fa fa-home': ecoCom.eco_com_state.id == 17}"></i> </h2>
         <div class="ibox-tools">
           <button
             data-toggle="tooltip"
@@ -114,6 +114,24 @@
                         @{{ecoCom.workflow.name}}
                     </span>
           </div>-->
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-2">
+            <label class="control-label">Estado</label>
+          </div>
+          <div class="col-md-4">
+            <input
+              type="text"
+              :value="ecoCom.eco_com_state.name"
+              disabled
+              class="form-control"
+            >
+          </div>
+          <div class="col-md-2">
+            <label class="control-label">Flujo</label>
+          </div>
+          <div class="col-md-4">{{ecoCom.workflow.name}}</div>
         </div>
         <br>
         <div>

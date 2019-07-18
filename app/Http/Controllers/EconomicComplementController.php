@@ -585,6 +585,7 @@ class EconomicComplementController extends Controller
 =======
             'eco_com_modality:id,name,shortened,procedure_modality_id',
             'eco_com_reception_type:id,name',
+            'eco_com_state:id,name',
             'degree',
             'category'
 >>>>>>> c79142f0b7425eb0beaaee5cd01bccdefc8012ff

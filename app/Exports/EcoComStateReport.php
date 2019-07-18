@@ -6,15 +6,17 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComState;
-
+use DB;
 class EcoComStateReport implements WithMultipleSheets
 {
     use Exportable;
     protected $eco_com_procedure_id;
+    protected $wf_states_ids;
 
-    public function __construct(int $eco_com_procedure_id)
+    public function __construct(int $eco_com_procedure_id, $wf_states_ids)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
+        $this->wf_states_ids = $wf_states_ids;
     }
     public function sheets(): array
     {
@@ -71,7 +73,10 @@ class EcoComStateReport implements WithMultipleSheets
                 'economic_complements.difference as diferencia',
                 'economic_complements.total_amount_semester as total_semestre',
                 'economic_complements.complementary_factor as factor_complementario',
-                'economic_complements.total as total_complemento',
+                DB::raw(
+                    'round(economic_complements.total_amount_semester * round(economic_complements.complementary_factor/100, 2), 2) as total_complemento',
+                ),
+                'economic_complements.total as total_liquido_pagable',
                 'wf_states.first_shortened as ubicacion',
                 'eco_com_modalities.name as tipo_beneficiario',
                 'workflows.name as flujo',
@@ -82,6 +87,7 @@ class EcoComStateReport implements WithMultipleSheets
             ->affiliateInfo()
             ->wfstates()
             ->ecoComProcedure($this->eco_com_procedure_id)
+            ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
             ->get();
         foreach ($eco_com_states as $e) {
             $sheets[] = new EcoComStateSheet($e, $eco_coms);

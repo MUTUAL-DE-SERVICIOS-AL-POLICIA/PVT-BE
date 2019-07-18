@@ -1,53 +1,57 @@
 <?php
 
-namespace Muserpol\Exports;
+namespace Muserpol\Exports\PlanillaGeneral;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Muserpol\Models\EconomicComplement\EcoComState;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
+use DB;
+use Muserpol\Models\ObservationType;
 
-class EcoComStateSheet implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
+class EcoComTramitesLimpiosSheet implements FromQuery,WithTitle, WithHeadings, ShouldAutoSize
 {
-    private $eco_com_state;
-    private $eco_coms;
-    public function __construct(EcoComState $eco_com_state, Collection $eco_coms)
+    protected $eco_com_procedure_id;
+    public function __construct($eco_com_procedure_id)
     {
-        $this->eco_com_state = $eco_com_state;
-        $this->eco_coms = $eco_coms;
+        $this->eco_com_procedure_id = $eco_com_procedure_id;
     }
-    public function collection()
+    public function query()
     {
-        logger($this->eco_com_state);
-        $data = collect([]);
-        foreach ($this->eco_coms as $e) {
-
-            if ($e->eco_com_state_id ==  $this->eco_com_state->id) {
-                $e->eco_com_state_name = $this->eco_com_state->name;
-                // $e->observaciones = $e->observations->pluck('name')->implode(' || ');
-                $data->push($e);
-            }
-        }
-        return $data;
+        $columns = '';
+        return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+            ->info()
+            ->beneficiary()
+            ->affiliateInfo()
+            ->wfstates()
+            ->where('economic_complements.wf_current_state_id', 3)
+            ->where('economic_complements.eco_com_state_id', 16)
+            ->where('economic_complements.total', '>', 0)
+            ->whereNotIn('economic_complements.id', function ($query) {
+                $query->select('observables.observable_id')
+                    ->from('observables')
+                    ->where('observables.observable_type', 'economic_complements')
+                    ->whereIn('observables.observation_type_id', ObservationType::all()->pluck('id'))
+                    ->whereNull('observables.deleted_at');
+            })
+            ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns));
     }
     public function title(): string
     {
-        return Str::limit(collect(explode('-', $this->eco_com_state->name))->last(), 25);
+        return 'Tramites limpios';
     }
     public function headings(): array
     {
-        $new_columns = ['Nombre observacion', 'Estado observacion'];
+        $new_columns = [];
         $default = [
-            'ID',
+            'NRO',
             'NUP',
             'Nro Tramite',
             "fecha_de_recepcion",
             'CI Beneficiario',
             'CI Exp BEN',
-            // 'CI COMPLETO BEN',
+            'CI COMPLETO BEN',
             "Primer Nombre Beneficiario",
             "Segundo Nombre Beneficiario",
             "Paterno Beneficiario",
@@ -62,7 +66,7 @@ class EcoComStateSheet implements FromCollection, WithTitle, WithHeadings, Shoul
             "fecha_matrimonio Beneficiario",
             "ci_causa",
             "exp_causa",
-            // "ci_completo_causa",
+            "ci_completo_causa",
             "primer_nombre_causahabiente",
             "segundo_nombre_causahabiente",
             "ap_paterno_causahabiente",
@@ -95,7 +99,6 @@ class EcoComStateSheet implements FromCollection, WithTitle, WithHeadings, Shoul
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
-            "estado",
         ];
         return array_merge($default, $new_columns);
     }
