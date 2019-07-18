@@ -11,13 +11,13 @@
             <div class="timeline-item" v-for="dr in affiliateRecords" :key="dr.id">
               <div class="row">
                 <div class="col-md-3 date">
-                  <h3>{{ dr.create_at | recordDate | uppercase }}</h3>
+                  <h3>{{ dr.created_at | recordDate | uppercase }}</h3>
                   <!-- <i
                     class="fa"
                     :class="getRecordIcon(dr.record_type_id)"
                     :title="dr.record_type.name"
                   ></i> -->
-                  {{ dr.create_at | recordHour }}
+                  {{ dr.created_at | recordHour }}
                   <br>
                   <small class="text-navy">{{ dr.user.username }}</small>
                 </div>
