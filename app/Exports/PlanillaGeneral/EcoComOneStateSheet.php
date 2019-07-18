@@ -34,7 +34,7 @@ class EcoComOneStateSheet implements FromCollection, WithTitle, WithHeadings, Sh
             ->wfstates()
             ->where('economic_complements.wf_current_state_id', 3)
             ->whereIn('economic_complements.eco_com_state_id', [$this->eco_com_state->id])
-            ->where('economic_complements.total', '>', 0)
+            ->where('economic_complements.total', '>=', 0)
             ->select(
                 'economic_complements.id as id',
                 'economic_complements.affiliate_id as NUP',
