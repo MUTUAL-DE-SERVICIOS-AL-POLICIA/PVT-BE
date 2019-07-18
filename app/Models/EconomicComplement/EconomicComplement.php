@@ -379,7 +379,7 @@ class EconomicComplement extends Model
             }
         }
         if ($this->discount_types->count() > 0) {
-            if ($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 2) ==  $this->discount_types()->sum('amount')) {
+            if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 2),2) ==  $this->discount_types()->sum('amount')) {
                 $this->eco_com_state_id = 18;
             }else{
                 if ($this->eco_com_state_id == 18) {

@@ -11,6 +11,8 @@ use Muserpol\Exports\PlanillaGeneral\EcoComNoAmortizationSheet;
 use Muserpol\Exports\PlanillaGeneral\EcoComMoreObservationSheet;
 use Muserpol\Exports\PlanillaGeneral\EcoComMoreObservationNoAmortizableSheet;
 use Muserpol\Exports\PlanillaGeneral\EcoComOneObservationSheet;
+use Muserpol\Exports\PlanillaGeneral\EcoComOneStateSheet;
+use Muserpol\Models\EconomicComplement\EcoComState;
 
 class EcoComPlanillaGeneralReport implements WithMultipleSheets
 {
@@ -34,6 +36,7 @@ class EcoComPlanillaGeneralReport implements WithMultipleSheets
         foreach (ObservationType::whereIn('id', [22,39])->get() as $o) {
             $sheets[] = new EcoComOneObservationSheet($this->eco_com_procedure_id, $o);
         }
+        $sheets[] = new EcoComOneStateSheet($this->eco_com_procedure_id, EcoComState::find(17));
         foreach (ObservationType::where('description', 'Amortizable')->get() as $o) {
             $sheets[] = new EcoComNoAmortizationSheet($this->eco_com_procedure_id, $o);
         }
