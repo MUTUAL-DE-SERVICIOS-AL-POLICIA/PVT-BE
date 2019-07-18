@@ -140,7 +140,7 @@ class EconomicComplement extends Model
     }
     public function qualify()
     {
-        if ($this->eco_com_state->eco_com_state_type_id == 1 || $this->eco_com_state->eco_com_state_type_id == 6) {
+        if ($this->eco_com_state->eco_com_state_type_id == 1 || $this->eco_com_state->eco_com_state_type_id == 6 || $this->eco_com_state_id == 23) {
             $eco_com_state = $this->eco_com_state;
             return response()->json([
                 'status' => 'error',
@@ -317,7 +317,7 @@ class EconomicComplement extends Model
         $this->seniority = $seniority;
         $salary_quotable = $salary_reference + $seniority;
         $this->salary_quotable = $salary_quotable;
-        $difference = $salary_quotable - $this->total_rent;
+        $difference = $salary_quotable - $this->total_rent_calc;
         $this->difference = $difference;
         $months_of_payment = 6;
         $total_amount_semester = $difference * $months_of_payment;
@@ -376,6 +376,15 @@ class EconomicComplement extends Model
         } else {
             if ($this->eco_com_state_id == 12) {
                 $this->eco_com_state_id = 16;
+            }
+        }
+        if ($this->discount_types->count() > 0) {
+            if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 2),2) ==  $this->discount_types()->sum('amount')) {
+                $this->eco_com_state_id = 18;
+            }else{
+                if ($this->eco_com_state_id == 18) {
+                    $this->eco_com_state_id = 16;
+                }
             }
         }
         $this->save();
@@ -620,7 +629,8 @@ class EconomicComplement extends Model
         economic_complements.difference as diferencia,
         economic_complements.total_amount_semester as total_semestre,
         economic_complements.complementary_factor as factor_complementario,
-        economic_complements.total as total_complemento";
+        round(economic_complements.total_amount_semester * round(economic_complements.complementary_factor/100, 2), 2) as total_complemento,
+        economic_complements.total as total_liquido_pagable";
     }
     public static function basic_info_affiliates()
     {
@@ -670,5 +680,15 @@ class EconomicComplement extends Model
     public function scopeWfstates($query)
     {
         return $query->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')->leftJoin('workflows', 'economic_complements.workflow_id', '=', 'workflows.id');
+    }
+    public function getEcoComBeneficiaryBank()
+    {
+        $beneficiary = $this->eco_com_beneficiary;
+        if ($this->eco_com_legal_guardian) {
+            if ($this->eco_com_legal_guardian->eco_com_legal_guardian_type_id == 2 || $this->eco_com_legal_guardian->eco_com_legal_guardian_type_id == 3) {
+                $beneficiary = $this->eco_com_legal_guardian;
+            }
+        }
+        return $beneficiary;
     }
 }

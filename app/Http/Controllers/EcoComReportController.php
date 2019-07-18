@@ -16,6 +16,8 @@ use Muserpol\Exports\EcoComCompareReport;
 use Muserpol\Exports\AffiliateTagsReport;
 use Muserpol\Exports\EcoComStateReport;
 use Muserpol\Exports\EcoComTagsReport;
+use Muserpol\Exports\EcoComPlanillaGeneralReport;
+use Muserpol\Exports\EcoComBankExport;
 
 class EcoComReportController extends Controller
 {
@@ -46,10 +48,12 @@ class EcoComReportController extends Controller
             case 2:
             case 3:
             case 8:
-                return Excel::download(new EcoComReports($eco_com_procedure->id, $request->reportTypeId, [], []), 'Reporte.xlsx');
+                $wf_states_ids = collect($request->wfCurrentStateIds)->pluck('id');
+                return Excel::download(new EcoComReports($eco_com_procedure->id, $request->reportTypeId, [], $wf_states_ids), 'Reporte.xlsx');
                 break;
             case 4:
-                return Excel::download(new EcoComObservationReport($eco_com_procedure->id), 'Reporte.xlsx');
+                $wf_states_ids = collect($request->wfCurrentStateIds)->pluck('id');
+                return Excel::download(new EcoComObservationReport($eco_com_procedure->id,$wf_states_ids), 'Reporte.xlsx');
                 break;
             case 6:
             case 7:
@@ -63,6 +67,7 @@ class EcoComReportController extends Controller
             case 11:
             case 12:
             case 13:
+            case 19:
                 $second_eco_com_procedure = EcoComProcedure::find($request->secondEcoComProcedureId);
                 return Excel::download(new EcoComCompareReport($request->reportTypeId, $eco_com_procedure->id, $second_eco_com_procedure->id), 'Reporte.xlsx');
                 break;
@@ -70,10 +75,17 @@ class EcoComReportController extends Controller
                 return Excel::download(new AffiliateTagsReport(), 'Reporte.xlsx');
                 break;
             case 15:
-                return Excel::download(new EcoComStateReport($eco_com_procedure->id), 'Reporte.xlsx');
+                $wf_states_ids = collect($request->wfCurrentStateIds)->pluck('id');
+                return Excel::download(new EcoComStateReport($eco_com_procedure->id,$wf_states_ids), 'Reporte.xlsx');
                 break;
             case 16:
                 return Excel::download(new EcoComTagsReport($eco_com_procedure->id), 'Reporte.xlsx');
+                break;
+            case 17:
+                return Excel::download(new EcoComPlanillaGeneralReport($eco_com_procedure->id), 'Reporte.xlsx');
+                break;
+            case 18:
+                return Excel::download(new EcoComBankExport($eco_com_procedure->id), 'Reporte.xlsx');
                 break;
             default:
                 # code...

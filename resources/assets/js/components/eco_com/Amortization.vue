@@ -3,8 +3,8 @@
     <button
       @click="showModal()"
       class="btn btn-primary"
-      :disabled="!can('amortize_economic_complement')"
     >
+      <!-- :disabled="!can('amortize_economic_complement')" -->
       <i class="fa fa-dollar"></i> Amortizar
     </button>
     <modal name="amortization-modal" class="p-lg" height="auto">

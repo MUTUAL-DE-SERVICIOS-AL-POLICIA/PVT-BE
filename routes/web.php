@@ -768,15 +768,5 @@ Route::group(['middleware' => ['auth']], function () {
 
     // affiliate submitted documents
     Route::get('get_procedure_requirements', 'AffiliateSubmittedDocumentsController@getRequirements');
-
-
-    Route::get('/export_bank',function ()
-    {
-      DB::connection()->enableQueryLog();
-      $year  = request()->year;
-      $semester  = request()->semester;
-      $eco_com_procedure = EcoComProcedure::whereYear('year', $year)->where('semester', $semester)->first();
-      return Excel::download(new EcoComBankExport($eco_com_procedure->id), 'Envio Banco.xlsx');
-    });
   });
 });
