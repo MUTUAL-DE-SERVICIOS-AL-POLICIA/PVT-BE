@@ -36,7 +36,9 @@ class EcoComPlanillaGeneralReport implements WithMultipleSheets
         foreach (ObservationType::whereIn('id', [22,39])->get() as $o) {
             $sheets[] = new EcoComOneObservationSheet($this->eco_com_procedure_id, $o);
         }
-        $sheets[] = new EcoComOneStateSheet($this->eco_com_procedure_id, EcoComState::find(17));
+        foreach (EcoComState::whereIn('id', [17,18])->get() as $o) {
+            $sheets[] = new EcoComOneStateSheet($this->eco_com_procedure_id, $o);
+        }
         foreach (ObservationType::where('description', 'Amortizable')->get() as $o) {
             $sheets[] = new EcoComNoAmortizationSheet($this->eco_com_procedure_id, $o);
         }
