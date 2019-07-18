@@ -1,15 +1,15 @@
-<div style="margin:0; padding:0; width:100%; display:block">
+<div style="margin:0; padding:0; width:100%; display:block; margin-top:50px">
     <div class="main-left">
         <table>
             <tr>
                 <td colspan="2" class="no-border"></td>
             </tr>
             <tr class="tableh1">
-                <th colspan="2" style="width: 50%;border: 0px;padding-top:10px" class="size-8">
+                <th colspan="2" style="width: 50%;border: 0px;padding-top:10px" class="text-xxs">
                     <b>MUTUAL DE SERVICIOS AL POLICÍA<br>
                         {!! $direction !!}<br>{!! $unit !!}
                         @yield('title')
-                        <br> <em>"{{ strtoupper($eco_com->eco_com_procedure->fullName() ?? '') }}
+                        <br> <em class="uppercase">"{{ $eco_com->eco_com_procedure->fullName() }}
                             @if ($eco_com->old_eco_com && $eco_com->total_repay > 0)
                             (REINTEGRO)
                             @endif
@@ -19,7 +19,7 @@
             </tr>
             <tr>
                 <td colspan="2" class="no-border">
-                    <em>{{ ucwords(strtolower($user->city->name ?? '')) ?? 'La Paz' }}, {!! $date !!} </em> </td>
+                    <em class="capitalize">{{ $user->city->name ?? 'La Paz' }}, {!! $date !!} </em> </td>
             </tr>
             <tr>
                 <td colspan="2" class="no-border">
@@ -57,14 +57,14 @@
             </tr>
             <tr>
                 <td colspan="2" class="no-border">
-                    <em class="size-9">{{ Util::convertir($eco_com->getOnlyTotalEcoCom())   }} BOLIVIANOS.</em>
+                    <em class="text-xxs">{{ Util::convertir($eco_com->getOnlyTotalEcoCom())   }} BOLIVIANOS.</em>
                 </td>
             </tr>
             <tr>
-                <td class="no-border">
-                    {{ strtoupper($eco_com->eco_com_modality->procedure_modality->name) ?? '' }}
+                <td class="no-border uppercase">
+                    {{ $eco_com->eco_com_modality->procedure_modality->name ?? '' }}
                 </td>
-                <td class="no-border text-center size-16">
+                <td class="no-border text-center text-base">
                     <span class="code border-radius">
                         Bs. {{ Util::formatMoney($eco_com->getOnlyTotalEcoCom() ) }}
                     </span>
@@ -79,7 +79,7 @@
                 <td colspan="4" class="no-border"></td>
             </tr>
             <tr class="tableh1">
-                <th colspan="4" style="width: 50%;border: 0px;padding-top:10px" class="size-8">
+                <th colspan="4" style="width: 50%;border: 0px;padding-top:10px" class="text-xxs">
                     <b>MUTUAL DE SERVICIOS AL POLICÍA<br>
                         {!! $direction !!}<br>{!! $unit !!}
                         @yield('title')
