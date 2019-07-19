@@ -1,25 +1,28 @@
-<div style="margin:0; padding:0; width:100%; display:block">
+<div class="block w-100 m-t-20">
     <div class="main-left">
-        <table>
+        <table class="text-xs">
             <tr>
                 <td colspan="2" class="no-border"></td>
             </tr>
             <tr class="tableh1">
-                <th colspan="2" style="width: 50%;border: 0px;padding-top:10px" class="size-8">
-                    <b>MUTUAL DE SERVICIOS AL POLICÍA<br>
-                        {!! $direction !!}<br>{!! $unit !!}
-                        @yield('title')
-                        <br> <em>"{{ strtoupper($eco_com->eco_com_procedure->fullName() ?? '') }}
-                            @if ($eco_com->old_eco_com && $eco_com->total_repay > 0)
-                            (REINTEGRO)
-                            @endif
-                            "</em>
-                    </b>
+                <th colspan="2" style="width: 50%;border: 0px;padding-top:10px"
+                    class="text-xxxs font-bold leading-tight">
+                    MUTUAL DE SERVICIOS AL POLICÍA
+                    <br>
+                    {!! $direction !!}
+                    <br>
+                    {!! $unit !!}
+                    <br>
+                    <span
+                        class="uppercase italic">"{{ $eco_com->eco_com_procedure->getTextName() }}{{ ($eco_com->old_eco_com && $eco_com->total_repay > 0) ? ' (reintegro)' :''}}"</span>
                 </th>
             </tr>
             <tr>
-                <td colspan="2" class="no-border">
-                    <em>{{ ucwords(strtolower($user->city->name ?? '')) ?? 'La Paz' }}, {!! $date !!} </em> </td>
+                <td colspan="3" style="border-bottom: 1px solid #22292f;"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="no-border italic">
+                    <span class="capitalize">{{ strtolower($user->city->name) ?? 'La Paz' }}</span>, {!! $date !!} </td>
             </tr>
             <tr>
                 <td colspan="2" class="no-border">
@@ -57,14 +60,15 @@
             </tr>
             <tr>
                 <td colspan="2" class="no-border">
-                    <em class="size-9">{{ Util::convertir($eco_com->getOnlyTotalEcoCom())   }} BOLIVIANOS.</em>
+                    <strong>SON:</strong> <em class="">{{ Util::convertir($eco_com->getOnlyTotalEcoCom())   }}
+                        BOLIVIANOS.</em>
                 </td>
             </tr>
             <tr>
-                <td class="no-border">
-                    {{ strtoupper($eco_com->eco_com_modality->procedure_modality->name) ?? '' }}
+                <td class="no-border uppercase">
+                    {{ $eco_com->eco_com_modality->procedure_modality->name ?? '' }}
                 </td>
-                <td class="no-border text-center size-16">
+                <td class="no-border text-center text-base">
                     <span class="code border-radius">
                         Bs. {{ Util::formatMoney($eco_com->getOnlyTotalEcoCom() ) }}
                     </span>
@@ -74,28 +78,29 @@
 
     </div>
     <div class="main-right">
-        <table>
+        <table class="text-xs">
             <tr>
                 <td colspan="4" class="no-border"></td>
             </tr>
             <tr class="tableh1">
-                <th colspan="4" style="width: 50%;border: 0px;padding-top:10px" class="size-8">
-                    <b>MUTUAL DE SERVICIOS AL POLICÍA<br>
-                        {!! $direction !!}<br>{!! $unit !!}
-                        @yield('title')
-                        <br> <em>"{{ strtoupper($eco_com->eco_com_procedure->fullName() ?? '') }}
-                            {{-- @if ($eco_com->old_eco_com && $eco_com->total_repay > 0)
-                            (REINTEGRO)
-                            @endif --}}
-                            "</em>
-                    </b>
+                <th colspan="4" style="width: 50%;border: 0px;padding-top:10px"
+                    class="text-xxxs font-bold leading-tight">
+                    MUTUAL DE SERVICIOS AL POLICÍA
+                    <br>
+                    {!! $direction !!}
+                    <br>
+                    {!! $unit !!}
+                    <br>
+                    <span
+                        class="uppercase italic">"{{ $eco_com->eco_com_procedure->getTextName() }}{{ ($eco_com->old_eco_com && $eco_com->total_repay > 0) ? ' (reintegro)' :''}}"</span>
                 </th>
-
             </tr>
             <tr>
-                <td class="no-border" colspan="4">
-                    <em>{{ ucwords(strtolower($user->city->name ?? '')) ?? 'La Paz' }}, {!! $date !!}</em>
-                </td>
+                <td colspan="4" style="border-bottom: 1px solid #22292f;"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="no-border italic">
+                    <span class="capitalize">{{ strtolower($user->city->name) ?? 'La Paz' }}</span>, {!! $date !!} </td>
             </tr>
             <tr>
                 <td colspan="2" class="no-border">

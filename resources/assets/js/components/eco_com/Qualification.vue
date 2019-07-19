@@ -75,9 +75,11 @@
                 </tr>
               </tbody>
             </table>
-            <h3 v-if="ecoCom.degree">Grado: {{ ecoCom.degree.name}} </h3>
-            <h3 v-if="ecoCom.category">Categoria: {{ ecoCom.category.name}} </h3>
-            <h3 v-if="ecoCom.eco_com_modality">Modalidad: {{ ecoCom.eco_com_modality.name }} ({{ ecoCom.eco_com_modality.shortened }})</h3>
+            <h3 v-if="ecoCom.degree">Grado: {{ ecoCom.degree.name}}</h3>
+            <h3 v-if="ecoCom.category">Categoria: {{ ecoCom.category.name}}</h3>
+            <h3
+              v-if="ecoCom.eco_com_modality"
+            >Modalidad: {{ ecoCom.eco_com_modality.name }} ({{ ecoCom.eco_com_modality.shortened }})</h3>
           </div>
           <div class="col-md-6">
             <p>Datos del Calculo del total del Complemento Economico</p>
@@ -162,14 +164,14 @@
                     name="aps_total_fsa"
                     v-model="ecoComModal.aps_total_fsa"
                     :disabled="!editing"
-                  >
+                  />
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
-            <br>
+            <br />
             <div class="row">
               <div class="form-group">
                 <label class="col-sm-4 control-label">Fracción de Cotización</label>
@@ -181,14 +183,14 @@
                     name="aps_total_cc"
                     v-model="ecoComModal.aps_total_cc"
                     :disabled="!editing"
-                  >
+                  />
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
-            <br>
+            <br />
             <div class="row">
               <div class="form-group">
                 <label class="col-sm-4 control-label">Fracción Solidaria</label>
@@ -200,14 +202,14 @@
                     name="aps_total_fs"
                     v-model="ecoComModal.aps_total_fs"
                     :disabled="!editing"
-                  >
+                  />
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
-            <br>
+            <br />
             <div class="row">
               <div class="form-group">
                 <label class="col-sm-4 control-label">Renta Invalidez</label>
@@ -219,14 +221,14 @@
                     name="aps_disability"
                     v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
-                  >
+                  />
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
-            <br>
+            <br />
             <div class="row">
               <div class="form-group">
                 <label class="col-sm-4 control-label">Renta Muerte</label>
@@ -238,7 +240,7 @@
                     name="aps_disability"
                     v-model="ecoComModal.aps_total_death"
                     :disabled="!editing"
-                  >
+                  />
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -271,14 +273,14 @@
                     name="sub_total_rent"
                     v-model="ecoComModal.sub_total_rent"
                     :disabled="!editing"
-                  >
+                  />
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
-            <br>
+            <br />
             <div class="row">
               <div class="form-group">
                 <label class="col-sm-4 control-label">Reintegro</label>
@@ -290,14 +292,14 @@
                     name="reimbursement"
                     v-model="ecoComModal.reimbursement"
                     :disabled="!editing"
-                  >
+                  />
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-minus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
-            <br>
+            <br />
             <div class="row">
               <div class="form-group">
                 <label class="col-sm-4 control-label">Renta Dignidad</label>
@@ -309,14 +311,14 @@
                     name="dignity_pension"
                     v-model="ecoComModal.dignity_pension"
                     :disabled="!editing"
-                  >
+                  />
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-minus" style="font-size:20px"></i>
                 </div>
               </div>
             </div>
-            <br>
+            <br />
             <div class="row">
               <div class="form-group">
                 <label class="col-sm-4 control-label">Renta Invalidez</label>
@@ -328,7 +330,7 @@
                     name="aps_disability"
                     v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
-                  >
+                  />
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -360,6 +362,35 @@
               <i v-else class="fa fa-save"></i>
               &nbsp;
               {{ loadingButton ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </modal>
+    <modal name="no-edit-rents-modal" class="p-sm" height="auto">
+      <div cass="ibox-title">
+        <h2 class="pull-left">
+          Edicion de Rentas
+          <strong>{{ namePensionEntity }}</strong>
+        </h2>
+      </div>
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-md-10 col-xs-offset-2">
+            <div class="row">
+              <h3>Las Rentas Fueron Importadas Automaticamente</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="text-center m-sm">
+            <button
+              class="btn btn-danger"
+              type="button"
+              @click="$modal.hide('no-edit-rents-modal')"
+            >
+              <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
+              <span class="bold">Cancelar</span>
             </button>
           </div>
         </div>
@@ -432,6 +463,10 @@ export default {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;
       }
+      if (this.ecoCom.rent_type == "Automatico") {
+        this.$modal.show("no-edit-rents-modal");
+        return;
+      }
       this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
       this.$modal.show("rents-modal");
       this.editing = true;
@@ -456,6 +491,9 @@ export default {
     },
     async save() {
       if (!this.can("update_economic_complement", this.permissions)) {
+        return;
+      }
+      if (this.ecoCom.rent_type == "Automatico") {
         return;
       }
       this.loadingButton = true;
@@ -492,5 +530,5 @@ export default {
       );
     }
   }
-}
+};
 </script>
