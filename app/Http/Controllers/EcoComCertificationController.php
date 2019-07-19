@@ -200,7 +200,8 @@ class EcoComCertificationController extends Controller
         $area = $eco_com->wf_state->first_shortened;
         $user = $eco_com->user;
         // $date = Util::getDateFormat($eco_com->reception_date);
-        $date = Util::getDateFormat(now());
+        $date = Util::getTextDate(now());
+        $with_padding = true;
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
@@ -222,6 +223,7 @@ class EcoComCertificationController extends Controller
             'eco_com_procedure' => $eco_com_procedure,
             'affiliate' => $affiliate,
             'eco_com_beneficiary' => $eco_com_beneficiary,
+            'with_padding' => $with_padding,
         ];
         $pages = [];
         $number_pages = Util::isRegionalRole() ? 3 : 2;
@@ -233,6 +235,8 @@ class EcoComCertificationController extends Controller
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '23mm')
+            ->setOption('margin-left', 0)
+            ->setOption('margin-bottom', 0)
             // ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $eco_com->id . '.pdf');
     }

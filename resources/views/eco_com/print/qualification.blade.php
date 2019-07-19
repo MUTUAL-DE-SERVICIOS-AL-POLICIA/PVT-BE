@@ -1,6 +1,6 @@
 @extends('print_global.print')
 @section('content')
-<div>
+<div style="min-height:1000px;">
     <div class="font-bold uppercase m-b-5 counter">
         Datos del Beneficiario
     </div>
@@ -132,5 +132,7 @@
         </tfoot>
     </table>
 </div>
+@endsection
+@section('other_content')
 @include('eco_com.print.ticket')
 @endsection
