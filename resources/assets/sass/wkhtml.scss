@@ -852,3 +852,37 @@ body {
 .sticky {
 	position: sticky;
 }
+.main-left{
+	height: 300px;
+	width: 317px;
+	// background:red;
+	display: inline-block;
+	margin-right: 28px;
+	margin-left: 13px
+}
+  .main-right{
+	height: 300px;
+	margin:0;
+	width: 550px;
+	display: inline-block;
+	// background:green;
+	margin-left:42px;
+}
+.tableh1 {
+	height: 15px;
+	width: 100%;
+	border-bottom: 1px solid  #5D6975;
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin-bottom: 3px;
+}
+.code{
+	margin:0;
+	border: 1px solid #000;
+	padding:0px 5px; 
+   }
+
+   .border-radius{
+	border-radius: 5px;
+	padding: 3px 6px;
+  }
