@@ -853,18 +853,20 @@ body {
 	position: sticky;
 }
 .main-left{
-	height: 350px;
+	height: 300px;
 	width: 317px;
 	// background:red;
 	display: inline-block;
-	margin-right: 10px
+	margin-right: 28px;
+	margin-left: 13px
 }
   .main-right{
-	height: 350px;
+	height: 300px;
 	margin:0;
 	width: 550px;
 	display: inline-block;
 	// background:green;
+	margin-left:42px;
 }
 .tableh1 {
 	height: 15px;

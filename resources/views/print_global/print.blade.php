@@ -8,7 +8,7 @@
 </head>
 <body class="no-border">
     <div class="page-break">
-    <table class="w-100 ">
+        <table class="w-100 " style="{{isset($with_padding) ? 'padding-left:48px' : ''}}">
         <tr>
             <th class="w-20 text-left no-padding no-margins align-middle">
                 <div class="text-center">
@@ -81,9 +81,11 @@
 
     </table>
 
-    <div class="block">
-
+    <div class="block" style="{{isset($with_padding) ? 'padding-left:48px' : ''}}">
         @yield('content')
+    </div>
+    <div class="block" style="padding:0px">
+        @yield('other_content')
     </div>
     <footer class="absolute pin-b no-margins no-paddings w-100">
         @yield('footer')
