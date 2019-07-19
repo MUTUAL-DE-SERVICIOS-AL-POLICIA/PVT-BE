@@ -579,11 +579,16 @@ class EconomicComplementController extends Controller
         $economic_complement = EconomicComplement::with([
             'wf_state:id,name',
             'workflow:id,name',
+<<<<<<< HEAD
+            'eco_com_modality:id,name,code,correlative,shortened,procedure_modality_id',
+            'eco_com_reception_type:id,name'
+=======
             'eco_com_modality:id,name,shortened,procedure_modality_id',
             'eco_com_reception_type:id,name',
             'eco_com_state:id,name',
             'degree',
             'category'
+>>>>>>> c79142f0b7425eb0beaaee5cd01bccdefc8012ff
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
@@ -1298,7 +1303,7 @@ class EconomicComplementController extends Controller
             $year = Carbon::parse($procedure->year)->year;
             $semester = $procedure->semester;
         }
-        $average_list = EcoComRent::select(DB::raw("degrees.shortened as degree, procedure_modalities.name as type,eco_com_rents.minor as rmin,eco_com_rents.higher as rmax, eco_com_rents.average as average "))
+        $average_list = EcoComRent::select(DB::raw("degrees.code as code, degrees.correlative as correlative, degrees.shortened as degree, procedure_modalities.name as type,eco_com_rents.minor as rmin,eco_com_rents.higher as rmax, eco_com_rents.average as average "))
             ->leftJoin('procedure_modalities', 'eco_com_rents.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('degrees', 'eco_com_rents.degree_id', '=', 'degrees.id')
             ->whereYear('eco_com_rents.year', '=', $year)
@@ -1307,6 +1312,12 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_modalities.id', 'ASC');
 
         return Datatables::of($average_list)
+            ->addColumn('correlative', function ($average_list) {
+            return $average_list->correlative;
+             })
+            ->addColumn('code', function ($average_list) {
+                return $average_list->code;
+            })
             ->addColumn('degree', function ($average_list) {
                 return $average_list->degree;
             })

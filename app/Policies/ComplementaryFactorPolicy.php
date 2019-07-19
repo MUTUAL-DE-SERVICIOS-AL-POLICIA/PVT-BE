@@ -9,8 +9,10 @@ use Muserpol\Helpers\Util;
 
 class ComplementaryFactorPolicy
 {
-    use HandlesAuthorization;
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
     use HandlesAuthorization;
     const ClASS_NAME = 'ComplementaryFactor';
     const CREATE = 'create';
