@@ -1076,7 +1076,7 @@ class Util
     }
     return Carbon::parse($date)->formatLocalized('%d de %B de %Y');
   }
-  public static function getEconomicComplementSendToBank($eco_com_procedure_id)
+  public static function getEconomicComplementSendToBank($eco_com_procedure_id, $change_state = false)
   {
     $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
     $ecos = EconomicComplement::with([
@@ -1170,6 +1170,10 @@ class Util
         $e->affiliate_id,
       ]);
       $index++;
+      if ($change_state === true) {
+        $e->eco_com_state_id = 24;
+        $e->save();
+      }
     }
     return ['result' => $result, 'total_amount' => $total_amount, 'total_eco_coms' => $total_eco_coms];
   }

@@ -16,9 +16,11 @@ use DB;
 class EcoComBankExport implements WithColumnFormatting, WithHeadings, ShouldAutoSize, WithMultipleSheets
 {
     protected $eco_com_procedure_id;
-    public function __construct(int $id)
+    protected $change_state;
+    public function __construct(int $id, $change_state = false)
     {
         $this->eco_com_procedure_id = $id;
+        $this->change_state = $change_state;
     }
 
     // public function collection()
@@ -31,7 +33,7 @@ class EcoComBankExport implements WithColumnFormatting, WithHeadings, ShouldAuto
 
         // for ($month = 1; $month <= 2; $month++) {
         $sheets[] = new EcoComBankExportHeaderSheet($this->eco_com_procedure_id);
-        $sheets[] = new EcoComBankExportSheet($this->eco_com_procedure_id);
+        $sheets[] = new EcoComBankExportSheet($this->eco_com_procedure_id, $this->change_state);
         // }
 
         return $sheets;
