@@ -579,16 +579,11 @@ class EconomicComplementController extends Controller
         $economic_complement = EconomicComplement::with([
             'wf_state:id,name',
             'workflow:id,name',
-<<<<<<< HEAD
-            'eco_com_modality:id,name,code,correlative,shortened,procedure_modality_id',
-            'eco_com_reception_type:id,name'
-=======
             'eco_com_modality:id,name,shortened,procedure_modality_id',
             'eco_com_reception_type:id,name',
             'eco_com_state:id,name',
             'degree',
             'category'
->>>>>>> c79142f0b7425eb0beaaee5cd01bccdefc8012ff
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
