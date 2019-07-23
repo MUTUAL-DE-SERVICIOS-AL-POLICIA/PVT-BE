@@ -1146,9 +1146,9 @@ class Util
         $ci_ext = $city->to_bank;
         $type = 'PE';
       } else {
-        if (strpos($ci, '-') !== false) {
-          $type = 'CIE';
-        }
+        // if (strpos($ci, '-') !== false) {
+        //   $type = 'CIE';
+        // }
       }
       // 'TipoDoc', // CI -> numero sin extension, //CIE -> con extension, // PE -> si en naturalizado
       $result->push([
