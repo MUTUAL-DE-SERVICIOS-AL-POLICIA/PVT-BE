@@ -10,6 +10,11 @@
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
       </select>
     </div>
+    <div v-if="form.reportTypeId == 18">
+      <label for="change-state">Actualizar Estados</label>
+      <i class="fa fa-question-circle" title="Si marca esta opcion actualizara todos los tramites listados en el reporte a Enviado a Banco"></i>
+      <input type="checkbox" id="change-state" v-model="form.changeState"/>
+    </div>
     <div
       v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13 || form.reportTypeId == 19"
     >
