@@ -6,9 +6,9 @@
     </div>
     <p class="text-justify">
         Yo <strong>{{ $eco_com_beneficiary->fullName() }}</strong>, mayor de edad con Cédula de Identidad Nº {!!
-        $eco_com_beneficiary->ciWithExt() !!}, domiciliado en la Zona {{ $address->zone ?? '-' }},
-        {{ $address->street ?? '-' }}, Nro. {{ $address->number_address ?? '-' }}, de la ciudad de
-        {{ $address->city->name ?? '' }}, hábil por derecho y en mi calidad de beneficiario (a) del Complemento
+        $eco_com_beneficiary->ciWithExt() !!}, domiciliado en la Zona {{ $affiliate->address()->first() ? $affiliate->address()->first()->zone : '-' }},
+        calle {{ $affiliate->address()->first() ? $affiliate->address()->first()->street: '-' }}, Nro. {{ $affiliate->address()->first() ? $affiliate->address()->first()->number_address : '-' }}, de la ciudad de
+        {{ $affiliate->address()->first() ? $affiliate->address()->first()->city->name: '-' }}, hábil por derecho y en mi calidad de beneficiario (a) del Complemento
         Económico que otorga la Mutual de Servicios al Policía – MUSERPOL al sector pasivo de la Policía Boliviana, que
         habiendo sido notificado por haber percibido pagos en defecto del Complemento Económico correspondiente al
         {{ $semesters}} por un importe de Bs. {{ Util::formatMoney($devolution->total) }}
