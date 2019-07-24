@@ -111,11 +111,7 @@ DB::table('document_type')->insert([
 ['name' => 'Memorándum de agradecimiento de servicios','issued'=>'Comando General de la Policía Boliviana.'],
 ['name' => 'Memorándum de baja definitiva a solicitud voluntaria','issued'=>'Comando General de la Policía Boliviana.'],
 ['name' => 'Memorándum de designación.','issued'=>'Comando General de la Policía Boliviana.'],
-['name' => 'Memorándum de destino a disponibilidad a la<?php
-
-use Illuminate\Database\Seeder;
-use Muserpol\Models\DocumentType;
- letra "A" en copia legalizada.','issued'=>'Autoridad Competente'],
+['name' => 'Memorándum de destino a disponibilidad a la letra "A" en copia legalizada.','issued'=>'Autoridad Competente'],
 ['name' => 'Memorándum de destino a disponibilidad a la letra "C" en copia legalizada.','issued'=>'Autoridad Competente'],
 ['name' => 'Memorándum de destino a disponibilidad a las letras "C" y "A"','issued'=>'Autoridad Competente'],
 ['name' => 'Memorándum de reincorporación','issued'=>'Comando General de la Policía Boliviana'],
