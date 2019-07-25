@@ -20,7 +20,7 @@
         <div class="ibox">
             <div class="ibox-content">
                 <div class="row">
-                    <eco-com-select-report :eco-com-procedures="{{ $eco_com_procedures }}"
+                <eco-com-select-report :rol="{{ Util::getRol() }}" :eco-com-procedures="{{ $eco_com_procedures }}"
                         :observation-types="{{$observation_types}}"  :affiliate-observations="{{ $affiliate_observations }}" :wf-states="{{$wf_states }}">
                     </eco-com-select-report>
                 </div>
