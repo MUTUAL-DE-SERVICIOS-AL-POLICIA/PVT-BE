@@ -43,11 +43,11 @@
             </tr>
         </thead>
         <tbody>
-        @php($sum = 0)
+        @php($total = 0)
         @foreach ($duess as $dd)
             @foreach ($dues as $d)
              @if($dd== $d->id)
-             @php($sum += $d->amount)
+             @php($total += $d->amount)
             <tr>
                 <td class="text-left uppercase px-10 py-3">
                     {{ $d->eco_com_procedure->getTextName()}}
@@ -69,7 +69,7 @@
             <tr>
                 <td class="border uppercase font-bold p-5">DEUDA TOTAL</td>
                 <td class="border font-bold  p-5"> Bs.
-                    {{ Util::formatMoney($sum) }}({{ Util::convertir($sum) }} BOLIVIANOS)
+                    {{ Util::formatMoney($total) }}({{ Util::convertir($total) }} BOLIVIANOS)
                 </td>
             </tr>
         </table>
