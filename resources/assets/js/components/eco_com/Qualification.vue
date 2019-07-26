@@ -9,9 +9,18 @@
         <div class="ibox-tools">
           <button
             class="btn btn-primary"
+            @click="refreshQualification()"
+            data-toggle="tooltip"
+            title="Actualizar Calificacion"
+            :disabled="!can('qualify_economic_complement')"
+          >
+            <i class="fa fa-refresh"></i>
+          </button>
+          <button
+            class="btn btn-primary"
             @click="edit()"
             data-toggle="tooltip"
-            title="Adicionar Observacion"
+            title="Editar Rentas"
             :disabled="!can('update_economic_complement')"
           >
             <i class="fa fa-pencil"></i> Editar
@@ -505,6 +514,28 @@ export default {
           this.$store.commit("ecoComForm/setEcoCom", response.data);
           this.$modal.hide("rents-modal");
           flash("Rentas Actualizadas con exito");
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+        });
+      this.loadingButton = false;
+      this.editing = true;
+    },
+    async refreshQualification(){
+      if (!this.can("qualify_economic_complement", this.permissions)) {
+        flash("No tiene permisos para realizar la calificacion", 'error')
+        return;
+      }
+      this.loadingButton = true;
+      this.editing = false;
+      this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
+      this.ecoComModal.refresh = true;
+      await axios
+        .patch(`/eco_com_update_rents`, this.ecoComModal)
+        .then(response => {
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.$modal.hide("rents-modal");
+          flash("Calificacion Actualizada");
         })
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);

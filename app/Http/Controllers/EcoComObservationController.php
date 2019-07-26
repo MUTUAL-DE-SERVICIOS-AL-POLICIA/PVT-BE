@@ -80,7 +80,7 @@ class EcoComObservationController extends Controller
         $eco_com->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 9,
-            'wf_state_id' => Util::getRol()->wf_states->first()->id,
+            'wf_state_id' => Util::getRol()->wf_states->first()->id ?? $eco_com->wf_current_state_id,
             'date' => Carbon::now(),
             'message' => "El usuario " . Auth::user()->username  . " creó la observación " . $observation->name . "."
         ]);
@@ -130,7 +130,7 @@ class EcoComObservationController extends Controller
             $eco_com->procedure_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 9,
-                'wf_state_id' => Util::getRol()->wf_states->first()->id,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id ?? $eco_com->wf_current_state_id,
                 'date' => Carbon::now(),
                 'message' => $message
             ]);
@@ -168,7 +168,7 @@ class EcoComObservationController extends Controller
             $eco_com->procedure_records()->create([
                 'user_id' => Auth::user()->id,
                 'record_type_id' => 9,
-                'wf_state_id' => Util::getRol()->wf_states->first()->id,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id ?? $eco_com->wf_current_state_id,
                 'date' => Carbon::now(),
                 'message' => "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . "."
             ]);
