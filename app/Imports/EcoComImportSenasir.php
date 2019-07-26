@@ -32,7 +32,7 @@ class EcoComImportSenasir implements ToCollection
             $ci = trim(Util::removeSpaces(trim($row[8])) . ((trim(Util::removeSpaces($row[9])) != '') ? '-' . $row[9] : ''));
             if ($row[6] == "DERECHOHABIENTE") { // viudedad
                 $eco_com = EconomicComplement::select('economic_complements.*')
-                    ->NotHasEcoComState(1, 4, 6)
+                    ->NotHasEcoComState(1, 6)
                     ->leftJoin('eco_com_applicants', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
@@ -45,7 +45,7 @@ class EcoComImportSenasir implements ToCollection
                     ->first();
             } elseif ($row[6] == "TITULAR") { //vejez
                 $eco_com = EconomicComplement::select('economic_complements.*')
-                    ->NotHasEcoComState(1, 4, 6)
+                    ->NotHasEcoComState(1, 6)
                     ->leftJoin('eco_com_applicants', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
@@ -58,7 +58,7 @@ class EcoComImportSenasir implements ToCollection
                     ->first();
             } else {
                 $eco_com = EconomicComplement::select('economic_complements.*')
-                    ->NotHasEcoComState(1, 4, 6)
+                    ->NotHasEcoComState(1, 6)
                     ->leftJoin('eco_com_applicants', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
