@@ -77,7 +77,7 @@ class EcoComImportSenasir implements ToCollection
                     // $discount = $row->renta_dignidad + $row->reintegro_renta_dignidad + $row->reintegro_importe_adicional + $row->reintegro_inc_gestion;
                     $discount = $row[25] + $row[26] + $reimbursements;
                     // $total_rent = $datos->total_ganado - $discount;
-                    $total_rent = $row[16] - $discount;
+                    $total_rent = $row[16] - $discount - $row[20];
                     if ($eco_com->isOldAge() && $total_rent < $eco_com_procedure->indicator) { //Vejez Senasir
                         $eco_com->eco_com_modality_id = 8;
                     } elseif ($eco_com->isWidowhood() && $total_rent < $eco_com_procedure->indicator) { //Viudedad
