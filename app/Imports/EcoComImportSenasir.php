@@ -87,7 +87,7 @@ class EcoComImportSenasir implements ToCollection
                         $eco_com->eco_com_modality_id = 12;
                     }
                     // $eco_com->sub_total_rent = $row->total_ganado;
-                    $eco_com->sub_total_rent = $row[16];
+                    $eco_com->sub_total_rent = $row[16] - $row[20];
                     $eco_com->total_rent = $total_rent;
                     // $eco_com->dignity_pension = $row->renta_dignidad;
                     $eco_com->dignity_pension = $row[25];
