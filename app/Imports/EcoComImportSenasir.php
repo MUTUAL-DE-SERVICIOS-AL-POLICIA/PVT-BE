@@ -71,7 +71,8 @@ class EcoComImportSenasir implements ToCollection
                     ->first();
             }
             if ($eco_com && $eco_com_procedure->indicator > 0) {
-                if ((is_null($eco_com->total_rent) || $eco_com->total_rent == 0) && $eco_com_procedure->indicator > 0) {
+                // if ((is_null($eco_com->total_rent) || $eco_com->total_rent == 0) && $eco_com_procedure->indicator > 0) {
+                if ($eco_com_procedure->indicator > 0) {
                     // $reimbursements = $row->reintegro_importe_adicional + $row->reintegro_inc_gestion;
                     $reimbursements = $row[35] + $row[39];
                     // $discount = $row->renta_dignidad + $row->reintegro_renta_dignidad + $row->reintegro_importe_adicional + $row->reintegro_inc_gestion;
