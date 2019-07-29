@@ -169,7 +169,6 @@ class EcoComMoreObservationNoAmortizableSheet implements FromCollection, WithTit
             "total_semestre",
             "factor_complementario",
             "total_complemento",
-            "total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
