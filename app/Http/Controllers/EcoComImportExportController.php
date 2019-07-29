@@ -91,6 +91,7 @@ class EcoComImportExportController extends Controller
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('eco_com_procedure_id', 14)
+                    ->NotHasEcoComState(1, 6)
                     ->get();
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
@@ -170,6 +171,7 @@ class EcoComImportExportController extends Controller
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('eco_com_procedure_id', 14)
+                    ->NotHasEcoComState(1, 6)
                     ->get();
                 $fails = collect([]);
                 foreach ($eco_coms as $e) {
@@ -249,6 +251,7 @@ class EcoComImportExportController extends Controller
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('eco_com_procedure_id', 14)
+                    ->NotHasEcoComState(1, 6)
                     ->get();
                 $fails = collect([]);
                 foreach ($eco_coms as $e) {

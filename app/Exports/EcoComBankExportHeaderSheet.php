@@ -39,7 +39,7 @@ class EcoComBankExportHeaderSheet implements FromArray, WithTitle, WithHeadings,
         $this->getEcoComs();
         return [
             [
-                132,
+                136,
                 now()->format('Ymd'),
                 1,
                 'BONO',
@@ -49,7 +49,7 @@ class EcoComBankExportHeaderSheet implements FromArray, WithTitle, WithHeadings,
                 'Bs',
                 'PAGO DE COMPLEMENTO ECONOMICO',
                 'B',
-                132,
+                136,
                 $this->getProcedure()->getSemesterText(),
                 'GESTION ' . $this->getProcedure()->getYear()
             ],

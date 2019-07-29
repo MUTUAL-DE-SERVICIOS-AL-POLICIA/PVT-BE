@@ -18,10 +18,12 @@ use Muserpol\Helpers\Util;
 class EcoComBankExportSheet implements FromCollection, WithTitle, WithHeadings,WithColumnFormatting, ShouldAutoSize
 {
     private $eco_com_procedure_id;
+    private $change_state;
 
-    public function __construct(int $id)
+    public function __construct(int $id,$change_state = false)
     {
         $this->eco_com_procedure_id = $id;
+        $this->change_state = $change_state;
     }
 
     /**
@@ -29,7 +31,7 @@ class EcoComBankExportSheet implements FromCollection, WithTitle, WithHeadings,W
      */
     public function collection()
     {
-        return Util::getEconomicComplementSendToBank($this->eco_com_procedure_id)['result'];
+        return Util::getEconomicComplementSendToBank($this->eco_com_procedure_id, $this->change_state)['result'];
     }
 
     /**

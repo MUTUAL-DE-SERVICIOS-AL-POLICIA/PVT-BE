@@ -1076,7 +1076,7 @@ class Util
     }
     return Carbon::parse($date)->formatLocalized('%d de %B de %Y');
   }
-  public static function getEconomicComplementSendToBank($eco_com_procedure_id)
+  public static function getEconomicComplementSendToBank($eco_com_procedure_id, $change_state = false)
   {
     $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
     $ecos = EconomicComplement::with([
@@ -1146,9 +1146,9 @@ class Util
         $ci_ext = $city->to_bank;
         $type = 'PE';
       } else {
-        if (strpos($ci, '-') !== false) {
-          $type = 'CIE';
-        }
+        // if (strpos($ci, '-') !== false) {
+        //   $type = 'CIE';
+        // }
       }
       // 'TipoDoc', // CI -> numero sin extension, //CIE -> con extension, // PE -> si en naturalizado
       $result->push([
@@ -1170,6 +1170,10 @@ class Util
         $e->affiliate_id,
       ]);
       $index++;
+      if ($change_state === true && self::getRol()->id == 5) {
+        $e->eco_com_state_id = 24;
+        $e->save();
+      }
     }
     return ['result' => $result, 'total_amount' => $total_amount, 'total_eco_coms' => $total_eco_coms];
   }
