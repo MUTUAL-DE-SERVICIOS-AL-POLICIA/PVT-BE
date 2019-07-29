@@ -1170,7 +1170,7 @@ class Util
         $e->affiliate_id,
       ]);
       $index++;
-      if ($change_state === true) {
+      if ($change_state === true && self::getRol()->id == 5) {
         $e->eco_com_state_id = 24;
         $e->save();
       }

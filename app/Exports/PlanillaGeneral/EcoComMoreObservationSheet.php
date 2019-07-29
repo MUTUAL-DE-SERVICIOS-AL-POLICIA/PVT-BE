@@ -98,9 +98,6 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
         $collect = collect([]);
         $observations_ids = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
         foreach ($eco_coms as $e) {
-            if ($e->code == '3483/P/2019' ) {
-                logger($e->code);
-            }
             $observations = $e->observations->whereIn('id', $observations_ids);
             if ($observations->count() > 1) {
                 $sw = true;
