@@ -32,6 +32,7 @@ class EcoComImportSenasir implements ToCollection
             $ci = trim(Util::removeSpaces(trim($row[8])) . ((trim(Util::removeSpaces($row[9])) != '') ? '-' . $row[9] : ''));
             if ($row[6] == "DERECHOHABIENTE") { // viudedad
                 $eco_com = EconomicComplement::select('economic_complements.*')
+                    ->NotHasEcoComState(1, 6)
                     ->leftJoin('eco_com_applicants', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
@@ -44,6 +45,7 @@ class EcoComImportSenasir implements ToCollection
                     ->first();
             } elseif ($row[6] == "TITULAR") { //vejez
                 $eco_com = EconomicComplement::select('economic_complements.*')
+                    ->NotHasEcoComState(1, 6)
                     ->leftJoin('eco_com_applicants', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
@@ -56,6 +58,7 @@ class EcoComImportSenasir implements ToCollection
                     ->first();
             } else {
                 $eco_com = EconomicComplement::select('economic_complements.*')
+                    ->NotHasEcoComState(1, 6)
                     ->leftJoin('eco_com_applicants', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
@@ -68,13 +71,14 @@ class EcoComImportSenasir implements ToCollection
                     ->first();
             }
             if ($eco_com && $eco_com_procedure->indicator > 0) {
-                if ((is_null($eco_com->total_rent) || $eco_com->total_rent == 0) && $eco_com_procedure->indicator > 0) {
+                // if ((is_null($eco_com->total_rent) || $eco_com->total_rent == 0) && $eco_com_procedure->indicator > 0) {
+                if ($eco_com_procedure->indicator > 0) {
                     // $reimbursements = $row->reintegro_importe_adicional + $row->reintegro_inc_gestion;
                     $reimbursements = $row[35] + $row[39];
                     // $discount = $row->renta_dignidad + $row->reintegro_renta_dignidad + $row->reintegro_importe_adicional + $row->reintegro_inc_gestion;
                     $discount = $row[25] + $row[26] + $reimbursements;
                     // $total_rent = $datos->total_ganado - $discount;
-                    $total_rent = $row[16] - $discount;
+                    $total_rent = $row[16] - $discount - $row[20];
                     if ($eco_com->isOldAge() && $total_rent < $eco_com_procedure->indicator) { //Vejez Senasir
                         $eco_com->eco_com_modality_id = 8;
                     } elseif ($eco_com->isWidowhood() && $total_rent < $eco_com_procedure->indicator) { //Viudedad
@@ -83,7 +87,7 @@ class EcoComImportSenasir implements ToCollection
                         $eco_com->eco_com_modality_id = 12;
                     }
                     // $eco_com->sub_total_rent = $row->total_ganado;
-                    $eco_com->sub_total_rent = $row[16];
+                    $eco_com->sub_total_rent = $row[16] - $row[20];
                     $eco_com->total_rent = $total_rent;
                     // $eco_com->dignity_pension = $row->renta_dignidad;
                     $eco_com->dignity_pension = $row[25];

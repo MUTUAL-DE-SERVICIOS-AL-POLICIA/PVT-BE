@@ -671,7 +671,8 @@ class EconomicComplementController extends Controller
             Note::class
         );
         $permissions->push(['operation' => 'amortize_economic_complement', 'value' => Gate::allows('amortize', $economic_complement)]);
-
+        $permissions->push(['operation' => 'qualify_economic_complement', 'value' => Gate::allows('qualify', $economic_complement)]);
+        
         /**
          ** legal guardian types
          */
@@ -1059,14 +1060,11 @@ class EconomicComplementController extends Controller
         $eco_com = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality'])->findOrFail($id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         if ($rol->id == 4) {
-            logger("si uno");
             $devolution = $eco_com->affiliate->devolutions()->where('observation_type_id',13)->first();
-            logger($devolution);
             if ($devolution) {
                 $eco_com->discount_amount = $eco_com->getOnlyTotalEcoCom() * $devolution->percentage;
             }
         }
-        logger($eco_com);
         $eco_com->total_eco_com = $eco_com->getOnlyTotalEcoCom();
         return $eco_com;
     }
@@ -1081,44 +1079,47 @@ class EconomicComplementController extends Controller
             ], 403);
         }
         $economic_complement = EconomicComplement::with('discount_types')->find($request->id);
-        if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
-            $eco_com_state = $economic_complement->eco_com_state;
-            return response()->json([
-                'status' => 'error',
-                'msg' => 'Error',
-                'errors' => ['No se puede modificar las rentas del trámite ' . $economic_complement->code . 'porque se encuentra en estado de ' . $eco_com_state->name],
-            ], 422);
+        if ($request->refresh == false) {
+            if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
+                $eco_com_state = $economic_complement->eco_com_state;
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Error',
+                    'errors' => ['No se puede modificar las rentas del trámite ' . $economic_complement->code . 'porque se encuentra en estado de ' . $eco_com_state->name],
+                ], 422);
+            }
+            if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
+                $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
+                $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
+                $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
+                $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
+                $economic_complement->aps_total_fsa = null;
+                $economic_complement->aps_total_cc = null;
+                $economic_complement->aps_total_fs = null;
+                $economic_complement->aps_total_death = null;
+            } else {
+                $economic_complement->aps_total_fsa = Util::parseMoney($request->aps_total_fsa);
+                $economic_complement->aps_total_cc = Util::parseMoney($request->aps_total_cc);
+                $economic_complement->aps_total_fs = Util::parseMoney($request->aps_total_fs);
+                $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
+                $economic_complement->aps_total_death = Util::parseMoney($request->aps_total_death);
+                $economic_complement->sub_total_rent = null;
+                $economic_complement->reimbursement = null;
+                $economic_complement->dignity_pension = null;
+            }
+            $economic_complement->save();
+            if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
+                $economic_complement->total_rent =
+                $economic_complement->sub_total_rent -
+                $economic_complement->reimbursement -
+                $economic_complement->dignity_pension +
+                $economic_complement->aps_disability;
+            }else{
+                $economic_complement->calculateTotalRentAps();
+            }
+            $economic_complement->rent_type == "Manual";
+            $economic_complement->save();
         }
-        if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
-            $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
-            $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
-            $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
-            $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
-            $economic_complement->aps_total_fsa = null;
-            $economic_complement->aps_total_cc = null;
-            $economic_complement->aps_total_fs = null;
-            $economic_complement->aps_total_death = null;
-        } else {
-            $economic_complement->aps_total_fsa = Util::parseMoney($request->aps_total_fsa);
-            $economic_complement->aps_total_cc = Util::parseMoney($request->aps_total_cc);
-            $economic_complement->aps_total_fs = Util::parseMoney($request->aps_total_fs);
-            $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
-            $economic_complement->aps_total_death = Util::parseMoney($request->aps_total_death);
-            $economic_complement->sub_total_rent = null;
-            $economic_complement->reimbursement = null;
-            $economic_complement->dignity_pension = null;
-        }
-        $economic_complement->save();
-        if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
-            $economic_complement->total_rent =
-            $economic_complement->sub_total_rent -
-            $economic_complement->reimbursement -
-            $economic_complement->dignity_pension +
-            $economic_complement->aps_disability;
-        }else{
-            $economic_complement->calculateTotalRentAps();
-        }
-        $economic_complement->save();
         $discount_type_id = null;
         $rol = Util::getRol();
         switch ($rol->id) {
@@ -1198,7 +1199,7 @@ class EconomicComplementController extends Controller
         $eco_com->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 10,
-            'wf_state_id' => Util::getRol()->wf_states->first()->id,
+            'wf_state_id' => Util::getRol()->wf_states->first()->id ?? $eco_com->wf_current_state_id,
             'date' => Carbon::now(),
             'message' => "El usuario " . Auth::user()->username  . " amortizó " . $request->amount . "."
         ]);
@@ -1298,7 +1299,7 @@ class EconomicComplementController extends Controller
             $year = Carbon::parse($procedure->year)->year;
             $semester = $procedure->semester;
         }
-        $average_list = EcoComRent::select(DB::raw("degrees.shortened as degree, procedure_modalities.name as type,eco_com_rents.minor as rmin,eco_com_rents.higher as rmax, eco_com_rents.average as average "))
+        $average_list = EcoComRent::select(DB::raw("degrees.code as code, degrees.correlative as correlative, degrees.shortened as degree, procedure_modalities.name as type,eco_com_rents.minor as rmin,eco_com_rents.higher as rmax, eco_com_rents.average as average "))
             ->leftJoin('procedure_modalities', 'eco_com_rents.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('degrees', 'eco_com_rents.degree_id', '=', 'degrees.id')
             ->whereYear('eco_com_rents.year', '=', $year)
@@ -1307,6 +1308,12 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_modalities.id', 'ASC');
 
         return Datatables::of($average_list)
+            ->addColumn('correlative', function ($average_list) {
+            return $average_list->correlative;
+             })
+            ->addColumn('code', function ($average_list) {
+                return $average_list->code;
+            })
             ->addColumn('degree', function ($average_list) {
                 return $average_list->degree;
             })

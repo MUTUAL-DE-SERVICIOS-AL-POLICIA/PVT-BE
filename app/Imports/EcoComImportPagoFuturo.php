@@ -35,6 +35,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 ->where('economic_complements.eco_com_procedure_id', $eco_com_procedure->id)
                 ->whereRaw("ltrim(trim(eco_com_applicants.identity_card),'0') ='" . ltrim(trim($ci), '0') . "'")
                 // ->where('eco_com_applicants.identity_card', $ci)
+                ->NotHasEcoComState(1, 4, 6)
                 ->first();
             if ($eco_com) {
                 if (!Util::isDoblePerceptionEcoCom($ci)) {

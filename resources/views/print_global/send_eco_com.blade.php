@@ -94,7 +94,9 @@
                     <tr></tr>
                 </thead>
                 <tbody>
+                @php($sum = 0)
                     @foreach ($procedures as $procedure)
+                    @php($sum += $procedure->total)
                     <tr class="text-sm">
                         <td class="uppercase px-5 text-right">{{ $loop->iteration }}</td>
                         <td class="uppercase px-5 text-left">{{ $procedure->code }}</td>
@@ -111,6 +113,11 @@
                     </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="uppercase px-5 text-right" colspan=9>TOTAL</th><th class="uppercase px-5 text-right">{{$sum}}</th>
+                    </tr>
+                </tfoot>
             </table>
             <div class="w-60 mx-auto">
                 <table class="m-t-25 border table-info w-100">

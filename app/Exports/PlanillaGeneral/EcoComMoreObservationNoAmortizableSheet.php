@@ -113,7 +113,7 @@ class EcoComMoreObservationNoAmortizableSheet implements FromCollection, WithTit
     }
     public function title(): string
     {
-        return 'Multiples Obs';
+        return 'Multiples Obs No Amortizado';
     }
     public function headings(): array
     {
@@ -169,7 +169,6 @@ class EcoComMoreObservationNoAmortizableSheet implements FromCollection, WithTit
             "total_semestre",
             "factor_complementario",
             "total_complemento",
-            "total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",

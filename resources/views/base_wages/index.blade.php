@@ -16,19 +16,19 @@
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 01 - COMANDANTE GENERAL">CMTE GRAL.</div>
+                                        data-original-title="00 01 - INSPECTOR GENERAL, SUPERVISOR">INSP GRAL.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 02 - SUBCOMANDANTE GENERAL">SBCMTE.</div>
+                                        data-original-title="00 02 - SUBCOMANDANTE, EX COMANDANTE">SBCMTE.GRAL.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 03 - INSPECTOR GENERAL">INSP GRAL.</div>
+                                        data-original-title="00 03 - GENERAL SUPERVISOR">INSP SUP.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 04 - DIRECTOR GENERAL">DIR GRAL.</div>
+                                        data-original-title="00 04 - GENERAL DIRECTOR">GRAL.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"

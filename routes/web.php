@@ -443,8 +443,6 @@ Route::group(['middleware' => ['auth']], function () {
       $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
       $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
       $title = "TRÁMITES BENEFICIOS ECONÓMICOS - FONDO DE RETIRO POLICIAL SOLIDARIO";
-
-      // <<<<<<< HEAD
       $retirement_funds = RetirementFund::leftJoin('ret_fun_correlatives', 'retirement_funds.id', '=', 'ret_fun_correlatives.retirement_fund_id')
         ->where('retirement_funds.wf_state_current_id', 26)
         ->where('retirement_funds.inbox_state', true)

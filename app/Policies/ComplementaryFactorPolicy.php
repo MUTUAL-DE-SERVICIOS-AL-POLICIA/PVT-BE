@@ -10,8 +10,6 @@ use Muserpol\Helpers\Util;
 class ComplementaryFactorPolicy
 {
     use HandlesAuthorization;
-
-    use HandlesAuthorization;
     const ClASS_NAME = 'ComplementaryFactor';
     const CREATE = 'create';
     const READ = 'read';
