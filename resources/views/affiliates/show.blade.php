@@ -310,7 +310,7 @@ th.ellipsis-text {
                         <affiliate-observations :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :observation-types="{{ $observation_types }}"></affiliate-observations>
                     </div>
                     <div id="tab-devolutions" class="tab-pane">
-                        <affiliate-devolutions :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}"></affiliate-devolutions>
+                        <affiliate-devolutions :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :eco-com-procedures="{{ $eco_com_procedures }}"></affiliate-devolutions>
                     </div>
                     <div id="tab-affiliate-records" class="tab-pane">
                         <affiliate-record :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}"></affiliate-record>

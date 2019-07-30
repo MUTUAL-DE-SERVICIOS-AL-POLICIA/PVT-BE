@@ -33,6 +33,8 @@ use Muserpol\Models\Voucher;
 use Muserpol\Models\VoucherType;
 use Muserpol\Models\ObservationType;
 use DB;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
+
 class AffiliateController extends Controller
 {
     /**
@@ -334,6 +336,10 @@ class AffiliateController extends Controller
          ** eco coms
          */
         $eco_coms = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->reverse();
+        $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->get();
+        foreach ($eco_com_procedures as $e) {
+            $e->full_name = $e->fullName();
+        }
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -374,7 +380,8 @@ class AffiliateController extends Controller
 
             'observation_types'  =>  $observation_types,
             'permissions'  =>  $permissions,
-            'eco_coms'  =>  $eco_coms
+            'eco_coms'  =>  $eco_coms,
+            'eco_com_procedures'  =>  $eco_com_procedures
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
