@@ -174,7 +174,7 @@ class EcoComDashboardController extends Controller
             return [];
         }
         $eco_coms = EconomicComplement::whereIn('economic_complements.eco_com_procedure_id', [$eco_com_procedure->id])
-            ->select(DB::raw("count(*) as quantity,date_trunc('month', reception_date) as name"))
+            ->select(DB::raw("count(*) as quantity,date_trunc('week', reception_date) as name"))
             ->groupBy('name')
             ->orderBy('name')
             ->get();
