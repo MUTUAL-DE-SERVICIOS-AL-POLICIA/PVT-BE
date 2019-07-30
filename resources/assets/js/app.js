@@ -163,9 +163,9 @@ instance.extend('max_current_date_month_year', {
 });
 instance = new Validator();
 instance.extend('alpha_space_quote', {
-  getMessage: (field) => `El dato ingresado es incorrecto.`,
+  getMessage: (field) => `El dato ingresado no debe contener números o minúsculas.`,
   validate: (value) => {
-    let regex = /^[A-ZÁÉÍÑÓÚÜ\s\'\.]*$/i;
+    let regex = /^[A-ZÁÉÍÑÓÚÜ\s\'\.]*$/;
     return regex.exec(value) !== null;
   }
 });
