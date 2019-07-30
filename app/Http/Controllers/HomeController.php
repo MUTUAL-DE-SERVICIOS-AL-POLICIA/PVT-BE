@@ -48,6 +48,9 @@ class HomeController extends Controller
         ];
         if (Util::rolIsEcoCom()) {
             $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->take(3)->get();
+            foreach ($eco_com_procedures as $e) {
+                $e->full_name = $e->fullName();
+            }
             $data = [
                 'eco_com_procedures' => $eco_com_procedures
             ];
