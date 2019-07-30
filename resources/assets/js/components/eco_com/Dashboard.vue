@@ -130,9 +130,9 @@
     <div class="row">
       <div class="col-md-6">
         <pie-bar
-          title="Recepcion de los tramites"
+          title="Recepcion de los tramites (por semana)"
           url="chart_eco_com_reception_months"
-          type="bar"
+          type="line"
           :eco-com-procedures="ecoComProcedures"
           :options="{scales: {
 			yAxes: [{
