@@ -35,7 +35,7 @@
         <thead class="bg-grey-darker">
             <tr class="font-medium text-white">
                 <td class="px-15 py text-center">
-                    Gestión
+                    GESTION
                 </td>
                 <td class="px-15 py text-center">
                     MONTO ADEUDADO
@@ -43,24 +43,33 @@
             </tr>
         </thead>
         <tbody>
+        @php($total = 0)
+        @foreach ($duess as $dd)
             @foreach ($dues as $d)
+             @if($dd== $d->id)
+             @php($total += $d->amount)
             <tr>
                 <td class="text-left uppercase px-10 py-3">
                     {{ $d->eco_com_procedure->getTextName()}}
                 </td>
                 <td class="text-right px-10 py-3">
                     {{ Util::formatMoney($d->amount) }}
+
                 </td>
             </tr>
+            @endif
             @endforeach
+          
+            
+        @endforeach
         </tbody>
     </table>
     <div class="w-80 mx-auto m-t-20">
         <table class=" w-100 ">
             <tr>
-                <td class="border uppercase font-bold p-5">Deuda Total</td>
+                <td class="border uppercase font-bold p-5">DEUDA TOTAL</td>
                 <td class="border font-bold  p-5"> Bs.
-                    {{ Util::formatMoney($devolution->total) }}({{ Util::convertir($devolution->total) }} BOLIVIANOS)
+                    {{ Util::formatMoney($total) }}({{ Util::convertir($total) }} BOLIVIANOS)
                 </td>
             </tr>
         </table>
