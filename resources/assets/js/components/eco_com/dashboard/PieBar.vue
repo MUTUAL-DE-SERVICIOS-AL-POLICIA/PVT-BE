@@ -119,7 +119,7 @@ export default {
     getProcedureName() {
       if (this.ecoComProcedureId) {
         let p = this.ecoComProcedures.find(x => x.id == this.ecoComProcedureId);
-        return `${p.semester} semestre ${p.year}`;
+        return `${p.full_name}`;
       }
       return null;
     }

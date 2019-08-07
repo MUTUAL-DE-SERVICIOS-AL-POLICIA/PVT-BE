@@ -16,15 +16,15 @@
             @if($devolution->percentage)
             expreso mi conformidad de manera voluntaria para que se efectúe el descuento con el
             {{ $devolution->percentage * 100 }}% del beneficio del Complemento Económico a partir del
-            {{ $current_semester->semester }} Semestre de la gestión {{ $current_semester->getYear() }}, hasta
+            {{ $start_eco_com_procedure->semester }} Semestre de la gestión {{ $start_eco_com_procedure->getYear() }}, hasta
             cubrir el monto determinado.
             @else
             {{-- @if($devolution->deposit_number && $devolution->payment_date)
                     expreso mi conformidad de manera voluntaria para efectuar la devolución del total del monto
                     en defecto inicialmente determinado.
                     @else
-                    expreso mi conformidad de manera voluntaria para que se efectúe el descuento del total del monto en defecto inicialmente determinado, con el beneficio del Complemento Económico del {{ $current_semester->semester }}
-            semestre de la gestión {{ $current_semester->getYear() }}.
+                    expreso mi conformidad de manera voluntaria para que se efectúe el descuento del total del monto en defecto inicialmente determinado, con el beneficio del Complemento Económico del {{ $start_eco_com_procedure->semester }}
+            semestre de la gestión {{ $start_eco_com_procedure->getYear() }}.
             @endif --}}
             @endif
     </p>

@@ -54,7 +54,7 @@ class EcoComNoAmortizationSheet implements FromQuery, WithTitle, WithHeadings, S
     }
     public function title(): string
     {
-        return $this->observation_type->shortened . 'No Amort';
+        return $this->observation_type->shortened . ' No Amorti';
     }
     public function headings(): array
     {

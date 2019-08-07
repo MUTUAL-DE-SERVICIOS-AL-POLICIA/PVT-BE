@@ -122,8 +122,12 @@ class AffiliateDevolutionController extends Controller
                 $devolution->percentage = null;
             }
             $devolution->has_payment_commitment = true;
+            $devolution->start_eco_com_procedure_id = $request->start_eco_com_procedure_id;
             $devolution->save();
-            return $devolution;
+            $data = [
+                'devolution' => $devolution,
+            ];
+            return $data;
             // $devolution->eco_com_procedures()->sync($request->eco_com_procedures);
             // return redirect()->route('devolution_print', $devolution->id);
         }
@@ -167,7 +171,7 @@ class AffiliateDevolutionController extends Controller
            $semesters->push($d->eco_com_procedure->getTextName());  
         }
         $semesters = $semesters->implode(', ');
-        $current_semester = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first());
+        $start_eco_com_procedure = EcoComProcedure::find($devolution->start_eco_com_procedure_id);
         $eco_com = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last();
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
         // $eco_coms = EconomicComplement::with('discount_types')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
@@ -200,6 +204,7 @@ class AffiliateDevolutionController extends Controller
             'eco_com' => $eco_com,
             'user' => $user,
             'semesters' => $semesters,
+            'start_eco_com_procedure' => $start_eco_com_procedure,
             'current_semester' => $current_semester,
             'duess' => $duess
         ];
