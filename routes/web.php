@@ -746,7 +746,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('affiliate_get_devolutions/{affiliate_id}', 'AffiliateDevolutionController@getDevolutions');
     Route::post('affiliate_devolution_payment_commitment', 'AffiliateDevolutionController@store');
     Route::get('affiliate/{affiliate_id}/print/certification_devolutions', 'AffiliateDevolutionController@printCertificationDevolutions');
-    Route::get('affiliate/{affiliate_id}/print/devolution_payment_commitment', 'AffiliateDevolutionController@printDevolutionPaymentCommitment');
+    Route::post('affiliate/{affiliate_id}/print/devolution_payment_commitment', 'AffiliateDevolutionController@printDevolutionPaymentCommitment');
 
     // affiliate records
     Route::get('affiliate_record/{id}', 'AffiliateController@getRecord');

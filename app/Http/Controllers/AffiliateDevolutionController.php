@@ -138,8 +138,14 @@ class AffiliateDevolutionController extends Controller
         // Session::flash('message', $message);
         // return redirect('affiliate/' . $affiliate->id);
     }
-    public function printDevolutionPaymentCommitment($affiliate_id)
+    public function printDevolutionPaymentCommitment(Request $request, $affiliate_id)
     {
+        $duesss = $request->all();
+        
+        //logger($affiliate_id);
+       // logger($request->dues);
+        $duess = $request->dues;
+        logger($duess);
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
@@ -151,7 +157,9 @@ class AffiliateDevolutionController extends Controller
         $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])->get();
         $devolution = $devolutions->where('observation_type_id', 13)->first();
         if (!isset($devolution->id)) {
+     
             return response()->json('El Trámite no tiene deudas', 204);
+         
         }
         $dues = $devolution->dues()->select('dues.*')
             ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
@@ -160,7 +168,7 @@ class AffiliateDevolutionController extends Controller
             ->get();
         $semesters = collect([]);
         foreach ($dues as $d) {
-            $semesters->push($d->eco_com_procedure->getTextName());
+           $semesters->push($d->eco_com_procedure->getTextName());  
         }
         $semesters = $semesters->implode(', ');
         $start_eco_com_procedure = EcoComProcedure::find($devolution->start_eco_com_procedure_id);
@@ -196,7 +204,9 @@ class AffiliateDevolutionController extends Controller
             'eco_com' => $eco_com,
             'user' => $user,
             'semesters' => $semesters,
-            'start_eco_com_procedure' => $start_eco_com_procedure
+            'start_eco_com_procedure' => $start_eco_com_procedure,
+            'current_semester' => $current_semester,
+            'duess' => $duess
         ];
         $pages = [];
         $pages[] = \View::make('affiliates.print.devolution_payment_commitment', $data)->render();

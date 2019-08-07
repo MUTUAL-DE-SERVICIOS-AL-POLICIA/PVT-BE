@@ -10,7 +10,7 @@
               <button  class="btn btn-primary" @click="printCertification()">
                 <i class="fa fa-print"></i> Imprimir Certificacion
               </button>
-              <button :disabled="! devolution.has_payment_commitment" class="btn btn-primary" @click="printPaymentCommitment()">
+              <button :disabled="devolution.hasPaymentCommitment || selectedDues.length == 0" class="btn btn-primary" @click="printPaymentCommitment()">
                 <i class="fa fa-print"></i> Imprimir Compromiso
               </button>
               <button class="btn btn-primary" data-toggle="tooltip" title="Crear compromiso de Pago" @click="createPaymentCommitment()">
@@ -28,6 +28,7 @@
             <table class="table table-striped table-hover table-bordered" v-if='dues.length'>
               <thead>
                 <tr>
+                  <th></th>
                   <th>Nro.</th>
                   <th>GESTIÓN</th>
                   <th>MONTO ADEUDADO</th>
@@ -35,6 +36,7 @@
               </thead>
               <tbody>
                 <tr v-for="(d, index) in dues" :key="index">
+                  <td><input type="checkbox" @click="selectDue(d.id)"></td>
                   <td>{{index + 1}}</td>
                   <td>{{ d.eco_com_procedure_name }}</td>
                   <td>{{ d.amount | currency }}</td>
@@ -143,6 +145,7 @@ export default {
   props: ["affiliate", "permissions", 'ecoComProcedures'],
   data() {
     return {
+      selectedDues: [],
       form: {
         affiliate_id: this.affiliate.id,
         percentage: null,
@@ -183,6 +186,13 @@ export default {
     this.getDevolutions();
   },
   methods: {
+    selectDue(due) {
+      if (this.selectedDues.includes(due)) {
+        this.selectedDues = this.selectedDues.filter(function(o) {return o != due;});
+      } else {
+        this.selectedDues.push(due)
+      }
+    },
     can(operation) {
       return canOperation(operation, this.permissions);
     },
@@ -291,12 +301,15 @@ export default {
     async printPaymentCommitment(){
       try {
         let res = await axios({
-          method: "GET",
+          method: "POST",
           url: `/affiliate/${this.affiliate.id}/print/devolution_payment_commitment`,
-          responseType: "arraybuffer"
-        });
-        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
-        printJS(URL.createObjectURL(pdfBlob));
+          responseType: "arraybuffer",
+          data: {
+             dues:this.selectedDues
+          }
+         });
+         const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+         printJS(URL.createObjectURL(pdfBlob));
         this.loading = false;
       } catch (error) {
         this.loading = false;
