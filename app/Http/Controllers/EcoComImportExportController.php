@@ -30,6 +30,7 @@ class EcoComImportExportController extends Controller
             ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
             ->where('eco_com_procedure_id', 14)
             ->where('rent_type', '<>', 'Automatico')
+            ->where('rent_type', '<>', 'Manual')
             ->where('affiliates.pension_entity_id', 5)
             ->get();
         return array_merge(session()->get('senasir_data'), ['not_found' => $no_import]);
@@ -132,6 +133,7 @@ class EcoComImportExportController extends Controller
                     ->where('eco_com_procedure_id', 14)
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('rent_type', '<>', 'Automatico')
+                    ->where('rent_type', '<>', 'Manual')
                     ->where(function ($query) {
                         $query->whereNull('economic_complements.total_rent')
                             ->orWhere('economic_complements.total_rent', '=', 0);
@@ -212,6 +214,7 @@ class EcoComImportExportController extends Controller
                     ->where('eco_com_procedure_id', 14)
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('rent_type', '<>', 'Automatico')
+                    ->where('rent_type', '<>', 'Manual')
                     ->where(function ($query) {
                         $query->whereNull('economic_complements.total_rent')
                             ->orWhere('economic_complements.total_rent', '=', 0);
@@ -288,6 +291,7 @@ class EcoComImportExportController extends Controller
                     ->where('eco_com_procedure_id', 14)
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('rent_type', '<>', 'Automatico')
+                    ->where('rent_type', '<>', 'Manual')
                     ->where(function ($query) {
                         $query->whereNull('economic_complements.total_rent')
                             ->orWhere('economic_complements.total_rent', '=', 0);

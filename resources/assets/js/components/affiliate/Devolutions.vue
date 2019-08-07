@@ -16,7 +16,7 @@
               <button class="btn btn-primary" data-toggle="tooltip" title="Crear compromiso de Pago" @click="createPaymentCommitment()">
                 <!-- :disabled="!can('create_observation_type')"
                 v-if="can('read_observation_type')" -->
-                <i class="fa fa-plus"></i> Crear compromiso de Pago
+                <i class="fa fa-plus"></i> {{ devolution.has_payment_commitment ? 'Editar':'Crear'}} compromiso de Pago
               </button>
             </div>
           </div>
@@ -97,6 +97,7 @@
               v-show="errors.has('percentage')"
               class="text-danger"
             >{{ errors.first('percentage') }}</span>
+            <br>
           </div>
           <i v-show="errors.has('type_discount')" class="fa fa-warning text-danger"></i>
             <span
@@ -104,9 +105,28 @@
               class="text-danger"
             >{{ errors.first('type_discount') }}</span>
         </div>
+        <div class="col-md-12" :class="{'has-error': errors.has('type_discount')}">
+          <div class="col-md-3">
+            <label class="control-label">Gestion inicio pago deuda</label>
+          </div>
+          <div class="col-md-9">
+            <select
+              class="form-control m-b"
+              name="start_eco_com_procedure_id"
+              v-model="form.start_eco_com_procedure_id"
+            >
+              <option v-for="p in ecoComProcedures" :value="p.id" :key="p.id">{{ p.full_name}}</option>
+            </select>
+          </div>
+          <i v-show="errors.has('start_eco_com_procedure_id')" class="fa fa-warning text-danger"></i>
+            <span
+              v-show="errors.has('start_eco_com_procedure_id')"
+              class="text-danger"
+            >{{ errors.first('start_eco_com_procedure_id') }}</span>
+        </div>
         <div class="col-md-12">
           <div class="text-center m-sm">
-            <button class="btn btn-danger" type="button" @click="$modal.hide('observation-modal')">
+            <button class="btn btn-danger" type="button" @click="$modal.hide('create-payment-commitment-modal')">
               <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
               <span class="bold">Cancelar</span>
             </button>
@@ -122,13 +142,13 @@
 <script>
 import { flashErrors, canOperation } from "../../helper.js";
 export default {
-  props: ["affiliate", "permissions"],
+  props: ["affiliate", "permissions", 'ecoComProcedures'],
   data() {
     return {
       selectedDues: [],
       form: {
         affiliate_id: this.affiliate.id,
-        percentage: '0.50',
+        percentage: null,
         discountType: null,
       },
       percentages:[
@@ -251,13 +271,14 @@ export default {
           this.devolution = response.data.devolution;
           this.dues = response.data.dues;
           if (this.devolution) {
-            if (this.devolution.has_payment_commitment) {
+            // if (this.devolution.has_payment_commitment) {
               this.form.discountType = 'total'
+              this.form.start_eco_com_procedure_id = this.devolution.start_eco_com_procedure_id;
               if (this.devolution.percentage > 0) {
                 this.form.discountType =  'percentage';
                 this.form.percentage =  this.devolution.percentage;
               }
-            }
+            // }
           }
         })
         .catch(error => {
@@ -272,6 +293,7 @@ export default {
       .then(response => {
         console.log(response)
         this.$modal.hide("create-payment-commitment-modal");
+        this.devolution = response.data.devolution;
       }).catch(error => {
         flashErrors("Error: ", error.response.data.errors);
       })
