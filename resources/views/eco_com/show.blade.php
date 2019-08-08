@@ -14,6 +14,14 @@
                     doc-id="{{ $economic_complement->id }}"
                     url-print="{{ route('eco_com_print_reception', [$economic_complement->id])}}">
                 </certification-button>
+                @if ($economic_complement->isLagging())
+                    <certification-button
+                        type="ecoCom"
+                        title="Imprimir Rezagado"
+                        doc-id="{{ $economic_complement->id }}"
+                        url-print="{{ route('eco_com_print_lagging', [$economic_complement->id])}}">
+                    </certification-button>
+                @endif
             @endif
             @if (Util::getRol()->id == 4)
                 <certification-button
