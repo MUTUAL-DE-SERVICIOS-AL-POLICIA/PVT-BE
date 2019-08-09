@@ -289,6 +289,7 @@ class RetirementFundController extends Controller
             case 5:
             case 6:
             case 7:
+            case 24:
                 $af->affiliate_state_id = ID::affiliateState()->jubilado;
                 break;
             default:
