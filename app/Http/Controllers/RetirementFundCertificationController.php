@@ -130,7 +130,7 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $modality = $retirement_fund->procedure_modality->name;
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-    $title = ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 2) ? "REQUISITOS DEL PAGO GLOBAL DE APORTES – " . mb_strtoupper($modality)  : "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . mb_strtoupper($modality);
+    $title = ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 2 || $retirement_fund->procedure_modality->id == 24) ? "REQUISITOS DEL PAGO GLOBAL DE APORTES – " . mb_strtoupper($modality)  : "REQUISITOS DEL BENEFICIO FONDO DE RETIRO – " . mb_strtoupper($modality);
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first()->id)->first();
@@ -1507,6 +1507,7 @@ class RetirementFundCertificationController extends Controller
       '5'  =>  'de su retiro.',
       '6'  =>  'de su retiro.',
       '7'  =>  'de su retiro.',
+      '24'  =>  'XXXXXYYYYYY.',
     ];
     if ($retirement_fund->procedure_modality->procedure_type_id == 1) {
       $body_accounts = "Que, mediante Certificación de Aportes N° " . $accounts->code . " del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($accounts->date) . ", se verificó los " . sizeof($affiliate->getContributionsPlus()) . " aportes antes " . $end_contributions[$retirement_fund->procedure_modality_id];
@@ -1571,6 +1572,7 @@ class RetirementFundCertificationController extends Controller
       5 => 'c)',
       6 => '2, 3, 5, 6, 7, 8, 10, 12, 13, 15, 26, 27, 30, 32, 34, 37, 41, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74',
       7 => 'd)',
+      24 => 'XXXX y YYYY',
     ];
     $discounts = $retirement_fund->discount_types(); //DiscountType::where('retirement_fund_id',$retirement_fund->id)->orderBy('discount_type_id','ASC')->get();
     $loans = InfoLoan::where('affiliate_id', $affiliate->id)->get();
@@ -1840,6 +1842,7 @@ class RetirementFundCertificationController extends Controller
       5 =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 26, 27, 30, 32, 37, 41, 44, 45, 48 y 55',
       6 =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 26, 27, 30, 32, 37, 41, 44, 45, 48 y 55',
       7 =>  '2, 3, 5, 6, 7, 8, 12, 13, 15, 26, 27, 31, 32, 37, 41, 44, 45, 48 y 55',
+      24 =>  'XXXX y YYYYYY'
     ];
 
     $law = 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
@@ -1886,7 +1889,7 @@ class RetirementFundCertificationController extends Controller
         <br><br>
         Que, el Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de
         Directorio Nº 31/2017 de 24 de agosto de 2017 y modificado mediante las Resoluciones de Directorio
-        Nº 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, Artículos ' . $art[$retirement_fund->procedure_modality_id] . ' reconocen el derecho de la otorgación del pago de Fondo de Retiro Policial Solidario.
+        Nº 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, Artículos ' . $art[$retirement_fund->procedure_modality_id] . ', reconocen el derecho de la otorgación del pago de Fondo de Retiro Policial Solidario.
         <br><br>
         Que, el Reglamento de Fondo de Retiro Policial Solidario, Artículo 15 del RECONOCIMIENTO
         DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a
