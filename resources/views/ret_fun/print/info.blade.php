@@ -22,10 +22,9 @@
             </td>
             <td class="text-center uppercase font-bold px-5 py-3">
             @if ($retirement_fund->procedure_modality->id == 24)
-                {{ $retirement_fund->procedure_modality->procedure_type->name }} por {{ $retirement_fund->procedure_modality->name }}
-            @else
-                {{ $retirement_fund->procedure_modality->name }}
+                {{ $retirement_fund->procedure_modality->procedure_type->name }} POR
             @endif
+            {{ $retirement_fund->procedure_modality->name }}
             </td>
             <td class="text-center uppercase font-bold px-5 py-3">
                 {{ $retirement_fund->city_start->name }}
