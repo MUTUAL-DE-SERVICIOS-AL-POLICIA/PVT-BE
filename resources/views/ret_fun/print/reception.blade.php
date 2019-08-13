@@ -23,13 +23,7 @@
                 <span class="font-bold capitalize">presente.-</span><br>
             </div>
             <div class="text-right block">
-                <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD DEL
-                @if ($retirement_fund->procedure_modality->id == 24)
-                    {{ $retirement_fund->procedure_modality->procedure_type->name }}
-                @else
-                    BENEFICIO DE FONDO DE RETIRO
-                @endif
-                POR {!! $modality !!}</span></span>
+                <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD DEL {{ $retirement_fund->procedure_modality->procedure_type->name }} POR {!! $modality !!}</span></span>
             </div>
             <div class="m-b-5">Distinguido Director:</div>
             <div class="m-b-10">Para tal efecto, adjunto folder con los requisitos exigidos de acuerdo al siguiente detalle:</div>

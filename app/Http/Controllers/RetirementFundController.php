@@ -261,7 +261,6 @@ class RetirementFundController extends Controller
             return;
         }
         $retirement_fund->wf_state_current_id = $wf_state->id;
-        //$retirement_fund->type = "Pago"; default value
         $retirement_fund->subtotal_ret_fun = 0;
         $retirement_fund->total_ret_fun = 0;
         $retirement_fund->reception_date = date('Y-m-d');
