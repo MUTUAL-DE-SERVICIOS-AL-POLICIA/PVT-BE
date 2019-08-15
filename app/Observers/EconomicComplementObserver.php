@@ -85,6 +85,9 @@ class EconomicComplementObserver
         if ($eco_com->comment != $old->comment) {
             $message = $message . ' Nota de Calificación: de ' . $old->comment . ' a ' . $eco_com->comment. ', ';
         }
+        if ($eco_com->is_paid_spouse != $old->is_paid_spouse) {
+            $message = $message . ' Pago de viuda por unica vez de ' . ($old->is_paid_spouse ? 'activo' : 'no activo')  . ' a ' . ($eco_com->is_paid_spouse ? 'activo' : 'no activo'). ', ';
+        }
         if($temp !=  $message){
             $message = $message . ' ';
             $eco_com->procedure_records()->create([

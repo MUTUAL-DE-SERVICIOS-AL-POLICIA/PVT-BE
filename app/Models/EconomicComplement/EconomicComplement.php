@@ -14,6 +14,7 @@ use Log;
 use Illuminate\Support\Facades\Crypt;
 use Hashids\Hashids;
 use DB;
+use Muserpol\Helpers\ID;
 
 class EconomicComplement extends Model
 {
@@ -689,6 +690,16 @@ class EconomicComplement extends Model
                 $beneficiary = $this->eco_com_legal_guardian;
             }
         }
+        if ($this->is_paid_spouse) {
+            $spouse = $this->affiliate->spouse->first();
+            if ($spouse) {
+                $beneficiary = $spouse;
+            }
+        }
         return $beneficiary;
+    }
+    public function isLagging()
+    {
+        return $this->workflow_id == ID::workflow()->eco_com_lagging;
     }
 }

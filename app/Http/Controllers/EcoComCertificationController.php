@@ -300,4 +300,54 @@ class EcoComCertificationController extends Controller
         }
         return $eco_com;
     }
+    public function printLagging($id)
+    {
+        $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality', 'workflow'])->find($id);
+        $affiliate = $eco_com->affiliate;
+        $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
+        $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
+        if (!$eco_com->isLagging()) {
+            return "error";
+        }
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
+        $title = "SOLICITUD DE PAGO REZAGADO DEL COMPLEMENTO ECONÓMICO – " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
+        $code = $eco_com->code;
+        $area = $eco_com->wf_state->first_shortened;
+        $user = $eco_com->user;
+        $date = Util::getDateFormat($eco_com->reception_date);
+        $number = $code;
+
+
+        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+
+        $data = [
+            'direction' => $direction,
+            'institution' => $institution,
+            'unit' => $unit,
+            'title' => $title,
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+
+            'eco_com' => $eco_com,
+            'affiliate' => $affiliate,
+            'eco_com_beneficiary' => $eco_com_beneficiary,
+        ];
+        $pages = [];
+        $number_pages = Util::isRegionalRole() ? 3 : 2;
+        for ($i = 1; $i <= $number_pages; $i++) {
+            $pages[] = \View::make('eco_com.print.lagging', $data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '23mm')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("Reception " . $eco_com->id . '.pdf');
+    }
 }
