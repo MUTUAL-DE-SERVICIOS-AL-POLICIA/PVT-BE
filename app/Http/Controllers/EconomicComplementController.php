@@ -823,6 +823,7 @@ class EconomicComplementController extends Controller
 
         $economic_complement->degree_id = $affiliate->degree_id;
         $economic_complement->category_id = $affiliate->category_id;
+        $economic_complement->is_paid_spouse = $request->is_paid_spouse;
         $economic_complement->save();
         /**
          * update affiliate info
