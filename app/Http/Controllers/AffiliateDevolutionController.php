@@ -205,7 +205,7 @@ class AffiliateDevolutionController extends Controller
             'user' => $user,
             'semesters' => $semesters,
             'start_eco_com_procedure' => $start_eco_com_procedure,
-            'current_semester' => $current_semester,
+            // 'current_semester' => $current_semester,
             'duess' => $duess
         ];
         $pages = [];

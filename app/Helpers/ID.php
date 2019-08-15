@@ -193,7 +193,8 @@ class ID
 	public static function workflow()
 	{
 		$ids = [
-			'eco_com_normal' => 1
+			'eco_com_normal' => 1,
+			'eco_com_lagging' => 2
 		];
 		return ((object)$ids);
 	}

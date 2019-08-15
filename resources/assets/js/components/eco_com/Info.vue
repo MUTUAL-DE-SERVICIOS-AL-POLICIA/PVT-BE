@@ -198,6 +198,11 @@
             </div>
         </div>
         <br>
+        <div>
+          <label for="is_paid_spouse">Pago por unica vez viuda</label>
+          <input type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing" >
+        </div>
+        <br>
         </div>
         <div v-if="editing">
           <div class="text-center">
@@ -240,7 +245,8 @@ export default {
         degree_id: this.ecoCom.degree_id,
         category_id: this.ecoCom.category_id,
         service_years: this.affiliate.service_years,
-        service_months: this.affiliate.service_months
+        service_months: this.affiliate.service_months,
+        is_paid_spouse: this.ecoCom.is_paid_spouse
       },
       editing: false,
       show_spinner: false,
