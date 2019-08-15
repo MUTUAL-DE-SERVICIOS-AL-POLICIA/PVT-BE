@@ -1855,7 +1855,7 @@ class RetirementFundCertificationController extends Controller
       'title' =>  $retirement_fund->procedure_modality->procedure_type->second_name,
       'area'  =>  $number->wf_state->first_shortened,
       'date'  =>   Util::getDateFormat($number->date),
-      'code'  =>  $number->code
+      'code'  =>  $retirement_fund->code
     ];
     return \PDF::loadView('ret_fun.print.headship_review', $data)
       ->setOption('encoding', 'utf-8')
