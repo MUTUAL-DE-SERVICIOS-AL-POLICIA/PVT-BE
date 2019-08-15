@@ -73,6 +73,7 @@ class AffiliateDevolutionController extends Controller
         $eco_coms = $eco_coms->filter(function ($item) {
             return $item->discount_types->contains(6);
         });
+        logger($eco_coms);
         // dd($eco_coms->first()->discount_types->where('id', 6));
         $bar_code = \DNS2D::getBarcodePNG($affiliate->encode(), "QRCODE");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
@@ -205,7 +206,7 @@ class AffiliateDevolutionController extends Controller
             'user' => $user,
             'semesters' => $semesters,
             'start_eco_com_procedure' => $start_eco_com_procedure,
-            'current_semester' => $current_semester,
+            //'current_semester' => $current_semester,
             'duess' => $duess
         ];
         $pages = [];

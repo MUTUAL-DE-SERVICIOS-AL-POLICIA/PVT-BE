@@ -6,7 +6,7 @@
         Virtual de Trámites PVT - MUSERPOL, por cuanto el derecho lo permite.
     </p>
     <p class="font-bold">
-        CERTIFICA QUE:
+        CERTIFICA QUE: 
     </p>
     <p class="text-justify">
         El Sr. (a) <strong>{{ $eco_com_beneficiary->fullName() }}</strong> con Cédula de Identidad N°
@@ -21,8 +21,16 @@
     </p>
     <p class="text-justify">
         En este sentido, se realizó la amortización de deuda por Pagos en Defecto del Complemento Económico, a partir
-        del {{ $devolution->eco_com_procedure->getTextName() }}, según compromisos de Devolución, de acuerdo al
-        siguiente detalle:
+        del
+        @php($first = true)
+        @foreach ($eco_coms as $eco)
+        @if($first)
+            {{ $eco->eco_com_procedure->getTextName()}}, según compromisos de Devolución, de acuerdo al
+        @php($first = false)
+        @else
+        @endif
+        @endforeach
+        siguiente detalle: 
     </p>
     <div class="w-50 mx-auto m-b-20">
         <table class=" w-100 ">
@@ -51,7 +59,11 @@
             </tr>
         </thead>
         <tbody>
+            @php ($amortizacion = 0)
+            @php ($deuda = 0)
             @foreach ($eco_coms as $eco)
+            @php ($amortizacion += $eco->discount_types->where('id',6)->first()->pivot->amount)
+           
             <tr>
                 <td class="text-left uppercase px-10 py-3">
                     {{ $eco->eco_com_procedure->getTextName()}}
@@ -67,13 +79,14 @@
                 </td>
             </tr>
             @endforeach
+            @php ($deuda = ($devolution->total - $amortizacion))
             <tr class="bg-grey-lightest">
                 <td class=""></td>
                 <td class="uppercase font-bold text-right px-10 py-3">
                     Total Amortización
                 </td>
                 <td class=" font-bold text-right px-10 py-3">
-                    Bs. {{Util::formatMoney($devolution->getAmortizado()) }}
+                    Bs. {{Util::formatMoney($amortizacion) }}
                 </td>
                 <td class=""></td>
             </tr>
@@ -83,7 +96,7 @@
         <table class=" w-100 ">
             <tr>
                 <td class="border uppercase font-bold p-5">Deuda Pendiente a la fecha</td>
-                <td class="border font-bold  p-5"> Bs. {{ Util::formatMoney($devolution->balance) }}
+                <td class="border font-bold  p-5"> Bs. {{ Util::formatMoney($deuda) }}
                 </td>
             </tr>
         </table>
@@ -91,7 +104,7 @@
 
     <p class="text-justify">
         Por lo cual, actualmente usted tiene una deuda pendiente de <strong>Bs.
-            {{ Util::formatMoney($devolution->balance) }}
+            {{ Util::formatMoney($deuda) }}
             ({{Util::convertir($devolution->balance)}} Bolivianos)</strong> por Pagos en Defecto del Complemento
         Economico, que
         deberá ser cancelado conforme compromiso(s) de devolución.
