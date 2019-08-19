@@ -17,7 +17,6 @@
                                     <dt>Fecha de recepcion:</dt><dd>{{ $retirement_fund->reception_date }}</dd>
                                     <dt>Ciudad inicio Trámite:</dt><dd>{{ $retirement_fund->city_start->name ?? 'ERROR' }}</dd>
                                     <dt>Modalidad:</dt><dd>{{ $retirement_fund->procedure_modality->name ?? 'ERROR' }}</dd>
-                                    <dt>Tipo:</dt><dd>{{ $retirement_fund->type }}</dd>
                                     <dt>Subtotal:</dt><dd>{{ $retirement_fund->subtotal }}</dd>
                                     <dt>Total:</dt><dd>{{ $retirement_fund->total }}</dd>
                                     <dt>Ciudad de Pago:</dt><dd>{{ $retirement_fund->city_end->name ?? 'ERROR' }}</dd>
