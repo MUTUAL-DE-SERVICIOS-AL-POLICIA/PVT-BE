@@ -18,7 +18,7 @@
         </div>
         <div class="block">
                 <div class="text-center text-2 font-bold underline uppercase">
-                        REF: FONDO DE RETIRO POLICIAL SOLIDARIO-{{$retirement_fund->procedure_modality->name}}
+                        REF: {{$retirement_fund->procedure_modality->procedure_type->name}} - {{$retirement_fund->procedure_modality->name}}
                     </div>
             <span class="block text-center">
                     <td>{!! ucwords(strtolower($actual_city)) !!}, <b>{{ $actual_date }}</b></td>
