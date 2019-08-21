@@ -80,29 +80,34 @@
     <div class="modal inmodal"  id="SelectModal"  tabindex="-1" role="dialog"  aria-hidden="true">
         <div class="modal-dialog modal-lg">
         <div class="modal-content">
+
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">Seleccione un Tipo de Documento</h4>
                 
             </div>
             <div class="modal-body">
-                    <table id="ProcedureDocuments" class="table" style="width:100%">
+                    <table id="ProcedureDocuments" class="table" style="width:100%; font-size:14px">
                         <thead>
                             <tr>
-                                <th>id</th>
-                                <th>Nombre</th>
-                                <th>Accion</th>
+                                <th style="width:15%">id</th>
+                                <th style="width:70%">Nombre</th>
+                                <th style="width:15%">Accion</th>
+                                
                                 
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($procedure_documents as $procedure_document)
-                            <tr>
-                                <td>{{$procedure_document->id}}</td>
-                                <td>{{$procedure_document->name}}</td>
-                            <td><button class="btn btn-success select_procedure" data-id="{{$procedure_document->id}}" data-name="{{$procedure_document->name}}"  data-dismiss="modal">Seleccionar</button></td>
-                            </tr>
-                            @endforeach
+                        
+                            @foreach($affiliate_submitted_documents as $affiliate_document)
+                           
+                           <tr> 
+                               <th style="widht:70%">{{$affiliate_document->procedure_document->id}}</th>                                                                                                                                                                                                                                   
+                               <th style="widht:70%">{{$affiliate_document->procedure_document->name}}</th>
+                               <td style="widht:15%"><button class="btn btn-success select_procedure" data-id="{{$affiliate_document->procedure_document->id}}" data-name="{{$affiliate_document->procedure_document->name}}"  data-dismiss="modal">Seleccionar</button></td>
+                           </tr>
+                           
+                        @endforeach
                         </tbody>
                     </table>
             </div>
@@ -114,7 +119,7 @@
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
 @endsection
-@section('jss')
+@section('jss')                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 <script>
     function cyk() {
         window.history.back();
