@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\ScannedDocument;
 use Muserpol\Models\ProcedureDocument;
+use Muserpol\Models\AffiliateSubmittedDocument;
 use Storage;
 use Response;
 use File;
@@ -31,12 +32,24 @@ class ScannedDocumentController extends Controller
         //
     }
 
+    
     public function create_document($affiliate_id){
-        $affililate =Affiliate::find($affiliate_id);
+        $affiliate =Affiliate::find($affiliate_id);
         $procedure_documents = ProcedureDocument::all();
-        
-        $data = array('affiliate'=>$affililate,'procedure_documents'=>$procedure_documents);
+        $document = ScannedDocument::where('affiliate_id', '=', $affiliate_id)->get();
+        $affiliate_submitted_documents = AffiliateSubmittedDocument::where('affiliate_id','=', $affiliate_id)->get();   
+        //logger($affiliate_submitted_documents); 
+        if($document->affiliate_id=$affiliate_id){
+        $data = array(
+            'affiliate'=>$affiliate,
+            'affiliate_submitted_documents'=>$affiliate_submitted_documents,
+            'procedure_documents'=>$procedure_documents,
+            'document'=>$document
+        );
+    }
+        logger($data);  
         return view('affiliates.create_scanned_document',$data);
+        
     }
 
     /**
