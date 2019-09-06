@@ -80,19 +80,13 @@
             </tr>
             @endif
             @foreach ($eco_com->discount_types as $d)
-                @if ($d->pivot->discount_type_id == 6)
-                    {{-- @if($affiliate->devolution->first())
-                    <td> – AMORTIZACIÓN POR REPOSICIÓN DE FONDOS {{ $economic_complement->affiliate->devolution->first()->percentage ? ' CON EL '.($economic_complement->affiliate->devolution->first()->percentage*100).'%' : 'POR EL TOTAL' }}</td><td></td><td class="number" >{{Util::formatMoney($economic_complement->amount_replacement)}}</td>
-                    @else
-                    <td> – AMORTIZACIÓN POR REPOSICIÓN DE FONDOS</td><td></td><td class="number" >{{Util::formatMoney($economic_complement->amount_replacement)}}</td>
-                    @endif --}}
-                @else
+
                 <tr class="text-sm">
                     <td class="w-60 text-left px-20 py-3 uppercase"> - {{ $d->name }}</td>
                     <td class="w-15  text-center uppercase px-5 py-3"></td>
                     <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($d->pivot->amount)}} </td>
                 </tr>
-                @endif
+              
             @endforeach
             <tr class="text-sm">
                 <td class="text-left px-10 py-3 uppercase font-bold">{{$eco_com->hasDiscountTypes() ? 'TOTAL LIQUIDO A PAGAR EN BOLIVIANOS' : 'TOTAL COMPLEMENTO ECONÓMICO EN BOLIVIANOS'}}</td>
