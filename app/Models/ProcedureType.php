@@ -16,4 +16,8 @@ class ProcedureType extends Model
         return $this->belongsTo('Muserpol\Models\Module');
     }
 
+    public function modalities()
+    {
+        return $this->hasMany('Muserpol\Models\ProcedureModality');
+    }
 }
