@@ -17,7 +17,7 @@
                                 <span class="corner"></span>
 
                                 <div class="icon">
-                                    <i class="fa fa-file"></i>
+                                    <i class="fa fa-file-pdf-o"></i>
                                 </div>
                                 <div class="file-name">
                                     {{$scanned_document->procedure_document->name}}
