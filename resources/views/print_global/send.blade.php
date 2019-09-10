@@ -81,7 +81,12 @@
                             @endif
                             <td class="uppercase px-15 text-right">{{ $procedure->affiliate->ciWithExt() }}</td>
                             <td class="uppercase px-15 text-left">{{ $procedure->affiliate->fullName() }}</td>
-                            <td class="uppercase px-15 text-center">{{ $procedure->procedure_modality->name }}</td>
+                            <td class="uppercase px-15 text-center">
+                            @if ($procedure->procedure_modality->id == 24)
+                                {{ $procedure->procedure_modality->procedure_type->name }} POR
+                            @endif
+                            {{ $procedure->procedure_modality->name }}
+                            </td>
                             <td class="uppercase px-15 text-center">{{ $procedure->city_start->name }}</td>
                         </tr>
                     @endforeach

@@ -625,26 +625,29 @@ class Util
         array_push($results, array_merge(array($element), $combination));
       }
     }
-    foreach ($results as $value) {
-      $sw = true;
-      foreach ($value as $id) {
-        // if (!$retirement_fund->discount_types()->find($id)) {
-        if (!($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
-          $sw = false;
-        }
-      }
-      if ($sw) {
-        $temp_total_discount = 0;
-        $array_discounts_text = array();
+    if ($retirement_fund->discount_types()->count() > 0) {
+
+      foreach ($results as $value) {
+        $sw = true;
         foreach ($value as $id) {
-          $amount = $retirement_fund->discount_types()->find($id)->pivot->amount;
-          if ($amount > 0) {
-            $temp_total_discount = $temp_total_discount + $amount;
-            array_push($array_discounts_text, "que descontado el monto <b>" . self::formatMoney($amount, true) . ' (' . self::convertir($amount) . " BOLIVIANOS)</b> por concepto de " . $retirement_fund->discount_types()->find($id)->name);
+          // if (!$retirement_fund->discount_types()->find($id)) {
+          if (!($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
+            $sw = false;
           }
         }
-        $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
-        array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+        if ($sw) {
+          $temp_total_discount = 0;
+          $array_discounts_text = array();
+          foreach ($value as $id) {
+            $amount = $retirement_fund->discount_types()->find($id)->pivot->amount;
+            if ($amount > 0) {
+              $temp_total_discount = $temp_total_discount + $amount;
+              array_push($array_discounts_text, "que descontado el monto <b>" . self::formatMoney($amount, true) . ' (' . self::convertir($amount) . " BOLIVIANOS)</b> por concepto de " . $retirement_fund->discount_types()->find($id)->name);
+            }
+          }
+          $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
+          array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+        }
       }
     }
     $name = join(' - ', $array_discounts_text);

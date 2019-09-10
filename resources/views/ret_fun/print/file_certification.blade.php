@@ -7,7 +7,13 @@
     <p>El suscrito Encargado de Archivo de Beneficios Económicos:</p>
     <p class="font-bold uppercase">CERTIFICA QUE:</p>
             <p class="text-justify">
-                Iniciado el Trámite de Fondo de Retiro Policial Solidario <strong>N° {{$retirement_fund->code}} </strong>de Ventanilla de Atención al
+                Iniciado el Trámite de
+                @if (in_array($retirement_fund->procedure_modality->id, [1, 2, 24]))
+                    {{ $retirement_fund->procedure_modality->procedure_type->name }} por {{ $retirement_fund->procedure_modality->name }}
+                @else
+                    Fondo de Retiro Policial Solidario
+                @endif
+                <strong>N° {{$retirement_fund->code}} </strong>de Ventanilla de Atención al
                 Afiliado, se realizó la revisión y verificación de antecedentes en base a los datos que figuran en el
                 expediente presentado en favor del titular señor (a):
             </p>

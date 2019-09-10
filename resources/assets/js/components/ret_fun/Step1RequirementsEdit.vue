@@ -241,7 +241,7 @@
                         ).then(response =>{
                             flash("Verificacion Correcta");
                             this.toggle_editing();
-
+                            location.reload();
                             //this.showEconomicData = true
                             //TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
                         }).catch(error =>{
