@@ -506,7 +506,12 @@ class Affiliate extends Model
                 reimbursements.subtotal,
                 reimbursements.total
                     FROM reimbursements
-                    WHERE affiliate_id = " . $this->id . " and reimbursements.deleted_at is null and month_year <= '" . $this->contributions()->leftJoin('contribution_types', 'contributions.contribution_type_id', '=', 'contribution_types.id')->where('contribution_types.operator', '=', '+')->orderBy('contributions.month_year')->get()->last()->month_year . "'
+                    WHERE affiliate_id = " . $this->id . "
+		    and reimbursements.deleted_at is null
+                    and month_year in (SELECT contributions.month_year
+                                        FROM contributions
+                                        LEFT JOIN contribution_types ON contributions.contribution_type_id = contribution_types.id
+                                        WHERE contributions.affiliate_id = " . $this->id . " and  contributions.deleted_at is null and contribution_types.operator LIKE '+')
                     UNION ALL
                     SELECT
                     contributions.id,
