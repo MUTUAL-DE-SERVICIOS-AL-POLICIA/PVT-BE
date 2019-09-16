@@ -35,7 +35,7 @@
             <tr>
                 <td colspan="3" class="font-bold text-center text-xl uppercase">
                     {{ $title ?? 'custom title' }} @if (isset($subtitle))
-                    <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span> @endif
+                    <br><span class="font-medium text-lg">{{ $semesters->semester }} SEMESTRE {!! $year ?? '' !!} {!! $subtitle ?? '' !!}</span> @endif
                 </td>
             </tr>
 
@@ -96,7 +96,7 @@
                 <tbody>
                 @php($sum = 0)
                     @foreach ($procedures as $procedure)
-                    @php($sum += $procedure->total)
+                    @php($sum += $procedure->getOnlyTotalEcoCom())
                     <tr class="text-sm">
                         <td class="uppercase px-5 text-right">{{ $loop->iteration }}</td>
                         <td class="uppercase px-5 text-left">{{ $procedure->code }}</td>
@@ -109,13 +109,13 @@
                         <td class="uppercase px-5 text-center">{{ $procedure->eco_com_reception_type->name }}</td>
                         <td class="uppercase px-5 text-center">{{ $procedure->degree->shortened }}</td>
                         <td class="uppercase px-5 text-center">{{ $procedure->category->name }}</td>
-                        <td class="uppercase px-5 text-right">Bs. {{ Util::formatMoney($procedure->total) }}</td>
+                        <td class="uppercase px-5 text-right">Bs. {{ Util::formatMoney($procedure->getOnlyTotalEcoCom()) }}</td>
                     </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th class="uppercase px-5 text-right" colspan=9>TOTAL</th><th class="uppercase px-5 text-right">{{$sum}}</th>
+                        <th class="uppercase px-5 text-right" colspan=9>TOTAL</th><th class="uppercase px-5 text-right">{{ Util::formatMoney($sum)}}</th>
                     </tr>
                 </tfoot>
             </table>

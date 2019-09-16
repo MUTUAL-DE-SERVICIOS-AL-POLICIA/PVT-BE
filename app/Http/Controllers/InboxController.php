@@ -21,6 +21,7 @@ use Muserpol\Models\RetirementFund\RetFunCorrelative;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
 use Muserpol\Models\ProcedureType;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\City;
 use Muserpol\Models\ProcedureModality;
 use Muserpol\Models\EconomicComplement\EcoComModality;
@@ -533,8 +534,13 @@ class InboxController extends Controller
       ->whereIn('id', $procedure_ids)
       ->orderBy(DB::raw("split_part(economic_complements.code, '/',3)::integer asc, split_part(economic_complements.code, '/',2), split_part(economic_complements.code, '/',1)::integer"))
       ->get();
+    $semesters = EcoComProcedure::get()->last();
+    $years = Carbon::parse($semesters->year)->year;
+    logger($semesters);
     $data = [
       'procedures'  =>  $procedures,
+      'semesters' => $semesters,
+      'years'=> $years,
       'title'  =>  $title,
       'subtitle'  =>  null,
       'from_area'  =>  $wf_state_from,
@@ -547,6 +553,8 @@ class InboxController extends Controller
       $procedures_cities = $procedures->where('city_id', $city->id);
       $data = [
         'procedures'  =>  $procedures_cities,
+        'semesters' => $semesters,
+        'years'=> $years,
         'title'  =>  $title,
         'unit'  =>  'UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO',
         'subtitle'  =>  'Regional '.$city->name,
