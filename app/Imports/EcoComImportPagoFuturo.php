@@ -41,17 +41,18 @@ class EcoComImportPagoFuturo implements ToCollection
                 ->NotHasEcoComState(1, 4, 6)
                 ->first();*/
                 $affiliate= Affiliate::where('id','=', $affiliafte_id)->first();
-                
+                logger("encontro afiliado" . $affiliafte_id);
             //if ($eco_com) {
-                if (!Util::isDoblePerceptionEcoCom($ci)) {
+                //if (!Util::isDoblePerceptionEcoCom($ci)) {
                     //if (!$eco_com->hasObservationType($pago_futuro_id)) {
-                if (!$affiliate->hasObservationType($pago_futuro_id)) {
+                    if (!$affiliate->hasObservationType($pago_futuro_id)) {
                         $affiliate->observations()->save($observation, [
                             'user_id' => Auth::user()->id,
                             'date' => now(),
                             'message' => "Descuento Importado",
                             'enabled' => true
                         ]);    
+                        logger("observacion creada");
                         /*$eco_com->observations()->save($observation, [
                             'user_id' => Auth::user()->id,
                             'date' => now(),
@@ -84,9 +85,9 @@ class EcoComImportPagoFuturo implements ToCollection
                     //         $eco_com->discount_types()->save($discount_type, ['amount' => $amount, 'date' => now()]);
                     //     }
                     //     $found++;
-                } else {
-                    logger("sii doble" . $ci);
-                }
+                //} else {
+                //    logger("sii doble" . $ci);
+                //}
             /*} else {
                  $not_found->push($ci);
             }*/
