@@ -9,6 +9,7 @@ use Muserpol\Helpers\Util;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\ObservationType;
+use Muserpol\Models\Affiliate;
 use Auth;
 
 class EcoComImportPagoFuturo implements ToCollection
