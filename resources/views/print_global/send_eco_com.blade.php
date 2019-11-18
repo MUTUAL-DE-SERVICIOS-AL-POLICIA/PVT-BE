@@ -35,6 +35,7 @@
             <tr>
                 <td colspan="3" class="font-bold text-center text-xl uppercase">
                     {{ $title ?? 'custom title' }} @if (isset($subtitle))
+                    <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span>
                     <br><span class="font-medium text-lg">{{ $procedures->first()->eco_com_procedure->semester }} SEMESTRE {{  date('Y',strtotime($procedures->first()->eco_com_procedure->year)) }}</span> @endif
                 </td>
             </tr>
