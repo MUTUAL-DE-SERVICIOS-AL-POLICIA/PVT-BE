@@ -1,6 +1,6 @@
 @extends('print_global.print')
 @section('content')
-<div style="min-height:1000px;">
+<div style="min-height:1050px;">
     <div class="font-bold uppercase m-b-5 counter">
         Datos del Beneficiario
     </div>
@@ -30,9 +30,9 @@
                 </td>
             </tr>
         </thead>
-        <tbody class="table-striped">
-            <tr class="text-sm">
-                <td class="w-60 text-left px-10 py-3 uppercase">RENTA O PENSIÓN (PASIVO NETO)</td>
+        <tbody class="table-striped text-xs">
+            <tr class="text-sm ">
+                <td class="w-60 text-left px-10 py-3 uppercase ">RENTA O PENSIÓN (PASIVO NETO)</td>
                 <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->total_rent)}} </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
@@ -85,8 +85,7 @@
                     <td class="w-60 text-left px-20 py-3 uppercase"> - {{ $d->name }}</td>
                     <td class="w-15  text-center uppercase px-5 py-3"></td>
                     <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($d->pivot->amount)}} </td>
-                </tr>
-              
+                </tr> 
             @endforeach
             <tr class="text-sm">
                 <td class="text-left px-10 py-3 uppercase font-bold">{{$eco_com->hasDiscountTypes() ? 'TOTAL LIQUIDO A PAGAR EN BOLIVIANOS' : 'TOTAL COMPLEMENTO ECONÓMICO EN BOLIVIANOS'}}</td>
