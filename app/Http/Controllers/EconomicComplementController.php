@@ -67,6 +67,7 @@ class EconomicComplementController extends Controller
         $eco_coms = EconomicComplement::select(
             DB::RAW("
             economic_complements.id as id,
+            economic_complements.affiliate_id as nup,
             economic_complements.code,
             economic_complements.reception_date,
             city_eco_com.name as eco_com_city_name,
@@ -92,6 +93,10 @@ class EconomicComplementController extends Controller
             ->where('economic_complements.code', 'not like', '%A')
             ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',3)::integer desc, split_part(economic_complements.code, '/',2), split_part(economic_complements.code, '/',1)::integer"));
             return $datatables->eloquent($eco_coms)
+                ->filterColumn('nup', function($query, $keyword) {
+                    $sql = "affiliates.affiliate_id ilike ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                 })
                 ->filterColumn('code', function($query, $keyword) {
                     $sql = "economic_complements.code ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);

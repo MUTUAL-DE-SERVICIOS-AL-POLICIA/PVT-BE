@@ -18,6 +18,8 @@
                                     style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control"
                                     style="width:100%"></th>
+                            <th style="padding:5px; width:20px;"><input type="text" class="form-control"
+                                    style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control"
                                     style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control"
@@ -46,6 +48,7 @@
                     </tfoot>
                     <thead>
                         <tr>
+                            <th>Nup</th>
                             <th># de Trámite</th>
                             <th>Fecha de Recepción</th>
                             <th>C.I Beneficiario</th>
@@ -131,7 +134,7 @@
             // },
 
             order: [],
-            /* para personalizar el orden
+            /* para personalizar el ordenaffiliate_id
              columnDefs: [
                { type: 'monthYear', targets: 0 }
             ],
@@ -148,6 +151,7 @@
             ],
             columns:[
                 // { data: 'id' },
+                { data: 'id' },
                 { data: 'code' },
                 { data: 'reception_date' },
                 { data: 'eco_com_beneficiary_identity_card' },
