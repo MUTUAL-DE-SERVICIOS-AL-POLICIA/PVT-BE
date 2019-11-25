@@ -1,6 +1,6 @@
 <div>
     <table>
-        <tr>
+        <tr class="m-b-15">
             <th style="width:30%"></th>
             <th style="width:40%" class="text-xxs font-bold leading-tight">
             MUTUAL DE SERVICIOS AL POLICÍA
@@ -13,13 +13,14 @@
             {{ strtolower($user->city->name) ?? 'La Paz' }}, {!! $date !!} </td>
             </td>
         </tr>
+        <br><br>
         <tr>
-           
-            <td colspan="3" style="width:100%; border-bottom: 3px double #22292f;"></td>
+            <td></td>
+            <td colspan="2" style="width:100%; border-bottom: 3px double #22292f;"></td>
         </tr>
     </table>
 </div>
-<div class="block w-100 m-t-10">
+<div class="block w-100 m-t-15">
     <div class="main-right">
     <table class="text-xs" style="width:100%;">
         
