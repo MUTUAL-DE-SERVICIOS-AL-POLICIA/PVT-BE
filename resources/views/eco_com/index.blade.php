@@ -48,7 +48,7 @@
                     </tfoot>
                     <thead>
                         <tr>
-                            <th>Nup</th>
+                            <th>NUP</th>
                             <th># de Trámite</th>
                             <th>Fecha de Recepción</th>
                             <th>C.I Beneficiario</th>

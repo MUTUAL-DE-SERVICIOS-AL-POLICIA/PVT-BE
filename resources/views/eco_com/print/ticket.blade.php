@@ -8,9 +8,9 @@
             <br>{!! $unit !!}
             <br><span class="uppercase italic">"{{ $eco_com->eco_com_procedure->getTextName() }}{{ ($eco_com->old_eco_com && $eco_com->total_repay > 0) ? ' (reintegro)' :''}}"</span>
             </th>
-            <td style="width:30%; text-align:right" class="text-xs">
+            <td style="width:30%; text-align:right" class="text-xs uppercase">
             <br><br>
-            {{ strtolower($user->city->name) ?? 'La Paz' }}, {!! $date !!} </td>
+            {{ ($user->city->name) ?? 'La Paz' }}, {!! $date !!} </td>
             </td>
         </tr>
         <br><br>
