@@ -57,7 +57,7 @@ class Util
   public static function formatMoney($value, $prefix = false)
   {
     if ($value) {
-      $value = number_format($value, 2, '.', ',');
+      $value = number_format($value, 2, ',', '.');
       if ($prefix) {
         return 'Bs' . $value;
       }
