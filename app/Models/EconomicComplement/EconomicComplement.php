@@ -638,10 +638,7 @@ class EconomicComplement extends Model
         economic_complements.total_amount_semester as total_semestre,
         economic_complements.complementary_factor as factor_complementario,
         round(economic_complements.total_amount_semester * round(economic_complements.complementary_factor/100, 2), 2) as total_complemento,
-        sum(case when (discount.shortened='Prestamos en Mora') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamos_en_Mora,
-        sum(case when (discount.shortened='Reposición de Fondos') then  ecocomdiscount.amount else 0 end)  as Amortización_Reposición_de_Fondos,
-        sum(case when (discount.shortened='Pago a Futuro') then  ecocomdiscount.amount else 0 end)  as Amortización_Auxilio_Mortuorio,
-        sum(case when (discount.shortened='Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar,
+        " . EconomicComplement::basic_info_discount() . ",
         economic_complements.total as total_liquido_pagable";
     }
 
@@ -651,7 +648,7 @@ class EconomicComplement extends Model
         sum(case when (discount.shortened='Prestamos en Mora') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamos_en_Mora,
         sum(case when (discount.shortened='Reposición de Fondos') then  ecocomdiscount.amount else 0 end)  as Amortización_Reposición_de_Fondos,
         sum(case when (discount.shortened='Pago a Futuro') then  ecocomdiscount.amount else 0 end)  as Amortización_Auxilio_Mortuorio,
-        sum(case when (discount.shortened='Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar,";
+        sum(case when (discount.shortened='Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar";
     } 
 
 
@@ -687,7 +684,8 @@ class EconomicComplement extends Model
     {
         return $query->leftJoin('eco_com_legal_guardians', 'economic_complements.id', '=', 'eco_com_legal_guardians.economic_complement_id')
             ->leftJoin('cities as city_legal_guardian_identity_card', 'eco_com_legal_guardians.city_identity_card_id', '=', 'city_legal_guardian_identity_card.id')
-            ->leftJoin('eco_com_legal_guardian_types', 'eco_com_legal_guardians.eco_com_legal_guardian_type_id', '=', 'eco_com_legal_guardian_types.id');
+            ->leftJoin('eco_com_legal_guardian_types', 'eco_com_legal_guardians.eco_com_legal_guardian_type_id', '=', 'eco_com_legal_guardian_types.id')
+            ->groupBy('eco_com_legal_guardians.id','city_legal_guardian_identity_card.id','eco_com_legal_guardian_types.id');
     }
     public function scopeAffiliateinfo($query)
     {
