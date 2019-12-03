@@ -218,8 +218,7 @@ class EconomicComplement extends Model
                 } elseif ($component == 1 && $this->total_rent < $indicator) {
                     $this->eco_com_modality_id = 6;
                 } elseif ($component > 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_m->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
-                    ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id');
+                    $this->eco_com_modality_id = 8;
                 } else {
                     $this->eco_com_modality_id = 1;
                 }

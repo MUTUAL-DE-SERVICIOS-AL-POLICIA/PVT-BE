@@ -268,7 +268,7 @@ export default {
         service_years: this.affiliate.service_years,
         service_months: this.affiliate.service_months,
         is_paid_spouse: this.ecoCom.is_paid_spouse,
-        eco_com_state_id: this.ecoCom.eco_com_state_id=false,
+        eco_com_state_id: this.ecoCom.eco_com_state_id,
       },
       editing: false,
       show_spinner: false,
