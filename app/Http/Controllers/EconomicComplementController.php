@@ -805,9 +805,17 @@ class EconomicComplementController extends Controller
         // $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
         // $affiliate->item = $request->item;
         $affiliate->category_id = $request->category_id;
+        $ecocomdes = $economic_complement->eco_com_state_id;
         $service_year = $request->service_years;
         $service_month = $request->service_months;
-        if ($service_year > 0 || $service_month > 0) {
+
+        if ($request->eco_com_state_id == true)
+        {
+            $request->eco_com_state_id = 17;
+        }else{
+            $request->eco_com_state_id = 16;
+        }
+            if ($service_year > 0 || $service_month > 0) {
             if ($service_month > 0) {
                 $service_year++;
             }
@@ -829,6 +837,7 @@ class EconomicComplementController extends Controller
         $economic_complement->degree_id = $affiliate->degree_id;
         $economic_complement->category_id = $affiliate->category_id;
         $economic_complement->is_paid_spouse = $request->is_paid_spouse;
+        $economic_complement->eco_com_state_id = $request->eco_com_state_id;
         $economic_complement->save();
         /**
          * update affiliate info
