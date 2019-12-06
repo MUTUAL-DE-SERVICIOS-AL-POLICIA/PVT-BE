@@ -52,13 +52,13 @@ class AffiliateSubmittedDocumentsController extends Controller
             $requirements_habitual = [];
             switch ($request->procedure_modality_id) {
                 case 29:
-                    $requirements_habitual = [1226, 1235];
+                    $requirements_habitual = [1235];
                     break;
                 case 30:
-                    $requirements_habitual = [1252, 1263, 1262, 1264, 1266];
+                    $requirements_habitual = [1263, 1262, 1264, 1266];
                     break;
                 case 31:
-                    $requirements_habitual = [1285, 1298, 1297, 1300];
+                    $requirements_habitual = [1298, 1297, 1300];
                     break;
                 default:
                     # code...
