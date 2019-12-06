@@ -209,7 +209,8 @@ th.ellipsis-text {
                                             <th>Modalidad</th>
                                             <th>Ubicación</th>
                                             <th>Estado</th>
-                                            <th>Total</th>
+                                            <th>Complemento Economico</th>
+                                            <th>liquido Pagable</th>
                                             <th>Opciones</th>
                                             </tr>
                                         </thead>
@@ -222,7 +223,8 @@ th.ellipsis-text {
                                                 <td>{{$eco_com->eco_com_modality->procedure_modality->name }}</td>
                                                 <td>{{$eco_com->wf_state->first_shortened }}</td>
                                                 <td>{{$eco_com->eco_com_state->name }}</td>
-                                                <td>{{Util::formatMoney($eco_com->total)}}</td>
+                                                <td style="text-align:right">{{Util::formatMoney($eco_com->getOnlyTotalEcoCom())}}</td>
+                                                <td style="text-align:right">{{Util::formatMoney($eco_com->total)}}</td>
                                                 <td style="vertical-align:middle">
                                                     <a href="/eco_com/{{$eco_com->id}}">
                                                         <button class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
@@ -241,8 +243,8 @@ th.ellipsis-text {
                                                     </tr>
                                                     @foreach ($eco_com->discount_types as $d)
                                                     <tr class="danger">
-                                                        <td colspan="2">{{$d->name}}</td>
-                                                        <td>{{Util::formatMoney($d->pivot->amount)}}</td>
+                                                        <th colspan="2">{{$d->name}}</th>
+                                                        <th colspan="2">{{Util::formatMoney($d->pivot->amount)}}</th>
                                                     </tr>
                                                     @endforeach
                                                 @endif

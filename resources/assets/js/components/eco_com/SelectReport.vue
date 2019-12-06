@@ -16,7 +16,7 @@
       <input type="checkbox" id="change-state" v-model="form.changeState"/>
     </div>
     <div
-      v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13 || form.reportTypeId == 19"
+      v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13 || form.reportTypeId == 19 || form.reportTypeId == 20"
     >
       <label>Comparar Con:</label>
       <select v-model="form.secondEcoComProcedureId" :disabled="loadingButton">
@@ -163,6 +163,10 @@ export default {
         {
           id: 19,
           name: "Comparacion de Datos Personales"
+        },
+        {
+          id: 20,
+          name: "Comparacion de Concurrencias"
         },
         {
           id: 9,
