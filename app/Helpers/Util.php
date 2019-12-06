@@ -1105,7 +1105,7 @@ class Util
       ->select('economic_complements.*')
       ->where('economic_complements.total', '>', 0)
       ->get();
-    logger($ecos->count());
+    logger("*");
     $observations_ids = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
     $collect = collect([]);
     foreach ($ecos as $e) {
@@ -1141,6 +1141,7 @@ class Util
     $index = 1;
     $result = collect([]);
     $city = City::find(4);
+    
     foreach ($ecos as $e) {
       $ci_ext = $e->getEcoComBeneficiaryBank()->city_identity_card->to_bank;
       $ci = $e->getEcoComBeneficiaryBank()->identity_card;
@@ -1153,6 +1154,8 @@ class Util
         //   $type = 'CIE';
         // }
       }
+      $descuento=$e->getOnlyTotalEcoCom()-$e->total;
+      
       // 'TipoDoc', // CI -> numero sin extension, //CIE -> con extension, // PE -> si en naturalizado
       $result->push([
         $index, // correlativo
@@ -1168,10 +1171,11 @@ class Util
         $e->getEcoComBeneficiaryBank()->second_name,
         $eco_com_procedure->getYear(),
         now()->month,
-        $e->eco_com_modality->shortened . " - " . $e->degree->shortened . " - " . $e->category->name,
+        $e->eco_com_modality->shortened . " - " . $e->degree->shortened . " - " . $e->category->name . " - " . "TOTAL DESCUENTO: "  . $descuento,
         2307,
         $e->affiliate_id,
-      ]);
+        
+      ]); 
       $index++;
       if ($change_state === true && self::getRol()->id == 5) {
         $e->eco_com_state_id = 24;
