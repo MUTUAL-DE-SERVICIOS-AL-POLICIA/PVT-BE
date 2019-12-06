@@ -67,6 +67,7 @@ class EconomicComplementController extends Controller
         $eco_coms = EconomicComplement::select(
             DB::RAW("
             economic_complements.id as id,
+            economic_complements.affiliate_id as nup,
             economic_complements.code,
             economic_complements.reception_date,
             city_eco_com.name as eco_com_city_name,
@@ -92,6 +93,10 @@ class EconomicComplementController extends Controller
             ->where('economic_complements.code', 'not like', '%A')
             ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',3)::integer desc, split_part(economic_complements.code, '/',2), split_part(economic_complements.code, '/',1)::integer"));
             return $datatables->eloquent($eco_coms)
+                ->filterColumn('nup', function($query, $keyword) {
+                    $sql = "affiliates.affiliate_id ilike ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                 })
                 ->filterColumn('code', function($query, $keyword) {
                     $sql = "economic_complements.code ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -800,9 +805,17 @@ class EconomicComplementController extends Controller
         // $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
         // $affiliate->item = $request->item;
         $affiliate->category_id = $request->category_id;
+        $ecocomdes = $economic_complement->eco_com_state_id;
         $service_year = $request->service_years;
         $service_month = $request->service_months;
-        if ($service_year > 0 || $service_month > 0) {
+
+        if ($request->eco_com_state_id == true)
+        {
+            $request->eco_com_state_id = 17;
+        }else{
+            $request->eco_com_state_id = 16;
+        }
+            if ($service_year > 0 || $service_month > 0) {
             if ($service_month > 0) {
                 $service_year++;
             }
@@ -824,6 +837,7 @@ class EconomicComplementController extends Controller
         $economic_complement->degree_id = $affiliate->degree_id;
         $economic_complement->category_id = $affiliate->category_id;
         $economic_complement->is_paid_spouse = $request->is_paid_spouse;
+        $economic_complement->eco_com_state_id = $request->eco_com_state_id;
         $economic_complement->save();
         /**
          * update affiliate info

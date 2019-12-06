@@ -199,8 +199,29 @@
         </div>
         <br>
         <div>
-          <label for="is_paid_spouse">Pago por unica vez viuda</label>
-          <input type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing" >
+          <label for="is_paid_spouse">PAGO POR UNICA VEZ VIUDA -  </label>
+          <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing" >
+        </div>
+        <div>
+          <label for="eco_com_state_id">PAGO EN DOMICILIO -  </label>
+          
+          <input class ="mediumCheckbox"
+          v-if="ecoCom.eco_com_state.id == 16"
+          type="checkbox" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id"
+          :value="false"
+          :disabed="!editing">
+
+          <input class ="mediumCheckbox"
+          v-if="ecoCom.eco_com_state.id == 17"
+          type="checkbox" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id"
+          :value="true"
+          :disabed="!editing">
+  
+      
         </div>
         <br>
         </div>
@@ -246,7 +267,8 @@ export default {
         category_id: this.ecoCom.category_id,
         service_years: this.affiliate.service_years,
         service_months: this.affiliate.service_months,
-        is_paid_spouse: this.ecoCom.is_paid_spouse
+        is_paid_spouse: this.ecoCom.is_paid_spouse,
+        eco_com_state_id: this.ecoCom.eco_com_state_id,
       },
       editing: false,
       show_spinner: false,

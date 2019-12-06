@@ -123,7 +123,7 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                             ($one->aps_total_fsa > 0 && (is_null($old->aps_total_fsa) || $old->aps_total_fsa == 0) || (is_null($one->aps_total_fsa) || $one->aps_total_fsa == 0) && $old->aps_total_fsa > 0)
                             || ($one->aps_total_fs > 0 && (is_null($old->aps_total_fs) || $old->aps_total_fs == 0) || (is_null($one->aps_total_fs) || $one->aps_total_fs == 0) && $old->aps_total_fs > 0)
                             || ($one->aps_total_cc > 0 && (is_null($old->aps_total_cc) || $old->aps_total_cc == 0) || (is_null($one->aps_total_cc) || $one->aps_total_cc == 0) && $old->aps_total_cc > 0)
-                            || ($one->aps_disability > 0 && is_null($old->aps_disability) || is_null($one->aps_disability) && $old->aps_disability > 0)
+                            //|| ($one->aps_disability > 0 && is_null($old->aps_disability) || is_null($one->aps_disability) && $old->aps_disability > 0)
                         ) {
                             $rows->push(array(
                                 'afiliado_nup' => $one->affiliate->id,
@@ -136,8 +136,8 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                                 "aps_total_FS Actual" => $old->aps_total_fs,
                                 "aps_total_CC Anterior" => $one->aps_total_cc,
                                 "aps_total_CC Actual" => $old->aps_total_cc,
-                                "aps_total_invalidez Anterior" => $one->aps_disability,
-                                "aps_total_invalidez Actual" => $old->aps_disability,
+                                //"aps_total_invalidez Anterior" => $one->aps_disability,
+                                //"aps_total_invalidez Actual" => $old->aps_disability,
                             ));
                         }
                     }
@@ -179,6 +179,46 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                                 'materno_ben_tramite_actual' => $one->eco_com_beneficiary->mothers_last_name,
                                 'ap_casada_ben_tramite_anterior' => $old->eco_com_beneficiary->surname_husband,
                                 'ap_casada_ben_tramite_actual' => $one->eco_com_beneficiary->surname_husband,
+                            ));
+                        }
+                    }
+                }
+                return $rows;
+                break;
+            
+                case 20:
+            
+                $ecos_one = $eco_com_procedure->economic_complements;
+                $ecos_second = $second_eco_com_procedure->economic_complements;
+                $rows = collect([]);
+                foreach ($ecos_one as $current) {
+                    $afi_id = $current->affiliate_id;
+                    $old = EconomicComplement::where('affiliate_id', '=', $afi_id)
+                        ->where('eco_com_procedure_id', '=', $second_eco_com_procedure->id)
+                        ->first();
+                    if ($old) {
+                        if (
+                            ((($old->aps_disability == 0 || is_null($old->aps_disability)) && $current->aps_disability>0)
+                            ||(($current->aps_disability == 0 || is_null($current->aps_disability)) && $old->aps_disability>0))
+
+                            ||((($old->aps_total_death == 0 || is_null($old->aps_total_death)) && $current->aps_total_death>0)
+                            ||(($current->aps_total_death == 0 || is_null($current->aps_total_death)) && $old->aps_total_death>0))
+                            ) 
+                            {
+                            $rows->push(array(
+                                'afiliado_nup' => $current->affiliate->id,
+                                'afiliado_ci' => $current->affiliate->identity_card,
+                                
+                                'tramite_anterior' => $old->code,
+                                'tramite_actual' => $current->code,
+                                'Primer_nombre_beneficiario' => $current->affiliate->first_name,
+                                'Segundo _nombre_beneficiario' => $current->affiliate->second_name,
+                                'Paterno_beneficiario' => $current->affiliate->last_name,
+                                'Materno _beneficiario' => $current->affiliate->mothers_last_name,
+                                'Invalidez_Anterior' => $old->aps_disability,
+                                'Invalidez_Actual' => $current->aps_disability,
+                                'Muerte_Anterior' => $old->aps_total_death,
+                                'Muerte_Actual' => $current->aps_total_death,
                             ));
                         }
                     }
@@ -255,6 +295,20 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                     'ap_casada_ben_tramite_actual',
                 ];
                 break;
+
+            case 20:
+                $new_columns = [
+                    "Primer_nombre_beneficiario",
+                    "Segundo _nombre_beneficiario",
+                    "Paterno_beneficiario",
+                    "Materno_beneficiario",
+                    "Invalidez_Anterior",
+                    "Invalidez_Actual",
+                    "Muerte_Anterior",
+                    "Muerte_Actual",
+                ];
+                break;
+
             default:
                 # code...
                 break;

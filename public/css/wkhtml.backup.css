@@ -419,7 +419,9 @@ table {
 .text-black{color: #22292f;}
 .text-white{color: #ffffff;}
 .text-xxxs 	{font-size: 8px;}
+.text-xxss 	{font-size: 9px;}
 .text-xxs 	{font-size: 10px;}
+.text-xsx 	{font-size: 11px;}
 .text-xs 	{font-size: 12px;}
 .text-sm 	{font-size: 14px;}
 .text-base 	{font-size: 16px;}
