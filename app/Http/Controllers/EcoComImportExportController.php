@@ -28,7 +28,7 @@ class EcoComImportExportController extends Controller
         Excel::import(new EcoComImportSenasir, 'senasir/' . now()->year . '/senasir.xlsx');
         $no_import = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
             ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-            ->where('eco_com_procedure_id', 14)
+            ->where('eco_com_procedure_id', 15)
             ->where('rent_type', '<>', 'Automatico')
             ->where('rent_type', '<>', 'Manual')
             ->where('affiliates.pension_entity_id', 5)
@@ -91,7 +91,7 @@ class EcoComImportExportController extends Controller
                     ->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('eco_com_procedure_id', 14)
+                    ->where('eco_com_procedure_id', 15)
                     ->NotHasEcoComState(1, 6)
                     ->get();
                 foreach ($eco_coms as $e) {
@@ -121,7 +121,7 @@ class EcoComImportExportController extends Controller
                     $affiliate = Affiliate::whereRaw("split_part(ltrim(trim(affiliates.identity_card),'0'), '-', 1) ='" . ltrim(trim($ci_aps), '0') . "'")
                         ->where('nua', $c[3])->first();
                     if ($affiliate) {
-                        if (!$affiliate->hasEconomicComplementWithProcedure(14)) {
+                        if (!$affiliate->hasEconomicComplementWithProcedure(15)) {
                             $not_has_eco_com->push($affiliate);
                         }
                     } else {
@@ -130,7 +130,7 @@ class EcoComImportExportController extends Controller
                 }
                 $not_found = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-                    ->where('eco_com_procedure_id', 14)
+                    ->where('eco_com_procedure_id', 15)
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('rent_type', '<>', 'Automatico')
                     ->where('rent_type', '<>', 'Manual')
@@ -172,7 +172,7 @@ class EcoComImportExportController extends Controller
                 $eco_coms = EconomicComplement::with('affiliate')->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('eco_com_procedure_id', 14)
+                    ->where('eco_com_procedure_id', 15)
                     ->NotHasEcoComState(1, 6)
                     ->get();
                 $fails = collect([]);
@@ -200,7 +200,7 @@ class EcoComImportExportController extends Controller
                         $affiliate = Affiliate::whereRaw("split_part(ltrim(trim(affiliates.identity_card),'0'), '-', 1) ='" . ltrim(trim($ci_aps), '0') . "'")
                             ->where('nua', $c[3])->first();
                         if ($affiliate) {
-                            if (!$affiliate->hasEconomicComplementWithProcedure(14)) {
+                            if (!$affiliate->hasEconomicComplementWithProcedure(15)) {
                                 $not_has_eco_com->push($affiliate);
                             }
                         } else {
@@ -211,7 +211,7 @@ class EcoComImportExportController extends Controller
                 }
                 $not_found = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-                    ->where('eco_com_procedure_id', 14)
+                    ->where('eco_com_procedure_id', 15)
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('rent_type', '<>', 'Automatico')
                     ->where('rent_type', '<>', 'Manual')
@@ -253,7 +253,7 @@ class EcoComImportExportController extends Controller
                 $eco_coms = EconomicComplement::with('affiliate')->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('eco_com_procedure_id', 14)
+                    ->where('eco_com_procedure_id', 15)
                     ->NotHasEcoComState(1, 6)
                     ->get();
                 $fails = collect([]);
@@ -277,7 +277,7 @@ class EcoComImportExportController extends Controller
                         $affiliate = Affiliate::whereRaw("split_part(ltrim(trim(affiliates.identity_card),'0'), '-', 1) ='" . ltrim(trim($ci_aps), '0') . "'")
                             ->where('nua', $c[3])->first();
                         if ($affiliate) {
-                            if (!$affiliate->hasEconomicComplementWithProcedure(14)) {
+                            if (!$affiliate->hasEconomicComplementWithProcedure(15)) {
                                 $not_has_eco_com->push($affiliate);
                             }
                         } else {
@@ -288,7 +288,7 @@ class EcoComImportExportController extends Controller
                 }
                 $not_found = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-                    ->where('eco_com_procedure_id', 14)
+                    ->where('eco_com_procedure_id', 15)
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('rent_type', '<>', 'Automatico')
                     ->where('rent_type', '<>', 'Manual')
@@ -312,7 +312,7 @@ class EcoComImportExportController extends Controller
         return $data;
         // $no_import = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
         //     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-        //     ->where('eco_com_procedure_id',14)
+        //     ->where('eco_com_procedure_id',15)
         //     ->where('rent_type','<>','Automatico')
         //     ->where('affiliates.pension_entity_id',5)
         //     ->get();
