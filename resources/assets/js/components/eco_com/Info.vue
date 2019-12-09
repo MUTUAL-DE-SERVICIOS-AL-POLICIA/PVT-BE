@@ -203,25 +203,10 @@
           <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing" >
         </div>
         <div>
-          <label for="eco_com_state_id">PAGO EN DOMICILIO -  </label>
+          <label for="state">PAGO EN DOMICILIO asa-  </label>
           
-          <input class ="mediumCheckbox"
-          v-if="ecoCom.eco_com_state.id == 16"
-          type="checkbox" 
-          id="eco_com_state_id" 
-          v-model="form.eco_com_state_id"
-          :value="false"
-          :disabed="!editing">
-
-          <input class ="mediumCheckbox"
-          v-if="ecoCom.eco_com_state.id == 17"
-          type="checkbox" 
-          id="eco_com_state_id" 
-          v-model="form.eco_com_state_id"
-          :value="true"
-          :disabed="!editing">
+           <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing" >
   
-      
         </div>
         <br>
         </div>
@@ -258,6 +243,7 @@ export default {
   data() {
     return {
       read: true,
+      state:null,
       form: {
         id: this.ecoCom.id,
         reception_date: this.ecoCom.reception_date,
@@ -268,7 +254,7 @@ export default {
         service_years: this.affiliate.service_years,
         service_months: this.affiliate.service_months,
         is_paid_spouse: this.ecoCom.is_paid_spouse,
-        eco_com_state_id: this.ecoCom.eco_com_state_id,
+
       },
       editing: false,
       show_spinner: false,
