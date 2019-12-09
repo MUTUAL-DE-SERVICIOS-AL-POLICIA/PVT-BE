@@ -151,7 +151,7 @@
             ],
             columns:[
                 // { data: 'id' },
-                { data: 'id' },
+                { data: 'affiliate_id' },
                 { data: 'code' },
                 { data: 'reception_date' },
                 { data: 'eco_com_beneficiary_identity_card' },

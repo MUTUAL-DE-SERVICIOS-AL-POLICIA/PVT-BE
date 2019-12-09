@@ -205,9 +205,8 @@
         <div>
           <label for="eco_com_state_id">PAGO EN DOMICILIO -  </label>
           
-          <input class ="mediumCheckbox" type="checkbox" id="eco_com_state_id" v-model="form.eco_com_state_id"  :disabled="!editing" >
-           {{ form.eco_com_state_id }}
-       
+          <input class ="mediumCheckbox" type="checkbox" id="eco_com_state_id" v-model="form.eco_com_state_id" :disabled="!editing" >
+      
         </div>
         <br>
         </div>
