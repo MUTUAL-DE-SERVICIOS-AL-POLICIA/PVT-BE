@@ -1,6 +1,6 @@
 @extends('print_global.print')
 @section('content')
-<div style="min-height:1050px;">
+<div style="min-height:1000px;">
     <div class="font-bold uppercase m-b-5 counter">
         Datos del Beneficiario
     </div>

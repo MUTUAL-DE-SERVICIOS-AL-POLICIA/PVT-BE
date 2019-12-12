@@ -7,6 +7,9 @@
           <div class="ibox-tools">
             <!-- @click="createObs()" -->
             <div v-if="devolution">
+              <button  class="btn btn-info" @click="deposito()">
+                <i class="fa fa-dollar"></i> <b>Registrar Deposito</b>
+              </button>
               <button  class="btn btn-primary" @click="printCertification()">
                 <i class="fa fa-print"></i> Imprimir Certificacion
               </button>
@@ -43,11 +46,11 @@
                 </tr>
               </tbody>
             </table>
-            <table>
+            <table style="width:30%">
               <tr>
                 <td>Total Deuda</td>
                 <td>
-                  <strong>{{ devolution.total | currency }}</strong>
+                  <strong class="text-xxs">{{ devolution.total | currency }}</strong>
                 </td>
               </tr>
               <tr>
@@ -56,6 +59,26 @@
                   <strong>{{ devolution.balance | currency }}</strong>
                 </td>
               </tr>
+
+              <tr>
+                <td>Numero de Deposito</td>
+                <td>
+                  <strong>{{ devolution.deposit_number }}</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>Fecha de Deposito</td>
+                <td>
+                  <strong>{{ devolution.payment_date }}</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>Monto de Deposito</td>
+                <td>
+                  <strong>Bs. {{ devolution.payment_amount }}</strong>
+                </td>
+              </tr>
+               
             </table>
           </div>
           <!-- <div >
@@ -137,10 +160,95 @@
         </div>
       </div>
     </modal>
+
+    <modal name="deposito-modal" class="p-lg mx-10 px-10" height="auto">
+    <div class="col-md-12">
+      <div class="text-center m-sm">
+      <h1 class="mx-10"><b> Registrar Deposito</b></h1>
+      <hr style="border:2px solid #ddd">
+      </br>
+      </div>
+    </div>
+      <div class="row col-xs-offset-2" >
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Nro de Comprobante</label>
+            <div class="col-sm-6">
+              <input style="text-align:right"
+                type="text"
+                class="form-control"
+                name="deposit_number"
+                v-model="ecoCom.deposit_number"
+              >
+            </div>
+        </div>
+      </div>
+        </br>
+      <div class="row col-xs-offset-2" >
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Fecha de Deposito</label>
+            <div class="col-sm-6">
+              <input style="text-align:right"
+                type="text"
+                v-date
+                class="form-control"
+                name="payment_date"
+                v-model="ecoCom.payment_date"
+              >
+              
+            </div>
+        </div>
+      </div>
+      </br>
+      <div class="row col-xs-offset-2" >
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Monto</label>
+            <div class="col-sm-6">
+              <input
+                type="text"
+                v-money
+                class="form-control"
+                
+                name="payment_amount"
+                v-model="ecoCom.payment_amount"
+              >
+            </div>
+        </div>
+      </div>
+      </br>
+      <div class="col-md-12">
+      <div class="text-center m-sm">
+      <button
+        class="btn btn-danger"
+        type="button"
+        @click="$modal.hide('deposito-modal')"
+      >
+        <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
+        <span class="bold">Cancelar</span>
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="saved()"
+        :disabled="loadingButton"
+      >
+      <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
+      <i v-else class="fa fa-save"></i>
+      &nbsp;
+      {{ loadingButton ? 'Guardando...' : 'Guardar' }}
+      </button>
+      </div>
+      </div>
+    </modal>
+
   </div>
 </template>
+
+    
+
 <script>
-import { flashErrors, canOperation } from "../../helper.js";
+import { parseMoney, flashErrors, canOperation } from "../../helper.js";
+import { mapState, mapMutations } from "vuex";
+
 export default {
   props: ["affiliate", "permissions", 'ecoComProcedures'],
   data() {
@@ -151,6 +259,8 @@ export default {
         percentage: null,
         discountType: null,
       },
+
+      
       percentages:[
         {
           percentage: '0.50',
@@ -179,9 +289,17 @@ export default {
       ],
       devolution: {},
       devolutions: [],
-      dues: []
+      dues: [],
+      loadingButton: false
     };
   },
+
+  computed: {
+    ecoCom() {
+      return this.$store.state.ecoComForm.ecoCom;
+    }
+  },
+
   mounted() {
     this.getDevolutions();
   },
@@ -210,6 +328,11 @@ export default {
           break;
       }
       return method;
+    },
+
+    deposito() {
+    
+      this.$modal.show("deposito-modal");
     },
     async printCertification() {
       try {
@@ -305,17 +428,45 @@ export default {
           url: `/affiliate/${this.affiliate.id}/print/devolution_payment_commitment`,
           responseType: "arraybuffer",
           data: {
-             dues:this.selectedDues
+            dues:this.selectedDues
           }
-         });
-         const pdfBlob = new Blob([res.data], { type: "application/pdf" });
-         printJS(URL.createObjectURL(pdfBlob));
+        });
+        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+        printJS(URL.createObjectURL(pdfBlob));
         this.loading = false;
       } catch (error) {
         this.loading = false;
         flashErrors("Error: ", ["Ocurrio un error al generar el documento"]);
       }
-    }
+    },
+
+      async saved(){
+      /*if (!this.can("amortize_economic_complement", this.permissions)) {
+        flash("No se puede realizar el Depositocc.", 'error');
+        this.$modal.hide("deposito-modal");
+        return;
+      }*/
+      this.loadingButton = true;
+      this.form.id = this.ecoCom.id;
+      this.form.payment_amount = parseMoney(this.ecoCom.payment_amount);
+      this.form.deposit_number = this.ecoCom.deposit_number;
+      this.form.payment_date = this.ecoCom.payment_date;
+      await axios
+        .patch(`/eco_com_save_deposito`, this.form)
+        
+        .then(response => {
+          console.log(response);
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.$modal.hide("deposito-modal");
+          flash("Amortizacion realizada con exito.");
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+        });
+      this.loadingButton = false;
+  }
+    
+
   }
 };
 </script>

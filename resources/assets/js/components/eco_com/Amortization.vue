@@ -7,6 +7,12 @@
       <!-- :disabled="!can('amortize_economic_complement')" -->
       <i class="fa fa-dollar"></i> Amortizar
     </button>
+    <!--<button
+      @click="showModald()"
+      class="btn btn-primary"
+    >
+      <i class="fa fa-dollar"></i> Deposito
+    </button>-->
     <modal name="amortization-modal" class="p-lg" height="auto">
       <div cass="ibox-title">
         <h1>Registrar Amortización</h1>
@@ -54,6 +60,85 @@
         </div>
       </div>
     </modal>
+
+    <modal name="deposito-modal" class="p-lg mx-10 px-10" height="auto">
+    <div class="col-md-12">
+      <div class="text-center m-sm">
+      <h1 class="mx-10"><b> Registrar Deposito</b></h1>
+      <hr style="border:2px solid #ddd">
+      </br>
+      </div>
+    </div>
+      <div class="row col-xs-offset-2" >
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Nro de Comprobante</label>
+            <div class="col-sm-6">
+              <input style="text-align:right"
+                type="text"
+                class="form-control"
+                name="deposit_number"
+                v-model="ecoCom.deposit_number"
+              >
+            </div>
+        </div>
+      </div>
+        </br>
+      <div class="row col-xs-offset-2" >
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Fecha de Deposito</label>
+            <div class="col-sm-6">
+              <input style="text-align:right"
+                type="text"
+                v-date
+                class="form-control"
+                name="payment_date"
+                v-model="ecoCom.payment_date"
+              >
+              
+            </div>
+        </div>
+      </div>
+      </br>
+      <div class="row col-xs-offset-2" >
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Monto</label>
+            <div class="col-sm-6">
+              <input
+                type="text"
+                v-money
+                class="form-control"
+                
+                name="payment_amount"
+                v-model="ecoCom.payment_amount"
+              >
+            </div>
+        </div>
+      </div>
+      </br>
+      <div class="col-md-12">
+      <div class="text-center m-sm">
+      <button
+        class="btn btn-danger"
+        type="button"
+        @click="$modal.hide('deposito-modal')"
+      >
+        <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
+        <span class="bold">Cancelar</span>
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="saved()"
+        :disabled="loadingButton"
+      >
+      <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
+      <i v-else class="fa fa-save"></i>
+      &nbsp;
+      {{ loadingButton ? 'Guardando...' : 'Guardar' }}
+      </button>
+      </div>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -84,6 +169,13 @@ export default {
       // }
       this.$modal.show("amortization-modal");
     },
+    showModald() {
+      // if (!this.can("amortize_economic_complement", this.permissions)) {
+      //   flash("No tiene permisos para realizar la amortizacion", "error");
+      //   return;
+      // }
+      this.$modal.show("deposito-modal");
+    },
     async save() {
       if (!this.can("amortize_economic_complement", this.permissions)) {
         flash("No se puede realizar la Amortizacion.", 'error');
@@ -105,7 +197,34 @@ export default {
           flashErrors("Error al procesar: ", error.response.data.errors);
         });
       this.loadingButton = false;
-    }
+    },
+    
+  async saved(){
+  if (!this.can("amortize_economic_complement", this.permissions)) {
+        flash("No se puede realizar el Deposito.", 'error');
+        this.$modal.hide("deposito-modal");
+        return;
+      }
+      this.loadingButton = true;
+      this.form.id = this.ecoCom.id;
+      this.form.payment_amount = parseMoney(this.ecoCom.payment_amount);
+      this.form.deposit_number = this.ecoCom.deposit_number;
+      this.form.payment_date = this.ecoCom.payment_date;
+      await axios
+        .patch(`/eco_com_save_deposito`, this.form)
+        
+        .then(response => {
+          console.log(response);
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.$modal.hide("deposito-modal");
+          flash("Amortizacion realizada con exito.");
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+        });
+      this.loadingButton = false;
+  }  
+    
   }
 };
 </script>

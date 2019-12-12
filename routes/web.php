@@ -670,6 +670,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
+    Route::patch('eco_com_save_deposito', 'EconomicComplementController@saveDeposito');
     Route::get('eco_com_record/{id}', 'EconomicComplementController@getRecord');
     Route::post('eco_com_import_rents', 'EcoComImportExportController@importSenasir');
     Route::post('eco_com_import_rents_aps', 'EcoComImportExportController@importAPS');
