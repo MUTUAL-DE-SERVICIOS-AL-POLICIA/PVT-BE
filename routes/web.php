@@ -752,6 +752,12 @@ Route::group(['middleware' => ['auth']], function () {
 
     // affiliate records
     Route::get('affiliate_record/{id}', 'AffiliateController@getRecord');
+    Route::get('affiliate_notes/{id}', 'AffiliateController@getNote');
+
+    // affiliate notes
+    Route::post('affiliate_note_create', 'AffiliateNoteController@create');
+    Route::patch('affiliate_note_update', 'AffiliateNoteController@update');
+    Route::delete('affiliate_note_delete', 'AffiliateNoteController@delete');
 
     //eco com dashboard
     Route::get('chart_eco_com_modalities_general', 'EcoComDashboardController@modalitiesGeneral');

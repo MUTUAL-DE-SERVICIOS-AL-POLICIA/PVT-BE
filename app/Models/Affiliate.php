@@ -163,6 +163,10 @@ class Affiliate extends Model
   {
     return $this->hasMany('Muserpol\Models\AffiliateRecord');
   }
+  public function records()
+    {
+      return $this->morphMany(Record::class, 'recordable');
+    }
   public function testimony()
   {
     return $this->hasMany('Muserpol\Models\Testimony');

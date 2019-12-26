@@ -1,10 +1,11 @@
 <?php
-
 namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Address;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\AffiliateState;
 use Muserpol\Models\Category;
+use Muserpol\Models\RecordType;
+use Muserpol\Models\Record;
 use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Muserpol\Models\PensionEntity;
@@ -34,6 +35,7 @@ use Muserpol\Models\VoucherType;
 use Muserpol\Models\ObservationType;
 use DB;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
 
 class AffiliateController extends Controller
 {
@@ -58,8 +60,8 @@ class AffiliateController extends Controller
         /*$query = Affiliate::take(100)->get();
 
         return $datatables->collection($query)
-                          // ->addColumn('action', 'eloquent.tables.users-action')
-                          ->make(true);*/
+            // ->addColumn('action', 'eloquent.tables.users-action')
+        ->make(true);*/
         $offset = $request->offset ?? 0;
         $limit = $request->limit ?? 10;
         $sort = $request->sort ?? 'id';
@@ -580,6 +582,11 @@ class AffiliateController extends Controller
     {
         $affiliate = Affiliate::find($affiliate_id);
         $affiliate_records = $affiliate->affiliate_records_pvt()->with(['user:id,username'])->orderByDesc('created_at')->get();
-        return compact('affiliate_records');
+        $records = $affiliate->records()->with(['user:id,username'])->get();
+        logger($affiliate_records);
+        return compact('affiliate_records','records');
+    }
+    public function getNote($affiliate_id)
+    {
     }
 }

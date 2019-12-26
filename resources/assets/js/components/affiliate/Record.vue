@@ -19,7 +19,7 @@
                   ></i> -->
                   {{ dr.created_at | recordHour }}
                   <br>
-                  <small class="text-navy">{{ dr.user.username }}</small>
+                  <small class="text-navy">{{ }}</small>
                 </div>
                 <div class="col-md-9 content">
                   <p style="font-size:medium" class="p-sm">{{ dr.message }}</p>
@@ -31,7 +31,16 @@
             </div>
           </div>
         </v-tab>
+        <v-tab title="Anotaciones" icon="fa fa-file">
+          <affiliate-notes
+            :affiliate="affiliate"
+            v-on:getUpdateRecords="getRecord()"
+            :permissions="permissions"
+            :note-records="records"
+          ></affiliate-notes>
+        </v-tab>
       </vue-tabs>
+      
     </div>
   </div>
 </template>
@@ -42,6 +51,8 @@ export default {
   data() {
     return {
       affiliateRecords: [],
+      records: [],
+
       recordTypeIcons: [
         { id: 1, icon: "fa-check", active: true },
         { id: 2, icon: "fa-times", active: true },
@@ -84,7 +95,9 @@ export default {
         .get(`/affiliate_record/${this.affiliate.id}`)
         .then(response => {
           console.log(response.data);
+          this.records = response.data.records;
           this.affiliateRecords = response.data.affiliate_records;
+          //this.noteRecords = response.data.note_records;
         })
         .catch(error => {
           console.log(error);
