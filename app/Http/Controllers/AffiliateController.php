@@ -583,10 +583,7 @@ class AffiliateController extends Controller
         $affiliate = Affiliate::find($affiliate_id);
         $affiliate_records = $affiliate->affiliate_records_pvt()->with(['user:id,username'])->orderByDesc('created_at')->get();
         $records = $affiliate->records()->with(['user:id,username'])->get();
-        logger($affiliate_records);
-        return compact('affiliate_records','records');
-    }
-    public function getNote($affiliate_id)
-    {
-    }
+        $affiliate_activities = $affiliate->activities()->with('user:id,username')->orderByDesc('created_at')->get();
+        return compact('affiliate_records','records','affiliate_activities');
+    } 
 }
