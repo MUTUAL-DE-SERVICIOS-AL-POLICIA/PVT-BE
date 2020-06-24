@@ -94,24 +94,35 @@ class EconomicComplementController extends Controller
             ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',3)::integer desc, split_part(economic_complements.code, '/',2), split_part(economic_complements.code, '/',1)::integer"));
             return $datatables->eloquent($eco_coms)
                 ->filterColumn('nup', function($query, $keyword) {
-                    $sql = "affiliates.affiliate_id ilike ?";
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                    $sql = "affiliates.affiliate_id >= ?";
+                    $query->whereRaw($sql, [(integer)$keyword]);
                  })
                 ->filterColumn('code', function($query, $keyword) {
                     $sql = "economic_complements.code ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
+                ->filterColumn('reception_date', function($query, $keyword) {
+                    $date = array_filter(explode('-', $keyword));
+                    if (count($date) == 1) {
+                        $date[] = Carbon::now()->month;
+                    }
+                    if (count($date) == 2) {
+                        $date[] = Carbon::now()->day;
+                    }
+                    $sql = "economic_complements.reception_date <= ?";
+                    $query->whereRaw($sql, [Carbon::parse(implode('-', $date))->toDateString()]);
+                })
                 ->filterColumn('eco_com_beneficiary_identity_card', function($query, $keyword) {
-                    $sql = "eco_com_applicants.identity_card ilike ?";
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                    $sql = "eco_com_applicants.identity_card like ?";
+                    $query->whereRaw($sql, ["{$keyword}%"]);
                 })
                 ->filterColumn('eco_com_beneficiary_full_name', function($query, $keyword) {
                     $sql = "trim(regexp_replace(concat_ws(' ', eco_com_applicants.first_name, eco_com_applicants.second_name, eco_com_applicants.last_name, eco_com_applicants.mothers_last_name, eco_com_applicants.surname_husband), '\s+', ' ', 'g')) ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->filterColumn('affiliate_identity_card', function($query, $keyword) {
-                    $sql = "affiliates.identity_card ilike ?";
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                    $sql = "affiliates.identity_card like ?";
+                    $query->whereRaw($sql, ["{$keyword}%"]);
                 })
                 ->filterColumn('affiliate_full_name', function($query, $keyword) {
                     $sql = "trim(regexp_replace(concat_ws(' ', affiliates.first_name, affiliates.second_name, affiliates.last_name, affiliates.mothers_last_name, affiliates.surname_husband), '\s+', ' ', 'g')) ilike ?";

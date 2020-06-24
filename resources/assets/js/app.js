@@ -76,6 +76,9 @@ Vue.use(VeeValidate, {
         identity_card: {
           required: "Debe ingresar la Cédula de identidad."
         },
+        nup: {
+          required: "Debe ingresar el Número único policial."
+        },
         city_identity_card_id: {
           required: "Debe seleccionar la ciudad de expedición."
         },
