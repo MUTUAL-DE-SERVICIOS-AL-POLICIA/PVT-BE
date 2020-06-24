@@ -19,7 +19,6 @@ use Muserpol\Models\Affiliate;
 use Muserpol\Models\Spouse;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidCorrelative;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
-use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
 use Muserpol\Models\Contribution\AidContribution;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\Contribution\ContributionProcess;
@@ -564,15 +563,6 @@ class Util
   public static function getRetFunCurrentProcedure()
   {
     $procedure_active = RetFunProcedure::where('is_enabled', 'true')->first();
-    if (!$procedure_active) {
-      Log::info("No existe ret fun procedure activo");
-      abort(500);
-    }
-    return $procedure_active;
-  }
-  public static function getQuotaAidCurrentProcedure()
-  {
-    $procedure_active =  QuotaAidProcedure::where('is_enabled', 'true')->first();
     if (!$procedure_active) {
       Log::info("No existe ret fun procedure activo");
       abort(500);

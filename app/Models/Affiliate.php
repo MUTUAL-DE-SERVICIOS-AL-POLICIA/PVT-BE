@@ -11,6 +11,8 @@ use Log;
 use DB;
 use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\EconomicComplement\Devolution;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Hashids\Hashids;
 class Affiliate extends Model
 {
@@ -416,6 +418,7 @@ class Affiliate extends Model
     $number_contributions = $current_procedure->contributions_number;
     return $this->getTotalQuotes() < $number_contributions;
   }
+
   public function getQuotaAidContributions($quota_aid_id)
   {
     $null_data = [
@@ -425,7 +428,10 @@ class Affiliate extends Model
     if (!$date_death  = optional(optional($this->quota_aid_mortuaries()->where('code', 'not like', '%A')->where('id', $quota_aid_id)->orderBy('id', 'DESC')->first())->getDeceased())->date_death) {
       return $null_data;
     }
-    $number_contributions = Util::getQuotaAidCurrentProcedure()->first()->months;
+    $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+    
+    $number_contributions = QuotaAidProcedure::where('is_enabled', 'true')->where('id', $quota_aid->quota_aid_procedure_id)->first()->months;
+    
     $date_death = Carbon::parse(Util::verifyBarDate($date_death)  ? Util::parseBarDate($date_death) : $date_death)->subMonth();
     if ($this->hasQuota()) {
       $contributions = $this->contributions()
