@@ -70,7 +70,16 @@ class SearcherController
     }
     public function searchAjaxOnlyAffiliate(Request $request)
     {
-        $ci = $request->ci;
+        if ($request->has('nup')) {
+            $affiliate = Affiliate::find($request->nup);
+            if ($affiliate) {
+                $ci = $affiliate->identity_card;
+            } else {
+                $ci = null;
+            }
+        } else {
+            $ci = $request->identity_card;
+        }
         $eco_com = null;
         $affiliate = null;
         $affiliate_devolutions = [];

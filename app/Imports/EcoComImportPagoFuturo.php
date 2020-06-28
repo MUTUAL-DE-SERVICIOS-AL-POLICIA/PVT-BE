@@ -25,26 +25,55 @@ class EcoComImportPagoFuturo implements ToCollection
         set_time_limit('-1');
         $found = 0;
         $not_found = collect([]);
-        $eco_com_procedure = EcoComProcedure::find(14);
+        $eco_com_procedure = EcoComProcedure::find(15);
         //  EconomicComplementProcedure::whereYear('year', '=', $year)->where('semester', '=', $semester)->first();
         $pago_futuro_id = 31;
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($rows as $row) {
-            $affiliafte_id = strval($row[0]);
-            $ci = strval($row[1]); //ci
+            $affiliate_id = strval($row[0]);
+            //$ci = strval($row[1]); //ci
             
-            /*$amount = Util::verifyAndParseNumber($row[11]); //semestral
-            $eco_com = EconomicComplement::select('economic_complements.*')->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
+            //$amount = Util::verifyAndParseNumber($row[11]); //semestral
+            $eco_com = EconomicComplement::select('economic_complements.*')
                 ->where('economic_complements.eco_com_procedure_id', $eco_com_procedure->id)
-                ->whereRaw("ltrim(trim(eco_com_applicants.identity_card),'0') ='" . ltrim(trim($ci), '0') . "'")
-                // ->where('eco_com_applicants.identity_card', $ci)
-                ->NotHasEcoComState(1, 4, 6)
-                ->first();*/
-                $affiliate= Affiliate::where('id','=', $affiliafte_id)->first();
-                logger("encontro afiliado" . $affiliafte_id);
-            //if ($eco_com) {
+                 ->where('affiliate_id', $affiliate_id)
+                ->NotHasEcoComState(1, 4, 6)->first();
+
+                //logger("encontro afiliado" . $affiliafte_id);
+            if ($eco_com) {
+                
+                $eco_com->calculateTotalRentAps();
+                $total_rent = $eco_com->total_rent;
+                if ($total_rent > 0) {
+                    $total = $total_rent * 2.03 / 100;
+                    $aux = $total * 6;
+                    $discount_type = DiscountType::findOrFail(7);
+                    if ($eco_com->discount_types->contains($discount_type->id)) {
+                        $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
+                    } else {
+                        $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
+                    }
+                
+                    $found++;
+                        logger("discount creado".$eco_com->id."-".$found);
+                }else{
+                    //logger("no tiene total rent ".$eco_com->id);
+                    //$not_found->push($affiliate_id);
+                }
+            }
                 //if (!Util::isDoblePerceptionEcoCom($ci)) {
                     //if (!$eco_com->hasObservationType($pago_futuro_id)) {
+                    
+                        /*$eco_com->observations()->save($observation, [
+                            'user_id' => Auth::user()->id,
+                            'date' => now(),
+                            'message' => "Observación Importada",
+                            'enabled' => true
+                        ]);*/
+                        
+                        
+                    /*
+                    $affiliate = Affiliate::where('id','=', $affiliate_id)->first();
                     if (!$affiliate->hasObservationType($pago_futuro_id)) {
                         $affiliate->observations()->save($observation, [
                             'user_id' => Auth::user()->id,
@@ -53,13 +82,7 @@ class EcoComImportPagoFuturo implements ToCollection
                             'enabled' => true
                         ]);    
                         logger("observacion creada");
-                        /*$eco_com->observations()->save($observation, [
-                            'user_id' => Auth::user()->id,
-                            'date' => now(),
-                            'message' => "Observación Importada",
-                            'enabled' => true
-                        ]);/*
-                        logger("observacion creada");
+
                         // $subtotal = $eco_com->aps_total_cc + $eco_com->aps_total_fsa + $eco_com->aps_total_fs + $eco_com->aps_disability + $eco_com->aps_total_death;
                        /* $eco_com->calculateTotalRentAps();
                         $total_rent = $eco_com->total_rent;
@@ -76,7 +99,8 @@ class EcoComImportPagoFuturo implements ToCollection
                         }else{
                             logger("no tiene total rent");
                         }*/
-                    }
+                    //
+                
                     // if (!Util::isDoblePerceptionEcoCom($ci)) {
                     //     $discount_type = DiscountType::findOrFail($pago_futuro_id);
                     //     if ($eco_com->discount_types->contains($discount_type->id)) {
@@ -88,9 +112,10 @@ class EcoComImportPagoFuturo implements ToCollection
                 //} else {
                 //    logger("sii doble" . $ci);
                 //}
-            /*} else {
-                 $not_found->push($ci);
-            }*/
+           //} else {
+            //     $not_found->push($affiliate_id);
+            //     logger("observacion no creada ".$not_found);
+            //}
         }
         $data = [
             'found' => $found,

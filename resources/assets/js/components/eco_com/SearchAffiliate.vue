@@ -9,25 +9,45 @@
           <div class="row">
             <div class="col-lg-12 mx-auto">
               <div class="col-md-2">
-                <strong>Ingrese la cédula de identidad:</strong>
+                <select
+                  class="form-control"
+                  v-model="searchSelected"
+                >
+                  <option v-for="s in searchSelect" :value="s.type" :key="s.type">
+                    <strong>Buscar por {{ s.text }}</strong>
+                  </option>
+                </select>
               </div>
-              <div class="col-md-3" :class="{'has-error': errors.has('identity_card') }">
+              <div class="col-md-3" :class="{'has-error': errors.has(searchSelected) }">
                 <div class="input-group">
                   <input
+                    ref="searchInput"
                     type="text"
-                    name="identity_card"
+                    data-vv-name="identity_card"
                     v-model="identityCard"
                     class="form-control"
                     v-validate="'required'"
                     @keypress.enter="searchAffiliate()"
                     :disabled="hasDoblePerception"
+                    v-show="searchSelected == 'identity_card'"
+                  >
+                  <input
+                    ref="searchInput"
+                    type="text"
+                    data-vv-name="nup"
+                    v-model="identityCard"
+                    class="form-control"
+                    v-validate="'required'"
+                    @keypress.enter="searchAffiliate()"
+                    :disabled="hasDoblePerception"
+                    v-show="searchSelected == 'nup'"
                   >
                   <span class="input-group-btn">
                     <button
                       class="btn"
                       type="button"
                       @click="searchAffiliate()"
-                      :class="errors.has('identity_card') ? 'btn-danger' : 'btn-primary'"
+                      :class="errors.has(searchSelected) ? 'btn-danger' : 'btn-primary'"
                       role="button"
                     >
                       <i v-if="searching" key="searching" class="fa fa-spinner fa-pulse fa-fw"></i>
@@ -35,9 +55,9 @@
                     </button>
                   </span>
                 </div>
-                <div v-show="errors.has('identity_card')">
+                <div v-show="errors.has(searchSelected)">
                   <i class="fa fa-warning text-danger"></i>
-                  <span class="text-danger">{{ errors.first('identity_card') }}</span>
+                  <span class="text-danger">{{ errors.first(searchSelected) }}</span>
                 </div>
               </div>
               <div class="col-sm-6" v-if="hasDoblePerception">
@@ -73,7 +93,7 @@
     >
       <div class="alert alert-warning" v-if="affiliateNoFound">
         <h2>
-          No se encontro el ci
+          No se encontró el {{ searchSelect.find(o => o.type == searchSelected).text }}
           <strong>{{ identityCard }}</strong>
         </h2>
       </div>
@@ -316,6 +336,16 @@ export default {
       affiliateFound: false,
       showButton: false,
       // identityCard: "5633617",
+      searchSelect: [
+        {
+          type: 'identity_card',
+          text: 'C.I.'
+        }, {
+          type: 'nup',
+          text: 'N.U.P.'
+        }
+      ],
+      searchSelected: 'identity_card',
       identityCard: null,
       ecoComProcedureCreateName: null,
       ecoComProcedure: {},
@@ -327,6 +357,16 @@ export default {
       oneTime: true,
       hasDoblePerception: false
     };
+  },
+  watch: {
+    searchSelected(val) {
+      this.affiliateNoFound = false
+      this.identityCard = null
+      this.errors.clear()
+    },
+    identityCard(val) {
+      this.affiliateNoFound = false
+    }
   },
   methods: {
     rowClick(id) {
@@ -342,13 +382,14 @@ export default {
         return;
       }
       this.searching = true;
+      let params = {
+        type: this.searchType,
+        one_time: this.oneTime,
+        has_doble_perception: this.hasDoblePerception
+      }
+      params[this.searchSelected] = this.identityCard
       await axios
-        .post("/search_ajax_only_affiliate", {
-          ci: this.identityCard,
-          type: this.searchType,
-          one_time: this.oneTime,
-          has_doble_perception: this.hasDoblePerception
-        })
+        .post("/search_ajax_only_affiliate", params)
         .then(response => {
           let data = response.data;
           if (response.data.has_doble_perception) {
@@ -391,6 +432,7 @@ export default {
       this.searching = false;
     },
     clearResults() {
+      this.$forceUpdate()
       this.affiliateFound = false;
       this.affiliate = null;
       this.ecoCom = [];
