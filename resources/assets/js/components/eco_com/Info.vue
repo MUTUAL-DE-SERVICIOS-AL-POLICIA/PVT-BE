@@ -205,22 +205,7 @@
         <div>
           <label for="eco_com_state_id">PAGO EN DOMICILIO -  </label>
           
-          <input class ="mediumCheckbox"
-          v-if="ecoCom.eco_com_state.id == 16"
-          type="checkbox" 
-          id="eco_com_state_id" 
-          v-model="form.eco_com_state_id"
-          :value="false"
-          :disabed="!editing">
-
-          <input class ="mediumCheckbox"
-          v-if="ecoCom.eco_com_state.id == 17"
-          type="checkbox" 
-          id="eco_com_state_id" 
-          v-model="form.eco_com_state_id"
-          :value="true"
-          :disabed="!editing">
-  
+          <input class ="mediumCheckbox" type="checkbox" id="eco_com_state_id" v-model="form.eco_com_state_id" :disabled="!editing" >
       
         </div>
         <br>
@@ -268,7 +253,7 @@ export default {
         service_years: this.affiliate.service_years,
         service_months: this.affiliate.service_months,
         is_paid_spouse: this.ecoCom.is_paid_spouse,
-        eco_com_state_id: this.ecoCom.eco_com_state_id,
+        eco_com_state_id: this.ecoCom.eco_com_state_id == 17 ? true: false,
       },
       editing: false,
       show_spinner: false,
@@ -276,6 +261,7 @@ export default {
     };
   },
   mounted() {
+    console.log(this.ecoCom.eco_com_state_id==17 ? true: false);
     document.querySelectorAll(".tab-eco-com")[0].addEventListener(
       "click",
       () => {
