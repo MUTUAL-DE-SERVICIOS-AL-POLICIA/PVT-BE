@@ -28,10 +28,60 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
     public function collection()
     {
         $data = null;
-        $columns = '';
+        $columns = ",". EconomicComplement::basic_info_discount();
         switch ($this->report_type_id) {
             case 1:
                 $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                    ->groupBy("economic_complements.affiliate_id",
+                    "economic_complements.code",
+                    "economic_complements.reception_date",
+                    "beneficiary.identity_card",
+                    "beneficiary_city.first_shortened",
+                    "beneficiary.first_name",
+                    "beneficiary.second_name",
+                    "beneficiary.last_name",
+                    "beneficiary.mothers_last_name",
+                    "beneficiary.surname_husband",
+                    "beneficiary.birth_date",
+                    "beneficiary.phone_number",
+                    "beneficiary.cell_phone_number",
+                    "beneficiary.official",
+                    "beneficiary.book",
+                    "beneficiary.departure",
+                    "beneficiary.marriage_date",
+                    "affiliates.identity_card",
+                    "affiliate_city.first_shortened",
+                    "affiliates.first_name",
+                    "affiliates.second_name",
+                    "affiliates.last_name",
+                    "affiliates.mothers_last_name",
+                    "affiliates.surname_husband",
+                    "affiliates.birth_date",
+                    "affiliates.nua",
+                    "eco_com_city.name",
+                    "procedure_modalities.name",
+                    "eco_com_reception_types.name",
+                    "eco_com_category.name",
+                    "eco_com_degree.name",
+                    "pension_entities.name",
+                    "economic_complements.sub_total_rent",
+                    "economic_complements.reimbursement",
+                    "economic_complements.dignity_pension",
+                    "economic_complements.aps_total_fsa",
+                    "economic_complements.aps_total_cc",
+                    "economic_complements.aps_total_fs",
+                    "economic_complements.total_rent",
+                    "economic_complements.total_rent_calc",
+                    "economic_complements.seniority",
+                    "economic_complements.salary_reference",
+                    "economic_complements.salary_quotable",
+                    "economic_complements.difference",
+                    "economic_complements.total_amount_semester",
+                    "economic_complements.complementary_factor",
+                    "economic_complements.total",
+                    "wf_states.first_shortened",
+                    "eco_com_modalities.name",
+                    "workflows.name")
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
@@ -136,6 +186,14 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
     {
         $new_columns = [];
         switch ($this->report_type_id) {
+            case 1:
+                $new_columns = [
+                    "Amortización_Préstamos_en_Mora ",
+                    "Amortización_Reposición_de_Fondos",
+                    "Amortización_Auxilio_Mortuorio",
+                    "Amortización_Cuentas_por_cobrar",
+                ];
+                break;
             case 2:
                 $new_columns = [
                     'MONTO INVALIDEZ',
@@ -223,10 +281,6 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "total_semestre",
             "factor_complementario",
             "total_complemento",
-            "Amortización_Préstamos_en_Mora ",
-            "Amortización_Reposición_de_Fondos",
-            "Amortización_Auxilio_Mortuorio",
-            "Amortización_Cuentas_por_cobrar",
             "total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
