@@ -52,7 +52,8 @@ class EcoComCertificationController extends Controller
             'eco_com_submitted_documents' => $eco_com_submitted_documents,
         ];
         $pages = [];
-        $number_pages = Util::isRegionalRole() ? 3 : 2;
+        // $number_pages = Util::isRegionalRole() ? 3 : 2;
+        $number_pages = $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion ? (Util::isRegionalRole() ? 3 : 2) : 1;
         for ($i = 1; $i <= $number_pages; $i++) {
             $pages[] = \View::make('eco_com.print.reception', $data)->render();
         }

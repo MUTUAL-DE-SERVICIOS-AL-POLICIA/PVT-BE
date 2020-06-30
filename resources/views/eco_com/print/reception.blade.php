@@ -112,6 +112,7 @@
         </table>
         @endif --}}
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
+        @if($eco_com->eco_com_reception_type_id == 2)
         <table class="m-t-50 table-info">
             <tbody>
                 <tr>
@@ -131,6 +132,7 @@
                 </tr>
             </tbody>
         </table>
+        @endif
         <div class="m-t-50 font-bold text-xxxs">
             Los datos insertos en la presente solicitud son de plena responsabilidad del solicitante.
             <br>
