@@ -55,7 +55,8 @@ class AffiliateSubmittedDocumentsController extends Controller
                     $requirements_habitual = [1235];
                     break;
                 case 30:
-                    $requirements_habitual = [1263, 1262, 1264, 1266];
+                    //$requirements_habitual = [1263, 1262, 1264, 1266];
+                    $requirements_habitual = [1266];
                     break;
                 case 31:
                     $requirements_habitual = [1298, 1297, 1300];
