@@ -710,6 +710,7 @@ class EconomicComplementController extends Controller
          ** legal guardian types
          */
         $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
+        $financial_entities = FinancialEntity::all();
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -740,6 +741,8 @@ class EconomicComplementController extends Controller
             'permissions' =>  $permissions,
 
             'eco_com_legal_guardian_types' =>  $eco_com_legal_guardian_types,
+            'financial_entities' =>  $financial_entities,
+            
         ];
         return view('eco_com.show', $data);
     }
@@ -862,6 +865,10 @@ class EconomicComplementController extends Controller
         // $affiliate->pension_entity_id = $request->pension_entity_id;
         // $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
         // $affiliate->file_code = mb_strtoupper($request->file_code);
+        //$affiliate->account_number = $request->account_number;
+       // $affiliate->financial_entity_id = $request->financial_entity_id;
+        //$affiliate->sigep_status = $request->sigep_status;
+
         $affiliate->save();
 
         $economic_complement->degree_id = $affiliate->degree_id;

@@ -94,7 +94,7 @@
         <div class="tab-content">
             <div id="tab-eco-com" class="tab-pane active">
                 <eco-com-info :eco-com="{{ $economic_complement }}" :affiliate="{{$affiliate}}" :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}" :states="{{ $states }}"
-                :cities="{{ $cities }}" :degrees="{{$degrees}}" :categories="{{ $categories }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
+                :cities="{{ $cities }}" :degrees="{{$degrees}}" :categories="{{ $categories }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}" :financial-entities="{{ $financial_entities }}">
                 </eco-com-info>
             </div>
             <div id="tab-eco-coms" class="tab-pane">
