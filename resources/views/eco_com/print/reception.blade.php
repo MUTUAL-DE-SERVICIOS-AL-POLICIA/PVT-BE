@@ -135,7 +135,9 @@
         </table>
         @endif
         <div class="m-t-50 font-bold text-xxxs">
-            Los datos insertos en la presente solicitud son de plena responsabilidad del solicitante.
+            @if($eco_com->eco_com_reception_type_id == 2)
+                Los datos insertos en la presente solicitud son de plena responsabilidad del solicitante.
+            @endif
             <br>
             Autorizo a la MUSERPOL acceder a mi información personal (y causante si corresponde) en las bases de datos
             de SERECI, SEGIP y otras instituciones públicas y/o privadas para su revisión, verificación o contrastación.
