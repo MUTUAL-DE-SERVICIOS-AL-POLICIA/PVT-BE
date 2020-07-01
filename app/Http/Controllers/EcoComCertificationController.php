@@ -23,7 +23,13 @@ class EcoComCertificationController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
-        $title = "RECEPCIÓN DEL BENEFICIO DE COMPLEMENTO ECONÓMICO – " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
+        if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual){
+            $title = "BENEFICIO DE COMPLEMENTO ECONÓMICO – " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
+            $subtitle = "FORMULARIO DE REGISTRO PARA EL PAGO DEL COMPLEMENTO ECONÓMICO 1ER. SEMESTRE 2020";
+        }else{
+            $title = "RECEPCIÓN DEL BENEFICIO DE COMPLEMENTO ECONÓMICO – " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
+            $subtitle = '';
+        }
         $code = $eco_com->code;
         $area = $eco_com->wf_state->first_shortened;
         $user = $eco_com->user;
@@ -39,6 +45,7 @@ class EcoComCertificationController extends Controller
             'institution' => $institution,
             'unit' => $unit,
             'title' => $title,
+            'subtitle' => $subtitle,
             'code' => $code,
             'area' => $area,
             'user' => $user,
