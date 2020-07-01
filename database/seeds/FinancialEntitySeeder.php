@@ -24,9 +24,8 @@ class FinancialEntitySeeder extends Seeder
             ['name' => 'BANCO FORTALEZA S.A.'],
             ['name' => 'BANCO GANADERO S.A.'],
             ['name' => 'BANCO MERCANTIL SANTA CRUZ S.A.'],
-            ['name' => 'BANCO NACIONAL DE BOLIVIA S.A.'],
-            ['name' => 'BANCO SOLIDARIO S.A.'],
-            ['name' => 'BANCO UNION S.A.']
+
+  
         ];
         foreach ($financial_entities as $financial_entity) {
             FinancialEntity::firstOrCreate($financial_entity);
