@@ -798,6 +798,69 @@
         </div>
       </div>
     </div>
+
+    <div class="ibox float-e-margins">
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-md-12">
+            <legend>Datos Sigep</legend>
+            <div class="row">
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_account_number') }">
+                <div class="col-md-4">
+                  <label class="control-label">Número de cuenta</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="affiliate_account_number"
+                    v-model.trim="affiliate.account_number"
+                    class="form-control"
+                  >
+                </div>
+              </div>
+              <div class="col-md-6" :class="{'has-error': errors.has('affiliate_financial_entity_id') }">
+                <div class="col-md-4">
+                  <label class="control-label">Entidad Financiera</label>
+                </div>
+                <div class="col-md-8">
+                  <select
+                    class="form-control"
+                    name="affiliate_financial_entity_id"
+                    v-model.trim="affiliate.financial_entity_id"
+                  >
+                    <option :value="null"></option>
+                    <option v-for="c in financialEntities" :value="c.id" :key="c.id">{{ c.name }}</option>
+                  </select>
+                  <div v-show="errors.has('affiliate_financial_entity_id')">
+                    <i class="fa fa-warning text-danger"></i>
+                    <span class="text-danger">{{ errors.first('affiliate_financial_entity_id') }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="col-md-4">
+                  <label class="control-label">Estado Sigep</label>
+                </div>
+                <div class="col-md-8">
+                  <select
+                    class="form-control"
+                    name="affiliate_account_number_sigep_status"
+                    v-model.trim="affiliate.sigep_status"
+                  >
+                    <option :value="null"></option>
+                    <option v-for="c in sigepStatus" :value="c.id" :key="c.id">{{ c.name }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <div class="ibox float-e-margins">
       <div class="ibox-content">
         <div class="row">
@@ -1308,7 +1371,7 @@
 <script>
 import { mapGetters, mapMutations, mapState } from "vuex";
 export default {
-  props: ["cities", "degrees", "categories", "ecoComLegalGuardianTypes"],
+  props: ["cities", "degrees", "categories", "ecoComLegalGuardianTypes", "financialEntities"],
   data() {
     return {
       civilStatus: [
@@ -1316,6 +1379,12 @@ export default {
         { id: "S", name: "Soltero (a)" },
         { id: "V", name: "Viudo (a)" },
         { id: "D", name: "Divorciado (a)" }
+      ],
+      sigepStatus: [
+        { id: "ACTIVO", name: "ACTIVO" },
+        { id: "ELABORADO", name: "ELABORADO" },
+        { id: "VALIDADO", name: "VALIDADO" },
+        { id: "SIN REGISTRO", name: "SIN REGISTRO" }
       ],
       has_legal_guardian: false,
       legal_guardian_type_id: null

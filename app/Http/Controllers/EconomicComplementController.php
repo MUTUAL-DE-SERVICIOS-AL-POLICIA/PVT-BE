@@ -43,6 +43,7 @@ use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\EconomicComplement\EcoComReceptionType;
 use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
+use Muserpol\Models\FinancialEntity;
 
 class EconomicComplementController extends Controller
 {
@@ -201,6 +202,7 @@ class EconomicComplementController extends Controller
         $categories = Category::all();
         $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $eco_com_reception_types = EcoComReceptionType::all();
+        $financial_entities = FinancialEntity::all();
         $data = [
             'affiliate' => $affiliate,
             'cities' => $cities,
@@ -215,6 +217,7 @@ class EconomicComplementController extends Controller
             'categories' => $categories,
             'eco_com_legal_guardian_types' => $eco_com_legal_guardian_types,
             'eco_com_reception_types' => $eco_com_reception_types,
+            'financial_entities' => $financial_entities,
         ];
 
         return view('eco_com.create', $data);
@@ -270,7 +273,18 @@ class EconomicComplementController extends Controller
             $affiliate->pension_entity_id = $request->pension_entity_id;
             $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
             $affiliate->save();
+            
         }
+        /**
+         ** create Economic complement 
+         */
+        $affiliate->account_number = $request->affiliate_account_number;
+        $affiliate->financial_entity_id = $request->affiliate_financial_entity_id;
+        $affiliate->sigep_status = $request->affiliate_account_number_sigep_status;
+        
+        $affiliate->save();
+
+
         /**
          ** create Economic complement 
          */
