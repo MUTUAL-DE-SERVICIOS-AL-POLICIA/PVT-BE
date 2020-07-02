@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="ibox">
         <div class="ibox-title">
-          <h2 class="pull-left">Importar Pago a Futuro</h2>
+          <h2 class="pull-left">Importar Pago a Futuro P</h2>
           <div class="ibox-tools"></div>
         </div>
         <div class="ibox-content">
