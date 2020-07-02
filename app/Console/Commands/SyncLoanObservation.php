@@ -53,7 +53,7 @@ class SyncLoanObservation extends Command
    */
   public function handle()
   {
-    if (!$this->argument('date')) {
+    /*if (!$this->argument('date')) {
       $date = Carbon::now();
     } else {
       try {
@@ -209,6 +209,7 @@ class SyncLoanObservation extends Command
     $this->info($message);
     \Log::info($message);
     Storage::disk('local')->put($this->file_name, $this->file_content);
+  */
   }
 
   private function new_line($line)

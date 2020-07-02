@@ -47,57 +47,32 @@
             <h2>Importados Satisfactoriamente: {{ found }}</h2>
           </div>
           <br />
-          <!-- <div class="row">
+          <div class="row">
             <h2>Datos Distintos: {{fails.length}}</h2>
             <table class="table table-striped table-bordered">
               <thead>
                 <tr>
-                  <th>Nro Tramite</th>
-                  <th>aps_total_cc TRAMITE</th>
-                  <th>aps_total_cc APS</th>
-                  <th>aps_total_fsa TRAMITE</th>
-                  <th>aps_total_fsa APS</th>
-                  <th>aps_total_fs TRAMITE</th>
-                  <th>aps_total_fs APS</th>
+                  <th>Numero de Carnet</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(nf, index) in fails" :key="index">
                   <td>
-                    <a :href="`/eco_com/${nf.id}`">{{ nf.code }}</a>
+                   {{ nf }}
                   </td>
-                  <td
-                    :class="{'danger':  nf.aps_total_cc != nf.aps_total_cc_aps}"
-                  >{{ nf.aps_total_cc}}</td>
-                  <td
-                    :class="{'danger':  nf.aps_total_cc != nf.aps_total_cc_aps}"
-                  >{{ nf.aps_total_cc_aps}}</td>
-
-                  <td
-                    :class="{'danger':  nf.aps_total_fsa != nf.aps_total_fsa_aps}"
-                  >{{ nf.aps_total_fsa}}</td>
-                  <td
-                    :class="{'danger':  nf.aps_total_fsa != nf.aps_total_fsa_aps}"
-                  >{{ nf.aps_total_fsa_aps}}</td>
-
-                  <td
-                    :class="{'danger':  nf.aps_total_fs != nf.aps_total_fs_aps}"
-                  >{{ nf.aps_total_fs}}</td>
-                  <td
-                    :class="{'danger':  nf.aps_total_fs != nf.aps_total_fs_aps}"
-                  >{{ nf.aps_total_fs_aps}}</td>
                 </tr>
               </tbody>
             </table>
-          </div> -->
+          </div>
           <br>
+          <!-- 
           <div class="row">
             <div class="text-center m-sm">
               <button class="btn btn-danger" type="button" @click="confirm()">
                 <i class="fa fa-check-circle"></i>&nbsp;Sobreescribir Informacion
               </button>
             </div>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>
@@ -174,7 +149,7 @@ export default {
         .then(response => {
           console.log(response.data);
           this.found = response.data.found;
-        //   this.fails = response.data.fails;
+           this.fails = response.data.not_found;
         })
         .catch(error => {
           console.log(error);
