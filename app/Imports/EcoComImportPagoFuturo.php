@@ -64,7 +64,7 @@ class EcoComImportPagoFuturo implements ToCollection
                         $eco->observations()->save($observation, [
                             'user_id' => $user->id,
                             'date' => Carbon::now(),
-                            'message' => 'PRIORITARIO - PRESTATARIOS TITULARES MOROSOS CON DESCUENTO A GARANTES',
+                            'message' => 'PRIORITARIO - PRESTATARIOS CASOS VILLA SALOME',
                             'enabled' => false
                         ]);
                         $found2++;
