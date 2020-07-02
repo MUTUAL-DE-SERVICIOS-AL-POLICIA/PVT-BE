@@ -54,7 +54,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 $affiliate->observations()->save($observation, [
                     'user_id' => $user->id,
                     'date' => Carbon::now(),
-                    'message' => 'PRIORITARIO - Préstamo con mora (generado automáticamente)',
+                    'message' => 'PRIORITARIO - PRESTATARIOS TITULARES MOROSOS CON DESCUENTO A GARANTES',
                     'enabled' => false
                 ]);
 
@@ -64,7 +64,7 @@ class EcoComImportPagoFuturo implements ToCollection
                         $eco->observations()->save($observation, [
                             'user_id' => $user->id,
                             'date' => Carbon::now(),
-                            'message' => 'PRIORITARIO - PRESTARIOS CON PAGOS EN EFECTIVO O DEPOSITOS EN CUENTA',
+                            'message' => 'PRIORITARIO - PRESTATARIOS TITULARES MOROSOS CON DESCUENTO A GARANTES',
                             'enabled' => false
                         ]);
                         $found2++;
