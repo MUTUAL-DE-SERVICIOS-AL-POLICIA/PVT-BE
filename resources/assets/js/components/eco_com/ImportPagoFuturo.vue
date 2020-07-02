@@ -44,7 +44,8 @@
         </div>
         <div class="ibox-content">
           <div class="row">
-            <h2>Importados Satisfactoriamente: {{ found }}</h2>
+            <h2>Afiliados Importados Satisfactoriamente: {{ found }} </h2>
+            <h2>Complementos Importados Satisfactoriamente: {{ found2 }}</h2>
           </div>
           <br />
           <div class="row">
@@ -86,6 +87,7 @@ export default {
     return {
       loadingButton: false,
       found: 0,
+      found2: 0,
       fails: [],
       showResults: false,
       refresh: false,
@@ -149,7 +151,8 @@ export default {
         .then(response => {
           console.log(response.data);
           this.found = response.data.found;
-           this.fails = response.data.not_found;
+          this.found2 = response.data.found2;
+          this.fails = response.data.not_found;
         })
         .catch(error => {
           console.log(error);

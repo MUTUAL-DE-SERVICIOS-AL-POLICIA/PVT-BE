@@ -28,6 +28,7 @@ class EcoComImportPagoFuturo implements ToCollection
         set_time_limit('-1');
 
         $found = 0;
+        $found2 = 0;
         $not_found = collect([]);
         $user = User::first();
 
@@ -46,7 +47,7 @@ class EcoComImportPagoFuturo implements ToCollection
                     $not_found->push($ci);
                 }
            
-            } /*
+            }
             else{
                 
                 $observation = ObservationType::find(2);
@@ -57,30 +58,30 @@ class EcoComImportPagoFuturo implements ToCollection
                     'enabled' => false
                 ]);
 
-                $eco_coms = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $current_procedures)->get();
-                dd($eco_coms);
+                $eco_coms = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', Util::getEcoComCurrentProcedure())->get();
                 foreach ($eco_coms as $eco) {
                     if (!$eco->hasObservationType(2) && $eco->eco_com_state_id == 16) {
-                    $eco->observations()->save($observation, [
-                        'user_id' => $user->id,
-                        'date' => Carbon::now(),
-                        'message' => 'PRIORITARIO - Préstamo con mora (generado automáticamente)',
-                        'enabled' => false
-                    ]);
-
+                        $eco->observations()->save($observation, [
+                            'user_id' => $user->id,
+                            'date' => Carbon::now(),
+                            'message' => 'PRIORITARIO - Préstamo con mora (generado automáticamente)',
+                            'enabled' => false
+                        ]);
+                        $found++;
                 
                      }
 
                 }
                 $found++;
                 
-            }*/
+            }
 
 
         }
 
         $data = [
             'found' => $found,
+            'found2' => $found2,
             'not_found' => $not_found,
         ];
         logger($data);
