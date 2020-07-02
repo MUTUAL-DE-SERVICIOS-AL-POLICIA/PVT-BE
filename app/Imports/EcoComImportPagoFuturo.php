@@ -67,7 +67,7 @@ class EcoComImportPagoFuturo implements ToCollection
                             'message' => 'PRIORITARIO - Préstamo con mora (generado automáticamente)',
                             'enabled' => false
                         ]);
-                        $found++;
+                        $found2++;
                 
                      }
 
