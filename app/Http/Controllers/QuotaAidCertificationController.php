@@ -1029,7 +1029,7 @@ class QuotaAidCertificationController extends Controller
     if ($quota_aid->procedure_modality->procedure_type_id == 3) {
       $law .= 'aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 ';
     }
-    $law .= 'en su Artículo 55 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento administrativo para la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 030/2019 del 1 de octubre de 2019, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.';
+    $law .= 'en su Artículo 55 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento administrativo para la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 014/2020 del 8 de julio de 2020, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.';
 
     $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 33)->first();
 
