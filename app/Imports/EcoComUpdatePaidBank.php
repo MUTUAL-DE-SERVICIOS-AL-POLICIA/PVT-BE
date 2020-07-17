@@ -33,7 +33,7 @@ class EcoComUpdatePaidBank implements ToCollection
         $user = User::first();
 
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
-        $current_procedure = 15;
+
          foreach ($rows as $row) {
             
             $nup = strval($row[0]);

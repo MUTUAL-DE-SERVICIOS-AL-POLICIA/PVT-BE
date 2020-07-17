@@ -28,9 +28,10 @@ class EcoComImportExportController extends Controller
             );
         }
         Excel::import(new EcoComImportSenasir, 'senasir/' . now()->year . '/senasir.xlsx');
+        $eco_com_procedure_id = Util::getEcoComCurrentProcedure()->first();
         $no_import = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
             ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-            ->where('eco_com_procedure_id', 15)
+            ->where('eco_com_procedure_id', $eco_com_procedure_id)
             ->where('rent_type', '<>', 'Automatico')
             ->where('rent_type', '<>', 'Manual')
             ->where('affiliates.pension_entity_id', 5)
