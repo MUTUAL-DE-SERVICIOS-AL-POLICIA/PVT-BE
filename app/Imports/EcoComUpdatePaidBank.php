@@ -29,6 +29,7 @@ class EcoComUpdatePaidBank implements ToCollection
 
         $found = 0;
         $not_found = collect([]);
+        $not_found_t = collect([]);
         $user = User::first();
 
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
@@ -40,28 +41,25 @@ class EcoComUpdatePaidBank implements ToCollection
             $affiliate = Affiliate::where('id', $nup)->first();
             
             if ($affiliate) {
-    
-                $eco_coms = $affiliate->economic_complements()->where('eco_com_procedure_id', $current_procedure)->get();
-                
+                $eco_coms = $affiliate->economic_complements()->where('eco_com_procedure_id', $current_procedure)->get();            
                 foreach ($eco_coms as $eco) {
                     if ( $eco->eco_com_state_id == 24) {
                         $eco->eco_com_state_id = 1;
                         $eco->save();
                         $found++;
+                    }else{
+                        $not_found_t->push($nup);
                     }
-
-                }          
-                
+                }                  
             }else{
-                $not_found->push($affiliate);
+                $not_found->push($nup);
             }
-
-
         }
 
         $data = [
             'found' => $found,
             'not_found' => $not_found,
+            'not_found_t' => $not_found_t,
         ];
         /* logger($data); */
         session()->put('pago_banco_data', $data);

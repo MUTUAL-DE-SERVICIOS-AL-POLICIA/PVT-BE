@@ -63,6 +63,22 @@
                 </tr>
               </tbody>
             </table>
+
+            <h2>Trámites no Actualizados: {{fails_t.length}}</h2>
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>Numero Unico de Afiliado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(nf, index) in fails_t" :key="index">
+                  <td>
+                   {{ nf }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <br>
         </div> 
@@ -104,6 +120,7 @@ export default {
           console.log(response.data);
           this.found = response.data.found;
           this.fails = response.data.not_found;
+          this.fails_t = response.data.not_found_t;
         })
         .catch(error => {
           console.log(error);
