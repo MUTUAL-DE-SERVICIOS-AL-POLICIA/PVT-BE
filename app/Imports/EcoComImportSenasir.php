@@ -24,8 +24,9 @@ class EcoComImportSenasir implements ToCollection
         set_time_limit('-1');
         $found = 0;
         $not_found = collect([]);
-        $eco_com_procedure = EcoComProcedure::find(15);
-        //  EconomicComplementProcedure::whereYear('year', '=', $year)->where('semester', '=', $semester)->first();
+        $eco_com_procedure_id = Util::getEcoComCurrentProcedure()->first();
+        $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
+        logger("eco_com_procedure" . $eco_com_procedure);
         foreach ($rows as $row) {
             $ext = ($row[9] ? "-" . $row[9] : '');
             $ext = str_replace(' ', '', $ext);

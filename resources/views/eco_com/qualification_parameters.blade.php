@@ -31,19 +31,19 @@
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-averages"><a href="#"><i
                             class="fa fa-address-card"></i> Promedios</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-complementary-factor"><a href="#"><i
-                            class="fa fa-users"></i> Factor de Complementacion</a></li>
+                            class="fa fa-users"></i> Factor de Complementación</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-procedure"><a href="#"><i
                             class="fa fa-users"></i> Rango de Fechas</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-rents"><a href="#"><i
-                            class="fa fa-users"></i> Importar Rentas</a></li>
+                            class="fa fa-users"></i> Importar Rentas SENASIR</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-rents-aps"><a href="#"><i
-                            class="fa fa-users"></i> Rentas APS</a></li>
+                            class="fa fa-users"></i> Importar Rentas APS</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-pago-futuro"><a href="#"><i
                             class="fa fa-users"></i> Importar Pago a Futuro</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-update-paid-bank"><a href="#"><i
                             class="fa fa-users"></i> Actualizar Pagados en Banco</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-automatic-qualification"><a href="#"><i
-                            class="fa fa-users"></i> Calificacion Automatica</a></li>
+                            class="fa fa-users"></i> Calificación Automática</a></li>
             </ul>
         </div>
     </div>
