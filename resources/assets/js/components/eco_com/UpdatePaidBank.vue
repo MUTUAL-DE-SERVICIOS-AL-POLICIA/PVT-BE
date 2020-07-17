@@ -3,11 +3,11 @@
     <div class="col-lg-12">
       <div class="ibox">
         <div class="ibox-title">
-          <h2 class="pull-left">Importar Pago a Futuro</h2>
+          <h2 class="pull-left">Actualizar Pagados en Banco</h2>
           <div class="ibox-tools"></div>
         </div>
         <div class="ibox-content">
-          <input class="form-control" type="file" id="file-upload-pago-futuro" :disabled="loadingButton" />
+          <input class="form-control" type="file" id="file-upload-paid-bank" :disabled="loadingButton" />
           <br />
           <button
             type="button"
@@ -42,18 +42,17 @@
           <h2 class="pull-left">Resultados</h2>
           <div class="ibox-tools"></div>
         </div>
-        <div class="ibox-content">
+         <div class="ibox-content">
           <div class="row">
-            <h2>Afiliados Importados Satisfactoriamente: {{ found }} </h2>
-            <h2>Complementos Importados Satisfactoriamente: {{ found2 }}</h2>
+            <h2>Trámites actualizados  : {{ found }} </h2>
           </div>
           <br />
-          <div class="row">
-            <h2>Datos Distintos: {{fails.length}}</h2>
+           <div class="row">
+            <h2>NUP no encontrados: {{fails.length}}</h2>
             <table class="table table-striped table-bordered">
               <thead>
                 <tr>
-                  <th>Numero de Carnet</th>
+                  <th>Numero Unico de Afiliado</th>
                 </tr>
               </thead>
               <tbody>
@@ -66,15 +65,7 @@
             </table>
           </div>
           <br>
-          <!-- 
-          <div class="row">
-            <div class="text-center m-sm">
-              <button class="btn btn-danger" type="button" @click="confirm()">
-                <i class="fa fa-check-circle"></i>&nbsp;Sobreescribir Informacion
-              </button>
-            </div>
-          </div>-->
-        </div>
+        </div> 
       </div>
     </div>
   </div>
@@ -82,12 +73,11 @@
 
 <script>
 export default {
-  props: ["permissions"],
+   props: ["permissions"],
   data() {
     return {
       loadingButton: false,
       found: 0,
-      found2: 0,
       fails: [],
       showResults: false,
       refresh: false,
@@ -95,44 +85,6 @@ export default {
     };
   },
   methods: {
-    // async confirm(){
-    //   this.override = true;
-    //   await this.$swal({
-    //     title: "¿Está seguro de sobreescribir la informacion?",
-    //     type: "warning",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#59B75C",
-    //     cancelButtonColor: "#EC4758",
-    //     confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
-    //     cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
-    //     showLoaderOnConfirm: true,
-    //     preConfirm: () => {
-    //       return axios
-    //         .post("eco_com_import_rents_aps", {override: this.override})
-    //         .then(response => {
-    //           if (!response.data) {
-    //             throw new Error(response.errors)
-    //           }
-    //           return response.status;
-    //         })
-    //         .catch(error => {
-    //           this.$swal.showValidationError(
-    //             `Solicitud fallida: ${error.response.data.errors}`
-    //           );
-    //         });
-    //     },
-    //     allowOutsideClick: () => !this.$swal.isLoading()
-    //   }).then(result => {
-    //     if (result.value) {
-    //       this.$swal({
-    //         type: "success",
-    //         title: "Actualizacion realizada correctamente.",
-    //         showConfirmButton: false,
-    //         timer: 1000
-    //       });
-    //     }
-    //   });
-    // },
     async refreshData() {
       this.refresh = true;
       this.sendForm()
@@ -140,18 +92,17 @@ export default {
     async sendForm() {
       this.showResults = false;
       this.override = false;
-      const fileInput = document.querySelector("#file-upload-pago-futuro");
+      const fileInput = document.querySelector("#file-upload-paid-bank");
       const formData = new FormData();
       formData.append("image", fileInput.files[0]);
       formData.append("override", this.override);
       formData.append("refresh", this.refresh);
       this.loadingButton = true;
       await axios
-        .post("eco_com_import_pago_futuro", formData)
+        .post("eco_com_update_paid_bank", formData)
         .then(response => {
           console.log(response.data);
           this.found = response.data.found;
-          this.found2 = response.data.found2;
           this.fails = response.data.not_found;
         })
         .catch(error => {

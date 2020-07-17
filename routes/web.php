@@ -673,9 +673,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_save_deposito', 'EconomicComplementController@saveDeposito');
     Route::get('eco_com_record/{id}', 'EconomicComplementController@getRecord');
     Route::post('eco_com_import_rents', 'EcoComImportExportController@importSenasir');
-    Route::post('eco_com_import_rents_aps', 'EcoComImportExportController@importAPS');
+   Route::post('eco_com_import_rents_aps', 'EcoComImportExportController@importAPS');
+    Route::post('eco_com_update_paid_bank', 'EcoComImportExportController@updatePaidBank');
     Route::post('eco_com_import_pago_futuro', 'EcoComImportExportController@importPagoFuturo');
 
+    
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
     // Eco com Beneficiary

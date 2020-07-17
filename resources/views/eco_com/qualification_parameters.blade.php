@@ -28,19 +28,21 @@
             <ul class="list-group elements-list">
                 <li class="list-group-item active" data-toggle="tab" href="#tab-base-wage"><a href="#"><i
                             class="fa fa-puzzle-piece"></i> Sueldos</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-averages"><a href="#"><i
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-averages"><a href="#"><i
                             class="fa fa-address-card"></i> Promedios</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-complementary-factor"><a href="#"><i
+                <li class="list-group-item" data-toggle="tab" href="#tab-complementary-factor"><a href="#"><i
                             class="fa fa-users"></i> Factor de Complementacion</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-procedure"><a href="#"><i
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-procedure"><a href="#"><i
                             class="fa fa-users"></i> Rango de Fechas</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-import-rents"><a href="#"><i
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-rents"><a href="#"><i
                             class="fa fa-users"></i> Importar Rentas</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-import-rents-aps"><a href="#"><i
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-rents-aps"><a href="#"><i
                             class="fa fa-users"></i> Rentas APS</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-import-pago-futuro"><a href="#"><i
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-pago-futuro"><a href="#"><i
                             class="fa fa-users"></i> Importar Pago a Futuro</a></li>
-                <li class="list-group-item " data-toggle="tab" href="#tab-eco-com-automatic-qualification"><a href="#"><i
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-update-paid-bank"><a href="#"><i
+                            class="fa fa-users"></i> Actualizar Pagados en Banco</a></li>
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-automatic-qualification"><a href="#"><i
                             class="fa fa-users"></i> Calificacion Automatica</a></li>
             </ul>
         </div>
@@ -68,6 +70,9 @@
             </div>
             <div id="tab-eco-com-import-pago-futuro" class="tab-pane">
             <eco-com-import-pago-futuro :permissions="{{ $permissions }}"></eco-com-import-pago-futuro>
+            </div>
+            <div id="tab-eco-com-update-paid-bank" class="tab-pane">
+            <eco-com-update-paid-bank :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-update-paid-bank>
             </div>
             <div id="tab-eco-com-automatic-qualification" class="tab-pane">
             <eco-com-automatic-qualification :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-automatic-qualification>

@@ -10,7 +10,9 @@ use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Imports\EcoComImportAPS;
 use Muserpol\Helpers\Util;
 use Muserpol\Imports\EcoComImportPagoFuturo;
+use Muserpol\Imports\EcoComUpdatePaidBank;
 use Muserpol\Models\Affiliate;
+
 
 class EcoComImportExportController extends Controller
 {
@@ -334,5 +336,20 @@ class EcoComImportExportController extends Controller
         return session()->get('pago_futuro_data');
         // return array_merge(session()->get('senasir_data'), []);
 
+    }
+    public function updatePaidBank(Request $request)
+    {
+        logger($request->all());
+        if ($request->refresh != 'true') {
+            $uploadedFile = $request->file('image');
+            $filename = 'pago_banco.' . $uploadedFile->getClientOriginalExtension();
+            Storage::disk('local')->putFileAs(
+                'pago_banco/' . now()->year,
+                $uploadedFile,
+                $filename
+            );
+        }
+        Excel::import(new EcoComUpdatePaidBank, 'pago_banco/' . now()->year . '/pago_banco.csv');
+        return session()->get('pago_banco_data');
     }
 }
