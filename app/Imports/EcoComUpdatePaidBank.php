@@ -44,14 +44,18 @@ class EcoComUpdatePaidBank implements ToCollection
             
             $affiliate = Affiliate::where('id', $nup)->first();
             $financial_entities = FinancialEntity::where('name', $financial_entity_id)->first();
-            
-            if ($affiliate && $status == $sigep_status && $financial_entities && $account_number>0) {
-                $affiliate->account_number = $account_number;
-                $affiliate->financial_entity_id = $financial_entities->id;
-                $affiliate->sigep_status = $sigep_status;
-                $affiliate->save();
-                $found++;
+            if ($affiliate) {
+                if ($affiliate && $status == $sigep_status && $financial_entities && $account_number>0) {
+                    $affiliate->account_number = $account_number;
+                    $affiliate->financial_entity_id = $financial_entities->id;
+                    $affiliate->sigep_status = $sigep_status;
+                    $affiliate->save();
+                    $found++;
+                }
+            }else {
+                $not_found_t->push($nup);
             }
+            
             logger($sigep_status.$financial_entity_id. $account_number);
             /* $nup = strval($row[0]); 
             $affiliate = Affiliate::where('id', $nup)->first();     
