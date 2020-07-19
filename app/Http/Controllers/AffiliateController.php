@@ -312,10 +312,11 @@ class AffiliateController extends Controller
         $year_death = $death[2];
         
         $is_editable = "1";
+        /* 
         if(isset($retirement_fund->id) && $retirement_fund->procedure_modality_id != 4 && $retirement_fund->procedure_modality_id != 1)
         {
             $is_editable = "0";
-        }
+        } */
         $quota_aid = $affiliate->quota_aid_mortuaries->last();
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
                 
