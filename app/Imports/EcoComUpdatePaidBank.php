@@ -52,6 +52,9 @@ class EcoComUpdatePaidBank implements ToCollection
                     $affiliate->save();
                     $found++;
                 }
+                else {
+                    $not_found_t->push($nup);
+                }
             }else {
                 $not_found_t->push($nup);
             }
