@@ -662,7 +662,10 @@ class EconomicComplement extends Model
         affiliates.mothers_last_name as ap_materno_causahabiente,
         affiliates.surname_husband as ape_casada_causahabiente,
         affiliates.birth_date as fecha_nacimiento,
-        affiliates.nua as codigo_nua_cua";
+        affiliates.nua as codigo_nua_cua,
+        affiliates.sigep_status as Estado_sigep,
+        financial_entities.name as Entidad_financiera,
+        affiliates.account_number as Numero_de_cuenta";
     }
     public static function basic_info_legal_guardian()
     {
@@ -689,7 +692,8 @@ class EconomicComplement extends Model
     {
         return $query->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
             ->leftJoin('cities as affiliate_city', 'affiliates.city_identity_card_id', '=', 'affiliate_city.id')
-            ->leftJoin('pension_entities', 'affiliates.pension_entity_id', '=', 'pension_entities.id');
+            ->leftJoin('pension_entities', 'affiliates.pension_entity_id', '=', 'pension_entities.id')
+            ->leftJoin('financial_entities', 'affiliates.financial_entity_id', '=', 'financial_entities.id');
     }
     public function scopeEcocomstates($query)
     {
