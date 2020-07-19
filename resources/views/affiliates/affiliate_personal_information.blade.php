@@ -248,6 +248,45 @@
                         </div>
                     </div>
                     <br>
+                    <div class="hr-line-dashed"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4"><strong>Número de cuenta:</strong></div>
+                            <div class="col-md-8"><input name="account_number" type="text" v-model="form.account_number" class="form-control" :disabled="!editing">
+                                <div v-show="errors.has('account_number') && editing">
+                                    <i class="fa fa-warning text-danger"></i>
+                                    <span class="text-danger">@{{ errors.first('account_number') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Entidad Financiera:</label>
+                            </div>
+                            <div class="col-md-8">
+                                {!! Form::select('financial_entity_id', $financial_entities, null, ['placeholder' => 'Seleccione Entidad Financiera', 'class' => 'form-control','v-model'=> 'form.financial_entity_id',':disabled'=>'!editing' ]) !!}
+                                <div v-show="errors.has('financial_entity_id') && editing" >
+                                    <i class="fa fa-warning text-danger"></i>
+                                    <span class="text-danger">@{{ errors.first('financial_entity_id') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">Estado Sigep:</label>
+                            </div>
+                            <div class="col-md-8">{!! Form::select('sigep_status', ['ACTIVO'=>'ACTIVO','ELABORADO'=>'ELABORADO','VALIDADO'=>'VALIDADO','SIN REGISTRO'=>'SIN REGISTRO'], null, ['placeholder' => 'Seleccione Estado', 'class' => 'form-control','v-model' => 'form.sigep_status',':disabled' => '!editing']) !!}
+                                <div v-show="errors.has('sigep_status') && editing">
+                                    <i class="fa fa-warning text-danger"></i>
+                                    <span class="text-danger">@{{ errors.first('sigep_status') }}</span>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                     <div class="row" v-show="editing">
                         <div class="text-center">
                             <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>

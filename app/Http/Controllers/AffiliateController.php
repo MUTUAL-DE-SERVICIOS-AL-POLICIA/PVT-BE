@@ -36,6 +36,7 @@ use Muserpol\Models\ObservationType;
 use DB;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\FinancialEntity;
 
 class AffiliateController extends Controller
 {
@@ -222,6 +223,7 @@ class AffiliateController extends Controller
         $degrees = Degree::all()->pluck('name', 'id');
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
+        $financial_entities = FinancialEntity::all()->pluck('name', 'id');
         $affiliate_records = AffiliateRecord::where('affiliate_id', $affiliate->id)
         ->orderBy('id','desc')
         ->get();
@@ -383,7 +385,8 @@ class AffiliateController extends Controller
             'observation_types'  =>  $observation_types,
             'permissions'  =>  $permissions,
             'eco_coms'  =>  $eco_coms,
-            'eco_com_procedures'  =>  $eco_com_procedures
+            'eco_com_procedures'  =>  $eco_com_procedures,
+            'financial_entities' =>  $financial_entities,
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
@@ -514,7 +517,11 @@ class AffiliateController extends Controller
         $affiliate->mothers_last_name = mb_strtoupper($affiliate->mothers_last_name);
         $affiliate->surname_husband = mb_strtoupper($affiliate->surname_husband);        
 
+        $affiliate->account_number = $request->account_number;
+        $affiliate->financial_entity_id = $request->financial_entity_id;
+        $affiliate->sigep_status = $request->sigep_status;
         $affiliate->save();
+
         $affiliate = Affiliate::with('address')->find($affiliate->id);
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
@@ -522,6 +529,9 @@ class AffiliateController extends Controller
         $affiliate->phone_number = explode(',', $affiliate->phone_number);
         $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
         $datos=array('affiliate' => $affiliate ,'city_birth' => $affiliate->city_birth,'city_identity_card' => $affiliate->city_identity_card);
+        
+
+
         return $datos;
 
     }

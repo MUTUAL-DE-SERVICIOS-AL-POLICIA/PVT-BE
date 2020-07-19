@@ -33,6 +33,7 @@ import { flashErrors } from "../../helper.js";
                     surname_husband: this.affiliate.surname_husband,
                     address: this.affiliate.address,
                     registration: this.affiliate.registration,
+                    account_number: this.affiliate.account_number,
                     is_duedate_undefined: this.affiliate.is_duedate_undefined,
                     due_date: this.affiliate.due_date                    
                 },
@@ -140,6 +141,7 @@ import { flashErrors } from "../../helper.js";
                     this.form.surname_husband = this.values.surname_husband;
                     this.form.address = this.values.address;
                     this.form.registration = this.values.registration;
+                    this.form.account_number = this.values.account_number;
                 }else{
                     this.validateBeforeSubmit();
                 }
@@ -179,6 +181,7 @@ import { flashErrors } from "../../helper.js";
                         this.values.due_date = response.data.affiliate.due_date;
                         this.values.address = response.data.affiliate.address;
                         this.pension_entity = response.data.pension_entity;
+                        this.values.account_number = response.data.account_number;
                         flash('Informacion del Afiliado Actualizada');
                         this.loadingButton=false;
                     }).catch((error)=>{
