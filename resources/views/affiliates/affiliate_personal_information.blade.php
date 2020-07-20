@@ -249,29 +249,7 @@
                     </div>
                     <br>
                     <div class="hr-line-dashed"></div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="col-md-4"><strong>Número de cuenta:</strong></div>
-                            <div class="col-md-8"><input name="account_number" type="text" v-model="form.account_number" class="form-control" :disabled="!editing">
-                                <div v-show="errors.has('account_number') && editing">
-                                    <i class="fa fa-warning text-danger"></i>
-                                    <span class="text-danger">@{{ errors.first('account_number') }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="col-md-4">
-                                <label class="control-label">Entidad Financiera:</label>
-                            </div>
-                            <div class="col-md-8">
-                                {!! Form::select('financial_entity_id', $financial_entities, null, ['placeholder' => 'Seleccione Entidad Financiera', 'class' => 'form-control','v-model'=> 'form.financial_entity_id',':disabled'=>'!editing' ]) !!}
-                                <div v-show="errors.has('financial_entity_id') && editing" >
-                                    <i class="fa fa-warning text-danger"></i>
-                                    <span class="text-danger">@{{ errors.first('financial_entity_id') }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <br>
                     <div class="row">
                         <div class="col-md-6">
