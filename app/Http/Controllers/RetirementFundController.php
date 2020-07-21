@@ -46,6 +46,7 @@ use Muserpol\Models\InfoLoan;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\Testimony;
 use Illuminate\Support\Collection;
+use Muserpol\Models\FinancialEntity;
 
 class RetirementFundController extends Controller
 {
@@ -665,6 +666,7 @@ class RetirementFundController extends Controller
 
         $cities_pluck = City::all()->pluck('first_shortened', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
+        $financial_entities = FinancialEntity::all()->pluck('name', 'id');
 
         $states = RetFunState::get();
 
@@ -848,6 +850,7 @@ class RetirementFundController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'states'    =>  $states,
+            'financial_entities'    =>  $financial_entities,
             'ret_fun_records' => $ret_fun_records,
             'requirements'  =>  $procedure_requirements,
             'user'  =>  $user,
