@@ -67,6 +67,8 @@ class EcoComImportPagoFuturo implements ToCollection
                         $not_found->push($affiliate_id);
                     }
                 //}
+            }else {
+                $not_found->push($affiliate_id);
             }
  
         }
