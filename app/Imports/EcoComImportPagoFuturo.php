@@ -38,7 +38,7 @@ class EcoComImportPagoFuturo implements ToCollection
         foreach ($rows as $row) {
             $affiliate_id = strval($row[0]);
             $eco_com = EconomicComplement::select('economic_complements.*')
-                ->where('economic_complements.eco_com_procedure_id', $eco_com_procedure->id)
+                ->where('economic_complements.eco_com_procedure_id', $current_procedures->id)
                  ->where('affiliate_id', $affiliate_id)
                 ->NotHasEcoComState(1, 4, 6)->first();
             if ($eco_com) { 
