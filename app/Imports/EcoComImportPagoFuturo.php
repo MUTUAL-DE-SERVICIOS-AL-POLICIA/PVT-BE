@@ -39,8 +39,7 @@ class EcoComImportPagoFuturo implements ToCollection
             $affiliate_id = strval($row[0]);
             $eco_com = EconomicComplement::select('economic_complements.*')
                 ->where('economic_complements.eco_com_procedure_id', $current_procedures)
-                 ->where('affiliate_id', $affiliate_id)
-                ->NotHasEcoComState(1, 4, 6)->first();
+                 ->where('affiliate_id', $affiliate_id);
             if ($eco_com) { 
                 // if (!$eco_com->hasObservationType($pago_futuro_id)) {
                 //     $eco_com->observations()->save($observation, [
