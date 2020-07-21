@@ -32,25 +32,24 @@ class EcoComUpdatePaidBank implements ToCollection
         $not_found = collect([]);
         $not_found_t = collect([]);
         $user = User::first();
-        $status = "ACTIVO";
+        $status = array("ACTIVO", "ELABORADO", "SIN REGISTRO", "VALIDADO");
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
 
          foreach ($rows as $row) {
             
-            $nup = strval($row[1]);
-            $sigep_status = strval($row[15]);
-            $financial_entity_id = strval($row[16]);
-            $account_number = strval($row[17]);
-            
+            $nup = strval($row[0]);
+            $sigep_status = strval($row[14]);
+            $financial_entity_id = strval($row[15]) ? FinancialEntity::where('name', strval($row[15]))->first()->id : null;
+            $account_number = strval($row[16]) ? strval($row[16]): null;          
             $affiliate = Affiliate::where('id', $nup)->first();
-            $financial_entities = FinancialEntity::where('name', $financial_entity_id)->first();
             if ($affiliate) {
-                if ($affiliate && $status == $sigep_status && $financial_entities && $account_number>0) {
+                if (in_array($sigep_status, $status)) {
                     $affiliate->account_number = $account_number;
-                    $affiliate->financial_entity_id = $financial_entities->id;
-                    $affiliate->sigep_status = $sigep_status;
+                    $affiliate->financial_entity_id = $financial_entity_id;
+                    $affiliate->sigep_status = $sigep_status; 
                     $affiliate->save();
                     $found++;
+                    logger($sigep_status. "/".$account_number. "/" . $financial_entity_id);
                 }
                 else {
                     $not_found_t->push($nup);
@@ -59,7 +58,8 @@ class EcoComUpdatePaidBank implements ToCollection
                 $not_found_t->push($nup);
             }
             
-            logger($sigep_status.$financial_entity_id. $account_number);
+            
+            
             /* $nup = strval($row[0]); 
             $affiliate = Affiliate::where('id', $nup)->first();     
             if ($affiliate) {
