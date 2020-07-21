@@ -33,8 +33,49 @@ class EcoComImportPagoFuturo implements ToCollection
         $user = User::first();
 
         $current_procedures = Util::getEcoComCurrentProcedure()->first();
-
+        $pago_futuro_id = 31;
+        $observation = ObservationType::find($pago_futuro_id);
         foreach ($rows as $row) {
+            $affiliate_id = strval($row[0]);
+            $eco_com = EconomicComplement::select('economic_complements.*')
+                ->where('economic_complements.eco_com_procedure_id', $eco_com_procedure->id)
+                 ->where('affiliate_id', $affiliate_id)
+                ->NotHasEcoComState(1, 4, 6)->first();
+            if ($eco_com) { 
+                if (!$eco_com->hasObservationType($pago_futuro_id)) {
+                    $eco_com->observations()->save($observation, [
+                        'user_id' => Auth::user()->id,
+                        'date' => now(),
+                        'message' => "Observación Importada I/2020",
+                        'enabled' => true
+                    ]);                       
+                    $eco_com->calculateTotalRentAps();
+                    $total_rent = $eco_com->total_rent;
+                    if ($total_rent > 0) {
+                        $total = $total_rent * 2.03 / 100;
+                        $aux = $total * 6;
+                        $discount_type = DiscountType::findOrFail(7);
+                        if ($eco_com->discount_types->contains($discount_type->id)) {
+                            $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
+                        } else {
+                            $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
+                        }
+                    
+                        $found++;
+                            logger("discount creado".$eco_com->id."-".$found);
+                    }else{
+                        $not_found->push($affiliate_id);
+                    }
+                }
+            }
+ 
+        }
+
+
+
+
+
+        /* foreach ($rows as $row) {
             
             $ci = strval($row[0]);
             $affiliate = Affiliate::where('identity_card', $ci)->first();
@@ -77,7 +118,7 @@ class EcoComImportPagoFuturo implements ToCollection
             }
 
 
-        }
+        } */
 
         $data = [
             'found' => $found,
