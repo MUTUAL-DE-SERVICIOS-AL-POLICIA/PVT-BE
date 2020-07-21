@@ -42,13 +42,13 @@ class EcoComImportPagoFuturo implements ToCollection
                  ->where('affiliate_id', $affiliate_id)
                 ->NotHasEcoComState(1, 4, 6)->first();
             if ($eco_com) { 
-                if (!$eco_com->hasObservationType($pago_futuro_id)) {
-                    $eco_com->observations()->save($observation, [
-                        'user_id' => Auth::user()->id,
-                        'date' => now(),
-                        'message' => "Observación Importada I/2020",
-                        'enabled' => true
-                    ]);                       
+                // if (!$eco_com->hasObservationType($pago_futuro_id)) {
+                //     $eco_com->observations()->save($observation, [
+                //         'user_id' => Auth::user()->id,
+                //         'date' => now(),
+                //         'message' => "Observación Importada I/2020",
+                //         'enabled' => true
+                //     ]);                       
                     $eco_com->calculateTotalRentAps();
                     $total_rent = $eco_com->total_rent;
                     if ($total_rent > 0) {
@@ -66,7 +66,7 @@ class EcoComImportPagoFuturo implements ToCollection
                     }else{
                         $not_found->push($affiliate_id);
                     }
-                }
+                //}
             }
  
         }
