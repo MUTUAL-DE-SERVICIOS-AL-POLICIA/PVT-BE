@@ -18,10 +18,13 @@ class EcoComOneStateSheet implements FromCollection, WithTitle, WithHeadings, Sh
 {
     protected $eco_com_procedure_id;
     protected $eco_com_state;
-    public function __construct($eco_com_procedure_id, $eco_com_state)
+    protected $change_state;
+
+    public function __construct($eco_com_procedure_id, $eco_com_state, $change_state = false)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
         $this->eco_com_state = $eco_com_state;
+        $this->change_state = $change_state;
     }
     // public function view(): View
     public function collection()
@@ -35,6 +38,7 @@ class EcoComOneStateSheet implements FromCollection, WithTitle, WithHeadings, Sh
             ->where('economic_complements.wf_current_state_id', 3)
             ->whereIn('economic_complements.eco_com_state_id', [$this->eco_com_state->id])
             ->where('economic_complements.total', '>=', 0)
+            ->directPayment($this->change_state)
             ->select(
                 'economic_complements.id as id',
                 'economic_complements.affiliate_id as NUP',

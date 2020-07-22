@@ -14,9 +14,12 @@ use Muserpol\Helpers\Util;
 class EcoComMoreObservationNoAmortizableSheet implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize
 {
     protected $eco_com_procedure_id;
-    public function __construct($eco_com_procedure_id)
+    protected $change_state;
+
+    public function __construct($eco_com_procedure_id, $change_state = false)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
+        $this->change_state = $change_state;
     }
     public function collection()
     {
@@ -29,6 +32,7 @@ class EcoComMoreObservationNoAmortizableSheet implements FromCollection, WithTit
             ->where('economic_complements.wf_current_state_id', 3)
             ->whereIn('economic_complements.eco_com_state_id', [16])
             ->where('economic_complements.total', '>', 0)
+            ->directPayment($this->change_state)
             ->has('observations')
             ->select(
                 'economic_complements.id as id',

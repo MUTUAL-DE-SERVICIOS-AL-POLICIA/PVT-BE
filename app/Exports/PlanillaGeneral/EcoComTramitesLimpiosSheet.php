@@ -13,9 +13,12 @@ use Muserpol\Models\ObservationType;
 class EcoComTramitesLimpiosSheet implements FromQuery,WithTitle, WithHeadings, ShouldAutoSize
 {
     protected $eco_com_procedure_id;
-    public function __construct($eco_com_procedure_id)
+    protected $change_state;
+    
+    public function __construct($eco_com_procedure_id, $change_state = false)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
+        $this->change_state = $change_state;
     }
     public function query()
     {
@@ -28,6 +31,7 @@ class EcoComTramitesLimpiosSheet implements FromQuery,WithTitle, WithHeadings, S
             ->where('economic_complements.wf_current_state_id', 3)
             ->where('economic_complements.eco_com_state_id', 16)
             ->where('economic_complements.total', '>', 0)
+            ->directPayment($this->change_state)
             ->whereNotIn('economic_complements.id', function ($query) {
                 $query->select('observables.observable_id')
                     ->from('observables')

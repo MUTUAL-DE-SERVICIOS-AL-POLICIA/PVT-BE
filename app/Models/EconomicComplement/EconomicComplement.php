@@ -435,6 +435,20 @@ class EconomicComplement extends Model
             ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
             ->whereIn('eco_com_state_types.id', $collect);
     }
+
+    public function scopeDirectPayment($query, $id)
+    {
+        if ($id == 1) {
+            $collect = collect([1,2,3,4,5,6,7,8,9,10,11,12,13]);
+            $query->where('affiliates.sigep_status', 'LIKE', "ACTIVO")
+                ->whereIn('affiliates.financial_entity_id',$collect)
+                ->where('affiliates.account_number', '>', 0);
+        } elseif ($id == 2) {
+            $query->where('affiliates.sigep_status', 'NOT LIKE', "ACTIVO");
+        } 
+        return $query;
+    }
+
     public function scopeNotHasEcoComState($query, ...$ids)
     {
         $collect = collect([]);

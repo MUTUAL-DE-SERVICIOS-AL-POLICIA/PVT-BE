@@ -84,7 +84,8 @@ class EcoComReportController extends Controller
                 return Excel::download(new EcoComTagsReport($eco_com_procedure->id), 'Reporte.xlsx');
                 break;
             case 17:
-                return Excel::download(new EcoComPlanillaGeneralReport($eco_com_procedure->id), 'Reporte.xlsx');
+                $change_state = $request->changeState;
+                return Excel::download(new EcoComPlanillaGeneralReport($eco_com_procedure->id, $change_state), 'Reporte.xlsx');
                 break;
             case 18:
                 $change_state = $request->changeState;

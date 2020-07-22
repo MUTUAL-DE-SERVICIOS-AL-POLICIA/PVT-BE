@@ -15,10 +15,13 @@ class EcoComNoAmortizationSheet implements FromQuery, WithTitle, WithHeadings, S
 {
     protected $eco_com_procedure_id;
     protected $observation_type;
-    public function __construct($eco_com_procedure_id,$observation_type)
+    protected $change_state;
+
+    public function __construct($eco_com_procedure_id,$observation_type, $change_state = false)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
         $this->observation_type = $observation_type;
+        $this->change_state = $change_state;
     }
     public function query()
     {
@@ -31,6 +34,7 @@ class EcoComNoAmortizationSheet implements FromQuery, WithTitle, WithHeadings, S
             ->where('economic_complements.wf_current_state_id', 3)
             ->whereIn('economic_complements.eco_com_state_id', [16])
             ->where('economic_complements.total', '>', 0)
+            ->directPayment($this->change_state)
             ->whereNotIn('economic_complements.id', function ($query) {
                 $query->select('observables.observable_id')
                     ->from('observables')

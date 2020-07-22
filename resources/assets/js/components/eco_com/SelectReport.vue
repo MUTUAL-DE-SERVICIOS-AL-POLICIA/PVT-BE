@@ -10,6 +10,16 @@
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
       </select>
     </div>
+
+    <div v-if="form.reportTypeId == 17">
+      <label for="change-state">Tipo de Reporte: </label>
+      <select id="change-state" v-model="form.changeState">
+        <option value="0" selected>Todos los Trámites</option>
+        <option value="1">Pago Directo</option>
+        <option value="2">Pago Indirecto</option>
+      </select>
+    </div>
+
     <div v-if="form.reportTypeId == 18 && rol.id == 5">
       <label for="change-state">Actualizar Estados</label>
       <i class="fa fa-question-circle" title="Si marca esta opcion actualizara todos los tramites listados en el reporte a Enviado a Banco"></i>
