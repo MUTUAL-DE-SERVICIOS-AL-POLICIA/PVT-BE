@@ -439,7 +439,7 @@ class EconomicComplement extends Model
     public function scopeDirectPayment($query, $id)
     {
         if ($id == 1) {
-            $collect = collect([1,2,3,4,5,6,7,8,9,10,11,12,13]);
+            $collect = collect([1,2,3,4,5,7,8,9,10,11,12,13]);
             $query->where('affiliates.sigep_status', 'LIKE', "ACTIVO")
                 ->whereIn('affiliates.financial_entity_id',$collect)
                 ->where('affiliates.account_number', '>', 0);
