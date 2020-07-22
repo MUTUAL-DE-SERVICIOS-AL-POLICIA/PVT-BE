@@ -1084,6 +1084,7 @@ class Util
       'observations',
       'discount_types',
     ])
+      ->indirectPayment()
       ->ecoComProcedure($eco_com_procedure_id) // procedure_id
       ->NotHasEcoComState(1, 4, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
       ->workflow(1, 2, 3) // los 3 workflows
@@ -1161,9 +1162,10 @@ class Util
         $e->getEcoComBeneficiaryBank()->second_name,
         $eco_com_procedure->getYear(),
         now()->month,
-        $e->eco_com_modality->shortened . " - " . $e->degree->shortened . " - " . $e->category->name . " - " . "TOTAL DESCUENTO: "  . $descuento,
-        2307,
         $e->affiliate_id,
+        2307,
+        $e->eco_com_modality->shortened . " - " . $e->degree->shortened . " - " . $e->category->name . " - " . "TOTAL DESCUENTO: "  . $descuento,
+
         
       ]); 
       $index++;
