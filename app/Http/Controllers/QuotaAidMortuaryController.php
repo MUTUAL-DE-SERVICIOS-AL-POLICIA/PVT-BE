@@ -40,6 +40,7 @@ use Muserpol\Models\Testimony;
 use Muserpol\Models\InfoLoan;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureState;
+use Muserpol\Models\FinancialEntity;
 
 class QuotaAidMortuaryController extends Controller
 {
@@ -623,6 +624,7 @@ class QuotaAidMortuaryController extends Controller
     $birth_cities = City::all()->pluck('name', 'id');
 
     $states = ProcedureState::all();
+    $financial_entities = FinancialEntity::all()->pluck('name', 'id');
 
 
     $quota_aid_records =  QuotaAidRecord::where('quota_aid_id', $id)->orderBy('id', 'desc')->get();
@@ -721,6 +723,7 @@ class QuotaAidMortuaryController extends Controller
       'kinships'   =>  $kinships,
       'cities_pluck' => $cities_pluck,
       'birth_cities' => $birth_cities,
+      'financial_entities'    =>  $financial_entities,
       'states'    =>  $states,
       'quota_aid_records' => $quota_aid_records,
       'requirements'  =>  $procedure_requirements,
