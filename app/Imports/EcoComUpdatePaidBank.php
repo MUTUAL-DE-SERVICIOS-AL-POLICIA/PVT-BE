@@ -36,6 +36,8 @@ class EcoComUpdatePaidBank implements ToCollection
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
 
         foreach ($rows as $row) {
+            $nup = strval($row[0]); 
+            $affiliate = Affiliate::where('id', $nup)->first();
             $sigep_status = strval($row[14]);
             $financial_entity_id = strval($row[15]) ? FinancialEntity::where('name', strval($row[15]))->first()->id : null;
             $account_number = strval($row[16]) ? strval($row[16]): null;  
