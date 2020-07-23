@@ -35,30 +35,10 @@ class EcoComUpdatePaidBank implements ToCollection
         $status = array("ACTIVO", "ELABORADO", "SIN REGISTRO", "VALIDADO");
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
 
-         foreach ($rows as $row) {
-            
-            $nup = strval($row[0]);   
-            $affiliate = Affiliate::where('id', $nup)->first();
-            if ($affiliate) {
-                $eco_coms = $affiliate->economic_complements()->where('eco_com_procedure_id', $current_procedure)->get();            
-                foreach ($eco_coms as $eco) {
-                    if ( $eco->eco_com_state_id == 16) {
-                        $eco->eco_com_state_id = 25;
-                        $eco->save();
-                        $found++;
-                    }else{
-                        $not_found_t->push($nup);
-                    }
-                }                  
-            }else{
-                $not_found->push($nup);
-            }
-            /*
-            
+        foreach ($rows as $row) {
             $sigep_status = strval($row[14]);
             $financial_entity_id = strval($row[15]) ? FinancialEntity::where('name', strval($row[15]))->first()->id : null;
             $account_number = strval($row[16]) ? strval($row[16]): null;  
-            
             if ($affiliate) {
                 if (in_array($sigep_status, $status)) {
                     $affiliate->account_number = $account_number;
@@ -73,9 +53,7 @@ class EcoComUpdatePaidBank implements ToCollection
                 }
             }else {
                 $not_found_t->push($nup);
-            }*/
-            
-            
+            }
             
             /* 
             
@@ -94,7 +72,26 @@ class EcoComUpdatePaidBank implements ToCollection
                 }                  
             }else{
                 $not_found->push($nup);
-            } */
+            } 
+            
+            $nup = strval($row[0]);   
+            $affiliate = Affiliate::where('id', $nup)->first();
+            if ($affiliate) {
+                $eco_coms = $affiliate->economic_complements()->where('eco_com_procedure_id', $current_procedure)->get();            
+                foreach ($eco_coms as $eco) {
+                    if ( $eco->eco_com_state_id == 16) {
+                        $eco->eco_com_state_id = 25;
+                        $eco->save();
+                        $found++;
+                    }else{
+                        $not_found_t->push($nup);
+                    }
+                }                  
+            }else{
+                $not_found->push($nup);
+            }
+            
+            */
         }
 
         $data = [
