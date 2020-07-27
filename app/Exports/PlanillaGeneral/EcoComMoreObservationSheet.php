@@ -39,7 +39,6 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
             ->where('economic_complements.total', '>', 0)
             ->directPayment($this->change_state)
             ->has('observations')
-            ->groupBy('economic_complements.id','observables.observable_id')
             ->select(
                 'economic_complements.id as id',
                 'economic_complements.affiliate_id as NUP',

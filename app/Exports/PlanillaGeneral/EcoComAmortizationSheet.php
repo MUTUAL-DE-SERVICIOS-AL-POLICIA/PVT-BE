@@ -53,7 +53,6 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
                 $query->where('discount_types.id', Util::getDiscountId($this->observation_type->id));
             })
             ->leftJoin('discount_type_economic_complement', 'discount_type_economic_complement.economic_complement_id', '=', 'economic_complements.id')
-            ->groupBy('economic_complements.id','observables.observable_id')
             ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns));
     }
     public function title(): string
