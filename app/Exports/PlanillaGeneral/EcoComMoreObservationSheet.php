@@ -39,6 +39,7 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
             ->where('economic_complements.total', '>', 0)
             ->directPayment($this->change_state)
             ->has('observations')
+            ->groupBy('economic_complements.id','observables.observable_id')
             ->select(
                 'economic_complements.id as id',
                 'economic_complements.affiliate_id as NUP',
@@ -69,6 +70,9 @@ class EcoComMoreObservationSheet implements FromCollection, WithTitle, WithHeadi
                 'affiliates.surname_husband as ape_casada_causahabiente',
                 'affiliates.birth_date as fecha_nacimiento',
                 'affiliates.nua as codigo_nua_cua',
+                'affiliates.sigep_status as Estado_sigep',
+                'financial_entities.name as Entidad_financiera',
+                'affiliates.account_number as Numero_de_cuenta',
                 'eco_com_city.name as regional',
                 'procedure_modalities.name as tipo_de_prestacion',
                 'eco_com_reception_types.name as reception_type',
