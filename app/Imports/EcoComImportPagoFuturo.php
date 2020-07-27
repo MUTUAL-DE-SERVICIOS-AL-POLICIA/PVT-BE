@@ -47,7 +47,8 @@ class EcoComImportPagoFuturo implements ToCollection
                          'date' => now(),
                          'message' => "Observación Importada I/2020",
                          'enabled' => true
-                     ]);                       
+                     ]);
+                    }                     
                     $eco_com->calculateTotalRentAps();
                     $total_rent = $eco_com->total_rent;
                     if ($total_rent > 0) {
@@ -65,7 +66,7 @@ class EcoComImportPagoFuturo implements ToCollection
                     }else{
                         $not_found->push($affiliate_id);
                     }
-                //}
+                
             }else {
                 $not_found->push($affiliate_id);
             }
