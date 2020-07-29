@@ -36,9 +36,9 @@ class EcoComUpdatePaidBank implements ToCollection
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
 
          foreach ($rows as $row) {
-            
+            /*
             $nup = strval($row[0]);
-            $sigep_status = strval($row[14]);
+            $sigep_status = strval($row[14]);  
             $financial_entity_id = strval($row[15]) ? FinancialEntity::where('name', strval($row[15]))->first()->id : null;
             $account_number = strval($row[16]) ? strval($row[16]): null;          
             $affiliate = Affiliate::where('id', $nup)->first();
@@ -56,11 +56,10 @@ class EcoComUpdatePaidBank implements ToCollection
                 }
             }else {
                 $not_found_t->push($nup);
-            }
+            }*/
             
-            
-            
-            /* $nup = strval($row[0]); 
+            /*
+            $nup = strval($row[0]); 
             $affiliate = Affiliate::where('id', $nup)->first();     
             if ($affiliate) {
                 $eco_coms = $affiliate->economic_complements()->where('eco_com_procedure_id', $current_procedure)->get();            
@@ -75,7 +74,8 @@ class EcoComUpdatePaidBank implements ToCollection
                 }                  
             }else{
                 $not_found->push($nup);
-            } 
+            }
+            */
             
             $nup = strval($row[0]);   
             $affiliate = Affiliate::where('id', $nup)->first();
@@ -93,8 +93,6 @@ class EcoComUpdatePaidBank implements ToCollection
             }else{
                 $not_found->push($nup);
             }
-            
-            */
         }
 
         $data = [
