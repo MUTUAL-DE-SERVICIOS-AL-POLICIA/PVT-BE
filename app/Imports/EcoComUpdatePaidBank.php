@@ -48,17 +48,17 @@ class EcoComUpdatePaidBank implements ToCollection
                 if (!Util::isDoblePerceptionEcoCom($ci)) {
                         if ( $eco_com->eco_com_state_id == 25) {
                             $eco_com->eco_com_state_id = 16;
-                            //$eco_com->save();
+                            $eco_com->save();
 
                             $affiliate = Affiliate::where('id', $eco_com->affiliate_id)->first();
                             $affiliate->sigep_status = '';
-                            //$affiliate->save();
+                            $affiliate->save();
 
                             $found++;
                         logger($ci);
-                    }
+                }
                 } else {
-                    logger("sii doble " . $ci);
+                    logger("------------------- si doble " . $ci);
                 }
             } else {
                 $not_found->push($ci);
