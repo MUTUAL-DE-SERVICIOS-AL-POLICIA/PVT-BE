@@ -46,11 +46,11 @@ class EcoComUpdatePaidBank implements ToCollection
                 ->first();
             if ($eco_com) {
                 if (!Util::isDoblePerceptionEcoCom($ci)) {
-                        if ( $eco->eco_com_state_id == 25) {
-                            $eco->eco_com_state_id = 16;
-                            //$eco->save();
+                        if ( $eco_com->eco_com_state_id == 25) {
+                            $eco_com->eco_com_state_id = 16;
+                            //$eco_com->save();
 
-                            $affiliate = Affiliate::where('id', $eco->affiliate_id)->first();
+                            $affiliate = Affiliate::where('id', $eco_com->affiliate_id)->first();
                             $affiliate->sigep_status = '';
                             //$affiliate->save();
 
