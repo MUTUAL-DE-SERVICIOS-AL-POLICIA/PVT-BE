@@ -40,7 +40,7 @@ class EcoComUpdatePaidBank implements ToCollection
 
             $ci = strval($row[0]); //ci
             $eco_com = EconomicComplement::select('economic_complements.*')->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
-                ->where('economic_complements.eco_com_procedure_id', $current_procedure->id)
+                ->where('economic_complements.eco_com_procedure_id', $current_procedure)
                 ->where('economic_complements.eco_com_state_id', 25)
                 ->whereRaw("ltrim(trim(eco_com_applicants.identity_card),'0') ='" . ltrim(trim($ci), '0') . "'")
                 ->first();
