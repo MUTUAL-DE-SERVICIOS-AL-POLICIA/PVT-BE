@@ -51,7 +51,7 @@ class EcoComUpdatePaidBank implements ToCollection
                             $eco_com->save();
 
                             $affiliate = Affiliate::where('id', $eco_com->affiliate_id)->first();
-                            $affiliate->sigep_status = '';
+                            $affiliate->sigep_status = NULL;
                             $affiliate->save();
 
                             $found++;
