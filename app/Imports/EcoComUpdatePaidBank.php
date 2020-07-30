@@ -55,10 +55,10 @@ class EcoComUpdatePaidBank implements ToCollection
                             //$affiliate->save();
 
                             $found++;
-                       
+                        logger($ci);
                     }
                 } else {
-                    logger("sii doble" . $ci);
+                    logger("sii doble " . $ci);
                 }
             } else {
                 $not_found->push($ci);
