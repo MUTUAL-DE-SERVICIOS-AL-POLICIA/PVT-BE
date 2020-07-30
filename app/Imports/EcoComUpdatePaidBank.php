@@ -36,6 +36,37 @@ class EcoComUpdatePaidBank implements ToCollection
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
 
          foreach ($rows as $row) {
+
+
+            $ci = strval($row[1]); //ci
+            $eco_com = EconomicComplement::select('economic_complements.*')->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
+                ->where('economic_complements.eco_com_procedure_id', $current_procedure->id)
+                ->where('economic_complements.eco_com_state_id', 25)
+                ->whereRaw("ltrim(trim(eco_com_applicants.identity_card),'0') ='" . ltrim(trim($ci), '0') . "'")
+                ->first();
+            if ($eco_com) {
+                if (!Util::isDoblePerceptionEcoCom($ci)) {
+                        if ( $eco->eco_com_state_id == 25) {
+                            $eco->eco_com_state_id = 16;
+                            //$eco->save();
+
+                            $affiliate = Affiliate::where('id', $eco->affiliate_id)->first();
+                            $affiliate->sigep_status = '';
+                            //$affiliate->save();
+
+                            $found++;
+                       
+                    }
+                } else {
+                    logger("sii doble" . $ci);
+                }
+            } else {
+                $not_found->push($ci);
+            }
+
+
+
+
             /*
             $nup = strval($row[0]);
             $sigep_status = strval($row[14]);  
@@ -76,7 +107,12 @@ class EcoComUpdatePaidBank implements ToCollection
                 $not_found->push($nup);
             }
             */
-            
+
+
+
+
+
+            /*
             $nup = strval($row[0]);   
             $affiliate = Affiliate::where('id', $nup)->first();
             if ($affiliate) {
@@ -86,13 +122,13 @@ class EcoComUpdatePaidBank implements ToCollection
                         $eco->eco_com_state_id = 25;
                         $eco->save();
                         $found++;
-                    /* }else{
-                        $not_found_t->push($nup);
-                    } */
+                    // }else{
+                    //    $not_found_t->push($nup);
+                    //} 
                 }                  
             }else{
                 $not_found->push($nup);
-            }
+            }*/
         }
 
         $data = [
