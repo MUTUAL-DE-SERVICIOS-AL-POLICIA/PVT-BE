@@ -453,8 +453,7 @@ class EconomicComplement extends Model
     public function scopeIndirectPayment($query)
     {          
         $query->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id') 
-            ->where('affiliates.sigep_status', 'NOT LIKE', 'ACTIVO')
-            ->orwhere('affiliates.account_number', null);
+            ->where('affiliates.sigep_status', 'NOT LIKE', 'ACTIVO');
         return $query;
     }
 
