@@ -725,16 +725,16 @@ class QuotaAidCertificationController extends Controller
     /** LAW DATA */
 
     $art = [
-      '8' => '43 inciso a)',
-      '9' => '43 inciso b)',
-      '13' => '44 inciso a)',
-      '14' => '44 inciso b)',
-      '15' => '44 inciso c)',
+      '8' => '42 inciso a)',
+      '9' => '42 inciso b)',
+      '13' => '43 inciso a)',
+      '14' => '43 inciso b)',
+      '15' => '43 inciso c)',
     ];
 
     $law = "Conforme normativa, el trámite N° " . $quota_aid->code . " de la Regional " . ucwords(strtolower($quota_aid->city_start->name)) . " es ingresado por Ventanilla
         de Atención al Afiliado de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio; verificados los requisitos y la documentación presentada por la parte solicitante según lo señalado
-        el Art. " . $art[$quota_aid->procedure_modality_id] . " (" . $quota_aid->procedure_modality->procedure_type->name . " al " . $quota_aid->procedure_modality->name . ") del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 de fecha 08 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de fecha 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, y conforme el Art. 48 de referido Reglamento (Procedimiento), se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:";
+        el Art. " . $art[$quota_aid->procedure_modality_id] . " (" . $quota_aid->procedure_modality->procedure_type->name . " al " . $quota_aid->procedure_modality->name . ") del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 76/2019 de fecha 11 de diciembre de 2019 y conforme el Art. 48 de referido Reglamento (Procedimiento), se detalla la documentación como resultado de la aplicación de la base técnica-legal del Estudio Matemático Actuarial 2016-2020, generada y adjuntada al expediente por los funcionarios de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según correspondan las funciones, detallando lo siguiente:";
     /** END LAW DATA */
 
     $body = "";
@@ -804,7 +804,7 @@ class QuotaAidCertificationController extends Controller
       '6'  =>  'de su retiro.',
       '7'  =>  'de su retiro.',
     ];
-    $body_accounts = "Que, mediante Certificación de Aportes N° " . $accounts->code . " del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($accounts->date) . ", se verificó los últimos " . "12" . " aportes antes del fallecimiento";
+    $body_accounts = "Que, mediante Certificación de Aportes N° " . $accounts->code . " del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($accounts->date) . ", se verificó los aportes requeridos según el reglamento vigente";
 
     switch ($quota_aid->procedure_modality_id) {
       case 14:
@@ -836,14 +836,14 @@ class QuotaAidCertificationController extends Controller
     $payment = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario,
         Cuota y Auxilio Mortuorio, autorizado por Jefatura de la referida Unidad, conforme a los Art. ";
     $art = [
-      8 => '2, 3, 5, 6, 10, 20, 21, 22, 24, 25, 26, 27, 28, 29, 43, 47, 48 y 51 ',
-      9 => '2, 3, 5, 6, 10, 20, 21, 23, 24, 25, 26, 27, 28, 29, 43, 47, 48 y 51 ',
-      13 => '2, 3, 5, 6, 10, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 ',
-      14 => '2, 3, 5, 6, 10, 31, 32, 34, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 ',
-      15 => '2, 3, 5, 6, 10, 31, 32, 35, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 '
+      8 => '2, 3, 5, 6, 10, 20, 21, 22, 24, 25, 26, 27, 28, 29, 42, 47, 48 y 51 ',
+      9 => '2, 3, 5, 6, 10, 20, 21, 23, 24, 25, 26, 27, 28, 29, 42, 47, 48 y 51 ',
+      13 => '2, 3, 5, 6, 10, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42, 43, 47, 48, 52 y Disposición Transitoria Cuarta',
+      14 => '2, 3, 5, 6, 10, 31, 32, 34, 36, 37, 38, 39, 40, 41, 42, 43, 47, 48, 52 y Disposición Transitoria Cuarta',
+      15 => '2, 3, 5, 6, 10, 31, 32, 35, 36, 37, 38, 39, 40, 41, 42, 43, 47, 48, 52 y Disposición Transitoria Cuarta'
     ];
-    $payment .= $art[$quota_aid->procedure_modality_id] . " del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 43/2017 en fecha 08 de noviembre de 2017 y
-        modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019. Se <strong>DICTAMINA</strong> en mérito a la documentación de respaldo contenida en el presente reconocer
+    $payment .= $art[$quota_aid->procedure_modality_id] . " del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 76/2019 en fecha 11 de diciembre de 2019.
+     Se <strong>DICTAMINA</strong> en mérito a la documentación de respaldo contenida en el presente reconocer
         los derechos y se otorgue el beneficio de <strong>" . strtoupper($quota_aid->procedure_modality->procedure_type->second_name) . "</strong> por <strong class='uppercase'>" . $quota_aid->procedure_modality->name . "</strong> a favor ";
 
     $flagy = 0;
@@ -880,7 +880,7 @@ class QuotaAidCertificationController extends Controller
           } else {
             $payment .= ($affiliate->gender == "M" ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . " " . ($affiliate->city_identity_card->first_shortened ?? "SIN CI");
           }
-          $payment .= ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. 23, 28 y " . $art[$quota_aid->procedure_modality_id] . " del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 43/2017 en fecha 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros. 51/2017 de fecha 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, de la siguiente manera:<br><br>";
+          $payment .= ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. " . $art[$quota_aid->procedure_modality_id] . " del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 76/2019 en fecha 11 de diciembre de 2019, de la siguiente manera:<br><br>";
         }
         //return $beneficiary;
         if (Util::isChild($beneficiary->birth_date)) {
