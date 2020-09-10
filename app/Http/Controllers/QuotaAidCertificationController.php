@@ -1018,6 +1018,8 @@ class QuotaAidCertificationController extends Controller
     }
     $law .= 'que consiste en el pago de un monto único y por una sola vez”</i>.
         <br> <br>
+        Que, la Mutual de Servicios al Policía al ser una institución pública descentralizada, bajo tuición del Ministerio de Gobierno, regula su actividad y procedimiento bajo los principios generales descritos en el Art. 232 de la Constitución Política del Estado, Art. 4 de la Ley 2341 y Art. 3 del Decreto Supremo N° 27113, cuya competencia para conocer asuntos administrativos suscitados tanto por la institución, así como por los administrados, se sujetan a lo determinado por el Art. 5 de la Ley de Procedimiento Administrativo.
+        <br> <br>
         Que, el Estudio Matemático Actuarial 2016 – 2020, aprobado mediante Resolución de Directorio Nº 26/2017, de 11 de agosto de 2017, determina las cuantías para la otorgación del beneficio de ' . $quota_aid->procedure_modality->procedure_type->second_name . '.
         <br><br>
         Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, en sus Artículos
@@ -1027,9 +1029,19 @@ class QuotaAidCertificationController extends Controller
         <br><br>
         Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, ';
     if ($quota_aid->procedure_modality->procedure_type_id == 3) {
-      $law .= 'aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 ';
+        $law .= 'aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 ';
     }
-    $law .= 'en su Artículo 55 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento administrativo para la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 014/2020 del 8 de julio de 2020, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.';
+    $law .= 'en su Artículo 55 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento administrativo para la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 022/2020 del 4 de septiembre de 2020, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.<br><br>';
+    
+    $law .= 'Que, al momento de la presentación de la documentación para acceder los beneficios de Fondo de Retiro Policial Solidario, Cuota Mortuoria y Auxilio Mortuoria por parte del (los) solicitante (s), el formulario de solicitud adquiere carácter de Declaratoria Jurada Voluntaria, donde los firmantes asumen la responsabilidad de reparar el daño ocasionado a terceros que pueden demostrar igual o mejor derecho, de acuerdo a lo determinado por autoridad competente.';
+
+    $law .= 'Que, los derechohabientes que efectivicen el cobro indebido del beneficio obrando con dolo, vulnerando el principio de buena fe establecido en la ley N° 2341 de Procedimiento Administrativo, asumen la responsabilidad de reparar el daño ocasionado a terceros que puedan demostrar igual o mejor derecho, de acuerdo a lo determinado por autoridad competente.';
+    
+    $law .= 'Que, según lo establecido en el ' . ($quota_aid->procedure_modality->procedure_type_id == 3 ? "Art. 42 del Reglamento de Cuota Mortuoria " : "Art. 43 del Reglamento de Auxilio Mortuorio ") . '
+        por parte del (los) solicitante (s), 
+        el Formulario de solicitud adquiere carácter de declaración jurada voluntaria a través de la cual, el (los) derechohabiente (s) 
+        que efectivizan el cobro del beneficio, se hacen responsables de reparar los daños que se origine por la vulneración de derechos de 
+        terceros que puedan acreditar igual o mejor derecho.';
 
     $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 33)->first();
 
