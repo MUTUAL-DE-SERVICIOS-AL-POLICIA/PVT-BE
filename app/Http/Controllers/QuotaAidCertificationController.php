@@ -1033,15 +1033,13 @@ class QuotaAidCertificationController extends Controller
     }
     $law .= 'en su Artículo 55 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento administrativo para la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 022/2020 del 4 de septiembre de 2020, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.<br><br>';
     
-    $law .= 'Que, al momento de la presentación de la documentación para acceder los beneficios de Fondo de Retiro Policial Solidario, Cuota Mortuoria y Auxilio Mortuoria por parte del (los) solicitante (s), el formulario de solicitud adquiere carácter de Declaratoria Jurada Voluntaria, donde los firmantes asumen la responsabilidad de reparar el daño ocasionado a terceros que pueden demostrar igual o mejor derecho, de acuerdo a lo determinado por autoridad competente.';
-
-    $law .= 'Que, los derechohabientes que efectivicen el cobro indebido del beneficio obrando con dolo, vulnerando el principio de buena fe establecido en la ley N° 2341 de Procedimiento Administrativo, asumen la responsabilidad de reparar el daño ocasionado a terceros que puedan demostrar igual o mejor derecho, de acuerdo a lo determinado por autoridad competente.';
-    
-    $law .= 'Que, según lo establecido en el ' . ($quota_aid->procedure_modality->procedure_type_id == 3 ? "Art. 42 del Reglamento de Cuota Mortuoria " : "Art. 43 del Reglamento de Auxilio Mortuorio ") . '
-        por parte del (los) solicitante (s), 
-        el Formulario de solicitud adquiere carácter de declaración jurada voluntaria a través de la cual, el (los) derechohabiente (s) 
-        que efectivizan el cobro del beneficio, se hacen responsables de reparar los daños que se origine por la vulneración de derechos de 
-        terceros que puedan acreditar igual o mejor derecho.';
+    $law .= 'Que, según lo establecido en el Art. 41 del Reglamento de Fondo de Retiro Policial Solidario, 
+    al momento de la presentación de la documentación para acceder a los beneficios de Fondo de Retiro Policial 
+    Solidario, Cuota Mortuoria y Auxilio Mortuorio por parte del (los) solicitante (s), el Formulario de Solicitud 
+    adquiere carácter de Declaración Jurada Voluntaria a través de la cual, el (los) derechohabiente (s) que efectivizan 
+    el cobro del beneficio, se hacen responsables de reparar los daños que se origine por la vulneración de derechos de 
+    terceros que puedan acreditar igual o mejor derecho.  
+    <br><br>';
 
     $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 33)->first();
 
