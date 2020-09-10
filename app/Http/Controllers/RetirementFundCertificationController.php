@@ -2023,19 +2023,13 @@ class RetirementFundCertificationController extends Controller
             Que, el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: <i>“Generada la desvinculación de la Policía Boliviana, se reconocerá al titular el aporte laboral efectivizado en el destino de la disponibilidad de las letras en función al aporte laboral efectuado (prima de aportación) más rendimiento de 5%, siempre y cuando no se haya suscitado el fallecimiento y el tiempo de aporte en éste destino no haya formado parte de la calificación del beneficio de Fondo de Retiro Policial”</i>.<br><br>';
 
     }
-    if ($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
-        $law .= 'Que, los derechohabientes que efectivicen el cobro indebido del beneficio obrando con dolo, 
-            vulnerando el principio de buena fe establecido en la ley N° 2341 de Procedimiento Administrativo, 
-            asumen la responsabilidad de reparar el daño ocasionado a terceros que puedan demostrar igual o mejor 
-            derecho, de acuerdo a lo determinado por autoridad competente.
-            <br><br>';
-    }
 
     $law .= 'Que, según lo establecido en el Art. 41 del Reglamento de Fondo de Retiro Policial Solidario, 
-        Cuota Mortuoria y Auxilio Mortuorio por parte del (los) solicitante (s), el Formulario de solicitud adquiere 
-        carácter de declaración jurada voluntaria a través de la cual, el (los) derechohabiente (s) que efectivizan 
-        el cobro del beneficio, se hacen responsables de reparar los daños que se origine por la vulneración de derechos 
-        de terceros que puedan acreditar igual o mejor derecho.  
+        al momento de la presentación de la documentación para acceder a los beneficios de Fondo de Retiro Policial 
+        Solidario, Cuota Mortuoria y Auxilio Mortuorio por parte del (los) solicitante (s), el Formulario de Solicitud 
+        adquiere carácter de Declaración Jurada Voluntaria a través de la cual, el (los) derechohabiente (s) que efectivizan 
+        el cobro del beneficio, se hacen responsables de reparar los daños que se origine por la vulneración de derechos de 
+        terceros que puedan acreditar igual o mejor derecho.  
         <br><br>';
 
     // $due = 'Que, mediante Resolución de la Comisión de Prestaciones Nº de fecha , se otorgó en calidad
@@ -2082,7 +2076,7 @@ class RetirementFundCertificationController extends Controller
     $qualification_id = 23;
     $qualification = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', $qualification_id)->first();
     $months  = $affiliate->getTotalQuotes();
-    $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario <b>N° " . $qualification->code . "</b> de fecha <strong>" . Util::getStringDate($qualification->date) . "</strong>, de la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente " . ($affiliate->gender == 'M' ? 'al' : 'a la') . "<strong>&nbsp; "
+    $body_qualification .= "Que, mediante Calificación Fondo de Retiro Policial Solidario <b>N° " . $qualification->code . "</b> de fecha <strong>" . Util::getStringDate($qualification->date) . "</strong>, la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente " . ($affiliate->gender == 'M' ? 'al' : 'a la') . "<strong>&nbsp; "
       . $affiliate->fullNameWithDegree() . "</strong> con C.I. Nº <b>" . $affiliate->identity_card . ' ' . $affiliate->city_identity_card->first_shortened . "</b>, determina el monto de <b>" . Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun) . "</b>";
     if ($affiliate->hasAvailability()) {
       $body_qualification .= ", de la misma forma realizó el cálculo por el reconocimiento de aportes laborales durante el periodo de disponibilidad, por no ser considerados en la calificación del " . $retirement_fund->procedure_modality->procedure_type->name . ", de acuerdo a los parámetros establecidos por el Estudio Matemático Actuarial 2016 – 2020; correspondiéndole el monto de <b>" . Util::formatMoneyWithLiteral($retirement_fund->total_availability) . "</b>, haciendo un monto total de<strong> " . Util::formatMoneyWithLiteral($retirement_fund->total_availability + $retirement_fund->subtotal_ret_fun) . "</strong>";
