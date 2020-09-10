@@ -1950,7 +1950,15 @@ class RetirementFundCertificationController extends Controller
         reconocimiento de un pago único, con motivo y oportunidad del retiro definitivo de la actividad
         remunerada dependiente de la Policía Boliviana, el cual será administrado por la MUSERPOL; a
         ser otorgado en el marco del principio de solidaridad, cuando el retiro se produzca por: a)
-        Jubilación, b) Fallecimiento del titular, c) Retiro forzoso, d) Retiro voluntario”</i>.<br><br>
+        Jubilación, b) Fallecimiento del titular, c) Retiro forzoso, d) Retiro voluntario”</i>.
+        <br><br>
+        Que, la Mutual de Servicios al Policía al ser una institución pública descentralizada, 
+        bajo tuición del Ministerio de Gobierno, regula su actividad y procedimiento bajo los principios 
+         generales descritos en el Art. 232 de la Constitución Política del Estado, Art. 4 de la Ley 2341 y 
+         Art. 3 del Decreto Supremo N° 27113, cuya competencia para conocer asuntos administrativos suscitados 
+        tanto por la institución, así como por los administrados, se sujetan a lo determinado por el Art. 5 
+        de la Ley de Procedimiento Administrativo.
+        <br><br>
         Que, el Estudio Matemático Actuarial 2016 – 2020, aprobado mediante Resolución de Directorio
         Nº 26/2017, de 11 de agosto de 2017, determina la modalidad y parámetros de calificación para
         la otorgación del beneficio de Fondo de Retiro Policial Solidario.
@@ -2003,17 +2011,32 @@ class RetirementFundCertificationController extends Controller
         <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento
         administrativo para la otorgación del beneficio de Fondo de Retiro Policial Solidario. Es designada
         mediante Resolución Administrativa de la Dirección General Ejecutiva de la MUSERPOL”</i>. Por consiguiente,
-        la Resolución Administrativa Nº 014/2020 del 8 de julio de 2020, conforma la Comisión de Beneficios Económicos,
+        la Resolución Administrativa Nº 022/2020 del 4 de septiem de 2020, conforma la Comisión de Beneficios Económicos,
         en cumplimiento al Reglamento.
         <br><br>';
 
     if ($affiliate->hasAvailability()) {
-      $law .= 'Que dicho Reglamento, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 36/2017 de 20 de septiembre de 2017 y modificada
+        $law .= 'Que dicho Reglamento, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 36/2017 de 20 de septiembre de 2017 y modificada
             mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: <i>“ Corresponderá el reconocimiento de aportes laborales realizados con la prima de
             1.85% durante la permanencia en la reserva activa, más el 5% de rendimiento, toda vez que estos aportes no forman parte de los parámetros de
             calificación establecidos en el Estudio Matemático Actuarial 2016 – 2020 considerado por el Decreto Supremo Nº 3231 de 28 de junio de 2017”</i>. <br><br>
-            Que, el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: <i>“Generada la desvinculación de la Policía Boliviana, se reconocerá al titular el aporte laboral efectivizado en el destino de la disponibilidad de las letras en función al aporte laboral efectuado (prima de aportación) más rendimiento de 5%, siempre y cuando no se haya suscitado el fallecimiento y el tiempo de aporte en éste destino no haya formado parte de la calificación del beneficio de Fondo de Retiro Policial”</i>.';
+            Que, el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 36/2017 de 20 de septiembre de 2017, 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, en su DISPOSICIÓN TRANSITORIA SEGUNDA (Incluida mediante Resolución de Directorio Nº 51/2017 de 29 de diciembre de 2017), refiere: <i>“Generada la desvinculación de la Policía Boliviana, se reconocerá al titular el aporte laboral efectivizado en el destino de la disponibilidad de las letras en función al aporte laboral efectuado (prima de aportación) más rendimiento de 5%, siempre y cuando no se haya suscitado el fallecimiento y el tiempo de aporte en éste destino no haya formado parte de la calificación del beneficio de Fondo de Retiro Policial”</i>.<br><br>';
+
     }
+    if ($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
+        $law .= 'Que, los derechohabientes que efectivicen el cobro indebido del beneficio obrando con dolo, 
+            vulnerando el principio de buena fe establecido en la ley N° 2341 de Procedimiento Administrativo, 
+            asumen la responsabilidad de reparar el daño ocasionado a terceros que puedan demostrar igual o mejor 
+            derecho, de acuerdo a lo determinado por autoridad competente.
+            <br><br>';
+    }
+
+    $law .= 'Que, según lo establecido en el Art. 41 del Reglamento de Fondo de Retiro Policial Solidario, 
+        Cuota Mortuoria y Auxilio Mortuorio por parte del (los) solicitante (s), el Formulario de solicitud adquiere 
+        carácter de declaración jurada voluntaria a través de la cual, el (los) derechohabiente (s) que efectivizan 
+        el cobro del beneficio, se hacen responsables de reparar los daños que se origine por la vulneración de derechos 
+        de terceros que puedan acreditar igual o mejor derecho.  
+        <br><br>';
 
     // $due = 'Que, mediante Resolución de la Comisión de Prestaciones Nº de fecha , se otorgó en calidad
     // de ANTICIPO del 50% el monto de Bs() a favor del Sr. SOF. 1ro. MARIO BAUTISTA
