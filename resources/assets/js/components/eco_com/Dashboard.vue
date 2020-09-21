@@ -128,7 +128,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <pie-bar
           title="Recepcion de los tramites (por semana)"
           url="chart_eco_com_reception_months"
