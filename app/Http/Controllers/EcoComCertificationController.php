@@ -59,23 +59,22 @@ class EcoComCertificationController extends Controller
             'eco_com_submitted_documents' => $eco_com_submitted_documents,
         ];
         $pages = [];
-        
-        $number_pages = $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion ? (Util::isRegionalRole() ? 3 : 2) : 1;
-
+        //$number_pages = Util::isRegionalRole() ? 3 : 2;
+        $number_pages = $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion ? 2 : 1;
         for ($i = 1; $i <= $number_pages; $i++) {
             $pages[] = \View::make('eco_com.print.reception', $data)->render();
         }
 
         // ddjj
         if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion) {
-            $number_pages = Util::isRegionalRole() ? 3 : 2;
+            $number_pages = 2;
             for ($i = 1; $i <= $number_pages; $i++) {
                 $pages[] = \View::make('eco_com.print.sworn_declaration', self::printSwornDeclaration($id))->render();
             }
         }
         // other ddjj
         if ($eco_com->isWidowhood() && $submitted_document_ids->contains(1263)) {
-            $number_pages = Util::isRegionalRole() ? 3 : 2;
+            $number_pages = 2;
             for ($i = 1; $i <= $number_pages; $i++) {
                 $pages[] = \View::make('eco_com.print.sworn_declaration_beneficiary', self::printSwornDeclarationBeneficiary($id))->render();
             }
@@ -83,14 +82,14 @@ class EcoComCertificationController extends Controller
         //Compromiso de Pago Vejez
         if (!$eco_com->isWidowhood() && $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion && $affiliate->pension_entity_id <> ID::pensionEntity()->senasir) {
             
-            $number_pages = Util::isRegionalRole() ? 3 : 2;
+            $number_pages = 2;
             for ($i = 1; $i <= $number_pages; $i++) {
                 $pages[] = \View::make('eco_com.print.payment_commitment', self::printPaymentCommitment($id))->render();
             }
         }
         //Compromiso de Pago Viudedad
         if ($eco_com->isWidowhood() && $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion && $affiliate->pension_entity_id <> ID::pensionEntity()->senasir) {
-            $number_pages = Util::isRegionalRole() ? 3 : 2;
+            $number_pages = 2;
             for ($i = 1; $i <= $number_pages; $i++) {
                 $pages[] = \View::make('eco_com.print.payment_commitment_beneficiary', self::printPaymentCommitmentBeneficiary($id))->render();
             }
