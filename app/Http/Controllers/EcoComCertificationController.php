@@ -59,9 +59,9 @@ class EcoComCertificationController extends Controller
             'eco_com_submitted_documents' => $eco_com_submitted_documents,
         ];
         $pages = [];
-        // $number_pages = Util::isRegionalRole() ? 3 : 2;
-        //$number_pages = $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion ? (Util::isRegionalRole() ? 3 : 2) : 1;
-        $number_pages = 1;
+        
+        $number_pages = $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion ? (Util::isRegionalRole() ? 3 : 2) : 1;
+
         for ($i = 1; $i <= $number_pages; $i++) {
             $pages[] = \View::make('eco_com.print.reception', $data)->render();
         }
@@ -80,6 +80,22 @@ class EcoComCertificationController extends Controller
                 $pages[] = \View::make('eco_com.print.sworn_declaration_beneficiary', self::printSwornDeclarationBeneficiary($id))->render();
             }
         }
+        //Compromiso de Pago Vejez
+        if (!$eco_com->isWidowhood() && $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion && $affiliate->pension_entity_id <> ID::pensionEntity()->senasir) {
+            
+            $number_pages = Util::isRegionalRole() ? 3 : 2;
+            for ($i = 1; $i <= $number_pages; $i++) {
+                $pages[] = \View::make('eco_com.print.payment_commitment', self::printPaymentCommitment($id))->render();
+            }
+        }
+        //Compromiso de Pago Viudedad
+        if ($eco_com->isWidowhood() && $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion && $affiliate->pension_entity_id <> ID::pensionEntity()->senasir) {
+            $number_pages = Util::isRegionalRole() ? 3 : 2;
+            for ($i = 1; $i <= $number_pages; $i++) {
+                $pages[] = \View::make('eco_com.print.payment_commitment_beneficiary', self::printPaymentCommitmentBeneficiary($id))->render();
+            }
+        }
+
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
@@ -178,6 +194,110 @@ class EcoComCertificationController extends Controller
         $number_pages = Util::isRegionalRole() ? 3 : 2;
         for ($i = 1; $i <= $number_pages; $i++) {
             $pages[] = \View::make('eco_com.print.sworn_declaration_beneficiary', $data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '23mm')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("Reception " . $eco_com->id . '.pdf');
+    }
+    public function printPaymentCommitment($id, $only_data = true)
+    {
+        $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
+        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual) {
+            return 'error';
+        }
+        $affiliate = $eco_com->affiliate;
+        $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA Y AUXILIO MORTUORIO";
+        $title = "COMPROMISO DE PAGO – APORTE PARA
+        SOLICITANTES PARA DEL DESCUENTO DIRECTO DEL COMPLEMENTO ECONÓMICO DEL SECTOR PASIVO 
+        CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
+        $code = $eco_com->code;
+        $area = $eco_com->wf_state->first_shortened;
+        $user = $eco_com->user;
+        $date = Util::getDateFormat($eco_com->reception_date);
+        $number = $code;
+
+        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+
+        $data = [
+            'direction' => $direction,
+            'institution' => $institution,
+            'unit' => $unit,
+            'title' => $title,
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'eco_com' => $eco_com,
+            'affiliate' => $affiliate,
+            'eco_com_beneficiary' => $eco_com_beneficiary,
+        ];
+        if ($only_data) {
+            return $data;
+        }
+        $pages = [];
+        $number_pages = Util::isRegionalRole() ? 3 : 2;
+        for ($i = 1; $i <= $number_pages; $i++) {
+            $pages[] = \View::make('eco_com.print.payment_commitment', $data)->render();
+        }
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '23mm')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("Reception " . $eco_com->id . '.pdf');
+    }
+    public function printPaymentCommitmentBeneficiary($id, $only_data = true)
+    {
+        $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
+        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual) {
+            return 'error';
+        }
+        $affiliate = $eco_com->affiliate;
+        $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA Y AUXILIO MORTUORIO";
+        $title = "COMPROMISO DE PAGO – APORTE PARA
+        SOLICITANTES PARA DEL DESCUENTO DIRECTO DEL COMPLEMENTO ECONÓMICO DEL SECTOR PASIVO 
+        CORRESPONDIENTE AL SISTEMA INTEGRAL DE PENSIONES";
+        $code = $eco_com->code;
+        $area = $eco_com->wf_state->first_shortened;
+        $user = $eco_com->user;
+        $date = Util::getDateFormat($eco_com->reception_date);
+        $number = $code;
+
+        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+
+        $data = [
+            'direction' => $direction,
+            'institution' => $institution,
+            'unit' => $unit,
+            'title' => $title,
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'eco_com' => $eco_com,
+            'affiliate' => $affiliate,
+            'eco_com_beneficiary' => $eco_com_beneficiary,
+        ];
+        if ($only_data) {
+            return $data;
+        }
+        $pages = [];
+        $number_pages = Util::isRegionalRole() ? 3 : 2;
+        for ($i = 1; $i <= $number_pages; $i++) {
+            $pages[] = \View::make('eco_com.print.payment_commitment_beneficiary', $data)->render();
         }
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
