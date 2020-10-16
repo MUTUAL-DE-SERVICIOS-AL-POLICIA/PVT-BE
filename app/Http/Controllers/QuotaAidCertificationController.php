@@ -1002,8 +1002,8 @@ class QuotaAidCertificationController extends Controller
     $quota_aid =  QuotaAidMortuary::find($quota_aid_id);
     $affiliate = Affiliate::find($quota_aid->affiliate_id);
     $art = [
-      8 => '2, 3, 5, 6, 10, 20, 21, 22, 24, 25, 26, 27, 28, 29, 43, 47, 48 y 51 ',
-      9 => '2, 3, 5, 6, 10, 20, 21, 23, 24, 25, 26, 27, 28, 29, 43, 47, 48 y 51 ',
+      8 => '2, 3, 5, 6, 10, 20, 21, 22, 24, 25, 26, 27, 28, 29, 42, 47, 48 y 51 ',
+      9 => '2, 3, 5, 6, 10, 20, 21, 23, 24, 25, 26, 27, 28, 29, 42, 47, 48 y 51 ',
       13 => '2, 3, 5, 6, 10, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 ',
       14 => '2, 3, 5, 6, 10, 31, 32, 34, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 ',
       15 => '2, 3, 5, 6, 10, 31, 32, 35, 36, 37, 38, 39, 40, 41, 42, 44, 47, 48 y 52 '
@@ -1022,16 +1022,15 @@ class QuotaAidCertificationController extends Controller
         <br> <br>
         Que, el Estudio Matemático Actuarial 2016 – 2020, aprobado mediante Resolución de Directorio Nº 26/2017, de 11 de agosto de 2017, determina las cuantías para la otorgación del beneficio de ' . $quota_aid->procedure_modality->procedure_type->second_name . '.
         <br><br>
-        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, en sus Artículos
+        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 76/2019 de 11 de diciembre de 2019, en sus Artículos
         ' . $art[$quota_aid->procedure_modality_id] . ' reconocen el derecho de la otorgación del beneficio de <strong>' . $quota_aid->procedure_modality->procedure_type->second_name . '</strong>.
         <br><br>
-        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, en su Artículo 15 del RECONOCIMIENTO DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”</i>.
+        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 76/2019 de 11 de diciembre de 2019, en su Artículo 15 del RECONOCIMIENTO DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”</i>.
         <br><br>
-        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 y modificado mediante Resoluciones de Directorio Nros 51/2017 de 29 de diciembre de 2017 y 05/2019 de 20 de febrero de 2019, ';
-    if ($quota_aid->procedure_modality->procedure_type_id == 3) {
-        $law .= 'aprobado mediante Resolución de Directorio Nº 43/2017 de 8 de noviembre de 2017 ';
-    }
-    $law .= 'en su Artículo 55 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento administrativo para la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 022/2020 del 4 de septiembre de 2020, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.<br><br>';
+        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio, Nº 76/2019 de 11 de diciembre de 2019 ';
+    //if ($quota_aid->procedure_modality->procedure_type_id == 3) { }
+
+    $law .= 'en su Artículo 54 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“La Comisión de Beneficios Económicos es la instancia técnica y legal que consolida el procedimiento administrativo para la otorgación mediante la emisión de Resolución de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa Nº 022/2020 del 4 de septiembre de 2020, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.<br><br>';
 
     $law .= 'Que, según lo establecido en el ' . ($quota_aid->procedure_modality->procedure_type_id == 3 ? "Art. 42 del Reglamento de Cuota Mortuoria " : "Art. 43 del Reglamento de Auxilio Mortuorio ") . ', 
     al momento de la presentación de la documentación para acceder a los beneficios de Fondo 
@@ -1080,7 +1079,7 @@ class QuotaAidCertificationController extends Controller
     }
 
     $art = [
-      3 => 43,
+      3 => 42,
       4 => 44,
     ];
     $reception .= ', solicita el pago del beneficio de<strong> &nbsp;' . $quota_aid->procedure_modality->procedure_type->second_name . '</strong>, adjuntando documentación solicitada por la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según el Reglamento. Por consiguiente, habiéndose cumplido con los requisitos de orden establecidos en el Artículo
