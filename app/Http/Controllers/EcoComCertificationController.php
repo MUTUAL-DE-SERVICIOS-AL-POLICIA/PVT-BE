@@ -25,7 +25,7 @@ class EcoComCertificationController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
         if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual){
             $title = "BENEFICIO DE COMPLEMENTO ECONÓMICO – " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
-            $subtitle = "FORMULARIO DE REGISTRO PARA EL PAGO DEL COMPLEMENTO ECONÓMICO". $eco_com->eco_com_procedure->getTextName();
+            $subtitle = "FORMULARIO DE REGISTRO PARA EL PAGO DEL COMPLEMENTO ECONÓMICO ". $eco_com->eco_com_procedure->getTextName();
         }else{
             $title = "RECEPCIÓN DEL BENEFICIO DE COMPLEMENTO ECONÓMICO – " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
             $subtitle = '';
