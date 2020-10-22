@@ -1311,7 +1311,9 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid_contributions = $affiliate->getQuotaAidContributions($quota_aid_id);
     /*if (!$quota_aid_contributions['is_continuous']) {
       return 'Verifique que el titular tenga la cantidad de aportes correctas';
-    }/* rev
+    }
+    rev
+    */
     $total_dates = Util::sumTotalContributions($quota_aid_dates);
     $dates = array(
       'id' => 0,
