@@ -32,7 +32,9 @@ class EcoComImportPagoFuturo implements ToCollection
         $not_found = collect([]);
         $user = User::first();
 
-        $current_procedures = Util::getEcoComCurrentProcedure()->first();
+        //$current_procedures = Util::getEcoComCurrentProcedure()->first();
+        $current_procedures = 16;
+
         $pago_futuro_id = 31;
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($rows as $row) {
