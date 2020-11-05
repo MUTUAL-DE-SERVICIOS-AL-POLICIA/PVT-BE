@@ -84,7 +84,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "economic_complements.total",
                     "wf_states.first_shortened",
                     "eco_com_modalities.name",
-                    "workflows.name")
+                    "workflows.name",
+                    "eco_com_user.id")
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
@@ -291,6 +292,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
+            "usuario",
         ];
         return array_merge($default, $new_columns);
     }
