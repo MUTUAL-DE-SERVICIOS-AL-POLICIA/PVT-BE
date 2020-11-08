@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="ibox-content" v-if="can('read_observation_type')" >
-          <table class="table table-striped table-hover table-bordered" v-if="">
+          <table class="table table-striped table-hover table-bordered">
             <thead>
               <tr>
                 <th>Nro.</th>

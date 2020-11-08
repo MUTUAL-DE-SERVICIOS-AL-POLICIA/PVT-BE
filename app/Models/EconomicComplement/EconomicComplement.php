@@ -121,7 +121,7 @@ class EconomicComplement extends Model
     }
     public function observations()
     {
-        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
+        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
     }
     // public function procedure_modality()
     // {
