@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="ibox-content" v-if="can('read_observation_type')" >
-          <table class="table table-striped table-hover table-bordered">
+          <table class="table table-striped table-hover table-bordered" v-if="">
             <thead>
               <tr>
                 <th>Nro.</th>
@@ -30,7 +30,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(o, index) in observations" :key="index">
+              <tr v-for="(o, index) in observations" :key="index" v-if="o.pivot.deleted_at==NULL">
                 <td>{{index + 1}}</td>
                 <td>{{ o.pivot.date | textDate }}</td>
                 <td>
