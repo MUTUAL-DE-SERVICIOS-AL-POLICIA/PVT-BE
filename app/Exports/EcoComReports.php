@@ -142,6 +142,21 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
                     ->get();
                 break;
+            case 5:
+                    $columns = '';
+                    $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                        ->info()
+                        ->beneficiary()
+                        ->affiliateInfo()
+                        ->wfstates()
+                        ->spouseInfo()
+                        // ->order()
+                        ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_spouse() . $columns))
+                        ->where('economic_complements.is_paid_spouse',true)
+                        //->has('eco_com_legal_guardian')
+                        ->get();
+                        
+                break;
             case 6:
                 $columns = ",wf_states.name as ubicacion, CASE WHEN economic_complements.inbox_state = true then 'Validado' ELSE 'Sin Validar' END as estado";
                 $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
@@ -217,6 +232,17 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             case 4:
                 $new_columns = [
                     'observaciones'
+                ];
+                break;
+            case 5:
+                $new_columns = [
+                    "primer_nombre_conyugue",
+                    "segundo_nombre_conyugue",
+                    "ap_paterno_conyugue",
+                    "ap_materno_conyugue",
+                    "ape_casada_conyugue",
+                    "ci_conyugue",
+                    "ci_exp_conyugue",
                 ];
                 break;
             case 6:

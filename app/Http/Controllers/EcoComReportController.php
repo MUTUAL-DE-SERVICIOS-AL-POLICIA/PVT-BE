@@ -47,6 +47,7 @@ class EcoComReportController extends Controller
             case 1:
             case 2:
             case 3:
+            case 5:
             case 8:
                 $wf_states_ids = collect($request->wfCurrentStateIds)->pluck('id');
                 return Excel::download(new EcoComReports($eco_com_procedure->id, $request->reportTypeId, [], $wf_states_ids), 'Todos_tramites.xlsx');

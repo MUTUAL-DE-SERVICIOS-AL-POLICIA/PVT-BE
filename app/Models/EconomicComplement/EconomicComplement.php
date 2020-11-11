@@ -697,7 +697,25 @@ class EconomicComplement extends Model
     }
     public static function basic_info_legal_guardian()
     {
-        return "eco_com_legal_guardians.first_name as primer_nombre_apoderado, eco_com_legal_guardians.second_name as segundo_nombre_apoderado, eco_com_legal_guardians.last_name as ap_paterno_apoderado, eco_com_legal_guardians.mothers_last_name as ap_materno_apoderado, eco_com_legal_guardians.surname_husband as ape_casada_apoderado, eco_com_legal_guardians.identity_card as ci_apoderado, city_legal_guardian_identity_card.first_shortened as ci_exp_apoderado, eco_com_legal_guardian_types.name as eco_com_legal_guardian_type_name";
+        return "eco_com_legal_guardians.first_name as primer_nombre_apoderado, 
+        eco_com_legal_guardians.second_name as segundo_nombre_apoderado, 
+        eco_com_legal_guardians.last_name as ap_paterno_apoderado, 
+        eco_com_legal_guardians.mothers_last_name as ap_materno_apoderado, 
+        eco_com_legal_guardians.surname_husband as ape_casada_apoderado, 
+        eco_com_legal_guardians.identity_card as ci_apoderado, 
+        city_legal_guardian_identity_card.first_shortened as ci_exp_apoderado, 
+        eco_com_legal_guardian_types.name as eco_com_legal_guardian_type_name";
+    }
+    public static function basic_info_spouse()
+    {
+        return "
+        spouses.first_name as primer_nombre_apoderado, 
+        spouses.second_name as segundo_nombre_apoderado, 
+        spouses.last_name as ap_paterno_apoderado, 
+        spouses.mothers_last_name as ap_materno_apoderado, 
+        spouses.surname_husband as ape_casada_apoderado, 
+        spouses.identity_card as ci_apoderado,
+        city_spouse.name as eco_com_legal_guardian_type_name";
     }
     public static function basic_info_user()
     {
@@ -715,6 +733,13 @@ class EconomicComplement extends Model
             ->leftJoin('cities as city_legal_guardian_identity_card', 'eco_com_legal_guardians.city_identity_card_id', '=', 'city_legal_guardian_identity_card.id')
             ->leftJoin('eco_com_legal_guardian_types', 'eco_com_legal_guardians.eco_com_legal_guardian_type_id', '=', 'eco_com_legal_guardian_types.id');
             // ->groupBy('eco_com_legal_guardians.id','city_legal_guardian_identity_card.id','eco_com_legal_guardian_types.id');
+    }
+    public function scopeSpouseInfo($query)
+    {
+        return $query->leftJoin('spouses', 'spouses.affiliate_id', '=', 'affiliates.id')
+            ->leftJoin('cities as city_spouse', 'spouses.city_identity_card_id', '=', 'city_spouse.id');
+        //->leftJoin('eco_com_legal_guardian_types', 'eco_com_legal_guardians.eco_com_legal_guardian_type_id', '=', 'eco_com_legal_guardian_types.id');
+        // ->groupBy('eco_com_legal_guardians.id','city_legal_guardian_identity_card.id','eco_com_legal_guardian_types.id');
     }
     public function scopeAffiliateinfo($query)
     {
