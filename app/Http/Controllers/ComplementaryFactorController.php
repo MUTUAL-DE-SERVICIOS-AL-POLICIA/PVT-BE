@@ -94,11 +94,11 @@ class ComplementaryFactorController extends Controller
         $select = DB::raw('complementary_factors.year as year, complementary_factors.semester as semester, cf1.old_age as cf1, cf2.old_age as cf2, cf3.old_age as cf3, cf4.old_age as cf4, cf5.old_age as cf5');
 
         $complementary_factors = DB::table('complementary_factors')->select($select)
-            ->leftJoin('complementary_factors as cf1', 'cf1.year', '=', 'complementary_factors.year')
-            ->leftJoin('complementary_factors as cf2', 'cf2.year', '=', 'complementary_factors.year')
-            ->leftJoin('complementary_factors as cf3', 'cf3.year', '=', 'complementary_factors.year')
-            ->leftJoin('complementary_factors as cf4', 'cf4.year', '=', 'complementary_factors.year')
-            ->leftJoin('complementary_factors as cf5', 'cf5.year', '=', 'complementary_factors.year')
+            ->leftJoin('complementary_factors as cf1', function($join){$join->on('cf1.year', '=', 'complementary_factors.year');$join->on('cf1.semester', '=', 'complementary_factors.semester');})
+            ->leftJoin('complementary_factors as cf2', function($join){$join->on('cf2.year', '=', 'complementary_factors.year');$join->on('cf2.semester', '=', 'complementary_factors.semester');})
+            ->leftJoin('complementary_factors as cf3', function($join){$join->on('cf3.year', '=', 'complementary_factors.year');$join->on('cf3.semester', '=', 'complementary_factors.semester');})
+            ->leftJoin('complementary_factors as cf4', function($join){$join->on('cf4.year', '=', 'complementary_factors.year');$join->on('cf4.semester', '=', 'complementary_factors.semester');})
+            ->leftJoin('complementary_factors as cf5', function($join){$join->on('cf5.year', '=', 'complementary_factors.year');$join->on('cf5.semester', '=', 'complementary_factors.semester');})
 
             ->where('cf1.hierarchy_id', '=', '1')
             ->where('cf2.hierarchy_id', '=', '2')
@@ -140,11 +140,11 @@ class ComplementaryFactorController extends Controller
         $select = DB::raw('complementary_factors.year as year, complementary_factors.semester as semester, cf1.widowhood as cf1, cf2.widowhood as cf2, cf3.widowhood as cf3, cf4.widowhood as cf4, cf5.widowhood as cf5');
 
         $complementary_factors = DB::table('complementary_factors')->select($select)
-            ->leftJoin('complementary_factors as cf1', 'cf1.year', '=', 'complementary_factors.year')
-            ->leftJoin('complementary_factors as cf2', 'cf2.year', '=', 'complementary_factors.year')
-            ->leftJoin('complementary_factors as cf3', 'cf3.year', '=', 'complementary_factors.year')
-            ->leftJoin('complementary_factors as cf4', 'cf4.year', '=', 'complementary_factors.year')
-            ->leftJoin('complementary_factors as cf5', 'cf5.year', '=', 'complementary_factors.year')
+            ->leftJoin('complementary_factors as cf1', function($join){$join->on('cf1.year', '=', 'complementary_factors.year');$join->on('cf1.semester', '=', 'complementary_factors.semester');})
+            ->leftJoin('complementary_factors as cf2', function($join){$join->on('cf2.year', '=', 'complementary_factors.year');$join->on('cf2.semester', '=', 'complementary_factors.semester');})
+            ->leftJoin('complementary_factors as cf3', function($join){$join->on('cf3.year', '=', 'complementary_factors.year');$join->on('cf3.semester', '=', 'complementary_factors.semester');})
+            ->leftJoin('complementary_factors as cf4', function($join){$join->on('cf4.year', '=', 'complementary_factors.year');$join->on('cf4.semester', '=', 'complementary_factors.semester');})
+            ->leftJoin('complementary_factors as cf5', function($join){$join->on('cf5.year', '=', 'complementary_factors.year');$join->on('cf5.semester', '=', 'complementary_factors.semester');})
 
             ->where('cf1.hierarchy_id', '=', '1')
             ->where('cf2.hierarchy_id', '=', '2')
