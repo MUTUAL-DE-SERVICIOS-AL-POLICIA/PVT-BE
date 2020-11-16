@@ -554,12 +554,13 @@ class EconomicComplement extends Model
     {
         return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
             ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
-            ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+            ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')
+            ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
             ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
             ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
             ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
-            ->leftJoin('users as eco_com_user','eco_com_user.id','=','economic_complements.user_id');
+            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id');
             //->groupBy('economic_complements.id','eco_com_modalities.id','eco_com_reception_types.id','wf_states.id',
             //'workflows.id','procedure_modalities.id','affiliate_city.id','beneficiary.id','beneficiary_city.id',
             //'affiliates.id','eco_com_category.id','eco_com_city.id','eco_com_degree.id','pension_entities.id','eco_com_user.id');
@@ -613,7 +614,8 @@ class EconomicComplement extends Model
         return "row_number() OVER () AS NRO,
         economic_complements.affiliate_id as NUP,
         economic_complements.code as eco_com_code,
-        economic_complements.reception_date as fecha_recepcion," .
+        economic_complements.reception_date as fecha_recepcion,
+        eco_com_user.message as usuario," .
             EconomicComplement::basic_info_beneficiary() . "," .
             EconomicComplement::basic_info_affiliates() . ",
         eco_com_city.name as regional,
@@ -625,8 +627,7 @@ class EconomicComplement extends Model
             EconomicComplement::basic_info_complements() . ",
         wf_states.first_shortened as ubicacion,
         eco_com_modalities.name as tipo_beneficiario,
-        workflows.name as flujo,
-        eco_com_user.username as usuario";
+        workflows.name as flujo";
     }
     public static function basic_info_beneficiary()
     {

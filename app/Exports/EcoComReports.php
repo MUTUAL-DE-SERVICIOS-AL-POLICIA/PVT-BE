@@ -236,13 +236,13 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                 break;
             case 5:
                 $new_columns = [
+                    "ci_conyugue",
+                    "ci_exp_conyugue",
                     "primer_nombre_conyugue",
                     "segundo_nombre_conyugue",
                     "ap_paterno_conyugue",
                     "ap_materno_conyugue",
                     "ape_casada_conyugue",
-                    "ci_conyugue",
-                    "ci_exp_conyugue",
                 ];
                 break;
             case 6:
@@ -265,6 +265,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             'NUP',
             'Nro Tramite',
             "fecha_de_recepcion",
+            "usuario",
             'CI Beneficiario',
             'CI Exp BEN',
             'CI COMPLETO BEN',
@@ -318,7 +319,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
-            "usuario",
+            
         ];
         return array_merge($default, $new_columns);
     }
