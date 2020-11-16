@@ -560,7 +560,8 @@ class EconomicComplement extends Model
             ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
             ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
             ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
-            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id');
+            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
+            ->where('eco_com_user.message','like','%creó%');
             //->groupBy('economic_complements.id','eco_com_modalities.id','eco_com_reception_types.id','wf_states.id',
             //'workflows.id','procedure_modalities.id','affiliate_city.id','beneficiary.id','beneficiary_city.id',
             //'affiliates.id','eco_com_category.id','eco_com_city.id','eco_com_degree.id','pension_entities.id','eco_com_user.id');

@@ -91,10 +91,7 @@ class EconomicComplementController extends Controller
             ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id' )
             ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
             ->leftJoin('pension_entities', 'affiliates.pension_entity_id', '=', 'pension_entities.id')
-            ->leftJoin('procedure_records', 'economic_complements.id', '=', 'procedure_records.recordable_id')
             ->leftJoin('eco_com_applicants', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
-            ->where('procedure_records.message','like','%creó%')
-            
             ->where('economic_complements.code', 'not like', '%A')
             ->orderByDesc(DB::raw("split_part(economic_complements.code, '/',3)::integer desc, split_part(economic_complements.code, '/',2), split_part(economic_complements.code, '/',1)::integer"));
             return $datatables->eloquent($eco_coms)
