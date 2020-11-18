@@ -837,8 +837,8 @@ class EconomicComplementController extends Controller
         // $affiliate->item = $request->item;
         $affiliate->category_id = $request->category_id;
         //revisar
-        /*$ecocomdes = $economic_complement->eco_com_state_id;
-        if ($request->eco_com_state_id == true)
+        $economic_complement->eco_com_state_id;
+        /*if ($request->eco_com_state_id == true)
         {
             $request->eco_com_state_id = 17;
         }else{
@@ -868,13 +868,13 @@ class EconomicComplementController extends Controller
         //$affiliate->account_number = $request->account_number;
        // $affiliate->financial_entity_id = $request->financial_entity_id;
         //$affiliate->sigep_status = $request->sigep_status;
-
+        //is_paid_spouse
         $affiliate->save();
 
         $economic_complement->degree_id = $affiliate->degree_id;
         $economic_complement->category_id = $affiliate->category_id;
         $economic_complement->is_paid_spouse = $request->is_paid_spouse;
-        //$economic_complement->eco_com_state_id = $request->eco_com_state_id;
+        $economic_complement->eco_com_state_id = $request->eco_com_state_id;
         $economic_complement->save();
         /**
          * update affiliate info
