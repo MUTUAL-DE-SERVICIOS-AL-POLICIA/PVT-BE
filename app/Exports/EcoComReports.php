@@ -84,7 +84,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "economic_complements.total",
                     "wf_states.first_shortened",
                     "eco_com_modalities.name",
-                    "workflows.name")
+                    "workflows.name",
+                    "eco_com_user.id")
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
@@ -140,6 +141,21 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     })
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
                     ->get();
+                break;
+            case 5:
+                    $columns = '';
+                    $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                        ->info()
+                        ->beneficiary()
+                        ->affiliateInfo()
+                        ->wfstates()
+                        ->spouseInfo()
+                        // ->order()
+                        ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_spouse() . $columns))
+                        ->where('economic_complements.is_paid_spouse',true)
+                        //->has('eco_com_legal_guardian')
+                        ->get();
+                        
                 break;
             case 6:
                 $columns = ",wf_states.name as ubicacion, CASE WHEN economic_complements.inbox_state = true then 'Validado' ELSE 'Sin Validar' END as estado";
@@ -218,6 +234,17 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     'observaciones'
                 ];
                 break;
+            case 5:
+                $new_columns = [
+                    "ci_conyugue",
+                    "ci_exp_conyugue",
+                    "primer_nombre_conyugue",
+                    "segundo_nombre_conyugue",
+                    "ap_paterno_conyugue",
+                    "ap_materno_conyugue",
+                    "ape_casada_conyugue",
+                ];
+                break;
             case 6:
             case 7:
                 $new_columns = [
@@ -238,6 +265,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             'NUP',
             'Nro Tramite',
             "fecha_de_recepcion",
+            "usuario",
             'CI Beneficiario',
             'CI Exp BEN',
             'CI COMPLETO BEN',
@@ -291,6 +319,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
+            
         ];
         return array_merge($default, $new_columns);
     }

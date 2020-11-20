@@ -81,6 +81,7 @@ class EcoComStateReport implements WithMultipleSheets
                 'eco_com_modalities.name as tipo_beneficiario',
                 'workflows.name as flujo',
                 'eco_com_state_id as eco_com_state_id',
+                
             )
             ->info()
             ->beneficiary()

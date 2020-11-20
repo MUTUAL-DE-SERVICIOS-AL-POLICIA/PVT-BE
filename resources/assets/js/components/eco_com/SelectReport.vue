@@ -35,7 +35,7 @@
     </div>
     <br />
     <div
-      v-if="form.reportTypeId == 6 || form.reportTypeId == 7 || form.reportTypeId == 2 || form.reportTypeId == 3 || form.reportTypeId == 4 || form.reportTypeId == 15"
+      v-if="form.reportTypeId == 5 || form.reportTypeId == 6 || form.reportTypeId == 7 || form.reportTypeId == 2 || form.reportTypeId == 3 || form.reportTypeId == 4 || form.reportTypeId == 15"
     >
       <multiselect
         v-model="form.wfCurrentStateIds"
@@ -55,7 +55,7 @@
           <span class="custom__tag">
             <span>{{ props.option }}</span>
             <span class="custom__remove" @click="props.remove(props.option)">❌</span>
-          </span>
+          </span>Seleccione el Reporte
         </template>-->
       </multiselect>
     </div>
@@ -126,6 +126,11 @@ export default {
           id: 3,
           name: "Tramites con Apoderados"
         },
+         {
+          id: 5,
+          name: "Tramites con Pago por Unica Vez"
+        },
+        
         {
           id: 17,
           name: "Planilla General"

@@ -27,15 +27,19 @@ class AffiliateObservationSheet implements FromCollection, WithTitle, WithHeadin
     {
         $data = collect([]);
         foreach ($this->affiliates as $a) {
+            
             $observation = $a->observations->where('id',$this->observation_type->id)->first();
             // if ($a->observations->contains($this->observation_type->id)) {
             if ($observation) {
+                
                 $a->observation_name = $this->observation_type->name;
+                $a->deleted_at = $observation->pivot->deleted_at;
                 $data->push($a);
+                //logger($data);
             }
         }
         return $data;
-    }
+    }    
     /**
      * @return string
      */
@@ -45,7 +49,7 @@ class AffiliateObservationSheet implements FromCollection, WithTitle, WithHeadin
     }
     public function headings(): array
     {
-        $new_columns = ['Nombre observacion'];
+        $new_columns = ['Nombre observacion','Fecha de eliminacion'];
         $default = [
             // 'NRO',
             'NUP',

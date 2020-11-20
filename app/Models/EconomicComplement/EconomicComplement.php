@@ -121,7 +121,7 @@ class EconomicComplement extends Model
     }
     public function observations()
     {
-        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
+        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
     }
     // public function procedure_modality()
     // {
@@ -503,6 +503,10 @@ class EconomicComplement extends Model
     {
         return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id');
     }
+    /*public function scopeUser($query)
+    {
+        return $query->leftJoin('users as eco_com_user', 'eco_com_user.id', '=', 'economic_complements.user_id');
+    }*/
     public function scopeBeneficiary($query)
     {
         return $query->leftJoin('eco_com_applicants as beneficiary', 'beneficiary.economic_complement_id', '=', 'economic_complements.id')
@@ -550,14 +554,17 @@ class EconomicComplement extends Model
     {
         return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
             ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
-            ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+            ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')
+            ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
             ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
             ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
-            ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id');
-            // ->groupBy('economic_complements.id','eco_com_modalities.id','eco_com_reception_types.id','wf_states.id',
-            // 'workflows.id','procedure_modalities.id','affiliate_city.id','beneficiary.id','beneficiary_city.id',
-            // 'affiliates.id','eco_com_category.id','eco_com_city.id','eco_com_degree.id','pension_entities.id');
+            ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
+            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
+            ->where('eco_com_user.message','like','%creó el trámite%');
+            //->groupBy('economic_complements.id','eco_com_modalities.id','eco_com_reception_types.id','wf_states.id',
+            //'workflows.id','procedure_modalities.id','affiliate_city.id','beneficiary.id','beneficiary_city.id',
+            //'affiliates.id','eco_com_category.id','eco_com_city.id','eco_com_degree.id','pension_entities.id','eco_com_user.id');
         }
     public function scopeOrder($query)
     {
@@ -608,7 +615,8 @@ class EconomicComplement extends Model
         return "row_number() OVER () AS NRO,
         economic_complements.affiliate_id as NUP,
         economic_complements.code as eco_com_code,
-        economic_complements.reception_date as fecha_recepcion," .
+        economic_complements.reception_date as fecha_recepcion,
+        eco_com_user.message as usuario," .
             EconomicComplement::basic_info_beneficiary() . "," .
             EconomicComplement::basic_info_affiliates() . ",
         eco_com_city.name as regional,
@@ -691,7 +699,25 @@ class EconomicComplement extends Model
     }
     public static function basic_info_legal_guardian()
     {
-        return "eco_com_legal_guardians.first_name as primer_nombre_apoderado, eco_com_legal_guardians.second_name as segundo_nombre_apoderado, eco_com_legal_guardians.last_name as ap_paterno_apoderado, eco_com_legal_guardians.mothers_last_name as ap_materno_apoderado, eco_com_legal_guardians.surname_husband as ape_casada_apoderado, eco_com_legal_guardians.identity_card as ci_apoderado, city_legal_guardian_identity_card.first_shortened as ci_exp_apoderado, eco_com_legal_guardian_types.name as eco_com_legal_guardian_type_name";
+        return "eco_com_legal_guardians.first_name as primer_nombre_apoderado, 
+        eco_com_legal_guardians.second_name as segundo_nombre_apoderado, 
+        eco_com_legal_guardians.last_name as ap_paterno_apoderado, 
+        eco_com_legal_guardians.mothers_last_name as ap_materno_apoderado, 
+        eco_com_legal_guardians.surname_husband as ape_casada_apoderado, 
+        eco_com_legal_guardians.identity_card as ci_apoderado, 
+        city_legal_guardian_identity_card.first_shortened as ci_exp_apoderado, 
+        eco_com_legal_guardian_types.name as eco_com_legal_guardian_type_name";
+    }
+    public static function basic_info_spouse()
+    {
+        return "
+        spouses.first_name as primer_nombre_apoderado, 
+        spouses.second_name as segundo_nombre_apoderado, 
+        spouses.last_name as ap_paterno_apoderado, 
+        spouses.mothers_last_name as ap_materno_apoderado, 
+        spouses.surname_husband as ape_casada_apoderado, 
+        spouses.identity_card as ci_apoderado,
+        city_spouse.name as eco_com_legal_guardian_type_name";
     }
     public static function basic_info_user()
     {
@@ -710,6 +736,13 @@ class EconomicComplement extends Model
             ->leftJoin('eco_com_legal_guardian_types', 'eco_com_legal_guardians.eco_com_legal_guardian_type_id', '=', 'eco_com_legal_guardian_types.id');
             // ->groupBy('eco_com_legal_guardians.id','city_legal_guardian_identity_card.id','eco_com_legal_guardian_types.id');
     }
+    public function scopeSpouseInfo($query)
+    {
+        return $query->leftJoin('spouses', 'spouses.affiliate_id', '=', 'affiliates.id')
+            ->leftJoin('cities as city_spouse', 'spouses.city_identity_card_id', '=', 'city_spouse.id');
+        //->leftJoin('eco_com_legal_guardian_types', 'eco_com_legal_guardians.eco_com_legal_guardian_type_id', '=', 'eco_com_legal_guardian_types.id');
+        // ->groupBy('eco_com_legal_guardians.id','city_legal_guardian_identity_card.id','eco_com_legal_guardian_types.id');
+    }
     public function scopeAffiliateinfo($query)
     {
         return $query->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
@@ -724,7 +757,8 @@ class EconomicComplement extends Model
     }
     public function scopeWfstates($query)
     {
-        return $query->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')->leftJoin('workflows', 'economic_complements.workflow_id', '=', 'workflows.id');
+        return $query->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
+        ->leftJoin('workflows', 'economic_complements.workflow_id', '=', 'workflows.id');
     }
     public function getEcoComBeneficiaryBank()
     {

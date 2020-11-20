@@ -32,6 +32,7 @@ class EcoComObservationSheet  implements FromCollection, WithTitle, WithHeadings
             if ($observation) {
                 $e->observation_name = $this->observation_type->name;
                 $e->observation_state = $observation->pivot->enabled ? 'Subsanado' : 'No subsanado';
+                $e->observation_deleted_at = $observation->pivot->deleted_at;
                 $data->push($e);
             }
         }
@@ -44,7 +45,7 @@ class EcoComObservationSheet  implements FromCollection, WithTitle, WithHeadings
     }
     public function headings(): array
     {
-        $new_columns = ['Nombre observacion', 'Estado observacion'];
+        $new_columns = ['Nombre observacion', 'Estado observacion','Fecha Eliminacion'];
         $default = [
             'ID',
             'NUP',
@@ -97,9 +98,9 @@ class EcoComObservationSheet  implements FromCollection, WithTitle, WithHeadings
             "salario_cotizable",
             "diferencia",
             "total_semestre",
-            "factor_complementario",
-            "total_complemento",
-            "total_liquido_pagable",
+            //"factor_complementario",
+            //"total_complemento",
+            //"total_liquido_pagable",
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
