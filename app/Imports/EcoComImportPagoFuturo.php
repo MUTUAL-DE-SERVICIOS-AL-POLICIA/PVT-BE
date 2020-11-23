@@ -33,8 +33,9 @@ class EcoComImportPagoFuturo implements ToCollection
         $user = User::first();
 
         //$current_procedures = Util::getEcoComCurrentProcedure()->first();
-        $current_procedures = 16;
+        $current_procedures = 17;
 
+        /*
         $pago_futuro_id = 31;
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($rows as $row) {
@@ -43,14 +44,14 @@ class EcoComImportPagoFuturo implements ToCollection
                 ->where('economic_complements.eco_com_procedure_id', $current_procedures)
                  ->where('affiliate_id', $affiliate_id)->first();
             if ($eco_com) { 
-                 /* if (!$eco_com->hasObservationType($pago_futuro_id)) {
+                 --- if (!$eco_com->hasObservationType($pago_futuro_id)) {
                      $eco_com->observations()->save($observation, [
                          'user_id' => Auth::user()->id,
                          'date' => now(),
                          'message' => "Observación Importada I/2020",
                          'enabled' => true
                      ]);
-                    }  */                   
+                    }  ---                  
                     $eco_com->calculateTotalRentAps();
                     $total_rent = $eco_com->total_rent;
                     if ($total_rent > 0) {
@@ -73,13 +74,13 @@ class EcoComImportPagoFuturo implements ToCollection
                 $not_found->push($affiliate_id);
             }
  
-        }
+        }*/
 
 
 
 
 
-        /* foreach ($rows as $row) {
+        foreach ($rows as $row) {
             
             $ci = strval($row[0]);
             $affiliate = Affiliate::where('identity_card', $ci)->first();
@@ -99,7 +100,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 $affiliate->observations()->save($observation, [
                     'user_id' => $user->id,
                     'date' => Carbon::now(),
-                    'message' => 'PRIORITARIO - PRESTATARIOS TITULARES MOROSOS CON DESCUENTO A GARANTES',
+                    'message' => 'PRIORITARIO - CARTERA EN MORA MAYOR A 60 DÍAS',
                     'enabled' => false
                 ]);
 
@@ -109,7 +110,7 @@ class EcoComImportPagoFuturo implements ToCollection
                         $eco->observations()->save($observation, [
                             'user_id' => $user->id,
                             'date' => Carbon::now(),
-                            'message' => 'PRIORITARIO - PRESTATARIOS CASOS VILLA SALOME',
+                            'message' => 'PRIORITARIO - CARTERA EN MORA MAYOR A 60 DÍAS',
                             'enabled' => false
                         ]);
                         $found2++;
@@ -122,7 +123,7 @@ class EcoComImportPagoFuturo implements ToCollection
             }
 
 
-        } */
+        } 
 
         $data = [
             'found' => $found,
