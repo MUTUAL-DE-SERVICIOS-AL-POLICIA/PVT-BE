@@ -100,7 +100,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 $affiliate->observations()->save($observation, [
                     'user_id' => $user->id,
                     'date' => Carbon::now(),
-                    'message' => 'PRIORITARIO - TITULARES DE PRESTAMOS EN MORA CON DESCUENTO A SUS GARANTES',
+                    'message' => 'PRIORITARIO - AFILIADOS EN MORA "CASOS VILLA SALOME"',
                     'enabled' => false
                 ]);
 
@@ -110,7 +110,7 @@ class EcoComImportPagoFuturo implements ToCollection
                         $eco->observations()->save($observation, [
                             'user_id' => $user->id,
                             'date' => Carbon::now(),
-                            'message' => 'PRIORITARIO - TITULARES DE PRESTAMOS EN MORA CON DESCUENTO A SUS GARANTES',
+                            'message' => 'PRIORITARIO - AFILIADOS EN MORA "CASOS VILLA SALOME"',
                             'enabled' => false
                         ]);
                         $found2++;
