@@ -100,7 +100,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 $affiliate->observations()->save($observation, [
                     'user_id' => $user->id,
                     'date' => Carbon::now(),
-                    'message' => 'PRIORITARIO - CARTERA EN MORA MAYOR A 60 DÍAS',
+                    'message' => 'PRIORITARIO - TITULARES DE PRESTAMOS EN MORA CON DESCUENTO A SUS GARANTES',
                     'enabled' => false
                 ]);
 
@@ -110,7 +110,7 @@ class EcoComImportPagoFuturo implements ToCollection
                         $eco->observations()->save($observation, [
                             'user_id' => $user->id,
                             'date' => Carbon::now(),
-                            'message' => 'PRIORITARIO - CARTERA EN MORA MAYOR A 60 DÍAS',
+                            'message' => 'PRIORITARIO - TITULARES DE PRESTAMOS EN MORA CON DESCUENTO A SUS GARANTES',
                             'enabled' => false
                         ]);
                         $found2++;
