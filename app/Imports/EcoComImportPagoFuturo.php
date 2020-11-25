@@ -100,7 +100,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 $affiliate->observations()->save($observation, [
                     'user_id' => $user->id,
                     'date' => Carbon::now(),
-                    'message' => 'PRIORITARIO - AFILIADOS EN MORA "CASOS VILLA SALOME"',
+                    'message' => 'PRIORITARIO - CARTERA EN MORA MAYOR A 60 DÍAS',
                     'enabled' => false
                 ]);
 
@@ -110,7 +110,7 @@ class EcoComImportPagoFuturo implements ToCollection
                         $eco->observations()->save($observation, [
                             'user_id' => $user->id,
                             'date' => Carbon::now(),
-                            'message' => 'PRIORITARIO - AFILIADOS EN MORA "CASOS VILLA SALOME"',
+                            'message' => 'PRIORITARIO - CARTERA EN MORA MAYOR A 60 DÍAS',
                             'enabled' => false
                         ]);
                         $found2++;
