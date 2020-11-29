@@ -36,7 +36,7 @@ class EcoComImportPagoFuturo implements ToCollection
         //$current_procedures = Util::getEcoComCurrentProcedure()->first();
         $current_procedures = 17;
 
-        /*
+        
         $pago_futuro_id = 31;
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($rows as $row) {
@@ -75,11 +75,11 @@ class EcoComImportPagoFuturo implements ToCollection
                 $not_found->push($affiliate_id);
             }
  
-        }*/
+        }
 
 
 
-        foreach ($rows as $row) {
+       /* foreach ($rows as $row) {
             $ci = strval($row[0]);
             $affiliate = Affiliate::where('identity_card', $ci)->first();
             if (!$affiliate) {
@@ -95,7 +95,11 @@ class EcoComImportPagoFuturo implements ToCollection
             }
 
         }
-        /*
+
+
+
+
+        
         foreach ($rows as $row) {
             
             $ci = strval($row[0]);
