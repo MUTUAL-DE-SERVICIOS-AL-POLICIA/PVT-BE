@@ -28,14 +28,15 @@ class EcoComImportPagoFuturo implements ToCollection
         set_time_limit('-1');
 
         $found = 0;
-        $found2 = 0;
+        //$found2 = 0;
+        $found2 = collect([]);
         $not_found = collect([]);
         $user = User::first();
 
         //$current_procedures = Util::getEcoComCurrentProcedure()->first();
         $current_procedures = 17;
 
-        
+        /*
         $pago_futuro_id = 31;
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($rows as $row) {
@@ -74,11 +75,26 @@ class EcoComImportPagoFuturo implements ToCollection
                 $not_found->push($affiliate_id);
             }
  
+        }*/
+
+
+
+        foreach ($rows as $row) {
+            $ci = strval($row[0]);
+            $affiliate = Affiliate::where('identity_card', $ci)->first();
+            if (!$affiliate) {
+                $spouse = Spouse::where('identity_card', $ci)->first();
+                if ($spouse) {
+                $affiliate = $spouse->affiliate;     
+                }else{
+                    $not_found->push($ci);
+                }
+            }
+            if($affiliate){
+                $found2->push($affiliate->id);
+            }
+
         }
-
-
-
-
         /*
         foreach ($rows as $row) {
             
