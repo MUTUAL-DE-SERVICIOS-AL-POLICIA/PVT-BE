@@ -87,11 +87,11 @@ class EcoComImportPagoFuturo implements ToCollection
                 if ($spouse) {
                 $affiliate = $spouse->affiliate;     
                 }else{
-                    $not_found->push($ci);
+                    $found2->push($ci);
                 }
             }
             if($affiliate){
-                $found2->push($affiliate->id);
+                $not_found->push($affiliate->id);
             }
 
         }
