@@ -339,7 +339,7 @@ class EconomicComplement extends Model
             $complementary_factor = $complementary_factor->old_age;
         }
         $this->complementary_factor = $complementary_factor;
-        $total = $total_amount_semester * round(floatval($complementary_factor) / 100, 2);
+        $total = $total_amount_semester * round(floatval($complementary_factor) / 100, 3);
 
         //RESTANDO PRESTAMOS, CONTABILIDAD Y REPOSICION AL TOTAL PORCONCEPTO DE DEUDA
         $total  = $total - $this->discount_types()->sum('amount');
