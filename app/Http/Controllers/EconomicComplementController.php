@@ -1439,7 +1439,7 @@ class EconomicComplementController extends Controller
             return Carbon::parse($item)->year;
         })->unique()->toArray();
         $year_list = array_combine($year_list, $year_list);
-        $semester_list = EcoComProcedure::all()->pluck('semester')->unique()->toArray();
+        $semester_list = EcoComProcedure::all()->orderByDesc('semester')->pluck('semester')->unique()->toArray();
         $semester_list = array_combine($semester_list, $semester_list);
 
         // complementary factor
