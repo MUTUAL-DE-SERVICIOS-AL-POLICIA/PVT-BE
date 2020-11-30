@@ -380,7 +380,7 @@ class EconomicComplement extends Model
             }
         }
         if ($this->discount_types->count() > 0) {
-            if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 2),3) ==  $this->discount_types()->sum('amount')) {
+            if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
                 $this->eco_com_state_id = 18;
             }else{
                 if ($this->eco_com_state_id == 18) {
@@ -665,7 +665,7 @@ class EconomicComplement extends Model
         economic_complements.difference as diferencia,
         economic_complements.total_amount_semester as total_semestre,
         economic_complements.complementary_factor as factor_complementario,
-        round(economic_complements.total_amount_semester * round(economic_complements.complementary_factor/100, 2), 3) as total_complemento,
+        round(economic_complements.total_amount_semester * round(economic_complements.complementary_factor/100, 3), 2) as total_complemento,
         economic_complements.total as total_liquido_pagable";
         // " . EconomicComplement::basic_info_discount() . ",
     }
