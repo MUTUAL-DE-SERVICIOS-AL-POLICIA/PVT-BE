@@ -354,10 +354,12 @@ export default {
           this.form = response.data;
           flash("Información del Trámite Actualizada");
         })
+        location.reload()
         .catch(response => {
           flashErrors("Error al procesar: ", error.response.data.errors);
           this.show_spinner = false;
         });
+        
     },
     async deleteEcoCom() {
       if (!this.can("delete_economic_complement", this.permissions)) {
