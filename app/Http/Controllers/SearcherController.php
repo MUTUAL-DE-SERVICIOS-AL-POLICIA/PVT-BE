@@ -151,7 +151,7 @@ class SearcherController
             $affiliate->category_percentage = $affiliate->category->name ?? '';
             $affiliate->pension_entity_name = $affiliate->pension_entity->name ?? '';
             // !! TODO borrar id 33 y 35 despues de borrar las observaciones
-            $affiliate_observations_exclude = $affiliate->observations()->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->whereNull('observables.deleted_at')->get()->pluck('id'))->get();
+            $affiliate_observations_exclude = $affiliate->observations()->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->whereNull('deleted_at')->get()->pluck('id'))->get();
             $affiliate_devolutions = $affiliate->devolutions()->with('observation_type:id,name,type')->get();
             $affiliate_observations = $affiliate->observations()->whereIn('id', ObservationType::whereIn('description', ['Subsanable', 'Amortizable'])->get()->pluck('id'))->get();
             $eco_com = $affiliate->economic_complements()->select('id', 'code', 'total','eco_com_procedure_id', 'eco_com_modality_id', 'eco_com_state_id', 'aps_disability')->with([
