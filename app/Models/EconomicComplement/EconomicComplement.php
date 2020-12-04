@@ -129,7 +129,7 @@ class EconomicComplement extends Model
     // }
     public function getComplementaryFactor()
     {
-        return intval($this->complementary_factor);
+        return $this->complementary_factor;
     }
     public function getTotalSemester()
     {
