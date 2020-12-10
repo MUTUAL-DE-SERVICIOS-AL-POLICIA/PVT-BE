@@ -19,13 +19,13 @@
             {{ $start_eco_com_procedure->semester }} Semestre de la gestión {{ $start_eco_com_procedure->getYear() }}, hasta
             cubrir el monto determinado.
             @else
-            {{-- @if($devolution->deposit_number && $devolution->payment_date)
-                    expreso mi conformidad de manera voluntaria para efectuar la devolución del total del monto
-                    en defecto inicialmente determinado.
-                    @else
-                    expreso mi conformidad de manera voluntaria para que se efectúe el descuento del total del monto en defecto inicialmente determinado, con el beneficio del Complemento Económico del {{ $start_eco_com_procedure->semester }}
-            semestre de la gestión {{ $start_eco_com_procedure->getYear() }}.
-            @endif --}}
+                @if($devolution->deposit_number && $devolution->payment_date)
+                        expreso mi conformidad de manera voluntaria para efectuar la devolución del total del monto
+                        en defecto inicialmente determinado.
+                        @else
+                        expreso mi conformidad de manera voluntaria para que se efectúe el descuento del total del monto en defecto inicialmente determinado, con el beneficio del Complemento Económico del {{ $start_eco_com_procedure->semester }}
+                semestre de la gestión {{ $start_eco_com_procedure->getYear() }}.
+                @endif
             @endif
     </p>
     <div class="font-bold uppercase m-b-5 counter">
