@@ -23,7 +23,7 @@
                         expreso mi conformidad de manera voluntaria para efectuar la devolución del total del monto
                         en defecto inicialmente determinado.
                         @else
-                        expreso mi conformidad de manera voluntaria para que se efectúe el descuento del total del monto en defecto inicialmente determinado, con el beneficio del Complemento Económico del {{ $start_eco_com_procedure->semester }}
+                        expreso mi conformidad de manera voluntaria para que se efectúe el descuento del total del monto en defecto inicialmente determinado, con el beneficio del Complemento Económico a partir del {{ $start_eco_com_procedure->semester }}
                 semestre de la gestión {{ $start_eco_com_procedure->getYear() }}.
                 @endif
             @endif
