@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'session' => \Muserpol\Http\Middleware\SessionMiddleware::class,
         'affiliate_has_ret_fun' => \Muserpol\Http\Middleware\AffiliateHasRetFun::class,
+        'api_auth' => \Muserpol\Http\Middleware\ApiAuth::class,
     ];
     protected $commands = [
         UpdateAffiliateSubmittedDocuments::class,
