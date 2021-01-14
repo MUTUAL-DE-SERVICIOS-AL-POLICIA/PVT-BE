@@ -18,6 +18,7 @@ Route::group([
     'prefix' => 'v1',
 ], function () {
     Route::resource('auth', 'API\AuthController')->only('store');
+    Route::resource('city', 'API\CityController')->only('index');
 });
 
 Route::group([
