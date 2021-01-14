@@ -17,8 +17,8 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'v1',
 ], function () {
-    Route::resource('auth', 'API\AuthController')->only('store');
-    Route::resource('city', 'API\CityController')->only('index');
+    Route::post('auth', 'API\AuthController@store');
+    Route::get('city', 'API\CityController@index');
 });
 
 Route::group([
@@ -26,6 +26,7 @@ Route::group([
     'prefix' => 'v1',
 ], function () {
     Route::get('auth', 'API\AuthController@index');
+    Route::delete('auth', 'API\AuthController@destroy');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

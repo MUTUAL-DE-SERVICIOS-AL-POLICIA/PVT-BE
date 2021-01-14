@@ -31,9 +31,10 @@ class AuthController extends Controller
             'data' => [
                 'user' => [
                     'id' => $request->affiliate->id,
-                    'name' => $request->affiliate->fullName(),
+                    'full_name' => $request->affiliate->fullName(),
                     'degree' => $request->affiliate->degree->name,
-                    'enrolled' => $request->affiliate->device->enrolled
+                    'identity_card' => $request->affiliate->identity_card,
+                    'enrolled' => $request->affiliate->device->enrolled,
                 ],
             ]
         ], 200);
@@ -61,9 +62,10 @@ class AuthController extends Controller
                     'api_token' => $token,
                     'user' => [
                         'id' => $affiliate->id,
-                        'name' => $affiliate->fullName(),
+                        'full_name' => $affiliate->fullName(),
                         'degree' => $affiliate->degree->name,
-                        'enrolled' => $affiliate->device->enrolled
+                        'identity_card' => $affiliate->identity_card,
+                        'enrolled' => false,
                     ],
                 ]
             ], 200);
@@ -80,9 +82,10 @@ class AuthController extends Controller
                         'api_token' => $token,
                         'user' => [
                             'id' => $affiliate->id,
-                            'name' => $affiliate->fullName(),
+                            'full_name' => $affiliate->fullName(),
                             'degree' => $affiliate->degree->name,
-                            'enrolled' => $affiliate->device->enrolled
+                            'identity_card' => $affiliate->ciWithExt(),
+                            'enrolled' => $affiliate->device->enrolled,
                         ],
                     ]
                 ], 200);
