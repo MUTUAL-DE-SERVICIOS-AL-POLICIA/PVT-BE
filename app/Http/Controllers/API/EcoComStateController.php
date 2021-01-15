@@ -18,7 +18,9 @@ class EcoComStateController extends Controller
         return response()->json([
             'error' => true,
             'message' => 'Estados de trámites de Complemento Económico',
-            'data' => EcoComState::with('eco_com_state_type')->get()
+            'data' => [
+                'eco_com_states' => EcoComState::with('eco_com_state_type')->get()
+            ]
         ]);
     }
 }

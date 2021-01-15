@@ -32,6 +32,7 @@ class EconomicComplementController extends Controller
     {
         if ($economicComplement->affiliate_id == $request->affiliate->id) {
             $response = $economicComplement->only('id', 'code', 'reception_date', 'total_amount_semester', 'difference', 'total');
+            $response['eco_com_state_id'] = $economicComplement->eco_com_state->id;
             $response['eco_com_state'] = $economicComplement->eco_com_state->name;
             $response['eco_com_state_type'] = $economicComplement->eco_com_state->eco_com_state_type->name;
             $response['wf_current_state'] = $economicComplement->wf_state->name;
@@ -40,7 +41,9 @@ class EconomicComplementController extends Controller
             return response()->json([
                 'error' => false,
                 'message' => 'Trámite de Complemento Económico ' . $economicComplement->code,
-                'data' => $response
+                'data' => [
+                    'economic_complement' => $response
+                ]
             ]);
         } else {
             return response()->json([
