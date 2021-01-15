@@ -19,6 +19,7 @@ Route::group([
 ], function () {
     Route::post('auth', 'API\AuthController@store');
     Route::get('city', 'API\CityController@index');
+    Route::get('eco_com_state', 'API\EcoComStateController@index');
 });
 
 Route::group([
@@ -27,6 +28,7 @@ Route::group([
 ], function () {
     Route::get('auth', 'API\AuthController@index');
     Route::delete('auth', 'API\AuthController@destroy');
+    Route::resource('economic_complement', 'API\EconomicComplementController')->only('index', 'show');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
