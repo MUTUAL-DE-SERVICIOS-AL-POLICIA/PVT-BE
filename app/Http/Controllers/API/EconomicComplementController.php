@@ -18,7 +18,7 @@ class EconomicComplementController extends Controller
         return response()->json([
             'error' => false,
             'message' => 'Trámites de Complemento Económico',
-            'data' => $request->affiliate->economic_complements()->latest()->paginate($request->per_page ?? 10, ['id', 'code', 'reception_date', 'total_amount_semester', 'difference', 'total', 'eco_com_state_id'], 'page', $request->page ?? 1)
+            'data' => $request->affiliate->economic_complements()->orderBy('reception_date', 'desc')->paginate($request->per_page ?? 10, ['id', 'code', 'reception_date', 'total_amount_semester', 'difference', 'total', 'eco_com_state_id'], 'page', $request->page ?? 1)
         ]);
     }
 
