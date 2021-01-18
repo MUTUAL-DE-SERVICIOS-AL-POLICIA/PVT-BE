@@ -49,12 +49,26 @@ class AuthController extends Controller
     public function store(AuthForm $request)
     {
         $affiliate = Affiliate::whereIdentityCard($request->identity_card)->first();
-        if (!$affiliate->device) {
+        $affiliate_device = AffiliateDevice::whereDeviceId($request->device_id)->first();
+        $token = null;
+        if (!$affiliate->device && !$affiliate_device) {
             $token = $this->getToken($request->device_id);
             $affiliate->device()->create([
                 'api_token' => $token,
                 'device_id' => $request->device_id,
             ]);
+            $affiliate->device = (object)[
+                'enrolled' => true
+            ];
+        } elseif ($affiliate->device && $affiliate_device) {
+            if ($affiliate->id == $affiliate_device->affiliate_id) {
+                $token = $this->getToken($request->device_id);
+                $affiliate->device()->update([
+                    'api_token' => $token,
+                ]);
+            }
+        }
+        if ($token) {
             return response()->json([
                 'error' => false,
                 'message' => 'Usuario autenticado',
@@ -64,38 +78,17 @@ class AuthController extends Controller
                         'id' => $affiliate->id,
                         'full_name' => $affiliate->fullName(),
                         'degree' => $affiliate->degree->name,
-                        'identity_card' => $affiliate->identity_card,
-                        'enrolled' => false,
+                        'identity_card' => $affiliate->ciWithExt(),
+                        'enrolled' => $affiliate->device->enrolled,
                     ],
                 ]
             ], 200);
         } else {
-            if ($request->device_id == $affiliate->device->device_id && !$affiliate->device->api_token) {
-                $token = $this->getToken($request->device_id);
-                $affiliate->device()->update([
-                    'api_token' => $token,
-                ]);
-                return response()->json([
-                    'error' => false,
-                    'message' => 'Usuario autenticado',
-                    'data' => [
-                        'api_token' => $token,
-                        'user' => [
-                            'id' => $affiliate->id,
-                            'full_name' => $affiliate->fullName(),
-                            'degree' => $affiliate->degree->name,
-                            'identity_card' => $affiliate->ciWithExt(),
-                            'enrolled' => $affiliate->device->enrolled,
-                        ],
-                    ]
-                ], 200);
-            } else {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'Dispositivo inválido',
-                    'data' => []
-                ], 403);
-            }
+            return response()->json([
+                'error' => true,
+                'message' => 'Dispositivo inválido',
+                'data' => []
+            ], 403);
         }
     }
 
