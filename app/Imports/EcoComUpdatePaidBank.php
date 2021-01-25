@@ -44,7 +44,7 @@ class EcoComUpdatePaidBank implements ToCollection
                 $eco_coms = $affiliate->economic_complements()->where('eco_com_procedure_id', $current_procedure)->get();            
                 foreach ($eco_coms as $eco) {
                     //if ( $eco->eco_com_state_id == 24) {
-                        $eco->eco_com_state_id = 1;
+                        $eco->eco_com_state_id = 26;
                         $eco->save();
                         $found++;
                     //}else{
