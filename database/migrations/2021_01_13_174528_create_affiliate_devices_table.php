@@ -18,7 +18,11 @@ class CreateAffiliateDevicesTable extends Migration
             $table->string('api_token', 80)->unique()->nullable()->default(null);
             $table->string('device_id')->unique();
             $table->boolean('enrolled')->default(false);
+            $table->json('liveness_actions')->nullable()->default(null);
+            $table->boolean('verified')->default(false);
+            $table->bigInteger('eco_com_procedure_id')->nullable()->default(null);
             $table->foreign('affiliate_id')->references('id')->on('affiliates')->onDelete('cascade');
+            $table->foreign('eco_com_procedure_id')->references('id')->on('eco_com_procedures')->onDelete('cascade');
             $table->timestamps();
         });
     }

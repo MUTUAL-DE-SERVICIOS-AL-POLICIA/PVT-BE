@@ -12,7 +12,7 @@ use Muserpol\Http\Controllers\Controller;
 class AuthController extends Controller
 {
     private function getToken($device_id) {
-        do{
+        do {
             $token = Hash::make($device_id);
         } while(AffiliateDevice::where('api_token', $token)->exists());
         return $token;
@@ -58,9 +58,9 @@ class AuthController extends Controller
                 'device_id' => $request->device_id,
             ]);
             $affiliate->device = (object)[
-                'enrolled' => true
+                'enrolled' => false
             ];
-        } elseif ($affiliate->device && $affiliate_device) {
+        } elseif ($affiliate->device) {
             if ($affiliate->id == $affiliate_device->affiliate_id) {
                 $token = $this->getToken($request->device_id);
                 $affiliate->device()->update([

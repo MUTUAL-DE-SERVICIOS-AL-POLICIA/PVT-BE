@@ -11,7 +11,7 @@
         "doctrine/dbal": "^2.8",
         "fideloper/proxy": "~3.3",
         "fzaninotto/faker": "^1.7",
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^7.3",
         "h4cc/wkhtmltoimage-amd64": "0.12.x",
         "h4cc/wkhtmltopdf-amd64": "0.12.x",
         "hashids/hashids": "^4.0",

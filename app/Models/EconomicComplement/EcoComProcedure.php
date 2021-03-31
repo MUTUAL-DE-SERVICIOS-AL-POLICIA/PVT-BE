@@ -82,4 +82,8 @@ class EcoComProcedure extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+
+    public function device() {
+        return $this->hasOne(AffiliateDevice::class, 'eco_com_procedure_id', 'id', 'affiliate_devices');
+    }
 }
