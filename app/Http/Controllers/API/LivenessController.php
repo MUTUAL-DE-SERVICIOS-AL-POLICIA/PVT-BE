@@ -18,7 +18,10 @@ class LivenessController extends Controller
             'base_uri' => env("LIVENESS_URL"),
             'headers' => [
                 'Content-Type' => 'application/json'
-            ]
+            ],
+            'request.options' => [
+                'exceptions' => false,
+            ],
         ]);
 
         $this->eco_com_procedure = EcoComProcedure::orderBy('created_at', 'desc')->limit(1)->first();
@@ -168,14 +171,15 @@ class LivenessController extends Controller
                     'body' => json_encode([
                         'id' => $request->affiliate->id,
                         'image' => $file_name
-                    ])
+                    ]),
+                    'http_errors' => false,
                 ]);
                 if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
                 if ($res->getStatusCode() != 200) {
                     Storage::delete($path.$file_name);
                     return response()->json([
                         'error' => false,
-                        'message' => ($current_action_index + 1).count($device->liveness_actions).'. Intente nuevamente',
+                        'message' => ($current_action_index + 1).'/'.count($device->liveness_actions).'. Intente nuevamente',
                         'data' => [
                             'type' => $device->enrolled ? 'liveness' : 'enroll',
                             'action' => $current_action,
@@ -191,7 +195,8 @@ class LivenessController extends Controller
                     'is_base64' => false,
                     'id' => $request->affiliate->id,
                     'image' => $file_name
-                ])
+                ]),
+                'http_errors' => false,
             ]);
             if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
             if ($res->getStatusCode() == 200) {
@@ -206,7 +211,8 @@ class LivenessController extends Controller
                         'body' => json_encode([
                             'id' => $request->affiliate->id,
                             'image' => $file_name
-                        ])
+                        ]),
+                        'http_errors' => false,
                     ]);
                     if ($res->getStatusCode() == 200) {
                         $current_action_index += 1;
