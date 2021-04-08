@@ -47,11 +47,6 @@ class LivenessController extends Controller
                 'emotion' => 'happy',
                 'successful' => false,
                 'message' => 'Mire al frente sonriendo'
-            ], [
-                'gaze' => 'forward',
-                'emotion' => 'surprise',
-                'successful' => false,
-                'message' => 'Mire al frente con la boca y ojos bien abiertos'
             ]
         ];
         shuffle($actions);
@@ -96,7 +91,7 @@ class LivenessController extends Controller
                     if ($device->eco_com_procedure_id == $this->eco_com_procedure->id) {
                         return response()->json([
                             'error' => false,
-                            'message' => 'Control de vivencia realizado.',
+                            'message' => 'Proceso terminado',
                             'data' => [
                                 'type' => 'completed',
                                 'verified' => $device->verified
@@ -111,10 +106,12 @@ class LivenessController extends Controller
 
             return response()->json([
                 'error' => false,
-                'message' => 'Prepárese para el proceso del control de vivencia.',
+                'message' => '1/'.count($device->liveness_actions).'. Siga las instrucciones',
                 'data' => [
                     'type' => 'liveness',
-                    'action' => $device->liveness_actions[0]
+                    'action' => $device->liveness_actions[0],
+                    'current_action' => 1,
+                    'total_actions' => count($device->liveness_actions)
                 ]
             ], 200);
         } elseif (!$device->enrolled && !$device->verified) {
@@ -123,7 +120,7 @@ class LivenessController extends Controller
 
             return response()->json([
                 'error' => false,
-                'message' => 'Paso 1 de '.count($device->liveness_actions).'. Siga las instrucciones para tomar la foto.',
+                'message' => '1/'.count($device->liveness_actions).'. Siga las instrucciones',
                 'data' => [
                     'type' => 'enroll',
                     'action' => $device->liveness_actions[0],
@@ -162,6 +159,8 @@ class LivenessController extends Controller
             // TODO: Eliminar foto mas antigua para reemplazar por la última en caso de control de vivencia
             if (!$device->enrolled) {
                 Storage::put($path.$file_name, base64_decode($image), 'public');
+                $image_path = Storage::path($path.$file_name);
+                imagejpeg(imagerotate(imagecreatefromjpeg($image_path), 90, 0), $image_path);
             }
             $files = count(Storage::files($path));
             if ($files > 1) {
@@ -171,11 +170,12 @@ class LivenessController extends Controller
                         'image' => $file_name
                     ])
                 ]);
+                if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
                 if ($res->getStatusCode() != 200) {
                     Storage::delete($path.$file_name);
                     return response()->json([
                         'error' => false,
-                        'message' => 'No se pudo verificar la imagen, intente de nuevo.',
+                        'message' => ($current_action_index + 1).count($device->liveness_actions).'. Intente nuevamente',
                         'data' => [
                             'type' => $device->enrolled ? 'liveness' : 'enroll',
                             'action' => $current_action,
@@ -193,6 +193,7 @@ class LivenessController extends Controller
                     'image' => $file_name
                 ])
             ]);
+            if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
             if ($res->getStatusCode() == 200) {
                 $data = json_decode($res->getBody(), true);
                 if (($data['data']['analysis']['dominant_emotion'] == $current_action['emotion'] || $current_action['emotion'] == 'any') && $data['data']['gaze'] == $current_action['gaze']) {
@@ -212,7 +213,7 @@ class LivenessController extends Controller
                         if ($current_action_index < $total_actions) {
                             return response()->json([
                                 'error' => false,
-                                'message' => 'Paso '.($current_action_index + 1).' de '.$total_actions.'. Siga las instrucciones para tomar la foto.',
+                                'message' => ($current_action_index + 1).'/'.$total_actions.'. Siga las instrucciones',
                                 'data' => [
                                     'type' => $device->enrolled ? 'liveness' : 'enroll',
                                     'action' => $liveness_actions[$current_action_index],
@@ -234,7 +235,7 @@ class LivenessController extends Controller
                             }
                             return response()->json([
                                 'error' => false,
-                                'message' => 'Proceso terminado.',
+                                'message' => 'Proceso terminado',
                                 'data' => [
                                     'type' => 'completed',
                                     'verified' => $device->verified
@@ -252,7 +253,7 @@ class LivenessController extends Controller
             }
             return response()->json([
                 'error' => false,
-                'message' => 'Paso '.($current_action_index + 1).' de '.$total_actions.'. Siga las instrucciones para tomar la foto.',
+                'message' => ($current_action_index + 1).'/'.$total_actions.'. Intente nuevamente',
                 'data' => [
                     'type' => $device->enrolled ? 'liveness' : 'enroll',
                     'action' => $current_action,
@@ -265,7 +266,7 @@ class LivenessController extends Controller
 
         return response()->json([
             'error' => false,
-            'message' => 'Proceso terminado.',
+            'message' => 'Proceso terminado',
             'data' => [
                 'type' => 'completed',
                 'verified' => $device->verified
