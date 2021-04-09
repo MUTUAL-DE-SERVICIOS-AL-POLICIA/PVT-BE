@@ -23,3 +23,7 @@ yarn-error.log
 /nbproject/project.xml
 /public/fonts/vendor/mdi
 /laradock
+*.cache-7
+storage/.DS_Store
+.DS_Store
+.DS_Store
