@@ -143,7 +143,8 @@ class LivenessController extends Controller
     public function store(LivenessForm $request)
     {
         $device = $request->affiliate->device;
-
+        $remove_file = true;
+        $continue = true;
         if (str_contains($request->image, ';base64,')) {
             $image = explode(";base64,", $request->image)[1];
         } else {
@@ -162,103 +163,98 @@ class LivenessController extends Controller
             // TODO: Eliminar foto mas antigua para reemplazar por la última en caso de control de vivencia
             if (!$device->enrolled) {
                 Storage::put($path.$file_name, base64_decode($image), 'public');
-                $image_path = Storage::path($path.$file_name);
-                imagejpeg(imagerotate(imagecreatefromjpeg($image_path), 90, 0), $image_path);
             }
-            $files = count(Storage::files($path));
-            if ($files > 1) {
-                $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/verify', [
-                    'body' => json_encode([
-                        'id' => $request->affiliate->id,
-                        'image' => $file_name
-                    ]),
-                    'http_errors' => false,
-                ]);
-                if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
-                if ($res->getStatusCode() != 200) {
-                    Storage::delete($path.$file_name);
-                    return response()->json([
-                        'error' => false,
-                        'message' => ($current_action_index + 1).'/'.count($device->liveness_actions).'. Intente nuevamente',
-                        'data' => [
-                            'type' => $device->enrolled ? 'liveness' : 'enroll',
-                            'action' => $current_action,
-                            'current_action' => $current_action_index + 1,
-                            'total_actions' => $total_actions,
-                            'verified' => $device->verified
-                        ]
-                    ], 200);
-                }
-            }
-            $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/analyze', [
+            $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/crop', [
                 'body' => json_encode([
-                    'is_base64' => false,
                     'id' => $request->affiliate->id,
                     'image' => $file_name
                 ]),
                 'http_errors' => false,
             ]);
-            if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
-            if ($res->getStatusCode() == 200) {
-                $data = json_decode($res->getBody(), true);
-                if (($data['data']['analysis']['dominant_emotion'] == $current_action['emotion'] || $current_action['emotion'] == 'any') && $data['data']['gaze'] == $current_action['gaze']) {
-                    $current_action['successful'] = true;
-                    $liveness_actions[$current_action_index] = $current_action;
-                    $device->update([
-                        'liveness_actions' => $liveness_actions
-                    ]);
-                    $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/build', [
+            if ($res->getStatusCode() != 200) $continue = false;
+            if ($continue) {
+                $files = count(Storage::files($path));
+                if ($files > 1) {
+                    $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/verify', [
                         'body' => json_encode([
                             'id' => $request->affiliate->id,
                             'image' => $file_name
                         ]),
                         'http_errors' => false,
                     ]);
-                    if ($res->getStatusCode() == 200) {
-                        $current_action_index += 1;
-                        if ($current_action_index < $total_actions) {
-                            return response()->json([
-                                'error' => false,
-                                'message' => ($current_action_index + 1).'/'.$total_actions.'. Siga las instrucciones',
-                                'data' => [
-                                    'type' => $device->enrolled ? 'liveness' : 'enroll',
-                                    'action' => $liveness_actions[$current_action_index],
-                                    'current_action' => $current_action_index + 1,
-                                    'total_actions' => $total_actions,
-                                    'verified' => $device->verified
-                                ]
-                            ], 200);
-                        } else {
-                            if (!$device->enrolled && !$device->verified) {
-                                $device->update([
-                                    'enrolled' => true,
-                                    'liveness_actions' => null
-                                ]);
-                            } elseif ($device->enrolled && $device->verified) {
-                                $device->update([
-                                    'eco_com_procedure_id' => $this->eco_com_procedure->id
-                                ]);
-                            }
-                            return response()->json([
-                                'error' => false,
-                                'message' => 'Proceso terminado',
-                                'data' => [
-                                    'type' => 'completed',
-                                    'verified' => $device->verified
-                                ]
-                            ], 200);
-                        }
-                    } else {
-                        Storage::delete($path.$file_name);
-                    }
-                } else {
-                    Storage::delete($path.$file_name);
+                    if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
+                    if ($res->getStatusCode() != 200) $continue = false;
                 }
-            } else {
-                Storage::delete($path.$file_name);
+                if ($continue) {
+                    $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/analyze', [
+                        'body' => json_encode([
+                            'is_base64' => false,
+                            'id' => $request->affiliate->id,
+                            'image' => $file_name
+                        ]),
+                        'http_errors' => false,
+                    ]);
+                    if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
+                    if ($res->getStatusCode() == 200) {
+                        $data = json_decode($res->getBody(), true);
+                        if ($data['data']['gaze'] == $current_action['gaze']) {
+                            if (($current_action['emotion'] == 'neutral' && ($data['data']['analysis']['dominant_emotion'] != 'happy' && $data['data']['analysis']['dominant_emotion'] != 'surprise')) || $data['data']['analysis']['dominant_emotion'] == $current_action['emotion'] || $current_action['emotion'] == 'any') {
+                                $current_action['successful'] = true;
+                                $liveness_actions[$current_action_index] = $current_action;
+                                $device->update([
+                                    'liveness_actions' => $liveness_actions
+                                ]);
+                                $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/build', [
+                                    'body' => json_encode([
+                                        'id' => $request->affiliate->id,
+                                        'image' => $file_name
+                                    ]),
+                                    'http_errors' => false,
+                                ]);
+                                if ($res->getStatusCode() == 200) {
+                                    $remove_file = false;
+                                    $current_action_index += 1;
+                                    if ($current_action_index < $total_actions) {
+                                        return response()->json([
+                                            'error' => false,
+                                            'message' => ($current_action_index + 1).'/'.$total_actions.'. Siga las instrucciones',
+                                            'data' => [
+                                                'type' => $device->enrolled ? 'liveness' : 'enroll',
+                                                'action' => $liveness_actions[$current_action_index],
+                                                'current_action' => $current_action_index + 1,
+                                                'total_actions' => $total_actions,
+                                                'verified' => $device->verified
+                                            ]
+                                        ], 200);
+                                    } else {
+                                        if (!$device->enrolled && !$device->verified) {
+                                            $device->update([
+                                                'enrolled' => true,
+                                                'liveness_actions' => null
+                                            ]);
+                                        } elseif ($device->enrolled && $device->verified) {
+                                            $device->update([
+                                                'eco_com_procedure_id' => $this->eco_com_procedure->id
+                                            ]);
+                                        }
+                                        return response()->json([
+                                            'error' => false,
+                                            'message' => 'Proceso terminado',
+                                            'data' => [
+                                                'type' => 'completed',
+                                                'verified' => $device->verified
+                                            ]
+                                        ], 200);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
+            if ($remove_file) Storage::delete($path.$file_name);
             return response()->json([
-                'error' => false,
+                'error' => true,
                 'message' => ($current_action_index + 1).'/'.$total_actions.'. Intente nuevamente',
                 'data' => [
                     'type' => $device->enrolled ? 'liveness' : 'enroll',
@@ -268,15 +264,15 @@ class LivenessController extends Controller
                     'verified' => $device->verified
                 ]
             ], 200);
+        } else {
+            return response()->json([
+                'error' => false,
+                'message' => 'Proceso terminado',
+                'data' => [
+                    'type' => 'completed',
+                    'verified' => $device->verified
+                ]
+            ], 200);
         }
-
-        return response()->json([
-            'error' => false,
-            'message' => 'Proceso terminado',
-            'data' => [
-                'type' => 'completed',
-                'verified' => $device->verified
-            ]
-        ], 200);
     }
 }
