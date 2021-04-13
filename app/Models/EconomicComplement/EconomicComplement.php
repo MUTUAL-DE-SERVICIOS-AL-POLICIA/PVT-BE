@@ -645,7 +645,8 @@ class EconomicComplement extends Model
         beneficiary.official as oficialia_ben,
         beneficiary.book as libro_ben,
         beneficiary.departure as partida_ben,
-        beneficiary.marriage_date as fecha_matrimonio_ben
+        beneficiary.marriage_date as fecha_matrimonio_ben,
+        beneficiary.gender as genero_ben
         ";
     }
     public static function basic_info_complements()
