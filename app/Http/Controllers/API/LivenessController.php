@@ -56,7 +56,7 @@ class LivenessController extends Controller
         if ($enroll) {
             return $actions;
         } else {
-            return array_slice($actions, 0, 3);
+            return array_slice($actions, 0, 1);
         }
     }
 
@@ -68,39 +68,18 @@ class LivenessController extends Controller
 
         $device = $request->affiliate->device;
 
-        if ($device->enrolled && !$device->verified) {
-            return response()->json([
-                'error' => true,
-                'message' => 'Su identidad está siendo verificada, será notificado cuando se complete el proceso.',
-                'data' => [
-                    'type' => 'verifying'
-                ]
-            ], 200);
-        } elseif ($device->enrolled && $device->verified) {
-            // TODO: verificar si es el rango de fechas correcto
-            $eco_com_start_date = Carbon::createFromFormat('d/m/Y', $this->eco_com_procedure->normal_start_date)->startOfDay();
-            $eco_com_end_date = Carbon::createFromFormat('d/m/Y', $this->eco_com_procedure->normal_end_date)->endOfDay();
-            if (!Carbon::now()->between($eco_com_start_date, $eco_com_end_date)) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'No puede generar trámites ahora, espere a las fechas que se indican en la página web.',
-                    'data' => [
-                        'type' => 'wrong'
-                    ]
-                ], 200);
-            } else {
-                // TODO: verificar si es funciona en la creación de trámites
-                if ($device->eco_com_procedure_id != null) {
-                    if ($device->eco_com_procedure_id == $this->eco_com_procedure->id) {
-                        return response()->json([
-                            'error' => false,
-                            'message' => 'Proceso terminado',
-                            'data' => [
-                                'type' => 'completed',
-                                'verified' => $device->verified
-                            ]
-                        ], 200);
-                    }
+        if ($device->enrolled) {
+            if ($device->eco_com_procedure_id != null) {
+                if ($device->eco_com_procedure_id == $this->eco_com_procedure->id) {
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Proceso terminado',
+                        'data' => [
+                            'completed' => true,
+                            'type' => 'liveness',
+                            'verified' => $device->verified
+                        ]
+                    ], 200);
                 }
             }
 
@@ -111,13 +90,18 @@ class LivenessController extends Controller
                 'error' => false,
                 'message' => '1/'.count($device->liveness_actions).'. Siga las instrucciones',
                 'data' => [
+                    'completed' => false,
                     'type' => 'liveness',
+                    'dialog' => [
+                        'title' => 'Reconocimiento Facial',
+                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de control de vivencia, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                    ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
                     'total_actions' => count($device->liveness_actions)
                 ]
             ], 200);
-        } elseif (!$device->enrolled && !$device->verified) {
+        } elseif (!$device->enrolled) {
             $device->liveness_actions = $this->random_actions(true);
             $device->save();
 
@@ -125,7 +109,12 @@ class LivenessController extends Controller
                 'error' => false,
                 'message' => '1/'.count($device->liveness_actions).'. Siga las instrucciones',
                 'data' => [
+                    'completed' => false,
                     'type' => 'enroll',
+                    'dialog' => [
+                        'title' => 'Reconocimiento Facial',
+                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de enrolamiento, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                    ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
                     'total_actions' => count($device->liveness_actions)
@@ -171,10 +160,13 @@ class LivenessController extends Controller
                 ]),
                 'http_errors' => false,
             ]);
+            if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
             if ($res->getStatusCode() != 200) $continue = false;
             if ($continue) {
-                $files = count(Storage::files($path));
-                if ($files > 1) {
+                $files = Storage::files($path);
+                if (count(array_filter($files, function($item) {
+                    return strpos($item, '.npy') !== false;
+                })) > 1) {
                     $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/verify', [
                         'body' => json_encode([
                             'id' => $request->affiliate->id,
@@ -190,7 +182,9 @@ class LivenessController extends Controller
                         'body' => json_encode([
                             'is_base64' => false,
                             'id' => $request->affiliate->id,
-                            'image' => $file_name
+                            'image' => $file_name,
+                            'gaze' => true,
+                            'emotion' => $current_action['emotion'] == 'any' ? false : true,
                         ]),
                         'http_errors' => false,
                     ]);
@@ -219,6 +213,7 @@ class LivenessController extends Controller
                                             'error' => false,
                                             'message' => ($current_action_index + 1).'/'.$total_actions.'. Siga las instrucciones',
                                             'data' => [
+                                                'completed' => false,
                                                 'type' => $device->enrolled ? 'liveness' : 'enroll',
                                                 'action' => $liveness_actions[$current_action_index],
                                                 'current_action' => $current_action_index + 1,
@@ -241,7 +236,8 @@ class LivenessController extends Controller
                                             'error' => false,
                                             'message' => 'Proceso terminado',
                                             'data' => [
-                                                'type' => 'completed',
+                                                'completed' => true,
+                                                'type' => $device->enrolled ? 'liveness' : 'enroll',
                                                 'verified' => $device->verified
                                             ]
                                         ], 200);
@@ -257,6 +253,7 @@ class LivenessController extends Controller
                 'error' => true,
                 'message' => ($current_action_index + 1).'/'.$total_actions.'. Intente nuevamente',
                 'data' => [
+                    'completed' => false,
                     'type' => $device->enrolled ? 'liveness' : 'enroll',
                     'action' => $current_action,
                     'current_action' => $current_action_index + 1,
@@ -269,7 +266,8 @@ class LivenessController extends Controller
                 'error' => false,
                 'message' => 'Proceso terminado',
                 'data' => [
-                    'type' => 'completed',
+                    'completed' => true,
+                    'type' => $device->enrolled ? 'liveness' : 'enroll',
                     'verified' => $device->verified
                 ]
             ], 200);

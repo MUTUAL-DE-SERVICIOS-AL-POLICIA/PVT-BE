@@ -29,11 +29,14 @@ class AuthController extends Controller
             'error' => false,
             'message' => 'Usuario actual',
             'data' => [
+                'api_token' => $request->affiliate->device->api_token,
                 'user' => [
                     'id' => $request->affiliate->id,
                     'full_name' => $request->affiliate->fullName(),
                     'degree' => $request->affiliate->degree->name,
                     'identity_card' => $request->affiliate->identity_card,
+                    'pension_entity' => $request->affiliate->pension_entity->name,
+                    'category' => $request->affiliate->category->name,
                     'enrolled' => $request->affiliate->device->enrolled,
                 ],
             ]
@@ -60,7 +63,7 @@ class AuthController extends Controller
             $affiliate->device = (object)[
                 'enrolled' => false
             ];
-        } elseif ($affiliate->device) {
+        } elseif ($affiliate_device && $affiliate) {
             if ($affiliate->id == $affiliate_device->affiliate_id) {
                 $token = $this->getToken($request->device_id);
                 $affiliate->device()->update([
@@ -79,6 +82,8 @@ class AuthController extends Controller
                         'full_name' => $affiliate->fullName(),
                         'degree' => $affiliate->degree->name,
                         'identity_card' => $affiliate->ciWithExt(),
+                        'pension_entity' => $affiliate->pension_entity->name,
+                        'category' => $affiliate->category->name,
                         'enrolled' => $affiliate->device->enrolled,
                     ],
                 ]
@@ -87,7 +92,7 @@ class AuthController extends Controller
             return response()->json([
                 'error' => true,
                 'message' => 'Dispositivo inválido',
-                'data' => []
+                'data' => (object)[]
             ], 403);
         }
     }
@@ -104,7 +109,7 @@ class AuthController extends Controller
         return response()->json([
             'error' => false,
             'message' => 'Sesión terminada',
-            'data' => []
+            'data' => (object)[]
         ], 200);
     }
 }
