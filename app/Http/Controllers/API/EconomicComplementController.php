@@ -5,6 +5,9 @@ namespace Muserpol\Http\Controllers\API;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Illuminate\Http\Request;
 use Muserpol\Http\Controllers\Controller;
+use Muserpol\Http\Resources\EconomicComplementResource;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
+use Muserpol\Models\EconomicComplement\EcoComStateType;
 
 class EconomicComplementController extends Controller
 {
@@ -15,10 +18,28 @@ class EconomicComplementController extends Controller
      */
     public function index(Request $request)
     {
+        $data = $request->affiliate->economic_complements()->orderBy('reception_date', 'desc');
+        $current_procedures = EcoComProcedure::current_procedures(true);
+        if (filter_var($request->query('current'), FILTER_VALIDATE_BOOLEAN, false)) {
+            $state_types = EcoComStateType::whereIn('name', ['Enviado', 'Creado'])->pluck('id');
+            $data = $data->where(function($q) use ($current_procedures, $state_types) {
+                $q->whereIn('eco_com_procedure_id', $current_procedures)->orWhereHas('eco_com_state', function ($query) use ($state_types) {
+                    return $query->whereIn('eco_com_state_type_id', $state_types);
+                });
+            });
+        } else {
+            $state_types = EcoComStateType::whereIn('name', ['Pagado', 'No Efectivizado'])->pluck('id');
+            $data = $data->where(function($q) use ($current_procedures, $state_types) {
+                $q->whereNotIn('eco_com_procedure_id', $current_procedures)->whereHas('eco_com_state', function ($query) use ($state_types) {
+                    return $query->whereIn('eco_com_state_type_id', $state_types);
+                });
+            });
+        }
+
         return response()->json([
             'error' => false,
             'message' => 'Trámites de Complemento Económico',
-            'data' => $request->affiliate->economic_complements()->orderBy('reception_date', 'desc')->paginate($request->per_page ?? 10, ['id', 'code', 'reception_date', 'total_amount_semester', 'difference', 'total', 'eco_com_state_id'], 'page', $request->page ?? 1)
+            'data' => EconomicComplementResource::collection($data->paginate($request->per_page ?? 5, ['*'], 'page', $request->page ?? 1))->resource,
         ]);
     }
 
@@ -31,25 +52,16 @@ class EconomicComplementController extends Controller
     public function show(Request $request, EconomicComplement $economicComplement)
     {
         if ($economicComplement->affiliate_id == $request->affiliate->id) {
-            $response = $economicComplement->only('id', 'code', 'reception_date', 'total_amount_semester', 'difference', 'total');
-            $response['eco_com_state_id'] = $economicComplement->eco_com_state->id;
-            $response['eco_com_state'] = $economicComplement->eco_com_state->name;
-            $response['eco_com_state_type'] = $economicComplement->eco_com_state->eco_com_state_type->name;
-            $response['wf_current_state'] = $economicComplement->wf_state->name;
-            $response['city'] = $economicComplement->city->name;
-            $response['category'] = $economicComplement->category->name;
             return response()->json([
                 'error' => false,
                 'message' => 'Trámite de Complemento Económico ' . $economicComplement->code,
-                'data' => [
-                    'economic_complement' => $response
-                ]
+                'data' => new EconomicComplementResource($economicComplement),
             ]);
         } else {
             return response()->json([
                 'error' => true,
                 'message' => 'Este trámite no le pertenece',
-                'data' => []
+                'data' => null,
             ], 403);
         }
     }

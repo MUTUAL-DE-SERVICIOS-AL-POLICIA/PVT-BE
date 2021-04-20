@@ -15,64 +15,62 @@ class EconomicComplementResource extends Resource
      */
     public function toArray($request)
     {
+        $observations = $this->observations()->pluck('shortened')->unique();
+        $discounts = $this->discount_types->map(function($e) {
+            return $e['shortened'].': '.Util::formatMoney($e['pivot']['amount'], true);
+        });
+        $data = [
+            [
+                'key' => 'Beneficiario',
+                'value' => $this->eco_com_beneficiary->fullName(),
+            ], [
+                'key' => 'C.I.',
+                'value' => $this->eco_com_beneficiary->ciWithExt(),
+            ], [
+                'key' => 'Semestre',
+                'value' => $this->eco_com_procedure->fullName(),
+            ], [
+                'key' => 'Fecha de recepción',
+                'value' => Util::getDateFormat($this->reception_date),
+            ], [
+                'key' => 'Nº de trámite',
+                'value' => $this->code,
+            ], [
+                'key' => 'Tipo de prestación',
+                'value' => $this->eco_com_modality->shortened,
+            ], [
+                'key' => 'Tipo de trámite',
+                'value' => $this->eco_com_reception_type->name,
+            ], [
+                'key' => 'Estado de trámite',
+                'value' => $this->eco_com_state->name,
+            ], [
+                'key' => 'Observaciones',
+                'value' => $observations->count() > 0 ? $observations->values() : 'Ninguna',
+            ]
+        ];
+        if ($this->total) {
+            $data[] = [
+                'key' => 'Total pagado',
+                'value' => Util::formatMoney($this->total, true),
+            ];
+        }
+        $data[] = [
+            'key' => 'Descuentos',
+            'value' => $discounts->count() > 0 ? $discounts : 'Ninguno',
+        ];
+        if ($this->base_wage) {
+            $data[] = [
+                'key' => 'Líquido pagable',
+                    'value' => Util::formatMoney($this->base_wage->amount, true),
+            ];
+        }
+
         return [
             'id' => $this->id,
-            'affiliate_id' => $this->affiliate_id,
-            'display' => [
-                [
-                    'key' => 'Beneficiario',
-                    'value' => $this->eco_com_beneficiary->fullName(),
-                    'array' => false
-                ], [
-                    'key' => 'C.I.',
-                    'value' => $this->eco_com_beneficiary->ciWithExt(),
-                    'array' => false
-                ], [
-                    'key' => 'Semestre',
-                    'value' => $this->eco_com_procedure->fullName(),
-                    'array' => false
-                ], [
-                    'key' => 'Fecha de recepción',
-                    'value' => Util::getDateFormat($this->reception_date),
-                    'array' => false
-                ], [
-                    'key' => 'Nº de trámite',
-                    'value' => $this->code,
-                    'array' => false
-                ], [
-                    'key' => 'Tipo de prestación',
-                    'value' => $this->eco_com_modality->shortened,
-                    'array' => false
-                ], [
-                    'key' => 'Tipo de trámite',
-                    'value' => $this->eco_com_reception_type->name,
-                    'array' => false
-                ], [
-                    'key' => 'Estado de trámite',
-                    'value' => $this->eco_com_state->name,
-                    'array' => false
-                ], [
-                    'key' => 'Observaciones',
-                    'value' => $this->observations()->pluck('name'),
-                    'array' => true
-                ], [
-                    'key' => 'Total pagado',
-                    'value' => Util::formatMoney($this->total, true),
-                    'array' => false
-                ], [
-                    // TODO: verificar columna en BD
-                    'key' => 'Descuentos',
-                    'value' => [
-                        Util::formatMoney($this->seniority, true).' Descuento 1',
-                        Util::formatMoney($this->seniority, true).' Descuento X'
-                    ],
-                    'array' => true
-                ], [
-                    'key' => 'Líquido pagable',
-                    'value' => Util::formatMoney($this->base_wage->amount, true),
-                    'array' => false
-                ]
-            ]
+            'title' => $this->code,
+            'subtitle' => $this->eco_com_reception_type->name,
+            'display' => $data
         ];
     }
 }
