@@ -38,7 +38,7 @@ class EconomicComplementController extends Controller
 
         return response()->json([
             'error' => false,
-            'message' => 'Trámites de Complemento Económico',
+            'message' => 'Complemento Económico',
             'data' => EconomicComplementResource::collection($data->paginate($request->per_page ?? 5, ['*'], 'page', $request->page ?? 1))->resource,
         ]);
     }
@@ -54,7 +54,7 @@ class EconomicComplementController extends Controller
         if ($economicComplement->affiliate_id == $request->affiliate->id) {
             return response()->json([
                 'error' => false,
-                'message' => 'Trámite de Complemento Económico ' . $economicComplement->code,
+                'message' => 'Complemento Económico ' . $economicComplement->code,
                 'data' => new EconomicComplementResource($economicComplement),
             ]);
         } else {
