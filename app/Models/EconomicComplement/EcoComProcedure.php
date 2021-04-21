@@ -5,6 +5,7 @@ namespace Muserpol\Models\EconomicComplement;
 use Illuminate\Database\Eloquent\Model;
 use Muserpol\Helpers\Util;
 use Carbon\Carbon;
+use Muserpol\Http\Resources\EconomicComplementResource;
 
 class EcoComProcedure extends Model
 {
@@ -81,5 +82,15 @@ class EcoComProcedure extends Model
             return null;
         }
         return Carbon::parse($value)->format('d/m/Y');
+    }
+
+    public function device() {
+        return $this->hasOne(AffiliateDevice::class, 'eco_com_procedure_id', 'id', 'affiliate_devices');
+    }
+
+    public static function current_procedures($with_lagging = false)
+    {
+        $now = Carbon::now()->toDateString();
+        return EcoComProcedure::whereDate('normal_start_date', '>=', $now)->whereDate($with_lagging ? 'lagging_end_date' : 'additional_end_date', '<=', $now)->get();
     }
 }
