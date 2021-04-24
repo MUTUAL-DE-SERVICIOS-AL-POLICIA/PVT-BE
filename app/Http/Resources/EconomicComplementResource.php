@@ -33,9 +33,9 @@ class EconomicComplementResource extends Resource
                 'key' => 'Fecha de recepción',
                 'value' => Util::getDateFormat($this->reception_date),
             ], [
-                'key' => 'Nº de trámite',
-                'value' => $this->code,
-            ], [
+            //     'key' => 'Nº de trámite',
+            //     'value' => $this->code,
+            // ], [
                 'key' => 'Tipo de prestación',
                 'value' => $this->eco_com_modality->shortened,
             ], [
@@ -51,7 +51,7 @@ class EconomicComplementResource extends Resource
         ];
         if ($this->total) {
             $data[] = [
-                'key' => 'Total pagado',
+                'key' => 'Monto calculado',
                 'value' => Util::formatMoney($this->total, true),
             ];
         }
@@ -69,7 +69,7 @@ class EconomicComplementResource extends Resource
         return [
             'id' => $this->id,
             'title' => $this->code,
-            'subtitle' => $this->eco_com_reception_type->name,
+            'subtitle' => $this->eco_com_state->eco_com_state_type->name,
             'display' => $data
         ];
     }
