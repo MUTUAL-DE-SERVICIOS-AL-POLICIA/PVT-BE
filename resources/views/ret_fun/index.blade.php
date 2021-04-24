@@ -46,6 +46,10 @@
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                         </tr>
                     </tfoot>
                     <thead>
@@ -59,9 +63,14 @@
                             <th>Apellido Paterno</th>
                             <th>Apellido Materno</th>
                             <th>Apellido de Casada</th>
+                            <th>Fecha de Fallecimiento</th>
+                            <th>Fecha de Ingreso</th>
+                            <th>Fecha de Desvinculación</th>
+                            <th>Teléfono</th>
+                            <th>Celular</th>
                             <th>Tipo de Trámite</th>
                             <th>Modalidad</th>
-                            <th>Ubicacion</th>
+                            <th>Ubicación</th>
                             <th>Regional</th>
                             <th>Estado de Bandeja</th>
                             <th>Disponibilidad</th>
@@ -73,14 +82,14 @@
                             <th>Fecha Revision Legal</th>
                             <th># de Cuentas individuales</th>
                             <th>Fecha Cuentas individuales</th>
-                            <th># de Calificacion</th>
-                            <th>Fecha Calificacion</th>
+                            <th># de Calificación</th>
+                            <th>Fecha Calificación</th>
                             <th># de Dictamen</th>
                             <th>Fecha Dictamen</th>
                             <th># de Jefatura</th>
                             <th>Fecha Jefatura</th>
-                            <th># de Resolucion</th>
-                            <th>Fecha Resolucion</th>
+                            <th># de Resolución</th>
+                            <th>Fecha Resolución</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
@@ -168,7 +177,11 @@
                 { data: 'affiliate.last_name' },
                 { data: 'affiliate.mothers_last_name' },
                 { data: 'affiliate.surname_husband' },
-                // { data: 'affiliate.gender' },
+                { data: 'affiliate.date_death', visible: false },
+                { data: 'affiliate.date_entry', visible: false },
+                { data: 'affiliate.date_derelict', visible: false },
+                { data: 'phone_number', visible: false },
+                { data: 'cell_phone_number', visible: false },
                 { data: 'type' },
                 { data: 'procedure_modality.name' },
                 { data: 'wf_state.first_shortened' },
