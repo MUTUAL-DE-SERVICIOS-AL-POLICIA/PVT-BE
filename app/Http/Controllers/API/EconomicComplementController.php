@@ -39,7 +39,7 @@ class EconomicComplementController extends Controller
         return response()->json([
             'error' => false,
             'message' => 'Complemento Económico',
-            'data' => EconomicComplementResource::collection($data->paginate($request->per_page ?? 5, ['*'], 'page', $request->page ?? 1))->resource,
+            'data' => EconomicComplementResource::collection($data->paginate($request->per_page ?? 3, ['*'], 'page', $request->page ?? 1))->resource,
         ]);
     }
 
