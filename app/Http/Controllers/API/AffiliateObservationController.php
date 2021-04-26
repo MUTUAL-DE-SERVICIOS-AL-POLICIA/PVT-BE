@@ -3,6 +3,7 @@
 namespace Muserpol\Http\Controllers\API;
 
 use Muserpol\Models\Affiliate;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Illuminate\Http\Request;
 use Muserpol\Http\Controllers\Controller;
 
@@ -18,6 +19,11 @@ class AffiliateObservationController extends Controller
         if ($request->affiliate->id == $affiliate->id) {
             $observations = array_unique($affiliate->observations()->where('description', 'Denegado')->pluck('shortened')->all());
             $enabled = (count($observations) == 0);
+            if ($enabled) {
+                if (EcoComProcedure::affiliate_available_procedures($affiliate->id)->count() == 0) {
+                    $enabled = false;
+                }
+            }
 
             return response()->json([
                 'error' => false,

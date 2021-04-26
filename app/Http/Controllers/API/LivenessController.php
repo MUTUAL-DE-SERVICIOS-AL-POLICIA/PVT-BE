@@ -23,8 +23,6 @@ class LivenessController extends Controller
                 'exceptions' => false,
             ],
         ]);
-
-        $this->eco_com_procedure = EcoComProcedure::orderBy('created_at', 'desc')->limit(1)->first();
     }
 
     private function random_actions($enroll)
@@ -62,15 +60,12 @@ class LivenessController extends Controller
 
     public function index(Request $request)
     {
-        if (!Storage::exists('liveness/faces/'.$request->affiliate->id)) {
-            Storage::makeDirectory('liveness/faces/'.$request->affiliate->id, 0775, true);
-        }
-
         $device = $request->affiliate->device;
+        $available_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
 
-        if ($device->enrolled) {
+        if ($device->enrolled && Storage::exists('liveness/faces/'.$request->affiliate->id) && ($available_procedures->count() > 0)) {
             if ($device->eco_com_procedure_id != null) {
-                if ($device->eco_com_procedure_id == $this->eco_com_procedure->id) {
+                if ($device->eco_com_procedure_id == $available_procedures->first()->id) {
                     return response()->json([
                         'error' => false,
                         'message' => 'Proceso terminado',
@@ -102,9 +97,12 @@ class LivenessController extends Controller
                 ]
             ], 200);
         } elseif (!$device->enrolled) {
+            if (Storage::exists('liveness/faces/'.$request->affiliate->id)) {
+                Storage::deleteDirectory('liveness/faces/'.$request->affiliate->id);
+            }
+            Storage::makeDirectory('liveness/faces/'.$request->affiliate->id, 0775, true);
             $device->liveness_actions = $this->random_actions(true);
             $device->save();
-
             return response()->json([
                 'error' => false,
                 'message' => '1/'.count($device->liveness_actions).'. Siga las instrucciones',
@@ -222,15 +220,24 @@ class LivenessController extends Controller
                                             ]
                                         ], 200);
                                     } else {
-                                        if (!$device->enrolled && !$device->verified) {
+                                        if (!$device->enrolled) {
                                             $device->update([
                                                 'enrolled' => true,
                                                 'liveness_actions' => null
                                             ]);
-                                        } elseif ($device->enrolled && $device->verified) {
-                                            $device->update([
-                                                'eco_com_procedure_id' => $this->eco_com_procedure->id
-                                            ]);
+                                        } else {
+                                            $current_procedure = EcoComProcedure::affiliate_available_procedures($request->affiliate->id)->first();
+                                            if ($current_procedure) {
+                                                $device->update([
+                                                    'eco_com_procedure_id' => $current_procedure->id
+                                                ]);
+                                            } else {
+                                                return response()->json([
+                                                    'error' => true,
+                                                    'message' => 'Ocurrió un error inesperado, comuniquese con el personal de MUSERPOL.',
+                                                    'data' => []
+                                                ], 500);
+                                            }
                                         }
                                         return response()->json([
                                             'error' => false,
