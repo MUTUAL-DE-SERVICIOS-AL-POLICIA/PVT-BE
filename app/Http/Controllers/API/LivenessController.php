@@ -23,6 +23,7 @@ class LivenessController extends Controller
                 'exceptions' => false,
             ],
         ]);
+        $this->image_count = 6;
     }
 
     private function random_actions($enroll)
@@ -147,10 +148,7 @@ class LivenessController extends Controller
         $current_action_index = $total_actions - $remaining_actions;
 
         if ($remaining_actions > 0) {
-            // TODO: Eliminar foto mas antigua para reemplazar por la última en caso de control de vivencia
-            if (!$device->enrolled) {
-                Storage::put($path.$file_name, base64_decode($image), 'public');
-            }
+            Storage::put($path.$file_name, base64_decode($image), 'public');
             $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/crop', [
                 'body' => json_encode([
                     'id' => $request->affiliate->id,
@@ -231,6 +229,18 @@ class LivenessController extends Controller
                                                 $device->update([
                                                     'eco_com_procedure_id' => $current_procedure->id
                                                 ]);
+                                                $files = collect(File::allFiles(Storage::path($path)))->filter(function ($file) {
+                                                    return in_array($file->getExtension(), ['npy']);
+                                                })->sortBy(function ($file) {
+                                                    return $file->getCTime();
+                                                })->map(function ($file) {
+                                                    return $file->getBaseName();
+                                                })->values();
+                                                if ($files->count() >= $this->image_count) {
+                                                    Storage::delete($path.$files->first());
+                                                    $image_file = $path.substr($files->first(), 0, strpos($files->first(), '.npy')).'.jpg';
+                                                    if (Storage::exists($image_file)) Storage::delete($image_file);
+                                                }
                                             } else {
                                                 return response()->json([
                                                     'error' => true,
