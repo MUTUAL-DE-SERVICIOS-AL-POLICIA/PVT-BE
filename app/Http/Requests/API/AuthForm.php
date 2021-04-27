@@ -22,7 +22,8 @@ class AuthForm extends ApiRequest
     public function rules()
     {
         return [
-            'identity_card' => 'required|exists:affiliates,identity_card',
+            'identity_card' => 'required',
+            'birth_date' => 'required',
             'device_id' => 'required|min:3|max:255'
         ];
     }

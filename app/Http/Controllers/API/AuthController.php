@@ -4,10 +4,12 @@ namespace Muserpol\Http\Controllers\API;
 
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\AffiliateDevice;
+use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Http\Requests\API\AuthForm;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Muserpol\Http\Controllers\Controller;
+use Muserpol\Helpers\Util;
 
 class AuthController extends Controller
 {
@@ -51,49 +53,73 @@ class AuthController extends Controller
      */
     public function store(AuthForm $request)
     {
-        $affiliate = Affiliate::whereIdentityCard($request->identity_card)->first();
-        $affiliate_device = AffiliateDevice::whereDeviceId($request->device_id)->first();
-        $token = null;
-        if (!$affiliate->device && !$affiliate_device) {
-            $token = $this->getToken($request->device_id);
-            $affiliate->device()->create([
-                'api_token' => $token,
-                'device_id' => $request->device_id,
-            ]);
-            $affiliate->device = (object)[
-                'enrolled' => false
-            ];
-        } elseif ($affiliate_device && $affiliate) {
-            if ($affiliate->id == $affiliate_device->affiliate_id) {
-                $token = $this->getToken($request->device_id);
-                $affiliate->device()->update([
-                    'api_token' => $token,
-                ]);
-            }
-        }
-        if ($token) {
-            return response()->json([
-                'error' => false,
-                'message' => 'Usuario autenticado',
-                'data' => [
-                    'api_token' => $token,
-                    'user' => [
-                        'id' => $affiliate->id,
-                        'full_name' => $affiliate->fullName(),
-                        'degree' => $affiliate->degree->name,
-                        'identity_card' => $affiliate->ciWithExt(),
-                        'pension_entity' => $affiliate->pension_entity->name,
-                        'category' => $affiliate->category->name,
-                        'enrolled' => $affiliate->device->enrolled,
-                    ],
-                ]
-            ], 200);
-        } else {
+        $identity_card = $request->identity_card;
+        $birth_date = $request->birth_date;
+        $device_id = $request->device_id;
+        if (Util::isDoblePerceptionEcoCom($identity_card)) {
             return response()->json([
                 'error' => true,
-                'message' => 'Dispositivo inválido',
+                'message' => 'Doble Percepción',
                 'data' => (object)[]
             ], 403);
+        } else {
+            $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
+            ->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+            ->orderBYDesc('eco_com_procedures.year')
+            ->orderBYDesc('eco_com_procedures.semester')
+            ->whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
+            if ($eco_com_beneficiary) {
+                $affiliate = Affiliate::whereId($eco_com_beneficiary->economic_complement->affiliate_id)->first();
+                $affiliate_device = AffiliateDevice::whereDeviceId($device_id)->first();
+                $token = null;
+                if (!$affiliate->device && !$affiliate_device) {
+                    $token = $this->getToken($device_id);
+                    $affiliate->device()->create([
+                        'api_token' => $token,
+                        'device_id' => $device_id,
+                    ]);
+                    $affiliate->device = (object)[
+                        'enrolled' => false
+                    ];
+                } elseif ($affiliate_device && $affiliate) {
+                    if ($affiliate->id == $affiliate_device->affiliate_id) {
+                        $token = $this->getToken($device_id);
+                        $affiliate->device()->update([
+                            'api_token' => $token,
+                        ]);
+                    }
+                }
+                if ($token) {
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Usuario autenticado',
+                        'data' => [
+                            'api_token' => $token,
+                            'user' => [
+                                'id' => $affiliate->id,
+                                'full_name' => $eco_com_beneficiary->fullName(),
+                                'degree' => $affiliate->degree->name,
+                                'identity_card' => $eco_com_beneficiary->ciWithExt(),
+                                'pension_entity' => $affiliate->pension_entity->name,
+                                'category' => $affiliate->category->name,
+                                'enrolled' => $affiliate->device->enrolled,
+                            ],
+                        ]
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Dispositivo inválido',
+                        'data' => (object)[]
+                    ], 403);
+                }
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Usted no se encuentra registrado como beneficiario habitual, para mayor información pasar por oficinas de la MUSERPOL.',
+                    'data' => (object)[]
+                ], 403);
+            }
         }
     }
 
