@@ -50,6 +50,7 @@
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                         </tr>
                     </tfoot>
                     <thead>
