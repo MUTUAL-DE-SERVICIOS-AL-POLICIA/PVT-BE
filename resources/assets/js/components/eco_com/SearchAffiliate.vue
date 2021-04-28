@@ -178,6 +178,11 @@
                       data-placement="top"
                       title="Fecha de desvinculacion"
                     >{{ affiliate.date_entry }}</h4>
+                    <h4
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="N.U.P."
+                    >{{ affiliate.id }}</h4>
                   </div>
                 </div>
               </div>
