@@ -3,9 +3,9 @@
 namespace Muserpol\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Muserpol\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Muserpol\Http\Requests\LivenessForm;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use GuzzleHttp\Client;
@@ -227,7 +227,8 @@ class LivenessController extends Controller
                                             $current_procedure = EcoComProcedure::affiliate_available_procedures($request->affiliate->id)->first();
                                             if ($current_procedure) {
                                                 $device->update([
-                                                    'eco_com_procedure_id' => $current_procedure->id
+                                                    'eco_com_procedure_id' => $current_procedure->id,
+                                                    'liveness_actions' => null
                                                 ]);
                                                 $files = collect(File::allFiles(Storage::path($path)))->filter(function ($file) {
                                                     return in_array($file->getExtension(), ['npy']);
@@ -289,5 +290,38 @@ class LivenessController extends Controller
                 ]
             ], 200);
         }
+    }
+
+    public function show(Request $request, $affiliate)
+    {
+        $current_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
+        if (($current_procedures->count() > 0) && $request->affiliate->device) {
+            if ($request->affiliate->device->eco_com_procedure_id == $current_procedures->first()->id) {
+                return response()->json([
+                    'error' => false,
+                    'message' => 'Puede crear trámites',
+                    'data' => [
+                        'procedure_id' => $request->affiliate->device->eco_com_procedure_id,
+                        'validate' => $request->affiliate->device->verified,
+                        'liveness_success' => true
+                    ],
+                ]);
+            } else {
+                return response()->json([
+                    'error' => false,
+                    'message' => 'Puede crear trámites',
+                    'data' => [
+                        'procedure_id' => $current_procedures->first()->id,
+                        'validate' => $request->affiliate->device->verified,
+                        'liveness_success' => false
+                    ],
+                ]);
+            }
+        }
+        return response()->json([
+            'error' => true,
+            'message' => 'No es posible crear trámites',
+            'data' => [],
+        ], 400);
     }
 }
