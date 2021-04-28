@@ -996,7 +996,7 @@ class RetirementFundController extends Controller
 
         // return response()->json(['ret_funds' => $ret_funds->toArray(),'total'=>$total]);
         $retirement_funds = RetirementFund::with([
-            'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id',
+            'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id,date_death,date_entry,date_derelict',
             'city_start:id,name,first_shortened',
             'wf_state:id,name,first_shortened',
             'procedure_modality:id,name,shortened,procedure_type_id',
@@ -1006,7 +1006,6 @@ class RetirementFundController extends Controller
             'id',
             'code',
             'reception_date',
-            'total',
             'affiliate_id',
             'city_start_id',
             'inbox_state',
@@ -1030,6 +1029,24 @@ class RetirementFundController extends Controller
             ->editColumn('affiliate.city_identity_card_id', function ($ret_fun) {
                 $city = City::find($ret_fun->affiliate->city_identity_card_id);
                 return $city ? $city->first_shortened : null;
+            })
+            ->addColumn('phone_number', function ($ret_fun) {
+                $filter = array_filter($ret_fun->ret_fun_beneficiaries->toArray(), function ($value) {
+                    return $value['type'] == 'S';
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['phone_number']);
+                }
+                return null;
+            })
+            ->addColumn('cell_phone_number', function ($ret_fun) {
+                $filter = array_filter($ret_fun->ret_fun_beneficiaries->toArray(), function ($value) {
+                    return $value['type'] == 'S';
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['cell_phone_number']);
+                }
+                return null;
             })
             ->addColumn('file_code', function ($ret_fun) {
                 $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
