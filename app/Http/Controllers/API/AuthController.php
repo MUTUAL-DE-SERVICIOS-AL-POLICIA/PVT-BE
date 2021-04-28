@@ -27,6 +27,12 @@ class AuthController extends Controller
      */
     public function index(Request $request)
     {
+        $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')
+            ->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+            ->orderBYDesc('eco_com_procedures.year')
+            ->orderBYDesc('eco_com_procedures.semester')
+            ->whereAffiliateId($request->affiliate->id)->first();
+
         return response()->json([
             'error' => false,
             'message' => 'Usuario actual',
@@ -34,9 +40,9 @@ class AuthController extends Controller
                 'api_token' => $request->affiliate->device->api_token,
                 'user' => [
                     'id' => $request->affiliate->id,
-                    'full_name' => $request->affiliate->fullName(),
+                    'full_name' => $eco_com_beneficiary->fullName(),
                     'degree' => $request->affiliate->degree->name,
-                    'identity_card' => $request->affiliate->identity_card,
+                    'identity_card' => $eco_com_beneficiary->identity_card,
                     'pension_entity' => $request->affiliate->pension_entity->name,
                     'category' => $request->affiliate->category->name,
                     'enrolled' => $request->affiliate->device->enrolled,
