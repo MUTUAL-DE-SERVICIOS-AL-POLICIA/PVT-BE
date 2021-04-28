@@ -40,6 +40,7 @@ class AuthController extends Controller
                     'pension_entity' => $request->affiliate->pension_entity->name,
                     'category' => $request->affiliate->category->name,
                     'enrolled' => $request->affiliate->device->enrolled,
+                    'verified' => $request->affiliate->device->verified,
                 ],
             ]
         ], 200);
@@ -79,7 +80,8 @@ class AuthController extends Controller
                         'device_id' => $device_id,
                     ]);
                     $affiliate->device = (object)[
-                        'enrolled' => false
+                        'enrolled' => false,
+                        'verified' => false
                     ];
                 } elseif ($affiliate_device && $affiliate) {
                     if ($affiliate->id == $affiliate_device->affiliate_id) {
@@ -103,6 +105,7 @@ class AuthController extends Controller
                                 'pension_entity' => $affiliate->pension_entity->name,
                                 'category' => $affiliate->category->name,
                                 'enrolled' => $affiliate->device->enrolled,
+                                'verified' => $affiliate->device->verified,
                             ],
                         ]
                     ], 200);

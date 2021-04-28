@@ -23,8 +23,7 @@ class LivenessController extends Controller
                 'exceptions' => false,
             ],
         ]);
-
-        $this->eco_com_procedure = EcoComProcedure::orderBy('created_at', 'desc')->limit(1)->first();
+        $this->image_count = 6;
     }
 
     private function random_actions($enroll)
@@ -62,15 +61,12 @@ class LivenessController extends Controller
 
     public function index(Request $request)
     {
-        if (!Storage::exists('liveness/faces/'.$request->affiliate->id)) {
-            Storage::makeDirectory('liveness/faces/'.$request->affiliate->id, 0775, true);
-        }
-
         $device = $request->affiliate->device;
+        $available_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
 
-        if ($device->enrolled) {
+        if ($device->enrolled && Storage::exists('liveness/faces/'.$request->affiliate->id) && ($available_procedures->count() > 0)) {
             if ($device->eco_com_procedure_id != null) {
-                if ($device->eco_com_procedure_id == $this->eco_com_procedure->id) {
+                if ($device->eco_com_procedure_id == $available_procedures->first()->id) {
                     return response()->json([
                         'error' => false,
                         'message' => 'Proceso terminado',
@@ -102,9 +98,12 @@ class LivenessController extends Controller
                 ]
             ], 200);
         } elseif (!$device->enrolled) {
+            if (Storage::exists('liveness/faces/'.$request->affiliate->id)) {
+                Storage::deleteDirectory('liveness/faces/'.$request->affiliate->id);
+            }
+            Storage::makeDirectory('liveness/faces/'.$request->affiliate->id, 0775, true);
             $device->liveness_actions = $this->random_actions(true);
             $device->save();
-
             return response()->json([
                 'error' => false,
                 'message' => '1/'.count($device->liveness_actions).'. Siga las instrucciones',
@@ -149,10 +148,7 @@ class LivenessController extends Controller
         $current_action_index = $total_actions - $remaining_actions;
 
         if ($remaining_actions > 0) {
-            // TODO: Eliminar foto mas antigua para reemplazar por la última en caso de control de vivencia
-            if (!$device->enrolled) {
-                Storage::put($path.$file_name, base64_decode($image), 'public');
-            }
+            Storage::put($path.$file_name, base64_decode($image), 'public');
             $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/crop', [
                 'body' => json_encode([
                     'id' => $request->affiliate->id,
@@ -222,15 +218,36 @@ class LivenessController extends Controller
                                             ]
                                         ], 200);
                                     } else {
-                                        if (!$device->enrolled && !$device->verified) {
+                                        if (!$device->enrolled) {
                                             $device->update([
                                                 'enrolled' => true,
                                                 'liveness_actions' => null
                                             ]);
-                                        } elseif ($device->enrolled && $device->verified) {
-                                            $device->update([
-                                                'eco_com_procedure_id' => $this->eco_com_procedure->id
-                                            ]);
+                                        } else {
+                                            $current_procedure = EcoComProcedure::affiliate_available_procedures($request->affiliate->id)->first();
+                                            if ($current_procedure) {
+                                                $device->update([
+                                                    'eco_com_procedure_id' => $current_procedure->id
+                                                ]);
+                                                $files = collect(File::allFiles(Storage::path($path)))->filter(function ($file) {
+                                                    return in_array($file->getExtension(), ['npy']);
+                                                })->sortBy(function ($file) {
+                                                    return $file->getCTime();
+                                                })->map(function ($file) {
+                                                    return $file->getBaseName();
+                                                })->values();
+                                                if ($files->count() >= $this->image_count) {
+                                                    Storage::delete($path.$files->first());
+                                                    $image_file = $path.substr($files->first(), 0, strpos($files->first(), '.npy')).'.jpg';
+                                                    if (Storage::exists($image_file)) Storage::delete($image_file);
+                                                }
+                                            } else {
+                                                return response()->json([
+                                                    'error' => true,
+                                                    'message' => 'Ocurrió un error inesperado, comuniquese con el personal de MUSERPOL.',
+                                                    'data' => []
+                                                ], 500);
+                                            }
                                         }
                                         return response()->json([
                                             'error' => false,

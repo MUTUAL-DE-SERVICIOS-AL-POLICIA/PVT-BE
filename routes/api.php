@@ -20,6 +20,7 @@ Route::group([
     Route::post('auth', 'API\AuthController@store');
     Route::get('city', 'API\CityController@index');
     Route::get('eco_com_state', 'API\EcoComStateController@index');
+    Route::resource('affiliate.observation', 'API\AffiliateObservationController')->only('index');
 });
 
 Route::group([
