@@ -87,10 +87,10 @@ class EcoComProcedure extends Model
         return $this->hasOne(AffiliateDevice::class, 'eco_com_procedure_id', 'id', 'affiliate_devices');
     }
 
-    public static function current_procedures($with_lagging = false)
+    public static function current_procedures()
     {
         $now = Carbon::now()->toDateString();
-        return EcoComProcedure::whereDate('normal_start_date', '<=', $now)->whereDate($with_lagging ? 'lagging_end_date' : 'additional_end_date', '>=', $now)->get();
+        return EcoComProcedure::whereDate('normal_start_date', '<=', $now)->whereDate('additional_end_date', '>=', $now)->get();
     }
 
     public static function affiliate_available_procedures($affiliate_id)

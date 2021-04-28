@@ -29,7 +29,7 @@ Route::group([
 ], function () {
     Route::get('auth', 'API\AuthController@index');
     Route::delete('auth', 'API\AuthController@destroy');
-    Route::resource('economic_complement', 'API\EconomicComplementController')->only('index', 'show');
+    Route::resource('economic_complement', 'API\EconomicComplementController')->only('index', 'store', 'show');
     Route::resource('liveness', 'API\LivenessController')->only('index', 'store');
 });
 
