@@ -19,7 +19,7 @@ class EconomicComplementController extends Controller
     public function index(Request $request)
     {
         $data = $request->affiliate->economic_complements()->orderBy('reception_date', 'desc');
-        $current_procedures = EcoComProcedure::current_procedures(true);
+        $current_procedures = EcoComProcedure::current_procedures(true)->pluck('id');
         if (filter_var($request->query('current'), FILTER_VALIDATE_BOOLEAN, false)) {
             $state_types = EcoComStateType::whereIn('name', ['Enviado', 'Creado'])->pluck('id');
             $data = $data->where(function($q) use ($current_procedures, $state_types) {
@@ -35,7 +35,6 @@ class EconomicComplementController extends Controller
                 });
             });
         }
-
         return response()->json([
             'error' => false,
             'message' => 'Complemento Económico',
