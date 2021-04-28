@@ -88,6 +88,61 @@ export default {
         handleTabChange(tabIndex, newTab, oldTab){
             this.activeWorkflowId = newTab.$attrs.dataid;
         },
+        sendReception(){
+            let found = this.dataInbox.workflows.find(w =>{
+                return w.workflow_id == this.activeWorkflowId
+            });
+            let procedures = found.docs
+            if (found) {
+                /*
+                if (!this.wfSequenceNextL.find(w=> w.wf_state_id == this.wfSequenceNext)) {
+                    flash("Debe seleccionar el destino al donde enviará los Trámites.", "error")
+                    return;
+                }
+                let wfSequenceNextName = this.wfSequenceNextL.find(w=> w.wf_state_id == this.wfSequenceNext).wf_state_name;
+                */
+                this.$swal({
+                    title: `¿Está seguro de enviar (${found.docs.length}) Trámite(s) ?`,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#59B75C",
+                    cancelButtonColor: "#EC4758",
+                    confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
+                    cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
+                    showLoaderOnConfirm: true,
+                    preConfirm: () => {
+                        console.log("entro");
+                        let uri=`/inbox_send_reception`;
+                        return axios.post(uri,{
+                            docs: found.docs
+                        }).then(response =>{
+                            if (!response.data) {
+                                throw new Error(response.errors)
+                            }
+                            return response.data;
+                        }).catch((error) => {
+                            this.$swal.showValidationError(`Solicitud fallida: ${error.response.data.errors}`);
+                            flash('Error al enviar los Trámites: '+error.message,'error');
+                        })
+                    },
+                    allowOutsideClick: () => !this.$swal.isLoading()
+                }).then(result => {
+                    if (result.value) {
+                        flash('Trámites enviados correctamente');
+                        this.$store.commit("inbox/clear", this.activeWorkflowId);
+                        this.$swal({
+                            type: 'success',
+                            title: 'Los Trámites fueron enviados correctamente.',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+                        this.getData();
+                    }
+                });
+            }else{
+                alert("error")
+            }
+        },
         sendForward(){
             let found = this.dataInbox.workflows.find(w =>{
                 return w.workflow_id == this.activeWorkflowId
