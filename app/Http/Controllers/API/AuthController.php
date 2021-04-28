@@ -62,7 +62,8 @@ class AuthController extends Controller
                 'device_id' => $request->device_id,
             ]);
             $affiliate->device = (object)[
-                'enrolled' => false
+                'enrolled' => false,
+                'verified' => false
             ];
         } elseif ($affiliate_device && $affiliate) {
             if ($affiliate->id == $affiliate_device->affiliate_id) {
