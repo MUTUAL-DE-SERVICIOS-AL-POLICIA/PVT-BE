@@ -30,7 +30,7 @@ Route::group([
     Route::get('auth', 'API\AuthController@index');
     Route::delete('auth', 'API\AuthController@destroy');
     Route::resource('economic_complement', 'API\EconomicComplementController')->only('index', 'show');
-    Route::resource('liveness', 'API\LivenessController')->only('index', 'store');
+    Route::resource('liveness', 'API\LivenessController')->only('index', 'store', 'show');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
