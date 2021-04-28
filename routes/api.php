@@ -28,7 +28,7 @@ Route::group([
     'prefix' => 'v1',
 ], function () {
     Route::resource('auth', 'API\AuthController')->only('index', 'destroy');
-    Route::resource('economic_complement', 'API\EconomicComplementController')->only('index', 'show');
+    Route::resource('economic_complement', 'API\EconomicComplementController')->only('index', 'store', 'show');
     Route::resource('liveness', 'API\LivenessController')->only('index', 'store', 'show');
     Route::resource('eco_com_procedure', 'API\EcoComProcedureController')->only('show');
 });
