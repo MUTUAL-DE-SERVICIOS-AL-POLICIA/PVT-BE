@@ -168,8 +168,8 @@ class EconomicComplementController extends Controller
         
         return response()->json([
             'error' => false,
-            'message' => 'Complemento Económico creado',
-            'data' => null,
+            'message' => 'Solicitud de trámite generada correctamente, podrá realizar el seguimiento del estado de su solicitud en el listado de trámites vigentes.',
+            'data' => (object)[]
         ], 200);
 
     }
