@@ -194,7 +194,8 @@ class ID
 	{
 		$ids = [
 			'eco_com_normal' => 1,
-			'eco_com_lagging' => 2
+			'eco_com_lagging' => 2,
+			'eco_com_additional' => 3
 		];
 		return ((object)$ids);
 	}
