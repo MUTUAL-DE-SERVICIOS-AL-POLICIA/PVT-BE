@@ -19,6 +19,7 @@ class AffiliateObservationController extends Controller
         if ($request->affiliate->id == $affiliate->id) {
             $observations = array_unique($affiliate->observations()->where('description', 'Denegado')->pluck('shortened')->all());
             $enabled = (count($observations) == 0);
+            $has_observations = count($observations) > 0;
             if ($enabled) {
                 if (EcoComProcedure::affiliate_available_procedures($affiliate->id)->count() == 0) {
                     $enabled = false;
@@ -35,7 +36,7 @@ class AffiliateObservationController extends Controller
                             'value' => $enabled ? 'Si' : 'No',
                         ], [
                             'key' => 'Obs. de afiliado',
-                            'value' => $enabled ? 'Ninguna' : $observations,
+                            'value' => $enabled ? 'Ninguna' : ($has_observations ? $observations : 'Ya solicitó el trámite disponible para el semestre.'),
                         ],
                     ],
                     'title' => $affiliate->fullNameWithDegree(),
