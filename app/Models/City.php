@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class City extends Model
 {
-	protected $table = "cities";
-
+    protected $table = "cities";
+    public $timestamps = false;
 	protected $fillable = [
 		'name',
 		'shortened'
-	];
+    ];
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
+        'company_phones' => 'array',
+        'company_cellphones' => 'array'
+    ];
 
 	public function affiliates_with_identity_cards()
 	{

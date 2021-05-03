@@ -861,4 +861,8 @@ class Affiliate extends Model
         affiliates.birth_date as fecha_nacimiento,
         affiliates.nua as codigo_nua_cua";
     }
+
+    public function device() {
+        return $this->hasOne(AffiliateDevice::class, 'affiliate_id', 'id', 'affiliate_devices');
+    }
 }

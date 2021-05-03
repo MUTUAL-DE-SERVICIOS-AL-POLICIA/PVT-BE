@@ -1,11 +1,13 @@
 <?php
 
-namespace Muserpol\Http\Controllers;
+namespace Muserpol\Http\Controllers\API;
 
-use Muserpol\City;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
+use Muserpol\Http\Resources\EcoComProcedureResource;
 use Illuminate\Http\Request;
+use Muserpol\Http\Controllers\Controller;
 
-class CityController extends Controller
+class EcoComProcedureController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,21 +43,21 @@ class CityController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Muserpol\City  $city
+     * @param  \Muserpol\Models\EconomicComplement\EcoComProcedure  $ecoComProcedure
      * @return \Illuminate\Http\Response
      */
-    public function show(City $city)
+    public function show(EcoComProcedure $ecoComProcedure)
     {
-        //
+        return new EcoComProcedureResource($ecoComProcedure);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Muserpol\City  $city
+     * @param  \Muserpol\Models\EconomicComplement\EcoComProcedure  $ecoComProcedure
      * @return \Illuminate\Http\Response
      */
-    public function edit(City $city)
+    public function edit(EcoComProcedure $ecoComProcedure)
     {
         //
     }
@@ -64,10 +66,10 @@ class CityController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Muserpol\City  $city
+     * @param  \Muserpol\Models\EconomicComplement\EcoComProcedure  $ecoComProcedure
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, City $city)
+    public function update(Request $request, EcoComProcedure $ecoComProcedure)
     {
         //
     }
@@ -75,10 +77,10 @@ class CityController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Muserpol\City  $city
+     * @param  \Muserpol\Models\EconomicComplement\EcoComProcedure  $ecoComProcedure
      * @return \Illuminate\Http\Response
      */
-    public function destroy(City $city)
+    public function destroy(EcoComProcedure $ecoComProcedure)
     {
         //
     }
