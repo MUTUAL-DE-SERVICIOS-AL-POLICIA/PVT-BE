@@ -218,6 +218,7 @@ class LivenessController extends Controller
                                             ]
                                         ], 200);
                                     } else {
+                                        $enrolled = $device->enrolled;
                                         if (!$device->enrolled) {
                                             $device->update([
                                                 'enrolled' => true,
@@ -255,7 +256,7 @@ class LivenessController extends Controller
                                             'message' => 'Proceso terminado',
                                             'data' => [
                                                 'completed' => true,
-                                                'type' => $device->enrolled ? 'liveness' : 'enroll',
+                                                'type' => $enrolled ? 'liveness' : 'enroll',
                                                 'verified' => $device->verified
                                             ]
                                         ], 200);
