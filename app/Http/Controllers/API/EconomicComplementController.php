@@ -161,7 +161,7 @@ class EconomicComplementController extends Controller
             /**
              ** has affiliate observation
             */
-            $observations = $affiliate->observations()->where('type', 'AT')->get();
+            $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->get();
             foreach ($observations as $observation) {
                 $economic_complement->observations()->save($observation, [
                     'user_id' => $observation->pivot->user_id,
