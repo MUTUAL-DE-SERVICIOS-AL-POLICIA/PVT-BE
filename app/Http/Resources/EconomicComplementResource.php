@@ -70,6 +70,8 @@ class EconomicComplementResource extends Resource
             'id' => $this->id,
             'title' => $this->code,
             'subtitle' => $this->eco_com_state->eco_com_state_type->name,
+            // TODO: enlace para la descarga del PDF
+            'link' => '',
             'display' => $data
         ];
     }
