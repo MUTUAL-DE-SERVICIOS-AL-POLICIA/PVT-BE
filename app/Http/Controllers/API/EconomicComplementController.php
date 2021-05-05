@@ -216,14 +216,14 @@ class EconomicComplementController extends Controller
             return response()->json([
                 'error' => false,
                 'message' => 'Complemento Económico creado',
-                'data' => null,
+                'data' => (object)[],
             ], 200);
 
         } else {
             return response()->json([
                 'error' => true,
                 'message' => 'Complemento Económico ya fue registrado.',
-                'data' => null,
+                'data' => (object)[],
             ], 403);
         }
         
