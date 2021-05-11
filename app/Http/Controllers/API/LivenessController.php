@@ -295,6 +295,9 @@ class LivenessController extends Controller
 
     public function show(Request $request, $affiliate)
     {
+        $last_procedure = $request->affiliate->economic_complements()->has('eco_com_beneficiary')->orderBy('reception_date', 'desc')->whereHas('eco_com_beneficiary', function($query) {
+            return $query->where('cell_phone_number', '!=', '')->where('cell_phone_number', '!=', null);
+        })->first();
         $current_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
         if (($current_procedures->count() > 0) && $request->affiliate->device) {
             if ($request->affiliate->device->eco_com_procedure_id == $current_procedures->first()->id) {
@@ -304,7 +307,8 @@ class LivenessController extends Controller
                     'data' => [
                         'procedure_id' => $request->affiliate->device->eco_com_procedure_id,
                         'validate' => $request->affiliate->device->verified,
-                        'liveness_success' => true
+                        'liveness_success' => true,
+                        'cell_phone_number' => $last_procedure ? str_replace('-', '', str_replace(')', '', str_replace('(', '', $last_procedure->eco_com_beneficiary->cell_phone_number))) : null,
                     ],
                 ]);
             } else {
@@ -314,7 +318,8 @@ class LivenessController extends Controller
                     'data' => [
                         'procedure_id' => $current_procedures->first()->id,
                         'validate' => $request->affiliate->device->verified,
-                        'liveness_success' => false
+                        'liveness_success' => false,
+                        'cell_phone_number' => $last_procedure ? str_replace('-', '', str_replace(')', '', str_replace('(', '', $last_procedure->eco_com_beneficiary->cell_phone_number))) : null,
                     ],
                 ]);
             }
