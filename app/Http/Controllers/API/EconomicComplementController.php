@@ -264,7 +264,7 @@ class EconomicComplementController extends Controller
             logger($pages);
             return response()->make($pdf->getOutputFromHtml($pages), 200, [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="'.$pdf.'"'
+                'Content-Disposition' => 'inline; filename="file.pdf"'
             ]);
 
         } else {
