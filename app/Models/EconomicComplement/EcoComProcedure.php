@@ -22,7 +22,7 @@ class EcoComProcedure extends Model
     }
     public function fullName()
     {
-        return  Util::removeSpaces($this->semester.'/'.Carbon::parse($this->year)->year);
+        return  Util::removeSpaces($this->semester.'/SEM/'.Carbon::parse($this->year)->year);
     }
     public function getNameSendBank()
     {
