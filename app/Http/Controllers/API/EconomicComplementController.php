@@ -246,11 +246,9 @@ class EconomicComplementController extends Controller
                 'user' => $user,
                 'date' => $date,
                 'number' => $number,
-    
                 'eco_com' => $economic_complement,
                 'affiliate' => $affiliate,
                 'eco_com_beneficiary' => $eco_com_beneficiary,
-                'eco_com_legal_guardian' => $eco_com_legal_guardian,
                 'eco_com_submitted_documents' => $eco_com_submitted_documents,
             ];
             $pages = [];
