@@ -63,7 +63,6 @@ class AuthController extends Controller
     {
         $identity_card = $request->identity_card;
         $birth_date = Carbon::parse($request->birth_date)->format('Y-m-d');
-        $birth_date = ;
         $device_id = $request->device_id;
         if (Util::isDoblePerceptionEcoCom($identity_card)) {
             return response()->json([
