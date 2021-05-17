@@ -261,8 +261,8 @@ class EconomicComplementController extends Controller
             ->setOption('margin-bottom', '23mm')
             ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $economic_complement->id . '.pdf');
-
-            return response()->make($pdf->inline(), 200, [
+            logger($pages);
+            return response()->make($pdf->getOutputFromHtml($pages), 200, [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="'.$pdf.'"'
             ]);
