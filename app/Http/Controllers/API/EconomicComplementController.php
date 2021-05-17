@@ -252,19 +252,19 @@ class EconomicComplementController extends Controller
                 'eco_com_beneficiary' => $eco_com_beneficiary,
                 'eco_com_submitted_documents' => $eco_com_submitted_documents,
             ];
-            //$pages = [];
+            $pages = [];
 
-            //$pages[] = \View::make('eco_com.print.reception', $data)->render();
+            $pages[] = \View::make('eco_com.print.reception', $data)->render();
 
-            $pdf = \PDF::loadView('eco_com.print.reception', $data);
-            $pdf->setOption('encoding', 'utf-8')
+            $pdf = \App::make('snappy.pdf');
+            $pdf->loadHTML($pages)->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '23mm')
             ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $economic_complement->id . '.pdf');
 
             return response()->make($pdf, 200, [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="file.pdf"'
+                'Content-Disposition' => 'inline; filename="'.$pdf.'"'
             ]);
 
         } else {
