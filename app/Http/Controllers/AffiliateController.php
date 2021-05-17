@@ -321,9 +321,12 @@ class AffiliateController extends Controller
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
                 
         $payment_types = PaymentType::get();
-        $voucher_types = VoucherType::where('module_id', Util::getRol()->module_id)->where('amount','>','0')->get();
+        $voucher_types = VoucherType::get();
         $voucher_type_ids = $voucher_types->pluck('id');
-        $vouchers = Voucher::where('affiliate_id',$affiliate->id)->whereIn('voucher_type_id',$voucher_type_ids)->with(['type'])->get();        
+        
+        //TODO modificar el listado voucher
+        //$vouchers = Voucher::where('affiliate_id',$affiliate->id)->whereIn('voucher_type_id',$voucher_type_ids)->with(['type'])->get();   
+        $vouchers = Voucher::whereIn('voucher_type_id',$voucher_type_ids)->with(['type'])->get();        
         //return $vouchers;
 
 

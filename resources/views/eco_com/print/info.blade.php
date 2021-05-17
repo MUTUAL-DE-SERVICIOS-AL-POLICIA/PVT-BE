@@ -2,19 +2,19 @@
     <thead class="bg-grey-darker">
         <tr class="font-medium text-white text-sm">
             <td class="px-15 text-center text-sm uppercase">
-                TIPO DE TRÁMITE:
+                TIPO DE TRÁMITE
             </td>
             <td class="px-15 text-center text-sm uppercase">
-                modalidad
+                MODALIDAD
             </td>
             <td class="px-15 text-center text-sm uppercase">
-                regional
+                REGIONAL
             </td>
             <td class="px-15 text-center text-sm uppercase">
-                Fecha de recepcion
+                FECHA DE RECEPCIÓN
             </td>
             <td class="px-15 text-center text-sm uppercase">
-                PERIODO
+                PERÍODO
             </td>
         </tr>
     </thead>
