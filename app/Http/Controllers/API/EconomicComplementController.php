@@ -256,7 +256,7 @@ class EconomicComplementController extends Controller
 
             $pages[] = \View::make('eco_com.print.reception', $data)->render();
 
-            $pdf = \App::make('snappy.pdf');
+            $pdf = \App::make('snappy.pdf.wrapper');
             $pdf->loadHTML($pages)->setOption('encoding', 'utf-8')
             ->setOption('margin-bottom', '23mm')
             ->setOption('footer-html', $footerHtml)
