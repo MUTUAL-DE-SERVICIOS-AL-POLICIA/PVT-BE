@@ -264,7 +264,7 @@ class EconomicComplementController extends Controller
 
             return response()->make($pdf, 200, [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="'.$pdf.'"'
+                'Content-Disposition' => 'inline; filename="file.pdf"'
             ]);
 
         } else {
