@@ -17,6 +17,16 @@ class AffiliateObservationController extends Controller
     public function index(Request $request, Affiliate $affiliate)
     {
         if ($request->affiliate->id == $affiliate->id) {
+            $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) {
+                $q->orderBy('year')->orderBy('normal_start_date');
+            })->latest()->first();
+            if (!$last_eco_com || !$last_eco_com->eco_com_beneficiary) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'No es beneficiario habitual',
+                    'data' => []
+                ], 401);    
+            }
             $observations = array_unique($affiliate->observations()->where('description', 'Denegado')->pluck('shortened')->all());
             $enabled = (count($observations) == 0);
             $has_observations = count($observations) > 0;
@@ -37,7 +47,7 @@ class AffiliateObservationController extends Controller
                             'value' => $has_observations ? $observations : 'Ninguna',
                         ],
                     ],
-                    'title' => $affiliate->fullNameWithDegree(),
+                    'title' => $last_eco_com->eco_com_beneficiary->fullName(),
                     'subtitle' => '',
                     'enabled' => $enabled
                 ]
