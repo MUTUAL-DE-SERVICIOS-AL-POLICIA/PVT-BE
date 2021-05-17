@@ -247,7 +247,7 @@ class EconomicComplementController extends Controller
                 'date' => $date,
                 'number' => $number,
     
-                'eco_com' => $eco_com,
+                'eco_com' => $economic_complement,
                 'affiliate' => $affiliate,
                 'eco_com_beneficiary' => $eco_com_beneficiary,
                 'eco_com_legal_guardian' => $eco_com_legal_guardian,
@@ -267,7 +267,7 @@ class EconomicComplementController extends Controller
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="'.$pdf.'"'
             ]);
-            
+
         } else {
             return response()->json([
                 'error' => true,
