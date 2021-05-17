@@ -262,7 +262,7 @@ class EconomicComplementController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $economic_complement->id . '.pdf');
 
-            return response()->make(Storage::get($pdf), 200, [
+            return response()->make($pdf, 200, [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="'.$pdf.'"'
             ]);
