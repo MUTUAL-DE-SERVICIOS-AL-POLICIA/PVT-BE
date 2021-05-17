@@ -5,6 +5,7 @@ namespace Muserpol\Http\Controllers\API;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Muserpol\Http\Controllers\Controller;
 use Muserpol\Http\Resources\EconomicComplementResource;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
