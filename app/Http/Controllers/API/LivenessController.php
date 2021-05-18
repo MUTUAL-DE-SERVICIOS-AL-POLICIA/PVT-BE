@@ -24,6 +24,8 @@ class LivenessController extends Controller
             ],
         ]);
         $this->image_count = 6;
+        // Constante para comparación de rostros entre [0, 1]
+        $this->threshold = 0.65;
     }
 
     private function random_actions($enroll)
@@ -38,12 +40,12 @@ class LivenessController extends Controller
                 'gaze' => 'left',
                 'emotion' => 'any',
                 'successful' => false,
-                'message' => 'Mire ligéramente hacia su izquierda'
+                'message' => 'Gire ligeramente su cabeza hacia la izquierda'
             ], [
                 'gaze' => 'right',
                 'emotion' => 'any',
                 'successful' => false,
-                'message' => 'Mire ligéramente hacia su derecha'
+                'message' => 'Gire ligeramente su cabeza hacia la derecha'
             ], [
                 'gaze' => 'forward',
                 'emotion' => 'happy',
@@ -90,7 +92,7 @@ class LivenessController extends Controller
                     'type' => 'liveness',
                     'dialog' => [
                         'title' => 'Reconocimiento Facial',
-                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de control de vivencia, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de control de vivencia, para ello debe tomar fotografías de su cabeza de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
@@ -112,7 +114,7 @@ class LivenessController extends Controller
                     'type' => 'enroll',
                     'dialog' => [
                         'title' => 'Reconocimiento Facial',
-                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de enrolamiento, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de enrolamiento, para ello debe tomar fotografías de su cabeza de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
@@ -181,6 +183,7 @@ class LivenessController extends Controller
                             'image' => $file_name,
                             'gaze' => true,
                             'emotion' => $current_action['emotion'] == 'any' ? false : true,
+                            'threshold' => $this->threshold
                         ]),
                         'http_errors' => false,
                     ]);
