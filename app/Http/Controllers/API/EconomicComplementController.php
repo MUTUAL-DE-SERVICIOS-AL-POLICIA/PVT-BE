@@ -94,13 +94,13 @@ class EconomicComplementController extends Controller
              ** Create Economic Complement 
             */
             $economic_complement = new EconomicComplement();
-            $economic_complement->user_id = 1;
+            $economic_complement->user_id = 171;
             $economic_complement->affiliate_id = $affiliate->id;
             $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
             $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
             $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
             $economic_complement->workflow_id = EcoComProcedure::whereDate('normal_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
-            $economic_complement->wf_current_state_id = 1;
+            $economic_complement->wf_current_state_id = 60;
             $economic_complement->city_id = ID::cityId()->LP;
             $economic_complement->degree_id = $affiliate->degree->id;
             $economic_complement->category_id = $affiliate->category->id;
