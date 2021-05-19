@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\City;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EcoComBeneficiary extends Model
 {
     protected $table = 'eco_com_applicants';
     use SoftDeletes;
-    
+
     public function getDueDateAttribute($value)
     {
         if(!$value){
