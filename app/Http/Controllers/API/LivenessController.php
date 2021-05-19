@@ -15,7 +15,7 @@ class LivenessController extends Controller
     public function __construct()
     {
         $this->api_client = new Client([
-            'base_uri' => env("LIVENESS_URL"),
+            'base_uri' => env('LIVENESS_URL', 'localhost'),
             'headers' => [
                 'Content-Type' => 'application/json'
             ],
@@ -25,7 +25,7 @@ class LivenessController extends Controller
         ]);
         $this->image_count = 6;
         // Constante para comparación de rostros entre [0, 1]
-        $this->threshold = 0.65;
+        $this->distance = floatval(env("LIVENESS_DISTANCE", 0.4));
     }
 
     private function random_actions($enroll)
@@ -183,7 +183,7 @@ class LivenessController extends Controller
                             'image' => $file_name,
                             'gaze' => true,
                             'emotion' => $current_action['emotion'] == 'any' ? false : true,
-                            'threshold' => $this->threshold
+                            'distance' => $this->distance
                         ]),
                         'http_errors' => false,
                     ]);
