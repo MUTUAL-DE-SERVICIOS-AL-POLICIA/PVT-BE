@@ -67,7 +67,7 @@ class AuthController extends Controller
         if (Util::isDoblePerceptionEcoCom($identity_card)) {
             return response()->json([
                 'error' => true,
-                'message' => 'Doble Percepción',
+                'message' => 'Para realizar el registro de su trámite debe apersonarse por oficinas de la MUSERPOL.',
                 'data' => (object)[]
             ], 403);
         } else {
