@@ -15,7 +15,7 @@ class EconomicComplementResource extends Resource
      */
     public function toArray($request)
     {
-        $observations = $this->observations()->pluck('shortened')->unique();
+        $observations = $this->observations()->where('enabled', false)->pluck('shortened')->unique();
         $discounts = $this->discount_types->map(function($e) {
             return $e['shortened'].': '.Util::formatMoney($e['pivot']['amount'], true);
         });

@@ -17,29 +17,37 @@ class AffiliateObservationController extends Controller
     public function index(Request $request, Affiliate $affiliate)
     {
         if ($request->affiliate->id == $affiliate->id) {
-            $observations = array_unique($affiliate->observations()->where('description', 'Denegado')->pluck('shortened')->all());
+            $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) {
+                $q->orderBy('year')->orderBy('normal_start_date');
+            })->latest()->first();
+            if (!$last_eco_com || !$last_eco_com->eco_com_beneficiary) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'No es beneficiario habitual',
+                    'data' => []
+                ], 401);    
+            }
+            $observations = array_unique($affiliate->observations()->where('description', 'Denegado')->where('enabled', false)->pluck('shortened')->all());
             $enabled = (count($observations) == 0);
             $has_observations = count($observations) > 0;
+            $available_procedures = EcoComProcedure::affiliate_available_procedures($affiliate->id)->count();
             if ($enabled) {
-                if (EcoComProcedure::affiliate_available_procedures($affiliate->id)->count() == 0) {
+                if ($available_procedures == 0) {
                     $enabled = false;
                 }
             }
 
             return response()->json([
                 'error' => false,
-                'message' => 'Observaciones de afiliado',
+                'message' => $has_observations ? 'No puede solicitar trámites debido a la(s) observación(es)' : ($available_procedures == 0 ? 'Ya realizó la solicitud correspondiente al semestre' : $available_procedures.' solicitud(es) de trámite disponible(s)'),
                 'data' => [
                     'display' => [
                         [
-                            'key' => 'Habilitado',
-                            'value' => $enabled ? 'Si' : 'No',
-                        ], [
                             'key' => 'Obs. de afiliado',
-                            'value' => $enabled ? 'Ninguna' : ($has_observations ? $observations : 'Ya solicitó el trámite disponible para el semestre.'),
+                            'value' => $has_observations ? $observations : 'Ninguna',
                         ],
                     ],
-                    'title' => $affiliate->fullNameWithDegree(),
+                    'title' => $last_eco_com->eco_com_beneficiary->fullName(),
                     'subtitle' => '',
                     'enabled' => $enabled
                 ]
