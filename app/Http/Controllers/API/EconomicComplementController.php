@@ -156,7 +156,7 @@ class EconomicComplementController extends Controller
             $eco_com_beneficiary->phone_number = $last_eco_com_beneficiary->phone_number;
             $eco_com_beneficiary->cell_phone_number = $last_eco_com_beneficiary->cell_phone_number;
             $eco_com_beneficiary->city_birth_id = $last_eco_com_beneficiary->city_birth_id;
-            $eco_com_beneficiary->due_date = $last_eco_com_beneficiary->due_date;
+            $eco_com_beneficiary->due_date = $last_eco_com_beneficiary->due_date ? Carbon::parse($last_eco_com_beneficiary->due_date)->format('Y-m-d') : null;
             $eco_com_beneficiary->is_duedate_undefined = $last_eco_com_beneficiary->is_duedate_undefined;
             $eco_com_beneficiary->save();
             /**
