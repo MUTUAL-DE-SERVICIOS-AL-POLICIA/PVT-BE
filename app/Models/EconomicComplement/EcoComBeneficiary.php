@@ -10,6 +10,8 @@ use Muserpol\Models\City;
 class EcoComBeneficiary extends Model
 {
     protected $table = 'eco_com_applicants';
+    use SoftDeletes;
+    
     public function getDueDateAttribute($value)
     {
         if(!$value){
