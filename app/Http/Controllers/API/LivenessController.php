@@ -172,8 +172,13 @@ class LivenessController extends Controller
                         ]),
                         'http_errors' => false,
                     ]);
-                    if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
-                    if ($res->getStatusCode() != 200) $continue = false;
+                    $response = json_decode($res->getBody(), true);
+                    if (env('APP_DEBUG')) logger($response);
+                    if ($res->getStatusCode() == 200) {
+                        $continue = $response['data']['verfied'];
+                    } else {
+                        $continue = false;
+                    }
                 }
                 if ($continue) {
                     $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/analyze', [
