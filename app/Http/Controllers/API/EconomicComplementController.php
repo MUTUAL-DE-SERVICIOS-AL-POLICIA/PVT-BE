@@ -75,6 +75,25 @@ class EconomicComplementController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \Muserpol\Models\EconomicComplement\EconomicComplement  $economicComplement
+     * @return \Illuminate\Http\Response
+     */
+    public function print(Request $request, EconomicComplement $economic_complement)
+    {
+        if ($economic_complement->affiliate_id == $request->affiliate->id) {
+            return $this->print_pdf($economic_complement);
+        } else {
+            return response()->json([
+                'error' => true,
+                'message' => 'Este trámite no le pertenece',
+                'data' => null,
+            ], 403);
+        }
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -215,58 +234,7 @@ class EconomicComplementController extends Controller
             $eco_com_submitted_document->save();
 
 
-            $submitted_document_ids = $economic_complement->submitted_documents->pluck('procedure_requirement_id');
-            $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', $submitted_document_ids)->get();
-            $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
-            $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
-            $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
-            if($economic_complement->eco_com_reception_type_id == ID::ecoCom()->habitual){
-                $title = "FORMULARIO DE REGISTRO DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
-            }else{
-                $title = "SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
-            }
-            $subtitle = $economic_complement->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
-    
-            $code = $economic_complement->code;
-            $area = $economic_complement->wf_state->first_shortened;
-            $user = $economic_complement->user;
-            $date = Util::getDateFormat($economic_complement->reception_date);
-            $number = $code;
-    
-            $bar_code = \DNS2D::getBarcodePNG($economic_complement->encode(), "QRCODE");
-            $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
-    
-            $data = [
-                'direction' => $direction,
-                'institution' => $institution,
-                'unit' => $unit,
-                'title' => $title,
-                'subtitle' => $subtitle,
-                'code' => $code,
-                'area' => $area,
-                'user' => $user,
-                'date' => $date,
-                'number' => $number,
-                'eco_com' => $economic_complement,
-                'affiliate' => $affiliate,
-                'eco_com_beneficiary' => $eco_com_beneficiary,
-                'eco_com_submitted_documents' => $eco_com_submitted_documents,
-            ];
-            $pages = [];
-
-            $pages[] = \View::make('eco_com.print.reception', $data)->render();
-
-            $pdf = \App::make('snappy.pdf.wrapper');
-            $pdf->setOption('encoding', 'utf-8')
-            ->setOption('margin-bottom', '23mm')
-            ->setOption('footer-html', $footerHtml)
-            ->stream($economic_complement->id . '.pdf');
-
-            return response()->make($pdf->getOutputFromHtml($pages), 200, [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="file.pdf"'
-            ]);
-
+            return $this->print_pdf($economic_complement);
         } else {
             return response()->json([
                 'error' => true,
@@ -275,5 +243,63 @@ class EconomicComplementController extends Controller
             ], 403);
         }
         
+    }
+
+    private function print_pdf(EconomicComplement $economic_complement)
+    {
+        $affiliate = $economic_complement->affiliate;
+        $eco_com_beneficiary = $economic_complement->eco_com_beneficiary;
+        $eco_com_submitted_documents = $economic_complement->submitted_documents;
+        $submitted_document_ids = $economic_complement->submitted_documents->pluck('procedure_requirement_id');
+        $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', $submitted_document_ids)->get();
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
+        if($economic_complement->eco_com_reception_type_id == ID::ecoCom()->habitual){
+            $title = "FORMULARIO DE REGISTRO DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
+        }else{
+            $title = "SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
+        }
+        $subtitle = $economic_complement->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
+
+        $code = $economic_complement->code;
+        $area = $economic_complement->wf_state->first_shortened;
+        $user = $economic_complement->user;
+        $date = Util::getDateFormat($economic_complement->reception_date);
+        $number = $code;
+
+        $bar_code = \DNS2D::getBarcodePNG($economic_complement->encode(), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+
+        $data = [
+            'direction' => $direction,
+            'institution' => $institution,
+            'unit' => $unit,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'eco_com' => $economic_complement,
+            'affiliate' => $affiliate,
+            'eco_com_beneficiary' => $eco_com_beneficiary,
+            'eco_com_submitted_documents' => $eco_com_submitted_documents,
+        ];
+        $pages = [];
+
+        $pages[] = \View::make('eco_com.print.reception', $data)->render();
+
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->setOption('encoding', 'utf-8')
+        ->setOption('margin-bottom', '23mm')
+        ->setOption('footer-html', $footerHtml)
+        ->stream($economic_complement->id . '.pdf');
+
+        return response()->make($pdf->getOutputFromHtml($pages), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="file.pdf"'
+        ]);
     }
 }

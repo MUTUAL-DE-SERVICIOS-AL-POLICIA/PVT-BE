@@ -62,7 +62,7 @@ class EconomicComplementResource extends Resource
         if ($this->base_wage) {
             $data[] = [
                 'key' => 'Líquido pagable',
-                    'value' => Util::formatMoney($this->base_wage->amount, true),
+                'value' => Util::formatMoney($this->base_wage->amount, true),
             ];
         }
 
@@ -70,8 +70,7 @@ class EconomicComplementResource extends Resource
             'id' => $this->id,
             'title' => $this->code,
             'subtitle' => $this->eco_com_state->eco_com_state_type->name,
-            // TODO: enlace para la descarga del PDF
-            'link' => '',
+            'printable' => in_array($this->eco_com_state->eco_com_state_type->name, ['Creado', 'Enviado']) ? true : false,
             'display' => $data
         ];
     }
