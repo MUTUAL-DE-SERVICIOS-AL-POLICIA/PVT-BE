@@ -43,12 +43,12 @@ class AffiliateObservationController extends Controller
                 'data' => [
                     'display' => [
                         [
-                            'key' => 'Obs. de afiliado',
+                            'key' => 'Observaciones',
                             'value' => $has_observations ? $observations : 'Ninguna',
                         ],
                     ],
                     'title' => $last_eco_com->eco_com_beneficiary->fullName(),
-                    'subtitle' => '',
+                    'subtitle' => 'Beneficiario',
                     'enabled' => $enabled
                 ]
             ]);

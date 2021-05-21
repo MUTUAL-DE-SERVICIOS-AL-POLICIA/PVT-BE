@@ -40,12 +40,12 @@ class LivenessController extends Controller
                 'gaze' => 'left',
                 'emotion' => 'any',
                 'successful' => false,
-                'message' => 'Gire ligeramente su cabeza hacia la izquierda'
+                'message' => 'Gire ligeramente su rostro hacia la izquierda'
             ], [
                 'gaze' => 'right',
                 'emotion' => 'any',
                 'successful' => false,
-                'message' => 'Gire ligeramente su cabeza hacia la derecha'
+                'message' => 'Gire ligeramente su rostro hacia la derecha'
             ], [
                 'gaze' => 'forward',
                 'emotion' => 'happy',
@@ -92,7 +92,7 @@ class LivenessController extends Controller
                     'type' => 'liveness',
                     'dialog' => [
                         'title' => 'Reconocimiento Facial',
-                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de control de vivencia, para ello debe tomar fotografías de su cabeza de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de control de vivencia, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
@@ -114,7 +114,7 @@ class LivenessController extends Controller
                     'type' => 'enroll',
                     'dialog' => [
                         'title' => 'Reconocimiento Facial',
-                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de enrolamiento, para ello debe tomar fotografías de su cabeza de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de enrolamiento, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
@@ -308,6 +308,11 @@ class LivenessController extends Controller
         })->first();
         $current_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
         if (($current_procedures->count() > 0) && $request->affiliate->device) {
+            if ($last_procedure) {
+                $phones = array_unique(explode(',', str_replace('-', '', str_replace(')', '', str_replace('(', '', $last_procedure->eco_com_beneficiary->cell_phone_number)))));
+            } else {
+                $phones = [];
+            }
             if ($request->affiliate->device->eco_com_procedure_id == $current_procedures->first()->id) {
                 return response()->json([
                     'error' => false,
@@ -316,7 +321,7 @@ class LivenessController extends Controller
                         'procedure_id' => $request->affiliate->device->eco_com_procedure_id,
                         'validate' => $request->affiliate->device->verified,
                         'liveness_success' => true,
-                        'cell_phone_number' => $last_procedure ? str_replace('-', '', str_replace(')', '', str_replace('(', '', $last_procedure->eco_com_beneficiary->cell_phone_number))) : null,
+                        'cell_phone_number' => $phones,
                     ],
                 ]);
             } else {
@@ -327,7 +332,7 @@ class LivenessController extends Controller
                         'procedure_id' => $current_procedures->first()->id,
                         'validate' => $request->affiliate->device->verified,
                         'liveness_success' => false,
-                        'cell_phone_number' => $last_procedure ? str_replace('-', '', str_replace(')', '', str_replace('(', '', $last_procedure->eco_com_beneficiary->cell_phone_number))) : null,
+                        'cell_phone_number' => $phones,
                     ],
                 ]);
             }
