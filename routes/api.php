@@ -20,7 +20,7 @@ Route::group([
     Route::resource('auth', 'API\AuthController')->only('store');
     Route::resource('city', 'API\CityController')->only('index');
     Route::resource('affiliate.observation', 'API\AffiliateObservationController')->only('index');
-    Route::resource('news', 'API\NewsController')->only('index', 'show');
+    Route::resource('policy', 'API\PolicyController')->only('index');
 });
 
 Route::group([
