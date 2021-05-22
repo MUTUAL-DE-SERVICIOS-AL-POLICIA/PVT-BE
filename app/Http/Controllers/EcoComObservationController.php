@@ -4,6 +4,8 @@ namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\Affiliate;
+use Muserpol\Models\AffiliateRecord;
 use Log;
 use Muserpol\Models\ObservationType;
 use Carbon\Carbon;
@@ -84,6 +86,20 @@ class EcoComObservationController extends Controller
             'date' => Carbon::now(),
             'message' => "El usuario " . Auth::user()->username  . " creó la observación " . $observation->name . "."
         ]);
+
+        $affiliate = Affiliate::find($eco_com->affiliate_id);
+        $affiliate->observations()->save($observation, [
+            'user_id' => Auth::user()->id,
+            'date' => Carbon::now(),
+            'message' => $request->message,
+            'enabled' => $request->enabled
+        ]);
+        $record = new AffiliateRecord();
+        $record->user_id = Auth::user()->id;
+        $record->affiliate_id = $affiliate->id;
+        $record->message = "El usuario " . Auth::user()->username  . " creó la observación " . $observation->name . ".";
+        $record->save();
+
         return 'created';
     }
     public function update(Request $request)

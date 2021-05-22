@@ -19,6 +19,9 @@ use Muserpol\Exports\EcoComTagsReport;
 use Muserpol\Exports\EcoComPlanillaGeneralReport;
 use Muserpol\Exports\EcoComBankExport;
 
+use Muserpol\Exports\AffiliateSpouseReport;
+use Muserpol\Exports\EcoComPromedioReport;
+
 class EcoComReportController extends Controller
 {
     public function index()
@@ -92,6 +95,14 @@ class EcoComReportController extends Controller
                 $change_state = $request->changeState;
                 return Excel::download(new EcoComBankExport($eco_com_procedure->id, $change_state), 'Reporte.xlsx');
                 break;
+            case 21:
+            case 22:
+                return Excel::download(new AffiliateSpouseReport($request->reportTypeId), 'Reporte.xlsx');
+                break;
+            case 23:
+            case 24:
+                return Excel::download(new EcoComPromedioReport($request->reportTypeId,$eco_com_procedure->id,$request->changeDate), 'Reporte.xlsx');
+                break;    
             default:
                 # code...
                 break;

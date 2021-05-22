@@ -346,7 +346,7 @@ class EconomicComplementController extends Controller
         /**
          ** has affiliate observation
          */
-        $observations = $affiliate->observations()->where('type', 'AT')->get();
+        $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->get();
         foreach ($observations as $o) {
             $economic_complement->observations()->save($o, [
                 'user_id' => $o->pivot->user_id,
@@ -579,12 +579,19 @@ class EconomicComplementController extends Controller
                 $submit->reception_date = date('Y-m-d');
                 $submit->comment = $request->input('comment' . $requirement->id);
                 $submit->save();
-                $affiliate->submitted_documents()->create([
-                    'user_id'=>auth()->user()->id,
-                    'reception_date'=>now(),
-                    'procedure_document_id'=>$requirement->procedure_document_id,
-                    'status'=>true,
-                ]);
+
+                if ($requirement->procedure_document_id!=237)
+                {
+                    if ($requirement->procedure_document_id!=269)
+                    {
+                        $affiliate->submitted_documents()->create([
+                            'user_id'=>auth()->user()->id,
+                            'reception_date'=>now(),
+                            'procedure_document_id'=>$requirement->procedure_document_id,
+                            'status'=>true,
+                        ]);
+                    }
+                }
             }
         }
         if ($request->additional_requirements) {
@@ -676,7 +683,8 @@ class EconomicComplementController extends Controller
         /**
          ** for observations
          */
-        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'T')->get();
+        // $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'T')->get();
+        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'AT')->get();
         // $affiliate_observations = AffiliateObservation::where('affiliate_id', $economic_complement->affiliate_id)->get();
         // foreach($affiliate_observations as $observation){
         //     if($observation->observationType->type=='AT')

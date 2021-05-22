@@ -202,6 +202,33 @@ class InboxController extends Controller
       'msg' => 'Okay',
     ], 201);
   }
+  public function sendReception(Request $request){
+    try {
+      $this->validate($request, [
+        'docs' => 'required|min:1'
+      ]);
+    } catch (ValidationException $exception) {
+      return response()->json([
+        'status' => 'error',
+        'msg' => 'Error',
+        'errors' => $exception->errors(),
+      ], 422);
+    }
+    $doc_ids = array_map(function ($doc) {
+      return $doc['id'];
+    }, $request->docs);
+
+    $eco_coms = EconomicComplement::whereIn('id', $doc_ids)->get();
+    foreach ($eco_coms as $eco_com) {
+      $eco_com->inbox_state = true;
+      $eco_com->save();
+    }
+
+    return response()->json([
+      'status' => 'success',
+      'msg' => 'Okay',
+    ], 201);
+  }
   public function validateDoc(Request $request, $doc_id)
   {
     $rol_id = Util::getRol()->id;
