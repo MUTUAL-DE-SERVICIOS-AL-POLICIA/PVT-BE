@@ -5,8 +5,9 @@ namespace Muserpol\Http\Controllers\API;
 use Illuminate\Http\Request;
 use Muserpol\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
-class NewsController extends Controller
+class PolicyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,13 +16,26 @@ class NewsController extends Controller
      */
     public function index()
     {
-        return response()->json([
-            'error' => false,
-            'message' => 'Imágenes de novedades',
-            'data' => (object)[
-                'images' => collect(Storage::files('news'))->map(function($item) { return explode('news/', $item)[1]; })
-            ],
-        ]);
+        $path = 'policy';
+        $files = collect(File::allFiles(Storage::path($path)))->filter(function ($file) {
+            return in_array($file->getExtension(), ['pdf']);
+        })->sortBy(function ($file) {
+            return $file->getCTime();
+        })->map(function ($file) {
+            return $file->getBaseName();
+        })->values();
+        if ($files->count() > 0) {
+            return response()->make(file_get_contents(Storage::path($path.'/'.$files->last())), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="'.$files->last().'"'
+            ]);
+        } else {
+            return response()->json([
+                'error' => true,
+                'message' => 'Ocurrió un error inesperado, comuniquese con el personal de MUSERPOL.',
+                'data' => null,
+            ], 500);
+        }
     }
 
     /**
@@ -53,19 +67,7 @@ class NewsController extends Controller
      */
     public function show($image)
     {
-        $path = 'news/'.$image;
-        logger($path);
-        if (Storage::exists($path)) {
-            return response()->make(Storage::get($path), 200, [
-                'Content-Type' => 'image/jpg',
-            ]);
-        } else {
-            return response()->json([
-                'error' => true,
-                'message' => 'Imagen inválida',
-                'data' => [],
-            ], 403);
-        }
+        //
     }
 
     /**

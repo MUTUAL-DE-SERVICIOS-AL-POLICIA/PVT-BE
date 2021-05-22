@@ -5,7 +5,6 @@ namespace Muserpol\Http\Controllers\API;
 use Illuminate\Http\Request;
 use Muserpol\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Muserpol\Http\Requests\LivenessForm;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use GuzzleHttp\Client;
@@ -23,7 +22,6 @@ class LivenessController extends Controller
                 'exceptions' => false,
             ],
         ]);
-        $this->image_count = 6;
         // Constante para comparación de rostros entre [0, 1]
         $this->distance = floatval(env("LIVENESS_DISTANCE", 0.4));
     }
@@ -35,22 +33,26 @@ class LivenessController extends Controller
                 'gaze' => 'forward',
                 'emotion' => 'neutral',
                 'successful' => false,
-                'message' => 'Mire al frente con la boca cerrada'
+                'message' => 'Mire al frente con la boca cerrada',
+                'translation' => 'Frente'
             ], [
                 'gaze' => 'left',
                 'emotion' => 'any',
                 'successful' => false,
-                'message' => 'Gire ligeramente su cabeza hacia la izquierda'
+                'message' => 'Gire ligeramente su rostro hacia la izquierda',
+                'translation' => 'Izquierda'
             ], [
                 'gaze' => 'right',
                 'emotion' => 'any',
                 'successful' => false,
-                'message' => 'Gire ligeramente su cabeza hacia la derecha'
+                'message' => 'Gire ligeramente su rostro hacia la derecha',
+                'translation' => 'Derecha'
             ], [
                 'gaze' => 'forward',
                 'emotion' => 'happy',
                 'successful' => false,
-                'message' => 'Mire al frente sonriendo'
+                'message' => 'Mire al frente sonriendo',
+                'translation' => 'Sonriente'
             ]
         ];
         shuffle($actions);
@@ -92,7 +94,7 @@ class LivenessController extends Controller
                     'type' => 'liveness',
                     'dialog' => [
                         'title' => 'Reconocimiento Facial',
-                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de control de vivencia, para ello debe tomar fotografías de su cabeza de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de control de vivencia, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
@@ -114,7 +116,7 @@ class LivenessController extends Controller
                     'type' => 'enroll',
                     'dialog' => [
                         'title' => 'Reconocimiento Facial',
-                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de enrolamiento, para ello debe tomar fotografías de su cabeza de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de enrolamiento, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
@@ -133,7 +135,6 @@ class LivenessController extends Controller
     public function store(LivenessForm $request)
     {
         $device = $request->affiliate->device;
-        $remove_file = true;
         $continue = true;
         if (str_contains($request->image, ';base64,')) {
             $image = explode(";base64,", $request->image)[1];
@@ -141,7 +142,8 @@ class LivenessController extends Controller
             $image = $request->image;
         }
         $path = 'liveness/faces/'.$request->affiliate->id.'/';
-        $file_name = str_random(12).'.jpg';
+        $random_string = str_random(12);
+        $file_name = $random_string.'.jpg';
 
         $liveness_actions = collect($device->liveness_actions);
         $total_actions = $liveness_actions->count();
@@ -210,7 +212,11 @@ class LivenessController extends Controller
                                     'http_errors' => false,
                                 ]);
                                 if ($res->getStatusCode() == 200) {
-                                    $remove_file = false;
+                                    foreach (['.jpg', '.npy'] as $extension) {
+                                        $file = $path.$current_action['translation'].$extension;
+                                        if (Storage::exists($file)) Storage::delete($file);
+                                        if (Storage::exists($path.$random_string.$extension)) Storage::move($path.$random_string.$extension, $file);
+                                    }
                                     $current_action_index += 1;
                                     if ($current_action_index < $total_actions) {
                                         return response()->json([
@@ -239,18 +245,6 @@ class LivenessController extends Controller
                                                     'eco_com_procedure_id' => $current_procedure->id,
                                                     'liveness_actions' => null
                                                 ]);
-                                                $files = collect(File::allFiles(Storage::path($path)))->filter(function ($file) {
-                                                    return in_array($file->getExtension(), ['npy']);
-                                                })->sortBy(function ($file) {
-                                                    return $file->getCTime();
-                                                })->map(function ($file) {
-                                                    return $file->getBaseName();
-                                                })->values();
-                                                if ($files->count() >= $this->image_count) {
-                                                    Storage::delete($path.$files->first());
-                                                    $image_file = $path.substr($files->first(), 0, strpos($files->first(), '.npy')).'.jpg';
-                                                    if (Storage::exists($image_file)) Storage::delete($image_file);
-                                                }
                                             } else {
                                                 return response()->json([
                                                     'error' => true,
@@ -275,7 +269,7 @@ class LivenessController extends Controller
                     }
                 }
             }
-            if ($remove_file) Storage::delete($path.$file_name);
+            Storage::delete($path.$file_name);
             return response()->json([
                 'error' => true,
                 'message' => ($current_action_index + 1).'/'.$total_actions.'. Intente nuevamente',
@@ -308,6 +302,11 @@ class LivenessController extends Controller
         })->first();
         $current_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
         if (($current_procedures->count() > 0) && $request->affiliate->device) {
+            if ($last_procedure) {
+                $phones = array_unique(explode(',', str_replace('-', '', str_replace(')', '', str_replace('(', '', $last_procedure->eco_com_beneficiary->cell_phone_number)))));
+            } else {
+                $phones = [];
+            }
             if ($request->affiliate->device->eco_com_procedure_id == $current_procedures->first()->id) {
                 return response()->json([
                     'error' => false,
@@ -316,7 +315,7 @@ class LivenessController extends Controller
                         'procedure_id' => $request->affiliate->device->eco_com_procedure_id,
                         'validate' => $request->affiliate->device->verified,
                         'liveness_success' => true,
-                        'cell_phone_number' => $last_procedure ? str_replace('-', '', str_replace(')', '', str_replace('(', '', $last_procedure->eco_com_beneficiary->cell_phone_number))) : null,
+                        'cell_phone_number' => $phones,
                     ],
                 ]);
             } else {
@@ -327,7 +326,7 @@ class LivenessController extends Controller
                         'procedure_id' => $current_procedures->first()->id,
                         'validate' => $request->affiliate->device->verified,
                         'liveness_success' => false,
-                        'cell_phone_number' => $last_procedure ? str_replace('-', '', str_replace(')', '', str_replace('(', '', $last_procedure->eco_com_beneficiary->cell_phone_number))) : null,
+                        'cell_phone_number' => $phones,
                     ],
                 ]);
             }
