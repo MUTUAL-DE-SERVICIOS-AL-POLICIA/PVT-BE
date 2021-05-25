@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Muserpol\Http\Controllers\Controller;
 use Muserpol\Helpers\Util;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -61,12 +62,12 @@ class AuthController extends Controller
     public function store(AuthForm $request)
     {
         $identity_card = $request->identity_card;
-        $birth_date = $request->birth_date;
+        $birth_date = Carbon::parse($request->birth_date)->format('Y-m-d');
         $device_id = $request->device_id;
         if (Util::isDoblePerceptionEcoCom($identity_card)) {
             return response()->json([
                 'error' => true,
-                'message' => 'Doble Percepción',
+                'message' => 'Para realizar el registro de su trámite debe apersonarse por oficinas de la MUSERPOL.',
                 'data' => (object)[]
             ], 403);
         } else {

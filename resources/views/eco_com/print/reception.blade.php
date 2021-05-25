@@ -31,24 +31,18 @@
                 </div>
                 <div class="text-right block m-t-10 m-b-10">
                     <span class="font-bold uppercase">REF: <span class="underline">
-                            SOLICITUD PAGO COMPLEMENTO ECONÓMICO {{ $eco_com->eco_com_procedure->semester }} SEMESTRE DE LA
-                            GESTIÓN {{ $eco_com->eco_com_procedure->getYear() }} BENEFICIARIO
-                            {{ $eco_com->eco_com_reception_type->name }}
+                            SOLICITUD DE PAGO DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO DEL {{ $eco_com->eco_com_procedure->semester }} SEMESTRE DE LA
+                            GESTIÓN {{ $eco_com->eco_com_procedure->getYear() }} NUEVO BENEFICIARIO {{ $eco_com->eco_com_reception_type->name }}
                         </span></span>
                 </div>
-                <div class="m-b-5">Distinguido Director:</div>
-                <div class="m-b-10">La presente tiene por objeto solicitar a su autoridad pueda instruir por la unidad
-                    correspondiente
-                    @if($eco_com->eco_com_reception_type_id == 1)
-                    hacerme el
-                    @endif
+                <div class="m-b-5">Distinguido Director General Ejecutivo:</div>
+                <div class="m-b-10">La presente tiene por objeto solicitar a su autoridad pueda autorizar a la unidad
+                    correspondiente 
                     <strong class="uppercase">
-                        @if($eco_com->eco_com_reception_type_id == 2)
                         LA INCLUSIÓN COMO NUEVO BENEFICIARIO PARA EL
-                        @endif
                         PAGO DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO DEL {{ $eco_com->eco_com_procedure->semester }}
                         SEMESTRE DE LA GESTIÓN {{ $eco_com->eco_com_procedure->getYear() }}</strong>,
-                    en mi calidad de beneficiario {{ $eco_com->eco_com_reception_type->name }}.
+                    en mi calidad de beneficiario titular.
                     <br>Para tal efecto, adjunto los requisitos
                     exigidos de acuerdo al siguiente detalle:</div>
             </div>
@@ -129,18 +123,17 @@
                         <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
                         <br />
                         <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
+                        <span class="font-bold">TEL. CEL. {{ $eco_com_beneficiary->phone_number }} {{ $eco_com_beneficiary->cell_phone_number }}</span>
                     </td>
                 </tr>
             </tbody>
         </table>
         @endif
         <div class="m-t-50 font-bold text-xxxs">
-            @if($eco_com->eco_com_reception_type_id == 2)
-                Los datos insertos en la presente solicitud son de plena responsabilidad del solicitante.
-            @endif
-            <br>
-            Autorizo a la MUSERPOL acceder a mi información personal (y causante si corresponde) en las bases de datos
-            de SERECI, SEGIP y otras instituciones públicas y/o privadas para su revisión, verificación o contrastación.
+        Autorizo a la MUSERPOL acceder a mi información personal (y causante si corresponde) en las bases de datos de Servicio de Registro Cívico - SERECI, 
+        Servicio General de Información Personal – SEGIP, Autoridad de Fiscalización y Control de Pensiones y Seguros - APS, 
+        Servicio Nacional del Sistema De Reparto - SENASIR, Comando General de la Policía Boliviana y otras Instituciones Públicas y/o 
+        Privadas para su verificación o contrastación.
         </div>
     </div>
 </div>

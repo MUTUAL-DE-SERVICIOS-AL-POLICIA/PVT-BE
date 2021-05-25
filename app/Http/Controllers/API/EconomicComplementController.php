@@ -5,6 +5,7 @@ namespace Muserpol\Http\Controllers\API;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Muserpol\Http\Controllers\Controller;
 use Muserpol\Http\Resources\EconomicComplementResource;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
@@ -26,7 +27,7 @@ class EconomicComplementController extends Controller
      */
     public function index(Request $request)
     {
-        $data = $request->affiliate->economic_complements()->orderBy('reception_date', 'desc');
+        $data = $request->affiliate->economic_complements()->has('eco_com_beneficiary')->orderBy('reception_date', 'desc');
         $current_procedures = EcoComProcedure::current_procedures()->pluck('id');
         if (filter_var($request->query('current'), FILTER_VALIDATE_BOOLEAN, false)) {
             $state_types = EcoComStateType::whereIn('name', ['Enviado', 'Creado'])->pluck('id');
@@ -74,6 +75,25 @@ class EconomicComplementController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \Muserpol\Models\EconomicComplement\EconomicComplement  $economicComplement
+     * @return \Illuminate\Http\Response
+     */
+    public function print(Request $request, EconomicComplement $economic_complement)
+    {
+        if ($economic_complement->affiliate_id == $request->affiliate->id) {
+            return $this->print_pdf($economic_complement);
+        } else {
+            return response()->json([
+                'error' => true,
+                'message' => 'Este trámite no le pertenece',
+                'data' => null,
+            ], 403);
+        }
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -82,6 +102,7 @@ class EconomicComplementController extends Controller
     public function store(Request $request)
     {
         $eco_com_procedure_id = $request->eco_com_procedure_id;
+        $cell_phone_number = $request->cell_phone_number;        
         $affiliate = $request->affiliate;
         $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
         $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();        
@@ -93,13 +114,13 @@ class EconomicComplementController extends Controller
              ** Create Economic Complement 
             */
             $economic_complement = new EconomicComplement();
-            $economic_complement->user_id = 1;
+            $economic_complement->user_id = 171;
             $economic_complement->affiliate_id = $affiliate->id;
             $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
             $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
             $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
             $economic_complement->workflow_id = EcoComProcedure::whereDate('normal_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
-            $economic_complement->wf_current_state_id = 1;
+            $economic_complement->wf_current_state_id = 60;
             $economic_complement->city_id = ID::cityId()->LP;
             $economic_complement->degree_id = $affiliate->degree->id;
             $economic_complement->category_id = $affiliate->category->id;
@@ -148,20 +169,20 @@ class EconomicComplementController extends Controller
             $eco_com_beneficiary->first_name = $last_eco_com_beneficiary->first_name;
             $eco_com_beneficiary->second_name = $last_eco_com_beneficiary->second_name;
             $eco_com_beneficiary->surname_husband = $last_eco_com_beneficiary->surname_husband;
-            $eco_com_beneficiary->birth_date = Util::parseBarDate($last_eco_com_beneficiary->birth_date);
+            $eco_com_beneficiary->birth_date =Carbon::parse($request->birth_date)->format('Y-m-d');
             $eco_com_beneficiary->nua = $last_eco_com_beneficiary->nua;
             $eco_com_beneficiary->gender = $last_eco_com_beneficiary->gender;
             $eco_com_beneficiary->civil_status = $last_eco_com_beneficiary->civil_status;
             $eco_com_beneficiary->phone_number = $last_eco_com_beneficiary->phone_number;
-            $eco_com_beneficiary->cell_phone_number = $last_eco_com_beneficiary->cell_phone_number;
+            $eco_com_beneficiary->cell_phone_number = $cell_phone_number;
             $eco_com_beneficiary->city_birth_id = $last_eco_com_beneficiary->city_birth_id;
-            $eco_com_beneficiary->due_date = $last_eco_com_beneficiary->due_date;
+            $eco_com_beneficiary->due_date = $last_eco_com_beneficiary->due_date ? Carbon::parse($last_eco_com_beneficiary->due_date)->format('Y-m-d') : null;
             $eco_com_beneficiary->is_duedate_undefined = $last_eco_com_beneficiary->is_duedate_undefined;
             $eco_com_beneficiary->save();
             /**
              ** has affiliate observation
             */
-            $observations = $affiliate->observations()->where('type', 'AT')->get();
+            $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->get();
             foreach ($observations as $observation) {
                 $economic_complement->observations()->save($observation, [
                     'user_id' => $observation->pivot->user_id,
@@ -212,20 +233,79 @@ class EconomicComplementController extends Controller
             $eco_com_submitted_document->procedure_requirement_id = $requirements_habitual;
             $eco_com_submitted_document->reception_date = now();
             $eco_com_submitted_document->save();
+            
+            Storage::makeDirectory('eco_com/'.$request->affiliate->id, 0775, true);
+            $path = 'eco_com/'.$request->affiliate->id.'/';
+            foreach ($request->attachments as $attachment) {               
+                Storage::put($path.$attachment['filename'], base64_decode($attachment['content']), 'public');
+            }   
 
-            return response()->json([
-                'error' => false,
-                'message' => 'Complemento Económico creado',
-                'data' => null,
-            ], 200);
-
+            return $this->print_pdf($economic_complement);
         } else {
             return response()->json([
                 'error' => true,
                 'message' => 'Complemento Económico ya fue registrado.',
-                'data' => null,
+                'data' => (object)[],
             ], 403);
         }
         
+    }
+
+    private function print_pdf(EconomicComplement $economic_complement)
+    {
+        $affiliate = $economic_complement->affiliate;
+        $eco_com_beneficiary = $economic_complement->eco_com_beneficiary;
+        $eco_com_submitted_documents = $economic_complement->submitted_documents;
+        $submitted_document_ids = $economic_complement->submitted_documents->pluck('procedure_requirement_id');
+        $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', $submitted_document_ids)->get();
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
+        if($economic_complement->eco_com_reception_type_id == ID::ecoCom()->habitual){
+            $title = "FORMULARIO DE REGISTRO DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
+        }else{
+            $title = "SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
+        }
+        $subtitle = $economic_complement->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
+
+        $code = $economic_complement->code;
+        $area = $economic_complement->wf_state->first_shortened;
+        $user = $economic_complement->user;
+        $date = Util::getDateFormat($economic_complement->reception_date);
+        $number = $code;
+
+        $bar_code = \DNS2D::getBarcodePNG($economic_complement->encode(), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+
+        $data = [
+            'direction' => $direction,
+            'institution' => $institution,
+            'unit' => $unit,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'eco_com' => $economic_complement,
+            'affiliate' => $affiliate,
+            'eco_com_beneficiary' => $eco_com_beneficiary,
+            'eco_com_submitted_documents' => $eco_com_submitted_documents,
+        ];
+        $pages = [];
+
+        $pages[] = \View::make('eco_com.print.reception', $data)->render();
+
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->setOption('encoding', 'utf-8')
+        ->setOption('margin-bottom', '23mm')
+        ->setOption('footer-html', $footerHtml)
+        ->stream($economic_complement->id . '.pdf');
+
+        return response()->make($pdf->getOutputFromHtml($pages), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="file.pdf"'
+        ]);
     }
 }

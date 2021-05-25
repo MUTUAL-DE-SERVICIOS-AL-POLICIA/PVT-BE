@@ -142,7 +142,7 @@
                 </tr>
                 <tr class="success">
                   <td>
-                    <strong>Total Liquio Pagable</strong>
+                    <strong>Total Liquido Pagable</strong>
                   </td>
                   <td>{{ ecoCom.total | currency }}</td>
                 </tr>

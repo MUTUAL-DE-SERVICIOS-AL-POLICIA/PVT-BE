@@ -22,14 +22,14 @@ class EcoComCertificationController extends Controller
         $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', $submitted_document_ids)->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
-        $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
+        $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
         if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual){
-            $title = "BENEFICIO DE COMPLEMENTO ECONÓMICO – " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
-            $subtitle = "FORMULARIO DE REGISTRO PARA EL PAGO DEL COMPLEMENTO ECONÓMICO ". $eco_com->eco_com_procedure->getTextName();
+            $title = "FORMULARIO DE REGISTRO DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
         }else{
-            $title = "RECEPCIÓN DEL BENEFICIO DE COMPLEMENTO ECONÓMICO – " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
-            $subtitle = '';
+            $title = "SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
         }
+        $subtitle = $eco_com->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
+
         $code = $eco_com->code;
         $area = $eco_com->wf_state->first_shortened;
         $user = $eco_com->user;
