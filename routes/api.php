@@ -31,6 +31,7 @@ Route::group([
     Route::resource('economic_complement', 'API\EconomicComplementController')->only('index', 'store', 'show');
     Route::get('economic_complement/print/{economic_complement}', 'API\EconomicComplementController@print');
     Route::resource('liveness', 'API\LivenessController')->only('index', 'store', 'show');
+    Route::resource('message', 'API\MessageController')->only('show');
     Route::resource('eco_com_procedure', 'API\EcoComProcedureController')->only('show');
 });
 

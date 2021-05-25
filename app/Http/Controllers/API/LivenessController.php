@@ -93,8 +93,8 @@ class LivenessController extends Controller
                     'completed' => false,
                     'type' => 'liveness',
                     'dialog' => [
-                        'title' => 'Reconocimiento Facial',
-                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de control de vivencia, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                        'title' => 'CONTROL DE VIVENCIA',
+                        'content' => 'Para crear su trámite de Complemento Económico debe realizar el proceso de control de vivencia mediante fotografías de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
@@ -115,8 +115,8 @@ class LivenessController extends Controller
                     'completed' => false,
                     'type' => 'enroll',
                     'dialog' => [
-                        'title' => 'Reconocimiento Facial',
-                        'content' => 'Para poder generar trámites en línea debe realizar el proceso de enrolamiento, para ello debe tomar fotografías de su rostro de acuerdo a las instrucciones que aparecerán en pantalla. Debe quitarse elementos como anteojos y sombrero para que el proceso resulte efectivo.',
+                        'title' => 'PROCESO DE ENROLAMIENTO',
+                        'content' => 'Para tener acceso a la aplicación debe realizar el proceso de enrolamiento por única vez mediante fotografías de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,

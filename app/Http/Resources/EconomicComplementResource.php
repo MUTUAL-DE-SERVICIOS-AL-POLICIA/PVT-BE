@@ -4,6 +4,7 @@ namespace Muserpol\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 use Muserpol\Helpers\Util;
+use Carbon\Carbon;
 
 class EconomicComplementResource extends Resource
 {
@@ -33,9 +34,9 @@ class EconomicComplementResource extends Resource
                 'key' => 'Fecha de recepción',
                 'value' => Util::getDateFormat($this->reception_date),
             ], [
-            //     'key' => 'Nº de trámite',
-            //     'value' => $this->code,
-            // ], [
+                'key' => 'Nº de trámite',
+                'value' => $this->code,
+            ], [
                 'key' => 'Tipo de prestación',
                 'value' => $this->eco_com_modality->shortened,
             ], [
@@ -45,7 +46,7 @@ class EconomicComplementResource extends Resource
                 'key' => 'Estado de trámite',
                 'value' => $this->eco_com_state->name,
             ], [
-                'key' => 'Observaciones',
+                'key' => 'Observaciones del trámite',
                 'value' => $observations->count() > 0 ? $observations->values() : 'Ninguna',
             ]
         ];
@@ -68,7 +69,7 @@ class EconomicComplementResource extends Resource
 
         return [
             'id' => $this->id,
-            'title' => $this->code,
+            'title' => mb_strtoupper($this->eco_com_procedure->semester) . ' SEMESTRE ' . Carbon::parse($this->eco_com_procedure->year)->year,
             'subtitle' => $this->eco_com_state->eco_com_state_type->name,
             'printable' => in_array($this->eco_com_state->eco_com_state_type->name, ['Creado', 'Enviado']) ? true : false,
             'display' => $data
