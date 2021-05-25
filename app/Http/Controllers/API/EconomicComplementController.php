@@ -102,6 +102,7 @@ class EconomicComplementController extends Controller
     public function store(Request $request)
     {
         $eco_com_procedure_id = $request->eco_com_procedure_id;
+        $cell_phone_number = $request->cell_phone_number;        
         $affiliate = $request->affiliate;
         $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
         $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();        
@@ -173,7 +174,7 @@ class EconomicComplementController extends Controller
             $eco_com_beneficiary->gender = $last_eco_com_beneficiary->gender;
             $eco_com_beneficiary->civil_status = $last_eco_com_beneficiary->civil_status;
             $eco_com_beneficiary->phone_number = $last_eco_com_beneficiary->phone_number;
-            $eco_com_beneficiary->cell_phone_number = $last_eco_com_beneficiary->cell_phone_number;
+            $eco_com_beneficiary->cell_phone_number = $cell_phone_number;
             $eco_com_beneficiary->city_birth_id = $last_eco_com_beneficiary->city_birth_id;
             $eco_com_beneficiary->due_date = $last_eco_com_beneficiary->due_date ? Carbon::parse($last_eco_com_beneficiary->due_date)->format('Y-m-d') : null;
             $eco_com_beneficiary->is_duedate_undefined = $last_eco_com_beneficiary->is_duedate_undefined;
@@ -232,7 +233,12 @@ class EconomicComplementController extends Controller
             $eco_com_submitted_document->procedure_requirement_id = $requirements_habitual;
             $eco_com_submitted_document->reception_date = now();
             $eco_com_submitted_document->save();
-
+            
+            Storage::makeDirectory('eco_com/'.$request->affiliate->id, 0775, true);
+            $path = 'eco_com/'.$request->affiliate->id.'/';
+            foreach ($request->attachments as $attachment) {               
+                Storage::put($path.$attachment['filename'], base64_decode($attachment['content']), 'public');
+            }   
 
             return $this->print_pdf($economic_complement);
         } else {
