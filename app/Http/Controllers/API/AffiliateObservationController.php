@@ -43,7 +43,7 @@ class AffiliateObservationController extends Controller
                 'data' => [
                     'display' => [
                         [
-                            'key' => 'Observaciones',
+                            'key' => 'Observaciones del beneficiario',
                             'value' => $has_observations ? $observations : 'Ninguna',
                         ],
                     ],
