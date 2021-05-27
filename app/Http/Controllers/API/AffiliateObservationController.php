@@ -36,17 +36,17 @@ class AffiliateObservationController extends Controller
                     $enabled = false;
                 }
             }
+            $data = [];
+            if ($has_observations) $data[] = [
+                'key' => 'Observaciones del beneficiario',
+                'value' => $observations,
+            ];
 
             return response()->json([
                 'error' => false,
                 'message' => $has_observations ? 'No puede solicitar trámites debido a la(s) observación(es)' : ($available_procedures == 0 ? 'Ya realizó la solicitud correspondiente al semestre' : $available_procedures.' solicitud(es) de trámite disponible(s)'),
                 'data' => [
-                    'display' => [
-                        [
-                            'key' => 'Observaciones del beneficiario',
-                            'value' => $has_observations ? $observations : 'Ninguna',
-                        ],
-                    ],
+                    'display' => $data,
                     'title' => $last_eco_com->eco_com_beneficiary->fullName(),
                     'subtitle' => 'Beneficiario',
                     'enabled' => $enabled

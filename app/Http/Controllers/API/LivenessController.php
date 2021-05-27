@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Muserpol\Http\Requests\LivenessForm;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 class LivenessController extends Controller
 {
@@ -33,7 +34,7 @@ class LivenessController extends Controller
                 'gaze' => 'forward',
                 'emotion' => 'neutral',
                 'successful' => false,
-                'message' => 'Mire al frente con la boca cerrada',
+                'message' => 'Mire de frente con la boca cerrada',
                 'translation' => 'Frente'
             ], [
                 'gaze' => 'left',
@@ -51,7 +52,7 @@ class LivenessController extends Controller
                 'gaze' => 'forward',
                 'emotion' => 'happy',
                 'successful' => false,
-                'message' => 'Mire al frente sonriendo',
+                'message' => 'Mire de frente sonriendo',
                 'translation' => 'Sonriente'
             ]
         ];
@@ -94,7 +95,7 @@ class LivenessController extends Controller
                     'type' => 'liveness',
                     'dialog' => [
                         'title' => 'CONTROL DE VIVENCIA',
-                        'content' => 'Para crear su trámite de Complemento Económico debe realizar el proceso de control de vivencia mediante fotografías de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
+                        'content' => 'Para crear su trámite de Complemento Económico debe realizar el proceso de reconocimiento facial mediante una fotografía de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
@@ -116,7 +117,7 @@ class LivenessController extends Controller
                     'type' => 'enroll',
                     'dialog' => [
                         'title' => 'PROCESO DE ENROLAMIENTO',
-                        'content' => 'Para tener acceso a la aplicación debe realizar el proceso de enrolamiento por única vez mediante fotografías de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
+                        'content' => 'Para el acceso a la aplicación debe realizar el proceso de enrolamiento por única vez mediante fotografías de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,
@@ -255,7 +256,7 @@ class LivenessController extends Controller
                                         }
                                         return response()->json([
                                             'error' => false,
-                                            'message' => 'Proceso terminado',
+                                            'message' => ($enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado satisfactoriamente.',
                                             'data' => [
                                                 'completed' => true,
                                                 'type' => $enrolled ? 'liveness' : 'enroll',
@@ -285,7 +286,7 @@ class LivenessController extends Controller
         } else {
             return response()->json([
                 'error' => false,
-                'message' => 'Proceso terminado',
+                'message' => ($device->enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado satisfactoriamente.',
                 'data' => [
                     'completed' => true,
                     'type' => $device->enrolled ? 'liveness' : 'enroll',
@@ -308,6 +309,7 @@ class LivenessController extends Controller
                 $phones = [];
             }
             if ($request->affiliate->device->eco_com_procedure_id == $current_procedures->first()->id) {
+                $month = $request->affiliate->device->eco_com_procedure->rent_month ? $request->affiliate->device->eco_com_procedure->rent_month : '';
                 return response()->json([
                     'error' => false,
                     'message' => 'Puede crear trámites',
@@ -316,9 +318,11 @@ class LivenessController extends Controller
                         'validate' => $request->affiliate->device->verified,
                         'liveness_success' => true,
                         'cell_phone_number' => $phones,
+                        'month' => $month != '' ? $month.'/'.strval(Carbon::parse($request->affiliate->device->eco_com_procedure->year)->year) : '',
                     ],
                 ]);
             } else {
+                $month = $current_procedures->first()->rent_month ? $current_procedures->first()->rent_month : '';
                 return response()->json([
                     'error' => false,
                     'message' => 'Puede crear trámites',
@@ -327,6 +331,7 @@ class LivenessController extends Controller
                         'validate' => $request->affiliate->device->verified,
                         'liveness_success' => false,
                         'cell_phone_number' => $phones,
+                        'month' => $month != '' ? $month.'/'.strval(Carbon::parse($current_procedures->first()->year)->year) : '',
                     ],
                 ]);
             }

@@ -3,6 +3,7 @@
 namespace Muserpol\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
 
 class AffiliateDevice extends Model
 {

@@ -57,8 +57,8 @@ class MessageController extends Controller
                     'error' => false,
                     'message' => 'Mensaje de cámara',
                     'data' => [
-                        'title' => $enrolled ? 'Control de Vivencia' : 'Proceso de enrolamiento',
-                        'content' => 'Siga las instrucciones, para comenzar presione el botón azul "INICIAR"'
+                        'title' => $enrolled ? 'CONTROL DE VIVENCIA' : 'PROCESO DE ENROLAMIENTO',
+                        'content' => 'Siga las instrucciones, para comenzar presione el botón azul de "INICIAR"'
                     ]
                 ]);
                 break;
