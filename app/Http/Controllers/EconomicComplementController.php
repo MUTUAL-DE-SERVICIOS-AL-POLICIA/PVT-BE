@@ -45,6 +45,8 @@ use Muserpol\Models\EconomicComplement\EcoComReceptionType;
 use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\FinancialEntity;
 
+use Illuminate\Support\Facades\Storage;
+
 class EconomicComplementController extends Controller
 {
     /**
@@ -719,6 +721,32 @@ class EconomicComplementController extends Controller
          */
         $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $financial_entities = FinancialEntity::all();
+
+        $fotoFrente="";
+        $fotoSonriente="";
+        $fotoIzquierda="";
+        $fotoDerecha="";
+        $path = 'liveness/faces/'.$affiliate->id;
+        if (Storage::exists($path.'/Frente.jpg')) 
+            $fotoFrente=base64_encode(Storage::get($path.'/Frente.jpg'));
+        if (Storage::exists($path.'/Sonriente.jpg')) 
+            $fotoSonriente=base64_encode(Storage::get($path.'/Sonriente.jpg'));
+        if (Storage::exists($path.'/Izquierda.jpg')) 
+            $fotoIzquierda=base64_encode(Storage::get($path.'/Izquierda.jpg'));
+        if (Storage::exists($path.'/Derecha.jpg')) 
+            $fotoDerecha=base64_encode(Storage::get($path.'/Derecha.jpg'));
+
+        $fotoCIAnverso="";
+        $fotoCIReverso="";
+        $fotoBoleta="";
+            $path = 'liveness/eco_com/'.$affiliate->id;
+            if (Storage::exists($path.'/ci_anverso_'.$economic_complement->id.'.jpg')) 
+                $fotoCIAnverso=base64_encode(Storage::get($path.'/ci_anverso_'.$economic_complement->id.'.jpg'));
+            if (Storage::exists($path.'/ci_reverso_'.$economic_complement->id.'.jpg')) 
+                $fotoCIReverso=base64_encode(Storage::get($path.'/ci_reverso_'.$economic_complement->id.'.jpg'));
+            if (Storage::exists($path.'/boleta_de_renta_'.$economic_complement->id.'.jpg')) 
+                $fotoBoleta=base64_encode(Storage::get($path.'/boleta_de_renta_'.$economic_complement->id.'.jpg'));
+
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -751,6 +779,13 @@ class EconomicComplementController extends Controller
             'eco_com_legal_guardian_types' =>  $eco_com_legal_guardian_types,
             'financial_entities' =>  $financial_entities,
             
+            'fotofrente' =>  $fotoFrente,
+            'fotosonriente' =>  $fotoSonriente,
+            'fotoizquierda' =>  $fotoIzquierda,
+            'fotoderecha' =>  $fotoDerecha,
+            'fotocianverso' =>  $fotoCIAnverso,
+            'fotocireverso' =>  $fotoCIReverso,
+            'fotoboleta' =>  $fotoBoleta,
         ];
         return view('eco_com.show', $data);
     }

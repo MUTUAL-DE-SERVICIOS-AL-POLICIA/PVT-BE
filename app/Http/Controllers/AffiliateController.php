@@ -38,6 +38,8 @@ use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\FinancialEntity;
 
+use Illuminate\Support\Facades\Storage;
+
 class AffiliateController extends Controller
 {
     /**
@@ -348,6 +350,23 @@ class AffiliateController extends Controller
         foreach ($eco_com_procedures as $e) {
             $e->full_name = $e->fullName();
         }
+
+        $fotoFrente="";
+        $fotoSonriente="";
+        $fotoIzquierda="";
+        $fotoDerecha="";
+        $path = 'liveness/faces/'.$affiliate->id;
+        if (Storage::exists($path.'/Frente.jpg')) 
+            $fotoFrente=base64_encode(Storage::get($path.'/Frente.jpg'));
+        if (Storage::exists($path.'/Sonriente.jpg')) 
+            $fotoSonriente=base64_encode(Storage::get($path.'/Sonriente.jpg'));
+        if (Storage::exists($path.'/Izquierda.jpg')) 
+            $fotoIzquierda=base64_encode(Storage::get($path.'/Izquierda.jpg'));
+        if (Storage::exists($path.'/Derecha.jpg')) 
+            $fotoDerecha=base64_encode(Storage::get($path.'/Derecha.jpg'));
+
+        
+
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -391,6 +410,11 @@ class AffiliateController extends Controller
             'eco_coms'  =>  $eco_coms,
             'eco_com_procedures'  =>  $eco_com_procedures,
             'financial_entities' =>  $financial_entities,
+
+            'fotofrente' =>  $fotoFrente,
+            'fotosonriente' =>  $fotoSonriente,
+            'fotoizquierda' =>  $fotoIzquierda,
+            'fotoderecha' =>  $fotoDerecha,
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
