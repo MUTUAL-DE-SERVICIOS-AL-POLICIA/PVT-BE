@@ -263,7 +263,7 @@ class EconomicComplementController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
         $title = "FORMULARIO DE SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
 
-        $subtitle = $economic_complement->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
+        $subtitle = $economic_complement->eco_com_procedure->getTextName() . " - " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
 
         $code = $economic_complement->code;
         $area = $economic_complement->wf_state->first_shortened;
