@@ -140,7 +140,7 @@
                 <eco-com-record :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-record>
             </div>
             <div id="tab-eco-com-boleta" class="tab-pane">
-                @include('eco_com.boleta',['affiliate'=>$affiliate,'economic_complement'=>$economic_complement])
+                @include('eco_com.boleta',['affiliate'=>$affiliate,'economic_complement'=>$economic_complement,'fotofrente'=>$fotofrente,'fotosonriente'=>$fotosonriente,'fotoizquierda'=>$fotoizquierda,'fotoderecha'=>$fotoderecha,'fotocianverso'=>$fotocianverso,'fotocireverso'=>$fotocireverso,'fotoboleta'=>$fotoboleta])
             </div>
         </div>
     </div>
