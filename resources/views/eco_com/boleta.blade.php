@@ -37,12 +37,12 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="file">
-                    <img src="{{ Storage::url('eco_com/'.$affiliate->id.'/ci_anverso_'.$economic_complement->id.'.jpg') }}" alt="" />
+                    <img src="data:image/png;base64,{{$fotocianverso}}" alt="" />
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="file">
-                    <img src="{{ Storage::url('eco_com/'.$affiliate->id.'/ci_reverso_'.$economic_complement->id.'.jpg') }}" alt="" />
+                    <img src="data:image/png;base64,{{$fotocireverso}}" alt="" />
                 </div>
             </div>
         </div>
@@ -55,8 +55,7 @@
         <div class="row">
             <div class="file-box">
                 <div class="file">
-                {{-- {{$economic_complement}} --}}
-                    <img src="{{ Storage::url('eco_com/'.$affiliate->id.'/boleta_de_renta_'.$economic_complement->id.'.jpg') }}" alt="" />
+                    <img src="data:image/png;base64,{{$fotoboleta}}" alt="" />
                 </div>
             </div>
         </div>
