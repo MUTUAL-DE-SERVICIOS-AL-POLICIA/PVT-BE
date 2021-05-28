@@ -119,14 +119,14 @@ class AuthController extends Controller
                 } else {
                     return response()->json([
                         'error' => true,
-                        'message' => 'Dispositivo inválido',
+                        'message' => 'Dispositivo Inválido',
                         'data' => (object)[]
                     ], 403);
                 }
             } else {
                 return response()->json([
                     'error' => true,
-                    'message' => 'Usted no se encuentra registrado como beneficiario habitual, para mayor información pasar por oficinas de la MUSERPOL.',
+                    'message' => 'Usted No Se Encuentra Registrado Como Beneficiario Habitual, Para Mayor Información Pasar Por Oficinas De La MUSERPOL.',
                     'data' => (object)[]
                 ], 403);
             }
