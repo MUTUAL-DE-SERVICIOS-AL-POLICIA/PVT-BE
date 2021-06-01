@@ -256,7 +256,7 @@ class LivenessController extends Controller
                                         }
                                         return response()->json([
                                             'error' => false,
-                                            'message' => ($enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado satisfactoriamente.',
+                                            'message' => ($enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado exitosamente.',
                                             'data' => [
                                                 'completed' => true,
                                                 'type' => $enrolled ? 'liveness' : 'enroll',
@@ -286,7 +286,7 @@ class LivenessController extends Controller
         } else {
             return response()->json([
                 'error' => false,
-                'message' => ($device->enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado satisfactoriamente.',
+                'message' => ($device->enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado exitosamente.',
                 'data' => [
                     'completed' => true,
                     'type' => $device->enrolled ? 'liveness' : 'enroll',
