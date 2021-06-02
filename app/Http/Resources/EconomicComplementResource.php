@@ -53,7 +53,7 @@ class EconomicComplementResource extends Resource
         if ($this->total) {
             $data[] = [
                 'key' => 'Monto calculado',
-                'value' => Util::formatMoney($this->total, true),
+                'value' => Util::formatMoney($this->getOnlyTotalEcoCom(), true),
             ];
         }
         $data[] = [
@@ -63,7 +63,7 @@ class EconomicComplementResource extends Resource
         if ($this->base_wage) {
             $data[] = [
                 'key' => 'Líquido pagable',
-                'value' => Util::formatMoney($this->base_wage->amount, true),
+                    'value' => Util::formatMoney($this->total, true),
             ];
         }
 

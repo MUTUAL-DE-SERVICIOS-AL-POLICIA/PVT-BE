@@ -4,7 +4,7 @@
     <select v-model="form.reportTypeId" :disabled="loadingButton">
       <option v-for="r in reportsType" :value="r.id" :key="r.id">{{r.name}}</option>
     </select>
-    <div v-if="form.reportTypeId != 9">
+    <div v-if="form.reportTypeId != 9 && form.reportTypeId != 21 && form.reportTypeId != 22">
       <label>Gestion</label>
       <select v-model="form.ecoComProcedureId" :disabled="loadingButton">
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
@@ -75,7 +75,11 @@
         :max="1"
       ></multiselect>
     </div>-->
-
+    <div v-if="form.reportTypeId == 23 || form.reportTypeId == 24">
+      <label for="change-date">Fecha (yyyy-mm-dd)</label>
+      <input type="text" id="change-date" v-model="form.changeDate"/>
+    </div>
+    
     <div class="col-md-12">
       <div class="text-center m-sm">
         <button class="btn btn-primary" type="button" @click="send()" :disabled="loadingButton">
@@ -190,11 +194,27 @@ export default {
         {
           id: 14,
           name: "Afiliados por Etiquetas"
-        }
+        },
         // {
         //   id: 9,
         //   name: "Doble Beneficio"
         // }
+        {
+          id: 21,
+          name: "Afiliados por conyugue"
+        },
+        {
+          id: 22,
+          name: "Reporte de fallecidos"
+        },
+        {
+          id: 23,
+          name: "Reporte de promedios vejez"
+        },
+        {
+          id: 24,
+          name: "Reporte de promedios viudedad"
+        },
       ],
       form: {
         ecoComProcedureId:

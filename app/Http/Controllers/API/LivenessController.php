@@ -117,7 +117,7 @@ class LivenessController extends Controller
                     'type' => 'enroll',
                     'dialog' => [
                         'title' => 'PROCESO DE ENROLAMIENTO',
-                        'content' => 'Para el acceso a la aplicación debe realizar el proceso de enrolamiento por única vez mediante fotografías de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
+                        'content' => 'Para el acceso a la Aplicación Móvil debe realizar el proceso de enrolamiento por única vez mediante fotografías de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
                     ],
                     'action' => $device->liveness_actions[0],
                     'current_action' => 1,

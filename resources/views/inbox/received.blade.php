@@ -109,6 +109,13 @@
                                     </button>
                                 </div>
                             </transition>
+                            <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                            <div class="col-md-1 text-center" v-if="docs > 0 ">
+                                    <button class="btn btn-primary" @click="sendReception()" data-toggle="tooltip" data-placement="top" title="Derivar">
+                                        Derivar <i class="fa fa-send"></i> <strong>(@{{docs}})</strong>
+                                    </button>
+                            </div>
+                            </transition>
                         </div>
                     </div>
                     <div class="mail-box">
@@ -121,7 +128,11 @@
                         <vue-tabs>
                             <v-tab :title="`${itab.name} (${classification(itab.id).length})`" v-for="(itab, index) in workflows" :dataId="itab.id" icon="fa fa-file-text-o "
                                 :key="`tab-received-${index}`" :suffix="`<span class='badge'> ${classification(itab.id).length} </span>`">
-                                <inbox-content :inbox-state="`received`" :workflow-id="itab.id" :documents="classification(itab.id)"></inbox-content>
+                                @if(Session::get('rol_id') == 2)
+                                    <inbox-content :inbox-state="`edited`" :workflow-id="itab.id" :documents="classification(itab.id)"></inbox-content>
+                                @else
+                                    <inbox-content :inbox-state="`received`" :workflow-id="itab.id" :documents="classification(itab.id)"></inbox-content>
+                                @endif
                             </v-tab>
                         </vue-tabs>
                     </div>

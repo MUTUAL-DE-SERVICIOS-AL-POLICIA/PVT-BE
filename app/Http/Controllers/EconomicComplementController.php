@@ -45,6 +45,8 @@ use Muserpol\Models\EconomicComplement\EcoComReceptionType;
 use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\FinancialEntity;
 
+use Illuminate\Support\Facades\Storage;
+
 class EconomicComplementController extends Controller
 {
     /**
@@ -346,7 +348,7 @@ class EconomicComplementController extends Controller
         /**
          ** has affiliate observation
          */
-        $observations = $affiliate->observations()->where('type', 'AT')->get();
+        $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->get();
         foreach ($observations as $o) {
             $economic_complement->observations()->save($o, [
                 'user_id' => $o->pivot->user_id,
@@ -579,12 +581,19 @@ class EconomicComplementController extends Controller
                 $submit->reception_date = date('Y-m-d');
                 $submit->comment = $request->input('comment' . $requirement->id);
                 $submit->save();
-                $affiliate->submitted_documents()->create([
-                    'user_id'=>auth()->user()->id,
-                    'reception_date'=>now(),
-                    'procedure_document_id'=>$requirement->procedure_document_id,
-                    'status'=>true,
-                ]);
+
+                if ($requirement->procedure_document_id!=237)
+                {
+                    if ($requirement->procedure_document_id!=269)
+                    {
+                        $affiliate->submitted_documents()->create([
+                            'user_id'=>auth()->user()->id,
+                            'reception_date'=>now(),
+                            'procedure_document_id'=>$requirement->procedure_document_id,
+                            'status'=>true,
+                        ]);
+                    }
+                }
             }
         }
         if ($request->additional_requirements) {
@@ -676,7 +685,8 @@ class EconomicComplementController extends Controller
         /**
          ** for observations
          */
-        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'T')->get();
+        // $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'T')->get();
+        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'AT')->get();
         // $affiliate_observations = AffiliateObservation::where('affiliate_id', $economic_complement->affiliate_id)->get();
         // foreach($affiliate_observations as $observation){
         //     if($observation->observationType->type=='AT')
@@ -711,6 +721,32 @@ class EconomicComplementController extends Controller
          */
         $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $financial_entities = FinancialEntity::all();
+
+        $fotoFrente="";
+        $fotoSonriente="";
+        $fotoIzquierda="";
+        $fotoDerecha="";
+        $path = 'liveness/faces/'.$affiliate->id;
+        if (Storage::exists($path.'/Frente.jpg')) 
+            $fotoFrente=base64_encode(Storage::get($path.'/Frente.jpg'));
+        if (Storage::exists($path.'/Sonriente.jpg')) 
+            $fotoSonriente=base64_encode(Storage::get($path.'/Sonriente.jpg'));
+        if (Storage::exists($path.'/Izquierda.jpg')) 
+            $fotoIzquierda=base64_encode(Storage::get($path.'/Izquierda.jpg'));
+        if (Storage::exists($path.'/Derecha.jpg')) 
+            $fotoDerecha=base64_encode(Storage::get($path.'/Derecha.jpg'));
+
+        $fotoCIAnverso="";
+        $fotoCIReverso="";
+        $fotoBoleta="";
+            $path = 'eco_com/'.$affiliate->id;
+            if (Storage::exists($path.'/ci_anverso_'.$economic_complement->id.'.jpg')) 
+                $fotoCIAnverso=base64_encode(Storage::get($path.'/ci_anverso_'.$economic_complement->id.'.jpg'));
+            if (Storage::exists($path.'/ci_reverso_'.$economic_complement->id.'.jpg')) 
+                $fotoCIReverso=base64_encode(Storage::get($path.'/ci_reverso_'.$economic_complement->id.'.jpg'));
+            if (Storage::exists($path.'/boleta_de_renta_'.$economic_complement->id.'.jpg')) 
+                $fotoBoleta=base64_encode(Storage::get($path.'/boleta_de_renta_'.$economic_complement->id.'.jpg'));
+
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -743,6 +779,13 @@ class EconomicComplementController extends Controller
             'eco_com_legal_guardian_types' =>  $eco_com_legal_guardian_types,
             'financial_entities' =>  $financial_entities,
             
+            'fotofrente' =>  $fotoFrente,
+            'fotosonriente' =>  $fotoSonriente,
+            'fotoizquierda' =>  $fotoIzquierda,
+            'fotoderecha' =>  $fotoDerecha,
+            'fotocianverso' =>  $fotoCIAnverso,
+            'fotocireverso' =>  $fotoCIReverso,
+            'fotoboleta' =>  $fotoBoleta,
         ];
         return view('eco_com.show', $data);
     }

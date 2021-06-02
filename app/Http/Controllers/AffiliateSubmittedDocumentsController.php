@@ -26,11 +26,16 @@ class AffiliateSubmittedDocumentsController extends Controller
             foreach ($procedure_requirements as $p) {
                 foreach (explode(',', $p->procedure_document_ids) as $d) {
                     foreach ($affiliate->submitted_documents()->where('status', true)->get() as $a) {
-                        if ($a->procedure_document_id == $d && $affiliate->submitted_documents()->where('status', true)->count() > 2) {
-                            $collect->push($p->number);
-                            break;
-                        }
-                        
+                        /*if ($a->procedure_document_id != 269)
+                        {
+                            if ($a->procedure_document_id != 271)
+                            {*/
+                                if ($a->procedure_document_id == $d && $affiliate->submitted_documents()->where('status', true)->count() > 2) {
+                                    $collect->push($p->number);
+                                    break;
+                                }
+                            /*}
+                        }*/
                     }
                 }
             }

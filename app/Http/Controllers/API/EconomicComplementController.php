@@ -102,6 +102,7 @@ class EconomicComplementController extends Controller
     public function store(Request $request)
     {
         $eco_com_procedure_id = $request->eco_com_procedure_id;
+        $cell_phone_number = $request->cell_phone_number;        
         $affiliate = $request->affiliate;
         $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
         $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();        
@@ -113,13 +114,13 @@ class EconomicComplementController extends Controller
              ** Create Economic Complement 
             */
             $economic_complement = new EconomicComplement();
-            $economic_complement->user_id = 1;
+            $economic_complement->user_id = 171;
             $economic_complement->affiliate_id = $affiliate->id;
             $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
             $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
             $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
             $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
-            $economic_complement->wf_current_state_id = 1;
+            $economic_complement->wf_current_state_id = 60;
             $economic_complement->city_id = ID::cityId()->LP;
             $economic_complement->degree_id = $affiliate->degree->id;
             $economic_complement->category_id = $affiliate->category->id;
@@ -168,14 +169,14 @@ class EconomicComplementController extends Controller
             $eco_com_beneficiary->first_name = $last_eco_com_beneficiary->first_name;
             $eco_com_beneficiary->second_name = $last_eco_com_beneficiary->second_name;
             $eco_com_beneficiary->surname_husband = $last_eco_com_beneficiary->surname_husband;
-            $eco_com_beneficiary->birth_date = Util::parseBarDate($last_eco_com_beneficiary->birth_date);
+            $eco_com_beneficiary->birth_date =Carbon::parse($request->birth_date)->format('Y-m-d');
             $eco_com_beneficiary->nua = $last_eco_com_beneficiary->nua;
             $eco_com_beneficiary->gender = $last_eco_com_beneficiary->gender;
             $eco_com_beneficiary->civil_status = $last_eco_com_beneficiary->civil_status;
             $eco_com_beneficiary->phone_number = $last_eco_com_beneficiary->phone_number;
-            $eco_com_beneficiary->cell_phone_number = $last_eco_com_beneficiary->cell_phone_number;
+            $eco_com_beneficiary->cell_phone_number = $cell_phone_number;
             $eco_com_beneficiary->city_birth_id = $last_eco_com_beneficiary->city_birth_id;
-            $eco_com_beneficiary->due_date = $last_eco_com_beneficiary->due_date;
+            $eco_com_beneficiary->due_date = $last_eco_com_beneficiary->due_date ? Carbon::parse($last_eco_com_beneficiary->due_date)->format('Y-m-d') : null;
             $eco_com_beneficiary->is_duedate_undefined = $last_eco_com_beneficiary->is_duedate_undefined;
             $eco_com_beneficiary->save();
             /**
@@ -232,7 +233,12 @@ class EconomicComplementController extends Controller
             $eco_com_submitted_document->procedure_requirement_id = $requirements_habitual;
             $eco_com_submitted_document->reception_date = now();
             $eco_com_submitted_document->save();
-
+            
+            Storage::makeDirectory('eco_com/'.$request->affiliate->id, 0775, true);
+            $path = 'eco_com/'.$request->affiliate->id.'/';
+            foreach ($request->attachments as $attachment) {               
+                Storage::put($path.$attachment['filename'], base64_decode($attachment['content']), 'public');
+            }   
 
             return $this->print_pdf($economic_complement);
         } else {
@@ -255,12 +261,9 @@ class EconomicComplementController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
-        if($economic_complement->eco_com_reception_type_id == ID::ecoCom()->habitual){
-            $title = "FORMULARIO DE REGISTRO DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
-        }else{
-            $title = "SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
-        }
-        $subtitle = $economic_complement->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
+        $title = "FORMULARIO DE SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
+
+        $subtitle = $economic_complement->eco_com_procedure->getTextName() . " - " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
 
         $code = $economic_complement->code;
         $area = $economic_complement->wf_state->first_shortened;

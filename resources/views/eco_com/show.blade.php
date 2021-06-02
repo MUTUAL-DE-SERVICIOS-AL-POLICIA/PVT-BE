@@ -84,6 +84,7 @@
                 <li class="list-group-item tab-eco-com-qualification" data-toggle="tab" href="#tab-eco-com-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
                 <li class="list-group-item tab-eco-com-observations" data-toggle="tab" href="#tab-eco-com-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                 <li class="list-group-item tab-eco-com-record" data-toggle="tab" href="#tab-eco-com-record" ><a href="#"><i class="fa fa-history"></i> Historial</a></li>
+                <li class="list-group-item tab-eco-com-record" data-toggle="tab" href="#tab-eco-com-boleta" ><a href="#"><i class="fa fa-camera-retro"></i> Boleta</a></li>
             </ul>
         </div>
         <br>
@@ -137,6 +138,9 @@
             </div>
             <div id="tab-eco-com-record" class="tab-pane">
                 <eco-com-record :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-record>
+            </div>
+            <div id="tab-eco-com-boleta" class="tab-pane">
+                @include('eco_com.boleta',['affiliate'=>$affiliate,'economic_complement'=>$economic_complement,'fotofrente'=>$fotofrente,'fotosonriente'=>$fotosonriente,'fotoizquierda'=>$fotoizquierda,'fotoderecha'=>$fotoderecha,'fotocianverso'=>$fotocianverso,'fotocireverso'=>$fotocireverso,'fotoboleta'=>$fotoboleta])
             </div>
         </div>
     </div>
