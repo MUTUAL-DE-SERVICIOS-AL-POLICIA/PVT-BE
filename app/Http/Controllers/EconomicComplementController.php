@@ -738,14 +738,16 @@ class EconomicComplementController extends Controller
 
         $fotoCIAnverso="";
         $fotoCIReverso="";
+        $path = 'ci/'.$affiliate->id;
+        if (Storage::exists($path.'/ci_anverso_'.$affiliate->id.'.jpg')) 
+            $fotoCIAnverso=base64_encode(Storage::get($path.'/ci_anverso_'.$affiliate->id.'.jpg'));
+        if (Storage::exists($path.'/ci_reverso_'.$affiliate->id.'.jpg')) 
+            $fotoCIReverso=base64_encode(Storage::get($path.'/ci_reverso_'.$affiliate->id.'.jpg'));
+
         $fotoBoleta="";
-            $path = 'eco_com/'.$affiliate->id;
-            if (Storage::exists($path.'/ci_anverso_'.$economic_complement->id.'.jpg')) 
-                $fotoCIAnverso=base64_encode(Storage::get($path.'/ci_anverso_'.$economic_complement->id.'.jpg'));
-            if (Storage::exists($path.'/ci_reverso_'.$economic_complement->id.'.jpg')) 
-                $fotoCIReverso=base64_encode(Storage::get($path.'/ci_reverso_'.$economic_complement->id.'.jpg'));
-            if (Storage::exists($path.'/boleta_de_renta_'.$economic_complement->id.'.jpg')) 
-                $fotoBoleta=base64_encode(Storage::get($path.'/boleta_de_renta_'.$economic_complement->id.'.jpg'));
+        $path = 'eco_com/'.$affiliate->id;
+        if (Storage::exists($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg')) 
+            $fotoBoleta=base64_encode(Storage::get($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg'));
 
         $data = [
             'economic_complement' => $economic_complement,
