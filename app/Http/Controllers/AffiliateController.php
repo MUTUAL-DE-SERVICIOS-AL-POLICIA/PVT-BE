@@ -40,6 +40,8 @@ use Muserpol\Models\FinancialEntity;
 
 use Illuminate\Support\Facades\Storage;
 
+use Muserpol\Models\AffiliateDevice;
+
 class AffiliateController extends Controller
 {
     /**
@@ -624,4 +626,10 @@ class AffiliateController extends Controller
         $affiliate_activities = $affiliate->activities()->with('user:id,username')->orderByDesc('created_at')->get();
         return compact('affiliate_records','records','affiliate_activities');
     } 
+
+    public function deleteDevice($affiliate_id){
+        $affiliateDevice = AffiliateDevice::find($affiliate_id);
+        $affiliateDevice->delete();
+    }
+
 }
