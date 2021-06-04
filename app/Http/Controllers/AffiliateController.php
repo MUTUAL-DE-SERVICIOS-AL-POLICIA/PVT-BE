@@ -630,18 +630,6 @@ class AffiliateController extends Controller
     public function deleteDevice($affiliate_id){
         $affiliateDevice = AffiliateDevice::find($affiliate_id);
         $affiliateDevice->delete();
-        logger($affiliateDevice);
-        /*
-        $mensaje="";
-        if (count($affiliateDevice)>=1){
-            $affiliateDevice->delete();
-            $mensaje='Dispositivo desvinculado';
-        }else
-        {
-            $mensaje='No tiene dispositivo para desvincular';
-        }
-        */
-        //return $mensaje;
     }
 
 }
