@@ -224,6 +224,30 @@ import { flashErrors } from "../../helper.js";
                 if(this.form.cell_phone_number.length < 1)
                     this.addCellPhoneNumber()
             },
+            async deleteDevice () {
+               let uri = `/deleteDevice_affiliate/${this.affiliate.id}`;
+                await this.$swal({
+                    title: "¿Está seguro de Disvincular el Movil?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#59B75C",
+                    cancelButtonColor: "#EC4758",
+                    confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
+                    cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
+                    showLoaderOnConfirm: true,
+                    preConfirm: () => {
+                    return axios
+                        .get(uri)
+                        .then(response => {
+                            alert('Dispositivo desvinculado');
+                        })
+                        .catch(error => {
+                            alert('No tiene dispositivo para desvincular');
+                        });
+                    },
+                    allowOutsideClick: () => !this.$swal.isLoading()
+                });
+            },
         },
 	}
 </script>
