@@ -235,9 +235,21 @@ class EconomicComplementController extends Controller
             $eco_com_submitted_document->save();
             
             Storage::makeDirectory('eco_com/'.$request->affiliate->id, 0775, true);
-            $path = 'eco_com/'.$request->affiliate->id.'/';
-            foreach ($request->attachments as $attachment) {               
-                Storage::put($path.$attachment['filename'], base64_decode($attachment['content']), 'public');
+            Storage::makeDirectory('ci/'.$request->affiliate->id, 0775, true);
+
+            foreach ($request->attachments as $attachment) {
+                if (strpos($attachment['filename'], 'ci') !== false) {
+                    if (strpos($attachment['filename'], 'ci_anverso') !== false) {
+                        $path = 'ci/'.$request->affiliate->id.'/ci_anverso.jpg';
+                        Storage::put($path, base64_decode($attachment['content']), 'public');
+                    }else {
+                        $path = 'ci/'.$request->affiliate->id.'/ci_reverso.jpg';
+                        Storage::put($path, base64_decode($attachment['content']), 'public');
+                    }                   
+                }else {
+                    $path = 'eco_com/'.$request->affiliate->id.'/';
+                    Storage::put($pathec.$attachment['filename'], base64_decode($attachment['content']), 'public');
+                }         
             }   
 
             return $this->print_pdf($economic_complement);
