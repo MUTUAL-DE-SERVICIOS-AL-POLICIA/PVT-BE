@@ -739,9 +739,9 @@ class EconomicComplementController extends Controller
         $fotoCIAnverso="";
         $fotoCIReverso="";
         $path = 'ci/'.$affiliate->id;
-        if (Storage::exists($path.'/ci_anverso_'.$affiliate->id.'.jpg')) 
+        if (Storage::exists($path.'/ci_anverso.jpg')) 
             $fotoCIAnverso=base64_encode(Storage::get($path.'/ci_anverso.jpg'));
-        if (Storage::exists($path.'/ci_reverso_'.$affiliate->id.'.jpg')) 
+        if (Storage::exists($path.'/ci_reverso.jpg')) 
             $fotoCIReverso=base64_encode(Storage::get($path.'/ci_reverso.jpg'));
 
         $fotoBoleta="";
