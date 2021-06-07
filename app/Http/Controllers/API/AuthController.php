@@ -88,7 +88,7 @@ class AuthController extends Controller
                         'data' => (object)[]
                     ], 403);
                 }
-                $affiliate_device = AffiliateDevice::whereDeviceId($device_id)->first();
+                $affiliate_device = AffiliateDevice::whereAffiliateId($affiliate->id)->first();
                 $token = null;
                 if (!$affiliate->device && !$affiliate_device) {
                     $token = $this->getToken($device_id);
@@ -103,9 +103,13 @@ class AuthController extends Controller
                 } elseif ($affiliate_device && $affiliate) {
                     if ($affiliate->id == $affiliate_device->affiliate_id) {
                         $token = $this->getToken($device_id);
-                        $affiliate->device()->update([
+                        $update = [
                             'api_token' => $token,
-                        ]);
+                        ];
+                        if ($affiliate_device->device_id == null) {
+                            $update['device_id'] = $device_id;
+                        }
+                        $affiliate->device()->update($update);
                     }
                 }
                 if ($token) {
