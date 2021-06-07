@@ -119,7 +119,7 @@ class AuthController extends Controller
                                 'full_name' => $eco_com_beneficiary->fullName(),
                                 'degree' => $affiliate->degree->name,
                                 'identity_card' => $eco_com_beneficiary->ciWithExt(),
-                                'pension_entity' => $affiliate->pension_entity->name,
+                                'pension_entity' => $affiliate->pension_entity ? $affiliate->pension_entity->name : '',
                                 'category' => $affiliate->category->name,
                                 'enrolled' => $affiliate->device->enrolled,
                                 'verified' => $affiliate->device->verified,
