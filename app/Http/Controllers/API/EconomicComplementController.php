@@ -247,7 +247,7 @@ class EconomicComplementController extends Controller
                         Storage::put($path, base64_decode($attachment['content']), 'public');
                     }                   
                 }else {
-                    $path = 'eco_com/'.$request->affiliate->id.'/boleta_de_renta_'.$eco_com_procedure_id;
+                    $path = 'eco_com/'.$request->affiliate->id.'/boleta_de_renta_'.$eco_com_procedure_id.'.jpg';
                     Storage::put($path, base64_decode($attachment['content']), 'public');
                 }         
             }   
