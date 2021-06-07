@@ -16,7 +16,7 @@ class CreateAffiliateDevicesTable extends Migration
         Schema::create('affiliate_devices', function (Blueprint $table) {
             $table->bigInteger('affiliate_id');
             $table->string('api_token', 80)->unique()->nullable()->default(null);
-            $table->string('device_id')->unique();
+            $table->string('device_id')->unique()->nullable();
             $table->boolean('enrolled')->default(false);
             $table->json('liveness_actions')->nullable()->default(null);
             $table->boolean('verified')->default(false);

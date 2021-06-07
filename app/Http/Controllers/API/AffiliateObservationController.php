@@ -49,8 +49,8 @@ class AffiliateObservationController extends Controller
                 $data[] = [
                     'key' => 'Observaciones del beneficiario',
                     'value' => $observations,
-                    $message = 'No puede solicitar trámites debido a la(s) observación(es)';
                 ];
+                $message = 'No puede solicitar trámites debido a la(s) observación(es)';
             }
             
             return response()->json([
