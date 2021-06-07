@@ -68,7 +68,7 @@ class AuthController extends Controller
         if (Util::isDoblePerceptionEcoCom($identity_card)) {
             return response()->json([
                 'error' => true,
-                'message' => 'Usted Percibe El Beneficio Como Titular Y Viuda(O), Por Lo Cual Para Realizar El Registro De Su Trámite Debe Apersonarse Por Oficinas De La MUSERPOL',
+                'message' => 'Usted percibe el Beneficio como Titular y Viuda(o), por lo cual para realizar el registro de su trámite debe apersonarse por oficinas de la MUSERPOL.',
                 'data' => (object)[]
             ], 403);
         } else {
@@ -79,7 +79,6 @@ class AuthController extends Controller
                     $q->orderBy('year')->orderBy('normal_start_date');
                 })->latest()->first();
                 if (mb_strtoupper($last_eco_com->eco_com_beneficiary->identity_card) == $identity_card && Carbon::createFromFormat('d/m/Y', $last_eco_com->eco_com_beneficiary->birth_date)->format('Y-m-d') == $birth_date) {
-                    // TODO: verificar que tiene trámites registrados en los dos últimos semestres
                     $eco_com_beneficiary = $last_eco_com->eco_com_beneficiary;
                 } else {
                     return response()->json([
