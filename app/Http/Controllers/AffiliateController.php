@@ -629,7 +629,8 @@ class AffiliateController extends Controller
 
     public function deleteDevice($affiliate_id){
         $affiliateDevice = AffiliateDevice::find($affiliate_id);
-        $affiliateDevice->delete();
+        $affiliateDevice->device_id = null;
+        $affiliateDevice->save();
     }
 
 }
