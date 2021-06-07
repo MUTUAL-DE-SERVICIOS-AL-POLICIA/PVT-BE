@@ -47,7 +47,7 @@ class EconomicComplementController extends Controller
         return response()->json([
             'error' => false,
             'message' => 'Complemento Económico',
-            'data' => EconomicComplementResource::collection($data->paginate($request->per_page ?? 3, ['*'], 'page', $request->page ?? 1))->resource,
+            'data' => EconomicComplementResource::collection($data->paginate($request->per_page ?? 4, ['*'], 'page', $request->page ?? 1))->resource,
         ]);
     }
 
@@ -247,8 +247,8 @@ class EconomicComplementController extends Controller
                         Storage::put($path, base64_decode($attachment['content']), 'public');
                     }                   
                 }else {
-                    $path = 'eco_com/'.$request->affiliate->id.'/';
-                    Storage::put($path.$attachment['filename'], base64_decode($attachment['content']), 'public');
+                    $path = 'eco_com/'.$request->affiliate->id.'/boleta_de_renta_'.$eco_com_procedure_id;
+                    Storage::put($path, base64_decode($attachment['content']), 'public');
                 }         
             }   
 
