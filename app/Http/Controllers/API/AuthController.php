@@ -68,7 +68,7 @@ class AuthController extends Controller
         if (Util::isDoblePerceptionEcoCom($identity_card)) {
             return response()->json([
                 'error' => true,
-                'message' => 'Usted percibe el Beneficio como Titular y Viuda(o), por lo cual para realizar el registro de su trámite debe apersonarse por oficinas de la MUSERPOL.',
+                'message' => 'Usted percibe el Beneficio como Titular y Viuda(o), por lo cual para realizar el registro de su trámite debe apersonarse por oficinas de la MUSERPOL',
                 'data' => (object)[]
             ], 403);
         } else {
@@ -135,7 +135,7 @@ class AuthController extends Controller
             } else {
                 return response()->json([
                     'error' => true,
-                    'message' => 'Usted No Se Encuentra Registrado Como Beneficiario Habitual, Para Mayor Información Pasar Por Oficinas De La MUSERPOL.',
+                    'message' => 'Usted no se encuentra registrado como Beneficiario Habitual, para mayor información pasar por oficinas de la MUSERPOL',
                     'data' => (object)[]
                 ], 403);
             }

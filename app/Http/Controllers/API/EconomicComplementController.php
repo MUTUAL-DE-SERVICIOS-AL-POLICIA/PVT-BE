@@ -256,7 +256,7 @@ class EconomicComplementController extends Controller
         } else {
             return response()->json([
                 'error' => true,
-                'message' => 'Complemento Económico ya fue registrado.',
+                'message' => 'Complemento Económico ya fue registrado',
                 'data' => (object)[],
             ], 403);
         }
