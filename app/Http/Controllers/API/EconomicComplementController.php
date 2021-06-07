@@ -169,14 +169,14 @@ class EconomicComplementController extends Controller
             $eco_com_beneficiary->first_name = $last_eco_com_beneficiary->first_name;
             $eco_com_beneficiary->second_name = $last_eco_com_beneficiary->second_name;
             $eco_com_beneficiary->surname_husband = $last_eco_com_beneficiary->surname_husband;
-            $eco_com_beneficiary->birth_date =Carbon::parse($last_eco_com_beneficiary->birth_date)->format('Y-m-d');
+            $eco_com_beneficiary->birth_date = $last_eco_com_beneficiary->birth_date;
             $eco_com_beneficiary->nua = $last_eco_com_beneficiary->nua;
             $eco_com_beneficiary->gender = $last_eco_com_beneficiary->gender;
             $eco_com_beneficiary->civil_status = $last_eco_com_beneficiary->civil_status;
             $eco_com_beneficiary->phone_number = $last_eco_com_beneficiary->phone_number;
             $eco_com_beneficiary->cell_phone_number = $cell_phone_number;
             $eco_com_beneficiary->city_birth_id = $last_eco_com_beneficiary->city_birth_id;
-            $eco_com_beneficiary->due_date = $last_eco_com_beneficiary->due_date ? Carbon::parse($last_eco_com_beneficiary->due_date)->format('Y-m-d') : null;
+            $eco_com_beneficiary->due_date = $last_eco_com_beneficiary->due_date ? $last_eco_com_beneficiary->due_date : null;
             $eco_com_beneficiary->is_duedate_undefined = $last_eco_com_beneficiary->is_duedate_undefined;
             $eco_com_beneficiary->save();
             /**
