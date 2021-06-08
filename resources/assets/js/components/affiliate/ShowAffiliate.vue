@@ -239,10 +239,10 @@ import { flashErrors } from "../../helper.js";
                     return axios
                         .get(uri)
                         .then(response => {
-                            alert('Dispositivo desvinculado');
+                            flash('Dispositivo desvinculado');
                         })
                         .catch(error => {
-                            alert('No tiene dispositivo para desvincular');
+                            flash('No tiene dispositivo para desvincular', 'error');
                         });
                     },
                     allowOutsideClick: () => !this.$swal.isLoading()

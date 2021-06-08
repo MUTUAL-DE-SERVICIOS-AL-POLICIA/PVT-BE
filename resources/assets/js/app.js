@@ -452,6 +452,9 @@ Vue.component('certification-button', require('./components/utils/CertificationB
 // Edit user
 Vue.component('edit-user', require('./components/user/EditUser.vue'));
 
+// Dispositivo movil
+Vue.component('eco-com-boleta', require('./components/eco_com/Boleta.vue'));
+
 /**
  * custom component
  */
