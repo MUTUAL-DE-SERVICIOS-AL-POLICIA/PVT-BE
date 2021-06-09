@@ -29,22 +29,33 @@ class AffiliateObservationController extends Controller
             }
             $observations = array_unique($affiliate->observations()->where('description', 'Denegado')->where('enabled', false)->pluck('shortened')->all());
             $enabled = (count($observations) == 0);
-            $has_observations = count($observations) > 0;
             $available_procedures = EcoComProcedure::affiliate_available_procedures($affiliate->id)->count();
+            $data = [];
             if ($enabled) {
                 if ($available_procedures == 0) {
                     $enabled = false;
+                    $message = 'Ya realizó la solicitud correspondiente al semestre';
+                } else {
+                    $latest_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('normal_start_date')->limit(2)->whereNotIn('id', EcoComProcedure::current_procedures()->pluck('id'))->pluck('id');
+                    $latest_procedures = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $latest_procedures)->count();
+                    if ($latest_procedures < 1) {
+                        $enabled = false;
+                        $message = 'Para realizar el registro de su Trámite pase por oficinas de la MUSERPOl';
+                    } else {
+                        $message = $available_procedures.' solicitud(es) de trámite disponible(s)';
+                    }
                 }
+            } else {
+                $data[] = [
+                    'key' => 'Observaciones del beneficiario',
+                    'value' => $observations,
+                ];
+                $message = 'No puede solicitar trámites debido a la(s) observación(es)';
             }
-            $data = [];
-            if ($has_observations) $data[] = [
-                'key' => 'Observaciones del beneficiario',
-                'value' => $observations,
-            ];
-
+            
             return response()->json([
                 'error' => false,
-                'message' => $has_observations ? 'No puede solicitar trámites debido a la(s) observación(es)' : ($available_procedures == 0 ? 'Ya realizó la solicitud correspondiente al semestre' : $available_procedures.' solicitud(es) de trámite disponible(s)'),
+                'message' => $message,
                 'data' => [
                     'display' => $data,
                     'title' => $last_eco_com->eco_com_beneficiary->fullName(),
