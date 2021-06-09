@@ -1,8 +1,11 @@
 <div class="ibox">    
     <div class="ibox-content">
         <div class="row">
-            <div class="pull-left"> <legend >Rostro</legend></div>
-            <div class="text-right"></div>
+            <div class="pull-left"><legend >Rostro</legend></div>
+            <div class="text-right">
+                <button data-animation="flip" class="btn btn-danger"  @click="updateDesvalidar"><i class="fa" ></i>Desvalidar CI </button> 
+                <button data-animation="flip" class="btn btn-primary"  @click="updateValidar"><i class="fa" ></i>Varidar CI </button>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-6">
