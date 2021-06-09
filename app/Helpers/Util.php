@@ -86,13 +86,13 @@ class Util
   }
   public static function verifyBarDate($value)
   {
-    $re = $re = '/^\d{1,2}\/\d{1,2}\/\d{4}$/m';
+    $re = '/^\d{1,2}\/\d{1,2}\/\d{4}$/m';
     preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
     return (sizeOf($matches) > 0);
   }
   public static function verifyMonthYearDate($value)
   {
-    $re = $re = '/^\d{1,2}\/\d{4}$/m';
+    $re = '/^\d{1,2}\/\d{4}$/m';
     preg_match_all($re, $value, $matches, PREG_SET_ORDER, 0);
     return (sizeOf($matches) > 0);
   }
