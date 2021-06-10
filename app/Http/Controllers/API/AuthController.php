@@ -101,7 +101,7 @@ class AuthController extends Controller
                         'verified' => false
                     ];
                 } elseif ($affiliate_device && $affiliate) {
-                    if ($affiliate->id == $affiliate_device->affiliate_id) {
+                    if ($device_id == $affiliate_device->device_id || $affiliate_device->device_id == null) {
                         $token = $this->getToken($device_id);
                         $update = [
                             'api_token' => $token,
