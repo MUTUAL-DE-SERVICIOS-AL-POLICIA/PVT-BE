@@ -633,4 +633,10 @@ class AffiliateController extends Controller
         $affiliateDevice->save();
     }
 
+    public function CIDevice($affiliate_id, $valor){
+        $affiliateDevice = AffiliateDevice::find($affiliate_id);
+        $affiliateDevice->verified = $valor;
+        $affiliateDevice->save();
+    }
+
 }

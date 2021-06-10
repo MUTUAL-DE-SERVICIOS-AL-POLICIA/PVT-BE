@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/ret_fun_beneficiaries_testimonies/{ret_fun_id}', 'RetirementFundController@getTestimonies')->name('ret_fun_beneficiaries_testimonies');
 
     Route::get('/deleteDevice_affiliate/{affiliate}', 'AffiliateController@deleteDevice')->name('deleteDevice_affiliate');
+    Route::get('/CIDevice/{affiliate}/{valor}', 'AffiliateController@CIDevice')->name('CIDevice');
     //SpouseControler
     Route::patch('/update_spouse/{affiliate_id}', 'SpouseController@update')->name('update_spouse');
 
