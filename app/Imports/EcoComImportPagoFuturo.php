@@ -34,9 +34,9 @@ class EcoComImportPagoFuturo implements ToCollection
         $user = User::first();
 
         //$current_procedures = Util::getEcoComCurrentProcedure()->first();
-        $current_procedures = 17;
+        //$current_procedures = 17;
 
-        
+        /*
         $pago_futuro_id = 31;
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($rows as $row) {
@@ -75,7 +75,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 $not_found->push($affiliate_id);
             }
  
-        }
+        }*/
 
 
 
@@ -94,10 +94,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 $not_found->push($affiliate->id);
             }
 
-        }
-
-
-
+        }*/
 
         
         foreach ($rows as $row) {
@@ -111,8 +108,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 $affiliate = $spouse->affiliate;     
                 }else{
                     $not_found->push($ci);
-                }
-           
+                }    
             }
             else{
                 
@@ -120,31 +116,30 @@ class EcoComImportPagoFuturo implements ToCollection
                 $affiliate->observations()->save($observation, [
                     'user_id' => $user->id,
                     'date' => Carbon::now(),
-                    'message' => 'PRIORITARIO - AFILIADOS EN MORA "CASOS VILLA SALOME"',
+                    'message' => 'PRIORITARIO - AFILIADOS EN MORA',
                     'enabled' => false
                 ]);
 
-                $eco_coms = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', Util::getEcoComCurrentProcedure())->get();
+                /*$eco_coms = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', Util::getEcoComCurrentProcedure())->get();
                 foreach ($eco_coms as $eco) {
                     if (!$eco->hasObservationType(2) && $eco->eco_com_state_id == 16) {
                         $eco->observations()->save($observation, [
                             'user_id' => $user->id,
                             'date' => Carbon::now(),
-                            'message' => 'PRIORITARIO - AFILIADOS EN MORA "CASOS VILLA SALOME"',
+                            'message' => 'PRIORITARIO - AFILIADOS EN MORA',
                             'enabled' => false
                         ]);
                         $found2++;
                 
                      }
 
-                }
+                }*/
                 $found++;
                 
             }
 
 
         } 
-        */
 
         $data = [
             'found' => $found,
