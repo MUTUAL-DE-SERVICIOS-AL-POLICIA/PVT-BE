@@ -66,7 +66,7 @@ class EcoComCertificationController extends Controller
         }
 
         // ddjj
-        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion) {
+        /*if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion) {
             $number_pages = 2;
             for ($i = 1; $i <= $number_pages; $i++) {
                 $pages[] = \View::make('eco_com.print.sworn_declaration', self::printSwornDeclaration($id))->render();
@@ -78,7 +78,8 @@ class EcoComCertificationController extends Controller
             for ($i = 1; $i <= $number_pages; $i++) {
                 $pages[] = \View::make('eco_com.print.sworn_declaration_beneficiary', self::printSwornDeclarationBeneficiary($id))->render();
             }
-        }
+        }*/
+        
         //Compromiso de Pago Vejez
         if (!$eco_com->isWidowhood() && $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion && $affiliate->pension_entity_id <> ID::pensionEntity()->senasir) {
             
