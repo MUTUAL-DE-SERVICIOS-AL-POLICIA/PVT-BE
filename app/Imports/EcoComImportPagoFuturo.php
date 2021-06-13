@@ -116,7 +116,7 @@ class EcoComImportPagoFuturo implements ToCollection
                 $affiliate->observations()->save($observation, [
                     'user_id' => $user->id,
                     'date' => Carbon::now(),
-                    'message' => 'PRIORITARIO - AFILIADOS EN MORA',
+                    'message' => 'PRIORITARIO - AFILIADOS EN MORA CON DESCUENTO A GARANTES',
                     'enabled' => false
                 ]);
 
