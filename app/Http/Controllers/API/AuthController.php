@@ -75,6 +75,16 @@ class AuthController extends Controller
             $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
             if ($eco_com_beneficiary) {
                 $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
+                $affiliate_device = AffiliateDevice::whereDeviceId($device_id)->first();
+                if ($affiliate_device) {
+                    if ($affiliate_device->affiliate_id != $affiliate->id) {
+                        return response()->json([
+                            'error' => true,
+                            'message' => 'Afiliado registrado con otro dispositivo',
+                            'data' => (object)[]
+                        ], 403);
+                    }
+                }
                 $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) {
                     $q->orderBy('year')->orderBy('normal_start_date');
                 })->latest()->first();
