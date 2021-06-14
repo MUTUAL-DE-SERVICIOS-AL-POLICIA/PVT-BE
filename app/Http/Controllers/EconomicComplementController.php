@@ -233,7 +233,7 @@ class EconomicComplementController extends Controller
      */
     public function store(Request $request)
     {
-        logger($request->all());
+        //logger($request->all());
         try {
             $this->authorize('create', new EconomicComplement());
         } catch (AuthorizationException $exception) {
