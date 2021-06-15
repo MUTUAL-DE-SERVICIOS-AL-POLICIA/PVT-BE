@@ -27,7 +27,7 @@ class AffiliateObservationController extends Controller
                     'data' => []
                 ], 401);    
             }
-            $observations = array_unique($affiliate->observations()->where('description', 'Denegado')->where('enabled', false)->pluck('shortened')->all());
+            $observations = array_unique($affiliate->observations()->where('description', 'Denegado')->where('enabled', false)->whereNull('deleted_at')->pluck('shortened')->all());
             $enabled = (count($observations) == 0);
             $available_procedures = EcoComProcedure::affiliate_available_procedures($affiliate->id)->count();
             $data = [];
