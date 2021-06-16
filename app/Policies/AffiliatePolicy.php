@@ -25,11 +25,8 @@ class AffiliatePolicy
      */
     public function view(User $user, Affiliate $affiliate)
     {
-        //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
-
     }
 
     /**
@@ -40,9 +37,7 @@ class AffiliatePolicy
      */
     public function create(User $user)
     {
-        
         $permission = Util::CheckPermission(self::ClASS_NAME,self::CREATE);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
     }
 
@@ -55,11 +50,8 @@ class AffiliatePolicy
      */
     public function update(User $user, Affiliate $affiliate)
     {
-
         $permission = Util::CheckPermission(self::ClASS_NAME,self::UPDATE);
-        // Log::info(json_encode($permission));
-        return $permission?true:false;
-      
+        return $permission?true:false;     
     }
 
     /**
@@ -71,9 +63,7 @@ class AffiliatePolicy
      */
     public function delete(User $user, Affiliate $affiliate)
     {
-        //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
     }
 }

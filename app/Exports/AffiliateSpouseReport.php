@@ -65,7 +65,6 @@ class AffiliateSpouseReport implements FromCollection, WithHeadings
                     ->leftJoin('cities as spouse_birth_city','spouses.city_birth_id','=','spouse_birth_city.id')
                     //->wherein('affiliates.id', [1,2,3])
                     ->get();
-                //logger($data);
                 break;
             case 22:
                 $data = Affiliate::select(

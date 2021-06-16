@@ -25,9 +25,7 @@ class RetirementFundPolicy
      */
     public function view(User $user, RetirementFund $retirementFund)
     {
-        //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
     }
 
@@ -39,9 +37,7 @@ class RetirementFundPolicy
      */
     public function create(User $user)
     {
-        //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::CREATE);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
     }
 
@@ -54,9 +50,7 @@ class RetirementFundPolicy
      */
     public function update(User $user, RetirementFund $retirementFund)
     {
-        //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::UPDATE);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
     }
 
@@ -69,9 +63,7 @@ class RetirementFundPolicy
      */
     public function delete(User $user, RetirementFund $retirementFund)
     {
-        //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
     }
     public function qualify(User $user, RetirementFund $retirementFund)

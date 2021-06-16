@@ -106,7 +106,6 @@ class AffiliateDevolutionController extends Controller
     }
     public function store(Request $request)
     {
-        logger($request->all());
         $affiliate = Affiliate::find($request->affiliate_id);
         $address = $affiliate->address->first();
         if (!$address) {
@@ -142,10 +141,7 @@ class AffiliateDevolutionController extends Controller
     {
         $duesss = $request->all();
         
-        //logger($affiliate_id);
-       // logger($request->dues);
         $duess = $request->dues;
-        logger($duess);
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";

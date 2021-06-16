@@ -42,14 +42,10 @@ class UpdateAffiliateSubmittedDocuments extends Command
         $affiliate_submitted_documents = AffiliateSubmittedDocument::with('procedure_document', 'affiliate:id')->get();
         foreach ($affiliate_submitted_documents as $asd) {
             $procedure_document = $asd->procedure_document;
-            if (now() >= Carbon::parse($asd->reception_date)->addDays($procedure_document->expire_date)) {
-                logger(Carbon::parse($asd->reception_date)->addDays($procedure_document->expire_date));
-                logger(now());    
+            if (now() >= Carbon::parse($asd->reception_date)->addDays($procedure_document->expire_date)) {  
                 $asd->status =  false;
                 $asd->save();
             }
         }
-
-        // logger($affiliate_submitted_documents);
     }
 }

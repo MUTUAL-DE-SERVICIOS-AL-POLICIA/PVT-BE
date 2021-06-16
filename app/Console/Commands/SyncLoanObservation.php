@@ -73,8 +73,6 @@ class SyncLoanObservation extends Command
     $message = ' Sincronización iniciada ' . Carbon::now();
     $this->new_line($message);
     $this->info($message);
-    \Log::info($message);
-    \Log::info('Removing old data...');
     DB::table('observables')->where('observation_type_id', $id_overdue)->where('observable_type', 'affiliates')->where('message', 'not like', 'PRIORITARIO%')->delete();
 
     $current_procedures = Util::getEcoComCurrentProcedure();
@@ -118,9 +116,7 @@ class SyncLoanObservation extends Command
           // preg_match("/(\\d+)([a-zA-Z]+)/", $padron->PadMatriculaTit, $match);
           // if (count($match) > 0) {
           //   $padron->PadCedulaIdentidad = $match[1];
-          //   \Log::info('Padron with PadMatricula: ' . $padron->PadMatriculaTit . ' does not exist. Getting PadCedulaIdentidad as ' . $padron->PadCedulaIdentidad);
           // } else {
-          //   \Log::error('PadMatriculaTit: ' . $padron->PadMatriculaTit . 'does not contain numbers');
           //   continue;
           // }
           $message = ' Matrícula de padrón: ' . $padron->PadMatriculaTit . ' inexistente';
@@ -207,7 +203,6 @@ class SyncLoanObservation extends Command
     $message = ' Sincronización terminada ' . Carbon::now();
     $this->new_line($message);
     $this->info($message);
-    \Log::info($message);
     Storage::disk('local')->put($this->file_name, $this->file_content);
   */
   }

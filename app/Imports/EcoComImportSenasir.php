@@ -26,7 +26,6 @@ class EcoComImportSenasir implements ToCollection
         $not_found = collect([]);
         $eco_com_procedure_id = Util::getEcoComCurrentProcedure()->first();
         $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
-        logger("eco_com_procedure" . $eco_com_procedure);
         foreach ($rows as $row) {
             $ext = ($row[9] ? "-" . $row[9] : '');
             $ext = str_replace(' ', '', $ext);
@@ -111,7 +110,6 @@ class EcoComImportSenasir implements ToCollection
             'found' => $found,
             // 'not_found' => $not_found,
         ];
-        logger($data);
         session()->put('senasir_data', $data);
         return $data;
     }

@@ -25,7 +25,6 @@ class AffiliateReport implements FromCollection, WithHeadings, ShouldAutoSize, W
         $columns = "";
         switch ($this->report_type_id) {
             case 9:
-                // logger($this->observation_type_ids);
                 // $columns = ', observation_types.name as observaciones';
                 $columns = '';
                 $data = Affiliate::select(DB::raw(Affiliate::basic_info_colums() . $columns))
@@ -35,7 +34,6 @@ class AffiliateReport implements FromCollection, WithHeadings, ShouldAutoSize, W
                         $query->whereIn('observation_type_id', [13]);
                     })
                     ->toSql();
-                    logger($data);
                 break;
                 break;
 

@@ -182,7 +182,6 @@ class Util
     $wf_state = WorkflowState::where('module_id', 3)->where('role_id', Session::get('rol_id'))->first();
     $reprint = RetFunCorrelative::where('retirement_fund_id', $retirement_fund_id)->where('wf_state_id', $wf_state->id)->first();
     if (isset($reprint->id)) {
-      Log::info("reprint ret_fun_id: " . $retirement_fund_id);
       return $reprint;
     }
     $year =  date('Y');
@@ -213,7 +212,6 @@ class Util
           $next_correlative = "1/" . $year;
         } else {
           $next_correlative = ($year != $data[1] ? "1" : ($data[0] + 1)) . "/" . $year;
-          Log::info("correlative created " . $next_correlative);
         }
       }
     }
@@ -240,7 +238,6 @@ class Util
   {
     $wf_state = WorkflowState::where('module_id', 4)->where('role_id', Session::get('rol_id'))->first();
     $quota_aid = QuotaAidMortuary::find($quota_aid_mortuary_id);
-    Log::info("role_id: " . Session::get('rol_id'));
     $reprint = QuotaAidCorrelative::where('procedure_type_id', $quota_aid->procedure_modality->procedure_type_id)->where('quota_aid_mortuary_id', $quota_aid_mortuary_id)->where('wf_state_id', $wf_state->id)->first();
 
     // $last_quota_aid = QuotaAidCorrelative::
@@ -266,7 +263,6 @@ class Util
 
     //$correlative = $last_quota_aid->code ?? "";
     $correlative = $hole;
-    Log::info("type: " . $quota_aid->procedure_modality->procedure_type_id);
     $reception = WorkflowState::where('role_id', Session::get('rol_id'))->whereIn('sequence_number', [0, 1])->first();
     if ($reception) {
       $correlative = QuotaAidMortuary::find($quota_aid_mortuary_id)->code;
@@ -564,7 +560,6 @@ class Util
   {
     $procedure_active = RetFunProcedure::where('is_enabled', 'true')->first();
     if (!$procedure_active) {
-      Log::info("No existe ret fun procedure activo");
       abort(500);
     }
     return $procedure_active;
@@ -1096,7 +1091,6 @@ class Util
       ->select('economic_complements.*')
       ->where('economic_complements.total', '>', 0)
       ->get();
-    logger("*");
     $observations_ids = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
     $collect = collect([]);
     foreach ($ecos as $e) {
@@ -1125,8 +1119,6 @@ class Util
       }
     }
     $ecos = $collect;
-    logger($ecos->count());
-    // logger(DB::getQueryLog());
     $total_amount = $ecos->sum('total');
     $total_eco_coms = $ecos->count();
     $index = 1;

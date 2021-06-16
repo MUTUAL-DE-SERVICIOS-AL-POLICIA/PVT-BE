@@ -87,14 +87,10 @@ class LoginController extends Controller
     //logout user
     auth()->logout();
     // redirect to homepage
-    Log::info('Cyk');
     if (Session::has('rol_id'))
       Session::forget('rol_id');
     if (Session::has('rol_name'))
       Session::forget('rol_name');
-
-    Log::info('Olvidando a la session ');
-
     return redirect('/');
   }
 }

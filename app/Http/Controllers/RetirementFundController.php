@@ -199,7 +199,6 @@ class RetirementFundController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            // Log::info(json_encode($validator->errors));
             return redirect(route('create_ret_fun', $request->affiliate_id))
                 ->withErrors($validator)
                 ->withInput();
@@ -258,7 +257,6 @@ class RetirementFundController extends Controller
         $retirement_fund->workflow_id = 4;
         $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
         if (!$wf_state) {
-            Log::info("error al crear el trámite");
             return;
         }
         $retirement_fund->wf_state_current_id = $wf_state->id;
@@ -342,7 +340,6 @@ class RetirementFundController extends Controller
             Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
         if ($account_type == ID::applicant()->beneficiary_id && ($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == ID::kinship()->conyuge) {
-            Log::info("updating spouse 1");
             Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
         }
 
@@ -399,7 +396,6 @@ class RetirementFundController extends Controller
                 Util::updateAffiliatePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
             }
             if (($request->ret_fun_modality == ID::retFun()->fallecimiento_id || $request->ret_fun_modality == ID::retFunGlobalPay()->fallecimiento_id) && $beneficiary->kinship_id == ID::kinship()->conyuge) {
-                Log::info("updating spouse 2");
                 Util::updateCreateSpousePersonalInfo($retirement_fund->affiliate_id, $beneficiary);
             }
         }
@@ -438,7 +434,6 @@ class RetirementFundController extends Controller
                 $beneficiary->save();
                 switch ($legal_representative[$i]) {
                     case 1:
-                        Log::info('tutor');
                         $advisor = new RetFunAdvisor();
                         //$advisor->retirement_fund_id = $retirement_fund->id;
                         $advisor->city_identity_card_id = $request->beneficiary_advisor_city_identity_card[$advisor_count];
@@ -465,7 +460,6 @@ class RetirementFundController extends Controller
                         $advisor_count++;
                         break;
                     case 2:
-                        Log::info('APODE');
                         $legal_guardian = new RetFunLegalGuardian();
                         $legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
                         $legal_guardian->identity_card = strtoupper(trim($request->beneficiary_legal_guardian_identity_card[$legal_guardian_count]));
@@ -499,7 +493,6 @@ class RetirementFundController extends Controller
                         $beneficiary_legal_guardian->save();
                         break;
                     default:
-                        Log::info('NONE');
                         break;
                 }
             }
@@ -1245,7 +1238,6 @@ class RetirementFundController extends Controller
             $submit_document->is_valid = $document['status'];
             $submit_document->comment = $document['comment'];
             $submit_document->save();
-            // Log::info($document['number']);
         }
         return $request;
         // $submited_documents = RetFunSubmittedDocument::where('retirement_fund_id',$id)->orderBy('procedure_requirement_id','ASC')->get();
@@ -1275,7 +1267,6 @@ class RetirementFundController extends Controller
                 array_push($beneficiaries_array_request, $value);
             }
         }
-        // Log::info(json_encode($request->all()[0]));
         /* delete beneficiaries */
         $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries;
         foreach ($beneficiaries as $key => $ben) {
@@ -1294,7 +1285,6 @@ class RetirementFundController extends Controller
                     return ($var['id'] == $new_ben['id']);
                 });
             }
-            // Log::info($new_ben);
             if ($found) {
                 $old_ben = RetFunBeneficiary::find($new_ben['id']);
                 $old_ben->city_identity_card_id = $new_ben['city_identity_card_id'];
@@ -1434,7 +1424,6 @@ class RetirementFundController extends Controller
                         }
                     } else {
                         if ($new_ben['address']) {
-                            Log::info('new Address');
                             $address = new Address();
                             $address->city_address_id = $new_ben['address'][0]['city_address_id'] ?? 1;
                             $address->zone = $new_ben['address'][0]['zone'];
@@ -1973,7 +1962,6 @@ class RetirementFundController extends Controller
             $retirement_fund->discount_types()->detach($discount_type->id);
         }
         $discount_type = DiscountType::where('shortened', 'garantes')->first();
-        Log::info($request->guarantors);
         if ($retention_guarantor >= 0) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
                 $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_guarantor, 'date' => $request->retentionGuarantorDate, 'code' => $request->retentionGuarantorCode, 'note_code' => $request->retentionGuarantorNoteCode, 'note_code_date' => $request->retentionGuarantorNoteCodeDate]);
@@ -2177,7 +2165,6 @@ class RetirementFundController extends Controller
                 array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
             }
         }
-        Log::info("total disponibilidad: " . json_encode($retirement_fund));
         $data = [
             'has_availability' => $has_availability,
             'subtotal_availability' => $subtotal_availability ?? 0,
@@ -2200,7 +2187,6 @@ class RetirementFundController extends Controller
         $total_availability = $subtotal_availability + $total_annual_yield;
         $retirement_fund->total_availability =  $total_availability;
         $retirement_fund->total =  $total_availability + ($retirement_fund->total_ret_fun ?? 0);
-        Log::info($retirement_fund->total);
         $retirement_fund->save();
         /**added function calculate sub_total_availability */
         foreach ($request->beneficiaries as $beneficiary) {
@@ -2269,7 +2255,6 @@ class RetirementFundController extends Controller
             $ret_fun_correlative = RetFunCorrelative::where('retirement_fund_id', $ret_fun_id)->where('wf_state_id', $wf_state->id)->first();
             $ret_fun_correlative->note = $request->note;
             $ret_fun_correlative->save();
-            Log::info('note saved');
         }
         return $retirement_fund;
     }

@@ -11,7 +11,6 @@ class AffiliateSubmittedDocumentsController extends Controller
 {
     public function getRequirements(Request $request)
     {
-        logger($request->all());
         $affiliate = Affiliate::find($request->affiliate_id);
         if ($request->reception_type_id == 2) {
             $procedure_requirements_original = ProcedureRequirement::with('procedure_document')->where('procedure_modality_id', $request->procedure_modality_id)->where('number', '<>', 0)->orderBy('number')->get();

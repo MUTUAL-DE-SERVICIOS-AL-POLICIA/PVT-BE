@@ -27,7 +27,6 @@ class ContributionPolicy
     {
         //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::READ);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
     }
 
@@ -39,9 +38,7 @@ class ContributionPolicy
      */
     public function create(User $user)
     {
-        //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::CREATE);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
 
     }
@@ -55,9 +52,7 @@ class ContributionPolicy
      */
     public function update(User $user, Contribution $contribution)
     {
-        //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::UPDATE);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
     }
 
@@ -72,7 +67,6 @@ class ContributionPolicy
     {
         //
         $permission = Util::CheckPermission(self::ClASS_NAME,self::DELETE);
-        // Log::info(json_encode($permission));
         return $permission?true:false;
     }
 }

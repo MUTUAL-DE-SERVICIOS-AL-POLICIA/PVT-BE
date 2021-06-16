@@ -385,12 +385,10 @@ class AidContributionController extends Controller
         //return $foo;
         if( $foo === false)
         {
-            Log::info("Error ".$httpcode ." ".$foo);
             return response('error', 500);
         }
         else
         {
-            Log::info("Success: ".$httpcode. " ".$foo );
             $foo = [$foo,
                     $rate];
                 return $foo;

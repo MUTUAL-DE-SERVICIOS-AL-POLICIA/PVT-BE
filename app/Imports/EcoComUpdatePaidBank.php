@@ -74,10 +74,6 @@ class EcoComUpdatePaidBank implements ToCollection
                             $affiliate->save();
 
                             $found++;
-                        logger($ci);
-                }
-                } else {
-                    logger("------------------- si doble " . $ci);
                 }
             } else {
                 $not_found->push($ci);
@@ -99,7 +95,6 @@ class EcoComUpdatePaidBank implements ToCollection
                     $affiliate->sigep_status = $sigep_status; 
                     $affiliate->save();
                     $found++;
-                    logger($sigep_status. "/".$account_number. "/" . $financial_entity_id);
                 }
                 else {
                     $not_found_t->push($nup);
@@ -155,7 +150,6 @@ class EcoComUpdatePaidBank implements ToCollection
             'not_found' => $not_found,
             'not_found_t' => $not_found_t,
         ];
-        /* logger($data); */
         session()->put('pago_banco_data', $data);
     }
 }

@@ -42,7 +42,6 @@ class EcoComImportExportController extends Controller
     }
     public function importAPS(Request $request)
     {
-        logger($request->all());
         $success = 0;
         $not_found = collect([]);
         $not_found_db = collect([]);
@@ -90,7 +89,6 @@ class EcoComImportExportController extends Controller
                         $collect->push($temp);
                     }
                 }
-                logger("Total Datos del Excel " . $collect->count());
                 $eco_coms = EconomicComplement::with('affiliate')
                     ->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
@@ -100,8 +98,6 @@ class EcoComImportExportController extends Controller
                     ->get();
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
-                        // logger($e->affiliate->identity_card);
-                        // logger($c[3]);
                         $affiliate_ci_eco_com = explode("-", ltrim($e->affiliate->identity_card, "0"))[0];
                         // $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
                         $ci_aps = explode("-", ltrim($c[10], "0"))[0];
@@ -172,7 +168,6 @@ class EcoComImportExportController extends Controller
                     $temp[16] = Util::verifyAndParseNumber($temp[16]);
                     $collect->push($temp);
                 }
-                // logger($collect->count());
                 $eco_coms = EconomicComplement::with('affiliate')->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
@@ -324,7 +319,6 @@ class EcoComImportExportController extends Controller
     }
     public function importPagoFuturo(Request $request)
     {
-        logger($request->all());
         if ($request->refresh != 'true') {
             $uploadedFile = $request->file('image');
             $filename = 'pago_futuro.' . $uploadedFile->getClientOriginalExtension();
@@ -341,7 +335,6 @@ class EcoComImportExportController extends Controller
     }
     public function updatePaidBank(Request $request)
     {
-        logger($request->all());
         if ($request->refresh != 'true') {
             $uploadedFile = $request->file('image');
             $filename = 'pago_banco.' . $uploadedFile->getClientOriginalExtension();

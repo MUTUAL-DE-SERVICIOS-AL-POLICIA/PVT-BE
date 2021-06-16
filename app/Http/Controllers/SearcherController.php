@@ -89,14 +89,11 @@ class SearcherController
         $other_observations = collect([]);
         $eco_com_beneficiary = new EcoComBeneficiary();
         $has_doble_perception = false;
-        logger($request->all());
         if (Util::isDoblePerceptionEcoCom($ci) && $request->one_time == true ) {
-            logger("entre");
             $has_doble_perception = true;
             return response()->json(compact('has_doble_perception'), 200);
         }
         if ($request->has_doble_perception == true) {
-            logger("has DOble ");
             if ($request->type == 1) {
                 $affiliate = Affiliate::where('identity_card', $ci)->with(['degree:id,name', 'category:id,name', 'pension_entity:id,name'])->select('id', 'category_id', 'degree_id', 'pension_entity_id', 'date_entry', 'identity_card', 'city_identity_card_id', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband','gender')->first();
             } else {
@@ -111,8 +108,6 @@ class SearcherController
                     ->orderBYDesc('eco_com_procedures.semester')
                     ->get()
                     ->first();
-                logger("foun beneficiary in code");
-                logger($eco_com_beneficiary->economic_complement->code);
                 $affiliate = $eco_com_beneficiary->economic_complement->affiliate()->select('id', 'category_id', 'degree_id', 'pension_entity_id', 'date_entry', 'identity_card', 'city_identity_card_id', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband','gender')->first();
             }
         } else {
@@ -128,9 +123,7 @@ class SearcherController
                 ->first();
             if (!$eco_com_beneficiary) {
                 $affiliate = Affiliate::where('identity_card', $ci)->with(['degree:id,name', 'category:id,name', 'pension_entity:id,name'])->select('id', 'category_id', 'degree_id', 'pension_entity_id', 'date_entry', 'identity_card', 'city_identity_card_id', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband','gender')->first();
-                logger('Found in affiliate');
             }else{
-                logger('Found in eco_com_beneficiary');
                 $affiliate = $eco_com_beneficiary->economic_complement->affiliate()->with(['degree:id,name', 'category:id,name', 'pension_entity:id,name'])->select('id', 'category_id', 'degree_id', 'pension_entity_id', 'date_entry', 'identity_card', 'city_identity_card_id', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband','gender')->first();
             }
         }

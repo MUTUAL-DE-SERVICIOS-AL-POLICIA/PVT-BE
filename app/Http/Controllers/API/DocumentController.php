@@ -32,8 +32,6 @@ class DocumentController extends Controller
         break;
       case 2:
         # eco com
-        logger($request->all());
-
         $headers = Util::getHeadersInboxEcoCom();
         $documents = EconomicComplement::with('tags')->select(
           DB::raw(
@@ -255,7 +253,6 @@ class DocumentController extends Controller
         break;
       case 2:
         $headers = Util::getHeadersInboxEcoCom();
-        logger($request->all());
         # eco com
         $documents = EconomicComplement::with('tags')->select(
           DB::raw(

@@ -38,7 +38,6 @@ class ScannedDocumentController extends Controller
         $procedure_documents = ProcedureDocument::all();
         $document = ScannedDocument::where('affiliate_id', '=', $affiliate_id)->get();
         $affiliate_submitted_documents = AffiliateSubmittedDocument::where('affiliate_id','=', $affiliate_id)->get();   
-        //logger($affiliate_submitted_documents); 
         if($document->affiliate_id=$affiliate_id){
         $data = array(
             'affiliate'=>$affiliate,
@@ -47,7 +46,6 @@ class ScannedDocumentController extends Controller
             'document'=>$document
         );
     }
-        logger($data);  
         return view('affiliates.create_scanned_document',$data);
         
     }

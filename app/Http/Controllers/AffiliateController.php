@@ -527,7 +527,6 @@ class AffiliateController extends Controller
             if (sizeOf($request->address) > 0) {
                 foreach ($request->address as $value) {
                     if ($value['zone'] || $value['street'] || $value['number_address']) {
-                        Log::info('zoneee '.$value['zone']);
                         $address = new Address();
                         $address->city_address_id = $value['city_address_id'];
                         $address->zone = $value['zone'];

@@ -67,7 +67,6 @@ class TreasuryController extends Controller
                 $r->banco = $r->total;
             }
         }
-        Log::info($rows->pluck('voucher_type'));
         switch ($request->type) {
             case 'general':
                 $title = "Detalle de ingresos de Tesoreria";
@@ -82,7 +81,6 @@ class TreasuryController extends Controller
                     $rows->push($v);
                 }
 
-                Log::info(sizeof($respon9se));
                 // $rows = $rows->union(collect($temp));
                 $headers = [
                     ['key' => 'payment_date', 'text' => 'Fecha'],
@@ -109,7 +107,6 @@ class TreasuryController extends Controller
                             return Util::printMonthYear($month);
                         })->toArray());
                         if(isset($months)) {
-                            Log::info($months);
                             $pos = strrpos($months, ', ');
                             if ($pos !== false) {
                                 $months = substr_replace($months, ' y ', $pos, strlen(', '));

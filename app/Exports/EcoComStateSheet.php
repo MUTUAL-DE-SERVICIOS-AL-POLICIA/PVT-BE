@@ -21,7 +21,6 @@ class EcoComStateSheet implements FromCollection, WithTitle, WithHeadings, Shoul
     }
     public function collection()
     {
-        logger($this->eco_com_state);
         $data = collect([]);
         foreach ($this->eco_coms as $e) {
 

@@ -406,7 +406,6 @@ class Affiliate extends Model
           //     'years' => intval($sub_total_dates / 12),
           //     'months' => $sub_total_dates % 12,
           // );
-          // Log::info($total_dates ." " . $c->operator . " " . $sub_total_dates);
           eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
           $group_dates[] = $dates;
         }
@@ -763,7 +762,6 @@ class Affiliate extends Model
   //     if ($date) {
   //         return $date;
   //     }
-  //     Log::info('contributions not found');
   //     return 'error';
   // }
   public static function updatePersonalInfo($affiliate_id, $object)

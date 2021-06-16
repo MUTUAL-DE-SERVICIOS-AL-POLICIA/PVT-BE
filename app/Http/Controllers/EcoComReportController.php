@@ -43,7 +43,6 @@ class EcoComReportController extends Controller
     }
     public function generate(Request $request)
     {
-        logger($request->all());
         $eco_com_procedure = EcoComProcedure::find($request->ecoComProcedureId);
         $data = null;
         switch ($request->reportTypeId) {
@@ -107,7 +106,6 @@ class EcoComReportController extends Controller
                 # code...
                 break;
         }
-        logger("fin");
         return $data;
     }
 }

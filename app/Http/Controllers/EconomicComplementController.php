@@ -233,7 +233,6 @@ class EconomicComplementController extends Controller
      */
     public function store(Request $request)
     {
-        //logger($request->all());
         try {
             $this->authorize('create', new EconomicComplement());
         } catch (AuthorizationException $exception) {
@@ -299,7 +298,6 @@ class EconomicComplementController extends Controller
         $economic_complement->workflow_id = ID::workflow()->eco_com_normal;
         $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0,1])->first();
         if(!$wf_state){
-            Log::info("error al crear el trámite");
             return;
         }
         $economic_complement->wf_current_state_id = $wf_state->id;
@@ -1320,7 +1318,6 @@ class EconomicComplementController extends Controller
         //             }
         //         }
         //         $start_procedure = EconomicComplementProcedure::where('id', '=', Util::semesternext(Carbon::parse($start_procedure->year)->year, $start_procedure->semester))->first();
-        //         Log::info("whille");
         //     }
         //     $devolution = Devolution::where('affiliate_id', '=', $complemento->affiliate_id)->where('observation_type_id', '=', 13)->first();
         //     if ($devolution) {
@@ -1585,7 +1582,6 @@ class EconomicComplementController extends Controller
     public function automatiQualification(Request $request)
     {
         ini_set('max_execution_time', 300);
-        logger($request->all());
         $eco_com_procedure = EcoComProcedure::find($request->ecoComProcedureId);
         $eco_coms = EconomicComplement::with('eco_com_state')->where('eco_com_procedure_id', $eco_com_procedure->id)
             ->where('total_rent', '>', 0);
@@ -1594,14 +1590,12 @@ class EconomicComplementController extends Controller
         }
 
         $eco_coms = $eco_coms->get();
-        logger($eco_coms->count());
         $count = 0;
         foreach ($eco_coms as $e) {
             if (($e->eco_com_state->eco_com_state_type_id != 1 || $e->eco_com_state->eco_com_state_type_id != 6)) {
                 $e->qualify();
                 $count++;
             }
-            logger($count);
         }
         return $count;
     }

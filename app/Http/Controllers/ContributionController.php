@@ -65,12 +65,10 @@ class ContributionController extends Controller
         //if( ($json = curl_exec($ch) ) === false)
         if( $foo === false)
         {
-            Log::info("Error ".$httpcode ." ".$foo);
             return response('error', 500);
         }
         else
         {
-            Log::info("Success: ".$httpcode. " ".$foo );
             return $foo;
         }
     }
@@ -111,10 +109,8 @@ class ContributionController extends Controller
     }
     public function getContributionRate($date)
     {
-        Log::info($date);
         $date = Carbon::parse($date)->format('Y-m');
         $rate = ContributionRate::where('month_year',$date.'-01')->first();
-        Log::info($rate);
         if ($rate) {
             return $rate;
         }
@@ -762,12 +758,8 @@ class ContributionController extends Controller
         /* first contribution and date entry comparision */
         if (Util::parseMonthYearDate($affiliate->date_entry) < $first_contribution) {
             $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_entry));
-            Log::info("++++++++++++ creating ++++++++++++");
-            Log::info($month);
-            Log::info($first_contribution);
             $months = array();
             while($month < $first_contribution){
-                Log::info('pending create: '.$month);
                 array_push($months, [
                     'user_id' => Auth::user()->id,
                     'affiliate_id' => $affiliate->id,
@@ -793,34 +785,24 @@ class ContributionController extends Controller
                 $month->addMonth();
             }
             DB::table('contributions')->insert($months);
-            Log::info("************ / end creating********");
         }elseif(Util::parseMonthYearDate($affiliate->date_entry) > $first_contribution){
             $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_entry));
-            Log::info("-------------  deleting ---------");
-            Log::info($month);
-            Log::info($first_contribution);
             $temp_ids = array();
             foreach ($contributions as $value) {
                 if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) < Util::parseMonthYearDate($affiliate->date_entry) ){
-                    Log::info('deleted '.$value->month_year);
                     array_push($temp_ids, $value->id);
                 }
             }
             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
             dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
-            Log::info("-------------  / end deleting ---------");
         }
 
         /* last contributions and date derelict comparision */
 
         if (Util::parseMonthYearDate($affiliate->date_derelict) > $last_contribution) {
             $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_derelict));
-            Log::info("++++++++++++ creating ++++++++++++");
-            Log::info($month);
-            Log::info($last_contribution);
             $months = array();
             while($month->toDateString() > $last_contribution){
-                Log::info('pending create: '.$month);
                 array_push($months, [
                     'user_id' => Auth::user()->id,
                     'affiliate_id' => $affiliate->id,
@@ -846,22 +828,16 @@ class ContributionController extends Controller
                 $month->subMonth();
             }
             DB::table('contributions')->insert($months);
-            Log::info("************ / end creating********");
         }elseif(Util::parseMonthYearDate($affiliate->date_derelict) < $last_contribution){
             $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_derelict));
-            Log::info("-------------  deleting ---------");
-            Log::info($month);
-            Log::info($last_contribution);
             $temp_ids = array();
             foreach ($contributions->reverse() as $value) {
                 if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) > Util::parseMonthYearDate($affiliate->date_derelict) ){
-                    Log::info('deleted '.$value->month_year);
                     array_push($temp_ids, $value->id);
                 }
             }
             dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
-            Log::info("-------------  / end deleting ---------");
         }
 
         $contributions = DB::table('contributions')->where('affiliate_id', $affiliate->id)->orderBy('month_year')->get()->pluck('month_year');
@@ -971,7 +947,6 @@ class ContributionController extends Controller
         $subtotal_availability = array_sum(array_column($availability, 'total'));
         $ret_fun->subtotal_availability = $subtotal_availability;
         $ret_fun->save();
-        Log::info('saved subtotal availability: '. $subtotal_availability);
         $contribution_types = ContributionType::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_id')->distinct()->get()->pluck('contribution_type_id'))->orderBy('sequence')->select('name','id')->get();
         Util::getNextAreaCode($ret_fun->id);
         foreach($contribution_types as $index =>$c){

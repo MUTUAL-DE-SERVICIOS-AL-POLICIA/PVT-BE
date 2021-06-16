@@ -19,11 +19,9 @@ class SessionMiddleware
     {       
         if(session()->exists('rol_id'))
         {
-            // Log::info(session()->get('rol_id'));
             return $next($request);
         }
         else{
-            // Log::info("habiliatar en caso de error en cyk");
             return redirect('changerol');
         }
     }

@@ -27,7 +27,6 @@ class EcoComDashboardController extends Controller
             ->select(DB::raw('count(*) as quantity,procedure_modalities.name as name'))
             ->groupBy('procedure_modalities.name')
             ->get();
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
         return $eco_coms;
     }
     public function modalities()
@@ -41,7 +40,6 @@ class EcoComDashboardController extends Controller
             ->select(DB::raw('count(*) as quantity,eco_com_modalities.name as name'))
             ->groupBy('eco_com_modalities.name')
             ->get();
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
         return $eco_coms;
     }
     public function cities()
@@ -55,7 +53,6 @@ class EcoComDashboardController extends Controller
             ->select(DB::raw('count(*) as quantity,cities.name as name'))
             ->groupBy('cities.name')
             ->get();
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
         return $eco_coms;
     }
     public function receptionType()
@@ -69,7 +66,6 @@ class EcoComDashboardController extends Controller
             ->select(DB::raw('count(*) as quantity,eco_com_reception_types.name as name'))
             ->groupBy('eco_com_reception_types.name')
             ->get();
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
         return $eco_coms;
     }
     public function pensionEntity()
@@ -84,7 +80,6 @@ class EcoComDashboardController extends Controller
             ->select(DB::raw('count(*) as quantity,pension_entities.type as name'))
             ->groupBy('pension_entities.type')
             ->get();
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
         return $eco_coms;
     }
     public function states()
@@ -98,7 +93,6 @@ class EcoComDashboardController extends Controller
             ->select(DB::raw('count(*) as quantity,eco_com_states.name as name'))
             ->groupBy('eco_com_states.name')
             ->get();
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
         return $eco_coms;
     }
     public function stateTypes()
@@ -113,8 +107,6 @@ class EcoComDashboardController extends Controller
             ->select(DB::raw('count(*) as quantity,eco_com_state_types.name as name'))
             ->groupBy('eco_com_state_types.name')
             ->get();
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
-
         return $eco_coms;
     }
     public function wfStates()
@@ -129,7 +121,6 @@ class EcoComDashboardController extends Controller
             ->groupBy('wf_states.first_shortened', 'wf_states.sequence_number')
             ->orderBy('wf_states.sequence_number')
             ->get();
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
         return $eco_coms;
     }
     public function lastEcoCom()
@@ -146,8 +137,6 @@ class EcoComDashboardController extends Controller
                 'name' => $e->getTextName(),
             ]);
         }
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
-
         return $results;
     }
     public function totalAmountLastEcoCom()
@@ -164,7 +153,6 @@ class EcoComDashboardController extends Controller
                 'name' => $e->getTextName(),
             ]);
         }
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
         return $results;
     }
     public function receptionMonths()
@@ -185,8 +173,6 @@ class EcoComDashboardController extends Controller
                 'name' => Carbon::parse($e->name)->formatLocalized("%b %Y"),
             ]);
         }
-        logger(collect(DB::getQueryLog())->pluck('time')->sum());
-
         return $results;
     }
 }

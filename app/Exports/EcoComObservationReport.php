@@ -92,7 +92,6 @@ class EcoComObservationReport implements WithMultipleSheets
             ->ecoComProcedure($this->eco_com_procedure_id)
             ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
             ->get();
-        logger($eco_coms->count());
         foreach ($observation_types as $o) {
             $sheets[] = new EcoComObservationSheet($o, $eco_coms);
         }

@@ -243,8 +243,6 @@ class QuotaAidMortuaryController extends Controller
    */
   public function store(Request $request)
   {
-    Log::info($request->all());
-    Log::info($request->date_death);
     $first_name = $request->beneficiary_first_name;
     $second_name = $request->beneficiary_second_name;
     $last_name = $request->beneficiary_last_name;
@@ -339,8 +337,6 @@ class QuotaAidMortuaryController extends Controller
 
         $quota_aid_code = Util::getLastCodeAM(QuotaAidMortuary::class);
         $code = Util::getNextCode($quota_aid_code, '268');
-
-        Log::info('code: ' . $code);
       }
     }
 
@@ -359,7 +355,6 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->workflow_id = 5;
     $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
     if (!$wf_state) {
-      Log::info("error al crear el trámite");
       return;
     }
     $quota_aid->wf_state_current_id = $wf_state->id;
@@ -776,7 +771,6 @@ class QuotaAidMortuaryController extends Controller
           return ($var['id'] == $new_ben['id']);
         });
       }
-      // Log::info($new_ben);
       if ($found) {
         $old_ben = QuotaAidBeneficiary::find($new_ben['id']);
         $old_ben->city_identity_card_id = $new_ben['city_identity_card_id'];
@@ -915,7 +909,6 @@ class QuotaAidMortuaryController extends Controller
             }
           } else {
             if ($new_ben['address']) {
-              Log::info('new Address');
               $address = new Address();
               $address->city_address_id = $new_ben['address'][0]['city_address_id'] ?? 1;
               $address->zone = $new_ben['address'][0]['zone'];

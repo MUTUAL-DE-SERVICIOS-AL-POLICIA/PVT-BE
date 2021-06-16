@@ -16,7 +16,6 @@ class EcoComImportAPS implements ToCollection
         ini_set('max_execution_time', '-1');
         ini_set('max_input_time', '-1');
         set_time_limit('-1');
-        // logger($rows);
         // $found = 0;
         // $not_found = collect([]);
         // $eco_com_procedure = EcoComProcedure::find(14);
@@ -101,7 +100,6 @@ class EcoComImportAPS implements ToCollection
         //     'found' => $found,
         //     // 'not_found' => $not_found,
         // ];
-        // logger($data);
         session()->put('aps_data', $rows);
         return $rows;
     }

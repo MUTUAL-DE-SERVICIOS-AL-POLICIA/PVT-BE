@@ -195,7 +195,6 @@ class EconomicComplement extends Model
             ], 422);
         }
         $indicator = $eco_com_procedure->indicator;
-        logger("indicador " . $indicator);
         /**
          ** updating modality with components
          */
@@ -281,7 +280,6 @@ class EconomicComplement extends Model
          ** actualizacion de las rentas netas
          */
 
-        logger($this->eco_com_modality->name);
         if (array_search($this->eco_com_modality_id,  [4, 5, 6, 7, 8, 9, 10, 11, 12]) !== false) {
             // solo se esta tomando las modalidades de vejez y viudedad
             $eco_com_rent = EcoComRent::where('degree_id', '=', $this->degree_id)
@@ -289,12 +287,9 @@ class EconomicComplement extends Model
                 ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
                 ->where('semester', '=', $eco_com_procedure->semester)
                 ->first();
-            logger("promedio " . $eco_com_rent->average);
             if (array_search($this->eco_com_modality_id,  [6, 7, 8, 9, 11, 12]) !== false) {
-                logger("menor renta ");
                 $this->total_rent_calc = $eco_com_rent->average;
             } else if ($this->total_rent < $eco_com_rent->average && array_search($this->eco_com_modality_id,  [4, 5, 10]) !== false) {
-                logger("menor al promedio ");
                 $this->total_rent_calc = $eco_com_rent->average;
             }
         }

@@ -66,7 +66,6 @@ class EcoComImportPagoFuturo implements ToCollection
                         }
                     
                         $found++;
-                            logger("discount creado".$eco_com->id."-".$found);
                     }else{
                         $not_found->push($affiliate_id);
                     }
@@ -146,7 +145,6 @@ class EcoComImportPagoFuturo implements ToCollection
             'found2' => $found2,
             'not_found' => $not_found,
         ];
-        logger($data);
         session()->put('pago_futuro_data', $data);
     }
 }

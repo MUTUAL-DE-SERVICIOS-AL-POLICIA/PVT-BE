@@ -10,11 +10,9 @@ use Muserpol\Helpers\Util;
 class AffiliateObserver
 {
     public function created(Affiliate $affiliate){
-        Log::info('affiliado creado');
-        Log::info($affiliate);
+
     }
     public function updating(Affiliate $affiliate){
-        // Log::info('antes de actualizar');
 
         $old = Affiliate::find($affiliate->id);
 
@@ -147,7 +145,6 @@ class AffiliateObserver
             $message = $message . ' Meses de servicio '.$old->service_months.' a '.$affiliate->service_months.', ';
         }
 
-        Log::info('updating');
         if ('El usuario ' . Auth::user()->username . ' modificó ' != $message) {
             $message = $message . ' ';
             $affiliate_record = new AffiliateRecord;

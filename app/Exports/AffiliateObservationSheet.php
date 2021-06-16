@@ -35,7 +35,6 @@ class AffiliateObservationSheet implements FromCollection, WithTitle, WithHeadin
                 $a->observation_name = $this->observation_type->name;
                 $a->deleted_at = $observation->pivot->deleted_at;
                 $data->push($a);
-                //logger($data);
             }
         }
         return $data;
