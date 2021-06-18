@@ -367,7 +367,7 @@ class AffiliateController extends Controller
         if (Storage::exists($path.'/Derecha.jpg')) 
             $fotoDerecha=base64_encode(Storage::get($path.'/Derecha.jpg'));
 
-        
+        $affiliateDevice = AffiliateDevice::where('affiliate_id','=',$affiliate->id)->get();
 
         $data = array(
             'quota_aid'=>$quota_aid,
@@ -417,6 +417,7 @@ class AffiliateController extends Controller
             'fotosonriente' =>  $fotoSonriente,
             'fotoizquierda' =>  $fotoIzquierda,
             'fotoderecha' =>  $fotoDerecha,
+            'affiliatedevice' =>  $affiliateDevice,
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
