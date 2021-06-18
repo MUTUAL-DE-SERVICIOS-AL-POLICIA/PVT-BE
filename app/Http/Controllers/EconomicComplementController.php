@@ -46,6 +46,7 @@ use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\FinancialEntity;
 
 use Illuminate\Support\Facades\Storage;
+use Muserpol\Models\AffiliateDevice;
 
 class EconomicComplementController extends Controller
 {
@@ -747,6 +748,7 @@ class EconomicComplementController extends Controller
         if (Storage::exists($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg')) 
             $fotoBoleta=base64_encode(Storage::get($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg'));
 
+        $affiliateDevice = AffiliateDevice::where('affiliate_id','=',$economic_complement->affiliate_id)->get();
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -786,6 +788,7 @@ class EconomicComplementController extends Controller
             'fotocianverso' =>  $fotoCIAnverso,
             'fotocireverso' =>  $fotoCIReverso,
             'fotoboleta' =>  $fotoBoleta,
+            'affiliatedevice' =>  $affiliateDevice,
         ];
         return view('eco_com.show', $data);
     }
