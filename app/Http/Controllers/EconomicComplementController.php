@@ -750,7 +750,7 @@ class EconomicComplementController extends Controller
         if (Storage::exists($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg')) 
             $fotoBoleta=base64_encode(Storage::get($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg'));
 
-        $affiliateDevice = AffiliateDevice::findOrFail($economic_complement->affiliate_id);
+        $affiliateDevice = AffiliateDevice::where('affiliate_id','=',$economic_complement->affiliate_id)->get();
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
