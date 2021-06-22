@@ -221,6 +221,7 @@ class InboxController extends Controller
     $eco_coms = EconomicComplement::whereIn('id', $doc_ids)->get();
     foreach ($eco_coms as $eco_com) {
       $eco_com->inbox_state = true;
+      $eco_com->user_id = Auth::user()->id;
       $eco_com->save();
     }
 
