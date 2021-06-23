@@ -257,7 +257,7 @@ class EconomicComplementController extends Controller
                 'record_type_id' => 7,
                 'wf_state_id' => 60,
                 'date' => Carbon::now(),
-                'message' => 'Se creó el trámite mediante la aplicación móvil.'
+                'message' => 'Se creó el trámite mediante aplicación móvil.'
             ]);
 
             return $this->print_pdf($economic_complement);
