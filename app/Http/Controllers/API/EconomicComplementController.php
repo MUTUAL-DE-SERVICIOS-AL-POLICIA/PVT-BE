@@ -121,7 +121,7 @@ class EconomicComplementController extends Controller
             $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
             $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
             $economic_complement->wf_current_state_id = 60;
-            $economic_complement->city_id = ID::cityId()->LP;
+            $economic_complement->city_id = $last_eco_com->city_id;
             $economic_complement->degree_id = $affiliate->degree->id;
             $economic_complement->category_id = $affiliate->category->id;
             $economic_complement->code = Util::getLastCodeEconomicComplement($eco_com_procedure_id);
