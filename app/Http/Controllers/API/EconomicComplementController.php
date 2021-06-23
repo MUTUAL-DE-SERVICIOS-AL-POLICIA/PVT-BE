@@ -249,8 +249,16 @@ class EconomicComplementController extends Controller
                 }else {
                     $path = 'eco_com/'.$request->affiliate->id.'/boleta_de_renta_'.$eco_com_procedure_id.'.jpg';
                     Storage::put($path, base64_decode($attachment['content']), 'public');
-                }         
+                }
             }   
+
+            $eco_com->procedure_records()->create([
+                'user_id' => 171,
+                'record_type_id' => 7,
+                'wf_state_id' => 60,
+                'date' => Carbon::now(),
+                'message' => 'Se creó el trámite mediante aplicación móvil.'
+            ]);
 
             return $this->print_pdf($economic_complement);
         } else {
