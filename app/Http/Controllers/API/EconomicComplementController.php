@@ -252,12 +252,12 @@ class EconomicComplementController extends Controller
                 }
             }   
 
-            $eco_com->procedure_records()->create([
+            $economic_complement->procedure_records()->create([
                 'user_id' => 171,
                 'record_type_id' => 7,
                 'wf_state_id' => 60,
                 'date' => Carbon::now(),
-                'message' => 'Se creó el trámite mediante aplicación móvil.'
+                'message' => 'Se creó el trámite mediante la aplicación móvil.'
             ]);
 
             return $this->print_pdf($economic_complement);
