@@ -8,7 +8,8 @@
 			return { editable: true }
 		},
 		mounted() {
-			this.editable=this.affiliatedevice.verified;
+			if (this.affiliatedevice.length==1)
+				this.editable=this.affiliatedevice[0].verified;
     	},
 		methods: {
             updateValidar: function() {
