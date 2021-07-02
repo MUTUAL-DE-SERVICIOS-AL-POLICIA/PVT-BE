@@ -316,6 +316,12 @@ class EconomicComplement extends Model
         $difference = $salary_quotable - $this->total_rent_calc;
         $this->difference = $difference;
         $months_of_payment = 6;
+        if ($this->is_paid_spouse==true)
+        {
+            if (!empty($this->months_of_payment))
+                $months_of_payment = $this->months_of_payment;
+        }
+
         $total_amount_semester = $difference * $months_of_payment;
         $this->total_amount_semester = $total_amount_semester;
         // $economic_complement->sub_total_rent = floatval(str_replace(',', '', $sub_total_rent));

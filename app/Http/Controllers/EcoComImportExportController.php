@@ -13,6 +13,10 @@ use Muserpol\Imports\EcoComImportPagoFuturo;
 use Muserpol\Imports\EcoComUpdatePaidBank;
 use Muserpol\Models\Affiliate;
 
+use Muserpol\Models\ObservationType;
+use Muserpol\Models\DiscountType;
+use Muserpol\User;
+use Auth;
 
 class EcoComImportExportController extends Controller
 {
@@ -319,7 +323,62 @@ class EcoComImportExportController extends Controller
     }
     public function importPagoFuturo(Request $request)
     {
-        if ($request->refresh != 'true') {
+        // logger("entro");
+        // logger($request);
+        // logger($request->ecoComProcedureId);
+        $found = 0;
+        $found2 = collect([]);
+        $not_found = collect([]);
+        $user = User::first();
+
+        $current_procedures = $request->ecoComProcedureId;
+        $pago_futuro_id = 31;
+        $affiliates = Affiliate::select('affiliates.id')->join('observables','affiliates.id','observables.observable_id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observables.observation_type_id', '=', $pago_futuro_id)->whereNull('observables.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->get();
+        $observation = ObservationType::find($pago_futuro_id);
+        foreach ($affiliates as $affiliate) {
+            $affiliate_id = $affiliate->id;
+            $eco_com = EconomicComplement::select('economic_complements.*')
+                ->where('economic_complements.eco_com_procedure_id', $current_procedures)
+                 ->where('affiliate_id', $affiliate_id)->first();
+            if ($eco_com) { 
+                 if (!$eco_com->hasObservationType($pago_futuro_id)) {
+                     $eco_com->observations()->save($observation, [
+                         'user_id' => Auth::user()->id,
+                         'date' => now(),
+                         'message' => "Observación Importada II/2020",
+                         'enabled' => true
+                     ]);
+                    }              
+                    $eco_com->calculateTotalRentAps();
+                    $total_rent = $eco_com->total_rent;
+                    if ($total_rent > 0) {
+                        $total = $total_rent * 2.03 / 100;
+                        $aux = $total * 6;
+                        $discount_type = DiscountType::findOrFail(7);
+                        if ($eco_com->discount_types->contains($discount_type->id)) {
+                            $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
+                        } else {
+                            $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
+                        }
+                    
+                        $found++;
+                    }else{
+                        $not_found->push($affiliate_id);
+                    }
+                
+            }else {
+                $not_found->push($affiliate_id);
+            }
+        }
+        
+        $data = [
+            'found' => $found,
+            'found2' => $found2,
+            'not_found' => $not_found,
+        ];
+        session()->put('pago_futuro_data', $data);
+
+        /*if ($request->refresh != 'true') {
             $uploadedFile = $request->file('image');
             $filename = 'pago_futuro.' . $uploadedFile->getClientOriginalExtension();
             Storage::disk('local')->putFileAs(
@@ -329,7 +388,9 @@ class EcoComImportExportController extends Controller
             );
         }
         Excel::import(new EcoComImportPagoFuturo, 'pago_futuro/' . now()->year . '/pago_futuro.csv');
+        */
         return session()->get('pago_futuro_data');
+        // return null;
         // return array_merge(session()->get('senasir_data'), []);
 
     }

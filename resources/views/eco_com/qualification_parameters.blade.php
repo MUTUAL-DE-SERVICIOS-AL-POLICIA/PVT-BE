@@ -69,7 +69,7 @@
             <eco-com-import-rents-aps :permissions="{{ $permissions }}"></eco-com-import-rents-aps>
             </div>
             <div id="tab-eco-com-import-pago-futuro" class="tab-pane">
-            <eco-com-import-pago-futuro :permissions="{{ $permissions }}"></eco-com-import-pago-futuro>
+            <eco-com-import-pago-futuro :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-import-pago-futuro>
             </div>
             <div id="tab-eco-com-update-paid-bank" class="tab-pane">
             <eco-com-update-paid-bank :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-update-paid-bank>

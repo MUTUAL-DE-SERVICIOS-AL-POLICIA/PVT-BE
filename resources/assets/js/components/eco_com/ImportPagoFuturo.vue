@@ -7,7 +7,13 @@
           <div class="ibox-tools"></div>
         </div>
         <div class="ibox-content">
+          <label>Gestion</label>
+          <select v-model="form.ecoComProcedureId" :disabled="loadingButton">
+            <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
+          </select>
+          <!--
           <input class="form-control" type="file" id="file-upload-pago-futuro" :disabled="loadingButton" />
+          -->
           <br />
           <button
             type="button"
@@ -21,6 +27,7 @@
             &nbsp;
             {{ loadingButton ? 'Procesando...' : 'Subir Archivo Nuevo' }}
           </button>
+          <!--
           <button
             type="button"
             class="btn btn-primary"
@@ -28,8 +35,10 @@
             :disabled="loadingButton"
             title="verificar nuevamente"
           >
+          
             <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
             <i v-else class="fa fa-refresh"></i>
+            -->
             &nbsp;
             {{ loadingButton ? 'Procesando...' : '' }}
           </button>
@@ -82,7 +91,7 @@
 
 <script>
 export default {
-  props: ["permissions"],
+  props: ["permissions","ecoComProcedures"],
   data() {
     return {
       loadingButton: false,
@@ -92,6 +101,10 @@ export default {
       showResults: false,
       refresh: false,
       override: false,
+      form: {
+        ecoComProcedureId:
+          this.ecoComProcedures.length > 0 ? this.ecoComProcedures[0].id : null
+      },
     };
   },
   methods: {
@@ -140,19 +153,20 @@ export default {
     async sendForm() {
       this.showResults = false;
       this.override = false;
-      const fileInput = document.querySelector("#file-upload-pago-futuro");
+      // const fileInput = document.querySelector("#file-upload-pago-futuro");
       const formData = new FormData();
-      formData.append("image", fileInput.files[0]);
-      formData.append("override", this.override);
-      formData.append("refresh", this.refresh);
+      // formData.append("image", fileInput.files[0]);
+      // formData.append("override", this.override);
+      // formData.append("refresh", this.refresh);
+      formData.append("ecoComProcedureId", this.form.ecoComProcedureId);
       this.loadingButton = true;
       await axios
         .post("eco_com_import_pago_futuro", formData)
         .then(response => {
-          console.log(response.data);
-          this.found = response.data.found;
-          this.found2 = response.data.found2;
-          this.fails = response.data.not_found;
+          // console.log(response.data);
+          // this.found = response.data.found;
+          // this.found2 = response.data.found2;
+          // this.fails = response.data.not_found;
         })
         .catch(error => {
           console.log(error);
