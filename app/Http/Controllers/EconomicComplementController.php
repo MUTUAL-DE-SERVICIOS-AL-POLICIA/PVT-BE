@@ -921,6 +921,11 @@ class EconomicComplementController extends Controller
         $economic_complement->category_id = $affiliate->category_id;
         $economic_complement->is_paid_spouse = $request->is_paid_spouse;
         $economic_complement->eco_com_state_id = $request->eco_com_state_id;
+
+        if ($request->is_paid_spouse==true)
+            $economic_complement->months_of_payment = $request->months_of_payment;
+        else
+            $economic_complement->months_of_payment = null;
         $economic_complement->save();
         /**
          * update affiliate info

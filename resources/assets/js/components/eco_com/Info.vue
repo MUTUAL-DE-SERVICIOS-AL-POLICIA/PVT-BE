@@ -198,12 +198,28 @@
             </div>
         </div>
         <br>
-        <div>
-          <label for="is_paid_spouse">PAGO POR UNICA VEZ VIUDA -  </label>
-          <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing" >
+        <div class="row">
+          <div>
+            <div class="col-md-2"> <label for="is_paid_spouse">PAGO POR UNICA VEZ VIUDA -  </label> </div>
+            <div class="col-md-4">
+              <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing">
+            </div>
+          
+             <div class="col-md-2"><label for="months_of_payment">Periodo </label></div>
+            <div class="col-md-4">
+            <input type="number" name="months_of_payment" id="months_of_payment" class="form-control" v-model="form.months_of_payment" :disabled="!editing" v-validate="'min_value:0|max_value:6'" max="6" min="0" maxlength="2">
+              <div v-show="errors.has('months_of_payment') && editing" >
+                <i class="fa fa-warning text-danger"></i>
+                <span class="text-danger">@{{ errors.first('months_of_payment') }}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
+        <div class="row">
+          <div class="col-md-2">
           <label for="eco_com_state_id">PAGO EN DOMICILIO -  </label>
+          </div>
+          <div class="col-md-4">
           <input class ="mediumCheckbox"
           type="checkbox" 
           id="eco_com_state_id" 
@@ -212,6 +228,7 @@
           false-value='16'
           @click="homepayment()"
           :disabled="!editing" >
+          </div>
         </div>
         <br>
         </div>
@@ -258,6 +275,7 @@ export default {
         service_years: this.affiliate.service_years,
         service_months: this.affiliate.service_months,
         is_paid_spouse: this.ecoCom.is_paid_spouse,
+        months_of_payment: this.ecoCom.months_of_payment,
         eco_com_state_id: this.ecoCom.eco_com_state_id,
       },
       editing: false,
