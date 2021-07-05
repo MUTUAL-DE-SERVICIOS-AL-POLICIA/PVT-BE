@@ -74,7 +74,7 @@ class EcoComImportSenasir implements ToCollection
                 // if ((is_null($eco_com->total_rent) || $eco_com->total_rent == 0) && $eco_com_procedure->indicator > 0) {
                 if ($eco_com_procedure->indicator > 0) {
                     // $reimbursements = $row->reintegro_importe_adicional + $row->reintegro_inc_gestion;
-                    $reimbursements = $row[35] + $row[39];
+                    $reimbursements = $row[29] + $row[35] + $row[39];
                     // $discount = $row->renta_dignidad + $row->reintegro_renta_dignidad + $row->reintegro_importe_adicional + $row->reintegro_inc_gestion;
                     $discount = $row[25] + $row[26] + $reimbursements;
                     // $total_rent = $datos->total_ganado - $discount;
