@@ -60,13 +60,14 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
     {
         $new_columns = [];
         $default = [
-            'NRO',
-            'NUP',
-            'Nro Tramite',
+            "NRO",
+            "NUP",
+            "Nro Tramite",
             "fecha_de_recepcion",
-            'CI Beneficiario',
-            'CI Exp BEN',
-            'CI COMPLETO BEN',
+            "Usuario",
+            "CI Beneficiario",
+            "CI Exp BEN",
+            "CI COMPLETO BEN",
             "Primer Nombre Beneficiario",
             "Segundo Nombre Beneficiario",
             "Paterno Beneficiario",
@@ -79,6 +80,7 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
             "libro Beneficiario",
             "partida Beneficiario",
             "fecha_matrimonio Beneficiario",
+            "Genero",
             "ci_causa",
             "exp_causa",
             "ci_completo_causa",
@@ -118,6 +120,7 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
             "tipoe_beneficiario",
             "flujo",
             "Monto amortizado",
+            "Estado",
         ];
         return array_merge($default, $new_columns);
     }
