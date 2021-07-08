@@ -200,11 +200,11 @@ class EcoComCompareReport implements FromCollection, WithHeadings, ShouldAutoSiz
                         if (
                             ((($old->aps_disability == 0 || is_null($old->aps_disability)) && $current->aps_disability>0)
                             ||(($current->aps_disability == 0 || is_null($current->aps_disability)) && $old->aps_disability>0)
-                            ||$old->aps_disability > $current->aps_disability && $current->aps_disability !=0 ||$current->aps_disability > $old->aps_disability && $old->aps_disability >0 )
+                            ||$old->aps_disability >= $current->aps_disability && $current->aps_disability !=0 ||$current->aps_disability > $old->aps_disability && $old->aps_disability >0 )
                             
                             ||((($old->aps_total_death == 0 || is_null($old->aps_total_death)) && $current->aps_total_death>0)
                             ||(($current->aps_total_death == 0 || is_null($current->aps_total_death)) && $old->aps_total_death>0)
-                            ||$old->aps_total_death > $current->aps_total_death && $current->aps_total_death !=0 ||$current->aps_total_death > $old->aps_total_death && $old->aps_total_death >0 )
+                            ||$old->aps_total_death >= $current->aps_total_death && $current->aps_total_death !=0 ||$current->aps_total_death > $old->aps_total_death && $old->aps_total_death >0 )
                             )
                             {
                             $rows->push(array(
