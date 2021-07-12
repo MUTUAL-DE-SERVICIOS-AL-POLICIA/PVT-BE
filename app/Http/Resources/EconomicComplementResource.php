@@ -5,6 +5,7 @@ namespace Muserpol\Http\Resources;
 use Illuminate\Http\Resources\Json\Resource;
 use Muserpol\Helpers\Util;
 use Carbon\Carbon;
+use Muserpol\Helpers\ID;
 
 class EconomicComplementResource extends Resource
 {
@@ -50,21 +51,24 @@ class EconomicComplementResource extends Resource
                 'value' => $observations->count() > 0 ? $observations->values() : 'Ninguna',
             ]
         ];
-        if ($this->total) {
+        if($this->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado)
+        {
+            if ($this->total) {
+                $data[] = [
+                    'key' => 'Monto calculado',
+                    'value' => Util::formatMoney($this->getOnlyTotalEcoCom(), true),
+                ];
+            }
             $data[] = [
-                'key' => 'Monto calculado',
-                'value' => Util::formatMoney($this->getOnlyTotalEcoCom(), true),
+                'key' => 'Descuentos',
+                'value' => $discounts->count() > 0 ? $discounts : 'Ninguno',
             ];
-        }
-        $data[] = [
-            'key' => 'Descuentos',
-            'value' => $discounts->count() > 0 ? $discounts : 'Ninguno',
-        ];
-        if ($this->base_wage) {
-            $data[] = [
-                'key' => 'Líquido pagable',
-                    'value' => Util::formatMoney($this->total, true),
-            ];
+            if ($this->base_wage) {
+                $data[] = [
+                    'key' => 'Líquido pagable',
+                        'value' => Util::formatMoney($this->total, true),
+                ];
+            }
         }
 
         return [
