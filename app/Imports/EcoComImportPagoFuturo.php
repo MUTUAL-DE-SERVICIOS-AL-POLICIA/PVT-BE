@@ -34,7 +34,7 @@ class EcoComImportPagoFuturo implements ToCollection
         $user = User::first();
 
         //$current_procedures = Util::getEcoComCurrentProcedure()->first();
-        $current_procedures = 17;
+        $current_procedures = 18;
 
         
         $pago_futuro_id = 31;
