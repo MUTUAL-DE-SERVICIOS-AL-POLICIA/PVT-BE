@@ -177,11 +177,11 @@ export default {
       this.$modal.show("deposito-modal");
     },
     async save() {
-      if (!this.can("amortize_economic_complement", this.permissions)) {
-        flash("No se puede realizar la Amortizacion.", 'error');
-        this.$modal.hide("amortization-modal");
-        return;
-      }
+      // if (!this.can("amortize_economic_complement", this.permissions)) {
+      //   flash("No se puede realizar la Amortizacion.", 'error');
+      //   this.$modal.hide("amortization-modal");
+      //   return;
+      // }
       this.loadingButton = true;
       this.form.id = this.ecoCom.id;
       this.form.amount = parseMoney(this.ecoCom.discount_amount);
