@@ -333,7 +333,7 @@ class EcoComImportExportController extends Controller
 
         $current_procedures = $request->ecoComProcedureId;
         $pago_futuro_id = 31;
-        $affiliates = Affiliate::select('affiliates.id')->join('observables','affiliates.id','observables.observable_id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observables.observation_type_id', '=', $pago_futuro_id)->whereNull('observables.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->get();
+        $affiliates = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', 31)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',18)->get();
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($affiliates as $affiliate) {
             $affiliate_id = $affiliate->id;
@@ -345,7 +345,7 @@ class EcoComImportExportController extends Controller
                      $eco_com->observations()->save($observation, [
                          'user_id' => Auth::user()->id,
                          'date' => now(),
-                         'message' => "Observación Importada II/2020",
+                         'message' => "Observación Importada I/2021",
                          'enabled' => true
                      ]);
                     }              
