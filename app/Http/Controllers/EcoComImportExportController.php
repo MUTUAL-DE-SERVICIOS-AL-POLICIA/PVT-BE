@@ -336,7 +336,7 @@ class EcoComImportExportController extends Controller
         $affiliates = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->get();
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($affiliates as $affiliate) {
-            $affiliate_id = $affiliate->id;
+            $affiliate_id = $affiliate->observable_id;
             $eco_com = EconomicComplement::select('economic_complements.*')
                 ->where('economic_complements.eco_com_procedure_id', $current_procedures)
                  ->where('affiliate_id', $affiliate_id)->first();
