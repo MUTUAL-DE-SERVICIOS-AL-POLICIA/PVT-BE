@@ -25,7 +25,7 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
     }
     public function query()
     {
-        $columns = ',discount_type_economic_complement.amount ,'.DB::raw("(CASE WHEN observables.enabled = true THEN 'subanado' ELSE 'no subsando' END) as sub ");
+        $columns = ',discount_type_economic_complement.amount';
         return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
             ->info()
             ->beneficiary()
@@ -42,10 +42,13 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
                     ->whereIn('observables.observation_type_id', ObservationType::all()->except($this->observation_type->id)->pluck('id'))
                     ->whereNull('observables.deleted_at');
             })
-            ->join('observables', 'economic_complements.id','=','observables.observable_id')
-            ->where('observables.observable_type','=','economic_complements')
-            ->where('observables.observation_type_id','=', $this->observation_type->id)
-            ->whereNull('observables.deleted_at')
+            ->whereIn('economic_complements.id', function ($query) {
+                $query->select('observables.observable_id')
+                    ->from('observables')
+                    ->where('observables.observable_type', 'economic_complements')
+                    ->whereIn('observables.observation_type_id', [$this->observation_type->id])
+                    ->whereNull('observables.deleted_at');
+            })
             ->whereHas('discount_types', function ($query) {
                 $query->where('discount_types.id', Util::getDiscountId($this->observation_type->id));
             })
@@ -60,14 +63,13 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
     {
         $new_columns = [];
         $default = [
-            "NRO",
-            "NUP",
-            "Nro Tramite",
+            'NRO',
+            'NUP',
+            'Nro Tramite',
             "fecha_de_recepcion",
-            "Usuario",
-            "CI Beneficiario",
-            "CI Exp BEN",
-            "CI COMPLETO BEN",
+            'CI Beneficiario',
+            'CI Exp BEN',
+            'CI COMPLETO BEN',
             "Primer Nombre Beneficiario",
             "Segundo Nombre Beneficiario",
             "Paterno Beneficiario",
@@ -80,7 +82,6 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
             "libro Beneficiario",
             "partida Beneficiario",
             "fecha_matrimonio Beneficiario",
-            "Genero",
             "ci_causa",
             "exp_causa",
             "ci_completo_causa",
@@ -120,7 +121,6 @@ class EcoComAmortizationSheet implements FromQuery, WithTitle, WithHeadings, Sho
             "tipoe_beneficiario",
             "flujo",
             "Monto amortizado",
-            "Estado",
         ];
         return array_merge($default, $new_columns);
     }
