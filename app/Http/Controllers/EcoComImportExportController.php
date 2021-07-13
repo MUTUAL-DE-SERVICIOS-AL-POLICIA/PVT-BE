@@ -12,7 +12,7 @@ use Muserpol\Helpers\Util;
 use Muserpol\Imports\EcoComImportPagoFuturo;
 use Muserpol\Imports\EcoComUpdatePaidBank;
 use Muserpol\Models\Affiliate;
-
+use DB;
 use Muserpol\Models\ObservationType;
 use Muserpol\Models\DiscountType;
 use Muserpol\User;
