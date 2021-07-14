@@ -34,7 +34,7 @@ class EcoComUpdatePaidBank implements ToCollection
         $user = User::first();
         //$status = array("ACTIVO", "ELABORADO", "SIN REGISTRO", "VALIDADO");
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
-        $current_procedure = 17;
+        $current_procedure = 18;
 
         foreach ($rows as $row) {
             
@@ -43,13 +43,13 @@ class EcoComUpdatePaidBank implements ToCollection
             if ($affiliate) {
                 $eco_coms = $affiliate->economic_complements()->where('eco_com_procedure_id', $current_procedure)->get();            
                 foreach ($eco_coms as $eco) {
-                    //if ( $eco->eco_com_state_id == 24) {
-                        $eco->eco_com_state_id = 26;
+                    if ( $eco->eco_com_state_id == 16) {
+                        $eco->eco_com_state_id = 25;
                         $eco->save();
                         $found++;
-                    //}else{
-                    //    $not_found_t->push($nup);
-                    //}
+                    }else{
+                        $not_found_t->push($nup);
+                    }
                 }                  
             }else{
                 $not_found->push($nup);
