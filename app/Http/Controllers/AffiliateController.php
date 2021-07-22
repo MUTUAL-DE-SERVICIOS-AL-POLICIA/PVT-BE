@@ -369,6 +369,18 @@ class AffiliateController extends Controller
 
         $affiliateDevice = AffiliateDevice::where('affiliate_id','=',$affiliate->id)->get();
 
+        $file_name = $affiliate->id.'.PDF';
+        $base_path = env('FTP_DIRECTORY');
+        $file = "0";
+        if(Storage::disk('ftp')->has($base_path.'/'.$file_name)){
+            $file = "1";
+        }else{
+            $file_name = $affiliate->id.'.pdf';
+            if(Storage::disk('ftp')->has($base_path.'/'.$file_name)){
+                $file = "1";
+            }
+        }
+
         $data = array(
             'quota_aid'=>$quota_aid,
             'retirement_fund'=>$retirement_fund,
@@ -418,6 +430,7 @@ class AffiliateController extends Controller
             'fotoizquierda' =>  $fotoIzquierda,
             'fotoderecha' =>  $fotoDerecha,
             'affiliatedevice' =>  $affiliateDevice,
+            'file' => $file,
         );
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));

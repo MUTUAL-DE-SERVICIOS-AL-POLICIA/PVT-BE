@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth']], function () {
     //Scanned Documents
     Route::resource('scanned_documents', 'ScannedDocumentController');
     Route::get('document_scanned/{affiliate_id}', 'ScannedDocumentController@create_document')->name('document_scanned');
+    Route::get('document_scanned_upload/{affiliate_id}', 'ScannedDocumentController@upload')->name('document_scanned_upload');
 
 
     //retirement fund
