@@ -173,7 +173,7 @@ th.ellipsis-text {
                         ])
                     </div>
                     <div id="tab-documents-scanned" class="tab-pane">
-                        @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents])
+                        @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents, 'file'=>$file ])
                     </div>
                     <div id="tab-ret-fun" class="tab-pane">
                         @can('update',$retirement_fund)

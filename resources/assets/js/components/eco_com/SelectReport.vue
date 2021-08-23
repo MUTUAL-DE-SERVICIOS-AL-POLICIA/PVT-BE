@@ -209,11 +209,11 @@ export default {
         },
         {
           id: 23,
-          name: "Reporte de promedios vejez"
+          name: "Calculo de promedios vejez"
         },
         {
           id: 24,
-          name: "Reporte de promedios viudedad"
+          name: "Calculo de promedios viudedad"
         },
       ],
       form: {
