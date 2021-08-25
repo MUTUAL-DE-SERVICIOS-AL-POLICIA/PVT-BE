@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth']], function () {
     //Scanned Documents
     Route::resource('scanned_documents', 'ScannedDocumentController');
     Route::get('document_scanned/{affiliate_id}', 'ScannedDocumentController@create_document')->name('document_scanned');
+    Route::get('document_scanned_upload/{affiliate_id}', 'ScannedDocumentController@upload')->name('document_scanned_upload');
 
 
     //retirement fund
@@ -780,5 +781,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     // affiliate submitted documents
     Route::get('get_procedure_requirements', 'AffiliateSubmittedDocumentsController@getRequirements');
+
+    // Cargar promedios
+    Route::post('eco_com_load_promedio', 'EconomicComplementController@loadPromedio');
   });
 });

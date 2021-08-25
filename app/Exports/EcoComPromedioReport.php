@@ -27,10 +27,10 @@ class EcoComPromedioReport implements FromCollection, WithHeadings
         $data = null;
         switch ($this->report_type_id) {
             case 23:
-                $data = DB::select("select ec.degree_id, de.name, count(ec.degree_id) as vejez, sum(total_rent) as totalrenta, sum(total_rent)/count(ec.degree_id) promedio from economic_complements ec inner join degrees de on ec.degree_id=de.id where ec.eco_com_procedure_id=".$this->eco_com_procedure_id." and eco_com_modality_id in (1,4,8,6) and deleted_at is null and date(ec.created_at)<='".$this->date."' group by ec.degree_id, de.name order by ec.degree_id");
+                $data = DB::select("select ec.degree_id, de.name, count(ec.degree_id) as vejez, sum(total_rent) as totalrenta, round(sum(total_rent)/count(ec.degree_id),2) promedio from economic_complements ec inner join degrees de on ec.degree_id=de.id where ec.eco_com_procedure_id=".$this->eco_com_procedure_id." and eco_com_modality_id in (1,4,8,6) and deleted_at is null and date(ec.created_at)<='".$this->date."' and ec.total_rent > 0 group by ec.degree_id, de.name order by ec.degree_id");
                 break;
             case 24:
-                $data = DB::select("select ec.degree_id, de.name, count(ec.degree_id) as vejez, sum(total_rent) as totalrenta, sum(total_rent)/count(ec.degree_id) promedio from economic_complements ec inner join degrees de on ec.degree_id=de.id where ec.eco_com_procedure_id=".$this->eco_com_procedure_id." and eco_com_modality_id in (2,5,3,10,12,9,11,7) and deleted_at is null and date(ec.created_at)<='".$this->date."' group by ec.degree_id, de.name order by ec.degree_id");
+                $data = DB::select("select ec.degree_id, de.name, count(ec.degree_id) as vejez, sum(total_rent) as totalrenta, round(sum(total_rent)/count(ec.degree_id),2) promedio from economic_complements ec inner join degrees de on ec.degree_id=de.id where ec.eco_com_procedure_id=".$this->eco_com_procedure_id." and eco_com_modality_id in (2,5,3,10,12,9,11,7) and deleted_at is null and date(ec.created_at)<='".$this->date."' and ec.total_rent > 0 group by ec.degree_id, de.name order by ec.degree_id");
                 break;
         }
         return collect($data);

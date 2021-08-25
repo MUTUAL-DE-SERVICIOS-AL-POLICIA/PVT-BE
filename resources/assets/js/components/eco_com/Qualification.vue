@@ -43,15 +43,15 @@
               </thead>
               <tbody>
                 <tr v-if="! isSenasir">
-                  <td>Fracción de Saldo Acumulada</td>
+                  <td>Fracción de Saldo Acumulado (FSA)</td>
                   <td>{{ ecoCom.aps_total_fsa | currency}}</td>
                 </tr>
                 <tr v-if="! isSenasir">
-                  <td>Fracción de Pensión CCM o Pago de CCM</td>
+                  <td>Fracción Compensaci&oacute;n de Cotizaciones (CCM)</td>
                   <td>{{ ecoCom.aps_total_cc | currency}}</td>
                 </tr>
                 <tr v-if="! isSenasir">
-                  <td>Fracción Solidaria de Vejéz</td>
+                  <td>Fracción Solidaria de Vejéz (FSV)</td>
                   <td>{{ ecoCom.aps_total_fs | currency}}</td>
                 </tr>
                 <tr class="danger" v-if="ecoCom.aps_total_death > 0">
@@ -105,23 +105,23 @@
                   <td>{{ ecoCom.total_rent | currency }}</td>
                 </tr>
                 <tr>
-                  <td>Renta ó Pensión Pasivo Neto</td>
+                  <td>Renta ó Pensión Promedio (seg&uacute;n corresponda)  </td>
                   <td>{{ ecoCom.total_rent_calc | currency }}</td>
                 </tr>
                 <tr>
-                  <td>Referente Salario del Activo</td>
+                  <td>Haber B&aacute;sico (Servicio Activo)</td>
                   <td>{{ ecoCom.salary_reference | currency }}</td>
                 </tr>
                 <tr>
-                  <td>Antigüedad (Según Categoría)</td>
+                  <td>Categor&iacute;a (Seg&uacute;n Años de Servicio) </td>
                   <td>{{ ecoCom.seniority | currency }}</td>
                 </tr>
                 <tr>
-                  <td>Salario Cotizable (Salario del Activo + Antigüedad)</td>
+                  <td>Antig&uuml;edad (Haber B&aacute;sico + Categor&iacute;a)</td>
                   <td>{{ ecoCom.salary_quotable | currency }}</td>
                 </tr>
                 <tr>
-                  <td>Diferencia (Salario Activo - Renta Pasivo)</td>
+                  <td>Diferencia (Antig&uuml;edad - Renta o Pensi&oacute;n)</td>
                   <td>{{ ecoCom.difference | currency }}</td>
                 </tr>
                 <tr>
@@ -129,7 +129,7 @@
                   <td>{{ ecoCom.total_amount_semester | currency }}</td>
                 </tr>
                 <tr>
-                  <td>Factor de Complementación</td>
+                  <td>Factor de Complementación (%)</td>
                   <td>{{ ecoCom.complementary_factor }}</td>
                 </tr>
                 <tr class="warning">
@@ -137,7 +137,7 @@
                   <td>{{ ecoCom.total_eco_com | currency }}</td>
                 </tr>
                 <tr v-for="d in ecoCom.discount_types" :key="d.id" class="danger">
-                  <td>{{ d.name }}</td>
+                  <td>{{ d.shortened }}</td>
                   <td>{{ d.pivot.amount | currency}}</td>
                 </tr>
                 <tr class="success">
