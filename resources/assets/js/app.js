@@ -455,6 +455,8 @@ Vue.component('edit-user', require('./components/user/EditUser.vue'));
 // Dispositivo movil
 Vue.component('eco-com-boleta', require('./components/eco_com/Boleta.vue'));
 
+Vue.component('eco-com-loadaverages', require('./components/eco_com/LoadAveranges.vue'));
+
 /**
  * custom component
  */

@@ -1081,7 +1081,7 @@ class Util
     ])
       //->indirectPayment()
       ->ecoComProcedure($eco_com_procedure_id) // procedure_id
-      ->NotHasEcoComState(1, 4, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
+      //->NotHasEcoComState(1, 4, 6) // q el Trámite no tenga estado de pagado, excluido o enviado al banco
       ->workflow(1, 2, 3) // los 3 workflows
       ->wfState(3) // Area tecnica
       ->inboxState(true, false) // Trámites en la segunda bandeja
@@ -1090,6 +1090,7 @@ class Util
       ->beneficiary() // beneficiary
       ->select('economic_complements.*')
       ->where('economic_complements.total', '>', 0)
+      ->where('economic_complements.eco_com_state_id', '=', 24)
       ->get();
     $observations_ids = ObservationType::where('description', 'Amortizable')->get()->pluck('id');
     $collect = collect([]);

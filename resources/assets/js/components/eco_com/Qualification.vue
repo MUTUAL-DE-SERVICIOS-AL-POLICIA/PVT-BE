@@ -33,54 +33,54 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n</p>
+            <p>Datos de la boleta</p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th style="text-align: center;" >Detalle</th>
-                  <th style="text-align: center;" >Montos</th>
+                  <th>Detalle</th>
+                  <th>Monto</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-if="! isSenasir">
                   <td>Fracción de Saldo Acumulado (FSA)</td>
-                  <td style="text-align: right;">{{ ecoCom.aps_total_fsa | currency}}</td>
+                  <td>{{ ecoCom.aps_total_fsa | currency}}</td>
                 </tr>
                 <tr v-if="! isSenasir">
                   <td>Fracción Compensaci&oacute;n de Cotizaciones (CCM)</td>
-                  <td style="text-align: right;">{{ ecoCom.aps_total_cc | currency}}</td>
+                  <td>{{ ecoCom.aps_total_cc | currency}}</td>
                 </tr>
                 <tr v-if="! isSenasir">
                   <td>Fracción Solidaria de Vejéz (FSV)</td>
-                  <td style="text-align: right;">{{ ecoCom.aps_total_fs | currency}}</td>
+                  <td>{{ ecoCom.aps_total_fs | currency}}</td>
                 </tr>
                 <tr class="danger" v-if="ecoCom.aps_total_death > 0">
                   <td>Fracción por Muerte</td>
-                  <td style="text-align: right;">{{ ecoCom.aps_total_death | currency}}</td>
+                  <td>{{ ecoCom.aps_total_death | currency}}</td>
                 </tr>
                 <tr class="danger" v-if="ecoCom.aps_disability > 0">
                   <td>Prestación por Invalidéz</td>
-                  <td style="text-align: right;">{{ ecoCom.aps_disability | currency }}</td>
+                  <td>{{ ecoCom.aps_disability | currency }}</td>
                 </tr>
                 <tr v-if="!isSenasir" class="success">
-                  <td>Total Renta o Pensión</td>
-                  <td style="text-align: right;">{{ ecoCom.total_rent | currency }}</td>
+                  <td>Total Renta ó Pensión</td>
+                  <td>{{ ecoCom.total_rent | currency }}</td>
                 </tr>
                 <tr v-if="isSenasir">
-                  <td>Total Ganado Renta o Pensión</td>
-                  <td style="text-align: right;">{{ ecoCom.sub_total_rent | currency }}</td>
+                  <td>Total Ganado Renta ó Pensión</td>
+                  <td>{{ ecoCom.sub_total_rent | currency }}</td>
                 </tr>
                 <tr v-if="isSenasir">
                   <td>- Reintegro</td>
-                  <td style="text-align: right;">{{ ecoCom.reimbursement | currency }}</td>
+                  <td>{{ ecoCom.reimbursement | currency }}</td>
                 </tr>
                 <tr v-if="isSenasir">
                   <td>- Renta Dignidad</td>
-                  <td style="text-align: right;">{{ ecoCom.dignity_pension | currency }}</td>
+                  <td>{{ ecoCom.dignity_pension | currency }}</td>
                 </tr>
                 <tr v-if="isSenasir" class="success">
-                  <td>Total Renta o Pensión</td>
-                  <td style="text-align: right;">{{ ecoCom.total_rent | currency }}</td>
+                  <td>Total Renta ó Pensión</td>
+                  <td>{{ ecoCom.total_rent | currency }}</td>
                 </tr>
               </tbody>
             </table>
@@ -91,64 +91,60 @@
             >Modalidad: {{ ecoCom.eco_com_modality.name }} ({{ ecoCom.eco_com_modality.shortened }})</h3>
           </div>
           <div class="col-md-6">
-            <p>Datos del C&aacute;lculo del Complemento Econ&oacute;mico</p>
+            <p>Datos del Calculo del total del Complemento Economico</p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th style="text-align: center;" >Detalle</th>
-                  <th style="text-align: center;" >Montos</th>
+                  <th>Detalle</th>
+                  <th>Monto</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Total Renta o Pensión</td>
-                  <td style="text-align: right;">{{ ecoCom.total_rent | currency }}</td>
+                  <td>Total Renta ó Pensión</td>
+                  <td>{{ ecoCom.total_rent | currency }}</td>
                 </tr>
                 <tr>
-                  <td>Renta o Pensión Promedio (seg&uacute;n corresponda)  </td>
-                  <td style="text-align: right;">{{ ecoCom.total_rent_calc | currency }}</td>
+                  <td>Renta ó Pensión Promedio (seg&uacute;n corresponda)  </td>
+                  <td>{{ ecoCom.total_rent_calc | currency }}</td>
                 </tr>
                 <tr>
                   <td>Haber B&aacute;sico (Servicio Activo)</td>
-                  <td style="text-align: right;">{{ ecoCom.salary_reference | currency }}</td>
+                  <td>{{ ecoCom.salary_reference | currency }}</td>
                 </tr>
                 <tr>
                   <td>Categor&iacute;a (Seg&uacute;n Años de Servicio) </td>
-                  <td style="text-align: right;">{{ ecoCom.seniority | currency }}</td>
+                  <td>{{ ecoCom.seniority | currency }}</td>
                 </tr>
                 <tr>
                   <td>Antig&uuml;edad (Haber B&aacute;sico + Categor&iacute;a)</td>
-                  <td style="text-align: right;">{{ ecoCom.salary_quotable | currency }}</td>
+                  <td>{{ ecoCom.salary_quotable | currency }}</td>
                 </tr>
                 <tr>
                   <td>Diferencia (Antig&uuml;edad - Renta o Pensi&oacute;n)</td>
-                  <td style="text-align: right;">{{ ecoCom.difference | currency }}</td>
+                  <td>{{ ecoCom.difference | currency }}</td>
                 </tr>
-                <tr v-if="ecoCom.months_of_payment === null">
+                <tr>
                   <td>Total Semestre (Diferencia * 6 meses)</td>
-                  <td style="text-align: right;">{{ ecoCom.total_amount_semester | currency }}</td>
-                </tr>
-                <tr v-else>
-                  <td>Total Semestre (Diferencia * {{ecoCom.months_of_payment}} meses)</td>
-                  <td style="text-align: right;">{{ ecoCom.total_amount_semester | currency }}</td>
+                  <td>{{ ecoCom.total_amount_semester | currency }}</td>
                 </tr>
                 <tr>
                   <td>Factor de Complementación (%)</td>
-                  <td style="text-align: right;">{{ ecoCom.complementary_factor }}</td>
+                  <td>{{ ecoCom.complementary_factor }}</td>
                 </tr>
                 <tr class="warning">
-                  <td>Total Complemento Econ&oacute;mico</td>
-                  <td style="text-align: right;">{{ ecoCom.total_eco_com | currency }}</td>
+                  <td>Total Complemento Economico</td>
+                  <td>{{ ecoCom.total_eco_com | currency }}</td>
                 </tr>
                 <tr v-for="d in ecoCom.discount_types" :key="d.id" class="danger">
                   <td>{{ d.shortened }}</td>
-                  <td style="text-align: right;">{{ d.pivot.amount | currency}}</td>
+                  <td>{{ d.pivot.amount | currency}}</td>
                 </tr>
                 <tr class="success">
                   <td>
-                    <strong>Total L&iacute;quido Pagable</strong>
+                    <strong>Total Liquido Pagable</strong>
                   </td>
-                  <td style="text-align: right;">{{ ecoCom.total | currency }}</td>
+                  <td>{{ ecoCom.total | currency }}</td>
                 </tr>
               </tbody>
             </table>
