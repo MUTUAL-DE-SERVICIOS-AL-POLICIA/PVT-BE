@@ -91,7 +91,7 @@ class QuotaAidMortuaryController extends Controller
         return $city ? $city->first_shortened : null;
       })
       ->addColumn('phone_number', function ($ret_fun) {
-        $filter = array_filter($ret_fun->ret_fun_beneficiaries->toArray(), function ($value) {
+        $filter = array_filter($quota_aid->quota_aid_beneficiaries->toArray(), function ($value) {
                 return $value['type'] == 'S';
             });
             if (sizeof($filter) > 0) {
@@ -100,7 +100,7 @@ class QuotaAidMortuaryController extends Controller
             return null;
         })
         ->addColumn('cell_phone_number', function ($ret_fun) {
-            $filter = array_filter($ret_fun->ret_fun_beneficiaries->toArray(), function ($value) {
+            $filter = array_filter($quota_aid->quota_aid_beneficiaries->toArray(), function ($value) {
                 return $value['type'] == 'S';
             });
             if (sizeof($filter) > 0) {
