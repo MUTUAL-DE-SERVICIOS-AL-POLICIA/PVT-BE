@@ -90,7 +90,7 @@ class QuotaAidMortuaryController extends Controller
         $city = City::find($quota_aid->affiliate->city_identity_card_id);
         return $city ? $city->first_shortened : null;
       })
-      ->addColumn('phone_number', function ($ret_fun) {
+      ->addColumn('phone_number', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_beneficiaries->toArray(), function ($value) {
                 return $value['type'] == 'S';
             });
@@ -99,7 +99,7 @@ class QuotaAidMortuaryController extends Controller
             }
             return null;
         })
-        ->addColumn('cell_phone_number', function ($ret_fun) {
+        ->addColumn('cell_phone_number', function ($quota_aid) {
             $filter = array_filter($quota_aid->quota_aid_beneficiaries->toArray(), function ($value) {
                 return $value['type'] == 'S';
             });
