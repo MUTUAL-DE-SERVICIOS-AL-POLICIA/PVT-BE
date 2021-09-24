@@ -30,6 +30,8 @@
                             class="fa fa-puzzle-piece"></i> Sueldos</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-averages"><a href="#"><i
                             class="fa fa-address-card"></i> Promedios</a></li>
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-loadaverages"><a href="#"><i
+                            class="fa fa-address-card"></i> Cargar promedios</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-complementary-factor"><a href="#"><i
                             class="fa fa-users"></i> Factor de Complementación</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-procedure"><a href="#"><i
@@ -55,6 +57,9 @@
             </div>
             <div id="tab-eco-com-averages" class="tab-pane">
     @include('eco_com.average')
+            </div>
+            <div id="tab-eco-com-loadaverages" class="tab-pane">
+                <eco-com-loadaverages :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-loadaverages>    
             </div>
             <div id="tab-complementary-factor" class="tab-pane">
     @include('complementary_factor.index')

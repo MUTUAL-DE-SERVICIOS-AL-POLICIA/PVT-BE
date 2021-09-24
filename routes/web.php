@@ -781,5 +781,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     // affiliate submitted documents
     Route::get('get_procedure_requirements', 'AffiliateSubmittedDocumentsController@getRequirements');
+
+    // Cargar promedios
+    Route::post('eco_com_load_promedio', 'EconomicComplementController@loadPromedio');
   });
 });

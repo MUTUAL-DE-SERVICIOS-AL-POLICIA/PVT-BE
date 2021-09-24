@@ -1482,6 +1482,60 @@ class EconomicComplementController extends Controller
     {
         return null;
     }
+    public function loadPromedio(Request $request)
+    {
+        $eco_com_procedure_id = $request->ecoComProcedureId;
+        $date = $request->changeDate;
+
+        $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
+        $year = $eco_com_procedure->year;
+        $semester = $eco_com_procedure->semester;
+
+        $averages=EcoComRent::where('year','=',$year)->where('semester','=',$semester)->get();
+        if($averages)
+        {
+            foreach ($averages as $item)
+            {
+                $item->delete();
+            }
+        }
+
+        $userid=Auth::user()->id;
+        $average_list = DB::select("select ec.degree_id, de.name, count(ec.degree_id) as vejez, sum(total_rent) as totalrenta, round(sum(total_rent)/count(ec.degree_id),2) promedio from economic_complements ec inner join degrees de on ec.degree_id=de.id where ec.eco_com_procedure_id=".$eco_com_procedure_id." and eco_com_modality_id in (1,4,8,6) and deleted_at is null and date(ec.created_at)<='".$date."' and ec.total_rent > 0 group by ec.degree_id, de.name order by ec.degree_id");
+        if ($average_list) {
+            foreach ($average_list as $item) {
+                $rent = new EcoComRent();
+                $rent->user_id = $userid;
+                $rent->degree_id = $item->degree_id;
+                $rent->procedure_modality_id = 29;
+                $rent->year = $year;
+                $rent->semester = $semester;
+                $rent->minor = $item->promedio;
+                $rent->higher = $item->promedio;
+                $rent->average = $item->promedio;
+                $rent->save();
+            }
+        }
+
+        $average_list = DB::select("select ec.degree_id, de.name, count(ec.degree_id) as vejez, sum(total_rent) as totalrenta, round(sum(total_rent)/count(ec.degree_id),2) promedio from economic_complements ec inner join degrees de on ec.degree_id=de.id where ec.eco_com_procedure_id=".$eco_com_procedure_id." and eco_com_modality_id in (2,5,3,10,12,9,11,7) and deleted_at is null and date(ec.created_at)<='".$date."' and ec.total_rent > 0 group by ec.degree_id, de.name order by ec.degree_id");
+        if ($average_list) {
+            foreach ($average_list as $item) {
+                $rent = new EcoComRent();
+                $rent->user_id = $userid;
+                $rent->degree_id = $item->degree_id;
+                $rent->procedure_modality_id = 30;
+                $rent->year = $year;
+                $rent->semester = $semester;
+                $rent->minor = $item->promedio;
+                $rent->higher = $item->promedio;
+                $rent->average = $item->promedio;
+                $rent->save();
+            }
+        }
+
+        return null;
+    }
+
     public function qualificationParameters()
     {
         // averages
