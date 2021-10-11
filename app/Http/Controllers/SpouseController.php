@@ -39,8 +39,10 @@ class SpouseController extends Controller
      */
     public function store(Request $request)
     {
-
-        $spouse = new Spouse();
+        $spouse = Affiliate::find($request->affiliate_id)->spouse->first();
+        if (!$spouse) {
+            $spouse = new Spouse();
+        }
         $spouse->user_id = Auth::user()->id;
         $spouse->affiliate_id = $request->affiliate_id;
         $spouse->city_identity_card_id = $request->city_identity_card_id;
