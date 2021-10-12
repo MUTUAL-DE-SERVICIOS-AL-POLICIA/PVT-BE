@@ -283,8 +283,9 @@ class QuotaAidMortuaryController extends Controller
       case 14:
       case 15:
         $affiliate->affiliate_state_id = ID::affiliateState()->jubilado;
-
-        $spouse = new Spouse();
+        $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
+        if (!isset($spouse->id))
+          $spouse = new Spouse();
         $spouse->user_id = Auth::user()->id;
         $spouse->affiliate_id = $request->affiliate_id;
         $spouse->city_identity_card_id = $request->spouse_city_identity_card_id;
