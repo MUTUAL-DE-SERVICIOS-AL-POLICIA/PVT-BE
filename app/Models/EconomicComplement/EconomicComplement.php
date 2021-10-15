@@ -645,10 +645,6 @@ class EconomicComplement extends Model
         beneficiary.surname_husband as apellido_de_casado_ben,
         beneficiary.birth_date as fecha_nac_ben,beneficiary.phone_number as telefonos_ben,
         beneficiary.cell_phone_number as celulares_ben,
-        beneficiary.official as oficialia_ben,
-        beneficiary.book as libro_ben,
-        beneficiary.departure as partida_ben,
-        beneficiary.marriage_date as fecha_matrimonio_ben,
         beneficiary.gender as genero_ben
         ";
     }
