@@ -74,6 +74,7 @@ export default {
     monthYearInputMaskAll();
     dateInputMask();
     dateInputMaskAll();
+    this.addSpouse();
   },
   computed:{
     ...mapGetters('quotaAidForm', {
@@ -143,6 +144,38 @@ export default {
       setTimeout(() => {
         cellPhoneInputMaskAll();
       }, 500);
+    },
+    addSpouse(){
+      if(Object.entries(this.spouse).length === 0)
+      {
+        this.spouse_identity_card=null
+        this.spouse_city_identity_card_id=null
+        this.spouse_first_name=null
+        this.spouse_second_name=null
+        this.spouse_last_name=null
+        this.spouse_mothers_last_name=null
+        this.spouse_surname_husband=null
+        this.spouse_birth_date=null
+        this.spouse_city_birth_id=null
+        this.spouse_civil_status=null
+        this.spouse_date_death=null
+        this.spouse_reason_death=null
+      }
+      else
+      {
+        this.spouse_identity_card=this.spouse.identity_card
+        this.spouse_city_identity_card_id=this.spouse.city_identity_card_id 
+        this.spouse_first_name=this.spouse.first_name 
+        this.spouse_second_name=this.spouse.second_name 
+        this.spouse_last_name=this.spouse.last_name 
+        this.spouse_mothers_last_name=this.spouse.mothers_last_name 
+        this.spouse_surname_husband=this.spouse.surname_husband
+        this.spouse_birth_date=this.spouse.birth_date
+        this.spouse_city_birth_id=this.spouse.city_birth_id
+        this.spouse_civil_status=this.spouse.civil_status
+        this.spouse_date_death=this.spouse.date_death
+        this.spouse_reason_death=this.spouse.reason_death
+      }
     },
     deleteCellPhoneNumber(index){
       this.applicant_cell_phone_numbers.splice(index,1);
