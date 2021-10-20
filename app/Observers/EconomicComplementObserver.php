@@ -98,6 +98,9 @@ class EconomicComplementObserver
         if ($eco_com->is_paid_spouse != $old->is_paid_spouse) {
             $message = $message . ' Pago de viuda por unica vez de ' . ($old->is_paid_spouse ? 'activo' : 'no activo')  . ' a ' . ($eco_com->is_paid_spouse ? 'activo' : 'no activo'). ', ';
         }
+        if ($eco_com->eco_com_state_id != $old->eco_com_state_id) {
+            $message = $message . ' el estado de ' . $old->eco_com_state->name . ' a ' . $eco_com->eco_com_state->name . ', ';
+        }
         if($temp !=  $message){
             $message = $message . ' ';
             $eco_com->procedure_records()->create([

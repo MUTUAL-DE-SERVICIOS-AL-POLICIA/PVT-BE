@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="ibox">
       <div class="ibox-title">
-        <h2 class="pull-left">Información del Trámite <i :class="{'fa fa-home': ecoCom.eco_com_state.id == 17}"></i> </h2>
+        <h2 class="pull-left">Información del Trámite <i :class="{'fa fa-home': ecoCom.eco_com_state.id == 17 || ecoCom.eco_com_state.id == 29 }"></i> </h2>
         <div class="ibox-tools">
           <button
             data-toggle="tooltip"
@@ -202,12 +202,12 @@
           <div>
             <div class="col-md-2"> <label for="is_paid_spouse">PAGO POR UNICA VEZ VIUDA -  </label> </div>
             <div class="col-md-4">
-              <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing">
+              <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing || (roleId != 4)">
             </div>
           
              <div class="col-md-2"><label for="months_of_payment">Periodo </label></div>
             <div class="col-md-4">
-            <input type="number" name="months_of_payment" id="months_of_payment" class="form-control" v-model="form.months_of_payment" :disabled="!editing" v-validate="'min_value:0|max_value:6'" max="6" min="0" maxlength="2">
+            <input type="number" name="months_of_payment" id="months_of_payment" class="form-control" v-model="form.months_of_payment" :disabled="!editing || (roleId != 4)" v-validate="'min_value:0|max_value:6'" max="6" min="0" maxlength="2">
               <div v-show="errors.has('months_of_payment') && editing" >
                 <i class="fa fa-warning text-danger"></i>
                 <span class="text-danger">@{{ errors.first('months_of_payment') }}</span>
@@ -217,17 +217,41 @@
         </div>
         <div class="row">
           <div class="col-md-2">
+          <label for="eco_com_state_id">EN PROCESO -  </label>
+          </div>
+          <div class="col-md-4">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='16'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
           <label for="eco_com_state_id">PAGO EN DOMICILIO -  </label>
           </div>
           <div class="col-md-4">
           <input class ="mediumCheckbox"
-          type="checkbox" 
+          type="radio" 
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
-          true-value='17'
-          false-value='16'
-          @click="homepayment()"
-          :disabled="!editing" >
+          value='29'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+          <label for="eco_com_state_id">PAGO MEDIANTE CHEQUE -  </label>
+          </div>
+          <div class="col-md-4">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='28'
+          :disabled="!editing || (roleId != 4)" >
           </div>
         </div>
         <br>
