@@ -179,7 +179,7 @@ class EcoComUpdatePaidBank implements ToCollection
                             'message' => 'PRIORITARIO - PRESTATARIOS TITULARES EN MORA',
                             'enabled' => false
                         ]);
-                        $found2++;
+                        $found++;
                 
                      }
 
