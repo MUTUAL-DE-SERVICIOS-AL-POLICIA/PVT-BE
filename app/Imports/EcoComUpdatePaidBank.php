@@ -34,9 +34,9 @@ class EcoComUpdatePaidBank implements ToCollection
         $user = User::first();
         //$status = array("ACTIVO", "ELABORADO", "SIN REGISTRO", "VALIDADO");
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
-        $current_procedure = 18;
+        $current_procedure = 19;
 
-        foreach ($rows as $row) {
+       /* foreach ($rows as $row) {
             
             $nup = strval($row[0]); 
             $affiliate = Affiliate::where('id', $nup)->first();     
@@ -143,7 +143,55 @@ class EcoComUpdatePaidBank implements ToCollection
             }else{
                 $not_found->push($nup);
             }*/
-        }
+        
+        }*/
+        
+        
+         foreach ($rows as $row) {
+            
+            $ci = strval($row[0]);
+            $affiliate = Affiliate::where('identity_card', $ci)->first();
+            
+            if (!$affiliate) {
+                $spouse = Spouse::where('identity_card', $ci)->first();
+                if ($spouse) {
+                $affiliate = $spouse->affiliate;     
+                }else{
+                    $not_found->push($ci);
+                }    
+            }
+            else{
+                
+                $observation = ObservationType::find(2);
+                $affiliate->observations()->save($observation, [
+                    'user_id' => $user->id,
+                    'date' => Carbon::now(),
+                    'message' => 'PRIORITARIO - PRESTATARIOS TITULARES EN MORA',
+                    'enabled' => false
+                ]);
+
+                $eco_coms = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $current_procedure)->get();
+                foreach ($eco_coms as $eco) {
+                    if (!$eco->hasObservationType(2) && $eco->eco_com_state_id == 16) {
+                        $eco->observations()->save($observation, [
+                            'user_id' => $user->id,
+                            'date' => Carbon::now(),
+                            'message' => 'PRIORITARIO - PRESTATARIOS TITULARES EN MORA',
+                            'enabled' => false
+                        ]);
+                        $found2++;
+                
+                     }
+
+                }
+
+                $found++;
+                
+            }
+
+
+        } 
+        
 
         $data = [
             'found' => $found,
