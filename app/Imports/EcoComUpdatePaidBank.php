@@ -166,7 +166,7 @@ class EcoComUpdatePaidBank implements ToCollection
                     'enabled' => false
                 ]);
 
-                $eco_coms = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $current_procedure)->get();
+                $eco_coms = $affiliate->economic_complements()->where('eco_com_procedure_id', $current_procedure)->get();
                 foreach ($eco_coms as $eco) {
                     if (!$eco->hasObservationType(2) && $eco->eco_com_state_id == 16) {
                         $eco->observations()->save($observation, [
