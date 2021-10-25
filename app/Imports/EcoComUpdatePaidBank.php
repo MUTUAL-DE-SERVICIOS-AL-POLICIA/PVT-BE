@@ -142,7 +142,7 @@ class EcoComUpdatePaidBank implements ToCollection
                 }                  
             }else{
                 $not_found->push($nup);
-            }*/
+            }*
         
         }*/
         
