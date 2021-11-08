@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use DB;
 
-class EcoComPromedioReport implements FromCollection, WithHeadings
+class EcoComPromedioReport implements FromCollection, WithHeadings, ShouldAutoSize
 {
     protected $report_type_id;
     protected $eco_com_procedure_id;
