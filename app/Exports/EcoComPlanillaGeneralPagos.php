@@ -55,7 +55,7 @@ class EcoComPlanillaGeneralPagos implements FromCollection, WithHeadings, Should
             'Materno ',
             'Apellido casada(o) ',
             'Regional ',
-            'Tipo prestamo ',
+            'Tipo prestacion ',
             'Tipo Recepcion ',
             'Categoria ',
             'Grado ',
