@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use DB;
 
-class AffiliateSpouseReport implements FromCollection, WithHeadings
+class AffiliateSpouseReport implements FromCollection, WithHeadings, ShouldAutoSize
 {
     protected $report_type_id;
     public function __construct($report_type_id)
