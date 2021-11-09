@@ -230,7 +230,7 @@
         </div>
         <div class="row">
           <div class="col-md-2">
-          <label for="eco_com_state_id">PAGO EN DOMICILIO -  </label>
+          <label for="eco_com_state_id">HABILITADO PARA PAGO A DOMICILIO - </label>
           </div>
           <div class="col-md-4">
           <input class ="mediumCheckbox"
@@ -243,7 +243,7 @@
         </div>
         <div class="row">
           <div class="col-md-2">
-          <label for="eco_com_state_id">PAGO MEDIANTE CHEQUE -  </label>
+          <label for="eco_com_state_id">HABILITADO PARA PAGO MEDIANTE CHEQUE - </label>
           </div>
           <div class="col-md-4">
           <input class ="mediumCheckbox"

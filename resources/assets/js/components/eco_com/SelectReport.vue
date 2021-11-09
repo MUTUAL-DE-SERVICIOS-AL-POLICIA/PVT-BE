@@ -215,6 +215,18 @@ export default {
           id: 24,
           name: "Calculo de promedios viudedad"
         },
+        {
+          id: 25,
+          name: "Planilla general"
+        },
+        {
+          id: 26,
+          name: "Planilla de Pago Sigep"
+        },
+        {
+          id: 27,
+          name: "Planilla Banco Union"
+        },
       ],
       form: {
         ecoComProcedureId:
