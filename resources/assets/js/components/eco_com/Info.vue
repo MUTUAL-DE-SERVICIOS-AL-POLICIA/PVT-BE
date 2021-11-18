@@ -198,10 +198,12 @@
             </div>
         </div>
         <br>
+        <br>
+        <br>
         <div class="row">
           <div>
-            <div class="col-md-2"> <label for="is_paid_spouse">PAGO POR UNICA VEZ VIUDA -  </label> </div>
-            <div class="col-md-4">
+            <div class="col-md-4"> <label for="is_paid_spouse">PAGO POR UNICA VEZ VIUDA -  </label> </div>
+            <div class="col-md-2">
               <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing || (roleId != 4)">
             </div>
           
@@ -216,10 +218,10 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-4">
           <label for="eco_com_state_id">EN PROCESO -  </label>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-2">
           <input class ="mediumCheckbox"
           type="radio" 
           id="eco_com_state_id" 
@@ -229,10 +231,10 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-4">
           <label for="eco_com_state_id">HABILITADO PARA PAGO A DOMICILIO - </label>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-2">
           <input class ="mediumCheckbox"
           type="radio" 
           id="eco_com_state_id" 
@@ -242,10 +244,10 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-4">
           <label for="eco_com_state_id">HABILITADO PARA PAGO MEDIANTE CHEQUE - </label>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-2">
           <input class ="mediumCheckbox"
           type="radio" 
           id="eco_com_state_id" 
