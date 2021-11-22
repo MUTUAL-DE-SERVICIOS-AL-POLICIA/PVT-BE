@@ -569,6 +569,7 @@ class InboxController extends Controller
       'semesters' => $semesters,
       'years' => $years,
       'title'  =>  $title,
+      'unit'  =>  'UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO',
       'subtitle'  =>  null,
       'from_area'  =>  $wf_state_from,
       'to_area'  =>  $wf_state_to,
@@ -576,6 +577,8 @@ class InboxController extends Controller
       'year'  =>  date('Y')
     ];
     $pages = [];
+    $pages[] = \View::make('print_global.send_eco_com', $data)->render();
+    /*
     foreach (City::orderBy('id')->get() as $city) {
       $procedures_cities = $procedures->where('city_id', $city->id);
       $data = [
@@ -593,7 +596,7 @@ class InboxController extends Controller
       if ($procedures_cities->count() > 0) {
         $pages[] = \View::make('print_global.send_eco_com', $data)->render();
       }
-    }
+    }*/
     $pdf = \App::make('snappy.pdf.wrapper');
     $pdf->loadHTML($pages);
     return $pdf->setOption('encoding', 'utf-8')

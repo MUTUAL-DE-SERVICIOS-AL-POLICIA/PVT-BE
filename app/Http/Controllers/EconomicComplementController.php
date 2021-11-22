@@ -362,30 +362,6 @@ class EconomicComplementController extends Controller
             // $record->save();
         }
         /**
-         ** verify observation id = 6
-         */
-        if($request->reception_type == ID::ecoCom()->inclusion){
-
-            $number_docs = ProcedureModality::find($request->modality_id)->procedure_requirements->pluck('number')->unique()->sort();
-            if ($number_docs->contains(0)) {
-                $number_docs = $number_docs->slice(1);
-            }
-            $count = 0;
-            foreach ($request->all() as $key => $value) {
-                if (strpos($key, 'document') !== false  && $value == 'checked') {
-                    $count++;
-                }
-            }
-            if ($count != $number_docs->count()) {
-                $economic_complement->observations()->save(ObservationType::find(6), [
-                    'user_id' => auth()->id(),
-                    'date' => now(),
-                    'message' => 'Documentación incompleta (Observación adicionada automáticamente)',
-                    'enabled' => false
-                ]);
-            }
-        }
-        /**
          ** Save legal guardian
          */
         if ($request->has_legal_guardian == 'on') {
