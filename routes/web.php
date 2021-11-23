@@ -685,6 +685,8 @@ Route::group(['middleware' => ['auth']], function () {
     
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
+    Route::get('eco_com/{eco_com_id}/print/paid_cetificate', 'EconomicComplementController@paidCertificate');
+
     // Eco com Beneficiary
     Route::get('get_eco_com_beneficiary/{eco_com_id}', 'EcoComBeneficiaryController@getEcoComBeneficiary');
     Route::patch('/eco_com_beneficiary', 'EcoComBeneficiaryController@update');

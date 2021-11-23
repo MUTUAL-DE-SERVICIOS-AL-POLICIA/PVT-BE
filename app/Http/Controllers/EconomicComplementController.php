@@ -589,7 +589,7 @@ class EconomicComplementController extends Controller
             'workflow:id,name',
             'eco_com_modality:id,name,shortened,procedure_modality_id',
             'eco_com_reception_type:id,name',
-            'eco_com_state:id,name',
+            'eco_com_state:id,name,eco_com_state_type_id',
             'degree',
             'category'
         ])->findOrFail($id);
@@ -1627,5 +1627,38 @@ class EconomicComplementController extends Controller
             }
         }
         return $count;
+    }
+
+    public function paidCertificate($id){
+        $eco_com = EconomicComplement::with([
+            'affiliate',
+            'eco_com_beneficiary',
+            'eco_com_procedure',
+            'eco_com_modality',
+            'discount_types',
+            'observations',
+        ])->find($id);
+        $date = Util::getStringDate(date('Y-m-d'));
+
+        $affiliate = $eco_com->affiliate;
+        $applicant = $eco_com->eco_com_beneficiary;
+        $area = $eco_com->wf_state->first_shortened;
+        // $user = $eco_com->user;
+        $user = Auth::user();
+
+        $date = Util::getStringDate(date('Y-m-d'));
+        $eco_com_procedure = $eco_com->eco_com_procedure;
+        $subtitle = $eco_com_procedure->semester . " SEMESTRE " . $eco_com_procedure->getYear();
+        $total_literal = Util::convertir($eco_com->total);
+       
+        $pdftitle = "Certificado de pago";
+        $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+
+        return \PDF::loadView('eco_com.print.paid_certificate', compact('area', 'user', 'date', 'pdftitle', 'subtitle', 'affiliate', 'applicant', 'eco_com', 'total_literal','bar_code'))
+        ->setPaper('letter')
+        ->setOption('encoding', 'utf-8')
+        ->stream("$namepdf");
     }
 }

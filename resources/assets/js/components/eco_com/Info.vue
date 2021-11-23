@@ -4,6 +4,17 @@
       <div class="ibox-title">
         <h2 class="pull-left">Información del Trámite <i :class="{'fa fa-home': ecoCom.eco_com_state.id == 17 || ecoCom.eco_com_state.id == 29 }"></i> </h2>
         <div class="ibox-tools">
+          <p> hola {{ ecoCom.eco_com_state.eco_com_state_type_id }}</p>
+          <button
+            data-animation="flip"
+            data-toggle="tooltip"
+            title="Certificación pago"
+            class="btn btn-primary"
+            @click="certificacionPago()"
+            :disabled="ecoCom.eco_com_state.eco_com_state_type_id != 1"
+          >
+            <i class="fa fa-print"></i> Boleta de pago
+          </button>
           <button
             data-toggle="tooltip"
             title="Eliminar Trámite"
@@ -448,6 +459,9 @@ export default {
           }, 1500);
         }
       });
+    },
+    async certificacionPago(){
+      printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/paid_cetificate', type:'pdf', showModal:true});
     }
   }
 };
