@@ -2,6 +2,9 @@
 
 namespace Muserpol\Http\Controllers\API;
 
+use Muserpol\Models\Affiliate;
+use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\EconomicComplement\EcoComStateType;
 use Muserpol\Http\Resources\EcoComProcedureResource;
