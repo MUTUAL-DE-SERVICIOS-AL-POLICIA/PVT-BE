@@ -21,6 +21,7 @@ Route::group([
     Route::resource('city', 'API\CityController')->only('index');
     Route::resource('affiliate.observation', 'API\AffiliateObservationController')->only('index');
     Route::resource('policy', 'API\PolicyController')->only('index');
+    Route::resource('eco_com_procedure', 'API\EcoComProcedureController')->only('index');
 });
 
 Route::group([
