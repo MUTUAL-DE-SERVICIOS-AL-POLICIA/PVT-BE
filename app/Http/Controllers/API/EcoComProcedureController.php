@@ -48,7 +48,7 @@ class EcoComProcedureController extends Controller
                     'error' => false,
                     'message' => 'Trámite vigente',
                     'data' => [
-                        'data' => EconomicComplementResource::collection($data)->resource,
+                        'data' => EconomicComplementResource::collection($data->paginate( 4, ['*'], 'page', 1))->resource,
                     ]
                 ], 200);
             }else {
