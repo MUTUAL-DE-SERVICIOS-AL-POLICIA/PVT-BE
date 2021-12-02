@@ -7,6 +7,7 @@ use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\EconomicComplement\EcoComStateType;
+use Muserpol\Http\Resources\EconomicComplementResource;
 use Muserpol\Http\Resources\EcoComProcedureResource;
 use Illuminate\Http\Request;
 use Muserpol\Http\Controllers\Controller;
@@ -47,7 +48,7 @@ class EcoComProcedureController extends Controller
                     'error' => false,
                     'message' => 'Trámite vigente',
                     'data' => [
-                        'data' => $data
+                        'data' => EconomicComplementResource::collection($data)->resource,
                     ]
                 ], 200);
             }else {
