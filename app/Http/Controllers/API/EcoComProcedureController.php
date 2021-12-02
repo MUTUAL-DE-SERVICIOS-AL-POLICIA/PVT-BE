@@ -47,9 +47,7 @@ class EcoComProcedureController extends Controller
                 return response()->json([
                     'error' => false,
                     'message' => 'Trámite vigente',
-                    'data' => [
-                        'data' => EconomicComplementResource::collection($data->paginate( 4, ['*'], 'page', 1))->resource,
-                    ]
+                    'data' => EconomicComplementResource::collection($data->paginate( 4, ['*'], 'page', 1))->resource,
                 ], 200);
             }else {
                 return response()->json([
