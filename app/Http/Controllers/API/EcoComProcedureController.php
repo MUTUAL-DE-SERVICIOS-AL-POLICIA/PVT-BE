@@ -31,30 +31,41 @@ class EcoComProcedureController extends Controller
                 'error' => true,
                 'message' => 'Usted percibe el Beneficio como Titular y Viuda(o).',
                 'data' => (object)[]
-            ], 403);
+            ]);
         } else {
             $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
             if ($eco_com_beneficiary) {
                 $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
-                $data = $affiliate->economic_complements()->has('eco_com_beneficiary')->orderBy('reception_date', 'desc');
-                $current_procedures = EcoComProcedure::current_procedures()->pluck('id');
-                $state_types = EcoComStateType::whereIn('name', ['Enviado', 'Creado'])->pluck('id');
-                $data = $data->where(function($q) use ($current_procedures, $state_types) {
-                    $q->whereIn('eco_com_procedure_id', $current_procedures)->orWhereHas('eco_com_state', function ($query) use ($state_types) {
-                        return $query->whereIn('eco_com_state_type_id', $state_types);
-                    });
-                });
+                $eco_coms = $affiliate->economic_complements()->has('eco_com_beneficiary')->orderBy('reception_date', 'desc')->get();
+                $data = collect();
+                foreach($eco_coms as $eco_com) {
+                    $observations = $eco_com->observations()->where('enabled', false)->pluck('shortened')->unique();
+                    $data->push([
+                        "id" => $eco_com->id,
+                        "title" => mb_strtoupper($eco_com->eco_com_procedure->semester) . ' SEMESTRE ' . Carbon::parse($eco_com->eco_com_procedure->year)->year,
+                        "beneficiario" => $eco_com->eco_com_beneficiary->fullName(),
+                        "ci" => $eco_com->eco_com_beneficiary->ciWithExt(),
+                        "semestre" => $eco_com->eco_com_procedure->fullName(),
+                        "fecha_de_recepcion" => Util::getDateFormat($eco_com->reception_date),
+                        "nro_tramite" => $eco_com->code,
+                        "tipo_de_prestacion" => $eco_com->eco_com_modality->shortened,
+                        "tipo_de_tramite" => $eco_com->eco_com_reception_type->name,
+                        "estado" => $eco_com->eco_com_state->name,
+                        "observaciones_del_tramite" => $observations->count() > 0 ? $observations->values() : 'Ninguna',
+                    ]);
+                }
+
                 return response()->json([
                     'error' => false,
-                    'message' => 'Trámite vigente',
-                    'data' => EconomicComplementResource::collection($data->paginate( 4, ['*'], 'page', 1))->resource,
+                    'message' => 'Trámites',
+                    'data' => $data,
                 ], 200);
             }else {
                 return response()->json([
                     'error' => true,
-                    'message' => 'Usted no tiene trámites registrados, para mayor información pasar por oficinas de la MUSERPOL.',
+                    'message' => 'Persona no registrada, favor revisar la información.',
                     'data' => (object)[]
-                ], 403);
+                ]);
             }
         }
     }
