@@ -34,7 +34,7 @@ class EcoComProcedureController extends Controller
                 $eco_com = $eco_com_beneficiary->economic_complement;
                 $observations = $eco_com->observations()->where('enabled', false)->pluck('shortened')->unique();
                 $data->push([
-                    "id" => $eco_com->id:,
+                    "id" => $eco_com->id,
                     "title" => mb_strtoupper($eco_com->eco_com_procedure->semester) . ' SEMESTRE ' . Carbon::parse($eco_com->eco_com_procedure->year)->year,
                     "beneficiario" => $eco_com->eco_com_beneficiary->fullName(),
                     "ci" => $eco_com->eco_com_beneficiary->ciWithExt(),
