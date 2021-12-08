@@ -25,7 +25,7 @@ class EcoComProcedureController extends Controller
     {
         $identity_card = mb_strtoupper($request->identity_card);
         $birth_date = Carbon::parse($request->birth_date)->format('Y-m-d');
-        $eco_com_beneficiaries = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->orderBy('created_at:', 'desc')->get();
+        $eco_com_beneficiaries = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->orderBy('created_at', 'desc')->get();
         if ($eco_com_beneficiaries) {
             $data = collect();
             foreach($eco_com_beneficiaries as $eco_com_beneficiary) {
