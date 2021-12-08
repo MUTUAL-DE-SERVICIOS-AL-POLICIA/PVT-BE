@@ -30,7 +30,7 @@ class EcoComProcedureController extends Controller
         if ($eco_com_beneficiary) {
             $eco_coms = EconomicComplement::leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
             ->where('eco_com_applicants.identity_card', $identity_card)
-            ->where('eco_com_applicants.birth_date', $birth_date))->get();
+            ->where('eco_com_applicants.birth_date', $birth_date)->get();
             ->orderBy('reception_date', 'desc')
             ->get();
             $data = collect();
