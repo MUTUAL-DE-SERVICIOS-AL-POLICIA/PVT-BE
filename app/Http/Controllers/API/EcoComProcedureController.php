@@ -28,8 +28,11 @@ class EcoComProcedureController extends Controller
 
         $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
         if ($eco_com_beneficiary) {
-            $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
-            $eco_coms = $affiliate->economic_complements()->has('eco_com_beneficiary')->orderBy('reception_date', 'desc')->get();
+            $eco_coms = EconomicComplement::leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
+            ->where('eco_com_applicants.identity_card', $identity_card)
+            ->where('eco_com_applicants.birth_date', $birth_date))->get();
+            ->orderBy('reception_date', 'desc')
+            ->get();
             $data = collect();
             foreach($eco_coms as $eco_com) {
                 $observations = $eco_com->observations()->where('enabled', false)->pluck('shortened')->unique();
