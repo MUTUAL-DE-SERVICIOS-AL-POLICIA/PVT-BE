@@ -30,18 +30,16 @@ class EcoComProcedureController extends Controller
         if ($eco_com_beneficiary) {
             $eco_coms = EconomicComplement::leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
             ->where('eco_com_applicants.identity_card', $identity_card)
-            ->where('eco_com_applicants.birth_date', $birth_date)
             ->orderBy('reception_date', 'desc')
             ->get();
             $data = collect();
             foreach($eco_coms as $eco_com) {
-                $eco_com_beneficiary = EcoComBeneficiary::where('eco_com_applicants.economic_complement_id',$eco_com->id)->first();
                 $observations = $eco_com->observations()->where('enabled', false)->pluck('shortened')->unique();
                 $data->push([
                     "id" => $eco_com->id,
                     "title" => mb_strtoupper($eco_com->eco_com_procedure->semester) . ' SEMESTRE ' . Carbon::parse($eco_com->eco_com_procedure->year)->year,
-                    "beneficiario" => $eco_com_beneficiary->fullName(),
-                    "ci" => $eco_com_beneficiary->ciWithExt(),
+                    "beneficiario" => $eco_com->eco_com_beneficiary->fullName(),
+                    "ci" => $eco_com->eco_com_beneficiary->ciWithExt(),
                     "semestre" => $eco_com->eco_com_procedure->fullName(),
                     "fecha_de_recepcion" => Util::getDateFormat($eco_com->reception_date),
                     "nro_tramite" => $eco_com->code,
