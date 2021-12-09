@@ -2011,7 +2011,7 @@ class RetirementFundCertificationController extends Controller
         <i>“I. La Comisión de Beneficios Económicos es la instancia técnica legal que realiza el procedimiento
         administrativo para la otorgación del beneficio de Fondo de Retiro Policial Solidario. Es designada
         mediante Resolución Administrativa de la Dirección General Ejecutiva de la MUSERPOL”</i>. Por consiguiente,
-        la Resolución Administrativa N° 039/2021 del 21 de septiembre de 2021, conforma la Comisión de Beneficios Económicos,
+        la Resolución Administrativa N° 060/2021 del 7 de diciembre de 2021, conforma la Comisión de Beneficios Económicos,
         en cumplimiento al Reglamento.
         <br><br>';
 
