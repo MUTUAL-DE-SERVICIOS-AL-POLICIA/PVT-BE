@@ -760,6 +760,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('affiliate/{affiliate_id}/print/certification_devolutions', 'AffiliateDevolutionController@printCertificationDevolutions');
     Route::post('affiliate/{affiliate_id}/print/devolution_payment_commitment', 'AffiliateDevolutionController@printDevolutionPaymentCommitment');
 
+    // Affiliate Devoluciones
+    Route::patch('affiliate_devolucion_total_deuda', 'AffiliateDevolutionController@actualizarTotalDeuda');
+    Route::patch('affiliate_devolucion_total_deuda_pendiente', 'AffiliateDevolutionController@actualizarTotalDeudaPendiente');
+    
     // affiliate records
     Route::get('affiliate_record/{id}', 'AffiliateController@getRecord');
     Route::get('affiliate_notes/{id}', 'AffiliateController@getNote');

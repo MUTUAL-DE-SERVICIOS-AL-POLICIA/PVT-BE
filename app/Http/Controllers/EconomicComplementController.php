@@ -1313,36 +1313,10 @@ class EconomicComplementController extends Controller
 
     public function saveDeposito(Request $request)
     {
-        $eco_com = EconomicComplement::with('discount_types')->find($request->id);
         $affiliate = Affiliate::find($request->affiliate_id);
         $devolution = $affiliate->devolutions()->where('observation_type_id', 13)->first();
 
-        /*if ($eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
-            $eco_com_state = $eco_com->eco_com_state;
-            return response()->json([
-                'status' => 'error',
-                'msg' => 'Error',
-                'errors' => ['No se puede realizar el deposito porque el trámite ' . $eco_com->code . ' se encuentra en estado de ' . $eco_com_state->name],
-            ], 422);
-        }*/
-        $rol = Util::getRol();
-        $discount_type_id = null;
-        switch ($rol->id) {
-            case 7: //contabiliadad
-                $discount_type_id = 4;
-                break;
-            case 16: //prestamo
-                $discount_type_id = 5;
-                break;
-            case 4: // complemento
-                $discount_type_id = 6;
-                break;
-        }
-        
-        $discount_type = DiscountType::findOrFail($discount_type_id);
-        
         if ($devolution) {
-        
             $devolution->percentage = null;
             $devolution->deposit_number = $request->deposit_number;
             $devolution->payment_amount = $request->payment_amount;
