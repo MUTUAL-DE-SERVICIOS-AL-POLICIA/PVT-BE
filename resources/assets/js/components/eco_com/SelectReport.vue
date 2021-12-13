@@ -225,7 +225,7 @@ export default {
         },
         {
           id: 27,
-          name: "Planilla Banco Union"
+          name: "Planilla de Pago Banco Union"
         },
       ],
       form: {
