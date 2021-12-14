@@ -70,7 +70,7 @@
                 </td>
             </tr>
             @php
-                $suma+=$eco->total
+                $suma+=$eco->discount_types->where('id',6)->first()->pivot->amount
             @endphp
             @endforeach
             <tr class="bg-grey-lightest">
