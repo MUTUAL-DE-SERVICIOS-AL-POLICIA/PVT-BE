@@ -10,7 +10,7 @@
         calle {{ $affiliate->address()->first() ? $affiliate->address()->first()->street: '-' }}, Nro. {{ $affiliate->address()->first() ? $affiliate->address()->first()->number_address : '-' }}, de la ciudad de
         {{ $affiliate->address()->first() ? $affiliate->address()->first()->city->name: '-' }}, hábil por derecho y en mi calidad de beneficiario (a) del Complemento
         Económico que otorga la Mutual de Servicios al Policía – MUSERPOL al sector pasivo de la Policía Boliviana, que
-        habiendo sido notificado por haber percibido pagos en defecto del Complemento Económico correspondiente al
+        habiendo sido notificado por haber percibido pagos en demasía del Complemento Económico correspondiente al
         {{ $semesters}} por un importe de Bs. {{ Util::formatMoney($devolution->total) }}
         ({{ Util::convertir($devolution->total) }} BOLIVIANOS), <strong>
             @if($devolution->percentage)
@@ -21,9 +21,9 @@
             @else
                 @if($devolution->deposit_number && $devolution->payment_date)
                         expreso mi conformidad de manera voluntaria para efectuar la devolución del total del monto
-                        en defecto inicialmente determinado.
+                        en demasía inicialmente determinado.
                         @else
-                        expreso mi conformidad de manera voluntaria para que se efectúe el descuento del total del monto en defecto inicialmente determinado, con el beneficio del Complemento Económico a partir del {{ $start_eco_com_procedure->semester }}
+                        expreso mi conformidad de manera voluntaria para que se efectúe el descuento del total del monto en demasía inicialmente determinado, con el beneficio del Complemento Económico a partir del {{ $start_eco_com_procedure->semester }}
                 semestre de la gestión {{ $start_eco_com_procedure->getYear() }}.
                 @endif
             @endif

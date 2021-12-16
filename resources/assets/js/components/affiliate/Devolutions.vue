@@ -5,9 +5,9 @@
         <div class="ibox-title">
           <h2 class="pull-left">Devoluciones</h2>
           <div class="ibox-tools">
-            <!-- @click="createObs()" -->
             <div v-if="devolution">
-              <button  class="btn btn-info" @click="deposito()">
+               
+              <button :disabled="devolution.balance==0"  class="btn btn-info" @click="deposito()">
                 <i class="fa fa-dollar"></i> <b>Registrar Deposito</b>
               </button>
               <button  class="btn btn-primary" @click="printCertification()">
@@ -17,14 +17,11 @@
                 <i class="fa fa-print"></i> Imprimir Compromiso
               </button>
               <button class="btn btn-primary" data-toggle="tooltip" title="Crear compromiso de Pago" @click="createPaymentCommitment()">
-                <!-- :disabled="!can('create_observation_type')"
-                v-if="can('read_observation_type')" -->
                 <i class="fa fa-plus"></i> {{ devolution.has_payment_commitment ? 'Editar':'Crear'}} compromiso de Pago
               </button>
             </div>
           </div>
         </div>
-        <!-- v-if="can('read_observation_type')" -->
         <div class="ibox-content">
           <div v-for="devolution in devolutions" :key="devolution.id">
             <h2>Por: {{devolution.observation_type.name}}</h2>
@@ -75,19 +72,28 @@
               <tr>
                 <td>Monto de Deposito</td>
                 <td>
-                  <strong>Bs. {{ devolution.payment_amount }}</strong>
+                  <strong>{{ devolution.payment_amount | currency }}</strong>
                 </td>
               </tr>
-               
             </table>
+            <br>
+            <button
+                class="btn btn-primary"
+                @click="confirmTotalDeuda()"
+                data-toggle="tooltip"
+                title="Actualizar Total Deuda"
+               >
+                <i class="fa fa-refresh"></i>Total Deuda
+              </button>
+              <button
+                class="btn btn-primary"
+                @click="confirmTotalDeudaPendiente()"
+                data-toggle="tooltip"
+                title="Actualizar Total Deuda Pendiente"
+               >
+                <i class="fa fa-refresh"></i>Total Deuda Pendiente
+              </button>
           </div>
-          <!-- <div >
-            <div class="alert alert-info">El afiliado no tiene deudas.</div>
-          </div> -->
-        </div>
-        <!-- v-else -->
-        <div class="ibox-content">
-          <div class="alert alert-warning">No tiene permisos para ver las Devoluciones.</div>
         </div>
       </div>
     </div>
@@ -160,13 +166,12 @@
         </div>
       </div>
     </modal>
-
     <modal name="deposito-modal" class="p-lg mx-10 px-10" height="auto">
     <div class="col-md-12">
       <div class="text-center m-sm">
       <h1 class="mx-10"><b> Registrar Deposito</b></h1>
       <hr style="border:2px solid #ddd">
-      </br>
+      <br>
       </div>
     </div>
       <div class="row col-xs-offset-2" >
@@ -182,7 +187,7 @@
             </div>
         </div>
       </div>
-        </br>
+        <br>
       <div class="row col-xs-offset-2" >
         <div class="form-group">
           <label class="col-sm-4 control-label">Fecha de Deposito</label>
@@ -194,11 +199,10 @@
                 name="payment_date"
                 v-model="ecoCom.payment_date"
               >
-              
             </div>
         </div>
       </div>
-      </br>
+      <br>
       <div class="row col-xs-offset-2" >
         <div class="form-group">
           <label class="col-sm-4 control-label">Monto</label>
@@ -214,7 +218,7 @@
             </div>
         </div>
       </div>
-      </br>
+      <br>
       <div class="col-md-12">
       <div class="text-center m-sm">
       <button
@@ -228,7 +232,7 @@
       <button
         type="button"
         class="btn btn-primary"
-        @click="saved()"
+        @click="confirmSaved()"
         :disabled="loadingButton"
       >
       <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
@@ -242,9 +246,6 @@
 
   </div>
 </template>
-
-    
-
 <script>
 import { parseMoney, flashErrors, canOperation } from "../../helper.js";
 import { mapState, mapMutations } from "vuex";
@@ -331,7 +332,7 @@ export default {
     },
 
     deposito() {
-    
+      this.ecoCom.payment_amount=this.devolution.balance;
       this.$modal.show("deposito-modal");
     },
     async printCertification() {
@@ -349,44 +350,7 @@ export default {
         flashErrors("Error: ", ["Ocurrio un error al generar el documento"]);
       }
     },
-    // createObs() {
-    //   if(!this.can('create_observation_type', this.permissions)){
-    //     return;
-    //   }
-    //   this.$modal.show("observation-modal");
-    //   this.form.observationTypeId = null;
-    //   this.form.message = null;
-    //   this.form.enabled = false;
-    //   this.method = "post";
-    // },
-    // async save() {
-    //   await this.$validator.validateAll();
-    //   if (this.$validator.errors.items.length) {
-    //     return;
-    //   }
-    //   let option = this.getOption();
-    //   this.form.affiliateId = this.affiliate.id;
-    //   if (this.method == "delete") {
-    //     this.form = { data: this.form };
-    //   }
-    //   await axios[this.method](`/affiliate_observation_${option}`, this.form)
-    //     .then(response => {
-    //       console.log(response);
-    //       this.$modal.hide("observation-modal");
-    //     })
-    //     .catch(error => {
-    //       flashErrors(
-    //         "Error al procesar la observacion: ",
-    //         error.response.data.errors
-    //       );
-    //       console.log(error);
-    //     });
-    //   await this.getDevolutions();
-    // },
     async getDevolutions() {
-      //   if(!this.can('read_observation_type', this.permissions)){
-      //     return;
-      //   }
       await axios
         .get(`/affiliate_get_devolutions/${this.affiliate.id}`)
         .then(response => {
@@ -394,14 +358,12 @@ export default {
           this.devolution = response.data.devolution;
           this.dues = response.data.dues;
           if (this.devolution) {
-            // if (this.devolution.has_payment_commitment) {
               this.form.discountType = 'total'
               this.form.start_eco_com_procedure_id = this.devolution.start_eco_com_procedure_id;
               if (this.devolution.percentage > 0) {
                 this.form.discountType =  'percentage';
                 this.form.percentage =  this.devolution.percentage;
               }
-            // }
           }
         })
         .catch(error => {
@@ -439,13 +401,26 @@ export default {
         flashErrors("Error: ", ["Ocurrio un error al generar el documento"]);
       }
     },
-
-      async saved(){
-      /*if (!this.can("amortize_economic_complement", this.permissions)) {
-        flash("No se puede realizar el Depositocc.", 'error');
-        this.$modal.hide("deposito-modal");
-        return;
-      }*/
+    async confirmSaved(){
+        await this.$swal({
+        title: "¿Está seguro de registrar?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#59B75C",
+        cancelButtonColor: "#EC4758",
+        confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
+        cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return this.saved().catch(error => {
+            this.$swal.showValidationError(
+              `Devolucion fallida: ${error.response.data.errors}`
+            );
+          });
+        },
+      });
+    },
+    async saved(){
       this.loadingButton = true;
       this.form.id = this.ecoCom.id;
       this.form.payment_amount = parseMoney(this.ecoCom.payment_amount);
@@ -453,23 +428,79 @@ export default {
       this.form.payment_date = this.ecoCom.payment_date;
       await axios
         .patch(`/eco_com_save_deposito`, this.form)
-        
         .then(response => {
-          console.log(response);
           this.$store.commit("ecoComForm/setEcoCom", response.data);
           this.$modal.hide("deposito-modal");
+          this.getDevolutions();
           flash("Amortizacion realizada con exito.");
         })
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);
         });
       this.loadingButton = false;
-  }
-    
-
+    },
+    async confirmTotalDeuda(){
+      await this.$swal({
+        title: "¿Está seguro de Actualizar Total Deuda?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#59B75C",
+        cancelButtonColor: "#EC4758",
+        confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
+        cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return this.totalDeuda().catch(error => {
+            this.$swal.showValidationError(
+              `Actualizacion fallida: ${error.response.data.errors}`
+            );
+          });
+        },
+      });
+    },
+    async totalDeuda(){
+      await axios
+        .patch(`/affiliate_devolucion_total_deuda`, this.form)
+        .then(response => {
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.getDevolutions();
+          flash("Se actualizo Total Deuda.");
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+        });
+    },
+    async confirmTotalDeudaPendiente(){
+      await this.$swal({
+        title: "¿Está seguro de Actualizar Total Deuda Pendiente?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#59B75C",
+        cancelButtonColor: "#EC4758",
+        confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
+        cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return this.totalDeudaPendiente().catch(error => {
+            this.$swal.showValidationError(
+              `Actualizacion fallida: ${error.response.data.errors}`
+            );
+          });
+        },
+      });
+    },
+    async totalDeudaPendiente(){
+      await axios
+        .patch(`/affiliate_devolucion_total_deuda_pendiente`, this.form)
+        .then(response => {
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.getDevolutions();
+          flash("Se actualizo Total Deuda Pendiente.");
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+        });
+    }
   }
 };
 </script>
-
-<style>
-</style>

@@ -48,6 +48,8 @@ use Muserpol\Models\FinancialEntity;
 use Illuminate\Support\Facades\Storage;
 use Muserpol\Models\AffiliateDevice;
 
+use Muserpol\Models\BaseWage;
+
 class EconomicComplementController extends Controller
 {
     /**
@@ -1127,7 +1129,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 6;
                 break;
         }
-        $eco_com = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality'])->findOrFail($id);
+        $eco_com = EconomicComplement::with(['discount_types', 'eco_com_state:id,name,eco_com_state_type_id', 'degree','category','eco_com_modality'])->findOrFail($id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         if ($rol->id == 4) {
             $devolution = $eco_com->affiliate->devolutions()->where('observation_type_id',13)->first();
@@ -1311,36 +1313,10 @@ class EconomicComplementController extends Controller
 
     public function saveDeposito(Request $request)
     {
-        $eco_com = EconomicComplement::with('discount_types')->find($request->id);
         $affiliate = Affiliate::find($request->affiliate_id);
         $devolution = $affiliate->devolutions()->where('observation_type_id', 13)->first();
 
-        /*if ($eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
-            $eco_com_state = $eco_com->eco_com_state;
-            return response()->json([
-                'status' => 'error',
-                'msg' => 'Error',
-                'errors' => ['No se puede realizar el deposito porque el trámite ' . $eco_com->code . ' se encuentra en estado de ' . $eco_com_state->name],
-            ], 422);
-        }*/
-        $rol = Util::getRol();
-        $discount_type_id = null;
-        switch ($rol->id) {
-            case 7: //contabiliadad
-                $discount_type_id = 4;
-                break;
-            case 16: //prestamo
-                $discount_type_id = 5;
-                break;
-            case 4: // complemento
-                $discount_type_id = 6;
-                break;
-        }
-        
-        $discount_type = DiscountType::findOrFail($discount_type_id);
-        
         if ($devolution) {
-        
             $devolution->percentage = null;
             $devolution->deposit_number = $request->deposit_number;
             $devolution->payment_amount = $request->payment_amount;
@@ -1643,7 +1619,6 @@ class EconomicComplementController extends Controller
         $affiliate = $eco_com->affiliate;
         $applicant = $eco_com->eco_com_beneficiary;
         $area = $eco_com->wf_state->first_shortened;
-        // $user = $eco_com->user;
         $user = Auth::user();
 
         $date = Util::getStringDate(date('Y-m-d'));
@@ -1660,5 +1635,153 @@ class EconomicComplementController extends Controller
         ->setPaper('letter')
         ->setOption('encoding', 'utf-8')
         ->stream("$namepdf");
+    }
+
+    public function recalificacion(Request $request)
+    {
+        $eco_com = EconomicComplement::find($request->id);
+        $temp_eco_com = (array)json_decode($eco_com);
+        $old_eco_com = [];
+        foreach ($temp_eco_com as $key => $value) {
+            if ($key != 'old_eco_com') {
+                $old_eco_com[$key] = $value;
+            }
+        }
+        $eco_com->recalification_date = Carbon::now();
+        if (!$eco_com->old_eco_com) {
+            $eco_com->old_eco_com=json_encode($old_eco_com);
+        }
+
+        $total_liquido_pagable = json_decode($eco_com->old_eco_com)->total;
+
+        $eco_com_procedure = $eco_com->eco_com_procedure;
+        $eco_com_rent = EcoComRent::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
+            ->where('semester', '=', $eco_com_procedure->semester)
+            ->get();
+        if ($eco_com_rent->count() == 0) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['Verifique que existan los promedio para la gestion ' . $eco_com_procedure->fullName()],
+            ], 422);
+        }
+
+        $base_wage = BaseWage::whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->get();
+        if ($base_wage->count() == 0) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['Verifique que si existen los sueldos para la gestion ' . $eco_com_procedure->fullName()],
+            ], 422);
+        }
+
+        $complementary_factor = ComplementaryFactor::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
+            ->where('semester', '=', $eco_com_procedure->semester)
+            ->get();
+        
+        if ($complementary_factor->count() == 0) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['Verifique los datos de los factores de complementación de la gestion ' . $eco_com_procedure->fullName()],
+            ], 422);
+        }
+
+        $eco_com->total_rent_calc = $eco_com->total_rent;
+
+        if (array_search($eco_com->eco_com_modality_id,  [4, 5, 6, 7, 8, 9, 10, 11, 12]) !== false) {
+            // solo se esta tomando las modalidades de vejez y viudedad
+            $eco_com_rent = EcoComRent::where('degree_id', '=', $eco_com->degree_id)
+                ->where('procedure_modality_id', '=', ($eco_com->isOrphanhood() ? 29 : $eco_com->eco_com_modality->procedure_modality_id))
+                ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
+                ->where('semester', '=', $eco_com_procedure->semester)
+                ->first();
+            if (array_search($eco_com->eco_com_modality_id,  [6, 7, 8, 9, 11, 12]) !== false) {
+                $eco_com->total_rent_calc = $eco_com_rent->average;
+            } else if ($eco_com->total_rent < $eco_com_rent->average && array_search($eco_com->eco_com_modality_id,  [4, 5, 10]) !== false) {
+                $eco_com->total_rent_calc = $eco_com_rent->average;
+            }
+        }
+        
+        $base_wage = BaseWage::where('degree_id', $eco_com->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first();
+
+        //para el caso de las viudas 80%
+        if ($eco_com->isWidowhood()) {
+            $base_wage_amount = $base_wage->amount * (80 / 100);
+            $salary_reference = $base_wage_amount;
+            $seniority = $eco_com->category->percentage * $base_wage_amount;
+        } else {
+            $salary_reference = $base_wage->amount;
+            $seniority = $eco_com->category->percentage * $base_wage->amount;
+        }
+
+        $eco_com->seniority = $seniority;
+        $salary_quotable = $salary_reference + $seniority;
+        $eco_com->salary_quotable = $salary_quotable;
+        $difference = $salary_quotable - $eco_com->total_rent_calc;
+        $eco_com->difference = $difference;
+        $months_of_payment = 6;
+        if ($eco_com->is_paid_spouse==true)
+        {
+            if (!empty($eco_com->months_of_payment))
+                $months_of_payment = $eco_com->months_of_payment;
+        }
+
+        $total_amount_semester = $difference * $months_of_payment;
+        $eco_com->total_amount_semester = $total_amount_semester;
+
+        $complementary_factor = ComplementaryFactor::where('hierarchy_id', '=', $base_wage->degree->hierarchy->id)
+            ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
+            ->where('semester', '=', $eco_com_procedure->semester)
+            ->first();
+        $eco_com->complementary_factor_id = $complementary_factor->id;
+        if ($eco_com->isWidowhood()) {
+            //viudedad
+            $complementary_factor = $complementary_factor->widowhood;
+        } else {
+            //vejez
+            $complementary_factor = $complementary_factor->old_age;
+        }
+        $eco_com->complementary_factor = $complementary_factor;
+        $total = $total_amount_semester * round(floatval($complementary_factor) / 100, 3);
+
+        $total  = $total - $eco_com->discount_types()->sum('amount');
+
+        $eco_com->total = $total;
+        $eco_com->base_wage_id = $base_wage->id;
+        $eco_com->salary_reference = $salary_reference;
+
+        if ($eco_com->total_rent > $eco_com->salary_quotable) {
+            $eco_com->eco_com_state_id = 12;
+        } else {
+            if ($eco_com->eco_com_state_id == 12) {
+                $eco_com->eco_com_state_id = 16;
+            }
+        }
+        if ($eco_com->discount_types->count() > 0) {
+            if (round($eco_com->total_amount_semester * round(floatval($eco_com->complementary_factor) / 100, 3),2) ==  $eco_com->discount_types()->sum('amount')) {
+                $eco_com->eco_com_state_id = 18;
+            }else{
+                if ($eco_com->eco_com_state_id == 18) {
+                    $eco_com->eco_com_state_id = 16;
+                }
+            }
+        }
+
+        if (round($eco_com->total,2) > $total_liquido_pagable)
+        {
+            $eco_com->total_repay = $eco_com->total - $total_liquido_pagable;
+            $eco_com->save();
+            $eco_com->total_eco_com = $eco_com->getOnlyTotalEcoCom();
+        }
+        else
+        {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['No se realizo la recalificacion, no hubo cambio en los datos de trámite ' . $eco_com->code],
+            ], 422);
+        }
+        return $eco_com;
     }
 }

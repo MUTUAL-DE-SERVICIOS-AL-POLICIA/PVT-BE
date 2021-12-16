@@ -32,38 +32,41 @@
         </thead>
         <tbody class="table-striped text-xs">
             <tr class="text-sm ">
-                <td class="w-60 text-left px-10 py-3 uppercase ">RENTA O PENSIÓN (PASIVO NETO)</td>
+                <td class="w-60 text-left px-10 py-3 uppercase ">TOTAL RENTA O PENSIÓN</td>
                 <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->total_rent)}} </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
             <tr class="text-sm">
-                <td class="w-60 text-left px-10 py-3 uppercase">REFERENTE DE CALIFICACIÓN (PROMEDIO)</td>
+                <td class="w-60 text-left px-10 py-3 uppercase">RENTA O PENSION PROMEDIO (según corresponda)</td>
                 <td class="w-15 text-right uppercase px-5 py-3">{{ ($eco_com->total_rent_calc == $eco_com->total_rent) ? NULL : Util::formatMoney($eco_com->total_rent_calc) }} </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
             <tr class="text-sm">
-                <td class="w-60 text-left px-10 py-3 uppercase">REFERENTE SALARIO DEL ACTIVO</td>
+                <td class="w-60 text-left px-10 py-3 uppercase">HABER BÁSICO (Servicio activo)</td>
                 <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->salary_reference)}} </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
             <tr class="text-sm">
-                <td class="w-60 text-left px-10 py-3 uppercase">ANTIGÜEDAD (SEGÚN CATEGORÍA)</td>
+                <td class="w-60 text-left px-10 py-3 uppercase">CATEGORIÍA (según años de servicio)</td>
                 <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->seniority)}} </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
             <tr class="text-sm">
-                <td class="w-60 text-left px-10 py-3 uppercase">SALARIO COTIZABLE (SALARIO DEL ACTIVO + ANTIGÜEDAD)</td>
+                <td class="w-60 text-left px-10 py-3 uppercase">ANTIGÜEDAD (HABER BÁSICO + CATEGORÍA)</td>
                 <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->salary_quotable)}} </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
             <tr class="text-sm">
-                <td class="w-60 text-left px-10 py-3 uppercase">DIFERENCIA (SALARIO ACTIVO - RENTA PASIVO)</td>
+                <td class="w-60 text-left px-10 py-3 uppercase">DIFERENCIA (ANTIGÜEDAD - TOTAL RENTA O PENSIÓN)</td>
                 <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->difference)}} </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
             <tr class="text-sm">
-                <td class="w-60 text-left px-10 py-3 uppercase">TOTAL SEMESTRE (DIFERENCIA SE MULTIPLICA POR 6 MESES)
-                </td>
+                @if ($eco_com->months_of_payment === null)
+                    <td class="w-60 text-left px-10 py-3 uppercase">TOTAL SEMESTRE (DIFERENCIA SE MULTIPLICA POR 6 MESES)</td>
+                @else 
+                    <td class="w-60 text-left px-10 py-3 uppercase">TOTAL SEMESTRE (DIFERENCIA SE MULTIPLICA POR {{ $eco_com->months_of_payment }} MESES)</td>
+                @endif
                 <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->getTotalSemester())}} </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
