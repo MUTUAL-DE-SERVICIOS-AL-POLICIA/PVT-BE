@@ -29,7 +29,19 @@
       </div>
       <div class="ibox-content">
         <div class="row">
-          <eco-com-amortization :permissions="permissions"></eco-com-amortization>
+          <div class="col-md-3">
+            <eco-com-amortization :permissions="permissions"></eco-com-amortization>
+          </div>
+          <div class="col-md-3" v-if="eco_com_state_type_id===1 && roleId===4">
+            <button
+              class="btn btn-primary"
+              data-toggle="tooltip"
+              title="Cuando se le a pagado menos"
+              @click="recalificar()"
+            >
+            <i class="fa fa-cog"></i> Recalificar
+            </button>
+          </div>
         </div>
         <div class="row">
           <div class="col-md-6">
@@ -149,6 +161,18 @@
                     <strong>Total L&iacute;quido Pagable</strong>
                   </td>
                   <td style="text-align: right;">{{ ecoCom.total | currency }}</td>
+                </tr>
+                <tr v-if="ecoCom.total_repay">
+                  <td>
+                    <strong>Total pagado</strong>
+                  </td>
+                  <td style="text-align: right;">{{ (ecoCom.total - ecoCom.total_repay)   | currency }}</td>
+                </tr>
+                <tr class="success" v-if="ecoCom.total_repay">
+                  <td>
+                    <strong>Reintegro</strong>
+                  </td>
+                  <td style="text-align: right;">{{ ecoCom.total_repay | currency }}</td>
                 </tr>
               </tbody>
             </table>
@@ -423,12 +447,13 @@ import {
 import { mapState, mapMutations } from "vuex";
 
 export default {
-  props: ["ecoComId", "affiliate", "permissions"],
+  props: ["ecoComId", "affiliate", "permissions","roleId"],
   data() {
     return {
       ecoComModal: {},
       editing: false,
-      loadingButton: false
+      loadingButton: false,
+      eco_com_state_type_id:0
     };
   },
   mounted() {
@@ -497,6 +522,7 @@ export default {
         .get(`/get_eco_com/${this.ecoComId}`)
         .then(response => {
           this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.eco_com_state_type_id=response.data.eco_com_state.eco_com_state_type_id;
         })
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);
@@ -563,6 +589,37 @@ export default {
         parseFloat(parseMoney(this.ecoCom.dignity_pension)) +
         parseFloat(parseMoney(this.ecoCom.aps_disability))
       );
+    },
+    async recalificar(){
+      await this.$swal({
+        title: "¿Está seguro de RECALIFICAR?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#59B75C",
+        cancelButtonColor: "#EC4758",
+        confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
+        cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          return this.saveRecalificacion().catch(error => {
+            this.$swal.showValidationError(
+              `Recalificacion fallida: ${error.response.data.errors}`
+            );
+          });
+        },
+        allowOutsideClick: () => !this.$swal.isLoading()
+      });
+    },
+    async saveRecalificacion() {
+      await axios
+        .patch(`/eco_com_recalificacion`,this.ecoCom)
+        .then(response => {
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          flash("Recalificacion Actualizada");
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+        });
     }
   }
 };

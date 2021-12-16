@@ -130,7 +130,7 @@
                 </eco-com-step1-requirements-edit>
             </div>
             <div id="tab-eco-com-qualification" class="tab-pane">
-            <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}">
+            <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
                 </eco-com-qualification>
             </div>
             <div id="tab-eco-com-observations" class="tab-pane">

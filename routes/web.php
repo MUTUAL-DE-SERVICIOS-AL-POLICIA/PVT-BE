@@ -685,6 +685,9 @@ Route::group(['middleware' => ['auth']], function () {
     
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
+    Route::get('eco_com/{eco_com_id}/print/paid_cetificate', 'EconomicComplementController@paidCertificate');
+    Route::patch('eco_com_recalificacion', 'EconomicComplementController@recalificacion');
+
     // Eco com Beneficiary
     Route::get('get_eco_com_beneficiary/{eco_com_id}', 'EcoComBeneficiaryController@getEcoComBeneficiary');
     Route::patch('/eco_com_beneficiary', 'EcoComBeneficiaryController@update');
@@ -757,6 +760,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('affiliate/{affiliate_id}/print/certification_devolutions', 'AffiliateDevolutionController@printCertificationDevolutions');
     Route::post('affiliate/{affiliate_id}/print/devolution_payment_commitment', 'AffiliateDevolutionController@printDevolutionPaymentCommitment');
 
+    // Affiliate Devoluciones
+    Route::patch('affiliate_devolucion_total_deuda', 'AffiliateDevolutionController@actualizarTotalDeuda');
+    Route::patch('affiliate_devolucion_total_deuda_pendiente', 'AffiliateDevolutionController@actualizarTotalDeudaPendiente');
+    
     // affiliate records
     Route::get('affiliate_record/{id}', 'AffiliateController@getRecord');
     Route::get('affiliate_notes/{id}', 'AffiliateController@getNote');

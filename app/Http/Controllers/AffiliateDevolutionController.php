@@ -66,6 +66,7 @@ class AffiliateDevolutionController extends Controller
             ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
             // ->where('eco_com_applicants.identity_card', $eco_com_beneficiary->identity_card)
             ->where('affiliate_id', $affiliate->id)
+            ->whereIn('economic_complements.eco_com_state_id', [1,21,17,18,26,2])
             ->select('economic_complements.*')
             ->orderBY('eco_com_procedures.year')
             ->orderBY('eco_com_procedures.semester')
@@ -145,7 +146,7 @@ class AffiliateDevolutionController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
-        $title = "COMPROMISO DE DEVOLUCIÓN POR PAGOS EN DEFECTO DEL COMPLEMENTO ECONÓMICO";
+        $title = "COMPROMISO DE DEVOLUCIÓN POR PAGOS EN DEMASÍA DEL COMPLEMENTO ECONÓMICO";
         $user = auth()->user();
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
@@ -213,5 +214,66 @@ class AffiliateDevolutionController extends Controller
             ->setOption('margin-bottom', '23mm')
             ->setOption('footer-html', $footerHtml)
             ->stream("certificacion.pdf");
+    }
+
+    public function actualizarTotalDeuda(Request $request){
+        $affiliate = Affiliate::find($request->affiliate_id);
+        $devolution = $affiliate->devolutions()->with('dues')->where('observation_type_id', 13)->first();
+
+        $dues = $devolution->dues()->get();
+        $totalDeuda=0;
+        foreach ($dues as $d) {
+            $totalDeuda+= $d->amount;
+        }
+
+        if ($totalDeuda>0)
+        {
+            $devolution->total=$totalDeuda;
+            $devolution->save();
+        }
+
+        $data = [
+            'devolution' => $devolution,
+        ];
+        return $data;
+    }
+
+    public function actualizarTotalDeudaPendiente(Request $request){
+        $affiliate = Affiliate::find($request->affiliate_id);
+        $devolution = $affiliate->devolutions()->where('observation_type_id', 13)->first();
+
+        $user = auth()->user();
+        $eco_coms = EconomicComplement::with('discount_types')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+            ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
+            ->where('affiliate_id', $affiliate->id)
+            ->whereIn('economic_complements.eco_com_state_id', [1,21,17,18,26,2])
+            ->select('economic_complements.*')
+            ->orderBY('eco_com_procedures.year')
+            ->orderBY('eco_com_procedures.semester')
+            ->get();
+        $eco_coms = $eco_coms->filter(function ($item) {
+            return $item->discount_types->contains(6);
+        });
+
+        $totalDeudaPendiente=0;
+        foreach ($eco_coms as $eco){
+            $totalDeudaPendiente+=$eco->discount_types->where('id',6)->first()->pivot->amount;
+        }
+
+        if (!is_null($devolution->payment_amount))
+        {
+            $totalDeudaPendiente+=$devolution->payment_amount;
+        }
+
+        if ($totalDeudaPendiente>=0)
+        {
+            $devolution->balance=$devolution->total - $totalDeudaPendiente;
+            $devolution->save();
+        }
+
+        $data = [
+            'devolution' => $devolution,
+        ];
+        return $data;
     }
 }
