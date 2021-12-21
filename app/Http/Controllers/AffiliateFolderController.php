@@ -100,15 +100,6 @@ class AffiliateFolderController extends Controller
         $folder->delete();
         return back()->withInput();
     }
-
-    public function updateFileCode(Request $request) {
-
-        //return $request->affiliate_id;
-        $affiliate = Affiliate::find($request->affiliate_id);
-        $affiliate->file_code = $request->file_code;
-        $affiliate->save();
-        return back()->withInput();
-    }
     
     public function editFolder(Request $request){        
         $folder=AffiliateFolder::find($request->folder_id);

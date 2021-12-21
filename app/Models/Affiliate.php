@@ -45,12 +45,9 @@ class Affiliate extends Model
     'reason_death',
     'date_derelict',
     'reason_derelict',
-    'change_date',
     'phone_number',
     'cell_phone_number',
-    'afp',
     'nua',
-    'item',
     'is_duedate_undefined',
     'due_date'
   ];

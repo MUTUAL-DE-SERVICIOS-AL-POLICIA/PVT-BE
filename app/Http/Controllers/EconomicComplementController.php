@@ -796,7 +796,6 @@ class EconomicComplementController extends Controller
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
-        $affiliate->file_code = mb_strtoupper($request->file_code);
         $affiliate->save();
         $economic_complement = EconomicComplement::find($request->eco_com_id);
         $economic_complement->degree_id = $request->degree_id;
@@ -879,7 +878,6 @@ class EconomicComplementController extends Controller
         $affiliate->degree_id = $request->degree_id;
         // $affiliate->pension_entity_id = $request->pension_entity_id;
         // $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
-        // $affiliate->file_code = mb_strtoupper($request->file_code);
         //$affiliate->account_number = $request->account_number;
        // $affiliate->financial_entity_id = $request->financial_entity_id;
         //$affiliate->sigep_status = $request->sigep_status;

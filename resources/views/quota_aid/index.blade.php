@@ -190,7 +190,6 @@
                 { data: 'city_start.name' },
                 { data: 'inbox_state' },
                 { data: 'total' },                
-                { data: 'file_code',  visible: false },
                 { data: 'file_date', visible: false },
                 { data: 'review_code', visible: false },
                 { data: 'review_date', visible: false },

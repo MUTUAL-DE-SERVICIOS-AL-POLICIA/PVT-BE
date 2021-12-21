@@ -17,7 +17,6 @@
 				pension_entity: this.affiliate.pension_entity,
 				values:{
 						date_entry: this.affiliate.date_entry,
-						item: this.affiliate.item,
 						type: this.affiliate.type
 					},
 				calculateCategoryId: null
@@ -67,13 +66,11 @@
 				{
 					this.form.affiliate_state_id = this.state.id;
 					this.form.date_entry = this.values.date_entry;
-					this.form.item = this.values.item;
 					this.form.category_id  = this.category.id;
 					this.form.degree_id  = this.degree.id;					
 					this.form.pension_entity_id = this.pension_entity.id;
 					this.form.state_id = this.state.id;
 					this.form.type = this.values.type;
-					this.form.file_code = this.values.file_code;
 				}
 			},
 			update: function (){
@@ -94,9 +91,7 @@
 						this.degree = response.data.degree;
 						this.pension_entity = response.data.pension_entity;
 						this.values.date_entry = response.data.affiliate.date_entry;
-						this.values.item = response.data.affiliate.item;
 						this.values.type = response.data.affiliate.type; 
-						this.values.file_code = response.data.affiliate.file_code;
 						flash('Informacion Policial Actualizada');
 					}).catch((response)=>{
 						flash('Error al actualizar Informacion Policial: '+response.message,'error');

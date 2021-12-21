@@ -72,11 +72,6 @@
                 </div>
                 <br>
                 <div class="row">
-                    <div class="col-md-2"><strong>C&oacute;digo de archivo:</strong></div>
-                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.file_code" :disabled="!editing"></div>  
-                </div>
-                <br>
-                <div class="row">
                     <div class="text-center" v-if="editing">
                         <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
                         <button class="btn btn-primary" type="button" @click="update"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
