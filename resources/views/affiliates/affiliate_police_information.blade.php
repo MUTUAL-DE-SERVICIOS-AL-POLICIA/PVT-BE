@@ -26,8 +26,6 @@
                 <div class="row">
                     <div class="col-md-2"><strong>Fecha de Ingreso a la Institucional Policial:</strong></div>
                     <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_entry" v-month-year :disabled="!editing"></div>
-                    <div class="col-md-2"><strong>Numero de Item:</strong></div>
-                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.item" :disabled="!editing"></div>
                 </div>
                 <br>
                 <div class="row">

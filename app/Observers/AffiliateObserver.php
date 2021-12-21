@@ -132,14 +132,11 @@ class AffiliateObserver
 
         }
 
-        if($affiliate->item != $old->item)
-        {
-            $message = $message . ' número de ítem '.$old->item.' a '.$affiliate->item.', ';
-        }
         if($affiliate->service_years != $old->service_years)
         {
             $message = $message . ' Años de servicio '.$old->service_years.' a '.$affiliate->service_years.', ';
         }
+        
         if($affiliate->service_months != $old->service_months)
         {
             $message = $message . ' Meses de servicio '.$old->service_months.' a '.$affiliate->service_months.', ';
