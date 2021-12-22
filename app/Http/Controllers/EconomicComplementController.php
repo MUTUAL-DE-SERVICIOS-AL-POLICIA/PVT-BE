@@ -776,7 +776,6 @@ class EconomicComplementController extends Controller
         $affiliate->affiliate_state_id = $request->affiliate_state_id;
         $affiliate->type = $request->type;
         $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
-        $affiliate->item = $request->item;
         $affiliate->category_id = $request->category_id;
         $service_year = $request->service_years;
         $service_month = $request->service_months;
@@ -848,7 +847,6 @@ class EconomicComplementController extends Controller
         // $affiliate->affiliate_state_id = $request->affiliate_state_id;
         // $affiliate->type = $request->type;
         // $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
-        // $affiliate->item = $request->item;
         $affiliate->category_id = $request->category_id;
         //revisar
         $economic_complement->eco_com_state_id;
