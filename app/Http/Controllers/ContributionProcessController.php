@@ -315,11 +315,6 @@ class ContributionProcessController extends Controller
                 $contribution->border_bonus = 0;
                 $contribution->east_bonus = 0;
                 $contribution->public_security_bonus = 0;
-                $contribution->deceased = 0;
-                $contribution->natality = 0;
-                $contribution->lactation = 0;
-                $contribution->prenatal = 0;
-                $contribution->subsidy = 0;
                 $contribution->gain = $aporte->sueldo;
                 $contribution->payable_liquid = 0;
                 $contribution->quotable = $aporte->sueldo;
