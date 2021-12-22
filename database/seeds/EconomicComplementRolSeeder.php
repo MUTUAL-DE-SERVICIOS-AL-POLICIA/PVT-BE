@@ -34,7 +34,6 @@ class EconomicComplementRolSeeder extends Seeder
             ['module_id' => 2, 'name' => 'EcoComRent'],
             ['module_id' => 2, 'name' => 'EcoComSubmittedDocument'],
             ['module_id' => 2, 'name' => 'Address'],
-            ['module_id' => 2, 'name' => 'ScannedDocument'],
             ['module_id' => 2, 'name' => 'Spouse'],
             ['module_id' => 2, 'name' => 'ComplementaryFactor'],
             ['module_id' => 2, 'name' => 'ObservationType'],

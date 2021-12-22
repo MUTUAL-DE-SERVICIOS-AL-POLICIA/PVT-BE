@@ -33,7 +33,6 @@ class OperationSeeder extends Seeder
             ['module_id' => '3', 'name' => 'ProcedureType', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'Role', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'RoleUser', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
-            ['module_id' => '3', 'name' => 'ScannedDocument', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'Spouse', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'Unit', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],
             ['module_id' => '3', 'name' => 'Voucher', 'created_at' => '2018/03/08', 'updated_at' =>'2018/03/08'],

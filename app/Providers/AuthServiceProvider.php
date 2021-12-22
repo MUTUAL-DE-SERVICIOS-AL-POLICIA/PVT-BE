@@ -44,8 +44,6 @@ use Muserpol\Models\Role;
 use Muserpol\Policies\RolePolicy;
 use Muserpol\Models\RoleUser;
 use Muserpol\Policies\RoleUserPolicy;
-use Muserpol\Models\ScannedDocument;
-use Muserpol\Policies\ScannedDocumentPolicy;
 use Muserpol\Models\Spouse;
 use Muserpol\Policies\SpousePolicy;
 use Muserpol\Models\Unit;
@@ -134,7 +132,6 @@ class AuthServiceProvider extends ServiceProvider
          ProcedureType::class => ProcedureTypePolicy::class,
          Role::class => RolePolicy::class,
          RoleUser::class => RoleUserPolicy::class,
-         ScannedDocument::class => ScannedDocumentPolicy::class,
          Spouse::class => SpousePolicy::class,
          Unit::class => UnitPolicy::class,
          Voucher::class => VoucherPolicy::class,

@@ -137,10 +137,6 @@ class Affiliate extends Model
   {
     return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund');
   }
-  public function scanned_documents()
-  {
-    return $this->hasMany('Muserpol\Models\ScannedDocument');
-  }
   public function affiliate_folders()
   {
     return $this->hasMany('Muserpol\Models\AffiliateFolder');
@@ -184,10 +180,6 @@ class Affiliate extends Model
     return !!$this->observations()->where('observation_type_id', '=', $id)->first();
   }
 
-  public function submitted_documents()
-  {
-    return $this->hasMany(AffiliateSubmittedDocument::class);
-  }
   /**
    * methods
    */

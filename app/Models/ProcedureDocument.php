@@ -11,8 +11,4 @@ class ProcedureDocument extends Model
         return $this->hasMany('Muserpol\Models\ProcedureRequirement');
     }
 
-    public function scanned_documents()
-    {
-        return $this->hasMany('Muserpol\Models\ScannedDocument');
-    }
 }

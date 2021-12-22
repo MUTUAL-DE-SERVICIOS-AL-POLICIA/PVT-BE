@@ -33,7 +33,6 @@ class OperationQuotaAidSeeder extends Seeder
             ['module_id' => 4, 'name' => 'ProcedureType', ],
             ['module_id' => 4, 'name' => 'Role', ],
             ['module_id' => 4, 'name' => 'RoleUser', ],
-            ['module_id' => 4, 'name' => 'ScannedDocument', ],
             ['module_id' => 4, 'name' => 'Spouse', ],
             ['module_id' => 4, 'name' => 'Unit', ],
             ['module_id' => 4, 'name' => 'Voucher', ],
