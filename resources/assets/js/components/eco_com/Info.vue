@@ -4,6 +4,29 @@
       <div class="ibox-title">
         <h2 class="pull-left">Información del Trámite <i :class="{'fa fa-home': ecoCom.eco_com_state.id == 17 || ecoCom.eco_com_state.id == 29 }"></i> </h2>
         <div class="ibox-tools">
+          <span v-if="roleId === 5">
+          <button
+            data-animation="flip"
+            data-toggle="tooltip"
+            title="Cambiar a estado pagado"
+            class="btn btn-primary"
+            @click="estadoPagado()"
+            :disabled="ecoCom.eco_com_state_id != 28 && ecoCom.eco_com_state_id != 29"
+          >
+            <i class="fa fa-dollar"></i> Cambiar a estado pagado
+          </button>
+          </span>
+          <span v-if="ecoCom.eco_com_state_id === 16 && ecoCom.procedure_date !== null ">
+            <button
+            data-animation="flip"
+            data-toggle="tooltip"
+            title="Cambiar a estado habilitado"
+            class="btn btn-primary"
+            @click="estadoPagadoObservado()"
+          >
+            <i class="fa fa-dollar"></i> Cambiar a estado habilitado
+          </button>
+          </span>
           <button
             data-animation="flip"
             data-toggle="tooltip"
@@ -286,6 +309,7 @@
 
 <script>
 import { flashErrors, canOperation } from "../../helper";
+import EstadoPagadoVue from './EstadoPagado.vue';
 export default {
   props: [
     "ecoCom",
@@ -402,7 +426,6 @@ export default {
       await axios
         .patch(uri, this.form)
         .then(response => {
-          console.log(response);
           this.editing = false;
           this.show_spinner = false;
           this.form = response.data;
@@ -459,12 +482,39 @@ export default {
         }
       });
     },
+    async estadoPagado() {
+      this.show_spinner = true;
+      await axios
+        .delete(`/eco_com_cambiar_estado_individual/${this.ecoCom.id}`)
+        .then(response => {
+          this.form = response.data;
+          flash("Información del Trámite Actualizada");
+        })
+        location.reload()
+        .catch(response => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+          this.show_spinner = false;
+        });
+    },
+    async estadoPagadoObservado() {
+      this.show_spinner = true;
+      await axios
+        .get(`/eco_com_cambiar_habilitado/${this.ecoCom.id}`)
+        .then(response => {
+          this.form = response.data;
+          flash("Información del Trámite Actualizada");
+        })
+        location.reload()
+        .catch(response => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+          this.show_spinner = false;
+        });
+    },
     async certificacionPago(){
       printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/paid_cetificate', type:'pdf', showModal:true});
     }
   }
 };
 </script>
-
 <style>
 </style>

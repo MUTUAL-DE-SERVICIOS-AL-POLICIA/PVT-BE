@@ -678,10 +678,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_save_deposito', 'EconomicComplementController@saveDeposito');
     Route::get('eco_com_record/{id}', 'EconomicComplementController@getRecord');
     Route::post('eco_com_import_rents', 'EcoComImportExportController@importSenasir');
-   Route::post('eco_com_import_rents_aps', 'EcoComImportExportController@importAPS');
+    Route::post('eco_com_import_rents_aps', 'EcoComImportExportController@importAPS');
     Route::post('eco_com_update_paid_bank', 'EcoComImportExportController@updatePaidBank');
     Route::post('eco_com_import_pago_futuro', 'EcoComImportExportController@importPagoFuturo');
-
+    Route::post('eco_com_import_planilla', 'EconomicComplementController@importPlanilla');
+    Route::post('eco_com_cambiar_estado', 'EconomicComplementController@cambioEstado');
+    Route::delete('eco_com_cambiar_estado_individual/{eco_com_id}', 'EconomicComplementController@cambioEstadoIndividual');
+    Route::get('eco_com_cambiar_habilitado/{eco_com_id}', 'EconomicComplementController@cambioEstadoObservados');
     
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
@@ -712,6 +715,7 @@ Route::group(['middleware' => ['auth']], function () {
     // eco com reports
     Route::get('eco_com_report', 'EcoComReportController@index')->name('eco_com_report');
     Route::post('eco_com_report_excel', 'EcoComReportController@generate');
+    Route::post('eco_com_estado', 'EconomicComplementController@cambiarEstado');
 
     // base wage
     Route::resource('base_wage', 'BaseWageController');

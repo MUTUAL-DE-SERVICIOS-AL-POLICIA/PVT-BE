@@ -445,6 +445,8 @@ Vue.component('eco-com-import-rents-aps', require('./components/eco_com/ImportRe
 Vue.component('eco-com-import-pago-futuro', require('./components/eco_com/ImportPagoFuturo.vue'));
 Vue.component('eco-com-update-paid-bank', require('./components/eco_com/UpdatePaidBank.vue'));
 Vue.component('eco-com-automatic-qualification', require('./components/eco_com/AutomaticQualification.vue'));
+
+Vue.component('eco-com-estado-pagado', require('./components/eco_com/EstadoPagado.vue'));
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));
