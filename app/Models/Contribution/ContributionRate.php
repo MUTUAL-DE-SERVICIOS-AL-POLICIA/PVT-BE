@@ -11,8 +11,6 @@ class ContributionRate extends Model
     	'month_year',
     	'retirement_fund',
         'mortuary_quota',
-    	'retirement_fund_commission',
-        'mortuary_quota_commission',
         'mortuary_aid'
 
 	];

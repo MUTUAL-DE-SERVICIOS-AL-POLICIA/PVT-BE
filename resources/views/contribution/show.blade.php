@@ -41,7 +41,6 @@
                                 <th>Gestión-1</th>
                                 <th>Grado</th>
                                 <th>Unidad</th>
-                                <th>Ítem</th>
                                 <th>Sueldo</th>
                                 <th>Antigüedad</th>
                                 <th>Estudio</th>
@@ -144,7 +143,6 @@
                 {data: 'month_year', },
                 {data: 'degree_id'},
                 {data: 'unit_id'},
-                {data: 'item', visible:false},
                 {data: 'base_wage'},
                 {data: 'seniority_bonus'},
                 {data: 'study_bonus', visible:false},

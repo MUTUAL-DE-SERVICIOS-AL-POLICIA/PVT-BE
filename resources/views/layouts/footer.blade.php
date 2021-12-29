@@ -3,6 +3,6 @@
         Plataforma Virtual de Trámites
     </div>
     <div>
-        <strong>MUSERPOL</strong> Muserpol <span class="copyleft">&copy;</span> {{ now()->year }}
+        <strong>MUSERPOL</strong><span class="copyleft">&copy;</span> {{ now()->year }}
     </div>
 </div>
