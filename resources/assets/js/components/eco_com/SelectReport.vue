@@ -79,7 +79,16 @@
       <label for="change-date">Fecha (yyyy-mm-dd)</label>
       <input type="text" id="change-date" v-model="form.changeDate"/>
     </div>
-    
+    <div class="col-md-12">
+      <div class="text-left m-sm" v-if="(form.reportTypeId == 26 || form.reportTypeId == 27) && rol.id == 5">
+        <button class="btn btn-primary" type="button" @click="CambiarEstado()">
+          <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
+          <i v-else class="fa fa-check-circle"></i>
+          &nbsp;
+          {{ loadingButton ? 'Cambiando estado a hatilitado...' : 'Cambiar a estado habilitado' }}
+        </button>
+      </div>
+    </div>
     <div class="col-md-12">
       <div class="text-center m-sm">
         <button class="btn btn-primary" type="button" @click="send()" :disabled="loadingButton">
@@ -258,6 +267,21 @@ export default {
           console.log(error);
         });
       this.loadingButton = false;
+    },
+    async CambiarEstado() {
+      this.loadingButton = true;
+      await axios({
+        url: "/eco_com_estado",
+        method: "POST",
+        data: this.form
+      })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+       });
+       this.loadingButton = false;
     }
   },
   computed: {

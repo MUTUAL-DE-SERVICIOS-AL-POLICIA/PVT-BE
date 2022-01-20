@@ -42,6 +42,9 @@
                             class="fa fa-users"></i> Importar Rentas APS</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-pago-futuro"><a href="#"><i
                             class="fa fa-users"></i> Importar Pago a Futuro</a></li>
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-estado-pagado"><a href="#"><i
+                            class="fa fa-users"></i> Cambiar a estado pagado</a></li>
+                            
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-update-paid-bank"><a href="#"><i
                             class="fa fa-users"></i> Actualizar Pagados en Banco</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-automatic-qualification"><a href="#"><i
@@ -75,6 +78,9 @@
             </div>
             <div id="tab-eco-com-import-pago-futuro" class="tab-pane">
             <eco-com-import-pago-futuro :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-import-pago-futuro>
+            </div>
+            <div id="tab-eco-com-estado-pagado" class="tab-pane">
+                <eco-com-estado-pagado :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-estado-pagado>
             </div>
             <div id="tab-eco-com-update-paid-bank" class="tab-pane">
             <eco-com-update-paid-bank :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-update-paid-bank>
