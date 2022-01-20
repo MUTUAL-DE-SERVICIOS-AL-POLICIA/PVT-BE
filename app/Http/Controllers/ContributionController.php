@@ -332,7 +332,6 @@ class ContributionController extends Controller
             concat('RE - ',  extract(year from month_year ))  as month_year_concat,
             null,
             null,
-            null,
             base_wage,
             seniority_bonus,
             study_bonus,
