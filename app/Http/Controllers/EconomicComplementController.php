@@ -1784,4 +1784,87 @@ class EconomicComplementController extends Controller
         }
         return $eco_com;
     }
+
+    public function cambiarEstado(Request $request){
+        switch ($request->reportTypeId) {
+            case 26:
+                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_shortened, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status = 'ACTIVO' and account_number is not null and financialentities is not null and total>0");
+                foreach ($data as $item) {
+                    $eco_com = EconomicComplement::where('code','=', $item->code)->first();
+                    $eco_com->eco_com_state_id = 25;
+                    $eco_com->wf_current_state_id = 4;
+                    $eco_com->procedure_date = Carbon::now();
+                    $eco_com->user_id = Auth::user()->id;
+                    $eco_com->save();
+                    // logger($eco_com);
+                }
+                break;
+            case 27:
+                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_shortened, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and (account_number is null or financialentities is null) and total>0");
+                foreach ($data as $item) {
+                    $eco_com = EconomicComplement::where('code','=', $item->code)->first();
+                    $eco_com->eco_com_state_id = 24;
+                    $eco_com->wf_current_state_id = 4;
+                    $eco_com->procedure_date = Carbon::now();
+                    $eco_com->user_id = Auth::user()->id;
+                    $eco_com->save();
+                }
+                break;
+        }
+        return 0;
+    }
+
+    public function importPlanilla(Request $request){
+        $eco_com_sigep = EconomicComplement::select("procedure_date")->where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',25)->distinct()->get();
+        $eco_com_banco = EconomicComplement::select("procedure_date")->where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',24)->distinct()->get();
+        $data = [
+            'eco_com_sigep' => $eco_com_sigep,
+            'eco_com_banco' => $eco_com_banco,
+        ];
+        return $data;
+    }
+    public function cambioEstado(Request $request){
+        $list_eco_com = EconomicComplement::where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',$request->ecoComState)->where('procedure_date', $request->procedureDate)->get();
+        foreach ($list_eco_com as $item) {
+             $eco_com = EconomicComplement::find($item->id);
+             $eco_com->eco_com_state_id=26;
+             if ($request->ecoComState===25){
+                $eco_com->eco_com_state_id=26;
+             }
+             if ($request->ecoComState=== 24){
+                $eco_com->eco_com_state_id=1;
+             }
+             $eco_com->wf_current_state_id=8;
+             $eco_com->user_id = Auth::user()->id;
+             $eco_com->save();
+        }
+        return 0;
+    }
+    public function cambioEstadoObservados($id){
+        $eco_com = EconomicComplement::find($id);
+        $affiliate = Affiliate::find($eco_com->affiliate_id);
+        logger($affiliate);
+        if ($affiliate->sigep_status == 'ACTIVO' && strlen($affiliate->account_number)>0 && strlen($affiliate->financial_entity_id)>0){
+            $eco_com->eco_com_state_id=25;
+        }
+        else{
+            $eco_com->eco_com_state_id=242;
+        }
+        $eco_com->save();
+        return $eco_com;
+    }
+    public function cambioEstadoIndividual($id){
+        $eco_com = EconomicComplement::find($id);
+        if ($eco_com->eco_com_state_id == 29){
+            $eco_com->eco_com_state_id=17;
+        }
+        else{
+            if ($eco_com->eco_com_state_id == 28){
+                $eco_com->eco_com_state_id=2;
+            }
+        }
+        $eco_com->save();
+        return $eco_com;
+    }
+
 }
