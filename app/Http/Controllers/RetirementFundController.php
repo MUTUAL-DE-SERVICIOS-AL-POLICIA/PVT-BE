@@ -695,7 +695,7 @@ class RetirementFundController extends Controller
         //workflow record
         $workflow_records = $retirement_fund->wf_records()->orderBy('date', 'desc')->get();
 
-        $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
+        /*$first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
         if ($first_wf_state) {
             $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
             $str = $first_wf_state->message;
@@ -703,7 +703,7 @@ class RetirementFundController extends Controller
             $user_name = $matches[0][0];
             $rol = User::where('username', '=', $user_name)->first()->roles->first();
             $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
-        }
+        }*/
 
 
         // dd($first_wf_state);
