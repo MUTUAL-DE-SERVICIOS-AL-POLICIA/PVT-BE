@@ -262,8 +262,8 @@ class DirectContributionController extends Controller
                 )
                 ->get();                        
                 
-        $financial_entities = FinancialEntity::all()->pluck('name', 'id');
-        }        
+        }     
+        $financial_entities = FinancialEntity::all()->pluck('name', 'id');   
         $payment_types = PaymentType::get();
         //print_r($contribution_process->voucher);
         //return 12;        
