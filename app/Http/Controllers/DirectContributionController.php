@@ -26,6 +26,8 @@ use Muserpol\Models\Contribution\AidReimbursement;
 use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\PaymentType;
+use Muserpol\Models\FinancialEntity;
+
 class DirectContributionController extends Controller
 {
     public function getAllDirectContribution(DataTables $datatables)
@@ -259,6 +261,8 @@ class DirectContributionController extends Controller
                     'wf_states.first_shortened as wf_state_name'
                 )
                 ->get();                        
+                
+        $financial_entities = FinancialEntity::all()->pluck('name', 'id');
         }        
         $payment_types = PaymentType::get();
         //print_r($contribution_process->voucher);
@@ -290,6 +294,7 @@ class DirectContributionController extends Controller
             'procedure_types'   =>  $procedure_types,
             'payment_types' =>  $payment_types,
             'submitted_documents'   =>  $submitted->get(),
+            'financial_entities'    =>  $financial_entities,
 
             'can_validate' => $can_validate ?? false,
             'can_cancel' => $can_cancel ?? false,
