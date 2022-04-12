@@ -408,6 +408,10 @@ class Affiliate extends Model
     );
     return $total_dates;
   }
+  public function getLastContributionAttribute(){
+
+    return $this->contributions()->latest('month_year')->first();
+  }
   public function globalPayRetFun()
   {
     $current_procedure = Util::getRetFunCurrentProcedure();
