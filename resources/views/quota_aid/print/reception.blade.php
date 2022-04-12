@@ -19,7 +19,7 @@
         <div class="font-bold uppercase m-b-5 counter">
             Datos Policiales del Titular
         </div>
-    @if (!$is_aid)
+    @if ($is_quota)
     @include('quota_aid.print.only_police_info_quota', ['affiliate'=>$affiliate])
     @else
     @include('print_global.only_police_info', ['affiliate'=>$affiliate])
