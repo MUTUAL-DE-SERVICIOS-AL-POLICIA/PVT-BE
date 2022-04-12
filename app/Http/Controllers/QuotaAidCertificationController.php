@@ -228,11 +228,6 @@ class QuotaAidCertificationController extends Controller
     if (($quota_aid->procedure_modality_id == 15 && $affiliate->pension_entity_id == 5) || $quota_aid->procedure_modality_id == 14) {//aqui
       $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
     }
-    //verificar si es cuota o auxilio_mortuorio
-    $is_aid =  false;
-    if ($quota_aid->procedure_modality_id == 15  || $quota_aid->procedure_modality_id == 14|| $quota_aid->procedure_modality_id == 13) {//aqui
-      $is_aid =true;
-    }
 
     $data = [
       'code' => $code,
@@ -253,7 +248,7 @@ class QuotaAidCertificationController extends Controller
       'submitted_documents' => $submitted_documents,
       'quota_aid' => $quota_aid,
       'spouse'=>$spouse,
-      'is_aid'=> $is_aid,
+      'is_quota'=> $quota_aid->isQuota(),
     ];
     $pages = [];
     for ($i = 1; $i <= 2; $i++) {
