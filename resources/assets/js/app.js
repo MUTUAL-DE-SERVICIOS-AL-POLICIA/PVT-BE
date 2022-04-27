@@ -141,7 +141,7 @@ instance.extend('max_date', {
 instance.extend('max_due_date', {
   getMessage: (field) => `La fecha ingresada no es valida.`,
   validate: (value) => {
-    return moment(value,'DD/MM/YYYY').isBetween(moment(), moment().add(6, 'years'))
+    return moment(value,'DD/MM/YYYY').isBetween(moment(), moment().add(11, 'years'))
   }
 });
 instance.extend('phone_number', {
