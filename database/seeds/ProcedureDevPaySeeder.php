@@ -48,14 +48,14 @@ class ProcedureDevPaySeeder extends Seeder
             ['name' => 'Aceptación de Herencia en copia legalizada emitida por la autoridad competente.'],
             ['name' => 'Declaratoria de Herederos en original emitida por la autoridad competente.'],
             ['name' => 'Declaratoria de Herederos en copia legalizada emitida por la autoridad competente.'],
-            ['name' => 'Certificado de años de servicio desglosado, en original otorgado por el Comando General de la Policía Boliviana.'],
-            ['name' => 'Certificado de años de servicio desglosado, en copia legalizada otorgado por el Comando General de la Policía Boliviana.'],
+            ['name' => 'Certificado de años de servicio desglosado en original, otorgado por el Comando General de la Policía Boliviana.'],
+            ['name' => 'Certificado de años de servicio desglosado en copia legalizada, otorgado por el Comando General de la Policía Boliviana.'],
             ['name' => 'Boletas de pago en original.'],
         ];
         foreach ($procedure_documents as $procedure_document) {
             ProcedureDocument::firstOrCreate($procedure_document);
         }
-        
+
         $procedure_requirements = [
             ['procedure_modality_id' => '62', 'procedure_document_id' => '326', 'number' => '1'],
             ['procedure_modality_id' => '62', 'procedure_document_id' => '327', 'number' => '2'],
@@ -64,18 +64,18 @@ class ProcedureDevPaySeeder extends Seeder
             ['procedure_modality_id' => '62', 'procedure_document_id' => '330', 'number' => '4'],
             ['procedure_modality_id' => '62', 'procedure_document_id' => '331', 'number' => '4'],
 
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '332', 'number' => '1'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '333', 'number' => '2'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '334', 'number' => '3'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '335', 'number' => '4'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '336', 'number' => '5'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '326', 'number' => '1'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '327', 'number' => '2'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '328', 'number' => '3'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '332', 'number' => '4'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '333', 'number' => '5'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '334', 'number' => '6'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '335', 'number' => '6'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '336', 'number' => '6'],
             ['procedure_modality_id' => '63', 'procedure_document_id' => '337', 'number' => '6'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '338', 'number' => '6'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '339', 'number' => '6'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '340', 'number' => '6'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '341', 'number' => '7'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '342', 'number' => '7'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '343', 'number' => '7'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '329', 'number' => '7'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '330', 'number' => '7'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '331', 'number' => '7'],
         ];
         foreach ($procedure_requirements as $procedure_requirement) {
             ProcedureRequirement::firstOrCreate($procedure_requirement);
