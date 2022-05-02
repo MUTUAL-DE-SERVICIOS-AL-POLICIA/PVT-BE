@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         //$this->call(AportesDocumentsSeeder::class);
         //$this->call(AportesRequirementsSeeder::class);
-        $this->call(AportesComisionRequirements::class);
-        $this->command->info('Todo ok finalizado! DAVID y NADIA'); 
+        //$this->call(AportesComisionRequirements::class);
+        $this->call(ProcedureDevPaySeeder::class);
     }
 }
