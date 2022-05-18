@@ -634,13 +634,13 @@ class RetirementFundController extends Controller
         }
         $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
 
-        if (RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id', $applicant->id)){
-            $beneficiary_advisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id', $applicant->id)->first();
-            $advisor = RetFunAdvisor::find($beneficiary_advisor->ret_fun_advisor_id);
-        }
-        else {
+        $beneficiary_avdisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id', $applicant->id)->first();
+
+        if (isset($beneficiary_avdisor->id))
+            $advisor = RetFunAdvisor::find($beneficiary_avdisor->ret_fun_advisor_id);
+        else
             $advisor = new RetFunAdvisor();
-        }
+
         $beneficiary_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id', $applicant->id)->first();
 
         if (isset($beneficiary_guardian->id))
