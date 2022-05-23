@@ -130,10 +130,14 @@
         </table>
         @endif
         
-        <div style="margin-top: 250px;" class="font-bold text-xxxs">
+        @if($habitual)
+            <div style="margin-top: 850px;" class="font-bold text-xxs">
+        @else
+            <div style="margin-top: 250px;" class="font-bold text-xxs">
+        @endif
             {{ $text }}
         </div>
-        <div class="font-bold text-xxxs">
+        <div class="font-bold text-xxs">
         Autorizo a la MUSERPOL acceder a mi información personal (y causante si corresponde) en las bases de datos de Servicio de Registro Cívico - SERECI, 
         Servicio General de Información Personal – SEGIP, Autoridad de Fiscalización y Control de Pensiones y Seguros - APS, 
         Servicio Nacional del Sistema De Reparto - SENASIR, Comando General de la Policía Boliviana y otras Instituciones Públicas y/o 

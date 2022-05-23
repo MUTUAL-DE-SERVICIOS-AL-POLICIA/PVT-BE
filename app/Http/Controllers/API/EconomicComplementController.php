@@ -281,7 +281,8 @@ class EconomicComplementController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
-        $title = "FORMULARIO DE SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
+        $title = "SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
+        $text = "La presente solicitud en generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
 
         $subtitle = $economic_complement->eco_com_procedure->getTextName() . " - " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
 
@@ -309,6 +310,8 @@ class EconomicComplementController extends Controller
             'affiliate' => $affiliate,
             'eco_com_beneficiary' => $eco_com_beneficiary,
             'eco_com_submitted_documents' => $eco_com_submitted_documents,
+            'text' => $text,
+            'habitual' => true,
         ];
         $pages = [];
 
