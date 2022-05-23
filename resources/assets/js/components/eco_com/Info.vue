@@ -30,6 +30,15 @@
           <button
             data-animation="flip"
             data-toggle="tooltip"
+            title="Form solicitud de pago"
+            class="btn btn-primary"
+            @click="formSolicitudPago()"
+          >
+            <i class="fa fa-print"></i> Imprimir solicitud de pago
+          </button>
+          <button
+            data-animation="flip"
+            data-toggle="tooltip"
             title="Certificación pago"
             class="btn btn-primary"
             @click="certificacionPago()"
@@ -512,6 +521,9 @@ export default {
     },
     async certificacionPago(){
       printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/paid_cetificate', type:'pdf', showModal:true});
+    },
+    async formSolicitudPago(){
+      printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/reception', type:'pdf', showModal:true});
     }
   }
 };
