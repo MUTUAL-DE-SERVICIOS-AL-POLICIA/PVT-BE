@@ -13,6 +13,7 @@ use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Models\EconomicComplement\Devolution;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Hashids\Hashids;
 class Affiliate extends Model
 {
@@ -828,4 +829,36 @@ class Affiliate extends Model
     public function device() {
         return $this->hasOne(AffiliateDevice::class, 'affiliate_id', 'id', 'affiliate_devices');
     }
+  //obtener si el afiliado ha dejado de sol consecutivamente mas de 2 tramites de eco_com
+  public function stop_eco_com_consecutively() {
+    $eco_com_procedures = $this->economic_complements()->select('eco_com_procedures.id','year','semester')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')->orderBy('eco_com_procedures.year')->orderBy('eco_com_procedures.semester')->pluck('eco_com_procedures.id');
+    $all_procedures = EcoComProcedure::orderBy('year','asc')->orderBy('semester','asc')->pluck('id');
+    $count_consecutives=0;
+
+    $position_eco_last = $eco_com_procedures->count()-1;
+    $position_eco = 0;
+    $find_firts_eco =$eco_com_procedures->first();
+
+    $position_procedure_last = $all_procedures->count()-1;
+    $position_procedure = 0;
+    $firts_eco =false;
+
+    while ($position_eco <= $position_eco_last) {
+      if($all_procedures[$position_procedure] == $find_firts_eco)
+        $firts_eco = true;
+
+      if($firts_eco== true){
+        if($eco_com_procedures[$position_eco] == $all_procedures[$position_procedure]){
+          $position_eco++;
+          if($count_consecutives<=2)
+            $count_consecutives = 0;
+        }else{
+          $count_consecutives++;
+        }
+      }
+      $position_procedure =  $position_procedure+1;
+    }
+
+    return $count_consecutives<=2? false:true;
+  }
 }
