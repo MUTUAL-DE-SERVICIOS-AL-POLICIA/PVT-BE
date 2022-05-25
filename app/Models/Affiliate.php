@@ -831,34 +831,25 @@ class Affiliate extends Model
     }
   //obtener si el afiliado ha dejado de sol consecutivamente mas de 2 tramites de eco_com
   public function stop_eco_com_consecutively() {
-    $eco_com_procedures = $this->economic_complements()->select('eco_com_procedures.id','year','semester')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')->orderBy('eco_com_procedures.year')->orderBy('eco_com_procedures.semester')->pluck('eco_com_procedures.id');
-    $all_procedures = EcoComProcedure::orderBy('year','asc')->orderBy('semester','asc')->pluck('id');
-    $count_consecutives=0;
+    $eco_com = $this->economic_complements()->select('eco_com_procedures.id','year','semester')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')->orderBy('eco_com_procedures.year')->orderBy('eco_com_procedures.semester')->pluck('eco_com_procedures.id');
+    $eco_com = $eco_com->toArray();
+    $count_actives = EcoComProcedure::current_procedures()->count();
+    $count_procedures = $count_actives + 3;// por mas de dos semestres es 3
+    $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->pluck('id')->take($count_procedures);
+    $stop_consecutively = false;
+    $i = 3;
 
-    $position_eco_last = $eco_com_procedures->count()-1;
-    $position_eco = 0;
-    $find_firts_eco =$eco_com_procedures->first();
+    while($i > 0){
+      $count_procedures = $count_procedures-1;
+      if (in_array($eco_com_procedures[$count_procedures], $eco_com) == false)
+        $stop_consecutively = true;
+      else
+        $stop_consecutively = false;
 
-    $position_procedure_last = $all_procedures->count()-1;
-    $position_procedure = 0;
-    $firts_eco =false;
-
-    while ($position_eco <= $position_eco_last) {
-      if($all_procedures[$position_procedure] == $find_firts_eco)
-        $firts_eco = true;
-
-      if($firts_eco== true){
-        if($eco_com_procedures[$position_eco] == $all_procedures[$position_procedure]){
-          $position_eco++;
-          if($count_consecutives<=2)
-            $count_consecutives = 0;
-        }else{
-          $count_consecutives++;
-        }
-      }
-      $position_procedure =  $position_procedure+1;
+      if($stop_consecutively == false)
+        break;
+      $i--;
     }
-
-    return $count_consecutives<=2? false:true;
+   return $stop_consecutively;
   }
 }
