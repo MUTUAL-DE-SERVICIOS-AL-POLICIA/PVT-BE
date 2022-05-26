@@ -834,11 +834,10 @@ class Affiliate extends Model
     $eco_com = $this->economic_complements()->select('eco_com_procedures.id','year','semester')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')->orderBy('eco_com_procedures.year')->orderBy('eco_com_procedures.semester')->pluck('eco_com_procedures.id');
     $eco_com = $eco_com->toArray();
     $count_actives = EcoComProcedure::current_procedures()->count();
-    $count_procedures = $count_actives + 3;// por mas de dos semestres es 3
+    $count_procedures = $count_actives + 2;// por dos semestres
     $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->pluck('id')->take($count_procedures);
     $stop_consecutively = false;
-    $i = 3;
-
+    $i = 2;
     while($i > 0){
       $count_procedures = $count_procedures-1;
       if (in_array($eco_com_procedures[$count_procedures], $eco_com) == false)
