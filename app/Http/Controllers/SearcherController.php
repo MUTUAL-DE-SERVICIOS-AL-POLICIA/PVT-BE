@@ -174,6 +174,9 @@ class SearcherController
                         }
                     }
                 }
+                if($affiliate->stop_eco_com_consecutively()){
+                    $other_observations->push(['value'=>'El beneficiario dejo de solicitar su pago por mas de dos Semestres consecutivos']);
+                }
             }
         }
         $data = [
