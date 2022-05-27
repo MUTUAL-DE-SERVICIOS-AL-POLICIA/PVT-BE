@@ -16,7 +16,7 @@
             <i class="fa fa-dollar"></i> Cambiar a estado pagado
           </button>
           </span>
-          <span v-if="ecoCom.eco_com_state_id === 16 && ecoCom.procedure_date !== null ">
+          <span v-if="ecoCom.eco_com_state_id === 16 && ecoCom.procedure_date == null ">
             <button
             data-animation="flip"
             data-toggle="tooltip"
@@ -298,6 +298,45 @@
           :disabled="!editing || (roleId != 4)" >
           </div>
         </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">REVERTIDO -  </label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='23'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">EXCLUIDO -  </label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='12'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">OBSERVACIÓN DOCUMENTAL -  </label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='27'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
         <br>
         </div>
         <div v-if="editing">
@@ -500,7 +539,7 @@ export default {
           flash("Información del Trámite Actualizada");
         })
         location.reload()
-        .catch(response => {
+         .catch(response => {
           flashErrors("Error al procesar: ", error.response.data.errors);
           this.show_spinner = false;
         });

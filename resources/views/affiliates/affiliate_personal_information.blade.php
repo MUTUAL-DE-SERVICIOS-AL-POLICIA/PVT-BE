@@ -285,7 +285,7 @@
                             <div class="col-md-4">
                                 <label class="control-label">Estado Sigep:</label>
                             </div>
-                            <div class="col-md-8">{!! Form::select('sigep_status', ['SIN REGISTRO'=>'SIN REGISTRO','REGISTRO OBSERVADO'=>'REGISTRO OBSERVADO','ACTIVO'=>'ACTIVO'], null, ['placeholder' => 'Seleccione Estado', 'class' => 'form-control','v-model' => 'form.sigep_status',':disabled' => '!editing']) !!}
+                            <div class="col-md-8">{!! Form::select('sigep_status', ['SIN REGISTRO'=>'SIN REGISTRO','REGISTRO OBSERVADO'=>'REGISTRO OBSERVADO','ACTIVO'=>'ACTIVO','ACTIVO-PAGO-VENTANILLA'=>'ACTIVO-PAGO-VENTANILLA'], null, ['placeholder' => 'Seleccione Estado', 'class' => 'form-control','v-model' => 'form.sigep_status',':disabled' => '!editing']) !!}
                                 <div v-show="errors.has('sigep_status') && editing">
                                     <i class="fa fa-warning text-danger"></i>
                                     <span class="text-danger">@{{ errors.first('sigep_status') }}</span>

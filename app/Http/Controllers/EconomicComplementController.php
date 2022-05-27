@@ -47,6 +47,7 @@ use Muserpol\Models\FinancialEntity;
 
 use Illuminate\Support\Facades\Storage;
 use Muserpol\Models\AffiliateDevice;
+use Validator;
 
 use Muserpol\Models\BaseWage;
 
@@ -1781,7 +1782,7 @@ class EconomicComplementController extends Controller
         return $eco_com;
     }
 
-    public function cambiarEstado(Request $request){
+    public function cambiarEstado(Request $request){//cambio de estado a habilitado
         switch ($request->reportTypeId) {
             case 26:
                 $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_shortened, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status = 'ACTIVO' and account_number is not null and financialentities is not null and total>0");
@@ -1796,7 +1797,7 @@ class EconomicComplementController extends Controller
                 }
                 break;
             case 27:
-                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_shortened, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and (account_number is null or financialentities is null) and total>0");
+                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_shortened, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and total>0");
                 foreach ($data as $item) {
                     $eco_com = EconomicComplement::where('code','=', $item->code)->first();
                     $eco_com->eco_com_state_id = 24;
@@ -1820,14 +1821,23 @@ class EconomicComplementController extends Controller
         return $data;
     }
     public function cambioEstado(Request $request){
+        $rules = [
+        'procedureDate' => 'required|date'
+        ];
+          $rules = array_merge($rules);
+          $messages = [];
+          $validator = Validator::make($request->all(),$rules,$messages);
+          if($validator->fails()){
+              return response()->json($validator->errors(), 406);
+          }
         $list_eco_com = EconomicComplement::where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',$request->ecoComState)->where('procedure_date', $request->procedureDate)->get();
         foreach ($list_eco_com as $item) {
-            // descuento por devoluciones por reposicion de fondos
+                 // descuento por devoluciones por reposicion de fondos
             $query = DB::table('discount_type_economic_complement')
-                    ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
-                    ->where('discount_type_economic_complement.economic_complement_id',$item->id)
-                    ->where('discount_types.name', 'like', '%Reposición de Fondos')
-                    ->select('amount')->get();
+            ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
+            ->where('discount_type_economic_complement.economic_complement_id',$item->id)
+            ->where('discount_types.name', 'like', '%Reposición de Fondos')
+            ->select('amount')->get();
             if(sizeof($query) > 0){
                 $devolution = $item->affiliate->devolutions->where('observation_type_id', ObservationType::where('name','like','%Reposición de Fondos.')->first()->id)->first();
                 $devolution->balance = $devolution->balance - $query[0]->amount;
@@ -1845,7 +1855,7 @@ class EconomicComplementController extends Controller
         }
         return 0;
     }
-    
+
     public function cambioEstadoObservados($id){
         $eco_com = EconomicComplement::find($id);
         $affiliate = Affiliate::find($eco_com->affiliate_id);
@@ -1854,7 +1864,8 @@ class EconomicComplementController extends Controller
             $eco_com->eco_com_state_id=25;
         }
         else{
-            $eco_com->eco_com_state_id=242;
+            $eco_com->eco_com_state_id=24;
+            $eco_com->procedure_date = Carbon::now();
         }
         $eco_com->save();
         return $eco_com;

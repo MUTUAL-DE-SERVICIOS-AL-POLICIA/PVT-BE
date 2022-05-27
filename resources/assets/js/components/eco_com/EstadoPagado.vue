@@ -99,16 +99,20 @@ export default {
         .then(response => {
           console.log(response.data);
           this.cargarplanilla();
+          flash("Realizado con Éxito");
+          this.form.sigepgestion = '';
         })
         .catch(error => {
           console.log(error);
+          if(error.response.data.procedureDate !== undefined)
+          flash(error.response.data.procedureDate[0],'error',10000);
         });
       this.loadingButton = false
     },
     async sigepBanco() {
       const formData = new FormData();
       formData.append("ecoComProcedureId", this.form.ecoComProcedureId);
-      formData.append("procedureDate", this.form.sigepgestion);
+      formData.append("procedureDate", this.form.bancogestion);
       formData.append("ecoComState", 24);
       this.loadingButton = true;
       await axios
@@ -116,9 +120,13 @@ export default {
         .then(response => {
           console.log(response.data);
           this.cargarplanilla();
+          flash("Realizado con Éxito");
+          this.form.bancogestion = '';
         })
         .catch(error => {
           console.log(error);
+          if(error.response.data.procedureDate !== undefined)
+          flash(error.response.data.procedureDate[0],'error',10000);
         });
       this.loadingButton = false
     }
