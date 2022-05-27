@@ -1882,15 +1882,15 @@ class EconomicComplementController extends Controller
             foreach($devolutions as $devolution)
             {
                 $sum = DB::table('discount_type_economic_complement')
-                        ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
                         ->join('economic_complements', 'economic_complements.id', '=', 'discount_type_economic_complement.economic_complement_id')
                         ->join('eco_com_states', 'eco_com_states.id', '=', 'economic_complements.eco_com_state_id')
                         ->join('eco_com_state_types','eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+                        ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
                         ->where('economic_complements.affiliate_id', '=', $devolution->affiliate_id)
                         ->where('eco_com_state_types.name', '=', 'Pagado')
-                        ->where('discount_types.name', '=', 'Amortización Reposición de Fondos')
+                        ->where('discount_types.name', '=', 'Amortización por Reposición de Fondos')
                         ->sum('discount_type_economic_complement.amount');
-                $devolution->balance = $sum;
+                $devolution->balance = $devolution->total - $sum;
                 $devolution->update();
                 $updates ++;
             }
