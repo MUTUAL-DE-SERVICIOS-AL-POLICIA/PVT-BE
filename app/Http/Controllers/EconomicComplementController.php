@@ -37,7 +37,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Muserpol\Models\EconomicComplement\EcoComState;
 use Illuminate\Validation\ValidationException;
 use Muserpol\Models\DiscountType;
-use Muserpol\Models\Devolution;
+use Muserpol\Models\EconomicComplement\Devolution;
 use Muserpol\Models\ComplementaryFactor;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardianType;
 use Muserpol\Helpers\ID;
@@ -1822,20 +1822,30 @@ class EconomicComplementController extends Controller
     public function cambioEstado(Request $request){
         $list_eco_com = EconomicComplement::where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',$request->ecoComState)->where('procedure_date', $request->procedureDate)->get();
         foreach ($list_eco_com as $item) {
-             $eco_com = EconomicComplement::find($item->id);
-             $eco_com->eco_com_state_id=26;
-             if ($request->ecoComState===25){
-                $eco_com->eco_com_state_id=26;
-             }
-             if ($request->ecoComState=== 24){
-                $eco_com->eco_com_state_id=1;
-             }
-             $eco_com->wf_current_state_id=8;
-             $eco_com->user_id = Auth::user()->id;
-             $eco_com->save();
+            // descuento por devoluciones por reposicion de fondos
+            $query = DB::table('discount_type_economic_complement')
+                    ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
+                    ->where('discount_type_economic_complement.economic_complement_id',$item->id)
+                    ->where('discount_types.name', 'like', '%Reposición de Fondos')
+                    ->select('amount')->get();
+            if(sizeof($query) > 0){
+                $devolution = $item->affiliate->devolutions->where('observation_type_id', ObservationType::where('name','like','%Reposición de Fondos.')->first()->id)->first();
+                $devolution->balance = $devolution->balance - $query[0]->amount;
+                $devolution->update();
+            }
+            if ($request->ecoComState == 25 ){
+                $item->eco_com_state_id = 26;
+            }
+            if ($request->ecoComState == 24){
+                $item->eco_com_state_id = 1;
+            }
+            $item->wf_current_state_id = 8;
+            $item->user_id = Auth::user()->id;
+            $item->update();
         }
         return 0;
     }
+    
     public function cambioEstadoObservados($id){
         $eco_com = EconomicComplement::find($id);
         $affiliate = Affiliate::find($eco_com->affiliate_id);
@@ -1863,4 +1873,32 @@ class EconomicComplementController extends Controller
         return $eco_com;
     }
 
+    public function update_overpayments()
+    {
+        DB::beginTransaction();
+        $updates = 0;
+        try{
+            $devolutions = Devolution::where('observation_type_id',ObservationType::where('shortened','Reposición de Fondos')->first()->id)->get();
+            foreach($devolutions as $devolution)
+            {
+                $sum = DB::table('discount_type_economic_complement')
+                        ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
+                        ->join('economic_complements', 'economic_complements.id', '=', 'discount_type_economic_complement.economic_complement_id')
+                        ->join('eco_com_states', 'eco_com_states.id', '=', 'economic_complements.eco_com_state_id')
+                        ->join('eco_com_state_types','eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+                        ->where('economic_complements.affiliate_id', '=', $devolution->affiliate_id)
+                        ->where('eco_com_state_types.name', '=', 'Pagado')
+                        ->where('discount_types.name', '=', 'Amortización Reposición de Fondos')
+                        ->sum('discount_type_economic_complement.amount');
+                $devolution->balance = $sum;
+                $devolution->update();
+                $updates ++;
+            }
+            DB::commit();
+            return $updates;
+        }catch (\Exception $e) {
+        DB::rollback();
+        return $e;
+        }
+    }
 }
