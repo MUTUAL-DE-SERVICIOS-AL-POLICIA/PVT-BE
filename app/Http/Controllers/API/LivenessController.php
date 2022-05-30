@@ -48,13 +48,15 @@ class LivenessController extends Controller
                 'successful' => false,
                 'message' => 'Gire ligeramente su rostro hacia la derecha',
                 'translation' => 'Derecha'
-            ], [
+            ]
+            // Obviar sonreir
+            /*, [
                 'gaze' => 'forward',
                 'emotion' => 'happy',
                 'successful' => false,
                 'message' => 'Mire de frente sonriendo',
                 'translation' => 'Sonriente'
-            ]
+            ]*/
         ];
         shuffle($actions);
         if ($enroll) {
