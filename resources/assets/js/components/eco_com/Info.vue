@@ -300,7 +300,7 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-          <label for="eco_com_state_id">REVERTIDO -  </label>
+          <label for="eco_com_state_id">NO PAGADO - REVERTIDO -  </label>
           </div>
           <div class="col-md-2">
           <input class ="mediumCheckbox"
@@ -313,7 +313,7 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-          <label for="eco_com_state_id">EXCLUIDO -  </label>
+          <label for="eco_com_state_id">NO PAGADO - EXCLUIDO -  </label>
           </div>
           <div class="col-md-2">
           <input class ="mediumCheckbox"
@@ -326,7 +326,7 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-          <label for="eco_com_state_id">OBSERVACIÓN DOCUMENTAL -  </label>
+          <label for="eco_com_state_id">NO PAGADO - OBSERVACIÓN DOCUMENTAL -  </label>
           </div>
           <div class="col-md-2">
           <input class ="mediumCheckbox"
@@ -334,6 +334,19 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='27'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">NO PAGADO - FALLECIDO -  </label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio"
+          id="eco_com_state_id"
+          v-model="form.eco_com_state_id"
+          value='30'
           :disabled="!editing || (roleId != 4)" >
           </div>
         </div>
