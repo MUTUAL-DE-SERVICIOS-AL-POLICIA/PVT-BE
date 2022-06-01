@@ -1859,6 +1859,18 @@ class EconomicComplementController extends Controller
     }
     public function cambioEstadoIndividual($id){
         $eco_com = EconomicComplement::find($id);
+        //descuento por reposicion de fondos
+        $query = DB::table('discount_type_economic_complement')
+            ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
+            ->where('discount_type_economic_complement.economic_complement_id',$id)
+            ->where('discount_types.name', 'like', '%Reposición de Fondos')
+            ->select('amount')->get();
+        if(sizeof($query) > 0){
+            $devolution = $eco_com->affiliate->devolutions->where('observation_type_id', ObservationType::where('name','like','%Reposición de Fondos.')->first()->id)->first();
+            $devolution->balance = $devolution->balance - $query[0]->amount;
+            $devolution->update();
+        }
+        //
         if ($eco_com->eco_com_state_id == 29){
             $eco_com->eco_com_state_id=17;
         }
