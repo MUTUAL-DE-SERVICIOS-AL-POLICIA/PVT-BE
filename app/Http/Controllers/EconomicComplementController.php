@@ -1769,7 +1769,7 @@ class EconomicComplementController extends Controller
         return $eco_com;
     }
 
-    public function cambiarEstado(Request $request){//cambio de estado a habilitado
+    public function cambiarEstado(Request $request){//cambio de estado a habilitado en lote
         switch ($request->reportTypeId) {
             case 26:
                 $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_shortened, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status = 'ACTIVO' and account_number is not null and financialentities is not null and total>0");
@@ -1807,7 +1807,7 @@ class EconomicComplementController extends Controller
         ];
         return $data;
     }
-    public function cambioEstado(Request $request){
+    public function cambioEstado(Request $request){//para cambio de estado a pagado en lote
         $rules = [
         'procedureDate' => 'required|date'
         ];
@@ -1843,7 +1843,7 @@ class EconomicComplementController extends Controller
         return 0;
     }
 
-    public function cambioEstadoObservados($id){
+    public function cambioEstadoObservados($id){//para habilitar un tramite observado,vizualiza para todos los tramites
         $eco_com = EconomicComplement::find($id);
         $affiliate = Affiliate::find($eco_com->affiliate_id);
         logger($affiliate);
@@ -1852,12 +1852,12 @@ class EconomicComplementController extends Controller
         }
         else{
             $eco_com->eco_com_state_id=24;
-            $eco_com->procedure_date = Carbon::now();
         }
+        $eco_com->procedure_date = Carbon::now();
         $eco_com->save();
         return $eco_com;
     }
-    public function cambioEstadoIndividual($id){
+    public function cambioEstadoIndividual($id){//para cambio de estado a Pagado individualmente cheque y domicilio
         $eco_com = EconomicComplement::find($id);
         //descuento por reposicion de fondos
         $query = DB::table('discount_type_economic_complement')
