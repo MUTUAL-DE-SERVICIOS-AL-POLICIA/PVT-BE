@@ -32,7 +32,7 @@ class EcoComPlanillaGeneralPagos implements FromCollection, WithHeadings, Should
                 $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_shortened, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$this->eco_com_procedure_id.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status = 'ACTIVO' and account_number is not null and financialentities is not null and total>0");
                 break;
             case 27:
-                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_shortened, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$this->eco_com_procedure_id.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and (account_number is null or financialentities is null) and total>0");
+                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_shortened, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$this->eco_com_procedure_id.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status <> 'ACTIVO' and total>0");
                 break;
         }
         return collect($data);
@@ -40,7 +40,7 @@ class EcoComPlanillaGeneralPagos implements FromCollection, WithHeadings, Should
     public function headings(): array
     {
         $new_columns = [];
-        
+
         $default = [
             'Nro ',
             'Observacion ',
