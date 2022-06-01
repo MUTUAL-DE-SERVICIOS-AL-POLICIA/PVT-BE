@@ -550,19 +550,6 @@ class EconomicComplementController extends Controller
                 $submit->reception_date = date('Y-m-d');
                 $submit->comment = $request->input('comment' . $requirement->id);
                 $submit->save();
-
-                if ($requirement->procedure_document_id!=237)
-                {
-                    if ($requirement->procedure_document_id!=269)
-                    {
-                        $affiliate->submitted_documents()->create([
-                            'user_id'=>auth()->user()->id,
-                            'reception_date'=>now(),
-                            'procedure_document_id'=>$requirement->procedure_document_id,
-                            'status'=>true,
-                        ]);
-                    }
-                }
             }
         }
         if ($request->additional_requirements) {
