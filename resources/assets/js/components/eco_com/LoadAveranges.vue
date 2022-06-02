@@ -8,7 +8,7 @@
             </div>
             <div class="ibox-content">
             <label>Gestion</label>
-            <select v-model="form.ecoComProcedureId" :disabled="true">
+            <select v-model="form.ecoComProcedureId">
                 <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
             </select>
             <br />
