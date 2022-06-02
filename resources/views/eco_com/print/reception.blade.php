@@ -106,9 +106,12 @@
             </tbody>
         </table>
         @endif --}}
+            @if(!$habitual)
+            <div class="text-justify text-sm">{{ $text }}</div>
+            @endif
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
         @if($eco_com->eco_com_reception_type_id == 2)
-        <table class="m-t-50 table-info">
+        <table style="margin-top: 200px;" class="m-t-50 table-info">
             <tbody>
                 <tr>
                     <td class="no-border text-center text-base w-50 align-bottom"
@@ -131,11 +134,10 @@
         @endif
         
         @if($habitual)
-            <div style="margin-top: 850px;" class="font-bold text-xxs">
+            <div style="margin-top: {{$size}}px;" class="font-bold text-xxs">
         @else
-            <div style="margin-top: 250px;" class="font-bold text-xxs">
+            <div style="margin-top: 100px;" class="font-bold text-xxs">
         @endif
-            {{ $text }}
         </div>
         <div class="font-bold text-xxs">
         Autorizo a la MUSERPOL acceder a mi información personal (y causante si corresponde) en las bases de datos de Servicio de Registro Cívico - SERECI, 

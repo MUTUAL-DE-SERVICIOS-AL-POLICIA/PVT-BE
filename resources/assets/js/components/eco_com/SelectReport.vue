@@ -90,16 +90,6 @@
       </div>
     </div>
     <div class="col-md-12">
-      <div class="text-center m-sm">
-        <button class="btn btn-primary" type="button" @click="send()" :disabled="loadingButton">
-          <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
-          <i v-else class="fa fa-check-circle"></i>
-          &nbsp;
-          {{ loadingButton ? 'Generando...' : 'Generar' }}
-        </button>
-      </div>
-    </div>
-    <div class="col-md-12">
       <div class="text-left m-sm" v-if="form.reportTypeId == 28 && rol.id == 5">
         <button class="btn btn-primary" type="button" @click="update()">
           <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
@@ -109,6 +99,16 @@
         </button>
       </div>
     </div>
+    <div class="col-md-12">
+      <div class="text-center m-sm">
+        <button class="btn btn-primary" type="button" @click="send()" :disabled="loadingButton">
+          <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
+          <i v-else class="fa fa-check-circle"></i>
+          &nbsp;
+          {{ loadingButton ? 'Generando...' : 'Generar' }}
+        </button>
+      </div>
+    </div>    
   </div>
 </template>
 
