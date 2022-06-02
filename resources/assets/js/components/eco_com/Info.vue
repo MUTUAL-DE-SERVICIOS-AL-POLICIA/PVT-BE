@@ -16,7 +16,7 @@
             <i class="fa fa-dollar"></i> Cambiar a estado pagado
           </button>
           </span>
-          <span v-if="ecoCom.eco_com_state_id === 16 && ecoCom.procedure_date == null ">
+          <!--<span v-if="ecoCom.eco_com_state_id === 16 && ecoCom.procedure_date == null && roleId === 4 &&  ecoCom.wf_current_state_id == 3">
             <button
             data-animation="flip"
             data-toggle="tooltip"
@@ -26,7 +26,7 @@
           >
             <i class="fa fa-dollar"></i> Cambiar a estado habilitado
           </button>
-          </span>
+          </span>-->
           <button
             data-animation="flip"
             data-toggle="tooltip"
