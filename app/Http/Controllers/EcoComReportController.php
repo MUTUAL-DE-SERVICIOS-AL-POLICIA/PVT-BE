@@ -18,11 +18,11 @@ use Muserpol\Exports\EcoComStateReport;
 use Muserpol\Exports\EcoComTagsReport;
 use Muserpol\Exports\EcoComPlanillaGeneralReport;
 use Muserpol\Exports\EcoComBankExport;
-
 use Muserpol\Exports\AffiliateSpouseReport;
 use Muserpol\Exports\EcoComPromedioReport;
 
 use Muserpol\Exports\EcoComPlanillaGeneralPagos;
+use Muserpol\Exports\EcoComOverpaymentsSheet;
 
 class EcoComReportController extends Controller
 {
@@ -108,6 +108,9 @@ class EcoComReportController extends Controller
             case 26:
             case 27:
                 return Excel::download(new EcoComPlanillaGeneralPagos($request->reportTypeId,$eco_com_procedure->id), 'Reporte.xlsx');
+                break;
+            case 28:
+                return Excel::download(new EcoComOverpaymentsSheet(), 'Pagos en Demasia.xlsx');
                 break;
             default:
                 # code...

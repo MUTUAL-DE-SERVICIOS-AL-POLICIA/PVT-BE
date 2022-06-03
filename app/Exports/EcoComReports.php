@@ -31,6 +31,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
         $columns = ",". EconomicComplement::basic_info_discount();
         switch ($this->report_type_id) {
             case 1:
+                $columns_add = ',eco_com_states.name as Estado_de_tramite';
                 $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                     ->groupBy("economic_complements.affiliate_id",
                     "economic_complements.code",
@@ -82,13 +83,15 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "wf_states.first_shortened",
                     "eco_com_modalities.name",
                     "workflows.name",
-                    "eco_com_user.id")
+                    "eco_com_user.id",
+                    "eco_com_states.name",)
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
                     ->wfstates()
+                    ->ecocomstates()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums(). $columns))
+                    ->select(DB::raw(EconomicComplement::basic_info_colums().$columns.$columns_add))
                     ->get();
                 break;
             case 2:
@@ -208,6 +211,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "Amortización_Reposición_de_Fondos",
                     "Amortización_Auxilio_Mortuorio",
                     "Amortización_Cuentas_por_cobrar",
+                    "Estado_de_tramite"
                 ];
                 break;
             case 2:

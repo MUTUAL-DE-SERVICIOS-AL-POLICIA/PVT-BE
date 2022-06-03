@@ -281,7 +281,9 @@ class EconomicComplementController extends Controller
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
-        $title = "FORMULARIO DE SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
+        $title = "SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
+        $size = 820;
+        $text = "La presente solicitud en generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
 
         $subtitle = $economic_complement->eco_com_procedure->getTextName() . " - " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
 
@@ -290,7 +292,10 @@ class EconomicComplementController extends Controller
         $user = $economic_complement->user;
         $date = Util::getDateFormat($economic_complement->reception_date);
         $number = $code;
-
+        if($economic_complement->eco_com_modality->procedure_modality->name != 'Vejez')
+            $size = 840;
+        if($economic_complement->eco_com_legal_guardian != null)
+            $size = 700;
         $bar_code = \DNS2D::getBarcodePNG($economic_complement->encode(), "QRCODE");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
 
@@ -309,6 +314,9 @@ class EconomicComplementController extends Controller
             'affiliate' => $affiliate,
             'eco_com_beneficiary' => $eco_com_beneficiary,
             'eco_com_submitted_documents' => $eco_com_submitted_documents,
+            'text' => $text,
+            'habitual' => true,
+            'size' => $size,
         ];
         $pages = [];
 

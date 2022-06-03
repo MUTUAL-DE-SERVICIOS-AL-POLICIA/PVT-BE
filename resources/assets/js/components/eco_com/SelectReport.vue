@@ -90,6 +90,16 @@
       </div>
     </div>
     <div class="col-md-12">
+      <div class="text-left m-sm" v-if="form.reportTypeId == 28 && rol.id == 5">
+        <button class="btn btn-primary" type="button" @click="update()">
+          <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
+          <i v-else class="fa fa-check-circle"></i>
+          &nbsp;
+          {{ loadingButton ? 'Actualizando Pagos en demasía...' : 'Actualizar Pagos en demasía' }}
+        </button>
+      </div>
+    </div>
+    <div class="col-md-12">
       <div class="text-center m-sm">
         <button class="btn btn-primary" type="button" @click="send()" :disabled="loadingButton">
           <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
@@ -98,7 +108,7 @@
           {{ loadingButton ? 'Generando...' : 'Generar' }}
         </button>
       </div>
-    </div>
+    </div>    
   </div>
 </template>
 
@@ -236,6 +246,10 @@ export default {
           id: 27,
           name: "Planilla de Pago Banco Union"
         },
+        {
+          id: 28,
+          name: "Pagos en demasía"
+        }
       ],
       form: {
         ecoComProcedureId:
@@ -273,6 +287,21 @@ export default {
       await axios({
         url: "/eco_com_estado",
         method: "POST",
+        data: this.form
+      })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+       });
+       this.loadingButton = false;
+    },
+    async update() {
+      this.loadingButton = true;
+      await axios({
+        url: "/update_overpayments",
+        method: "GET",
         data: this.form
       })
         .then(response => {
