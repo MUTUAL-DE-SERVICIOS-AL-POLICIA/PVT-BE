@@ -1839,6 +1839,7 @@ class EconomicComplementController extends Controller
             $item->wf_current_state_id = 8;
             $item->user_id = Auth::user()->id;
             $item->update();
+            $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($item->id)");
         }
         return 0;
     }
@@ -1880,6 +1881,7 @@ class EconomicComplementController extends Controller
             }
         }
         $eco_com->save();
+        $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($id)");
         return $eco_com;
     }
 
