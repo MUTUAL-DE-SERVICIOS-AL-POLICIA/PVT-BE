@@ -20,11 +20,15 @@ class EcoComOverpaymentsSheet implements FromCollection, WithHeadings, ShouldAut
     public function collection()
     {
         $data = null;
-        $query = "SELECT a.id, ot.name, concat(a.first_name, ' ', a.second_name, ' ', a.last_name, ' ', a.mothers_last_name) as fullname, a.identity_card, d.total, d.balance, devs.totalamrt
+        $query = "SELECT a.id, ot.name, concat(a.first_name, ' ', a.second_name, ' ', a.last_name, ' ', a.mothers_last_name) as fullname, a.identity_card, d.total, d.balance, 
+        case 
+            when devs.totalamrt is null then 0
+            else devs.totalamrt
+        end as totalamrt
                     from devolutions d
                     join affiliates a on a.id = d.affiliate_id
                     join observation_types ot on d.observation_type_id = ot.id
-                    join (select ec.affiliate_id, sum(dtec2.amount) as totalamrt
+                    left join (select ec.affiliate_id, sum(dtec2.amount) as totalamrt
                             from economic_complements ec
                             join eco_com_states ecs on ecs.id = ec.eco_com_state_id
                             join discount_type_economic_complement dtec2 on dtec2.economic_complement_id = ec.id
