@@ -82,15 +82,15 @@ class EconomicComplementController extends Controller
      */
     public function print(Request $request, EconomicComplement $economic_complement)
     {
-        //if ($economic_complement->affiliate_id == $request->affiliate->id) {
+        if ($economic_complement->affiliate_id == $request->affiliate->id) {
             return $this->print_pdf($economic_complement);
-        /*} else {
+        } else {
             return response()->json([
                 'error' => true,
                 'message' => 'Este trámite no le pertenece',
                 'data' => null,
             ], 403);
-        }*/
+        }
     }
 
     /**
