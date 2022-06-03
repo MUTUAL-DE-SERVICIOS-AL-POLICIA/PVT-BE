@@ -370,7 +370,7 @@ class EcoComImportExportController extends Controller
                 $not_found->push($affiliate_id);
             }
         }
-        
+        $imoprt_contribution = DB::select("select import_contribution_eco_com($current_procedures)");
         $data = [
             'found' => $found,
             'found2' => $found2,
