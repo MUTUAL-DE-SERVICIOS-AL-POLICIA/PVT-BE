@@ -217,7 +217,7 @@ class EconomicComplementController extends Controller
             /**
              ** save documents
             */
-            switch ($economic_complement->eco_com_modality_id) {
+          /*  switch ($economic_complement->eco_com_modality_id) {
                 case 1:
                     $requirements_habitual = 1235;
                     break;
@@ -235,7 +235,7 @@ class EconomicComplementController extends Controller
             $eco_com_submitted_document->economic_complement_id = $economic_complement->id;
             $eco_com_submitted_document->procedure_requirement_id = $requirements_habitual;
             $eco_com_submitted_document->reception_date = now();
-            $eco_com_submitted_document->save();
+            $eco_com_submitted_document->save();*/
             
             Storage::makeDirectory('eco_com/'.$request->affiliate->id, 0775, true);
             Storage::makeDirectory('ci/'.$request->affiliate->id, 0775, true);
