@@ -68,7 +68,7 @@ class AuthController extends Controller
         if (Util::isDoblePerceptionEcoCom($identity_card)) {
             return response()->json([
                 'error' => true,
-                'message' => 'Usted percibe el Beneficio como Titular y Viuda(o), por lo cual para realizar el registro de su trámite debe apersonarse por oficinas de la MUSERPOL',
+                'message' => 'Usted percibe el Beneficio como Titular y Viuda(o), por lo cual para realizar el registro de su trámite debe apersonarse por oficinas de la MUSERPOL.',
                 'data' => (object)[]
             ], 403);
         } else {
@@ -80,7 +80,7 @@ class AuthController extends Controller
                     if ($affiliate_device->affiliate_id != $affiliate->id) {
                         return response()->json([
                             'error' => true,
-                            'message' => 'Afiliado registrado con otro dispositivo',
+                            'message' => 'Afiliado registrado con otro dispositivo.',
                             'data' => (object)[]
                         ], 403);
                     }
@@ -93,7 +93,7 @@ class AuthController extends Controller
                 } else {
                     return response()->json([
                         'error' => true,
-                        'message' => 'Datos de beneficiario incorrectos',
+                        'message' => 'Datos de beneficiario incorrectos.',
                         'data' => (object)[]
                     ], 403);
                 }
@@ -149,7 +149,7 @@ class AuthController extends Controller
             } else {
                 return response()->json([
                     'error' => true,
-                    'message' => 'Usted no se encuentra registrado como Beneficiario Habitual, para mayor información pasar por oficinas de la MUSERPOL',
+                    'message' => 'Usted no se encuentra registrado como Beneficiario Habitual, para mayor información pasar por oficinas de la MUSERPOL.',
                     'data' => (object)[]
                 ], 403);
             }
