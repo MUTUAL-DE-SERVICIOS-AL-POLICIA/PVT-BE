@@ -352,11 +352,14 @@ class EconomicComplementController extends Controller
          */
         $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->get();
         foreach ($observations as $o) {
+            $enabled = false;
+            if($o->id == 31)
+                $enabled = true;
             $economic_complement->observations()->save($o, [
                 'user_id' => $o->pivot->user_id,
                 'date' => $o->pivot->date,
                 'message' => $o->pivot->message,
-                'enabled' => false
+                'enabled' => $enabled
             ]);
             // $record = new EconomicComplementRecord();
             // $record->user_id = Auth::user()->id;
@@ -552,8 +555,8 @@ class EconomicComplementController extends Controller
                 $submit->save();
             }
         }
-        if ($request->additional_requirements) {
-            foreach ($request->additional_requirements  as  $requirement) {
+        if ($request->aditional_requirements) {
+            foreach ($request->aditional_requirements  as  $requirement) {
                 $submit = new EcoComSubmittedDocument();
                 $submit->economic_complement_id = $economic_complement->id;
                 $submit->procedure_requirement_id = $requirement;

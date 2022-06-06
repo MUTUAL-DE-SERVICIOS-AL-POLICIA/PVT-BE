@@ -184,11 +184,14 @@ class EconomicComplementController extends Controller
             */
             $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->get();
             foreach ($observations as $observation) {
+                $enabled = false;
+                if($observation->id == 31)
+                    $enabled = true;
                 $economic_complement->observations()->save($observation, [
                     'user_id' => $observation->pivot->user_id,
                     'date' => $observation->pivot->date,
                     'message' => $observation->pivot->message,
-                    'enabled' => false
+                    'enabled' => $enabled
                 ]);
             }
             /**
