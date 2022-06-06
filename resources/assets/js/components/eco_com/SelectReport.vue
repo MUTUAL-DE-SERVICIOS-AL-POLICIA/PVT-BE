@@ -20,11 +20,11 @@
       </select>
     </div>
 
-    <div v-if="form.reportTypeId == 18 && rol.id == 5">
+   <!-- <div v-if="form.reportTypeId == 18 && rol.id == 5">
       <label for="change-state">Actualizar Estados</label>
       <i class="fa fa-question-circle" title="Si marca esta opcion actualizara todos los tramites listados en el reporte a Enviado a Banco"></i>
       <input type="checkbox" id="change-state" v-model="form.changeState"/>
-    </div>
+    </div>-->
     <div
       v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13 || form.reportTypeId == 19 || form.reportTypeId == 20"
     >
@@ -154,14 +154,10 @@ export default {
           name: "Tramites con Pago por Unica Vez"
         },
         
-        {
+       /* {
           id: 17,
           name: "Planilla General"
-        },
-        {
-          id: 18,
-          name: "Planilla BANCO UNION"
-        },
+        },*/
         // {
         //   id: 5,
         //   name: "Tramites con Etiquetas"
@@ -245,6 +241,10 @@ export default {
         {
           id: 27,
           name: "Planilla de Pago Banco Union"
+        },
+        {
+          id: 18,
+          name: "Para envío BANCO UNION"
         },
         {
           id: 28,
