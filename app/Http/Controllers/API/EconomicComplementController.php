@@ -296,7 +296,7 @@ class EconomicComplementController extends Controller
         $date = Util::getDateFormat($economic_complement->reception_date);
         $number = $code;
         if($economic_complement->eco_com_modality->procedure_modality->name != 'Vejez')
-            $size = 840;
+            $size = 780;
         if($economic_complement->eco_com_legal_guardian != null)
             $size = 700;
         $bar_code = \DNS2D::getBarcodePNG($economic_complement->encode(), "QRCODE");
