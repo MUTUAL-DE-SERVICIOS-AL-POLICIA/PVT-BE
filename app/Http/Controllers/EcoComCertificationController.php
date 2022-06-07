@@ -30,7 +30,7 @@ class EcoComCertificationController extends Controller
         $habitual = false;
         if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual)
         {
-            $text = "La presente solicitud en generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
+            $text = "La presente solicitud es generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
             $habitual = true;
         }
         elseif($eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion)
