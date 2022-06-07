@@ -40,7 +40,7 @@ class AffiliateObservationController extends Controller
                     $latest_procedures = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $latest_procedures)->count();
                     if ($latest_procedures < 1) {
                         $enabled = false;
-                        $message = 'Para realizar el registro de su Trámite pase por oficinas de la MUSERPOL.';
+                        $message = 'Usted dejó de solicitar su trámite por dos semestres o más, debe apersonarse por oficinas de la MUSERPOL para su rehabilitación al pago.';
                     } else {
                         if($available_procedures > 1) {
                             $message = 'Tiene '.$available_procedures.' solicitudes de trámite disponibles.';
