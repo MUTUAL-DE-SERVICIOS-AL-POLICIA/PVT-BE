@@ -109,7 +109,9 @@
         </table>
         @endif --}}
             @if($habitual)
+            <br>
             <div class="text-justify text-sm">{{ $text }}</div>
+            <br>
             @endif
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
         @if($eco_com->eco_com_reception_type_id == 2)
