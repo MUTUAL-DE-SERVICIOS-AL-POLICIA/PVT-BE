@@ -62,6 +62,15 @@ class MessageController extends Controller
                     ]
                 ]);
                 break;
+            case 'verified':
+                return response()->json([
+                    'error' => false,
+                    'message' => 'Verificación de CI',
+                    'data' => [
+                        'verified' => $request->affiliate->device->verified,
+                    ]
+                ]);
+                break;
             default:
                 return response()->json([
                     'error' => true,

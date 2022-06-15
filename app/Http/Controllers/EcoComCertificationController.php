@@ -30,13 +30,13 @@ class EcoComCertificationController extends Controller
         $habitual = false;
         if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual)
         {
-            $text = "La presente solicitud en generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
+            $text = "La presente solicitud es generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
             $habitual = true;
         }
         elseif($eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion)
             $text = "Firmo al pie del presente en señal de conformidad, debiendo considerarse mi consentimiento para las posteriores solicitudes de pago semestral a realizarse de manera presencial o virtual (Plataforma Virtual de Trámites o Aplicación Móvil – MUSERPOL PVT), sin necesidad de firma expresa en la Solicitud de Pago del Beneficio del Complemento Económico.";
         if($eco_com->eco_com_modality->procedure_modality->name != 'Vejez')
-            $size = 840;
+            $size = 780;
         if($eco_com->eco_com_legal_guardian != null)
             $size = 700;
         $code = $eco_com->code;

@@ -34,15 +34,20 @@ class AffiliateObservationController extends Controller
             if ($enabled) {
                 if ($available_procedures == 0) {
                     $enabled = false;
-                    $message = 'Ya realizó la solicitud correspondiente al semestre';
+                    $message = 'Espere las fechas de recepción para realizar el registro de su trámite.';
                 } else {
                     $latest_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('normal_start_date')->limit(2)->whereNotIn('id', EcoComProcedure::current_procedures()->pluck('id'))->pluck('id');
                     $latest_procedures = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $latest_procedures)->count();
                     if ($latest_procedures < 1) {
                         $enabled = false;
-                        $message = 'Para realizar el registro de su Trámite pase por oficinas de la MUSERPOl';
+                        $message = 'Usted dejó de solicitar su trámite por dos semestres o más, debe apersonarse por oficinas de la MUSERPOL para su rehabilitación al pago.';
                     } else {
-                        $message = $available_procedures.' solicitud(es) de trámite disponible(s)';
+                        if($available_procedures > 1) {
+                            $message = 'Tiene '.$available_procedures.' solicitudes de trámite disponibles.';
+                        } else {
+                            $message = 'Tiene una solicitud de trámite disponible.';
+                        }
+                        
                     }
                 }
             } else {
@@ -50,7 +55,7 @@ class AffiliateObservationController extends Controller
                     'key' => 'Observaciones del beneficiario',
                     'value' => $observations,
                 ];
-                $message = 'No puede solicitar trámites debido a la(s) observación(es)';
+                $message = 'No puede solicitar trámites debido a la(s) observación(es), pase por oficinas de la MUSERPOL.';
             }
             
             return response()->json([

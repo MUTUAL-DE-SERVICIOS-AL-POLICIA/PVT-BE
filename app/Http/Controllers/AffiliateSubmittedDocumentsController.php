@@ -29,7 +29,7 @@ class AffiliateSubmittedDocumentsController extends Controller
                 'requirements' => $requirements
             ];
             return $data;
-        } else {
+        }/*else {
             $requirements_habitual = [];
             switch ($request->procedure_modality_id) {
                 case 29:
@@ -50,24 +50,24 @@ class AffiliateSubmittedDocumentsController extends Controller
                 // ->where('procedure_modality_id', $request->procedure_modality_id)
                 ->where('number', '<>', 0)
                 ->whereIn('id', $requirements_habitual)
-                ->orderBy('number')->get();
+                ->orderBy('number')->get();*/
             $additional_requirements = ProcedureRequirement::with('procedure_document')
                 ->where('procedure_modality_id', $request->procedure_modality_id)
                 ->where('number', '=', 0)
                 ->orderBy('number')->get();
             $requirements = collect([]);
-            foreach ($procedure_requirements_original as $po) {
+            /*foreach ($procedure_requirements_original as $po) {
                 $po->background = "";
                 $po->status = false;
                 $po->number = "N" . $po->number;
                 $requirements->push($po);
-            }
+            }*/
             $requirements = $requirements->groupBy('number')->toArray();
             $data = [
                 'additional_requirements' => $additional_requirements,
                 'requirements' => $requirements
             ];
             return $data;
-        }
+        //}
     }
 }
