@@ -11,7 +11,7 @@
                                 @if(isset($affiliatedevice))
                                     @if(!$affiliatedevice->isEmpty())
                                         @if(!empty($affiliatedevice->first()->device_id))
-                                        <button data-animation="flip" class="btn btn-danger" v-if="editing" @click="deleteDevice"><i class="fa fa-mobile" ></i> Desvincular movil </button>
+                                        <button data-animation="flip" class="btn btn-danger" v-if="editing" @click="deleteDevice"><i class="fa fa-mobile" ></i> Desvincular móvil </button>
                                         @endif
                                     @endif
                                 @endif

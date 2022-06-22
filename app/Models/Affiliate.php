@@ -851,4 +851,9 @@ class Affiliate extends Model
     }
    return $stop_consecutively;
   }
+   // Estado fallecido del affiliado
+   public function getDeadAttribute()
+   {
+      return ($this->date_death != null || $this->reason_death != null || $this->death_certificate_number != null || $this->affiliate_state->name == "Fallecido");
+   }
 }

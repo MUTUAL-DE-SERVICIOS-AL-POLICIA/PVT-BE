@@ -315,7 +315,7 @@ class EconomicComplementController extends Controller
         $economic_complement->inbox_state = true;
         // $economic_complement->state = 'Received'; // !! TODO Borrar columna
         $economic_complement->eco_com_reception_type_id = $request->reception_type;
-
+        /*
         if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
             $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
@@ -345,18 +345,21 @@ class EconomicComplementController extends Controller
             $economic_complement->aps_total_cc +
             $economic_complement->aps_total_fs +
             $economic_complement->aps_disability;
-        }
+        }*/
         $economic_complement->save();
         /**
          ** has affiliate observation
          */
         $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->get();
         foreach ($observations as $o) {
+            $enabled = false;
+            if($o->id == 31)
+                $enabled = true;
             $economic_complement->observations()->save($o, [
                 'user_id' => $o->pivot->user_id,
                 'date' => $o->pivot->date,
                 'message' => $o->pivot->message,
-                'enabled' => false
+                'enabled' => $enabled
             ]);
             // $record = new EconomicComplementRecord();
             // $record->user_id = Auth::user()->id;
@@ -552,8 +555,8 @@ class EconomicComplementController extends Controller
                 $submit->save();
             }
         }
-        if ($request->additional_requirements) {
-            foreach ($request->additional_requirements  as  $requirement) {
+        if ($request->aditional_requirements) {
+            foreach ($request->aditional_requirements  as  $requirement) {
                 $submit = new EcoComSubmittedDocument();
                 $submit->economic_complement_id = $economic_complement->id;
                 $submit->procedure_requirement_id = $requirement;
