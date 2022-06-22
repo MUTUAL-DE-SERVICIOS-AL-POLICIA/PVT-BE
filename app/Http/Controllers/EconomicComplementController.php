@@ -315,7 +315,7 @@ class EconomicComplementController extends Controller
         $economic_complement->inbox_state = true;
         // $economic_complement->state = 'Received'; // !! TODO Borrar columna
         $economic_complement->eco_com_reception_type_id = $request->reception_type;
-
+        /*
         if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
             $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
@@ -345,7 +345,7 @@ class EconomicComplementController extends Controller
             $economic_complement->aps_total_cc +
             $economic_complement->aps_total_fs +
             $economic_complement->aps_disability;
-        }
+        }*/
         $economic_complement->save();
         /**
          ** has affiliate observation

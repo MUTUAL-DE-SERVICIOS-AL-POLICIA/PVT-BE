@@ -128,7 +128,7 @@ class EconomicComplementController extends Controller
             $economic_complement->reception_date = now();
             $economic_complement->inbox_state = false;
             $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
-
+            /*
             if ($affiliate->pension_entity_id == ID::pensionEntity()->senasir) {
                 $economic_complement->sub_total_rent = Util::parseMoney($last_eco_com->sub_total_rent);
                 $economic_complement->reimbursement = Util::parseMoney($last_eco_com->reimbursement);
@@ -155,7 +155,7 @@ class EconomicComplementController extends Controller
                 $economic_complement->aps_total_cc +
                 $economic_complement->aps_total_fs +
                 $economic_complement->aps_disability;
-            }
+            }*/
             $economic_complement->save();
             /**
              ** Save eco com beneficiary
