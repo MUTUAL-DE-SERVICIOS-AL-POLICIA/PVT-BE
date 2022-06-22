@@ -286,6 +286,7 @@ class EconomicComplementController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
         $title = "SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
         $size = 820;
+        $size_down = 200;
         $text = "La presente solicitud es generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
 
         $subtitle = $economic_complement->eco_com_procedure->getTextName() . " - " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
@@ -297,8 +298,10 @@ class EconomicComplementController extends Controller
         $number = $code;
         if($economic_complement->eco_com_modality->procedure_modality->name != 'Vejez')
             $size = 780;
-        if($economic_complement->eco_com_legal_guardian != null)
+        if ($economic_complement->eco_com_legal_guardian != null){
             $size = 700;
+            $size_down = 80;
+        }
         $bar_code = \DNS2D::getBarcodePNG($economic_complement->encode(), "QRCODE");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
 
@@ -320,6 +323,7 @@ class EconomicComplementController extends Controller
             'text' => $text,
             'habitual' => true,
             'size' => $size,
+            'size_down'=> $size_down,
         ];
         $pages = [];
 

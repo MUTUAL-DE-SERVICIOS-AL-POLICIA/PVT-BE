@@ -25,6 +25,7 @@ class EcoComCertificationController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
         $title = "SOLICITUD DE PAGO DEL BENEFICIO DE COMPLEMENTO ECONÓMICO";
         $size = 820;
+        $size_down = 200;
         $subtitle = $eco_com->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
         $text = "";
         $habitual = false;
@@ -37,8 +38,10 @@ class EcoComCertificationController extends Controller
             $text = "Firmo al pie del presente en señal de conformidad, debiendo considerarse mi consentimiento para las posteriores solicitudes de pago semestral a realizarse de manera presencial o virtual (Plataforma Virtual de Trámites o Aplicación Móvil – MUSERPOL PVT), sin necesidad de firma expresa en la Solicitud de Pago del Beneficio del Complemento Económico.";
         if($eco_com->eco_com_modality->procedure_modality->name != 'Vejez')
             $size = 780;
-        if($eco_com->eco_com_legal_guardian != null)
+        if ($eco_com->eco_com_legal_guardian != null) {
             $size = 700;
+            $size_down = 80;
+        }
         $code = $eco_com->code;
         $area = $eco_com->wf_state->first_shortened;
         $user = $eco_com->user;
@@ -63,6 +66,7 @@ class EcoComCertificationController extends Controller
             'text' => $text,
             'habitual' => $habitual,
             'size' => $size,
+            'size_down' => $size_down,
             'eco_com' => $eco_com,
             'affiliate' => $affiliate,
             'eco_com_beneficiary' => $eco_com_beneficiary,
