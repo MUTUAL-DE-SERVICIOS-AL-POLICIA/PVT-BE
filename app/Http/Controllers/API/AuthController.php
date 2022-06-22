@@ -12,6 +12,7 @@ use Muserpol\Http\Controllers\Controller;
 use Muserpol\Helpers\Util;
 use Carbon\Carbon;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\EconomicComplement\EcoComModality;
 
 class AuthController extends Controller
 {
@@ -91,7 +92,20 @@ class AuthController extends Controller
                         $q->orderBy('year')->orderBy('normal_start_date');
                     })->latest()->first();
                     if (mb_strtoupper($last_eco_com->eco_com_beneficiary->identity_card) == $identity_card && Carbon::createFromFormat('d/m/Y', $last_eco_com->eco_com_beneficiary->birth_date)->format('Y-m-d') == $birth_date) {
-                        $eco_com_beneficiary = $last_eco_com->eco_com_beneficiary;
+                        $economic_beneficiary = $last_eco_com->eco_com_beneficiary; //Datos del Último beneficiario registrado
+                        $economic_complement = EconomicComplement::find($economic_beneficiary->economic_complement_id);
+                        $eco_com_modality_id = $economic_complement->eco_com_modality_id;
+                        $modality_id = EcoComModality::find($eco_com_modality_id);
+                        /*Valida que no puedan ingresar los beneficiarios sí es Vejez=29 y está fallecido o es viudedad=30 y es fallecido */
+                           if(($modality_id->procedure_modality_id == 29 && $affiliate->dead == true ) || ($modality_id->procedure_modality_id == 30 && $affiliate->spouse->first()->dead == true)) {
+                              return response()->json([
+                                  'error' => true,
+                                  'message' => 'Datos del beneficiario se encuentra registrado como fallecido.',
+                                  'data' => (object)[]
+                              ], 403);
+                            } else {
+                            $eco_com_beneficiary = $economic_beneficiary;
+                            }
                     } else {
                         return response()->json([
                             'error' => true,
