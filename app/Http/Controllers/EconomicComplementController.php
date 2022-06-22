@@ -1817,6 +1817,7 @@ class EconomicComplementController extends Controller
           if($validator->fails()){
               return response()->json($validator->errors(), 406);
           }
+        $user_id = Auth::user()->id;
         $list_eco_com = EconomicComplement::where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',$request->ecoComState)->where('procedure_date', $request->procedureDate)->get();
         foreach ($list_eco_com as $item) {
                  // descuento por devoluciones por reposicion de fondos
@@ -1837,9 +1838,10 @@ class EconomicComplementController extends Controller
                 $item->eco_com_state_id = 1;
             }
             $item->wf_current_state_id = 8;
-            $item->user_id = Auth::user()->id;
+            $item->user_id = $user_id;
             $item->update();
-            $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($item->id)");
+
+            $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($user_id,$item->id)");
         }
         return 0;
     }
@@ -1872,6 +1874,7 @@ class EconomicComplementController extends Controller
             $devolution->update();
         }
         //
+        $user_id = Auth::user()->id;
         if ($eco_com->eco_com_state_id == 29){
             $eco_com->eco_com_state_id=17;
         }
@@ -1881,7 +1884,7 @@ class EconomicComplementController extends Controller
             }
         }
         $eco_com->save();
-        $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($id)");
+        $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($user_id,$id)");
         return $eco_com;
     }
 

@@ -149,6 +149,7 @@ class EconomicComplement extends Model
                 'errors' => ['No se puede realizar la amortización porque el trámite ' . $this->code . ' se encuentra en estado de ' . $eco_com_state->name],
             ], 422);
         }
+        $user_id = Auth::user()->id;
         // // requalify
         // if ($economic_complement->total > 0 && ( $economic_complement->eco_com_state_id == 1 || $economic_complement->eco_com_state_id == 2 || $economic_complement->eco_com_state_id == 3 || $economic_complement->eco_com_state_id == 17 || $economic_complement->eco_com_state_id == 18 || $economic_complement->eco_com_state_id == 15 ) ) {
         //     $economic_complement->recalification_date = Carbon::now();
@@ -383,9 +384,13 @@ class EconomicComplement extends Model
         if ($this->discount_types->count() > 0) {
             if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
                 $this->eco_com_state_id = 18;
+                //confirmación de la contribución en la tabla contribution_passives
+                $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($user_id,$this->id)");
             }else{
                 if ($this->eco_com_state_id == 18) {
                     $this->eco_com_state_id = 16;
+                    //cambio de estado de true a false de la tabla contribution_passives
+                    $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid_false($user_id,$this->id)");
                 }
             }
         }
