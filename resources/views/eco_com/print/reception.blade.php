@@ -115,7 +115,7 @@
             @endif
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
         @if($eco_com->eco_com_reception_type_id == 2)
-        <table style="margin-top: 200px;" class="m-t-50 table-info">
+        <table style="margin-top: {{$size_down}}px;" class="m-t-50 table-info">
             <tbody>
                 <tr>
                     <td class="no-border text-center text-base w-50 align-bottom"
