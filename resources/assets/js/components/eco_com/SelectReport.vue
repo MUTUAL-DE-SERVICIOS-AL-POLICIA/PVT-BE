@@ -20,11 +20,11 @@
       </select>
     </div>
 
-    <div v-if="form.reportTypeId == 18 && rol.id == 5">
+   <!-- <div v-if="form.reportTypeId == 18 && rol.id == 5">
       <label for="change-state">Actualizar Estados</label>
       <i class="fa fa-question-circle" title="Si marca esta opcion actualizara todos los tramites listados en el reporte a Enviado a Banco"></i>
       <input type="checkbox" id="change-state" v-model="form.changeState"/>
-    </div>
+    </div>-->
     <div
       v-if="form.reportTypeId == 10 || form.reportTypeId == 11 || form.reportTypeId == 12 || form.reportTypeId == 13 || form.reportTypeId == 19 || form.reportTypeId == 20"
     >
@@ -90,6 +90,16 @@
       </div>
     </div>
     <div class="col-md-12">
+      <div class="text-left m-sm" v-if="form.reportTypeId == 28 && rol.id == 5">
+        <button class="btn btn-primary" type="button" @click="update()">
+          <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
+          <i v-else class="fa fa-check-circle"></i>
+          &nbsp;
+          {{ loadingButton ? 'Actualizando Pagos en demasía...' : 'Actualizar Pagos en demasía' }}
+        </button>
+      </div>
+    </div>
+    <div class="col-md-12">
       <div class="text-center m-sm">
         <button class="btn btn-primary" type="button" @click="send()" :disabled="loadingButton">
           <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
@@ -98,7 +108,7 @@
           {{ loadingButton ? 'Generando...' : 'Generar' }}
         </button>
       </div>
-    </div>
+    </div>    
   </div>
 </template>
 
@@ -144,14 +154,10 @@ export default {
           name: "Tramites con Pago por Unica Vez"
         },
         
-        {
+       /* {
           id: 17,
           name: "Planilla General"
-        },
-        {
-          id: 18,
-          name: "Planilla BANCO UNION"
-        },
+        },*/
         // {
         //   id: 5,
         //   name: "Tramites con Etiquetas"
@@ -236,6 +242,14 @@ export default {
           id: 27,
           name: "Planilla de Pago Banco Union"
         },
+        {
+          id: 18,
+          name: "Para envío BANCO UNION"
+        },
+        {
+          id: 28,
+          name: "Pagos en demasía"
+        }
       ],
       form: {
         ecoComProcedureId:
@@ -273,6 +287,21 @@ export default {
       await axios({
         url: "/eco_com_estado",
         method: "POST",
+        data: this.form
+      })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+       });
+       this.loadingButton = false;
+    },
+    async update() {
+      this.loadingButton = true;
+      await axios({
+        url: "/update_overpayments",
+        method: "GET",
         data: this.form
       })
         .then(response => {

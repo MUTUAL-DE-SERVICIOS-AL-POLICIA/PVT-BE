@@ -47,6 +47,7 @@
                     exigidos de acuerdo al siguiente detalle:</div>
             </div>
         @endif
+        @if(sizeof($eco_com_submitted_documents) > 0)
         <div class="font-bold uppercase m-b-5 counter">DOCUMENTOS RECEPCIONADOS</div>
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
@@ -80,6 +81,7 @@
                 @endforeach
             </tbody>
         </table>
+        @endif
         {{-- @if($submitted_documents[0]->procedure_requirement->number != 1)
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
@@ -106,9 +108,14 @@
             </tbody>
         </table>
         @endif --}}
+            @if($habitual)
+            <br>
+            <div class="text-justify text-sm">{{ $text }}</div>
+            <br>
+            @endif
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
         @if($eco_com->eco_com_reception_type_id == 2)
-        <table class="m-t-50 table-info">
+        <table style="margin-top: {{$size_down}}px;" class="m-t-50 table-info">
             <tbody>
                 <tr>
                     <td class="no-border text-center text-base w-50 align-bottom"
@@ -129,7 +136,14 @@
             </tbody>
         </table>
         @endif
-        <div class="m-t-50 font-bold text-xxxs">
+        
+        @if($habitual)
+            <div style="margin-top: {{$size}}px;" class="font-bold text-xxs">
+        @else
+            <div style="margin-top: 100px;" class="font-bold text-xxs">
+        @endif
+        </div>
+        <div class="font-bold text-xxs">
         Autorizo a la MUSERPOL acceder a mi información personal (y causante si corresponde) en las bases de datos de Servicio de Registro Cívico - SERECI, 
         Servicio General de Información Personal – SEGIP, Autoridad de Fiscalización y Control de Pensiones y Seguros - APS, 
         Servicio Nacional del Sistema De Reparto - SENASIR, Comando General de la Policía Boliviana y otras Instituciones Públicas y/o 

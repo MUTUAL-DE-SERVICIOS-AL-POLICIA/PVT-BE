@@ -352,7 +352,7 @@ class EcoComImportExportController extends Controller
                     $eco_com->calculateTotalRentAps();
                     $total_rent = $eco_com->total_rent;
                     if ($total_rent > 0) {
-                        $total = $total_rent * 2.03 / 100;
+                        $total = round($total_rent * 2.03 / 100, 2);
                         $aux = $total * 6;
                         $discount_type = DiscountType::findOrFail(7);
                         if ($eco_com->discount_types->contains($discount_type->id)) {

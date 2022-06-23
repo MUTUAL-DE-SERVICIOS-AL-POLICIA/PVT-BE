@@ -715,6 +715,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('eco_com_report', 'EcoComReportController@index')->name('eco_com_report');
     Route::post('eco_com_report_excel', 'EcoComReportController@generate');
     Route::post('eco_com_estado', 'EconomicComplementController@cambiarEstado');
+    Route::get('update_overpayments', 'EconomicComplementController@update_overpayments');// actualizacion de reposicion de fondos
 
     // base wage
     Route::resource('base_wage', 'BaseWageController');

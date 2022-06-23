@@ -48,13 +48,15 @@ class LivenessController extends Controller
                 'successful' => false,
                 'message' => 'Gire ligeramente su rostro hacia la derecha',
                 'translation' => 'Derecha'
-            ], [
+            ]
+            // Obviar sonreir
+            /*, [
                 'gaze' => 'forward',
                 'emotion' => 'happy',
                 'successful' => false,
                 'message' => 'Mire de frente sonriendo',
                 'translation' => 'Sonriente'
-            ]
+            ]*/
         ];
         shuffle($actions);
         if ($enroll) {
@@ -273,7 +275,7 @@ class LivenessController extends Controller
             Storage::delete($path.$file_name);
             return response()->json([
                 'error' => true,
-                'message' => ($current_action_index + 1).'/'.$total_actions.'. Intente nuevamente',
+                'message' => 'Intente nuevamente.',
                 'data' => [
                     'completed' => false,
                     'type' => $device->enrolled ? 'liveness' : 'enroll',

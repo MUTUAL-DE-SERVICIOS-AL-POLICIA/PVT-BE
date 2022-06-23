@@ -1381,10 +1381,10 @@ export default {
         { id: "D", name: "Divorciado (a)" }
       ],
       sigepStatus: [
+        { id: "SIN REGISTRO", name: "SIN REGISTRO" },
+        { id: "REGISTRO OBSERVADO", name: "REGISTRO OBSERVADO" },
         { id: "ACTIVO", name: "ACTIVO" },
-        { id: "ELABORADO", name: "ELABORADO" },
-        { id: "VALIDADO", name: "VALIDADO" },
-        { id: "SIN REGISTRO", name: "SIN REGISTRO" }
+        { id: "ACTIVO-PAGO-VENTANILLA", name: "ACTIVO-PAGO-VENTANILLA" }
       ],
       has_legal_guardian: false,
       legal_guardian_type_id: null
