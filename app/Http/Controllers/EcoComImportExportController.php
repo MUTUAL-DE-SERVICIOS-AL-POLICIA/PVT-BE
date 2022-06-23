@@ -370,7 +370,10 @@ class EcoComImportExportController extends Controller
                 $not_found->push($affiliate_id);
             }
         }
-        
+        //registro de aportes en la tabla contribution_passives
+        $user_id = Auth::user()->id;
+        $import_contribution = DB::select("select import_contribution_eco_com($user_id,$current_procedures)");
+
         $data = [
             'found' => $found,
             'found2' => $found2,
