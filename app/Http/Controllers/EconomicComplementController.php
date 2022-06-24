@@ -1842,6 +1842,9 @@ class EconomicComplementController extends Controller
             $item->wf_current_state_id = 8;
             $item->user_id = Auth::user()->id;
             $item->update();
+            //cambio de estado del aporte en la tabla contribution_passives
+            $user_id = Auth::user()->id;
+            $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($user_id,$item->id)");
         }
         return 0;
     }
@@ -1883,6 +1886,9 @@ class EconomicComplementController extends Controller
             }
         }
         $eco_com->save();
+        //cambio de estado del aporte en la tabla contribution_passives
+        $user_id = Auth::user()->id;
+        $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($user_id,$id)");
         return $eco_com;
     }
 
