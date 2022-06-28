@@ -68,13 +68,13 @@ class AuthController extends Controller
         $device_id = $request->device_id;
         $is_new_app= isset( $request->is_new_app ) ? $request->is_new_app : false;
         if($is_new_app){
-            if (Util::isDoblePerceptionEcoCom($identity_card)) {
+            /*if (Util::isDoblePerceptionEcoCom($identity_card)) {
                 return response()->json([
                     'error' => true,
                     'message' => 'Usted percibe el Beneficio como Titular y Viuda(o), por lo cual para realizar el registro de su trámite debe apersonarse por oficinas de la MUSERPOL.',
                     'data' => (object)[]
                 ], 403);
-            } else {
+            } else {*/
                 $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
                 if ($eco_com_beneficiary) {
                     $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
@@ -169,7 +169,7 @@ class AuthController extends Controller
                         'data' => (object)[]
                     ], 403);
                 }
-            }
+            //}
         }else{
             return response()->json([
                 'error' => true,
