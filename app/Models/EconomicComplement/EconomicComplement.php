@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Crypt;
 use Hashids\Hashids;
 use DB;
 use Muserpol\Helpers\ID;
+use Auth;
 
 class EconomicComplement extends Model
 {
@@ -380,9 +381,12 @@ class EconomicComplement extends Model
                 $this->eco_com_state_id = 16;
             }
         }
+        $change_state = false;
+        $user_id = Auth::user()->id;
         if ($this->discount_types->count() > 0) {
             if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
                 $this->eco_com_state_id = 18;
+                $change_state = true;
             }else{
                 if ($this->eco_com_state_id == 18) {
                     $this->eco_com_state_id = 16;
@@ -390,6 +394,11 @@ class EconomicComplement extends Model
             }
         }
         $this->save();
+        if($change_state){
+            //confirmación de la contribución en la tabla contribution_passives
+             $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid($user_id,$this->id)");
+        }
+
         return response()->json([
             'status' => 'success',
         ], 200);
