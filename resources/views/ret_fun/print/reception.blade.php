@@ -10,10 +10,16 @@
             Datos del solicitante
         </div>
         @include('print_global.applicant_info', ['applicant'=>$applicant])
+      @if($applicant->kinship->name != 'Titular')
+        <div class="font-bold uppercase m-b-5 counter">
+            Datos del Titular
+        </div>
+            @include('print_global.police_info', ['affiliate'=>$affiliate])
+        @endif
         <div class="font-bold uppercase m-b-5 counter">
             Datos Policiales del Titular
         </div>
-            @include('print_global.only_police_info', ['affiliate'=>$affiliate])
+        @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate])
         <div>
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
@@ -87,10 +93,7 @@
                 </tbody>
             </table>
         @endif
-        <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, y en caso de demostrarse cualquier falsedad, distorsión
-            u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a
-            la anulación del trámite y podrá efectuar las acciones correspondientes conforme el Parágrafo II, artículo 44 del
-            Reglamento de Fondo de Retiro Policial Solidario.</div>
+        <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme al Artículo 49 del Reglamento de Fondo de Retiro Policial Solidario.</div>
         <table class="m-t-35">
             <tr>
                 <td class="no-border text-center text-base w-50 align-bottom">
