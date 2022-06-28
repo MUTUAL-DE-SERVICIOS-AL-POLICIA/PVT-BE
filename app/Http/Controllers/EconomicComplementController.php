@@ -883,6 +883,9 @@ class EconomicComplementController extends Controller
         else
             $economic_complement->months_of_payment = null;
         $economic_complement->save();
+        $user_id = auth()->id();
+        //cambio de estado de true a false de la tabla contribution_passives
+        $valid_payment_contribucion_passive = DB::select("SELECT change_state_valid_false($user_id,$request->id)");
         /**
          * update affiliate info
          */
