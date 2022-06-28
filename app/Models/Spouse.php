@@ -109,4 +109,9 @@ class Spouse extends Model
     {
         return Util::removeSpaces($this->identity_card . ' ' . ($this->city_identity_card->first_shortened ?? ''));
     }
+    // Estado fallecido de la esposa
+    public function getDeadAttribute()
+    {
+      return ($this->date_death != null || $this->reason_death != null || $this->death_certificate_number != null);
+    }
 }

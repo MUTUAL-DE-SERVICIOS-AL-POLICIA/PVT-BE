@@ -174,6 +174,9 @@ class SearcherController
                         }
                     }
                 }
+                if($affiliate->stop_eco_com_consecutively()){
+                    $other_observations->push(['value'=>'Beneficiario dejo de solicitar por dos semestres o mas (Debe solicitar rehabilitación).']);
+                }
             }
         }
         $data = [

@@ -16,7 +16,7 @@
             <i class="fa fa-dollar"></i> Cambiar a estado pagado
           </button>
           </span>
-          <span v-if="ecoCom.eco_com_state_id === 16 && ecoCom.procedure_date !== null ">
+          <!--<span v-if="ecoCom.eco_com_state_id === 16 && ecoCom.procedure_date == null && roleId === 4 &&  ecoCom.wf_current_state_id == 3">
             <button
             data-animation="flip"
             data-toggle="tooltip"
@@ -26,7 +26,16 @@
           >
             <i class="fa fa-dollar"></i> Cambiar a estado habilitado
           </button>
-          </span>
+          </span>-->
+          <button
+            data-animation="flip"
+            data-toggle="tooltip"
+            title="Form solicitud de pago"
+            class="btn btn-primary"
+            @click="formSolicitudPago()"
+          >
+            <i class="fa fa-print"></i> Imprimir solicitud de pago
+          </button>
           <button
             data-animation="flip"
             data-toggle="tooltip"
@@ -171,11 +180,10 @@
           <!-- <div class="hr-line-dashed"></div>
           <h3>Información Policial del Titular:</h3> -->
           <div class="row">
-            <div class="col-md-6" :class="{'has-error': errors.has('degree_id') }">
-              <div class="col-md-4">
+            <div class="col-md-2" :class="{'has-error': errors.has('degree_id') }">
                 <label class="control-label">Categoria</label>
-              </div>
-              <div class="col-md-8">
+            </div>
+              <div class="col-md-4">
                 <select class="form-control" v-model="form.category_id" name="category_id" :disabled="!editing" v-validate="'required'">
                   <option v-for="(c, index) in categories" :value="c.id" :key="index">{{c.name}}</option>
                 </select>
@@ -183,13 +191,11 @@
                   <i class="fa fa-warning text-danger"></i>
                   <span class="text-danger">{{ errors.first('category_id') }}</span>
                 </div>
-              </div>
             </div>
-            <div class="col-md-6" :class="{'has-error': errors.has('category_id') }">
-              <div class="col-md-4">
+            <div class="col-md-2" :class="{'has-error': errors.has('category_id') }">
                 <label class="control-label">Grado</label>
-              </div>
-              <div class="col-md-8">
+            </div>
+              <div class="col-md-4">
                 <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing" v-validate="'required'">
                   <option v-for="(c, index) in degrees" :value="c.id" :key="index">{{c.name}}</option>
                 </select>
@@ -199,7 +205,6 @@
                 </div>
               </div>
             </div>
-          </div>
           <br>
           <div class="row">
             <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
@@ -209,6 +214,11 @@
                     <i class="fa fa-warning text-danger"></i>
                     <span class="text-danger">@{{ errors.first('service_years') }}</span>
                 </div>
+            </div>
+
+            <div class="col-md-4"> <label for="is_paid_spouse">PAGO POR UNICA VEZ VIUDA </label> </div>
+            <div class="col-md-2">
+              <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing || (roleId != 4)">
             </div>
             <!-- <div class="col-md-2"><label class="control-label">Ente gestor:</label></div>
             <div class="col-md-4">
@@ -221,7 +231,7 @@
         </div>
         <br>
         <div class="row">
-            <div class="col-md-2"><label class="control-label">Meses de servicio</label></div>
+           <div class="col-md-2"><label class="control-label">Meses de servicio</label></div>
             <div class="col-md-4">
                 <input type="number" name="service_months" v-model="form.service_months" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:11'" min="0" max="11">
                 <div v-show="errors.has('service_months') && editing" >
@@ -229,30 +239,25 @@
                     <span class="text-danger">@{{ errors.first('service_months') }}</span>
                 </div>
             </div>
-        </div>
-        <br>
-        <br>
-        <br>
-        <div class="row">
-          <div>
-            <div class="col-md-4"> <label for="is_paid_spouse">PAGO POR UNICA VEZ VIUDA -  </label> </div>
-            <div class="col-md-2">
-              <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing || (roleId != 4)">
-            </div>
-          
              <div class="col-md-2"><label for="months_of_payment">Periodo </label></div>
-            <div class="col-md-4">
-            <input type="number" name="months_of_payment" id="months_of_payment" class="form-control" v-model="form.months_of_payment" :disabled="!editing || (roleId != 4)" v-validate="'min_value:0|max_value:6'" max="6" min="0" maxlength="2">
+             <div class="col-md-4">
+             <input type="number" name="months_of_payment" id="months_of_payment" class="form-control" v-model="form.months_of_payment" :disabled="!editing || (roleId != 4)" v-validate="'min_value:0|max_value:6'" max="6" min="0" maxlength="2">
               <div v-show="errors.has('months_of_payment') && editing" >
                 <i class="fa fa-warning text-danger"></i>
                 <span class="text-danger">@{{ errors.first('months_of_payment') }}</span>
               </div>
             </div>
-          </div>
         </div>
+        <br>
+         <div class="row" v-show="editing">
+          <div class="col-md-4" >
+            <label class="control-label">ACTUALIZAR ESTADO DEL TRAMITE:</label>
+          </div>
+         </div>
+         <br>
         <div class="row">
           <div class="col-md-4">
-          <label for="eco_com_state_id">EN PROCESO -  </label>
+          <label for="eco_com_state_id">EN PROCESO</label>
           </div>
           <div class="col-md-2">
           <input class ="mediumCheckbox"
@@ -263,9 +268,10 @@
           :disabled="!editing || (roleId != 4)" >
           </div>
         </div>
+         <br>
         <div class="row">
           <div class="col-md-4">
-          <label for="eco_com_state_id">HABILITADO PARA PAGO A DOMICILIO - </label>
+          <label for="eco_com_state_id">HABILITADO PARA PAGO A DOMICILIO</label>
           </div>
           <div class="col-md-2">
           <input class ="mediumCheckbox"
@@ -278,7 +284,7 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-          <label for="eco_com_state_id">HABILITADO PARA PAGO MEDIANTE CHEQUE - </label>
+          <label for="eco_com_state_id">HABILITADO PARA PAGO MEDIANTE CHEQUE</label>
           </div>
           <div class="col-md-2">
           <input class ="mediumCheckbox"
@@ -286,6 +292,58 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='28'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">NO PAGADO - REVERTIDO</label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='23'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">NO PAGADO - EXCLUIDO</label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='12'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">NO PAGADO - OBSERVACIÓN DOCUMENTAL</label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='27'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">NO PAGADO - FALLECIDO</label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio"
+          id="eco_com_state_id"
+          v-model="form.eco_com_state_id"
+          value='30'
           :disabled="!editing || (roleId != 4)" >
           </div>
         </div>
@@ -491,7 +549,7 @@ export default {
           flash("Información del Trámite Actualizada");
         })
         location.reload()
-        .catch(response => {
+         .catch(response => {
           flashErrors("Error al procesar: ", error.response.data.errors);
           this.show_spinner = false;
         });
@@ -512,6 +570,9 @@ export default {
     },
     async certificacionPago(){
       printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/paid_cetificate', type:'pdf', showModal:true});
+    },
+    async formSolicitudPago(){
+      printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/reception', type:'pdf', showModal:true});
     }
   }
 };
