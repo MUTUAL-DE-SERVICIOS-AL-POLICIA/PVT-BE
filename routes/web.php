@@ -772,6 +772,7 @@ Route::group(['middleware' => ['auth']], function () {
     // affiliate records
     Route::get('affiliate_record/{id}', 'AffiliateController@getRecord');
     Route::get('affiliate_notes/{id}', 'AffiliateController@getNote');
+    Route::get('affiliate_record_print/{affiliate_id}', 'AffiliateReportController@printRecordAffiliate')->name('affiliate_print_record');
 
     // affiliate notes
     Route::post('affiliate_note_create', 'AffiliateNoteController@create');
