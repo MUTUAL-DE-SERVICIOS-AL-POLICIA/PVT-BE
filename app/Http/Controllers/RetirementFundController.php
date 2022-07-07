@@ -123,7 +123,7 @@ class RetirementFundController extends Controller
         ];
 
 
-        $requirements = ProcedureRequirement::where('procedure_modality_id', $request->ret_fun_modality)->select('id', 'number')->orderBy('number', 'asc')->get();
+        $requirements = ProcedureRequirement::where('procedure_modality_id', $request->ret_fun_modality)->whereNull('deleted_at')->select('id', 'number')->orderBy('number', 'asc')->get();
         $array_requirements = [];
         foreach ($requirements as $requirement) {
             $array_requirements[$requirement->number] = 0;
@@ -282,7 +282,7 @@ class RetirementFundController extends Controller
                 $af->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
                 $af->reason_death = $request->reason_death;
                 break;
-            case 63:
+                case 63:
             case 2:
             case 3:
             case 5:
@@ -291,7 +291,7 @@ class RetirementFundController extends Controller
             case 24:
                 $af->affiliate_state_id = ID::affiliateState()->jubilado;
                 break;
-            case 62:
+                case 62:
             default:
                 $this->info("error");
                 break;
@@ -1192,8 +1192,9 @@ class RetirementFundController extends Controller
             ->find($affiliate->id);
         # 3 id of ret_fun
         $procedure_types = ProcedureType::where('module_id', 3)->get();
-        $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
+        $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id','procedure_requirements.deleted_at')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+            ->whereNull('procedure_requirements.deleted_at')
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
