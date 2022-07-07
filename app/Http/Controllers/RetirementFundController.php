@@ -282,6 +282,7 @@ class RetirementFundController extends Controller
                 $af->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
                 $af->reason_death = $request->reason_death;
                 break;
+            case 63:
             case 2:
             case 3:
             case 5:
@@ -290,6 +291,7 @@ class RetirementFundController extends Controller
             case 24:
                 $af->affiliate_state_id = ID::affiliateState()->jubilado;
                 break;
+            case 62:
             default:
                 $this->info("error");
                 break;
@@ -674,7 +676,7 @@ class RetirementFundController extends Controller
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
-        $modalities = ProcedureModality::where('procedure_type_id', '<=', '2')->select('id', 'name', 'procedure_type_id')->get();
+        $modalities = ProcedureModality::where('procedure_type_id', '<=', '21')->select('id', 'name', 'procedure_type_id')->get();
 
         $observation_types = ObservationType::where('module_id', 3)->get();
 
@@ -1199,7 +1201,7 @@ class RetirementFundController extends Controller
         $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
         if (!isset($spouse->id))
             $spouse = new Spouse();
-        $modalities = ProcedureModality::where('procedure_type_id', '<=', '2')->select('id', 'name', 'procedure_type_id')->get();
+        $modalities = ProcedureModality::where('procedure_type_id', '<=', '21')->select('id', 'name', 'procedure_type_id')->get();
 
         $kinships = Kinship::get();
 
