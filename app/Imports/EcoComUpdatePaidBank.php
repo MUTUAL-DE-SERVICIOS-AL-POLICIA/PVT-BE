@@ -34,10 +34,10 @@ class EcoComUpdatePaidBank implements ToCollection
         $user = User::first();
         //$status = array("ACTIVO", "ELABORADO", "SIN REGISTRO", "VALIDADO");
         $current_procedure = Util::getEcoComCurrentProcedure()->first();
-        $current_procedure = 19;
+        $current_procedure = 20;
 
         foreach ($rows as $row) {
-            /*
+            
             $nup = strval($row[0]); 
             $affiliate = Affiliate::where('id', $nup)->first();     
             if ($affiliate) {
@@ -53,7 +53,7 @@ class EcoComUpdatePaidBank implements ToCollection
                 }                  
             }else{
                 $not_found->push($nup);
-            }*/
+            }
 
 
 
@@ -78,8 +78,6 @@ class EcoComUpdatePaidBank implements ToCollection
             } else {
                 $not_found->push($ci);
             }*/
-
-
 
 
             /*
@@ -144,7 +142,7 @@ class EcoComUpdatePaidBank implements ToCollection
                 $not_found->push($nup);
             }*/
         
-
+            /*    
             $ci = strval($row[0]);
             $affiliate = Affiliate::where('identity_card', $ci)->first();
             
@@ -182,7 +180,7 @@ class EcoComUpdatePaidBank implements ToCollection
                 }
 
                 $found++;
-                
+                */
             }
 
 
