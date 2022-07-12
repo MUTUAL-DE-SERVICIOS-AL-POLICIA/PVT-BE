@@ -180,10 +180,10 @@ class EcoComUpdatePaidBank implements ToCollection
                 }
 
                 $found++;
-                */
+                
             }
 
-
+        */
         } 
         
 
