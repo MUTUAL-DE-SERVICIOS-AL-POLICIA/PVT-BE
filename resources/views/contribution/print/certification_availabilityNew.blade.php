@@ -22,7 +22,7 @@
                 TOTAL GANADO
             </td>
             <td class="px-15 py text-center">
-                BONO SEGURIDAD CIUDADANA
+                BONO SEG. CIUDADANA
             </td>
             <td class="px-15 py text-center">
                 APORTE F.R.P.S.
