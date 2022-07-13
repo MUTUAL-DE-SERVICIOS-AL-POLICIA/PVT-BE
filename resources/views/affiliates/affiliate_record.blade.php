@@ -54,6 +54,16 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                                <button class="btn btn-primary"
+                                            type="button"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Imprimir historial"
+                                            onclick='printJS({printable: "{{route("affiliate_print_record", [$affiliate->id])}}", type: "pdf", modalMessage: "Generando documentos de impresión, por favor espere un momentoooo.", showModal: true})'
+                                    >
+                                    <i class="fa fa-print"></i>
+                                    Imprimir
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -13,12 +13,12 @@ class DeleteEcoComApplicants extends Migration
      */
     public function up()
     {
-        Schema::table('eco_com_applicants', function (Blueprint $table) {
+        /*Schema::table('eco_com_applicants', function (Blueprint $table) {
             $table->dropColumn(['official']);
             $table->dropColumn(['book']);
             $table->dropColumn(['departure']);
             $table->dropColumn(['marriage_date']);
-        });
+        });*/
     }
 
     /**
@@ -28,11 +28,11 @@ class DeleteEcoComApplicants extends Migration
      */
     public function down()
     {
-        Schema::table('eco_com_applicants', function (Blueprint $table) {
+        /*Schema::table('eco_com_applicants', function (Blueprint $table) {
             $table->string('official',350)->nullable();
             $table->string('book',350)->nullable();
             $table->string('departure',350)->nullable();
             $table->date('marriage_date')->nullable();
-        });
+        });*/
     }
 }

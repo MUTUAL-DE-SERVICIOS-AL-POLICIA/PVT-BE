@@ -55,6 +55,7 @@
 								<thead>
 									<tr>
 										<th class="col-md-2">Fecha </th>
+										<th class="col-md-2">F.R.P.S.</th>
 										<th class="col-md-2">Total</th>
 										<th class="col-md-4">Tipo</th>
 									</tr>
@@ -62,6 +63,7 @@
 								<tbody id="contenedor">
 									<tr v-for="(contribution,index) in contributions" :key="`contribution-${index}`" :style="{'background':getColor1(contribution.contribution_type_id)}" >
 										<td class="col-md-2">{{ contribution.month_year | monthYear }}</td>
+										<td class="col-md-2">{{ contribution.retirement_fund }}</td>
 										<td class="col-md-2">{{ contribution.total }}</td>
 										<td class="col-md-4">
 											<select class="form-control" v-model="contribution.contribution_type_id" @change="resetPrintButton()">
@@ -237,6 +239,12 @@ export default {
 		  break;
 		case 9:
 		  color = "#30c1edfb";
+		  break;
+		case 12:
+		  color = "#CDDC39";
+		  break;
+		case 13:
+		  color = "#B2FF59";
 		  break;
 		case 18:
 		  color = "#545050";

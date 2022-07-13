@@ -1189,6 +1189,69 @@ class RetirementFundCertificationController extends Controller
     return \PDF::loadView('contribution.print.certification_item0', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
   }
 
+  public function printCertificationAvailabilityNew($id)
+  {
+    $retirement_fund = RetirementFund::find($id);
+    $affiliate = $retirement_fund->affiliate;
+    $item_cero_ids = [12, 13];
+    $contributions =  $affiliate->contributions()->whereIn('contribution_type_id', $item_cero_ids)->orderBy('month_year')->get();
+    $month_years = $contributions->pluck('month_year');
+    $months = implode(",", array_map(function ($item) {
+      return "'" . $item . "'";
+    }, $month_years->toArray()));
+
+    $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
+      ->orderBy('month_year')
+      ->get();
+
+    $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+    $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+    $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+    $title = "CERTIFICACIÓN DE CUENTAS INDIVIDUALES DISPONIBILIDAD";
+    $subtitle = "Cuenta Individual";
+
+    $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
+    $code = $retirement_fund->code;
+    $area = $next_area_code->wf_state->first_shortened;
+    $user = $next_area_code->user;
+    $date = Util::getDateFormat($next_area_code->date);
+    $number = $next_area_code->code;
+
+    $degree = Degree::find($affiliate->degree_id);
+    $exp = City::find($affiliate->city_identity_card_id);
+    $exp = ($exp == Null) ? "-" : $exp->first_shortened;
+    $dateac = Carbon::now()->format('d/m/Y');
+    $place = City::find(Auth::user()->city_id);
+    $pdftitle = "Cuentas Individuales";
+    $namepdf = Util::getPDFName($pdftitle, $affiliate);
+    $num=0;
+
+    $subtitle = $next_area_code->code;
+
+    $data = [
+      'code' => $code,
+      'area' => $area,
+      'user' => $user,
+      'date' => $date,
+      'number' => $number,
+      'subtitle' => $subtitle,
+      'place' => $place,
+      'retirement_fund' => $retirement_fund,
+      'reimbursements' => $reimbursements,
+      'dateac' => $dateac,
+      'exp' => $exp,
+      'degree' => $degree,
+      'contributions' => $contributions,
+      'affiliate' => $affiliate,
+      'title' => $title,
+      'institution' => $institution,
+      'direction' => $direction,
+      'unit' => $unit,
+      'num' => $num,
+    ];
+    return \PDF::loadView('contribution.print.certification_availabilityNew', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL')->stream("$namepdf");
+  }
+
   public function printCertificationSecurity($id)
   {
     $retirement_fund = RetirementFund::find($id);
