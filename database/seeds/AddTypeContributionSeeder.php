@@ -17,6 +17,7 @@ class AddTypeContributionSeeder extends Seeder
         $contribution_types = [
             ['name' => 'Disponibilidad Con Aporte','shortened' => '','description'=>'Periodos que el funcionario del sector activo de la Policía Boliviana estuvo en situación de disponibilidad de la letra "A" o la letra "C"','operator'=>'-','sequence'=>'12'],
             ['name' => 'Disponibilidad Sin Aporte','shortened' => '','description'=>'Periodos que el funcionario del sector activo de la Policía Boliviana estuvo en situación de disponibilidad de la letra "A" o la letra "C"','operator'=>'-','sequence'=>'13'],
+            ['name' => 'Inexistencia de Planilla de Haberes','shortened' => '','description'=>'Inexistencia de Planilla de Haberes','operator'=>'-','sequence'=>'14'],
         ];
         foreach ($contribution_types as $contribution_type) {
             ContributionType::firstOrCreate($contribution_type);
