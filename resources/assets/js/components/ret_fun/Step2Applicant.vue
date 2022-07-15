@@ -79,7 +79,7 @@ export default {
       })
     },
     applicant_types_filter(){
-      if (this.retFun.modality_id == 4 || this.retFun.modality_id == 1) {
+      if (this.retFun.modality_id == 4 || this.retFun.modality_id == 1 || this.retFun.modality_id == 63 ) {
         return this.applicant_types;
       }
       return this.applicant_types.filter(item=>{
@@ -87,7 +87,7 @@ export default {
       })
     },
     isDeathMode(){
-      return (this.retFun.modality_id == 4 || this.retFun.modality_id == 1);
+      return (this.retFun.modality_id == 4 || this.retFun.modality_id == 1 || this.retFun.modality_id == 63 );
     }
   },
   methods: {
@@ -193,7 +193,7 @@ export default {
       if(this.applicant_type  == '3'){
         this.show_apoderado_form = !this.show_apoderado_form;
         this.show_advisor_form = false;
-        if(modality_id == 4 || modality_id == 1){
+        if(modality_id == 4 || modality_id == 1 || modality_id == 63){
           this.setDataSpouse();
         }else{
           this.setDataAffilate();
@@ -203,7 +203,7 @@ export default {
       if(this.applicant_type  == '1'){
         this.show_apoderado_form = false;
         this.show_advisor_form = false;
-        if(modality_id == 4 || modality_id == 1){
+        if(modality_id == 4 || modality_id == 1 || modality_id == 63){
           this.setDataSpouse();
         }else{
           this.setDataAffilate();
