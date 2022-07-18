@@ -19,7 +19,7 @@
         <div class="font-bold uppercase m-b-5 counter">
             Datos Policiales del Titular
         </div>
-        @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate])
+        @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate,'procedure_modality'=>$retirement_fund->procedure_modality])
         <div>
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
@@ -28,8 +28,10 @@
                 <span class="uppercase font-bold">MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</span><br>
                 <span class="font-bold capitalize">presente.-</span><br>
             </div>
+            @php($article = $retirement_fund->procedure_modality->procedure_type_id==21 ? 'PARA LA': 'DEL')
+            @php($article_by = $retirement_fund->procedure_modality->id==62 ? 'AL': 'POR')
             <div class="text-right block">
-                <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD DEL {{ $retirement_fund->procedure_modality->procedure_type->name }} POR {!! $modality !!}</span></span>
+                <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD {{$article}} {{ $retirement_fund->procedure_modality->procedure_type->name }} {{$article_by}} {!! $modality !!}</span></span>
             </div>
             <div class="m-b-5">Distinguido Director:</div>
             <div class="m-b-10">Para tal efecto, adjunto folder con los requisitos exigidos de acuerdo al siguiente detalle:</div>

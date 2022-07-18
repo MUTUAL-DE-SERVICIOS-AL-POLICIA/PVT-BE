@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\ProcedureModality;
+use Muserpol\Models\ProcedureType;
 use Muserpol\Models\Kinship;
 use Muserpol\Models\City;
 use Muserpol\Models\RetirementFund\RetirementFund;
@@ -130,7 +131,9 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $modality = $retirement_fund->procedure_modality->name;
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-    $title = "REQUISITOS DEL " . mb_strtoupper($retirement_fund->procedure_modality->procedure_type->name) . " – " . mb_strtoupper($modality);
+    $dev_pay = ProcedureType::whereName("Devolución de Aportes")->first();
+    $article = $retirement_fund->procedure_modality->procedure_type_id === $dev_pay->id ?" PARA LA ":" DEL ";
+    $title = "REQUISITOS".$article. mb_strtoupper($retirement_fund->procedure_modality->procedure_type->name) . " – " . mb_strtoupper($modality);
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first()->id)->first();
