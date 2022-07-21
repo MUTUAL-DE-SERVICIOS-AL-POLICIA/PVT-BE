@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
         Affiliate::observe(AffiliateObserver::class);
         RetirementFund::observe(RetirementFundObserver::class);
         QuotaAidMortuary::observe(QuotaAidMortuaryObserver::class);
-        RetFunObservation::observe(RetirementFundObservationObserver::class);
+        //RetFunObservation::observe(RetirementFundObservationObserver::class);
         ContributionProcess::observe(ContributionProcessObserver::class);
         EconomicComplement::observe(EconomicComplementObserver::class);
         EcoComBeneficiary::observe(EcoComBeneficiaryObserver::class);

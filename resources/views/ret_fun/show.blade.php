@@ -411,7 +411,9 @@
 
                             </div>
                             <div id="tab-observations" class="tab-pane">
-                                    @include('ret_fun.observation')
+                                    {{-- @can('view',new Muserpol\Models\ObservationType)--}}
+                                            @include('ret_fun.observation', ['retirement_fund'=>$retirement_fund,'observations_delete'=>$retirement_fund->ret_fun_observations_delete])
+                                    {{-- @endcan --}}
                             </div>
 
                         </div>
