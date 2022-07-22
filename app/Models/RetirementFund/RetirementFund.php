@@ -16,9 +16,17 @@ class RetirementFund extends Model
     {
         return $this->belongsTo('Muserpol\Models\Affiliate');
     }
-    public function ret_fun_observations()
+   /* public function ret_fun_observations()
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetFunObservation');
+    }*/
+    public function ret_fun_observations()
+    {
+        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
+    }
+    public function ret_fun_observations_delete()
+    {
+        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNotNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
     }
     public function user()
     {
@@ -95,6 +103,10 @@ class RetirementFund extends Model
     public function workflow()
     {
         return $this->belongsTo('Muserpol\Models\Workflow\Workflow');
+    }
+    public function procedure_records()
+    {
+        return $this->morphMany('Muserpol\Models\ProcedureRecord', 'recordable');
     }
 
 
