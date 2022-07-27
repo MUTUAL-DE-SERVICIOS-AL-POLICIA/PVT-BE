@@ -12,27 +12,27 @@
                                 <th>AÑO</th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 00 - COMANDANTE GENERAL">CMTE GRAL</div>
+                                        data-original-title="00 00 - COMANDANTE GENERAL SUPERIOR">CMTE. GRAL. SUP.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 01 - INSPECTOR GENERAL, SUPERVISOR">INSP GRAL.</div>
+                                        data-original-title="00 01 - GENERAL SUPERIOR">GRAL. SUP.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 02 - SUBCOMANDANTE, EX COMANDANTE">SBCMTE.GRAL.</div>
+                                        data-original-title="00 02 - GENERAL SUPERIOR">GRAL. SUP.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 03 - GENERAL SUPERVISOR">INSP SUP.</div>
+                                        data-original-title="00 03 - GENERAL MAYOR">GRAL. MAY.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 04 - GENERAL DIRECTOR">GRAL.</div>
+                                        data-original-title="00 04 - GENERAL PRIMERO">GRAL. 1RO.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="01 01 - CORONEL CON SUELDO DE GENERAL">CNL.</div>
+                                        data-original-title="01 01 - CORONEL Art.133">CNL. Art.133</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
@@ -76,27 +76,27 @@
                                 <th>AÑO</th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="02 02 - CORONEL ADMINISTRATIVO">CNL. ADM.</div>
+                                        data-original-title="02 02 - CORONEL DE SERVICIOS">CNL. SERV.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="02 03 - TENIENTE CORONEL ADMINISTRATIVO ">TCNL. ADM.</div>
+                                        data-original-title="02 03 - TENIENTE CORONEL DE SERVICIOS">TCNL. SERV.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="02 04 - MAYOR ADMINISTRATIVO">MY. ADM.</div>
+                                        data-original-title="02 04 - MAYOR DE SERVICIOS">MY. SERV.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="02 05 - CAPITAN ADMINISTRATIVO">CAP. ADM.</div>
+                                        data-original-title="02 05 - CAPITAN DE SERVICIOS">CAP. SERV.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="02 06 - TENIENTE ADMINISTRATIVO">TTE. ADM.</div>
+                                        data-original-title="02 06 - TENIENTE DE SERVICIOS">TTE. SERV.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="02 07 - SUBTENIENTE ADMINISTRATIVO">SBTTE. ADM.</div>
+                                        data-original-title="02 07 - SUBTENIENTE DE SERVICIOS">SBTTE. SERV.</div>
                                 </th>
                             </tr>
                         </thead>
@@ -132,19 +132,19 @@
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="03 12 - SARGENTO PRIMERO">SGTO. 1RO.</div>
+                                        data-original-title="03 12 - SARGENTO MAYOR">SGTO. MY.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="03 13 - SARGENTO SEGUNDO">SGTO. 2DO.</div>
+                                        data-original-title="03 13 - SARGENTO PRIMERO">SGTO. 1RO.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="03 14 - CABO">CBO.</div>
+                                        data-original-title="03 14 - SARGENTO SEGUNDO">SGTO. 2DO.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="03 15 - POLICIA">POL.</div>
+                                        data-original-title="03 15 - SARGENTO">SGTO.</div>
                                 </th>
                             </tr>
                         </thead>
@@ -164,41 +164,41 @@
                                 <th>AÑO</th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="04 08 - SUBOFICIAL SUPERIOR ADMINISTRATIVO">SOF. SUP. ADM.
+                                        data-original-title="04 08 - SUBOFICIAL SUPERIOR DE SERVICIOS">SOF. SUP. SERV.
                                     </div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="04 09 - SUBOFICIAL MAYOR ADMINISTRATIVO ">SOF. MY. ADM.
+                                        data-original-title="04 09 - SUBOFICIAL MAYOR DE SERVICIOS">SOF. MY. SERV.
                                     </div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="04 010 - SUBOFICIAL PRIMERO ADMINISTRATIVO">SOF. 1RO. ADM.
+                                        data-original-title="04 010 - SUBOFICIAL PRIMERO DE SERVICIOS">SOF. 1RO. SERV.
                                     </div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="04 11 - SUBOFICIAL SEGUNDO ADMINISTRATIVO">SOF. 2DO. ADM.
+                                        data-original-title="04 11 - SUBOFICIAL SEGUNDO DE SERVICIOS">SOF. 2DO. SERV.
                                     </div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="04 12 - SARGENTO PRIMERO ADMINISTRATIVO">SGTO. 1RO. ADM.
+                                        data-original-title="04 12 - SARGENTO MAYOR DE SERVICIOS">SGTO. MY. SERV.
                                     </div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="04 13 - SARGENTO SEGUNDO ADMINISTRATIVO">SGTO. 2DO. ADM.
+                                        data-original-title="04 13 - SARGENTO PRIMERO DE SERVICIOS">SGTO. 1RO. SERV.
                                     </div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="04 14 - CABO ADMINISTRATIVO">CBO.</div>
+                                        data-original-title="04 14 - SARGENTO SEGUNDO DE SERVICIOS">SGTO. 2DO. SERV.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="04 16 - POLICIA ADMINISTRATIVO">POL.</div>
+                                        data-original-title="04 16 - SARGENTO DE SERVICIOS">SGTO. SERV.</div>
                                 </th>
                             </tr>
                         </thead>
