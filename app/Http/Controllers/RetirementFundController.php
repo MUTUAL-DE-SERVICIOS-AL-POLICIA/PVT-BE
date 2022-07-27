@@ -1385,7 +1385,7 @@ class RetirementFundController extends Controller
                     }
                 }
 
-                if ($old_ben->type == 'S' && $retirement_fund->procedure_modality_id !=  ID::retFun()->fallecimiento_id) {
+                if ($old_ben->type == 'S' && $retirement_fund->procedure_modality_id !=  ID::retFun()->fallecimiento_id && $retirement_fund->procedure_modality_id !=  ID::retFunGlobalPay()->fallecimiento_id && $retirement_fund->procedure_modality_id !=  ID::retFunDevPay()->fallecimiento_id) {
                     $update_affilaite = Affiliate::find($retirement_fund->affiliate_id);
                     $update_affilaite->identity_card = $old_ben->identity_card;
                     $update_affilaite->first_name = $old_ben->first_name;
