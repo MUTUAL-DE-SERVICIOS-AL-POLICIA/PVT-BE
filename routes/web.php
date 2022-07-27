@@ -105,6 +105,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('get_data_availability/{ret_fun_id}', 'RetirementFundController@getDataQualificationAvailability')->name('get_data_availability');
     Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
     Route::resource('ret_fun_observation', 'RetirementFundObservationController');
+    Route::post('retFuneditObservation', 'RetirementFundObservationController@editObservation')->name('retFuneditObservation');
+    Route::post('retFundeleteObservation', 'RetirementFundObservationController@destroy')->name('retFundeleteObservation');
     Route::post('ret_fun/{ret_fun_id}/edit_requirements', 'RetirementFundController@editRequirements')->name('edit_requirements');
     Route::get('ret_fun/{ret_fun_id}/correlative/{wf_state_id}', 'RetirementFundController@getCorrelative')->name('ret_fun_get_correlative');
     Route::get('ret_fun/{ret_fun_id}/info', 'RetirementFundController@info')->name('ret_fun_info');
@@ -148,7 +150,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('quota_aid/{quota_aid_id}/save_discounts', 'QuotaAidMortuaryController@saveDiscounts')->name('quota_aid_save_discounts');
     Route::patch('quota_aid/{quota_aid_id}/save_percentages', 'QuotaAidMortuaryController@savePercentages')->name('quota_aid_save_percentages');
     Route::patch('/update_information_quota_aid', 'QuotaAidMortuaryController@updateInformation')->name('update_information_quota_aid');
-
+    Route::resource('quota_aid_observation', 'QuotaAidObservationController');
+    Route::post('quotaAideditObservation', 'QuotaAidObservationController@editObservation')->name('quotaAideditObservation');
+    Route::post('quotaAiddeleteObservation', 'QuotaAidObservationController@destroy')->name('quotaAiddeleteObservation');
     Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->middleware('affiliate_has_ret_fun')->name('create_ret_fun');
     Route::post('ret_fun/{retirement_fund}/legal_review/create', 'RetirementFundController@storeLegalReview')->name('store_ret_fun_legal_review_create');
 

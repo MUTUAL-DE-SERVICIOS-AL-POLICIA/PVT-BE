@@ -57,7 +57,7 @@
                                         </td>
                                         <td>
 
-                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#editObservation"
+                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#quotaAideditObservation"
                                             data-modid="{{ $observation->pivot->observable_id }}"
                                             data-id_obs="{{$observation->id}}"
                                             data-name_obs="{{$observation->name}}"
@@ -97,7 +97,7 @@
                                 @foreach($observations_delete as $observation )
                                     <tr>
                                         <td> {{ $number++ }} </td>
-                                        <td> {{date("d/m/Y", strtotime($observation->pivot->date))}}  </td>
+                                        <td> {{date("d/m/Y", strtotime($observation->pivot->date))}} </td>
                                         <td> {{ $observation->name }} </td>
                                         <td> {{ $observation->pivot->message }} </td>
                                         <td>
@@ -113,7 +113,7 @@
                                             @endif
                                             </h3>
                                         </td>
-                                        <td> {{date("d/m/Y", strtotime($observation->pivot->deleted_at))}}</td>
+                                        <td> {{date("d/m/Y h:i:s" , strtotime($observation->pivot->deleted_at))}} </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -123,7 +123,7 @@
         </div>
     </div>
 </div>
-{!! Form::open(['action' => 'RetirementFundObservationController@store']) !!} 
+{!! Form::open(['action' => 'QuotaAidObservationController@store']) !!} 
 <div class="modal inmodal" id="observationModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
     <div class="modal-content animated bounceInRight">
@@ -135,7 +135,7 @@
             </div>
             <div class="modal-body">
                <div class="row">
-                   <input type="hidden" name="retirement_fund_id" value="{{ $retirement_fund->id}}">
+                   <input type="hidden" name="quota_aid_id" value="{{ $quota_aid->id}}">
                    <div class="col-md-4 text-right">
                        <label>Tipo de Observación:</label>
                    </div>
@@ -159,16 +159,11 @@
                </div>
                <br>
                <div class="row">
-                    <div class="col-md-4 text-right" >
+                    <div class="col-md-4 text-right">
                        <label> Mensaje:</label>
                     </div>
                     <div class="col-md-8">
-                        <textarea class="form-control $errors->has('message') ? 'error' : '' " name="message"></textarea>
-                        @if ($errors->has('message'))
-                        <div class="error">
-                            $errors->first('message') 
-                        </div>
-                        @endif
+                        <textarea class="form-control" name="message"></textarea>
                     </div>
                 </div>
             </div>
@@ -184,11 +179,11 @@
 {!! Form::close() !!}
 
 
-<form class="form-horizontal" action="{{route('retFuneditObservation')}}" method="POST">
+<form class="form-horizontal" action="{{route('quotaAideditObservation')}}" method="POST">
     <input type="hidden" name="_method" value="POST">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-    <input type="hidden" name="retirement_fund_id" value="{{ $retirement_fund->id}}">
-<div class="modal inmodal" id="editObservation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <input type="hidden" name="quota_aid_id" value="{{ $quota_aid->id}}">
+<div class="modal inmodal" id="quotaAideditObservation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
@@ -226,10 +221,10 @@
 </div>
 </form>
 
-<form class="form-horizontal" action="{{route('retFundeleteObservation')}}" method="POST">
+<form class="form-horizontal" action="{{route('quotaAiddeleteObservation')}}" method="POST">
     <input type="hidden" name="_method" value="POST">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-    <input type="hidden" name="retirement_fund_id" value="{{ $retirement_fund->id}}">
+    <input type="hidden" name="quota_aid_id" value="{{ $quota_aid->id}}">
     <div id="eliminarObs" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -251,7 +246,7 @@
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script>
     $( document ).ready(function() {
-        $('#editObservation').on('show.bs.modal', function (event) {
+        $('#quotaAideditObservation').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             var id_obs=button.data('id_obs')
             var moda_id =button.data('modid');

@@ -342,6 +342,7 @@
                             </div>
                             <div id="tab-observations" class="tab-pane">
                                     {{-- @include('ret_fun.observation') --}}
+                                    @include('quota_aid.observation', ['quota_aid'=>$quota_aid,'observations'=>$quota_aid->quota_aid_observations,'observations_delete'=>$quota_aid->quota_aid_observations_delete])
                             </div>
 
                         </div>
