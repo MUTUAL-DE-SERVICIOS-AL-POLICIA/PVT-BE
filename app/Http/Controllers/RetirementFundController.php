@@ -47,6 +47,7 @@ use Muserpol\Helpers\ID;
 use Muserpol\Models\Testimony;
 use Illuminate\Support\Collection;
 use Muserpol\Models\FinancialEntity;
+use Ramsey\Uuid\Uuid;
 
 class RetirementFundController extends Controller
 {
@@ -254,6 +255,7 @@ class RetirementFundController extends Controller
         $retirement_fund->city_end_id = $request->city_end_id;
         $retirement_fund->reception_date = Carbon::now();
         $retirement_fund->code = $code;
+        $retirement_fund->uuid = Uuid::uuid1()->toString();
         $retirement_fund->workflow_id = 4;
         $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
         if (!$wf_state) {
@@ -916,7 +918,14 @@ class RetirementFundController extends Controller
     {
         //
     }
-
+ //funcion para agregar uuid a los registros que tienen null
+    public  function add_uuid(){
+        $ret_funs=RetirementFund::withTrashed()->get();
+        foreach ($ret_funs as $ret_fun) {
+            $ret_fun->uuid=Uuid::uuid1()->toString();
+            $ret_fun->save();
+       }
+}
     public function getAllRetFun(DataTables $datatables)
     // public function getAllRetFun(Request $request)
     {
