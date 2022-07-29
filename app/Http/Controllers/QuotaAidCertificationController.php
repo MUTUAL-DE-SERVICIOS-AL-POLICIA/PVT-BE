@@ -195,6 +195,15 @@ class QuotaAidCertificationController extends Controller
       ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
       ->stream("$namepdf");
   }
+
+  public static function get_module_quota_aid_mortuary($quota_aida)
+  {
+      $quota_aid = QuotaAidMortuary::find($quota_aida);
+      $module_id= $quota_aid->procedure_modality->procedure_type->module->id;
+      $file_name =$module_id.'/'.$quota_aid->uuid;
+      return $file_name;
+  }
+
   public function printReception($id)
   {
     $quota_aid = QuotaAidMortuary::find($id);
@@ -219,7 +228,7 @@ class QuotaAidCertificationController extends Controller
             !!todo
             add support utf-8
          */
-    $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+    $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
     $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
     $pdftitle = "RECEPCIÓN - " . $title;
     $namepdf = Util::getPDFName($pdftitle, $applicant);
@@ -258,7 +267,7 @@ class QuotaAidCertificationController extends Controller
     $pdf->loadHTML($pages);
     return $pdf->setOption('encoding', 'utf-8')
       //    ->setOption('margin-top', '20mm')
-      ->setOption('margin-bottom', '15mm')
+      ->setOption('margin-bottom', '90mm')
       //    ->setOption('margin-left', '25mm')
       //    ->setOption('margin-right', '15mm')
       //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
