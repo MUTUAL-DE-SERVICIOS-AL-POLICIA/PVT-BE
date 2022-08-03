@@ -71,6 +71,20 @@ class ID
 	}
 
 	/**
+	 * Retorna una modalidad en Devolución de Aportes de fondo de retiro
+	 *
+	 * @return un objeto ret_fun Global_pay
+	 */
+	public static function retFunDevPay()
+	{
+		$dev_pay = [
+			'titular_id'	=>	62,
+			'fallecimiento_id'	=>	63
+		];
+		return ((object)$dev_pay);
+	}
+
+	/**
 	 * Retorna algun parentesco con el afiliado
 	 *
 	 * @return un objeto kinship
