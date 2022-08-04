@@ -922,7 +922,7 @@ class QuotaAidCertificationController extends Controller
 
     ///------EN  PAYMENT ------///
     // $number = Util::getNextAreaCode($quota_aid->id);
-    $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 39)->first();
+    $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 40)->first();//usa el correlativo de la resolucion
     //return $number;
 
     $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
@@ -974,8 +974,8 @@ class QuotaAidCertificationController extends Controller
     array_push($documents, 'CERTIFICACIÓN DE APORTES EN EL SERVICIO ACTIVO');
     array_push($documents, 'CERTIFICACIÓN DE PAGOS ANTERIORES (DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS)');
     // array_push($documents,'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
-    array_push($documents, 'CALIFICACIÓN DE FONDO DE RETIRO');
-    array_push($documents, 'DICTAMEN LEGAL');
+    array_push($documents, 'CALIFICACIÓN DE FONDO DE RETIRO');//ojo
+    //array_push($documents, 'DICTAMEN LEGAL');
 
     $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
     $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
@@ -1113,7 +1113,7 @@ class QuotaAidCertificationController extends Controller
 
     ///----- END QUALIFICATION ----////
 
-    $legal_dictum_id = 39;
+    $legal_dictum_id = 40;//Se usara el mismo cod de la resolucion
     $legal_dictum = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $legal_dictum_id)->first();
     $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 40)->first();
     $body_legal_dictum = '';
