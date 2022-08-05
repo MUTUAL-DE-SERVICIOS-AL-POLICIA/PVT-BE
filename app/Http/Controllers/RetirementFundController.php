@@ -733,6 +733,20 @@ class RetirementFundController extends Controller
             ->get();
 
 
+        //para devolver hacia adelante 735
+        $return_sequence = $retirement_fund->wf_records->first();
+        if($return_sequence->record_type_id == 4 && $return_sequence->wf_state_id == $retirement_fund->wf_state_current_id){
+            $wf_back = DB::table("wf_states")
+            ->where("wf_states.module_id", $module->id)
+            ->where('wf_states.id', $return_sequence->old_wf_state_id)
+            ->select(
+                'wf_states.id as wf_state_id',
+                'wf_states.first_shortened as wf_state_name'
+            )
+            ->get();
+            $wf_sequences_back = $wf_sequences_back->merge($wf_back);
+        }
+        //
         //summary individuals account
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());

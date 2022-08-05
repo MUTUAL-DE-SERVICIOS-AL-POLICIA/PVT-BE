@@ -20,7 +20,7 @@ class QuotaAidMortuaryObserver
         $quota_aid->message = 'El usuario ' . Auth::user()->username . ' creo el Trámite ' . $qa->code . ' con la modalidad ' . $qa->procedure_modality->name . ' ' . Carbon::now();
         $quota_aid->save();
     }
-    private function defaultValuesWfRecord($wf_state_current_id = null, $record_type_id = null, $message = null)
+    private function defaultValuesWfRecord($wf_state_current_id = null, $record_type_id = null, $message = null, $old_wf_state_id = null, $old_user_id = null)
     {
         $default = [
             'user_id' => Auth::user()->id,
@@ -28,6 +28,8 @@ class QuotaAidMortuaryObserver
             'wf_state_id' => $wf_state_current_id,
             'record_type_id' => $record_type_id,
             'message' => $message,
+            'old_wf_state_id' => $old_wf_state_id,
+            'old_user_id' => $old_user_id,
         ];
         return $default;
     }
@@ -63,11 +65,11 @@ class QuotaAidMortuaryObserver
         $old_wf_state_sequence = WorkflowState::find($old->wf_state_current_id)->sequence_number;
 
         if ($qa->wf_state_current_id != $old->wf_state_current_id && $wf_state_sequence > $old_wf_state_sequence) {
-            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id, 3, "El usuario " . Auth::user()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $qa->wf_state->name));
+            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id, 3, "El usuario " . Auth::user()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $qa->wf_state->name, $old->wf_state_current_id, $old->user_id));
 
         }
         if ($qa->wf_state_current_id != $old->wf_state_current_id && $wf_state_sequence < $old_wf_state_sequence) {
-            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id,4,"El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $qa->wf_state->name ." con nota: " . request()->message . "."));
+            $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id,4,"El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $qa->wf_state->name ." con nota: " . request()->message . ".", $old->wf_state_current_id, $old->user_id));
         }
         if ($old->inbox_state == false && $qa->inbox_state == true && $qa->wf_state_current_id == $old->wf_state_current_id) {
             $qa->wf_records()->create($this->defaultValuesWfRecord($qa->wf_state_current_id,1,'El usuario ' . Auth::user()->username . ' Validó el trámite.'));
