@@ -83,7 +83,7 @@ class RetirementFund extends Model
     }
     public function ret_fun_correlative()
     {
-        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunCorrelative');
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunCorrelative')->orderBy('id', 'desc');
     }
     public function wf_records()
     {
