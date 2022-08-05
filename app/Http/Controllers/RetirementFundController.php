@@ -726,6 +726,7 @@ class RetirementFundController extends Controller
         $wf_sequences_back = DB::table("wf_states")
             ->where("wf_states.module_id", "=", $module->id)
             ->where('wf_states.sequence_number', '<', WorkflowState::find($retirement_fund->wf_state_current_id)->sequence_number)
+            ->whereNull('wf_states.deleted_at')
             ->select(
                 'wf_states.id as wf_state_id',
                 'wf_states.first_shortened as wf_state_name'

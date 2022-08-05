@@ -115,15 +115,6 @@
                 >
                 </ret-fun-certification-button>
             @endif
-            @if(Muserpol\Helpers\Util::getRol()->id == 14)
-                <ret-fun-certification-button
-                    title="Imprimir Dictamen Legal"
-                    ret-fun-id="{{ $retirement_fund->id }}"
-                    url-print="{{ route('ret_fun_print_legal_dictum', $retirement_fund->id)}}"
-                    message="true"
-                >
-                </ret-fun-certification-button>
-            @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 28)
                 <ret-fun-certification-button
@@ -184,6 +175,15 @@
                 </button>
             </span>
             @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
+            @if(Muserpol\Helpers\Util::getRol()->id == 29)
+                <ret-fun-certification-button
+                    title="Imprimir Dictamen Legal"
+                    ret-fun-id="{{ $retirement_fund->id }}"
+                    url-print="{{ route('ret_fun_print_legal_dictum', $retirement_fund->id)}}"
+                    message="true"
+                >
+                </ret-fun-certification-button>
+            @endif
         </div>
         <div class="pull-right">
             <div class="form-inline">
