@@ -1796,7 +1796,7 @@ class RetirementFundCertificationController extends Controller
 
     ///------EN  PAYMENT ------///
     // $number = Util::getNextAreaCode($retirement_fund->id);
-    $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 25)->first();
+    $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();//Llevara el mismo codigo que el de la Resolución
 
 
     $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
@@ -1898,7 +1898,7 @@ class RetirementFundCertificationController extends Controller
     if ($tag > 0) {
       array_push($documents, 'INFORME DE TRABAJO SOCIAL (PRIORIZACIÓN DE TRÁMITES)');
     }
-    array_push($documents, 'DICTAMEN LEGAL');
+    //array_push($documents, 'DICTAMEN LEGAL');
 
     $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
     $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
@@ -1906,7 +1906,7 @@ class RetirementFundCertificationController extends Controller
 
     // $number = Util::getNextAreaCode($retirement_fund->id);
     $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 24)->first();
-    $legal_dictum_number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 25)->first();
+    $legal_dictum_number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 24)->first();//era 25 se obtendra del misma area
     $number->note = $legal_dictum_number->note;
     $number->save();
     $user = User::find($number->user_id);
@@ -2158,7 +2158,7 @@ class RetirementFundCertificationController extends Controller
     //".Util::getDiscountCombinations($retirement_fund->id);
     ///----- END QUALIFICATION ----////
 
-    $legal_dictum_id = 25;
+    $legal_dictum_id = 26;//Llevara el mismo codigo que el de la Resolución id 26
     $legal_dictum = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', $legal_dictum_id)->first();
     $body_legal_dictum = 'Que, habiéndose verificado el procedimiento establecido en el Reglamento de Fondo de Retiro Policial Solidario, se procedió con la emisión de DICTAMEN LEGAL <strong> Nº ' . $legal_dictum->code . '</strong> de fecha ' . Util::getStringDate($legal_dictum->date) . ', para la otorgación del ' . $retirement_fund->procedure_modality->procedure_type->name . ' por ' . $retirement_fund->procedure_modality->name . '.<br>';
 
