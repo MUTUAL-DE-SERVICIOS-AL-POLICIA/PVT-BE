@@ -709,7 +709,7 @@ class QuotaAidMortuaryController extends Controller
     
       //devolver hacia adelante
       $return_sequence = $quota_aid->wf_records->first();
-      if($return_sequence->record_type_id == 4 && $return_sequence->wf_state_id == $quota_aid->wf_state_current_id){
+      if($return_sequence <> null && $return_sequence->record_type_id == 4 && $return_sequence->wf_state_id == $quota_aid->wf_state_current_id){
           $wf_back = DB::table("wf_states")
           ->where("wf_states.module_id", $module->id)
           ->where('wf_states.id', $return_sequence->old_wf_state_id)
