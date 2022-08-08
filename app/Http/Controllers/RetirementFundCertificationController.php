@@ -131,9 +131,11 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $modality = $retirement_fund->procedure_modality->name;
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-    $dev_pay = ProcedureType::whereName("Devolución de Aportes")->first();
-    $article = $retirement_fund->procedure_modality->procedure_type_id === $dev_pay->id ?" PARA LA ":" DEL ";
-    $title = "REQUISITOS".$article. mb_strtoupper($retirement_fund->procedure_modality->procedure_type->name) . " – " . mb_strtoupper($modality);
+    $dev_pay = ProcedureType::whereName("Devolución de Aportes")->first();//ojo cambiar 
+    $article = $retirement_fund->procedure_modality->procedure_type_id === $dev_pay->id ?" PARA LA ":" PARA EL ";
+    $article_by = $retirement_fund->procedure_modality->id==62 ? ' AL ': ' POR ';
+    $title = "REQUISITOS".$article. mb_strtoupper($retirement_fund->procedure_modality->procedure_type->name) . $article_by . mb_strtoupper($modality);
+    $legend_ret_fun = $retirement_fund->procedure_modality->procedure_type_id === 2?'De evidenciarse descuentos en periodo de disponibilidad a la(s) Letra(s) se procederá a su devolución en consideración a la Disposición Transitoria Cuarta del Reglamento de Fondo de Retiro Policial Solidario.':'';
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first()->id)->first();
@@ -173,6 +175,7 @@ class RetirementFundCertificationController extends Controller
       'degree' => $degree,
       'submitted_documents' => $submitted_documents,
       'retirement_fund' => $retirement_fund,
+      'legend_ret_fun'=> $legend_ret_fun,
     ];
     $pages = [];
     $number_pages = Util::isRegionalRole() ? 3 : 2;
@@ -1345,7 +1348,9 @@ class RetirementFundCertificationController extends Controller
       ->where(function ($query) use ($certification_contribution, $certification_no_contribution) {
         $query->where('contribution_type_id', $certification_contribution->id)
           ->orWhere('contribution_type_id', $certification_no_contribution->id)
-          ->orWhere('contribution_type_id', 9);
+          ->orWhere('contribution_type_id', 9)
+          ->orWhere('contribution_type_id', 14)
+          ->orWhere('contribution_type_id', 6);
       })
       ->orderBy('month_year')
       ->get();
@@ -1358,7 +1363,7 @@ class RetirementFundCertificationController extends Controller
     $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-    $title = "CERTIFICACIÓN";
+    $title = "CERTIFICACIÓN DE APORTES";
     $subtitle = "Cuenta Individual";
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
