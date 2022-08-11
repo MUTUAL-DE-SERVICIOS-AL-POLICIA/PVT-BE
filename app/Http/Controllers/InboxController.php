@@ -153,54 +153,95 @@ class InboxController extends Controller
     $doc_ids = array_map(function ($doc) {
       return $doc['id'];
     }, $request->docs);
-    $wf_state_back_id = $request->wfSequenceBack;
+    $wf_state_back_id = $request->wfSequenceBack;//$retirement_funds = RetirementFund::whereIn('id', $doc_ids)->get();return $retirement_funds->first();
 
     $rol_id = Util::getRol()->id;
     $module = Role::find($rol_id)->module;
+    $user = Auth::user();
+    $title = "";
     switch ($module->id) {
       case 1:
         # code...
         break;
       case 2:
         $eco_coms = EconomicComplement::whereIn('id', $doc_ids)->get();
+        //$wf_state_from = $eco_coms->first()->wf_current_state_id;
+        $wf_state_from = WorkflowState::find($eco_coms->first()->wf_current_state_id);
         foreach ($eco_coms as $eco_com) {
           $eco_com->wf_current_state_id = $wf_state_back_id;
           $eco_com->inbox_state = false;
           $eco_com->save();
+          $title = "COMPLEMENTO ECONOMICO";
+          $procedure = $eco_com;
         }
         break;
       case 3:
         $retirement_funds = RetirementFund::whereIn('id', $doc_ids)->get();
+        //$wf_state_from = $retirement_funds->first()->wf_state;
+        $wf_state_from = WorkflowState::find($retirement_funds->first()->wf_state_current_id);
         foreach ($retirement_funds as $ret_fun) {
           $ret_fun->wf_state_current_id = $wf_state_back_id;
           $ret_fun->inbox_state = false;
           $ret_fun->save();
+          $title = "FONDO DE RETIRO POLICIAL SOLIDARIO";
+          $procedure = $ret_fun;
         }
         break;
       case 4:
         $quota_aids = QuotaAidMortuary::whereIn('id', $doc_ids)->get();
+        $wf_state_from = $quota_aids->first()->wf_state;
         foreach ($quota_aids as $quota_aid) {
           $quota_aid->wf_state_current_id = $wf_state_back_id;
           $quota_aid->inbox_state = false;
           $quota_aid->save();
+          $title = "QUOTA Y AUXILIO MORTUARIO";
+          $procedure = $quota_aid;
         }
         break;
       case 11:
         $contribution_processes = ContributionProcess::whereIn('id', $doc_ids)->get();
+        $wf_state_from = $contribution_processes->first()->wf_state;
         foreach ($contribution_processes as $doc) {
           $doc->wf_state_current_id = $wf_state_back_id;
           $doc->inbox_state = false;
           $doc->save();
+          $title = "CUENTAS INDIVIDUALES";
+          $procedure = $doc->first();
         }
         break;
       default:
         # code...
         break;
     }
-    return response()->json([
-      'status' => 'success',
-      'msg' => 'Okay',
-    ], 201);
+    if ($module->id != 2)
+    {
+    $wf_state_to = WorkflowState::find($request->wfSequenceBack);
+    $data = [
+      'procedure'  =>  $procedure,
+      'title'  =>  $title,
+      'subtitle'  =>  $wf_state_from->name,
+      'from_area'  =>  $wf_state_from,
+      'to_area'  =>  $wf_state_to,
+      'user'  =>  $user,
+      'year'  =>  date('Y')
+    ];
+    $pages[] = \View::make('print_global.backward', $data)->render();
+    //$pages[] = \View::make('print_global.send', $data)->render();
+    $pdf = \App::make('snappy.pdf.wrapper');
+    $pdf->loadHTML($pages);
+    return $pdf->setOption('encoding', 'utf-8')
+      ->setOption('margin-bottom', '15mm')
+      ->setOrientation('landscape')
+      ->setOption('footer-center', 'Pagina [page] de [toPage]')
+      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2022')
+      ->stream("tramite devuelto.pdf");
+    }else
+    {
+        return response()->json([
+        'status' => 'success',
+        'msg' => 'Okay',
+      ], 201);
+    }
   }
   public function sendReception(Request $request){
     try {

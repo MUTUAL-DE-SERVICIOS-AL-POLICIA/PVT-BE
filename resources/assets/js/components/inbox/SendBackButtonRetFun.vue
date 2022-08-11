@@ -99,13 +99,16 @@
                 .post(uri, {
                   wfSequenceBack: this.wfSequenceBack,
                   docs: [{ id: this.docId }],
-                  message: message
-                })
+                  message: message,
+                },{responseType: "arraybuffer"})
                 .then(response => {
                   if (!response.data) {
                     throw new Error(response.errors);
                   }
-                  return response.data;
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf"
+                  });
+                  printJS(window.URL.createObjectURL(blob));
                 })
                 .catch(error => {
                   for (const key in error.response.data.errors) {
