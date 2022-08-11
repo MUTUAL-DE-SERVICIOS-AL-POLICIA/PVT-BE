@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-md-8">
                     <select class="form-control" v-model.trim="beneficiary.city_identity_card_id" name="beneficiary_city_identity_card[]" :disabled="!editable">
-                        <option :value="null"></option>
+                        <!-- <option :value="null"></option> -->
                         <option v-for="city in cities" :key="city.id" :value="city.id" >{{ city.name }}</option>
                     </select>
                 </div>
@@ -266,7 +266,7 @@
                         </div>
                         <div class="col-md-8">
                             <select class="form-control" name="beneficiary_advisor_city_identity_card[]" v-model.trim="beneficiary.advisor_city_identity_card_id" v-validate.initial="'required'" :disabled="!editable">
-                                <option :value="null"></option>
+                                <!-- <option :value="null"></option> -->
                                 <option v-for="city in cities" :value="city.id" :key="`advisor-city-identity-card-${city.id}`">{{ city.name }}</option>
                             </select>
                             <i v-show="errors.has('beneficiary_advisor_city_identity_card[]')" class="fa fa-warning text-danger"></i>
@@ -475,7 +475,7 @@
                         </div>
                         <div class="col-md-8">
                             <select class="form-control" name="beneficiary_legal_guardian_city_identity_card[]" v-model.trim="beneficiary.legal_guardian_city_identity_card_id" :disabled="!editable">
-                                <option :value="null"></option>
+                                <!-- <option :value="null"></option> -->
                                 <option v-for="city in cities" :key="`city-legal-guardian-${city.id}`" :value="city.id">{{ city.name }}</option>
                             </select>
                         </div>

@@ -51,7 +51,7 @@
     <tbody>
         <tr class="text-sm">
             <td class="text-center uppercase font-bold px-5 py-3">{!! $affiliate->identity_card !!} </td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{$affiliate->city_identity_card->name ?? ''}}</td>
+            <td class="text-center uppercase font-bold px-5 py-3">{{$affiliate->expedition_card ?? ''}}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->registration }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened }}</td>
             {{-- <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->category->name }}</td> --}}
