@@ -17,7 +17,7 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'v1',
 ], function () {
-    Route::resource('auth', 'API\AuthController')->only('store');
+    Route::resource('auth', 'API\AuthController')->only('store'); 
     Route::resource('city', 'API\CityController')->only('index');
     Route::resource('affiliate.observation', 'API\AffiliateObservationController')->only('index');
     Route::resource('policy', 'API\PolicyController')->only('index');
@@ -29,8 +29,8 @@ Route::group([
     'middleware' => ['api', 'api_auth'],
     'prefix' => 'v1',
 ], function () {
-    Route::resource('auth', 'API\AuthController')->only('index', 'destroy');
-    Route::resource('economic_complement', 'API\EconomicComplementController')->only('index', 'store', 'show');
+    Route::resource('auth', 'API\AuthController')->only('index', 'destroy'); 
+    Route::resource('economic_complement', 'API\EconomicComplementController')->only('index', 'store', 'show'); 
     Route::get('economic_complement/print/{economic_complement}', 'API\EconomicComplementController@print');
     Route::resource('liveness', 'API\LivenessController')->only('index', 'store', 'show');
     Route::resource('message', 'API\MessageController')->only('show');

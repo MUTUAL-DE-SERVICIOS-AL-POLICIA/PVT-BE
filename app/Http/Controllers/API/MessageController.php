@@ -46,7 +46,7 @@ class MessageController extends Controller
      */
     public function show(Request $request, $type)
     {
-        $device = $request->affiliate->device;
+        $device = $request->affiliate->affiliate_token->affiliate_device;
         $enrolled = false;
         if ($device) {
             $enrolled = $device->enrolled;
@@ -67,7 +67,7 @@ class MessageController extends Controller
                     'error' => false,
                     'message' => 'Verificación de CI',
                     'data' => [
-                        'verified' => $request->affiliate->device->verified,
+                        'verified' => $request->affiliate->affiliate_token->affiliate_device->verified,
                     ]
                 ]);
                 break;

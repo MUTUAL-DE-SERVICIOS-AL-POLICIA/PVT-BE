@@ -9,6 +9,7 @@ use Muserpol\Http\Requests\LivenessForm;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class LivenessController extends Controller
 {
@@ -68,7 +69,7 @@ class LivenessController extends Controller
 
     public function index(Request $request)
     {
-        $device = $request->affiliate->device;
+        $device = $request->affiliate->affiliate_token->affiliate_device;
         $available_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
 
         if ($device->enrolled && Storage::exists('liveness/faces/'.$request->affiliate->id) && ($available_procedures->count() > 0)) {
@@ -137,7 +138,7 @@ class LivenessController extends Controller
 
     public function store(LivenessForm $request)
     {
-        $device = $request->affiliate->device;
+        $device = $request->affiliate->affiliate_token->affiliate_device;
         $continue = true;
         if (str_contains($request->image, ';base64,')) {
             $image = explode(";base64,", $request->image)[1];
@@ -154,8 +155,11 @@ class LivenessController extends Controller
         $current_action = $liveness_actions->where('successful', false)->first();
         $current_action_index = $total_actions - $remaining_actions;
 
+
+        //  Entra aca para guardar foto
         if ($remaining_actions > 0) {
             Storage::put($path.$file_name, base64_decode($image), 'public');
+            // conexión con flask
             $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/crop', [
                 'body' => json_encode([
                     'id' => $request->affiliate->id,
@@ -304,23 +308,23 @@ class LivenessController extends Controller
             return $query->where('cell_phone_number', '!=', '')->where('cell_phone_number', '!=', null);
         })->first();
         $current_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
-        if (($current_procedures->count() > 0) && $request->affiliate->device) {
+        if (($current_procedures->count() > 0) && $request->affiliate->affiliate_token->affiliate_device) {
             if ($last_procedure) {
                 $phones = array_unique(explode(',', str_replace('-', '', str_replace(')', '', str_replace('(', '', $last_procedure->eco_com_beneficiary->cell_phone_number)))));
             } else {
                 $phones = [];
             }
-            if ($request->affiliate->device->eco_com_procedure_id == $current_procedures->first()->id) {
-                $month = $request->affiliate->device->eco_com_procedure->rent_month ? $request->affiliate->device->eco_com_procedure->rent_month : '';
+            if ($request->affiliate->affiliate_token->affiliate_device->eco_com_procedure_id == $current_procedures->first()->id) {
+                $month = $request->affiliate->affiliate_token->affiliate_device->eco_com_procedure->rent_month ? $request->affiliate->affiliate_token->affiliate_device->eco_com_procedure->rent_month : '';
                 return response()->json([
                     'error' => false,
                     'message' => 'Puede crear trámites',
                     'data' => [
-                        'procedure_id' => $request->affiliate->device->eco_com_procedure_id,
-                        'validate' => $request->affiliate->device->verified,
+                        'procedure_id' => $request->affiliate->affiliate_token->affiliate_device->eco_com_procedure_id,
+                        'validate' => $request->affiliate->affiliate_token->affiliate_device->verified,
                         'liveness_success' => true,
                         'cell_phone_number' => $phones,
-                        'month' => $month != '' ? $month.'/'.strval(Carbon::parse($request->affiliate->device->eco_com_procedure->year)->year) : '',
+                        'month' => $month != '' ? $month.'/'.strval(Carbon::parse($request->affiliate->affiliate_token->affiliate_device->eco_com_procedure->year)->year) : '',
                     ],
                 ]);
             } else {
@@ -330,7 +334,7 @@ class LivenessController extends Controller
                     'message' => 'Puede crear trámites',
                     'data' => [
                         'procedure_id' => $current_procedures->first()->id,
-                        'validate' => $request->affiliate->device->verified,
+                        'validate' => $request->affiliate->affiliate_token->affiliate_device->verified,
                         'liveness_success' => false,
                         'cell_phone_number' => $phones,
                         'month' => $month != '' ? $month.'/'.strval(Carbon::parse($current_procedures->first()->year)->year) : '',

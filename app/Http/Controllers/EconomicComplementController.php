@@ -47,6 +47,7 @@ use Muserpol\Models\FinancialEntity;
 
 use Illuminate\Support\Facades\Storage;
 use Muserpol\Models\AffiliateDevice;
+use Muserpol\Models\AffiliateToken;
 use Validator;
 
 use Muserpol\Models\BaseWage;
@@ -708,7 +709,7 @@ class EconomicComplementController extends Controller
         if (Storage::exists($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg')) 
             $fotoBoleta=base64_encode(Storage::get($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg'));
 
-        $affiliateDevice = AffiliateDevice::where('affiliate_id','=',$economic_complement->affiliate_id)->get();
+        $affiliateDevice = AffiliateToken::where('affiliate_id','=',$economic_complement->affiliate_id)->get();
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -1855,7 +1856,7 @@ class EconomicComplementController extends Controller
     public function cambioEstadoObservados($id){//para habilitar un tramite observado,vizualiza para todos los tramites
         $eco_com = EconomicComplement::find($id);
         $affiliate = Affiliate::find($eco_com->affiliate_id);
-        logger($affiliate);
+        // logger($affiliate);
         if ($affiliate->sigep_status == 'ACTIVO' && strlen($affiliate->account_number)>0 && strlen($affiliate->financial_entity_id)>0){
             $eco_com->eco_com_state_id=25;
         }

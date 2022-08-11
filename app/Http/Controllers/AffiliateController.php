@@ -41,6 +41,7 @@ use Muserpol\Models\FinancialEntity;
 use Illuminate\Support\Facades\Storage;
 
 use Muserpol\Models\AffiliateDevice;
+use Muserpol\Models\AffiliateToken;
 
 class AffiliateController extends Controller
 {
@@ -367,7 +368,7 @@ class AffiliateController extends Controller
         if (Storage::exists($path.'/Derecha.jpg')) 
             $fotoDerecha=base64_encode(Storage::get($path.'/Derecha.jpg'));
 
-        $affiliateDevice = AffiliateDevice::where('affiliate_id','=',$affiliate->id)->get();
+        $affiliateDevice = AffiliateToken::where('affiliate_id','=',$affiliate->id)->get();
 
         $file_name = $affiliate->id.'.PDF';
         $base_path = env('FTP_DIRECTORY');
@@ -639,14 +640,15 @@ class AffiliateController extends Controller
     } 
 
     public function deleteDevice($affiliate_id){
-        $affiliateDevice = AffiliateDevice::find($affiliate_id);
+        $affiliateDevice = AffiliateToken::where('affiliate_id', $affiliate_id)->first()->affiliate_device;
         $affiliateDevice->device_id = null;
         $affiliateDevice->api_token = null;
         $affiliateDevice->save();
     }
 
     public function CIDevice($affiliate_id, $valor){
-        $affiliateDevice = AffiliateDevice::find($affiliate_id);
+        // logger($affiliate_id);
+        $affiliateDevice = AffiliateToken::where('affiliate_id', $affiliate_id)->first()->affiliate_device;
         $affiliateDevice->verified = $valor;
         $affiliateDevice->save();
     }
