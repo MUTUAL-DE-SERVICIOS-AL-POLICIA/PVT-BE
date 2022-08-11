@@ -661,7 +661,7 @@ class RetirementFundController extends Controller
         $cities = City::get();
         $kinships = Kinship::get();
 
-        $cities_pluck = City::all()->pluck('first_shortened', 'id');
+        $cities_pluck = City::all()->where('id','<>',10)->pluck('name', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         $financial_entities = FinancialEntity::all()->pluck('name', 'id');
 

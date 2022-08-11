@@ -860,4 +860,21 @@ class Affiliate extends Model
    {
       return ($this->date_death != null || $this->reason_death != null || $this->death_certificate_number != null || $this->affiliate_state->name == "Fallecido");
    }
+   public function getIdentityCardExtAttribute()
+    {
+        $data = $this->identity_card;
+        if ($this->city_identity_card && $this->city_identity_card->name != 'NINGUNO'){
+          $data .= ' ' . $this->city_identity_card->first_shortened;
+        } 
+        return rtrim($data);
+    }
+
+    public function getExpeditionCardAttribute()
+    {
+        $data = ' ';
+        if ($this->city_identity_card && $this->city_identity_card->name != 'NINGUNO'){
+          $data .= ' ' . $this->city_identity_card->name;
+        } 
+        return $data;
+    }
 }
