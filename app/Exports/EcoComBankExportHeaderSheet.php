@@ -17,10 +17,12 @@ class EcoComBankExportHeaderSheet implements FromArray, WithTitle, WithHeadings,
     private $eco_com_procedure_id;
     private $total_amount;
     private $total_eco_coms;
+    private $change_state;
 
-    public function __construct(int $id)
+    public function __construct(int $id,$change_state)
     {
         $this->eco_com_procedure_id = $id;
+        $this->change_state = $change_state;
     }
 
     public function getProcedure()
@@ -29,7 +31,7 @@ class EcoComBankExportHeaderSheet implements FromArray, WithTitle, WithHeadings,
     }
     public function getEcoComs()
     {
-        $results  = Util::getEconomicComplementSendToBank($this->eco_com_procedure_id);
+        $results  = Util::getEconomicComplementSendToBank($this->eco_com_procedure_id,$this->change_state);
         $this->total_amount = $results['total_amount'];
         $this->total_eco_coms = $results['total_eco_coms'];
     }
