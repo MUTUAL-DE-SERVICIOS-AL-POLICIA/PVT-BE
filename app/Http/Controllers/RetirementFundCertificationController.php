@@ -347,6 +347,7 @@ class RetirementFundCertificationController extends Controller
     }
     return $data;
   }
+    //---**IMPRIMIR FORMULARIO DE SALARIO PROMEDIO COTIZABLE CALIFICACIÓN**--//
   public function printQualificationAverageSalaryQuotable($id, $only_print = true)
   {
     $retirement_fund = RetirementFund::find($id);
@@ -383,6 +384,7 @@ class RetirementFundCertificationController extends Controller
     }
     return $data;
   }
+  //---**IMPRIMIR FORMULARIO DE CALIFICACIÓN**--//
   public function printDataQualification($id, $only_print = true)
   {
     $retirement_fund = RetirementFund::find($id);
@@ -394,12 +396,15 @@ class RetirementFundCertificationController extends Controller
     $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
     $pdftitle = "Calificación - INFORMACIÓN TÉCNICA";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
-    if ($affiliate->globalPayRetFun()) {
+    if ($retirement_fund->procedure_modality->procedure_type_id == 1) {//PGA
 
       $title = 'CALIFICACIÓN DE PAGO GLOBAL POR ' . $retirement_fund->procedure_modality->name;
-    } else {
+    }elseif ($retirement_fund->procedure_modality->procedure_type_id == 21){//DA
+      $title = 'DEVOLUCIÓN DE APORTES POR ' . $retirement_fund->procedure_modality->name;
+    }else {//FRPS
       $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
     }
+    $name_procedure_type =$retirement_fund->procedure_modality->procedure_type->name;
 
 
     $group_dates = [];
@@ -453,7 +458,7 @@ class RetirementFundCertificationController extends Controller
     $total_quotes = $affiliate->getTotalQuotes();
     $discounts = $retirement_fund->discount_types()->where('amount', '>', 0)->get();
 
-    $has_availability = sizeOf($affiliate->getContributionsWithType(10)) > 0;
+    $has_availability = sizeOf($affiliate->getContributionsWithType(12)) > 0;
 
     /*  discount combinations*/
     $array_discounts = array();
@@ -485,12 +490,21 @@ class RetirementFundCertificationController extends Controller
         }
       }
     }
+    if ($retirement_fund->procedure_modality->procedure_type_id == 1) {//PGA
+      $title = 'CALIFICACIÓN DE PAGO GLOBAL POR ' . $retirement_fund->procedure_modality->name;
+    }elseif ($retirement_fund->procedure_modality->procedure_type_id == 21){//DA
+      $title = 'DEVOLUCIÓN DE APORTES POR ' . $retirement_fund->procedure_modality->name;
+    }else {//FRPS
+      $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
+    }
 
     $array_discounts_combi = [];
     foreach ($array_discounts as $value) {
       $temp = 'Fondo de Retiro';
-      if ($affiliate->globalPayRetFun()) {
+      if ($retirement_fund->procedure_modality->procedure_type_id == 1) {
         $temp = 'Pago Global por ' . $retirement_fund->procedure_modality->name;
+      }elseif($retirement_fund->procedure_modality->procedure_type_id == 21){
+        $temp = 'Devolución de aportes por ' . $retirement_fund->procedure_modality->name;
       }
       array_push($array_discounts_combi, array('name' => ($temp . ' ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
     }
@@ -509,12 +523,12 @@ class RetirementFundCertificationController extends Controller
 
     $current_procedure = Util::getRetFunCurrentProcedure();
     $temp = [];
-    if ($affiliate->globalPayRetFun()) {
+    if ($retirement_fund->procedure_modality->procedure_type_id == 1) {//PGA
       $total_aporte = $retirement_fund->average_quotable;
-      //$yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
-      $yield = Util::compoundInterest($affiliate->getContributionsPlus(), $affiliate);
-      $administrative_expenses = (($yield * $current_procedure->administrative_expenses) / 100);
-      $less_administrative_expenses = $yield - $administrative_expenses;
+      $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
+      //$yield = Util::compoundInterest($affiliate->getContributionsPlus(), $affiliate);
+      $administrative_expenses = 0;
+      $less_administrative_expenses = $yield;
       $temp = [
         'yield' => $yield,
         'administrative_expenses' => $administrative_expenses,
@@ -539,6 +553,10 @@ class RetirementFundCertificationController extends Controller
       'applicant' => $applicant,
       'beneficiaries' => $beneficiaries,
       'retirement_fund' => $retirement_fund,
+      'name_procedure_type'=>$name_procedure_type,
+      'num'=>0,
+      'contributionsPlus' => $affiliate->getTotalAverageSalaryQuotable()['contributions'],//aqui se manda a imprimir
+      'total_retirement_fund'=>$affiliate->getTotalAverageSalaryQuotable()['total_retirement_fund']
     ];
     $data = array_merge($data, $temp);
 
@@ -547,12 +565,13 @@ class RetirementFundCertificationController extends Controller
     }
     return $data;
   }
+  //---**IMPRIMIR FORMULARIO DE CALIFICACIÓN DISPONIBILIDAD**--//
   public function printDataQualificationAvailability($id, $only_print = true)
   {
     $retirement_fund = RetirementFund::find($id);
 
     $current_procedure = Util::getRetFunCurrentProcedure();
-    $title = "RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD";
+    $title = "DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD";
     $affiliate = $retirement_fund->affiliate;
     $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
     $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
@@ -570,7 +589,7 @@ class RetirementFundCertificationController extends Controller
       'months' => $total_dates % 12,
     );
 
-    foreach (ContributionType::orderBy('id')->where('id', '=', 10)->get() as $c) {
+    foreach (ContributionType::orderBy('id')->where('id', '=', 12)->orWhere('id','=',13)->get() as $c) {
       // if($c->id != 1){
       $contributionsWithType = $affiliate->getContributionsWithType($c->id);
       if (sizeOf($contributionsWithType) > 0) {
@@ -598,8 +617,8 @@ class RetirementFundCertificationController extends Controller
     );
     $total_quotes = $affiliate->getTotalQuotes();
     $discounts = $retirement_fund->discount_types()->where('amount', '>', 0)->get();
-    $has_availability = sizeOf($affiliate->getContributionsWithType(10)) > 0;
-    $availability = ContributionType::find(10);
+    $has_availability = sizeOf($affiliate->getContributionsWithType(12)) > 0;
+    $availability = ContributionType::find(12);
 
     /*  discount combinations*/
     $array_discounts = array();
@@ -629,10 +648,10 @@ class RetirementFundCertificationController extends Controller
     }
     if ($affiliate->hasAvailability()) {
       $array_discounts_availability = [];
-      foreach ($array_discounts as $value) {
-        array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + ' . ($availability->display_name ?? 'error') . ' ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun + $retirement_fund->total_availability - $value['amount'])));
+       foreach ($array_discounts as $value) {
+        array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
       }
-    }
+     }
     /*  discount combinations*/
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
@@ -710,12 +729,12 @@ class RetirementFundCertificationController extends Controller
         array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
       }
     }
-    if ($affiliate->hasAvailability()) {
+     if ($affiliate->hasAvailability()) {
       $array_discounts_availability = [];
-      foreach ($array_discounts as $value) {
-        array_push($array_discounts_availability, array('name' => ('Fondo de Retiro + reconocimiento de aportes en disponibilidad ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun + $retirement_fund->total_availability - $value['amount'])));
+       foreach ($array_discounts as $value) {
+         array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
       }
-    }
+   }
     /*  discount combinations*/
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
@@ -750,6 +769,7 @@ class RetirementFundCertificationController extends Controller
     return $data;
   }
 
+//--**METODO PRINCIPAL DEL FORMULARIO DE CALIFICACIÓN PAGINAS**--//
   public function printAllQualification($id)
   {
     $retirement_fund = RetirementFund::find($id);
@@ -780,7 +800,7 @@ class RetirementFundCertificationController extends Controller
 
     $pages[] = \View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
 
-    if (!$affiliate->selectedContributions() > 0 && !$affiliate->globalPayRetFun()  && $retirement_fund->procedure_modality->procedure_type->id == 2) {
+    if (!$affiliate->selectedContributions() > 0 && $retirement_fund->procedure_modality->procedure_type->id == 2) {
       $pages[] = \View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
     }
     $pdf = \App::make('snappy.pdf.wrapper');

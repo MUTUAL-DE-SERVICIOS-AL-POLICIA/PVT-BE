@@ -20,11 +20,11 @@
                     <td class="w-25 text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->subtotal_availability)}} </td>
                     <td class="w-15  text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
-                <tr class="text-sm">
+                <!-- <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">con rendimiento del {{$current_procedure->annual_yield}}% anual</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_availability) }} </td>
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
-                </tr>
+                </tr> -->
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">{{ $availability->display_name }}</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_availability) }} </td>
@@ -39,7 +39,7 @@
         </table>
     </div>
     @include('ret_fun.print.qualification_beneficiaries_fair_share', ['beneficiaries'=>$beneficiaries, 'type'=>'availability'])
-    <h3 class="uppercase text-center">fondo de retiro y {{ $availability->display_name }}</h3>
+    <!-- <h3 class="uppercase text-center">Fondo de Retiro</h3>
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
@@ -58,14 +58,14 @@
                 </tr>
                 @endforeach
                 <tr>
-                    <td class="text-left px-10 py-3 uppercase font-bold">total fondo de retiro + {{ $availability->display_name }}</td>
+                    <td class="text-left px-10 py-3 uppercase font-bold">total fondo de retiro</td>
                     <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->total) }} </td>
                     <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                 </tr>
             </tbody>
         </table>
     </div>
-    @include('ret_fun.print.qualification_beneficiaries_fair_share', ['beneficiaries'=>$beneficiaries, 'type'=>'total'])
+    @include('ret_fun.print.qualification_beneficiaries_fair_share', ['beneficiaries'=>$beneficiaries, 'type'=>'total']) -->
     @include('ret_fun.print.signature_footer',['user'=>$user])
 </div>
 @endsection

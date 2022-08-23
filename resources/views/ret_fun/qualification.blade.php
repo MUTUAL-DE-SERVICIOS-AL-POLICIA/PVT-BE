@@ -225,24 +225,33 @@
                             </tr>
                         </thead>
                         <tbody>
+                          @if ($retirement_fund->procedure_modality->procedure_type_id == 21)
                             <tr>
-                                <td>Total Aporte</td>
-                                <td>@{{ totalAporte | currency }}
-                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
-                                </td>
-                            </tr>
+                                    <td>Total Devolución de Aportes</td>
+                                    <td>@{{ totalAporte | currency }}
+                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                    </td>
+                                </tr>
+                          @else
+                                <tr>
+                                    <td>Total Aportes</td>
+                                    <td>@{{ totalAporte | currency }}
+                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                    </td>
+                                </tr>
                             <tr>
-                                @if($retirement_fund->procedure_modality->procedure_type_id == 2)
-                                    <td>+ Rendimiento del 5% {{$retirement_fund->procedure_modality->procedure_type_id}}</td>
-                                @else
-                                    <td>+ Interes del 1.05% </td>
-                                @endif
-                                <td>@{{ yield | currency}} </td>
-                            </tr>
-                            <tr>
-                                <td>- Gastos Administrativos del 10%</td>
-                                <td>@{{ lessAdministrativeExpenses | currency }}</td>
-                            </tr>
+                                    @if($retirement_fund->procedure_modality->procedure_type_id == 2)
+                                        <td>+ Rendimiento del 5% {{$retirement_fund->procedure_modality->procedure_type_id}}</td>
+                                    @else
+                                        <td>+ Rendimiento del 5% </td>
+                                    @endif
+                                    <td>@{{ yield | currency}} </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td>- Gastos Administrativos del 10%</td>
+                                    <td>@{{ lessAdministrativeExpenses | currency }}</td>
+                                </tr> -->
+                           @endif
                         </tbody>
                     </table>
                     <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar
@@ -273,8 +282,8 @@
                             </thead>
                             <tbody>
                                 <tr class="info">
-                                    <td v-if="! globalPay">Sub Total fondo de retiro</td>
-                                    <td v-else>Sub Total Pago Global por {{ $retirement_fund->procedure_modality->name }} </td>
+                                    <td v-if="! globalPay">Sub Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }}</td>
+                                    <td v-else>Sub Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }} por {{ $retirement_fund->procedure_modality->name }} </td>
                                     <td>@{{ subTotalRetFun | currency }}</td>
                                 </tr>
                                 <tr>
@@ -367,8 +376,8 @@
                                     <td colspan="5">@{{ percentageRetentionGuarantor | percentage }}</td>
                                 </tr>
                                 <tr class="success">
-                                    <td v-if="! globalPay">Total Fondo de Retiro</td>
-                                    <td v-else>Total Pago Global por {{ $retirement_fund->procedure_modality->name }} </td>
+                                    <td v-if="! globalPay">Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }}</td>
+                                    <td v-else>Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }} por {{ $retirement_fund->procedure_modality->name }} </td>
                                     <td colspan="5"><strong>@{{ totalAnimated | currency }}</strong></td>
                                 </tr>
                             </tbody>
@@ -390,8 +399,8 @@
                                 <h5 v-if="! globalPay">Calculo de las cuotas partes para los derechohabientes (Fondo de Retiro)</h5>
                                 <h5 v-else>Calculo de las cuotas partes para los derechohabientes (Pago Global por {{ $retirement_fund->procedure_modality->name }})</h5>
                             @else
-                                <h5 v-if="! globalPay">Calculo del total (Fondo de Retiro)</h5>
-                                <h5 v-else>Calculo del total (Pago Global por {{ $retirement_fund->procedure_modality->name }})</h5>
+                                <h5 v-if="! globalPay">Calculo del total ({{ $retirement_fund->procedure_modality->procedure_type->second_name }})</h5>
+                                <h5 v-else>Calculo del total ({{ $retirement_fund->procedure_modality->procedure_type->second_name }} por {{ $retirement_fund->procedure_modality->name }})</h5>
                             @endif
                             <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="saveTotalRetFun(true)" ><i class="fa fa-refresh"></i></button>
                         </div>
@@ -446,7 +455,7 @@
                     <div v-if="hasAvailability" id="hasAvailabilityScroll">
                         <div class="ibox" class="fadeInRight">
                             <div class="ibox-title">
-                                <h5>RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD</h5>
+                                <h5>DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD</h5>
                             </div>
                             <div class="ibox-content">
                                 <table class="table table-bordered">
@@ -464,12 +473,12 @@
                                                 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <!-- <tr>
                                             <td>Con rendimiento del {{ $current_procedure->annual_yield }}% Anual</td>
                                             <td>@{{ totalAnnualYield | currency }}</td>
-                                        </tr>
+                                        </tr> -->
                                         <tr>
-                                            <td>Reconocimiento de Aportes en Disponibilidad</td>
+                                            <td>Devolución de Aportes en Disponibilidad</td>
                                             <td>@{{ totalAvailability | currency}}</td>
                                         </tr>
                                         <tr>
@@ -543,7 +552,7 @@
                         <div v-if="showPercentagesRetFunAvailability" id="showPercentagesRetFunAvailability">
                             <div class="ibox" class="fadeInRight">
                                 <div class="ibox-title">
-                                    @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                                    @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4 || $retirement_fund->procedure_modality->id == 63)
                                         <h5>Calculo de las cuotas partes para los derechohabientes (TOTAL) </h5>
                                     @else
                                         <h5>Calculo de del total (TOTAL) </h5>
@@ -554,7 +563,7 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                                                @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4 || $retirement_fund->procedure_modality->id == 63)
                                                     <th>NOMBRE DEL DERECHOHABIENTE</th>
                                                 @else
                                                     <th>NOMBRE DEL TITULAR</th>
@@ -568,7 +577,7 @@
                                             <tr>
                                                 <th></th>
                                                 <th>@{{ totalPercentageRetFunAvailability | percentage }}</th>
-                                                <th :class="colorClass(totalAmountRetFunAvailability, total)">@{{ totalAmountRetFunAvailability | currency }} </th>
+                                                <th :class="colorClass(totalAmountRetFunAvailability, total)">@{{ totalAmountRetFunAvailability | currency }}</th>
                                                 <th></th>
                                             </tr>
                                         </tfoot>
@@ -634,7 +643,11 @@
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                <h4 class="modal-title">SALARIO PROMEDIO COTIZABLE</h4>
+                @if ($retirement_fund->procedure_modality->procedure_type_id == 2)
+                    <h4 class="modal-title">SALARIO PROMEDIO COTIZABLE</h4>
+                @else
+                    <h4 class="modal-title">{{$retirement_fund->procedure_modality->procedure_type->name}}</h4>
+                @endif
             </div>
             <div class="modal-body">
                 <div class="col-lg-12">
@@ -653,10 +666,15 @@
                     </table>
                     <table class="table table-bordered table-striped">
                         <tbody>
-                            @if ($affiliate->globalPayRetFun())
+                            @if ($retirement_fund->procedure_modality->procedure_type_id == 1)
                                 <tr>
                                     <td>Total Aportes</td>
                                     <td>Bs {{ Util::formatMoney($total_aporte) }}</td>
+                                </tr>
+                            @elseif($retirement_fund->procedure_modality->procedure_type_id == 21)
+                            <tr>
+                                    <td>Total Devolución de Aportes </td>
+                                    <td>Bs {{ Util::formatMoney($total_retirement_fund) }}</td>
                                 </tr>
                             @else
                                 <tr>
@@ -687,7 +705,7 @@
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                <h4 class="modal-title">Reconocimiento de Aportes en Disponibilidad</h4>
+                <h4 class="modal-title">Devolución de Aportes en Disponibilidad</h4>
             </div>
             <div class="modal-body">
                 <div class="col-lg-12">
