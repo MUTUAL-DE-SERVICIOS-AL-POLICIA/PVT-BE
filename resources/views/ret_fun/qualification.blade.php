@@ -292,7 +292,7 @@
                                         <input class="form-control" type="text" v-model="advancePayment" data-money='true' style="width:130px">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Cite" v-model="advancePaymentCode">
+                                        <textarea class="form-control" type="text" placeholder="Cite" v-model="advancePaymentCode"></textarea>
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="advancePaymentDate">
@@ -314,7 +314,7 @@
                                         <input class="form-control" type="text" v-model="retentionLoanPayment" data-money='true' style="width:130px">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Cite" v-model="retentionLoanPaymentCode">
+                                        <textarea class="form-control" type="text" placeholder="Cite" v-model="retentionLoanPaymentCode"></textarea>
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
@@ -359,7 +359,7 @@
                                         <input class="form-control" type="text" :value="retentionGuarantor" disabled>
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="Cite" v-model="retentionGuarantorCode">
+                                        <textarea class="form-control" type="text" placeholder="Cite" v-model="retentionGuarantorCode"></textarea>
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="retentionGuarantorDate">
@@ -818,3 +818,9 @@
     });
 </script>
 @endsection
+
+<style>
+textarea {
+  resize: none;
+}
+</style>
