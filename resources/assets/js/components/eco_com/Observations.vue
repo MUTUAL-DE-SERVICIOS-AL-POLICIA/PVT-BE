@@ -27,6 +27,7 @@
                 <th>Mensaje</th>
                 <th>Estado</th>
                 <th>Opciones</th>
+                <!-- <th>Notificación</th> -->
               </tr>
             </thead>
             <tbody>
@@ -73,6 +74,16 @@
                     </ul>
                   </div>
                 </td>
+                <!-- <td class="text-center">
+                  <button 
+                    class="btn btn-primary " 
+                    @click="notity()"
+                    data-toggle="tooltip"
+                    title="Enviar notificación" 
+                  >
+                    <i class="fa fa-send"></i>
+                  </button>
+                </td> -->
               </tr>
             </tbody>
           </table>
@@ -223,7 +234,8 @@ export default {
       method: "post",
       observations: [],
       showDeleteObservation: false,
-      deleteObservations: []
+      // deleteObservations: [],
+      // credentials: false
     };
   },
   mounted() {
@@ -231,6 +243,7 @@ export default {
       "click",
       () => {
         this.getObservations();
+        // this.verifyCredentials();
       },
       { passive: true }
     );
@@ -378,7 +391,55 @@ export default {
         .catch(error => {
           console.log(error);
         });
-    }
+    },
+    // async notity() {
+    //   await this.$swal({
+    //     title: 'Notificación',
+    //     text: 'Desea enviar la notificación',
+    //     type: 'question',
+    //     showCancelButton: true,
+    //     confirmButtonColor: '#3085d6',
+    //     cancelButtonColor: '#d33',
+    //     confirmButtonText: 'Notificar',
+    //     preConfirm: () => {
+    //       let uri = '/api/v1/city';
+    //       return axios.get(uri)
+    //         .then(response => {
+    //           if (!response.data) {
+    //             throw new Error(response.errors)
+    //           }
+    //           console.log(this.observations);
+    //           return response.status;
+    //         })
+    //         .catch(error => {
+    //           this.$swal.showValidationError(
+    //             `Solicitud fallida: ${error.response.data.errors}`
+    //           );
+    //         });
+    //     },
+    //     allowOutsideClick: () => !this.$swal.isLoading()
+    //   }).then((result) => {
+    //     if(result.value) {
+    //       this.$swal({
+    //         title: 'Notificado',
+    //         text: 'Se notificó con éxito',
+    //         type: 'success',
+    //         timer: 1500,
+    //       });
+    //     } 
+    //   })
+    // },
+    // async verifyCredentials(){
+    //   let uri = `http://localhost:9014/api/v1/verify_credentials/${this.ecoCom.id}`;
+    //   await axios.get(uri)
+    //     .then(response => {
+    //       this.credentials = true;
+    //       console.log(this.credentials);
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    // },
   },
   computed: {
     observationTypesFilter() {

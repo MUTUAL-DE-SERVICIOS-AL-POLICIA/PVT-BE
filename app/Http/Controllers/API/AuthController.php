@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComModality;
 use Muserpol\Models\AffiliateToken;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -133,9 +134,9 @@ class AuthController extends Controller
                             'enrolled' => false,
                             'verified' => false
                         ]);
-                    } elseif ($affiliate_token && $affiliate) {
+                    } elseif ($affiliate_token && $affiliate) { // registrado en affiliate_tokens, pero no en affiliate_devices
                         if ($device_id == $affiliate_token->device_id || $affiliate_token->device_id == null) {
-                            $token = $this->getToken($device_id);
+                            $token = $this->getToken($device_id); 
                             $update = [
                                 'api_token' => $token,
                                 'firebase_token' => $firebase_token
@@ -143,7 +144,33 @@ class AuthController extends Controller
                             if ($affiliate_token->device_id == null) {
                                 $update['device_id'] = $device_id;
                             }
+                            $affiliate->affiliate_token()->update($update); // Actualizamos la tabla affiliate_tokens 
+
+                            $affiliate_token_id = $affiliate_token->id; // Obtenemos el id del affiliate_token
+                            if(AffiliateDevice::find($affiliate_token_id) == null) { // buscamos el id de la tabla affiliate_tokens en affilate_devices, si es nulo
+                                $affiliate_device = new AffiliateDevice;
+                                $affiliate_device->create([
+                                    'affiliate_token_id' => $affiliate_token_id,
+                                    'enrolled' => false,
+                                    'verified' => false
+                                ]);
+                            }
+                        } 
+                        elseif(AffiliateDevice::find($affiliate_token->id) == null) { // Se genero su device_id por la oficina virtual, pero nunca ingreso a complemento
+                            // Actualizamos el device_id
+                            $token = $this->getToken($device_id);
+                            $update = [
+                                'api_token' => $token,
+                                'firebase_token' => $firebase_token,
+                                'device_id' => $device_id
+                            ];
                             $affiliate->affiliate_token()->update($update);
+                            $affiliate_device = new AffiliateDevice;
+                            $affiliate_device->create([
+                                'affiliate_token_id' => $affiliate_token->id,
+                                'enrolled' => false,
+                                'verified' => false
+                            ]);
                         }
                     }
                     if ($token) {
@@ -199,7 +226,7 @@ class AuthController extends Controller
      */
     public function destroy(Request $request)
     {
-        $request->affiliate->device()->update(['api_token' => null]);
+        $request->affiliate->affiliate_token()->update(['api_token' => null]);
         return response()->json([
             'error' => false,
             'message' => 'Sesión terminada',
