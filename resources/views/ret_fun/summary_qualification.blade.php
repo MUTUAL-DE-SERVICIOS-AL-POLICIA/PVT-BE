@@ -23,7 +23,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="col-sm-6">
-                                @if ($affiliate->globalPayretFun())
+                                @if ($retirement_fund->procedure_modality->procedure_type_id == 1 || $retirement_fund->procedure_modality->procedure_type_id == 21 )
                                     <label class="control-label">Total Aportes</label>
                                 @else
                                     <label class="control-label">Salario Promedio Cotizable</label>
@@ -151,7 +151,7 @@
 <div class="col-lg-12">
     <div class="ibox">
         <div class="ibox-title">
-            <h5>RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD</h5>
+            <h5>DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD</h5>
         </div>
         <div class="ibox-content">
             <table class="table table-bordered">
@@ -195,7 +195,7 @@
 <div class="col-lg-12">
     <div class="ibox">
         <div class="ibox-title">
-            <h5>cuotas partes para los derechohabientes (RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD)</h5>
+            <h5>cuotas partes para los derechohabientes (DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD)</h5>
         </div>
         <div class="ibox-content">
             <table class="table table-bordered">
@@ -307,7 +307,7 @@
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                <h4 class="modal-title">Reconocimiento de Aportes en Disponibilidad</h4>
+                <h4 class="modal-title">DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD</h4>
             </div>
             <div class="modal-body">
                 <div class="col-lg-12">

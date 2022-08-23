@@ -3,7 +3,7 @@
         <thead class="bg-grey-darker">
             <tr class="font-medium text-white text-sm uppercase">
                 <td colspan='4' class="px-15 text-center">
-                    @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+                    @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4 || $retirement_fund->procedure_modality->id == 63)
                         CALCULO DE CUOTAS PARTE PARA DERECHOHABIENTES
                     @else
                         CALCULO DEL TOTAL
@@ -14,7 +14,7 @@
         <tbody class="table-striped">
             <tr>
                 <td class="w-40 text-center font-bold px-10 py-3 uppercase">
-                nombre del {{($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4) ? 'derechohabiente' : 'titular' }}
+                nombre del {{($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4 || $retirement_fund->procedure_modality->id == 63) ? 'derechohabiente' : 'titular' }}
                 </td>
                 <td class="w-20 text-center font-bold px-10 py-3 uppercase">% de asignacion</td>
                 <td class="w-20 text-center font-bold px-10 py-3 uppercase">monto</td>
