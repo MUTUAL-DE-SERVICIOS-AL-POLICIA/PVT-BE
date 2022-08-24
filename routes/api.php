@@ -22,7 +22,7 @@ Route::group([
     Route::resource('affiliate.observation', 'API\AffiliateObservationController')->only('index');
     Route::resource('policy', 'API\PolicyController')->only('index');
     Route::resource('eco_com_procedure', 'API\EcoComProcedureController')->only('index');
-    Route::get('version', 'API\VersionController@versiones');
+    Route::post('version', 'API\VersionController@versiones');
 });
 
 Route::group([
