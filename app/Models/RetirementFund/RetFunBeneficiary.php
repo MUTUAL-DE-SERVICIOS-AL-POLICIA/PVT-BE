@@ -83,4 +83,8 @@ class RetFunBeneficiary extends Model
         $birth_date = Util::verifyBarDate($this->birth_date) ? Util::parseBarDate($this->birth_date) : $this->birth_date;
         return Util::getDateFormat($birth_date, $size);
     }
+    public function ciWithExt()
+    {
+      return Util::removeSpaces(($this->identity_card ?? ''). ' ' . ($this->city_identity_card->first_shortened ?? ''));
+    }
 }

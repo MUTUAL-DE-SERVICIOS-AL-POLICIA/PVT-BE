@@ -26,5 +26,9 @@ class RetFunLegalGuardian extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function ciWithExt()
+    {
+      return Util::removeSpaces($this->identity_card . ' ' . ($this->city_identity_card->first_shortened ?? ''));
+    }
     
 }
