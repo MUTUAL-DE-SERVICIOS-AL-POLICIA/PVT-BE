@@ -2520,7 +2520,7 @@ class RetirementFundCertificationController extends Controller
     $months  = $affiliate->getTotalQuotes();
     $qualification_id = 23;
     $qualification = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', $qualification_id)->first();
-     $body_resolution .= '<b>' . $cardinal[$cardinal_index++] . '.-</b> Reconocer el '.$retirement_fund->procedure_modality->procedure_type->name.($retirement_fund->procedure_modality_id == ID::retFunDevPay()->titular_id?' al ':' por '). $retirement_fund->procedure_modality->name . ', por el periodo de&nbsp;<b>' . Util::formatMonthYearLiteral($months).
+     $body_resolution .= '<b>' . $cardinal[$cardinal_index++] . '.-</b> Reconocer '.($retirement_fund->procedure_modality->procedure_type_id==21?'la ':'el ').$retirement_fund->procedure_modality->procedure_type->name.($retirement_fund->procedure_modality_id == ID::retFunDevPay()->titular_id?' al ':' por '). $retirement_fund->procedure_modality->name . ', por el periodo de&nbsp;<b>' . Util::formatMonthYearLiteral($months).
      '</b> de acuerdo a Calificación de Fondo de Retiro Policial Solidario, de fecha&nbsp; <b>' . Util::getStringDate($qualification->date) . '</b>, el monto de <strong>' . Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun) . '</strong>.<br><br>';
 
 
