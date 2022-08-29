@@ -75,7 +75,7 @@ class QuotaAidMortuary extends Model
     }
     public function wf_records()
     {
-        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
+        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable')->orderBy('id', 'desc');
     }
     public function getBasicInfoCode()
     {

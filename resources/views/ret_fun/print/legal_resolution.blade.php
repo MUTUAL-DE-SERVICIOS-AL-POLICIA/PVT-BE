@@ -28,31 +28,35 @@
             
 
                 <div>
-                    
-                    <div >
-                      <b><u>CONSIDERANDO:</u></b>
+                 
+                    <div>
+                        <b><u>VISTOS:</u></b>
                     </div>
-                    <p class="text-justify">
-                        {!! $law !!}
-                    </p>
+                    <div class="text-justify">
+                        <br>
+                        {!! $viewed !!}
+                    </div>
+                    <div>
+                        <b><u>CONSIDERANDO:</u></b>
+                    </div>
+                    <div class="text-justify">
+                        <br>
+                        {!! $considering_one !!}
+                    </div>
+                    <div>
+                        <b><u>CONSIDERANDO:</u></b>
+                    </div>
+                    <div class="text-justify">
+                        <br>
+                        {!! $considering_two !!} 
+                        <br>
+                    </div>
                     <div >
                         <b><u>CONSIDERANDO:</u></b>
                     </div>
                     <div class="text-justify">
-                        {!! $body_finance !!} 
                         <br>
-                    </div>
-                    <div class="text-justify">
-                        {!! $reception !!}
-                        <br>
-                    </div>
-                    <div class="text-justify">
-                        {!! $body_qualification !!}
-                        <br>
-                    </div>
-                    <div class="text-justify">
-                        <br>
-                        {!! $body_legal_dictum !!}
+                        {!! $considering_three !!} 
                         <br>
                     </div>
                     <div class="text-justify">
@@ -70,10 +74,10 @@
                         <br><br>
                     </div>
                     <div class="text-justify">
-                        {!! $body_resolution !!}
+                          {!! $body_resolution !!}
                         <br>
                     </div>
-                <div >
+                </div >
 
         </div>
         {{-- @include('ret_fun.print.commission_signature',['user'=>$user]) --}}

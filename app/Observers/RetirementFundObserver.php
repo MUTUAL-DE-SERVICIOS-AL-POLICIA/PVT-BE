@@ -18,7 +18,7 @@ class RetirementFundObserver
         $retfun->message = 'El usuario '.Auth::user()->username. ' creo el Trámite '.$rf->code.' con la modalidad '.$rf->procedure_modality->name.' '.Carbon::now();
         $retfun->save();
     }
-    private function defaultValuesWfRecord($wf_state_current_id = null , $record_type_id = null, $message = null)
+    private function defaultValuesWfRecord($wf_state_current_id = null , $record_type_id = null, $message = null, $old_wf_state_id = null, $old_user_id = null)
     {
         $default = [
             'user_id' => Auth::user()->id,
@@ -26,6 +26,8 @@ class RetirementFundObserver
             'wf_state_id' => $wf_state_current_id,
             'record_type_id' => $record_type_id,
             'message' => $message,
+            'old_wf_state_id' => $old_wf_state_id,
+            'old_user_id' => $old_user_id,
         ];
         return $default;
     }
@@ -64,16 +66,16 @@ class RetirementFundObserver
         $old_wf_state_sequence = WorkflowState::find($old->wf_state_current_id)->sequence_number;
 
         if ( $rf->wf_state_current_id != $old->wf_state_current_id && $wf_state_sequence > $old_wf_state_sequence ) {
-            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 1, "El usuario " . Auth::user ()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $rf->wf_state->name . "."));
+            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 3, "El usuario " . Auth::user ()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $rf->wf_state->name . ".", $old->wf_state_current_id, $old->user_id));
         }
         if ( $rf->wf_state_current_id != $old->wf_state_current_id && $wf_state_sequence < $old_wf_state_sequence ) {
-            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 1 , "El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $rf->wf_state->name . " con Nota: " . request()->message . "."));
+            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 4 , "El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $rf->wf_state->name . " con Nota: " . request()->message . ".", $old->wf_state_current_id, $old->user_id));
         }
         if ( $old->inbox_state == false && $rf->inbox_state == true &&  $rf->wf_state_current_id == $old->wf_state_current_id  ) {
             $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 1,'El usuario ' . Auth::user ()->username . ' Validó el trámite.'));
         }
         if ($old->inbox_state == true && $rf->inbox_state == false && $rf->wf_state_current_id == $old->wf_state_current_id  ) {
-            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 1, 'El usuario ' . Auth::user()->username . ' Canceló el trámite.'));
+            $rf->wf_records()->create($this->defaultValuesWfRecord($rf->wf_state_current_id, 2, 'El usuario ' . Auth::user()->username . ' Canceló el trámite.'));
         }
     }
 }

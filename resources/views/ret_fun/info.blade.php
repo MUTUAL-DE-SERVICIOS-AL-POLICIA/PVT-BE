@@ -28,7 +28,7 @@
                         <input type="text" class="form-control" v-model="procedure_modality_name" disabled="">
                     </div>
                     <div class="col-md-2">
-                        <strong>Ciudad de Recepcion:</strong>
+                        <strong>Ciudad de Recepción:</strong>
                     </div>
                     <div class="col-md-4">
                         {!! Form::select('city_start_id', $cities, null , ['placeholder' => 'Seleccione ciudad', 'class' => 'form-control','v-model'=>'form.city_start_id',':disabled'=>'!editing'])
