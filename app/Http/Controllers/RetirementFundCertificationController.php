@@ -2020,7 +2020,6 @@ class RetirementFundCertificationController extends Controller
           }
         }
       }
-      
     $person .='. Solicitan ';
   }
   }
@@ -2598,7 +2597,6 @@ class RetirementFundCertificationController extends Controller
       if ($beneficiaries->count() > 1) {
         $body_resolution .= 'de los beneficiarios';
       } else {
- 
         $body_resolution .= ($applicant->gender == 'M' ? 'del beneficiario ' : 'de la beneficiaria ');
       }
       $body_resolution .= ($affiliate->gender == 'M' ? ' del Sr. ' : ' de la Sra. ') . $affiliate_name . "., en el siguiente manera: <br><br>";
@@ -2622,23 +2620,21 @@ class RetirementFundCertificationController extends Controller
         }
         $beneficiary_advisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id', $beneficiary->id)->first();
         $beneficiary_legal_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id', $beneficiary->id)->first();
+        if(!$beneficiary->state && (Util::isChild($beneficiary->birth_date))){
+          $body_resolution.=', a través de su '.($affiliate->gender == 'F' ? ' padre' : ' madre').', tutor (a) o hasta que cumpla la mayoría de edad';
+        }
         $body_resolution .= ', en el monto de <strong>' . Util::formatMoneyWithLiteral($beneficiary->amount_total) . '</strong> ';
-        //if(Util::isChild($beneficiary->birth_date)){
-          if (isset($beneficiary_advisor->id)) {
+          if (isset($beneficiary_advisor->id) && $beneficiary->state) {
             $advisor = RetFunAdvisor::where('id', $beneficiary_advisor->ret_fun_advisor_id)->first();
-            $body_resolution.= ' a través de '.($advisor->gender == 'M' ? 'el Sr.' : 'la Sra.').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .' '. ($advisor->city_identity_card->first_shortened ?? "Sin Extencion").($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br><br>';
+            $body_resolution.='en calidad de '.$beneficiary->kinship->name.' a través de '.($advisor->gender == 'M' ? 'el Sr. ' : 'la Sra. ').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .' '. ($advisor->city_identity_card->first_shortened ?? "Sin Extencion").($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br><br>';
           }else{
             $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br><br>';
           }
-      /* }else{
-            $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br><br>';
-       }*/
          /*if (isset($beneficiary_legal_guardian->id)) {
           $legal_guardian = RetFunLegalGuardian::where('id', $beneficiary_legal_guardian->ret_fun_legal_guardian_id)->first();
           $body_resolution .= " por si o representada legamente por " . ($legal_guardian->gender == 'M' ? "el Sr." : "la Sra. ") . " " . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . ($legal_guardian->city_identity_card->first_shortened ?? "sin extencion") . ".
                     conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° " . $legal_guardian->number_authority . " de " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " emitido por " . $legal_guardian->notary . ".";
         }*/
-  
       }
     } else {
       $body_resolution .= ($retirement_fund->procedure_modality_id != 62?(($affiliate->gender == 'M' ? 'del beneficiario: ' : 'de la beneficiaria: ')):'') . "<br><br>";
@@ -2673,12 +2669,13 @@ class RetirementFundCertificationController extends Controller
             }
             $beneficiary_advisor = RetFunAdvisorBeneficiary::where('ret_fun_beneficiary_id', $beneficiary->id)->first();
             $beneficiary_legal_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id', $beneficiary->id)->first();
+            if(!$beneficiary->state && (Util::isChild($beneficiary->birth_date))){
+              $body_resolution.=', a través de su '.($affiliate->gender == 'F' ? ' padre' : ' madre').', tutor (a) o hasta que cumpla la mayoría de edad';
+            }
             $body_resolution .= ', en el monto de <strong>' . Util::formatMoneyWithLiteral($beneficiary->amount_total) . '</strong> ';
-            if(Util::isChild($beneficiary->birth_date)){
-              if (isset($beneficiary_advisor->id)) {
+              if (isset($beneficiary_advisor->id) && $beneficiary->state) {
                 $advisor = RetFunAdvisor::where('id', $beneficiary_advisor->ret_fun_advisor_id)->first();
-                $body_resolution.= ' a través de '.($advisor->gender == 'M' ? 'el Sr.' : 'la Sra.').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .' '. ($advisor->city_identity_card->first_shortened ?? "Sin Extencion").($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br><br>';
-              }
+                $body_resolution.='en calidad de '.$beneficiary->kinship->name.' a través de '.($advisor->gender == 'M' ? 'el Sr. ' : 'la Sra. ').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .' '. ($advisor->city_identity_card->first_shortened ?? "Sin Extencion").($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br><br>';
            }else{
                 $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br><br>';
            }
