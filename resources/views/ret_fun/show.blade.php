@@ -253,7 +253,7 @@
                     <div class="widget-text-box">
                             <ul class="list-group elements-list">
                                 <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Fondo de Retiro</a></li>
-                                @if($retirement_fund->procedure_modality_id == 4)
+                                @if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1 || $retirement_fund->procedure_modality_id == 63 )
                                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate" ><a href="#"><i class="fa fa-user"></i> Afiliado </a></li>
                                 @endif
                                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
