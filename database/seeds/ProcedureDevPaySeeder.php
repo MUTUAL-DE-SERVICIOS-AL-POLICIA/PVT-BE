@@ -42,7 +42,7 @@ class ProcedureDevPaySeeder extends Seeder
             ['procedure_modality_id' => '62', 'procedure_document_id' => '98', 'number' => '0'],
             ['procedure_modality_id' => '62', 'procedure_document_id' => '99', 'number' => '0'],
             ['procedure_modality_id' => '62', 'procedure_document_id' => '100', 'number' => '0'],
-            ['procedure_modality_id' => '62', 'procedure_document_id' => '250', 'number' => '0'],
+            ['procedure_modality_id' => '62', 'procedure_document_id' => '101', 'number' => '0'],
             ['procedure_modality_id' => '62', 'procedure_document_id' => '186', 'number' => '0'],
             ['procedure_modality_id' => '62', 'procedure_document_id' => '187', 'number' => '0'],
             ['procedure_modality_id' => '62', 'procedure_document_id' => '188', 'number' => '0'],
@@ -53,7 +53,7 @@ class ProcedureDevPaySeeder extends Seeder
             ['procedure_modality_id' => '62', 'procedure_document_id' => '224', 'number' => '0'],
             ['procedure_modality_id' => '62', 'procedure_document_id' => '225', 'number' => '0'],
             ['procedure_modality_id' => '62', 'procedure_document_id' => '343', 'number' => '0'],
-            ['procedure_modality_id' => '62', 'procedure_document_id' => '360', 'number' => '0'],
+            ['procedure_modality_id' => '62', 'procedure_document_id' => '342', 'number' => '0'],
 
             ['procedure_modality_id' => '63', 'procedure_document_id' => '1', 'number' => '1'],
             ['procedure_modality_id' => '63', 'procedure_document_id' => '2', 'number' => '2'],
@@ -78,7 +78,7 @@ class ProcedureDevPaySeeder extends Seeder
             ['procedure_modality_id' => '63', 'procedure_document_id' => '188', 'number' => '0'],
             ['procedure_modality_id' => '63', 'procedure_document_id' => '215', 'number' => '0'],
             ['procedure_modality_id' => '63', 'procedure_document_id' => '343', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '360', 'number' => '0'],
+            ['procedure_modality_id' => '63', 'procedure_document_id' => '342', 'number' => '0'],
         ];
         foreach ($procedure_requirements as $procedure_requirement) {
             ProcedureRequirement::firstOrCreate($procedure_requirement);
