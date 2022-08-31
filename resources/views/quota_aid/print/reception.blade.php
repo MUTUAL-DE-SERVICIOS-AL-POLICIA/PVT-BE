@@ -14,7 +14,7 @@
         <div class="font-bold uppercase m-b-5 counter">
             Datos del Titular
         </div>
-            @include('print_global.police_info', ['affiliate'=>$affiliate])
+            @include('quota_aid.print.police_info', ['affiliate'=>$affiliate])
     @endif
         <div class="font-bold uppercase m-b-5 counter">
             Datos Policiales del Titular
