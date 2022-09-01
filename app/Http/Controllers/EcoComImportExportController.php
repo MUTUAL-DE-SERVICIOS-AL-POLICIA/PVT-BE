@@ -349,7 +349,7 @@ class EcoComImportExportController extends Controller
                      $eco_com->observations()->save($observation, [
                          'user_id' => Auth::user()->id,
                          'date' => now(),
-                         'message' => "Observación Importada Gestión $year_procedures",
+                         'message' => "Observación generada desde el afiliado.",
                          'enabled' => true
                      ]);
                     }              

@@ -34,7 +34,7 @@ class AffiliateObservationController extends Controller
             if ($enabled) {
                 if ($available_procedures == 0) {
                     $enabled = false;
-                    $message = 'Espere el Comunicado con las fechas de pago del Complemento Económico.';
+                    $message = 'El pago vía SIGEP se realizará los dias 15 y 18 julio 2022. Para mayor información visite https://www.muserpol.gob.bo';
                 } else {
                     $latest_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('normal_start_date')->limit(2)->whereNotIn('id', EcoComProcedure::current_procedures()->pluck('id'))->pluck('id');
                     $latest_procedures = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $latest_procedures)->count();
