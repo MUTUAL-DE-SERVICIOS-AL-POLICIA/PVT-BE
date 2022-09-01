@@ -47,7 +47,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Cotizacion</th>
+                                    <th>Cotización</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>

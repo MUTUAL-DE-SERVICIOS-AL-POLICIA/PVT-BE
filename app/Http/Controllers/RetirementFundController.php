@@ -1785,7 +1785,7 @@ class RetirementFundController extends Controller
         }else{
             if ($total_quotes >= $current_procedure->contributions_number && $procedure_type_id == 2) { } else {
                 $global_pay = true;
-                $total_aporte = $total_salary_quotable['total_aporte'];
+                $total_aporte = $total_salary_quotable['total_retirement_fund'];
                 $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
                 //$yield = Util::compoundInterest($total_salary_quotable['contributions'], $affiliate);
                 $administrative_expenses = 0;
@@ -1920,7 +1920,7 @@ class RetirementFundController extends Controller
                 $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
                 $total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
             } else {
-                $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_aporte'];
+                $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_retirement_fund'];
                 $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
                 //$yield = Util::compoundInterest($affiliate->getContributionsPlus(), $affiliate);
                 $administrative_expenses = 0;
@@ -1964,7 +1964,7 @@ class RetirementFundController extends Controller
                 $total_average_salary_quotable = $affiliate->getTotalAverageSalaryQuotable()['total_average_salary_quotable'];
                 $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
             } else {//PGA
-                $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_aporte'];
+                $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_retirement_fund'];
                 // $yield = Util::compoundInterest($affiliate->getContributionsPlus(), $affiliate);
                 $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
                 $administrative_expenses = 0;
