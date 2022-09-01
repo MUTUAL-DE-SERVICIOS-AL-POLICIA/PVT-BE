@@ -123,6 +123,12 @@ class RetirementFundCertificationController extends Controller
   {
     //
   }
+  public function get_module_retirement_fund($id)
+  {
+      $module_id= RetirementFund::find($id)->procedure_modality->procedure_type->module->id;
+      $file_name =$module_id.'/'.RetirementFund::find($id)->uuid;
+      return $file_name;
+  }
   public function printReception($id)
   {
     $retirement_fund = RetirementFund::find($id);
@@ -152,7 +158,7 @@ class RetirementFundCertificationController extends Controller
             !!todo
             add support utf-8
         */
-    $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+    $bar_code = \DNS2D::getBarcodePNG($this->get_module_retirement_fund($retirement_fund->id), "QRCODE");
     $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $retirement_fund->id)->first();
     $pdftitle = "RECEPCIÓN - " . $title;
     $namepdf = Util::getPDFName($pdftitle, $applicant);
@@ -187,7 +193,7 @@ class RetirementFundCertificationController extends Controller
     $pdf->loadHTML($pages);
     return $pdf->setOption('encoding', 'utf-8')
       //    ->setOption('margin-top', '20mm')
-      ->setOption('margin-bottom', '15mm')
+      ->setOption('margin-bottom', '90mm')
       //    ->setOption('margin-left', '25mm')
       //    ->setOption('margin-right', '15mm')
       //->setOption('footer-right', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')

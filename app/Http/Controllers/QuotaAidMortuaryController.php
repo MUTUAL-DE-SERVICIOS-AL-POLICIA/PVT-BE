@@ -41,6 +41,7 @@ use Muserpol\Models\InfoLoan;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureState;
 use Muserpol\Models\FinancialEntity;
+use Ramsey\Uuid\Uuid;
 
 class QuotaAidMortuaryController extends Controller
 {
@@ -252,6 +253,15 @@ class QuotaAidMortuaryController extends Controller
     //
   }
 
+   //funcion para agregar uuid a los registros que tienen null
+   public  function add_uuid(){
+    $quota_aid_mortuaries=QuotaAidMortuary::withTrashed()->get();
+    foreach ($quota_aid_mortuaries as $quota_aid_mortuary) {
+        $quota_aid_mortuary->uuid=Uuid::uuid1()->toString();
+        $quota_aid_mortuary->save();
+   }
+  }
+
   /**
    * Store a newly created resource in storage.
    *
@@ -369,6 +379,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->city_start_id = Auth::user()->city_id;
     $quota_aid->city_end_id = Auth::user()->city_id;
     $quota_aid->code = $code;
+    $quota_aid->uuid = Uuid::uuid1()->toString();
     $quota_aid->reception_date = date('Y-m-d');
     $quota_aid->workflow_id = 5;
     $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
