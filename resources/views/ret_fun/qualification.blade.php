@@ -668,8 +668,8 @@
                         <tbody>
                             @if ($retirement_fund->procedure_modality->procedure_type_id == 1)
                                 <tr>
-                                    <td>Total Aportes</td>
-                                    <td>Bs {{ Util::formatMoney($total_aporte) }}</td>
+                                    <td>Total Aportes FRPS</td>
+                                    <td>Bs {{ Util::formatMoney($total_retirement_fund) }}</td>
                                 </tr>
                             @elseif($retirement_fund->procedure_modality->procedure_type_id == 21)
                             <tr>
