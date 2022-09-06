@@ -281,7 +281,9 @@ class RetirementFundCertificationController extends Controller
       ->orderBy('procedure_requirements.number', 'ASC')->get();
 
     $affiliate = $retirement_fund->affiliate;
-    $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $this->generateBarCode($retirement_fund)])->render();
+    $bar_code = \DNS2D::getBarcodePNG($this->get_module_retirement_fund($retirement_fund->id), "QRCODE");
+    // $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $this->generateBarCode($retirement_fund)])->render();
+    $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
     $cite = $number; //RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
     $subtitle = $cite;
     $pdftitle = "Revision Legal";
@@ -308,7 +310,7 @@ class RetirementFundCertificationController extends Controller
     $pdf = \App::make('snappy.pdf.wrapper');
     $pdf->loadHTML($pages);
     return $pdf->setOption('encoding', 'utf-8')
-      ->setOption('margin-bottom', '15mm')
+      ->setOption('margin-bottom', '30mm')
       ->setOption('footer-html', $footerHtml)
       ->stream("$namepdf");
   }
@@ -1932,7 +1934,8 @@ class RetirementFundCertificationController extends Controller
     }
     //array_push($documents, 'DICTAMEN LEGAL');
 
-    $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+    $bar_code = \DNS2D::getBarcodePNG($retirement_fund->getBasicInfoCode()['code'], "QRCODE");
+    // $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
     $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
 
 
@@ -1959,7 +1962,7 @@ class RetirementFundCertificationController extends Controller
       ->setOption('encoding', 'utf-8')
       // ->setOption('header-html', $headerHtml)
       ->setOption('footer-html', $footerHtml)
-      ->setOption('margin-bottom', 15)
+      ->setOption('margin-bottom', 30)
       ->stream("jefaturaRevision.pdf");
   }
   public function printLegalResolution($ret_fun_id)
@@ -2729,7 +2732,8 @@ class RetirementFundCertificationController extends Controller
       'considering_two' => $considering_two,
       'considering_three' => $considering_three,
     ];
-    $bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+    $bar_code = \DNS2D::getBarcodePNG($this->get_module_retirement_fund($retirement_fund->id), "QRCODE");
+    //$bar_code = \DNS2D::getBarcodePNG(($retirement_fund->getBasicInfoCode()['code'] . "\n\n" . $retirement_fund->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
     $headerHtml = view()->make('ret_fun.print.legal_header')->render();
     $footerHtml = view()->make('ret_fun.print.resolution_footer', ['bar_code' => $bar_code])->render();
     return \PDF::loadView('ret_fun.print.legal_resolution', $data)
@@ -2737,7 +2741,7 @@ class RetirementFundCertificationController extends Controller
       ->setOption('footer-html', $footerHtml)
       ->setOption('header-html', $headerHtml)
       ->setOption('margin-top', 40)
-      ->setOption('margin-bottom', 30)
+      ->setOption('margin-bottom', 35)
       ->stream("jefaturaRevision.pdf");
   }
   private function getFlagy($num, $pos, $text = "")
