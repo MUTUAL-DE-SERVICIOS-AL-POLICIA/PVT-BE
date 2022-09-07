@@ -226,7 +226,7 @@ class AuthController extends Controller
      */
     public function destroy(Request $request)
     {
-        $request->affiliate->affiliate_token()->update(['api_token' => null]);
+        $request->affiliate->affiliate_token()->update(['api_token' => null, 'firebase_token' => null]);
         return response()->json([
             'error' => false,
             'message' => 'Sesión terminada',
