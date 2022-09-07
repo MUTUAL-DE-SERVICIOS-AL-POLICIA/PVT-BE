@@ -411,7 +411,9 @@ class QuotaAidCertificationController extends Controller
       ->leftJoin('procedure_requirements', 'quota_aid_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
       ->orderBy('procedure_requirements.number', 'ASC')->get();
     $affiliate = $quota_aid->affiliate;
-    $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
+    $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
+    $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
+    //$footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
     $cite = $number; //RetFunIncrement::getIncrement(Session::get('rol_id'), $quota_aid->id);
     $subtitle = $cite;
     $pdftitle = "Revision Legal";
@@ -435,7 +437,7 @@ class QuotaAidCertificationController extends Controller
     $pdf = \App::make('snappy.pdf.wrapper');
     $pdf->loadHTML($pages);
     return $pdf->setOption('encoding', 'utf-8')
-      ->setOption('margin-bottom', '15mm')
+      ->setOption('margin-bottom', '30mm')
       ->setOption('footer-html', $footerHtml)
       ->stream("$namepdf");
   }
@@ -986,7 +988,8 @@ class QuotaAidCertificationController extends Controller
     array_push($documents, 'CALIFICACIÓN DE FONDO DE RETIRO');//ojo
     //array_push($documents, 'DICTAMEN LEGAL');
 
-    $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+    $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
+    //$bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
     $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
 
     $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 38)->first();
@@ -1007,7 +1010,7 @@ class QuotaAidCertificationController extends Controller
     return \PDF::loadView('quota_aid.print.headship_review', $data)
       ->setOption('encoding', 'utf-8')
       ->setOption('footer-html', $footerHtml)
-      ->setOption('margin-bottom', 15)
+      ->setOption('margin-bottom', 30)
       ->stream("jefaturaRevision.pdf");
   }
 
@@ -1222,15 +1225,16 @@ class QuotaAidCertificationController extends Controller
       'users_commission'  =>  $users_commission,
       'body_legal_dictum' =>  $body_legal_dictum,
     ];
-    $bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
-    $headerHtml = view()->make('ret_fun.print.legal_header')->render();
-    $footerHtml = view()->make('quota_aid.print.resolution_footer', ['quota_aid' => $quota_aid,  'bar_code' => $bar_code])->render();
+   $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
+   //$bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
+   $headerHtml = view()->make('ret_fun.print.legal_header')->render();
+   $footerHtml = view()->make('quota_aid.print.resolution_footer', ['quota_aid' => $quota_aid,  'bar_code' => $bar_code])->render();
     return \PDF::loadView('quota_aid.print.legal_resolution', $data)
       ->setOption('encoding', 'utf-8')
       ->setOption('footer-html', $footerHtml)
       ->setOption('header-html', $headerHtml)
       ->setOption('margin-top', 40)
-      ->setOption('margin-bottom', 30)
+      ->setOption('margin-bottom', 35)
       ->stream("jefaturaRevision.pdf");
   }
 }
