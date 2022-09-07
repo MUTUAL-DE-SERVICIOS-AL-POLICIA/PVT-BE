@@ -1059,7 +1059,7 @@ class Util
     }
     return Carbon::parse($date)->formatLocalized('%d de %B de %Y');
   }
-  public static function getEconomicComplementSendToBank($eco_com_procedure_id, $change_state = false)
+  public static function getEconomicComplementSendToBank($eco_com_procedure_id, $change_state)
   {
     $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
     $ecos = EconomicComplement::with([
@@ -1084,6 +1084,7 @@ class Util
       ->city() // eco_com_city
       ->beneficiary() // beneficiary
       ->select('economic_complements.*')
+      ->where('economic_complements.procedure_date', '=', $change_state)
       ->where('economic_complements.total', '>', 0)
       ->where('economic_complements.eco_com_state_id', '=', 24)
       ->get();
@@ -1120,7 +1121,7 @@ class Util
     $index = 1;
     $result = collect([]);
     $city = City::find(4);
-    
+
     foreach ($ecos as $e) {
       $ci_ext = $e->getEcoComBeneficiaryBank()->city_identity_card->to_bank;
       $ci = $e->getEcoComBeneficiaryBank()->identity_card;
@@ -1157,10 +1158,10 @@ class Util
         
       ]); 
       $index++;
-      if ($change_state === true && self::getRol()->id == 5) {
-        $e->eco_com_state_id = 24;
-        $e->save();
-      }
+      // if ($change_state === true && self::getRol()->id == 5) {
+      //   $e->eco_com_state_id = 24;
+      //   $e->save();
+      // }
     }
     return ['result' => $result, 'total_amount' => $total_amount, 'total_eco_coms' => $total_eco_coms];
   }

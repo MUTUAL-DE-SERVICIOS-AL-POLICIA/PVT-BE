@@ -6,7 +6,7 @@
     </select>
     <div v-if="form.reportTypeId != 9 && form.reportTypeId != 21 && form.reportTypeId != 22">
       <label>Gestion</label>
-      <select v-model="form.ecoComProcedureId" :disabled="loadingButton">
+      <select v-model="form.ecoComProcedureId" :disabled="loadingButton" @change="cargarplanilla()">
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
       </select>
     </div>
@@ -79,6 +79,12 @@
       <label for="change-date">Fecha (yyyy-mm-dd)</label>
       <input type="text" id="change-date" v-model="form.changeDate"/>
     </div>
+    <div v-if="form.reportTypeId == 18" >
+        <label for="banco">Lote diario</label><!--copiar-->
+          <select id="banco" v-model="form.changeState" :disabled="loadingButton">
+            <option v-for="b in banco" :value="b.procedure_date" :key="b.procedure_date">{{b.procedure_date}}</option>
+          </select>
+    </div>
     <div class="col-md-12">
       <div class="text-left m-sm" v-if="(form.reportTypeId == 26 || form.reportTypeId == 27) && rol.id == 5">
         <button class="btn btn-primary" type="button" @click="CambiarEstado()">
@@ -127,6 +133,8 @@ export default {
   ],
   data() {
     return {
+      sigep: [],
+      banco: [],
       loadingButton: false,
       reportsType: [
         {
@@ -257,6 +265,9 @@ export default {
       }
     };
   },
+   mounted() {
+    this.cargarplanilla();
+  },
   methods: {
     async send() {
       this.loadingButton = true;
@@ -311,6 +322,20 @@ export default {
           console.log(error);
        });
        this.loadingButton = false;
+    },
+    async cargarplanilla() {
+        console.log('Entro a cargar planilla');
+        const formData = new FormData();
+        formData.append("ecoComProcedureId", this.form.ecoComProcedureId);
+        await axios
+            .post("eco_com_import_planilla", formData)
+            .then(response => {
+                this.sigep = response.data['eco_com_sigep'];
+                this.banco = response.data['eco_com_banco'];
+            })
+            .catch(error => {
+               console.log(error);
+        });
     }
   },
   computed: {
