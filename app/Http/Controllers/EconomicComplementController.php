@@ -883,6 +883,9 @@ class EconomicComplementController extends Controller
         else
             $economic_complement->months_of_payment = null;
         $economic_complement->save();
+        $user_id = auth()->id();
+        //cambio de estado pagado a en proceso en la tabla contribution_passives
+        $valid_payment_contribucion_passive = DB::select("SELECT change_state_contribution_process_eco_com($user_id,$request->id)");
         /**
          * update affiliate info
          */
@@ -1842,6 +1845,9 @@ class EconomicComplementController extends Controller
             $item->wf_current_state_id = 8;
             $item->user_id = Auth::user()->id;
             $item->update();
+            //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives
+            $user_id = Auth::user()->id;
+            $valid_payment_contribucion_passive = DB::select("SELECT change_state_contribution_paid_eco_com($user_id,$item->id)");
         }
         return 0;
     }
@@ -1883,6 +1889,9 @@ class EconomicComplementController extends Controller
             }
         }
         $eco_com->save();
+        //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives
+        $user_id = Auth::user()->id;
+        $valid_payment_contribucion_passive = DB::select("SELECT change_state_contribution_paid_eco_com($user_id,$id)");
         return $eco_com;
     }
 

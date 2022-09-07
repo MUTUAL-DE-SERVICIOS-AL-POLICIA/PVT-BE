@@ -41,7 +41,7 @@
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-rents-aps"><a href="#"><i
                             class="fa fa-users"></i> Importar Rentas APS</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-pago-futuro"><a href="#"><i
-                            class="fa fa-users"></i> Importar Pago a Futuro</a></li>
+                            class="fa fa-users"></i> Calcular Pago a Futuro</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-estado-pagado"><a href="#"><i
                             class="fa fa-users"></i> Cambiar a estado pagado</a></li>
                             
