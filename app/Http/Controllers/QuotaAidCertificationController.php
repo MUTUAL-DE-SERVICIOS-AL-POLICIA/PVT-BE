@@ -437,7 +437,7 @@ class QuotaAidCertificationController extends Controller
     $pdf = \App::make('snappy.pdf.wrapper');
     $pdf->loadHTML($pages);
     return $pdf->setOption('encoding', 'utf-8')
-      ->setOption('margin-bottom', '30mm')
+      ->setOption('margin-bottom', '15mm')
       ->setOption('footer-html', $footerHtml)
       ->stream("$namepdf");
   }
@@ -467,7 +467,10 @@ class QuotaAidCertificationController extends Controller
     $subtitle = $cite;
     $pdftitle = "Certificación de Archivo";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
-    $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
+    // aqui
+    $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
+    $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
+   // $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
     $data = [
       'code' => $code,
       'area' => $area,
@@ -1010,7 +1013,7 @@ class QuotaAidCertificationController extends Controller
     return \PDF::loadView('quota_aid.print.headship_review', $data)
       ->setOption('encoding', 'utf-8')
       ->setOption('footer-html', $footerHtml)
-      ->setOption('margin-bottom', 30)
+      ->setOption('margin-bottom', 15)
       ->stream("jefaturaRevision.pdf");
   }
 
