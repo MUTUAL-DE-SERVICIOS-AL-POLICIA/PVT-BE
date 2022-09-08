@@ -229,7 +229,10 @@ class RetirementFundCertificationController extends Controller
     $subtitle = $cite;
     $pdftitle = "Certificación de Archivo";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
-    $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $this->generateBarCode($retirement_fund)])->render();
+    //aqui
+    $bar_code = \DNS2D::getBarcodePNG($retirement_fund->getBasicInfoCode()['code'], "QRCODE");
+    $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
+    //$footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $this->generateBarCode($retirement_fund)])->render();
     $data = [
       'code' => $code,
       'area' => $area,
@@ -310,7 +313,7 @@ class RetirementFundCertificationController extends Controller
     $pdf = \App::make('snappy.pdf.wrapper');
     $pdf->loadHTML($pages);
     return $pdf->setOption('encoding', 'utf-8')
-      ->setOption('margin-bottom', '30mm')
+      ->setOption('margin-bottom', '15mm')
       ->setOption('footer-html', $footerHtml)
       ->stream("$namepdf");
   }
@@ -1962,7 +1965,7 @@ class RetirementFundCertificationController extends Controller
       ->setOption('encoding', 'utf-8')
       // ->setOption('header-html', $headerHtml)
       ->setOption('footer-html', $footerHtml)
-      ->setOption('margin-bottom', 30)
+      ->setOption('margin-bottom', 15)
       ->stream("jefaturaRevision.pdf");
   }
   public function printLegalResolution($ret_fun_id)
