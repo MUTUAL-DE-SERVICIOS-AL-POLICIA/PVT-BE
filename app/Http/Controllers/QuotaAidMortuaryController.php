@@ -1160,7 +1160,23 @@ class QuotaAidMortuaryController extends Controller
       return redirect("/affiliate/$affiliate->id")->with('message', "Debe actualizar el grado antes");
     }
     $hierarchy = $affiliate->degree->hierarchy;
-    $procedure_types = ProcedureType::where('id', '3')->orWhere('id', '4')->get();
+    /////Validar si tiene mas de un tramite de cuota para mostrar la modalidad
+        $active_quota = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+        ->where('affiliate_id',$affiliate->id)
+        ->where('procedure_modalities.procedure_type_id',3)
+        ->where('code','NOT LIKE','%A')->count();
+        $active_auxilio = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+        ->where('affiliate_id',$affiliate->id)
+        ->where('procedure_modalities.procedure_type_id',4)
+        ->where('code','NOT LIKE','%A')->count();
+    ///
+
+
+    if( $active_auxilio>=1 || $active_quota>=1){
+      $procedure_types = ProcedureType::where('id', '4')->get();
+    }else{
+      $procedure_types = ProcedureType::where('id', '3')->orWhere('id', '4')->get();
+    }
 
     $affiliate = Affiliate::select('affiliates.id', 'identity_card', 'city_identity_card_id', 'registration', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband', 'birth_date', 'gender', 'degree_id', 'degrees.name as degree', 'civil_status', 'affiliate_states.name as affiliate_state', 'phone_number', 'cell_phone_number', 'date_death')
       ->leftJoin('degrees', 'affiliates.degree_id', '=', 'degrees.id')
