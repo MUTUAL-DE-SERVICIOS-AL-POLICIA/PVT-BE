@@ -15,7 +15,7 @@
         </head>
         <body>
             <div class="text-right no-padding no-margins">
-                <img src="data:image/png;base64, {{ $bar_code }}"/>
+                <!-- <img src="data:image/png;base64, {{ $bar_code }}"/> -->
             </div>
             <div style="float:right; font-family:sans-serif; font-size:14px;">
                 <span>PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL &nbsp;</span>
