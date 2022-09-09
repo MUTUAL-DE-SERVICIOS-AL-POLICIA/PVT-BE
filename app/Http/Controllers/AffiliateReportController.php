@@ -38,7 +38,7 @@ class AffiliateReportController extends Controller
             'user' => $user
         ];
         $pages = [];
-        $pages[] = \View::make('ret_fun.print.print_record_affiliate', $data)->render();
+        $pages[] = \View::make('affiliates.print.life_record_affiliate', $data)->render();
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
@@ -46,7 +46,7 @@ class AffiliateReportController extends Controller
             ->setOption('margin-bottom', '23mm')
             ->setPaper('letter')->setOption('encoding', 'utf-8')
             ->setOption('footer-right', 'Pagina [page] de [toPage]')
-            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+            ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL')
             //->setOption('footer-html', $footerHtml)
             ->stream("historial.pdf");
     }

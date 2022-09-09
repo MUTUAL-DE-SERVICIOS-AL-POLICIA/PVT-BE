@@ -8,7 +8,7 @@
         <div class="font-bold uppercase m-b-5 counter">
             Datos Policiales del Afiliado
         </div>
-        @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate])
+        @include('print_global.only_police_info', ['affiliate'=>$affiliate])
 
     <div class="font-bold uppercase m-b-5 m-t-10 counter">
         Historial de datos generales del afiliado
@@ -30,7 +30,7 @@
                 <td class="text-left uppercase px-10 py-5">
                     {{ $affiliate_police_record->message}}
                 </td>
-                <td class="text-left uppercase px-10 py-5">
+                <td class="text-center uppercase px-10 py-5">
                     {{date("d/m/Y", strtotime($affiliate_police_record->date))}}
                 </td>
             </tr>
