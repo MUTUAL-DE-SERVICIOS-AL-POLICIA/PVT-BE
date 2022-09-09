@@ -1165,8 +1165,14 @@ class QuotaAidMortuaryController extends Controller
         ->where('affiliate_id',$affiliate->id)
         ->where('procedure_modalities.procedure_type_id',3)
         ->where('code','NOT LIKE','%A')->count();
+        $active_auxilio = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+        ->where('affiliate_id',$affiliate->id)
+        ->where('procedure_modalities.procedure_type_id',4)
+        ->where('code','NOT LIKE','%A')->count();
     ///
-    if($active_quota>=1){
+
+
+    if( $active_auxilio>=1 || $active_quota>=1){
       $procedure_types = ProcedureType::where('id', '4')->get();
     }else{
       $procedure_types = ProcedureType::where('id', '3')->orWhere('id', '4')->get();

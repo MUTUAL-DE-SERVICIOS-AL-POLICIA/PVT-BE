@@ -47,21 +47,27 @@ th.ellipsis-text {
             @endif
         @endcan
         @can('create', new Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary)
-            @if($has_auxilio)
-                <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene dos tr&aacute;mite de Auxilio Mortuoria">
+            @if(($active_auxilio >= 1) and ($active_quota >= 1))
+                <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene tr&aacute;mites de Cuota y Auxilio Mortuorio">
                     <button class="btn btn-info btn-sm  dim" type="button"  disabled><i class="fa fa-paste"></i> </button>
                 </a>
             @else
-                @if($has_quota)
-                    <a href="{{route('create_quota_aid', $affiliate->id)}}">
-                    <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene un tr&aacute;mite de Cuota Mortuoria"><i class="fa fa-paste"></i> </button>
-                </a>
-                @else
-                    <a href="{{route('create_quota_aid', $affiliate->id)}}">
-                        <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-paste"></i> </button>
-                    </a>
+                @if($active_auxilio >= 2)
+                        <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene dos tr&aacute;mite de Auxilio Mortuorio">
+                            <button class="btn btn-info btn-sm  dim" type="button"  disabled><i class="fa fa-paste"></i> </button>
+                        </a>
+                    @else
+                        @if($active_quota >= 1)
+                            <a href="{{route('create_quota_aid', $affiliate->id)}}">
+                            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene un tr&aacute;mite de Cuota Mortuoria"><i class="fa fa-paste"></i> </button>
+                        </a>
+                        @else
+                            <a href="{{route('create_quota_aid', $affiliate->id)}}">
+                            <button class="btn btn-warning btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Iniciar tr&aacute;mite de Cuota y Auxilio Morturorio"><i class="fa fa-heartbeat" style="font-size:15px;"></i> </button>
+                            </a>
+                        @endif
+                    @endif
                 @endif
-            @endif
         @endcan
         @can('create', new Muserpol\Models\Contribution\ContributionProcess)            
             @if($has_direct_contribution)
