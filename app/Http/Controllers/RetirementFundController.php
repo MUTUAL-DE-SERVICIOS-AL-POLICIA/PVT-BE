@@ -2136,7 +2136,7 @@ class RetirementFundController extends Controller
         }
         $availability = $affiliate->getContributionsWithType(12);
         $has_availability = sizeOf($availability) > 0;
-        $total = $retirement_fund->total_ret_fun;
+        $total = (float)$retirement_fund->total_ret_fun;
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
 
         $array_discounts = array();
@@ -2169,12 +2169,12 @@ class RetirementFundController extends Controller
 
 
         if ($has_availability) {
-            $availability = ContributionType::find(10);
+            $availability = ContributionType::find(12);
             $subtotal_availability = ($retirement_fund->subtotal_availability);
            // $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield) / 100;
             $total_annual_yield = 0;
             $total_availability = round(($subtotal_availability + $total_annual_yield), 2);
-            //$total = $total + $total_availability;
+            //$total = (float)$total;
 
             $spouse_id = ID::kinship()->conyuge;
             $spouse = $beneficiaries->filter(function ($item) use ($spouse_id) {
