@@ -260,6 +260,15 @@ class AffiliateController extends Controller
         else
             $nextcode = "";
         $active_ret_fun = RetirementFund::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
+        $active_quota = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+                        ->where('affiliate_id',$affiliate->id)
+                        ->where('procedure_modalities.procedure_type_id',3)
+                        ->where('code','NOT LIKE','%A')->count();
+        $active_auxilio = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+                        ->where('affiliate_id',$affiliate->id)
+                        ->where('procedure_modalities.procedure_type_id',4)
+                        ->where('code','NOT LIKE','%A')->count();
+
         $affiliate->load([
             'city_identity_card:id,first_shortened',
             'city_birth:id,name',
@@ -399,6 +408,8 @@ class AffiliateController extends Controller
             'affiliate_police_records'=>$affiliate_police_records,
             'nextcode'  =>  $nextcode,
             'has_ret_fun'   =>  isset($active_ret_fun->id)?true:false,
+            'active_quota'   =>  $active_quota,
+            'active_auxilio'   =>  $active_auxilio,
             'contributions' =>  $contributions,
             'aid_contributions' =>  $aid_contributions,
             'month_end' =>  $month_end,
@@ -432,6 +443,7 @@ class AffiliateController extends Controller
             'affiliatedevice' =>  $affiliateDevice,
             'file' => $file,
         );
+        //dd($data);
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
 
