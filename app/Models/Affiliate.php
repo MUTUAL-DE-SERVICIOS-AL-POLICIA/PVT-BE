@@ -204,17 +204,19 @@ class Affiliate extends Model
   }
   public function getDateEntryAvailability()
   {
-    $availability = $this->getContributionsWithType(12);
+    $availability = $this->getContributionsWithTypes(12,13);
     if (sizeOf($availability) > 0) {
-      return Util::getDateFormat($availability[0]->start);
+      //return Util::getDateFormat($availability[0]->start);
+      return $availability[0]->start;
     }
     return '-';
   }
   public function getDateFinishAvailability()
   {
-    $availability = $this->getContributionsWithType(13);
+    $availability = $this->getContributionsWithTypes(12,13);
     if (sizeOf($availability) > 0) {
-      return Util::getDateFormat($availability[sizeOf($availability)-1]->end);
+      //return Util::getDateFormat($availability[sizeOf($availability)-1]->end);
+      return $availability[sizeOf($availability)-1]->end;
     }
     return '-';
   }
@@ -332,6 +334,28 @@ class Affiliate extends Model
     $dates = [];
     if (!$contribution_type) return "error";
     $contributions = $this->contributions()->where('contribution_type_id', '=', $contribution_type->id)->orderBy('month_year', 'asc')->get();
+    if ($length = $contributions->count()) {
+      $start = $contributions[0]->month_year;
+      for ($i = 0; $i < $length - 1; $i++) {
+        if ($i <= $length - 1) {
+          if (Carbon::parse($contributions[$i]->month_year)->addMonth()->toDateString() == Carbon::parse($contributions[$i + 1]->month_year)->toDateString()) { } else {
+            $dates[] = (object)array('start' => $start, 'end' => $contributions[$i]->month_year);
+            $start = $contributions[$i + 1]->month_year;
+          }
+        }
+      }
+      $dates[] = (object)array('start' => $start, 'end' => $contributions[$i]->month_year);
+    }
+    return $dates;
+  }
+  public function getContributionsWithTypes($contribution_type_id_s,$contribution_type_id_e)
+  {
+    $contribution_type_start = ContributionType::find($contribution_type_id_s)->id;
+    $contribution_type_end = ContributionType::find($contribution_type_id_e)->id;
+    $contribution_types= [$contribution_type_start,$contribution_type_end];
+    $dates = [];
+    if (!$contribution_type_start && !$contribution_type_end) return "error";
+    $contributions = $this->contributions()->whereIn('contribution_type_id',$contribution_types)->orderBy('month_year', 'asc')->get();
     if ($length = $contributions->count()) {
       $start = $contributions[0]->month_year;
       for ($i = 0; $i < $length - 1; $i++) {
