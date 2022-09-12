@@ -22,10 +22,12 @@ class ApiAuth
         if ($request->bearerToken()) {
             $device = AffiliateToken::whereApiToken($request->bearerToken())->first();
             if ($device) {
-                if (Hash::check($device->device_id, $device->api_token)) {
-                    $request->merge(['affiliate' => $device->affiliate]);
-                    return $next($request);
-                }
+                // if (Hash::check($device->device_id, $device->api_token)) {
+                //     $request->merge(['affiliate' => $device->affiliate]);
+                //     return $next($request);
+                // }
+                $request->merge(['affiliate' => $device->affiliate]);
+                return $next($request); 
             }
         } else {
             return response()->json([
