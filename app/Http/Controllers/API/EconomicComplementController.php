@@ -148,10 +148,7 @@ class EconomicComplementController extends Controller
                 $economic_complement->aps_total_fs = Util::parseMoney($last_eco_com->aps_total_fs);
                 $economic_complement->aps_disability = Util::parseMoney($last_eco_com->aps_disability);
                 $economic_complement->sub_total_rent = null;
-                $economic_complement->reimbursement = null;
-                $economic_complement->dignity_pension = null;
-                $economic_complement->total_rent =
-                $economic_complement->aps_total_fsa +
+                $economic_complement->reimbaffiliateotal_fsa +
                 $economic_complement->aps_total_cc +
                 $economic_complement->aps_total_fs +
                 $economic_complement->aps_disability;
@@ -249,10 +246,11 @@ class EconomicComplementController extends Controller
                         $path = 'ci/'.$request->affiliate->id.'/ci_reverso.jpg';
                         Storage::put($path, base64_decode($attachment['content']), 'public');
                     }                   
-                }else {
-                    $path = 'eco_com/'.$request->affiliate->id.'/boleta_de_renta_'.$eco_com_procedure_id.'.jpg';
-                    Storage::put($path, base64_decode($attachment['content']), 'public');
                 }
+                // else {
+                //     $path = 'eco_com/'.$request->affiliate->id.'/boleta_de_renta_'.$eco_com_procedure_id.'.jpg';
+                //     Storage::put($path, base64_decode($attachment['content']), 'public');
+                // }
             }   
 
             $economic_complement->procedure_records()->create([

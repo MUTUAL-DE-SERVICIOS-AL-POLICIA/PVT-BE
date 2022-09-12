@@ -13,13 +13,15 @@ use Muserpol\Helpers\Util;
 use Carbon\Carbon;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComModality;
+use Muserpol\Models\AffiliateToken;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     private function getToken($device_id) {
         do {
             $token = Hash::make($device_id);
-        } while(AffiliateDevice::where('api_token', $token)->exists());
+        } while(AffiliateToken::where('api_token', $token)->exists());
         return $token;
     }
 
@@ -63,10 +65,12 @@ class AuthController extends Controller
      */
     public function store(AuthForm $request)
     {
-        $identity_card = mb_strtoupper($request->identity_card);
+        $identity_card = mb_strtoupper($request->identity_card); // obteniendo el identity_card
         $birth_date = Carbon::parse($request->birth_date)->format('Y-m-d');
         $device_id = $request->device_id;
+        $firebase_token = $request->firebase_token;
         $is_new_app= isset( $request->is_new_app ) ? $request->is_new_app : false;
+
         if($is_new_app){
             /*if (Util::isDoblePerceptionEcoCom($identity_card)) {
                 return response()->json([
@@ -76,21 +80,22 @@ class AuthController extends Controller
                 ], 403);
             } else {*/
                 $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
-                if ($eco_com_beneficiary) {
-                    $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
-                    $affiliate_device = AffiliateDevice::whereDeviceId($device_id)->first();
-                    if ($affiliate_device) {
-                        if ($affiliate_device->affiliate_id != $affiliate->id) {
+                if ($eco_com_beneficiary) {  
+                    $affiliate = $eco_com_beneficiary->economic_complement->affiliate; 
+                    $affiliate_token = AffiliateToken::whereDeviceId($device_id)->first(); 
+                    if ($affiliate_token) { 
+                        if ($affiliate_token->affiliate_id != $affiliate->id) { 
                             return response()->json([
                                 'error' => true,
                                 'message' => 'Afiliado registrado con otro dispositivo.',
                                 'data' => (object)[]
                             ], 403);
-                        }
-                    }
+                        } 
+                    } 
                     $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) {
                         $q->orderBy('year')->orderBy('normal_start_date');
                     })->latest()->first();
+                    // Datos del último beneficiario resgistrado
                     if (mb_strtoupper($last_eco_com->eco_com_beneficiary->identity_card) == $identity_card && Carbon::createFromFormat('d/m/Y', $last_eco_com->eco_com_beneficiary->birth_date)->format('Y-m-d') == $birth_date) {
                         $economic_beneficiary = $last_eco_com->eco_com_beneficiary; //Datos del Último beneficiario registrado
                         $economic_complement = EconomicComplement::find($economic_beneficiary->economic_complement_id);
@@ -113,31 +118,63 @@ class AuthController extends Controller
                             'data' => (object)[]
                         ], 403);
                     }
-                    $affiliate_device = AffiliateDevice::whereAffiliateId($affiliate->id)->first();
+                    $affiliate_token = AffiliateToken::whereAffiliateId($affiliate->id)->first();
+
                     $token = null;
-                    if (!$affiliate->device && !$affiliate_device) {
+                    if (!$affiliate->affiliate_token && !$affiliate_token) {
                         $token = $this->getToken($device_id);
-                        $affiliate->device()->create([
+                        $affiliate_token = $affiliate->affiliate_token()->create([
                             'api_token' => $token,
                             'device_id' => $device_id,
+                            'firebase_token' => $firebase_token
                         ]);
-                        $affiliate->device = (object)[
+                        $affiliate_device = new AffiliateDevice;
+                        $affiliate_device->create([
+                            'affiliate_token_id' => $affiliate_token->id,
                             'enrolled' => false,
                             'verified' => false
-                        ];
-                    } elseif ($affiliate_device && $affiliate) {
-                        if ($device_id == $affiliate_device->device_id || $affiliate_device->device_id == null) {
+                        ]);
+                    } elseif ($affiliate_token && $affiliate) { // registrado en affiliate_tokens, pero no en affiliate_devices
+                        if ($device_id == $affiliate_token->device_id || $affiliate_token->device_id == null) {
+                            $token = $this->getToken($device_id); 
+                            $update = [
+                                'api_token' => $token,
+                                'firebase_token' => $firebase_token
+                            ];
+                            if ($affiliate_token->device_id == null) {
+                                $update['device_id'] = $device_id;
+                            }
+                            $affiliate->affiliate_token()->update($update); // Actualizamos la tabla affiliate_tokens 
+
+                            $affiliate_token_id = $affiliate_token->id; // Obtenemos el id del affiliate_token
+                            if(AffiliateDevice::find($affiliate_token_id) == null) { // buscamos el id de la tabla affiliate_tokens en affilate_devices, si es nulo
+                                $affiliate_device = new AffiliateDevice;
+                                $affiliate_device->create([
+                                    'affiliate_token_id' => $affiliate_token_id,
+                                    'enrolled' => false,
+                                    'verified' => false
+                                ]);
+                            }
+                        } 
+                        elseif(AffiliateDevice::find($affiliate_token->id) == null) { // Se genero su device_id por la oficina virtual, pero nunca ingreso a complemento
+                            // Actualizamos el device_id
                             $token = $this->getToken($device_id);
                             $update = [
                                 'api_token' => $token,
+                                'firebase_token' => $firebase_token,
+                                'device_id' => $device_id
                             ];
-                            if ($affiliate_device->device_id == null) {
-                                $update['device_id'] = $device_id;
-                            }
-                            $affiliate->device()->update($update);
+                            $affiliate->affiliate_token()->update($update);
+                            $affiliate_device = new AffiliateDevice;
+                            $affiliate_device->create([
+                                'affiliate_token_id' => $affiliate_token->id,
+                                'enrolled' => false,
+                                'verified' => false
+                            ]);
                         }
                     }
                     if ($token) {
+
                         return response()->json([
                             'error' => false,
                             'message' => 'Usuario autenticado',
@@ -150,8 +187,10 @@ class AuthController extends Controller
                                     'identity_card' => $eco_com_beneficiary->ciWithExt(),
                                     'pension_entity' => $affiliate->pension_entity ? $affiliate->pension_entity->name : '',
                                     'category' => $affiliate->category->name,
-                                    'enrolled' => $affiliate->device->enrolled,
-                                    'verified' => $affiliate->device->verified,
+                                    'enrolled' => $affiliate_token->affiliate_device->enrolled,
+                                    'verified' => $affiliate_token->affiliate_device->verified,
+                                    // 'enrolled' => $affiliate->device->enrolled,
+                                    // 'verified' => $affiliate->device->verified,
                                 ],
                             ]
                         ], 200);
@@ -187,7 +226,7 @@ class AuthController extends Controller
      */
     public function destroy(Request $request)
     {
-        $request->affiliate->device()->update(['api_token' => null]);
+        $request->affiliate->affiliate_token()->update(['api_token' => null, 'firebase_token' => null]);
         return response()->json([
             'error' => false,
             'message' => 'Sesión terminada',

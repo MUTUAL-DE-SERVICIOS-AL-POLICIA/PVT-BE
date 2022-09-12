@@ -30,7 +30,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(o, index) in observations" :key="index" v-if="o.pivot.deleted_at==NULL">
+              <tr v-for="(o, index) in observations" :key="index" v-if="o.pivot.deleted_at==null">
                 <td>{{index + 1}}</td>
                 <td>{{ o.pivot.date | textDate }}</td>
                 <td>
