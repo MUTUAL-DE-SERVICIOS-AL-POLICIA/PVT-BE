@@ -1969,7 +1969,7 @@ class RetirementFundController extends Controller
             $total_aporte= $affiliate->getTotalAverageSalaryQuotable()['total_retirement_fund'];
             $sub_total_ret_fun = $total_aporte;
         }else{
-            if ($total_quotes >= $number_contributions) {
+            if ($total_quotes >= $number_contributions && $retirement_fund->procedure_modality->procedure_type->id == 2 ) {
                 $total_average_salary_quotable = $affiliate->getTotalAverageSalaryQuotable()['total_average_salary_quotable'];
                 $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
             } else {//PGA
@@ -1982,11 +1982,10 @@ class RetirementFundController extends Controller
             }
         }
 
-
         $advance_payment = $request->advancePayment ?? 0;
         $retention_loan_payment = $request->retentionLoanPayment ?? 0;
         $retention_guarantor = $request->retentionGuarantor ?? 0;
-
+        
         $total_ret_fun = $sub_total_ret_fun - $advance_payment - $retention_loan_payment - $retention_guarantor;
 
         $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
