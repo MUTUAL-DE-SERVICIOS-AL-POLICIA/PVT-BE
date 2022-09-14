@@ -232,7 +232,7 @@ class QuotaAidCertificationController extends Controller
     $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
     $pdftitle = "RECEPCIÓN - " . $title;
     $namepdf = Util::getPDFName($pdftitle, $applicant);
-    $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
+    $footerHtml = view()->make('quota_aid.print.footer_qr', ['bar_code' => $bar_code])->render();
     $spouse = null;
     if (($quota_aid->procedure_modality_id == 15 && $affiliate->pension_entity_id == 5) || $quota_aid->procedure_modality_id == 14) {//aqui
       $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
