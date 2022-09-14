@@ -1932,7 +1932,7 @@ class RetirementFundCertificationController extends Controller
     array_push($documents, 'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
     array_push($documents, 'CALIFICACIÓN DE FONDO DE RETIRO');
     if ($retirement_fund->total_availability != null) {
-      if($retirement_fund->total_availability !=0){
+      if($retirement_fund->total_availability > 0){
          array_push($documents, 'DEVOLUCIÓN DE DESCUENTOS EN DISPONIBILIDAD');
      }
     }
