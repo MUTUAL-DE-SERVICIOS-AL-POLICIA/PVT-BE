@@ -1899,7 +1899,7 @@ class RetirementFundCertificationController extends Controller
     if ($item0 > 0) {
       array_push($documents, 'CERTIFICACIÓN DE APORTES ITEM "0"');
     }
-    $valid_contributions = ContributionType::where('name', '=', 'Disponibilidad')->select('id')->pluck('id');
+    $valid_contributions = ContributionType::where('name', '=', 'Disponibilidad Con Aporte')->select('id')->pluck('id');
     $availability = Contribution::where('affiliate_id', $affiliate->id)
       ->whereIn('contribution_type_id', $valid_contributions)
       ->count();
@@ -1931,7 +1931,11 @@ class RetirementFundCertificationController extends Controller
     array_push($documents, 'CERTIFICACIÓN DE PAGOS ANTERIORES (DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS)');
     array_push($documents, 'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
     array_push($documents, 'CALIFICACIÓN DE FONDO DE RETIRO');
-    array_push($documents, 'RECONOCIMIENTO DE APORTES');
+    if ($retirement_fund->total_availability != null) {
+      if($retirement_fund->total_availability !=0){
+         array_push($documents, 'DEVOLUCIÓN DE DESCUENTOS EN DISPONIBILIDAD');
+     }
+    }
     if ($tag > 0) {
       array_push($documents, 'INFORME DE TRABAJO SOCIAL (PRIORIZACIÓN DE TRÁMITES)');
     }
