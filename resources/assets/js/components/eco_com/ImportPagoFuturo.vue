@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="ibox">
         <div class="ibox-title">
-          <h2 class="pull-left">Importar Pago a Futuro</h2>
+          <h2 class="pull-left">Calcular Pago a Futuro</h2>
           <div class="ibox-tools"></div>
         </div>
         <div class="ibox-content">
@@ -25,7 +25,7 @@
             <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
             <i v-else class="fa fa-save"></i>
             &nbsp;
-            {{ loadingButton ? 'Procesando...' : 'Subir Archivo Nuevo' }}
+            {{ loadingButton ? 'Procesando...' : 'Calcular' }}
           </button>
           <!--
           <button
@@ -55,26 +55,8 @@
         </div>
         <div class="ibox-content">
           <div class="row">
-            <h2>Afiliados Importados Satisfactoriamente: {{ found }} </h2>
-            <h2>Complementos Importados Satisfactoriamente: {{ found2 }}</h2>
-          </div>
-          <br />
-          <div class="row">
-            <h2>Datos Distintos: {{fails.length}}</h2>
-            <table class="table table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th>Numero de Carnet</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(nf, index) in fails" :key="index">
-                  <td>
-                   {{ nf }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <h2>Total Casos de Descuentos en Proceso: {{ import_eco_com }}</h2>
+            <h2>Total de Aportes registrados en Proceso: {{ import_contribution }}</h2>
           </div>
           <br>
           <!-- 
@@ -99,6 +81,8 @@ export default {
       loadingButton: false,
       found: 0,
       found2: 0,
+      import_eco_com: 0,
+      import_contribution: 0,
       fails: [],
       showResults: false,
       refresh: false,
@@ -169,6 +153,8 @@ export default {
           // this.found = response.data.found;
           // this.found2 = response.data.found2;
           // this.fails = response.data.not_found;
+          this.import_contribution = response.data.import_contribution;
+          this.import_eco_com = response.data.import_eco_com;
         })
         .catch(error => {
           console.log(error);

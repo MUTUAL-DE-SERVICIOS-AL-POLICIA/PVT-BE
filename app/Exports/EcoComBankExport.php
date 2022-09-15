@@ -17,7 +17,7 @@ class EcoComBankExport implements WithColumnFormatting, WithHeadings, ShouldAuto
 {
     protected $eco_com_procedure_id;
     protected $change_state;
-    public function __construct(int $id, $change_state = false)
+    public function __construct(int $id,$change_state)
     {
         $this->eco_com_procedure_id = $id;
         $this->change_state = $change_state;
@@ -32,7 +32,7 @@ class EcoComBankExport implements WithColumnFormatting, WithHeadings, ShouldAuto
         $sheets = [];
 
         // for ($month = 1; $month <= 2; $month++) {
-        $sheets[] = new EcoComBankExportHeaderSheet($this->eco_com_procedure_id);
+        $sheets[] = new EcoComBankExportHeaderSheet($this->eco_com_procedure_id, $this->change_state);
         $sheets[] = new EcoComBankExportSheet($this->eco_com_procedure_id, $this->change_state);
         // }
 

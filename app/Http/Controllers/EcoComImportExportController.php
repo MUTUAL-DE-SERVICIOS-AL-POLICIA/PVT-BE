@@ -17,6 +17,8 @@ use Muserpol\Models\ObservationType;
 use Muserpol\Models\DiscountType;
 use Muserpol\User;
 use Auth;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
+use Carbon\Carbon;
 
 class EcoComImportExportController extends Controller
 {
@@ -332,6 +334,8 @@ class EcoComImportExportController extends Controller
         $user = User::first();
 
         $current_procedures = $request->ecoComProcedureId;
+        $year_procedures = EcoComProcedure::find($current_procedures);
+        $year_procedures = Carbon::parse($year_procedures->year)->year;
         $pago_futuro_id = 31;
         $affiliates = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->get();
         $observation = ObservationType::find($pago_futuro_id);
@@ -370,11 +374,17 @@ class EcoComImportExportController extends Controller
                 $not_found->push($affiliate_id);
             }
         }
-        
+        //registro de aportes en la tabla contribution_passives
+        $user_id = Auth::user()->id;
+        $import_contribution = DB::select("select import_contribution_eco_com($user_id,$current_procedures)");
+        $import_contribution = explode(',',$import_contribution[0]->import_contribution_eco_com);
+
         $data = [
             'found' => $found,
             'found2' => $found2,
             'not_found' => $not_found,
+            'import_contribution'=>$import_contribution[1],
+            'import_eco_com'=>$import_contribution[2]
         ];
         session()->put('pago_futuro_data', $data);
 

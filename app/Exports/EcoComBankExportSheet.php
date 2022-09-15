@@ -20,7 +20,7 @@ class EcoComBankExportSheet implements FromCollection, WithTitle, WithHeadings,W
     private $eco_com_procedure_id;
     private $change_state;
 
-    public function __construct(int $id,$change_state = false)
+    public function __construct(int $id,$change_state)
     {
         $this->eco_com_procedure_id = $id;
         $this->change_state = $change_state;
