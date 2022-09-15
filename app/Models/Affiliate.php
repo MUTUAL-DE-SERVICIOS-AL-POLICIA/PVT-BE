@@ -529,7 +529,7 @@ class Affiliate extends Model
     if ($this->selectedContributions() > 0 || $this->contributions()->count() == 0) {
       return [];
     }
-    if($this->retirement_funds->last()->procedure_modality->procedure_type->id == 21){
+    if($this->retirement_funds()->where('code','not like','%A%')->first()->procedure_modality->procedure_type->id == 21){
       $number_contributions = $this->getTotalQuotes();
      }else{
       $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
