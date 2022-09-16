@@ -254,12 +254,13 @@ class QuotaAidMortuaryController extends Controller
   }
 
    //funcion para agregar uuid a los registros que tienen null
-   public  function add_uuid(){
+   public static function add_uuid(){
     $quota_aid_mortuaries=QuotaAidMortuary::withTrashed()->get();
     foreach ($quota_aid_mortuaries as $quota_aid_mortuary) {
         $quota_aid_mortuary->uuid=Uuid::uuid1()->toString();
         $quota_aid_mortuary->save();
-   }
+    }
+    return $quota_aid_mortuary;
   }
 
   /**
