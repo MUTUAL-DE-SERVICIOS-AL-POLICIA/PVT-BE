@@ -934,12 +934,13 @@ class RetirementFundController extends Controller
         //
     }
  //funcion para agregar uuid a los registros que tienen null
-    public  function add_uuid(){
+    public static function add_uuid(){
         $ret_funs=RetirementFund::withTrashed()->get();
         foreach ($ret_funs as $ret_fun) {
             $ret_fun->uuid=Uuid::uuid1()->toString();
             $ret_fun->save();
        }
+       return $ret_fun;
 }
     public function getAllRetFun(DataTables $datatables)
     // public function getAllRetFun(Request $request)
