@@ -139,9 +139,9 @@ class RetirementFundCertificationController extends Controller
     $modality = $retirement_fund->procedure_modality->name;
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $dev_pay = ProcedureType::whereName("Devolución de Aportes")->first();//ojo cambiar 
-    $article = $retirement_fund->procedure_modality->procedure_type_id === $dev_pay->id ?" PARA LA ":" PARA EL ";
+    $article_header = $retirement_fund->procedure_modality->procedure_type_id === $dev_pay->id ?" PARA LA ":" PARA EL ";
     $article_by = $retirement_fund->procedure_modality->id==62 ? ' AL ': ' POR ';
-    $title = "REQUISITOS".$article. mb_strtoupper($retirement_fund->procedure_modality->procedure_type->name) . $article_by . mb_strtoupper($modality);
+    $title = "REQUISITOS".$article_header. mb_strtoupper($retirement_fund->procedure_modality->procedure_type->name) . $article_by . mb_strtoupper($modality);
     $legend_ret_fun = $retirement_fund->procedure_modality->procedure_type_id === 2?'De evidenciarse descuentos en periodo de disponibilidad a la(s) Letra(s) se procederá a su devolución en consideración a la Disposición Transitoria Cuarta del Reglamento de Fondo de Retiro Policial Solidario.':'';
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
@@ -154,6 +154,12 @@ class RetirementFundCertificationController extends Controller
 
     $submitted_documents = RetFunSubmittedDocument::leftJoin('procedure_requirements', 'procedure_requirements.id', '=', 'ret_fun_submitted_documents.procedure_requirement_id')->where('retirement_fund_id', $retirement_fund->id)->orderBy('procedure_requirements.number', 'asc')->get();
 
+    if($retirement_fund->procedure_modality->procedure_type_id==21)
+      $article = 'PARA LA';
+    elseif($article = $retirement_fund->procedure_modality->procedure_type_id==1)
+      $article = 'PARA EL';
+    else
+      $article = 'DE';
     /*
             !!todo
             add support utf-8
@@ -183,6 +189,7 @@ class RetirementFundCertificationController extends Controller
       'submitted_documents' => $submitted_documents,
       'retirement_fund' => $retirement_fund,
       'legend_ret_fun'=> $legend_ret_fun,
+      'article'=> $article,
     ];
     $pages = [];
     $number_pages = Util::isRegionalRole() ? 3 : 2;

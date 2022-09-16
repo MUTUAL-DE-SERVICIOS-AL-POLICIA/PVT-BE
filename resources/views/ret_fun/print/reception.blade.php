@@ -28,7 +28,6 @@
                 <span class="uppercase font-bold">MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</span><br>
                 <span class="font-bold capitalize">presente.-</span><br>
             </div>
-            @php($article = $retirement_fund->procedure_modality->procedure_type_id==21 ? 'PARA LA': 'PARA EL')
             @php($article_by = $retirement_fund->procedure_modality->id==62 ? 'AL': 'POR')
             <div class="text-right block">
                 <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD {{$article}} {{ $retirement_fund->procedure_modality->procedure_type->name }} {{$article_by}} {!! $modality !!}</span></span>
