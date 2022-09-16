@@ -105,7 +105,7 @@
                                       v-model.trim="form.due_date"
                                       class="form-control"
                                       v-date
-                                      v-validate="'required|date_format:dd/MM/yyyy|max_due_date'"
+                                      v-validate="'required|date_format:dd/MM/yyyy'"
                                     >
                                     <br>
                                     <input
