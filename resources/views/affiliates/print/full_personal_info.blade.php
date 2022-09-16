@@ -99,7 +99,7 @@
                 @if( $type == "quota_aid" )
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">MODALIDAD</td>
-                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $ret_fun->procedure_modality->name}}</td>
+                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $ret_fun->procedure_modality->procedure_type->second_name }} - {{ $ret_fun->procedure_modality->name}}</td>
                     </tr>
                 @endif
                 @if( $type == "ret_fun" )

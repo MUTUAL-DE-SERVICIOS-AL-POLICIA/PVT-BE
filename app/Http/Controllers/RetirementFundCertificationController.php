@@ -412,7 +412,7 @@ class RetirementFundCertificationController extends Controller
 
       $title = 'CALIFICACIÓN DE PAGO GLOBAL POR ' . $retirement_fund->procedure_modality->name;
     }elseif ($retirement_fund->procedure_modality->procedure_type_id == 21){//DA
-      $title = 'DEVOLUCIÓN DE APORTES POR ' . $retirement_fund->procedure_modality->name;
+      $title = 'DEVOLUCIÓN DE APORTES - ' . $retirement_fund->procedure_modality->name;
     }else {//FRPS
       $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
     }
@@ -505,7 +505,7 @@ class RetirementFundCertificationController extends Controller
     if ($retirement_fund->procedure_modality->procedure_type_id == 1) {//PGA
       $title = 'CALIFICACIÓN DE PAGO GLOBAL POR ' . $retirement_fund->procedure_modality->name;
     }elseif ($retirement_fund->procedure_modality->procedure_type_id == 21){//DA
-      $title = 'DEVOLUCIÓN DE APORTES POR ' . $retirement_fund->procedure_modality->name;
+      $title = 'DEVOLUCIÓN DE APORTES - ' . $retirement_fund->procedure_modality->name;
     }else {//FRPS
       $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
     }
