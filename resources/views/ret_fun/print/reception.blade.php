@@ -95,7 +95,6 @@
             </table>
         @endif
         <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme al Artículo 49 del Reglamento de Fondo de Retiro Policial Solidario.</div>
-        <br>
         <div class="text-justify text-sm">{{$legend_ret_fun}}</div>
         <br>
         <table class="m-t-35">
