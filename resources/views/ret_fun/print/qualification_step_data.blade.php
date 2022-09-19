@@ -6,6 +6,7 @@
     </div>
     @include('ret_fun.print.interval_types', ['ret_fun' => $retirement_fund, 'type'=>'ret_fun' ])
     <div class="block">
+@if ($retirement_fund->procedure_modality->procedure_type_id == 1 || $retirement_fund->procedure_modality->procedure_type_id == 2)
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
@@ -15,7 +16,7 @@
                 </tr>
             </thead>
             <tbody class="table-striped">
-                @if ( $affiliate->globalPayRetFun() )
+                @if ( $retirement_fund->procedure_modality->procedure_type_id == 1 )
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">TOTAL APORTES</td>
                         <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->average_quotable) }} </td>
@@ -23,18 +24,18 @@
                     </tr>
                     <tr class="text-sm">
                         @if ($retirement_fund->procedure_modality->procedure_type_id == 1)
-                            <td class="text-left px-10 py-3 uppercase">Interés del 1.05%</td>
+                            <td class="text-left px-10 py-3 uppercase">5% DE RENDIMIENTO</td>
                         @else
                             <td class="text-left px-10 py-3 uppercase">CON RENDIMIENTO DEL 5% ANUAL</td>
                         @endif
                         <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($yield) }} </td>
                         <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>
-                    <tr class="text-sm">
+                    <!-- <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">menos gastos administrativos de 10%</td>
                         <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($less_administrative_expenses) }} </td>
                         <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
-                    </tr>
+                    </tr> -->
                 @else
                     <tr class="text-sm">
                         <td class="w-60 text-left px-10 py-3 uppercase">ultimo sueldo percibido</td>
@@ -52,8 +53,9 @@
                         <td class="text-center uppercase font-bold px-5 py-3"> meses </td>
                     </tr>
                 @endif
-            </tbody>
-        </table>
+    </tbody>
+</table>
+@endif
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
@@ -66,8 +68,10 @@
                 @if (sizeOf($discounts)>0)
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">
-                            @if ($affiliate->globalPayRetFun())
+                            @if ($retirement_fund->procedure_modality->procedure_type_id == 1)
                                 total pago global por {{ $retirement_fund->procedure_modality->name }}
+                            @elseif ($retirement_fund->procedure_modality->procedure_type_id == 21)
+                                total devolución de aportes por {{ $retirement_fund->procedure_modality->name }}
                             @else
                                 total fondo de retiro
                             @endif
@@ -92,10 +96,12 @@
                 @endforeach
                 <tr class="text-lg">
                     <td class="text-left px-10 py-3 uppercase font-bold">
-                        @if ($affiliate->globalPayretFUn())
+                        @if ($retirement_fund->procedure_modality->procedure_type_id == 1)
                             total pago global por {{ $retirement_fund->procedure_modality->name }}
+                        @elseif ($retirement_fund->procedure_modality->procedure_type_id == 21)
+                            total devolución de aportes por {{ $retirement_fund->procedure_modality->name }}
                         @else
-                        total fondo de retiro
+                            total fondo de retiro
                         @endif
                     </td>
                     <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->total_ret_fun) }} </td>

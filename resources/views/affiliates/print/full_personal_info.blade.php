@@ -99,7 +99,7 @@
                 @if( $type == "quota_aid" )
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">MODALIDAD</td>
-                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $ret_fun->procedure_modality->name}}</td>
+                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $ret_fun->procedure_modality->procedure_type->second_name }} - {{ $ret_fun->procedure_modality->name}}</td>
                     </tr>
                 @endif
                 @if( $type == "ret_fun" )
@@ -109,7 +109,7 @@
                     </tr>
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">fecha de ingreso a disponibilidad</td>
-                        <td class="uppercase font-bold px-5 py-3 text-left">{{ $affiliate->getDateEntryAvailability() }}</td>
+                        <td class="uppercase font-bold px-5 py-3 text-left">{{ Util::getDateFormat($affiliate->getDateEntryAvailability()) }}</td>
                     </tr>
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">fecha de baja</td>

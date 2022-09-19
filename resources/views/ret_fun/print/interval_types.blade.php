@@ -13,6 +13,19 @@
                 <td class="w-25 text-center font-bold px-10 py-3 uppercase" colspan="1">inicio</td>
                 <td class="w-25 text-center font-bold px-10 py-3 uppercase" colspan="1">fin</td>
             </tr>
+            @if ($type == 'availability')
+                <tr class="text-sm">
+                    <td class="text-left px-10 py-3 font-bold uppercase" >Disponibilidad general </td>
+                        <td colspan="2">
+                            <table class="no-border" style="border:none">
+                                <tr class="no-border" style="border:none">
+                                    <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($ret_fun->affiliate->getDateEntryAvailability()) ?? 'error' }}  </td>
+                                    <td class="text-center uppercase font-bold px-5 py-3" style="border:none">  {{ Util::formatMonthYear($ret_fun->affiliate->getDateFinishAvailability()) ?? 'error' }}  </td>
+                                </tr>
+                            </table>
+                        </td>
+                </tr>
+            @endif
             @foreach ($contributions['contribution_types'] as $c)
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase" >{{ $c['name'] }}</td>
@@ -41,6 +54,13 @@
             </tr>
         </thead>
         <tbody class="table-striped">
+            @if ($type == 'availability')
+             <tr class="text-sm">
+                <td class="text-left px-10 py-3 uppercase font-bold">Disponibilidad general</td>
+                <td class="text-center px-10 py-3 uppercase font-bold"> {{ $ret_fun->affiliate->getDateIntervalAvailability()['years'] ?? 'error' }}  </td>
+                <td class="text-center px-10 py-3 uppercase font-bold">  {{ $ret_fun->affiliate->getDateIntervalAvailability()['months'] ?? 'error' }}  </td>
+            </tr>
+            @endif
             @foreach ($contributions['contribution_types'] as $c)
             <tr class="text-sm">
                 <td class="text-left px-10 py-3 uppercase">{{ $c['name'] }}</td>
@@ -50,7 +70,7 @@
             @endforeach
             @if ($type != 'availability')
                 <tr>
-                    <td class="text-left px-10 py-3 uppercase font-bold">Total de cotizaciones para Calificacion</td>
+                    <td class="text-left px-10 py-3 uppercase font-bold">Total de cotizaciones para Calificación</td>
                     <td class="text-center"><strong>{{ $contributions['years'] }}</strong></td>
                     <td class="text-center"><strong>{{ $contributions['months'] }}</strong></td>
                 </tr>

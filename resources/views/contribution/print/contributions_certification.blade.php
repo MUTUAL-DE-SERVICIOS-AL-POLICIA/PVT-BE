@@ -30,6 +30,12 @@
                 ANTIGUEDAD
             </td>
             <td class="px-15 py text-center">
+                APORTE F.R.P.S
+            </td>
+            <td class="px-15 py text-center">
+                APORTE C.M
+            </td>
+            <td class="px-15 py text-center">
                 APORTE
             </td>               
         </tr>
@@ -44,12 +50,18 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->gain) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->base_wage) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->seniority_bonus) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->retirement_fund) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->mortuary_quota) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                     @else
                         @if ($contribution->contribution_type_id == 9)
-                            <td class="text-center uppercase font-bold px-5 py-3" colspan="4">PERÍODO NO TRABAJADO</td>
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="6">PERÍODO NO TRABAJADO</td>
+                        @elseif($contribution->contribution_type_id == 14)
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="6">INEXISTENCIA DE PLANILLAS DE HABERES</td>
+                        @elseif($contribution->contribution_type_id == 6)
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="6">PERIODOS ANTERIORES A MAYO/1976</td>
                         @else
-                            <td class="text-center uppercase font-bold px-5 py-3" colspan="4">NO APORTE</td>
+                            <td class="text-center uppercase font-bold px-5 py-3" colspan="6">PERIODO CERTIFICACIÓN SIN APORTE</td>
                         @endif
                     @endif
                 </tr>
@@ -62,6 +74,8 @@
                                 <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->gain) }}</td>
                                 <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->base_wage) }}</td>
                                 <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->seniority_bonus) }}</td>
+                                <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->retirement_fund) }}</td>
+                                <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->mortuary_quota) }}</td>
                                 <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>                            
                         </tr>
                     @endif        

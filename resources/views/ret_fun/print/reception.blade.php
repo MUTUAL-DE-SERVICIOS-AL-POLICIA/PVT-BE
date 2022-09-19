@@ -10,10 +10,16 @@
             Datos del solicitante
         </div>
         @include('print_global.applicant_info', ['applicant'=>$applicant])
+      @if($applicant->kinship->name != 'Titular')
+        <div class="font-bold uppercase m-b-5 counter">
+            Datos del Titular
+        </div>
+            @include('ret_fun.print.police_info', ['affiliate'=>$affiliate])
+        @endif
         <div class="font-bold uppercase m-b-5 counter">
             Datos Policiales del Titular
         </div>
-            @include('print_global.only_police_info', ['affiliate'=>$affiliate])
+        @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate,'procedure_modality'=>$retirement_fund->procedure_modality])
         <div>
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
@@ -22,8 +28,9 @@
                 <span class="uppercase font-bold">MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</span><br>
                 <span class="font-bold capitalize">presente.-</span><br>
             </div>
+            @php($article_by = $retirement_fund->procedure_modality->id==62 ? 'AL': 'POR')
             <div class="text-right block">
-                <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD DEL {{ $retirement_fund->procedure_modality->procedure_type->name }} POR {!! $modality !!}</span></span>
+                <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD {{$article}} {{ $retirement_fund->procedure_modality->procedure_type->name }} {{$article_by}} {!! $modality !!}</span></span>
             </div>
             <div class="m-b-5">Distinguido Director:</div>
             <div class="m-b-10">Para tal efecto, adjunto folder con los requisitos exigidos de acuerdo al siguiente detalle:</div>
@@ -87,10 +94,9 @@
                 </tbody>
             </table>
         @endif
-        <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, y en caso de demostrarse cualquier falsedad, distorsión
-            u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a
-            la anulación del trámite y podrá efectuar las acciones correspondientes conforme el Parágrafo II, artículo 44 del
-            Reglamento de Fondo de Retiro Policial Solidario.</div>
+        <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme al Artículo 49 del Reglamento de Fondo de Retiro Policial Solidario.</div>
+        <div class="text-justify text-sm">{{$legend_ret_fun}}</div>
+        <br>
         <table class="m-t-35">
             <tr>
                 <td class="no-border text-center text-base w-50 align-bottom">

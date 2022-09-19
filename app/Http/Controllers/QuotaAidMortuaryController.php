@@ -41,6 +41,7 @@ use Muserpol\Models\InfoLoan;
 use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureState;
 use Muserpol\Models\FinancialEntity;
+use Ramsey\Uuid\Uuid;
 
 class QuotaAidMortuaryController extends Controller
 {
@@ -252,6 +253,16 @@ class QuotaAidMortuaryController extends Controller
     //
   }
 
+   //funcion para agregar uuid a los registros que tienen null
+   public static function add_uuid(){
+    $quota_aid_mortuaries=QuotaAidMortuary::withTrashed()->get();
+    foreach ($quota_aid_mortuaries as $quota_aid_mortuary) {
+        $quota_aid_mortuary->uuid=Uuid::uuid1()->toString();
+        $quota_aid_mortuary->save();
+    }
+    return $quota_aid_mortuary;
+  }
+
   /**
    * Store a newly created resource in storage.
    *
@@ -369,6 +380,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->city_start_id = Auth::user()->city_id;
     $quota_aid->city_end_id = Auth::user()->city_id;
     $quota_aid->code = $code;
+    $quota_aid->uuid = Uuid::uuid1()->toString();
     $quota_aid->reception_date = date('Y-m-d');
     $quota_aid->workflow_id = 5;
     $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
@@ -700,13 +712,27 @@ class QuotaAidMortuaryController extends Controller
     $wf_sequences_back = DB::table("wf_states")
       ->where("wf_states.module_id", "=", $module->id)
       ->where('wf_states.sequence_number', '<', WorkflowState::find($quota_aid->wf_state_current_id)->sequence_number)
+      ->whereNull('wf_states.deleted_at')
       ->select(
         'wf_states.id as wf_state_id',
         'wf_states.first_shortened as wf_state_name'
       )
       ->get();
-    //return $data;
-    //return $correlatives;
+    
+      //devolver hacia adelante
+      $return_sequence = $quota_aid->wf_records->first();
+      if($return_sequence <> null && $return_sequence->record_type_id == 4 && $return_sequence->wf_state_id == $quota_aid->wf_state_current_id){
+          $wf_back = DB::table("wf_states")
+          ->where("wf_states.module_id", $module->id)
+          ->where('wf_states.id', $return_sequence->old_wf_state_id)
+          ->select(
+              'wf_states.id as wf_state_id',
+              'wf_states.first_shortened as wf_state_name'
+          )
+          ->get();
+          $wf_sequences_back = $wf_sequences_back->merge($wf_back);
+      }
+      //
 
     //summary individual accounts
     $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid($id);
@@ -1135,7 +1161,23 @@ class QuotaAidMortuaryController extends Controller
       return redirect("/affiliate/$affiliate->id")->with('message', "Debe actualizar el grado antes");
     }
     $hierarchy = $affiliate->degree->hierarchy;
-    $procedure_types = ProcedureType::where('id', '3')->orWhere('id', '4')->get();
+    /////Validar si tiene mas de un tramite de cuota para mostrar la modalidad
+        $active_quota = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+        ->where('affiliate_id',$affiliate->id)
+        ->where('procedure_modalities.procedure_type_id',3)
+        ->where('code','NOT LIKE','%A')->count();
+        $active_auxilio = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+        ->where('affiliate_id',$affiliate->id)
+        ->where('procedure_modalities.procedure_type_id',4)
+        ->where('code','NOT LIKE','%A')->count();
+    ///
+
+
+    if( $active_auxilio>=1 || $active_quota>=1){
+      $procedure_types = ProcedureType::where('id', '4')->get();
+    }else{
+      $procedure_types = ProcedureType::where('id', '3')->orWhere('id', '4')->get();
+    }
 
     $affiliate = Affiliate::select('affiliates.id', 'identity_card', 'city_identity_card_id', 'registration', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband', 'birth_date', 'gender', 'degree_id', 'degrees.name as degree', 'civil_status', 'affiliate_states.name as affiliate_state', 'phone_number', 'cell_phone_number', 'date_death')
       ->leftJoin('degrees', 'affiliates.degree_id', '=', 'degrees.id')

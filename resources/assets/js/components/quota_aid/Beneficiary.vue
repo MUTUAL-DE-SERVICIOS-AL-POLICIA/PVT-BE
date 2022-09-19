@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-md-8">
                     <select class="form-control" v-model.trim="beneficiary.city_identity_card_id" name="beneficiary_city_identity_card[]" :disabled="!editable">
-                        <option :value="null"></option>
+                        <!-- <option :value="null"></option> -->
                         <option v-for="city in cities" :key="city.id" :value="city.id" >{{ city.name }}</option>
                     </select>
                 </div>

@@ -115,15 +115,6 @@
                 >
                 </ret-fun-certification-button>
             @endif
-            @if(Muserpol\Helpers\Util::getRol()->id == 14)
-                <ret-fun-certification-button
-                    title="Imprimir Dictamen Legal"
-                    ret-fun-id="{{ $retirement_fund->id }}"
-                    url-print="{{ route('ret_fun_print_legal_dictum', $retirement_fund->id)}}"
-                    message="true"
-                >
-                </ret-fun-certification-button>
-            @endif
 
             @if(Muserpol\Helpers\Util::getRol()->id == 28)
                 <ret-fun-certification-button
@@ -184,6 +175,15 @@
                 </button>
             </span>
             @include('ret_fun.ret_fun_record', ['ret_fun_records' => $ret_fun_records,])
+            @if(Muserpol\Helpers\Util::getRol()->id == 29)
+                <ret-fun-certification-button
+                    title="Imprimir Dictamen Legal"
+                    ret-fun-id="{{ $retirement_fund->id }}"
+                    url-print="{{ route('ret_fun_print_legal_dictum', $retirement_fund->id)}}"
+                    message="true"
+                >
+                </ret-fun-certification-button>
+            @endif
         </div>
         <div class="pull-right">
             <div class="form-inline">
@@ -253,7 +253,7 @@
                     <div class="widget-text-box">
                             <ul class="list-group elements-list">
                                 <li class="list-group-item active" data-toggle="tab" href="#tab-ret-fun"><a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> Fondo de Retiro</a></li>
-                                @if($retirement_fund->procedure_modality_id == 4)
+                                @if($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1 || $retirement_fund->procedure_modality_id == 63 )
                                 <li class="list-group-item " data-toggle="tab" href="#tab-affiliate" ><a href="#"><i class="fa fa-user"></i> Afiliado </a></li>
                                 @endif
                                 <li class="list-group-item " data-toggle="tab" href="#tab-beneficiaries"><a href="#"><i class="fa fa-users"></i> Beneficiarios</a></li>
@@ -411,7 +411,9 @@
 
                             </div>
                             <div id="tab-observations" class="tab-pane">
-                                    @include('ret_fun.observation')
+                                    {{-- @can('view',new Muserpol\Models\ObservationType)--}}
+                                    {{--  @include('ret_fun.observation', ['retirement_fund'=>$retirement_fund,'observations_delete'=>$retirement_fund->ret_fun_observations_delete])-}}
+                                    {{-- @endcan --}}
                             </div>
 
                         </div>
