@@ -80,9 +80,11 @@ export default {
       if (!this.$refs.dos.$children[0].applicant_gender) {
         return false;
       }
-      if (!this.$refs.dos.$children[0].date_derelict) {
-        return false;
+      if (!(this.$refs.uno.$children[0].modality == 62 || this.$refs.uno.$children[0].modality == 63)) {
+        if (!this.$refs.dos.$children[0].date_derelict) {
+          return false;
       }
+    }
 
       if (this.$refs.dos.$children[0].applicant_type == 3) {
         // 3 id de Apoderado

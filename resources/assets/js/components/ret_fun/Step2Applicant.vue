@@ -88,6 +88,9 @@ export default {
     },
     isDeathMode(){
       return (this.retFun.modality_id == 4 || this.retFun.modality_id == 1 || this.retFun.modality_id == 63 );
+    },
+    validDateDerelict(){
+      return (this.retFun.modality_id == 62 ||  this.retFun.modality_id == 63 );
     }
   },
   methods: {
