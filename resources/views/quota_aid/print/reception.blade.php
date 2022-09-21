@@ -25,14 +25,14 @@
     @include('print_global.only_police_info', ['affiliate'=>$affiliate])
     @endif
 
-    @if(isset($spouse->id) && ($quota_aid->procedure_modality_id = 5 || $quota_aid->procedure_modality_id == 4))
+    <!-- @if(isset($spouse->id) && ($quota_aid->procedure_modality_id = 5 || $quota_aid->procedure_modality_id == 4))
         <div class="font-bold uppercase m-b-5 counter">
                 Datos del fallecido
         </div>
         <div class="my-10">
             @include('print_global.spouse_info', ['spouse' => $spouse])
          </div>
-    @endif
+    @endif -->
         <div>
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
