@@ -368,7 +368,10 @@ class AffiliateController extends Controller
         if (Storage::exists($path.'/Derecha.jpg')) 
             $fotoDerecha=base64_encode(Storage::get($path.'/Derecha.jpg'));
 
-        $affiliateDevice = AffiliateToken::where('affiliate_id','=',$affiliate->id)->get();
+        if(AffiliateToken::where('affiliate_id','=',$affiliate->id)->first())
+            $affiliateDevice = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()->affiliate_device? AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()->affiliate_device:NULL;
+        else
+            $affiliateDevice = null;
 
         $file_name = $affiliate->id.'.PDF';
         $base_path = env('FTP_DIRECTORY');
@@ -641,8 +644,17 @@ class AffiliateController extends Controller
 
     public function deleteDevice($affiliate_id){
         $affiliateDevice = AffiliateToken::where('affiliate_id', $affiliate_id)->first()->affiliate_device;
+        $affiliateToken = AffiliateToken::where('affiliate_id', $affiliate_id)->first();
         $affiliateDevice->device_id = null;
-        $affiliateDevice->api_token = null;
+        $affiliateDevice->save();
+        $affiliateToken->api_token = null;
+        $affiliateToken->save();
+    }
+    
+    public function deleteEnrolled($affiliate_id){
+        $affiliateDevice = AffiliateToken::where('affiliate_id', $affiliate_id)->first()->affiliate_device;
+        $affiliateDevice->enrolled = false;
+        $affiliateDevice->verified = false;
         $affiliateDevice->save();
     }
 
